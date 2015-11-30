@@ -1,0 +1,67 @@
+* File agkndisceauations.inc.
+* To be used with addon AGKNDISC to the Balmorel model.
+
+
+
+$ONTEXT
+QAGKNDISC1(IAGKNDISC(IA,IGDISPATCH(IGE)),IS3,T)..
+
+
+SUM(AGKNDISCSIZES$AGKNDISCDATA(IGDISPATCH,AGKNDISCSIZES,'AGKNDISCSIZE'),
+   VGKNDISC(IA,IGDISPATCH,AGKNDISCSIZES)*AGKNDISCDATA(IGDISPATCH,AGKNDISCSIZES,'AGKNDISCSIZE')*(1-GKDERATE(IA,IGDISPATCH,IS3))/(1$(not IGESTO(IGE)) + GDATA(IGE,'GDSTOHUNLD')$IGESTO(IGE))          )
+  =G=
+  VGEN_T(IA,IGDISPATCH,IS3,T)
+
+;
+
+$OFFTEXT
+
+
+
+
+
+* 'The invested capacity must be one of the specified sizes or zero (MW) (Addon AGKNDISC)'
+
+QAGKNDISCCONT(IAGKNDISCAG(IA,G))..
+
+VGKN(IA,G) =E= SUM(AGKNDISCGSIZESET$AGKNDISCGDATA(G,AGKNDISCGSIZESET,'AGKNDISCSIZE'),  VGKNDISC(IA,G,AGKNDISCGSIZESET)*AGKNDISCGDATA(G,AGKNDISCGSIZESET,'AGKNDISCSIZE'));
+
+
+
+
+
+
+
+
+
+
+
+$ontext
+
+QGEKNT(IAGKN(IA,IGDISPATCH(IGE)),IS3,T)$
+$ifi not %COMBTECH%==yes  1 ..
+$ifi     %COMBTECH%==yes  (NOT IGCOMB2(IGE)) ..
+* LARS20070814: Modified to account for investment in storage
+  VGKN(IA,IGDISPATCH)*(1-GKDERATE(IA,IGDISPATCH,IS3))/(1$(not IGESTO(IGE)) + GDATA(IGE,'GDSTOHUNLD')$IGESTO(IGE))
+    =G=
+  VGEN_T(IA,IGDISPATCH,IS3,T)
+$ifi %COMBTECH%==yes  * Add secondary generation if using combination technologies.
+$ifi %COMBTECH%==yes    + SUM(IGCOMB2$GGCOMB(IGDISPATCH,IGCOMB2), VGEN_T(IA,IGCOMB2,IS3,T))$IGCOMB1(IGDISPATCH)
+;
+
+QGHKNT(IAGKN(IA,IGKH),IS3,T)..
+* LARS20070814: Modified to account for investment in storage
+* LARS20071015: Skulle denne i virkeligheden også bruge IGDISPATCH for konsistens? For nuværende er alle varme teknologier dispatchable,
+* men hvad med solvarme?
+  VGKN(IA,IGKH)*(1-GKDERATE(IA,IGKH,IS3))/(1$(not IGHSTO(IGKH)) + GDATA(IGKH,'GDSTOHUNLD')$IGHSTO(IGKH))
+     =G=
+  VGHN_T(IA,IGKH,IS3,T)
+;
+
+$offtext
+
+
+
+* 'At most one of the specified discrete capacity size investments is chosen (Addon AGKNDISC)'
+QAGKNDISC01(IAGKNDISCAG(IA,G))..
+ SUM(AGKNDISCGSIZESET$AGKNDISCGDATA(G,AGKNDISCGSIZESET,'AGKNDISCSIZE'), VGKNDISC(IA,G,AGKNDISCGSIZESET) )=L= 1;

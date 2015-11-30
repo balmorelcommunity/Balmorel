@@ -1,0 +1,47 @@
+* This is the options file for the price dependent electricity exchange with
+* third countries add-on.
+* 1) In BB1 and BB2 there are two ways use the module.
+*   A) An assumption that there is a fixed annual net import/export to each
+*      specified 3rd country. This method also outputs a parallel shift in prices
+*      from the 3rd country which ensures this balance. The method is recomended
+*      for baseline scenarios, i.e. the normal situation.
+*   B) A parrallel price shift can be supplied as input, i.e. from an execution of
+*      the A). This is recomended for analysing abnormal years, i.e. dry
+*      or wet years in the Nordic region.
+* 2) For BB3 the only option is to use an exogenous parrallel shift in prices, i.e.
+* one generated from 1A). This option file should be located either in the
+* base/addons/x3v dirrectory or in working dirrectory (most often where your
+* project file is located. Balmorel searches the working dirrectory first and
+* otherwise defaults to base/addons/x3v.
+
+* (January 2007 LB).
+
+* Only one of the following options must be yes.
+
+* X3VfxQ==yes indicates 1A) is selected.
+$Setglobal X3VfxQ yes
+
+* X3VfxP==yes indicates 1B) is selected.
+$Setglobal X3VfxP
+
+* NOTE: BB3 disregards both options and runs as 2.
+
+* The following distinguishes the name of the price shift input or output file.
+* The path to the file is always '../../base/addons/x3v/data/'
+* the filename will be 'X3V_%X3VPRICECASE%_BALSP.gdx'. If set to the empty string
+* the file name will be X3V__BALSP.gdx.
+* (TIP: It can be usefull to set the X3VPRICECASE control option to %CASEID% or
+* %COMPARECASE% when writing input to or loading input from, other model
+* executions respectively.)
+
+$Setglobal X3VPRICECASE
+
+
+*-------------------------------------------------------------------------------
+* The following contains only internal program code and no user options.
+*-------------------------------------------------------------------------------
+
+* In order to use the same control variables for BB1, BB2 and BB3 some control
+* variables are overwritten.
+$ifi %BB3%==yes $Setglobal X3VfxP yes
+$ifi %BB3%==yes $Setglobal X3VfxQ no

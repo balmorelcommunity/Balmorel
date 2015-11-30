@@ -1,0 +1,9 @@
+QGEQ
+QCONSUMPTION
+QStoreInj
+QStoreExt
+QTransEntryCap
+QTransExitCap
+QGSFXW
+QGSVERIGE
+QGDEV_MAX

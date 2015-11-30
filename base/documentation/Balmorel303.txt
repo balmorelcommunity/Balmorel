@@ -1,0 +1,52 @@
+This document describes recent changes of Balmorel.
+
+Further documentation for Balmorel may be found at www.Balmorel.com.
+
+* ------------------------------------------------------------------------------
+Changes between 3.02 and 3.03 (20151127). Main changes only.
+All identifiers with "xxxDERATE" have been replaced by "xxxRATE"
+    as response to factual practice by some users,
+    and because RATE provides wider range of values (e.g. greater than 1) than DERATE
+    xxxRATE input data may be obtained from xxxDERATE as xxxRATE = 1-xxxDERATE.
+HYRSDATAS renamed HYRSDATASET
+Removed DAYTYPE, SCENARIO, SCENARSIM, IDAYSIN_S, IHOURSIN24.
+Added  ALIAS: (CCCRRRAAA,CCCRRRAAAALIAS), (IR,IRE,IRI), (FFF,IFFFALIAS), (S,IS3LOOPSET).
+Added GSOLH, GWAVE, GHSTO_S, IGHSTO_S, IGHSTOALL, IGWAVE, IAGK, WAVE_VAR_T, IWAVESUMST, WAVEFLH,
+    VGF_T, VGFN_T, QHYMAXG, ,
+Added a number of VQxxx variables.
+Added a number of tax data possibilities.
+Used acronyms more consistently in relation to GDTYPE and fueltype.
+Use of default values (to possibly reduce size of input data files or as first shot on workable data)
+    have been introduced in a number of parameters:
+    GEFFRATE, XKRATE, GKRATE, GKNMAX, IGKRATE, IXKRATE (GOMVCOST, GOMFCOST and GINVCOST as previously).
+Use of domain overloading to permit choise of level of detail in input data files
+    to not require more data than needed for a specific application or than available:
+    GMINF, GMAXF, GEQF, XKRATE, GKRATE. Cf. balopt.opt.
+Reduced the size of the large parameters by assigning 0 to unused entries.
+Not all addons are alive and documented, some will be deleted others documented (put otherwise: a mess).
+
+
+* ------------------------------------------------------------------------------
+
+Changes between 3.01, 3.02 (302.20110530) and the present 3.02 (302.20110920): -----
+
+File Balmorel.gms:
+   Fixed bug: QGKNSOLE and QGKNSOLH: changed index on VGKN
+   Fixed bug: QGKNSOLH: changed VGEN_T to VGHN_T.
+   Fixed assignment bug of IGF.
+   Fixed minor bugs.
+File bb123.sim: Fixed bug: VGEN_T.FX(IA,IGSOLH,S,T)$(NOT ISOLHSUMST(IA)) = 0; changed to VGHN_T.FX(IA,IGSOLH,S,T)$(NOT ISOLHSUMST(IA)) = 0;.
+File Balopt.opt:
+   Introduced PRINTSEPARATOR for permitting insertion of separators like ';' for use with e.g. copy-paste to Excel.
+   Applied PRINTSEPARATOR in some, but not all, print files in folder printinc.
+File print1.inc:
+   Introduced scalars OTLW, OTLW1, OTLG and OTL1 for specification of field widths in relation to printing.
+   Applied OTLW, OTLW1, OTLG and OTL1 in some, but not all, relevant print files.
+   (OTLG and OTL1 were added for 3.02 (20110920) as the only change relative to 3.02 (20110530).)
+Print files:
+   Renamed some files:  ehf_cy.inc to ehf_gcy.inc,  ehf_ry.inc to ehf_gry.inc, ehf_ay.inc to ehf_gay.inc, ehf2_cy.inc to ehf_fcy.inc.
+   Made consequential and additional minor other changes in these and other files.
+   Removed file ehf_gfcy.inc and references to it.
+   Revised prt3-bb2.inc with respect to sequence of technologies, from All/Old/New to Old/New/All, calculated All as sum of Old and New,
+   and provided better handling with respect to $IAGK_Y and $IAGKN.
+--------------------------------------------------------------------------------

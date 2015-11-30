@@ -1,0 +1,55 @@
+
+
+
+
+
+to måder:
+(1) IAGKN recuderes  med IAGKNDISC:
+
+
+
+(2) IAGKN er uændret IAGKNDISC
+   fordele:
+   meget få ændringer af eksisterende: muligvis kun i QOBJ, hvor enten vi skal 'trække fra', eller omskrive eksisterende, MHT GOMFCOST og AGKNDISCINVCOST.
+  [ problem: hvis der er fællesbegrænsninger på teknologi; der kan komme investeringer af begge slags; ... NEJ: IKKE NOGET PROBLEM! DER ER JO NETOP IKKE MULIGHED FOR DETTE, EN TEKNOLOGI KAN IKKE VÆRE BÅDE AKGN OG AGKNDISC!]
+  [Eneste problem er vel VKGN/VGKNDISC, hvor VGKN ikke skal eksistere. men det gør den jo? Jo, det er en af fiduserne: at den 'bare' indgår.]
+   Vi skal blot tage højde for, at (a) dens omkostninger (GOMFCOST og AGKNDISCINVCOST) bliver nulstillet
+  (b) der indfører VGKN(IAGKN(IA,G)) =E= sumdisckap      [næppe særlig vanskelig, vi har én konstinuert og en sum af deskrete]
+  (c) højst én af de diskrete kan vælges.
+
+  SMART!
+  Bemærk endvidere, at i stedet for at trække fra og lægge til i QOBJ mht omkostninger, kan vi jo definere nye differencomkostninger:
+  parameter Iagkndiscdiffcost(AAA,G,AGKNDISCSIZES,AGKNDISCDATASET);
+  Iagkndiscdiffcost(IA,G,AGKNDISCSIZES,AGKNDISCDATASET)$AGKNDISC(IA,G) =
+       AGKNDISCDATA(G,AGKNDISCSIZES,'AGKNDISCINVCOST')
+      -  AGKNDISCDATA(G,AGKNDISCSIZES,'AGKNDISCSIZE')*GOMFCOST(IA,G)
+      -  AGKNDISCDATA(G,AGKNDISCSIZES,'AGKNDISCSIZE')*GINVCOST(IA,G);
+  og bare lægge den til i QOBJ.
+  GENIALT!
+
+
+AGKNDISCDATA(GGG,AGKNDISCSIZES,AGKNDISCDATASET)
+
+
+
+
+
+==== huskhusk:
+
+ændret i egn_cy.inc
+
+==================================
+Her forslag til to nye sets,  IGHNOSTO  'Technologies generating heat, except seasonal storage' , IGENOSTO 'Technologies generating electricity, except seasonal storage' .
+Der vil gælde, at  IGENOSTO==IGKENOSTO (svarende til (IGE==IGKE)), og  IGKHNOSTO!=IGHNOSTO (faktisk delmængde,  IGKHNOSTO(IGHNOSTO), parallelt med at IGH!=IGKH  )
+TEST:
+set gtest(g);
+SET  IGENOSTO(G);
+IGENOSTO(G) =  IGE(G) -  IGESTO(G);
+gtest(g)= IGKENOSTO(G) -IGENOSTO(G);
+display "special:  IGENOSTO : ",  IGENOSTO  ,   "DIFF FROM    IGKENOSTO   :" ,gtest  ;
+SET IGHNOSTO(G);
+IGHNOSTO(G)=IGH(G)-IGHSTO(G);
+GTEST(G)=IGHNOSTO(G)-IGKHNOSTO(G);
+Display "special:  IGhNOSTO : ",  IGHNOSTO  ,   "DIFF FROM    IGKHNOSTO   :" ,gtest  ;
+
+====================================================================
