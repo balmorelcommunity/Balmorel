@@ -2,7 +2,7 @@
 
 * This file is part of the Balmorel model.
 
-* File last time modified 17-05-2002 (rus), 2005.07.31 (hr), 2005.12.17 (hr), 20080414(hr), 20120319(hr), 20120914(hr), 20150312(hr), 20150503(hr), 20150519(hr), 20150703(hr)
+* File last time modified 17-05-2002 (rus), 2005.07.31 (hr), 2005.12.17 (hr), 20080414(hr), 20120319(hr), 20120914(hr), 20150312(hr), 20150503(hr), 20150519(hr), 20150703(hr), 20160407(hr), 20160826(hr)
 * Note: The comments below in this file are not updated to reflect the file strucutre introduced with Balmorel version 3.xx.
 
 
@@ -23,6 +23,10 @@ PUT ERRORFILE;
 
 PUT / "The input data was investigated for obvious errors.";
 PUT / "Investigation is only performed for data that are to be included in the model."//;
+
+* Subset of GGG to any use:
+SET ERRSETGGG(GGG) "Subset of GGG to any use";
+
 
 
 *------------------------------------------------------------------------------
@@ -47,19 +51,6 @@ IF((ISCALAR1 LT ERRCOUNT2),
 
 *-------- set GGCOMB -----------------------------------------------------------
 
-$ifi not %COMBTECH%==yes $goto error2_combtech_label1
-LOOP(IGCOMB2,
-ERRSCALAR1 = 0;
-LOOP(G,
-IF((GGCOMB(G,IGCOMB2)),
-ERRSCALAR1 = ERRSCALAR1 + 1;
-))
-IF((ERRSCALAR1 GT 1),
-PUT "Each secondary combination technology should be associated with at most one primary technology,"
-    " but technology " IGCOMB2.TL:32" is associated with more than one. " /;
-ERRCOUNT2=ERRCOUNT2+1;
-));
-$label error2_combtech_label1
 
 *-------- sets TWORKDAY and TWEEKEND -------------------------------------------
 
@@ -355,7 +346,7 @@ IF((ISCALAR1 LT ERRCOUNT2),
 
 * WNDFLH:
 ISCALAR1=ERRCOUNT2;
-**LOOP(IA, LOOP(IGWND$(SMAX(Y,GKFX(Y,IA,IGWND))  TODO TODO: possibly frevise, then use sag idea elsewhere (WTRRRVAR_T etc.) to avoid writing an AAA several times 
+**LOOP(IA, LOOP(IGWND$(SMAX(Y,GKFX(Y,IA,IGWND))  TODO TODO: possibly frevise, then use sag idea elsewhere (WTRRRVAR_T etc.) to avoid writing an AAA several times
 LOOP(IA$(SUM((Y,IGWND), GKFX(Y,IA,IGWND))
 $ifi %BB2%==yes OR ( (SUM(IGWND$GDATA(IGWND,'GDKVARIABL'),1)) AND (SUM(IGWND$AGKN(IA,IGWND),1)))
 ),
@@ -715,129 +706,6 @@ ERRCOUNT2=ERRCOUNT2+1;
 
 
 
-$if not %COMBTECH%==yes $goto error2_combtech_label2
-ISCALAR1=ERRCOUNT2;
-* GDCOMB should be between 0 and 2:
-LOOP(G,
-IF((GDATA(G,'GDCOMB') LT 0) OR (2 LT GDATA(G,'GDCOMB')),
-PUT "Error in table GDATA:" /;
-PUT "   The GDCOMB-value for technology " G.TL
-    " is not between 0 and 2."/;
-ERRCOUNT2=ERRCOUNT2+1;
-));
-
-
-* A technologi can only have a GDCOMB-value differet from 0 if it belongs to
-* the set IGDISPATCH - IGESTO - IGHSTO:
-LOOP(G$(NOT IGDISPATCH(G)),
-IF((GDATA(G,'GDCOMB') GT 0),
-PUT "Error in table GDATA:" /;
-PUT "   The technology " G.TL:32 "is not allowed as a combination technology"
-    " but the GDCOMB-value is not 0."/;
-ERRCOUNT2=ERRCOUNT2+1;
-));
-LOOP(G$(IGESTO(G) OR IGESTO(G)),
-IF((GDATA(G,'GDCOMB') GT 0),
-PUT "Error in table GDATA:" /;
-PUT "   The technology " G.TL:32 "is not allowed as a combination technology"
-    " but the GDCOMB-value is not 0."/;
-ERRCOUNT2=ERRCOUNT2+1;
-));
-
-
-* GDCOMBSK should be between 0 and 1:
-LOOP(G,
-IF((GDATA(G,'GDCOMBSK') LT 0) OR (1 LT GDATA(G,'GDCOMBSK')),
-PUT "Error in table GDATA:" /;
-PUT "   The GDCOMBSK-value for technology " G.TL
-    " is not between 0 and 1."/;
-ERRCOUNT2=ERRCOUNT2+1;
-));
-
-
-* GDCOMBSLO should be between 0 and 1:
-LOOP(G,
-IF((GDATA(G,'GDCOMBSLO') LT 0) OR (1 LT GDATA(G,'GDCOMBSLO')),
-PUT "Error in table GDATA:" /;
-PUT "   The GDCOMBSLO-value for technology " G.TL
-    " is not between 0 and 1."/;
-ERRCOUNT2=ERRCOUNT2+1;
-));
-
-
-* GDCOMBSUP should be between 0 and 1:
-LOOP(G,
-IF((GDATA(G,'GDCOMBSUP') LT 0) OR (1 LT GDATA(G,'GDCOMBSUP')),
-PUT "Error in table GDATA:" /;
-PUT "   The GDCOMBSUP-value for technology " G.TL
-    " is not between 0 and 1."/;
-ERRCOUNT2=ERRCOUNT2+1;
-));
-
-
-* GDCOMBSLO should be less than or equal to GDCOMBSUP:
-LOOP(G,
-IF((GDATA(G,'GDCOMBSUP') LT GDATA(G,'GDCOMBSLO')),
-PUT "Error in table GDATA:" /;
-PUT "   The GDCOMBSUP-value for technology " G.TL
-    " is lower than the GDCOMBSUP-value."/;
-ERRCOUNT2=ERRCOUNT2+1;
-));
-
-
-* Sum of GDCOMBSLO for combinations technologies, should not exceed 1:
-LOOP(G$IGCOMB1(G),
-IF(((GDATA(G,'GDCOMBSLO') + sum(IGGGALIAS$GGCOMB(G,IGGGALIAS),GDATA(IGGGALIAS,'GDCOMBSLO'))) GT 1),
-PUT "Error in table GDATA:" /;
-PUT "   The sum of GDCOMBSLO-values for combination technology " G.TL
-    "exceeds one."/;
-ERRCOUNT2=ERRCOUNT2+1;
-));
-
-* GDOMFCOST0 and GDINVCOST0 values af secondary technologies should be 0:
-LOOP(G$IGCOMB2(G),
-IF((GDATA(G,'GDINVCOST0') NE 0),
-PUT "Error in table GDATA:" /;
-PUT "   The GDINVCOST0-values for secondary combinatio ntechnology " G.TL
-    "is "GDATA(G,'GDINVCOST0'):3", but should be 0."/;
-ERRCOUNT2=ERRCOUNT2+1;
-)
-IF((GDATA(G,'GDOMFCOST0') NE 0),
-PUT "Error in table GDATA:" /;
-PUT "   The GDOMFCOST0-values for secondary combination technology " G.TL
-    "is "GDATA(G,'GDOMFCOST0'):3", but should be 0."/;
-ERRCOUNT2=ERRCOUNT2+1;
-)
-);
-
-
-* Secondary technologies should have the same GDFROMYEAR, GDLIFETIME and GDKVARIABL values as the primary technology:
-LOOP(G$IGCOMB1(G),
-LOOP(IGGGALIAS$GGCOMB(G,IGGGALIAS),
-IF((GDATA(G,'GDFROMYEAR') NE GDATA(IGGGALIAS,'GDFROMYEAR')),
-PUT "Error in table GDATA:" ;
-PUT "   The GDFROMYEAR-value for secondary combination technology " IGGGALIAS.TL
-    "is different from primary technology " G.TL/;
-ERRCOUNT2=ERRCOUNT2+1;
-)
-IF((GDATA(G,'GDLIFETIME') NE GDATA(IGGGALIAS,'GDLIFETIME')),
-PUT "Error in table GDATA:" ;
-PUT "   The GDLIFETIME-value for secondary combination technology " IGGGALIAS.TL
-    "is different from primary technology " G.TL/;
-ERRCOUNT2=ERRCOUNT2+1;
-)
-IF((GDATA(G,'GDKVARIABL') NE GDATA(IGGGALIAS,'GDKVARIABL')),
-PUT "Error in table GDATA:" ;
-PUT "   The GDKVARIABL-value for secondary combination technology " IGGGALIAS.TL
-    "is different from primary technology " G.TL/;
-ERRCOUNT2=ERRCOUNT2+1;
-)
-)
-);
-IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
-$label error2_combtech_label2
-
-
 * Check if acronyms have been entered for each element in FFF.
 * The acronym text string should equal the text string of the corresponding element in FFF.
 * The check is not complete, cf. the error messages.
@@ -1089,18 +957,6 @@ ERRCOUNT2=ERRCOUNT2+1;
 ));
 IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
 
-* There should be no capacity for secondary combination technologies:
-$if not %COMBTECH%==yes $goto error2_combtech_label3
-ISCALAR1=ERRCOUNT2;
-LOOP((Y,IA,IGCOMB2),
-IF((GKFX(Y,IA,IGCOMB2) GT 0),
-PUT "Error in table GKFX:" /;
-PUT "   There should be no capacity for secondary combination technologies, " /;
-PUT "   in area "IA.TL:32 " technology " IGCOMB2.TL:32 " has a capacity of " GKFX(Y,IA,IGCOMB2):4:0" MW" /;
-ERRCOUNT2=ERRCOUNT2+1;
-));
-IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
-$label error2_combtech_label3
 
 *--- END OF DATA IN THE FILE gkfx.incr:-----------------------------------------
 *-------------------------------------------------------------------------------

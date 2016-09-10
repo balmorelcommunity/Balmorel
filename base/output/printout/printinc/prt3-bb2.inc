@@ -2,7 +2,7 @@
 * For updating parameters holding results for simulations with endogeneous investments.
 * Note: Actually this file is also presently used for simulations without endogeneous investments, cf. prt2-bb1.inc.
 
-* File last time modified 27-09-2002 (rus), 15-05-2003 (hr), 08-08-2003 (hr), 20090203(hr), 20110508(hr)
+* File last time modified 27-09-2002 (rus), 15-05-2003 (hr), 08-08-2003 (hr), 20090203(hr), 20110508(hr), 20160407(hr)
 
 * This file is part of the Balmorel model.
 
@@ -561,7 +561,7 @@ $ifi %X3V%==yes IHOURSINST(S,T) * SUM((X3VPLACE,X3VSTEP)$X3VX(IR,X3VPLACE),VX3VE
 * from all (old and new) technologies (MWh):
 
 *   in each area for each time period
-    HZGqAT(IA,S,T) = SUM(G, HGqAT(IA,G,S,T))-SUM(IGHSTO,HGqAT(IA,IGHSTO,S,T));
+    HZGqAT(IA,S,T) = SUM(G, HGqAT(IA,G,S,T))-SUM(IGHSTOALL,HGqAT(IA,IGHSTOALL,S,T));
 
 *   in each area for each season
     HZGqAS(IA,S) = SUM(T, HZGqAT(IA,S,T));
@@ -602,7 +602,7 @@ $ifi %X3V%==yes IHOURSINST(S,T) * SUM((X3VPLACE,X3VSTEP)$X3VX(IR,X3VPLACE),VX3VE
 * from old technologies (MWh):
 
 *   in each area for each time period
-    HZGOqAT(IA,S,T) = SUM(G, HGOqAT(IA,G,S,T))-SUM(IGHSTO,HGOqAT(IA,IGHSTO,S,T)) ;
+    HZGOqAT(IA,S,T) = SUM(G, HGOqAT(IA,G,S,T))-SUM(IGHSTOALL,HGOqAT(IA,IGHSTOALL,S,T)) ;
 
 *   in each area for each season
     HZGOqAS(IA,S) = SUM(T, HZGOqAT(IA,S,T));
@@ -643,7 +643,7 @@ $ifi %X3V%==yes IHOURSINST(S,T) * SUM((X3VPLACE,X3VSTEP)$X3VX(IR,X3VPLACE),VX3VE
 * from new technologies (MWh):
 
 *   in each area for each time period
-    HZGNqAT(IA,S,T) = SUM(G, HGNqAT(IA,G,S,T))-SUM(IGHSTO,HGNqAT(IA,IGHSTO,S,T));
+    HZGNqAT(IA,S,T) = SUM(G, HGNqAT(IA,G,S,T))-SUM(IGHSTOALL,HGNqAT(IA,IGHSTOALL,S,T));
 
 *   in each area for each season
     HZGNqAS(IA,S) = SUM(T, HZGNqAT(IA,S,T));

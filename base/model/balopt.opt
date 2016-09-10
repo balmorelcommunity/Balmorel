@@ -1,4 +1,3 @@
-* This file was written by BUI 28-04-2014 14:41 based on User's choices of option Values in BUI.
 
 * This file holds options that are used to control model functionality,
 * including extentions in the form of addons, and interplay between models.
@@ -84,6 +83,7 @@ $setglobal WNDSHUTDOWN yes
 
 * This variable includes addon for distric heating
 $Setglobal FV
+*!option yes
 
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of add-on modules to include.
@@ -133,9 +133,6 @@ $setglobal REShareEH
 *!option yes
 *!notif %REShareE%==yes
 
-* Include individual heating areas.
-$setglobal FV
-*!option yes
 
 * Make investments in technologies only at specified capcities.
 $setglobal AGKNDISC
@@ -147,17 +144,17 @@ $setglobal AGKNDISC
 $Setglobal H2
 *!option yes
 
-* Set calculation of electricity marginals.
-$Setglobal Marg_E
-*!option yes
+* Set short storages to be inter- or intra-seasonal
+* according to GDSTOINTERS in GDATA (default) or all or none
+$setglobal stointers
+*! option  default    Use as specified by GDSTOINTERS in GDATA
+*! option  all        Let all storage technologies be inter-seasonal
+*! option  none       Let no storage technologies be inter-seasonal (i.e., let all be intra-seasonal)
 
-* Set calculation of heat marginals.
-$Setglobal Marg_H
-*!option yes
 
 * Bypass of 'turbine' (electricity production) on backpressure units. To be implemented pronto.
 $setglobal bypass
-*!option !fixedvalue
+*!option yes
 
 *-------------------------------------------------------------------------------
 * Unit Commitment:
@@ -267,7 +264,7 @@ $ifi not %bb2%==yes $Setglobal MAKEINVEST no
 * this may be achieved by the following mechanism.
 
 * Make a summary of the input data in text format to file inputout.out:
-$setglobal inputdatatxt
+$setglobal inputdatatxt ""
 *!option ""          !text do not make it
 *!option yes         !text make it when solving
 *!option yesnosolve  !text make it but do not solve
@@ -343,7 +340,7 @@ $ifi %SAVEPOINTVALUE%==1  execute "del %relpathModel%..\output\temp\*.gdx";
 
 
 * Use the $setglobal MERGESAVEPOINTRESULTS to choose whether to merge annual/seasonal results or not:
-$setglobal MERGESAVEPOINTRESULTS
+$setglobal MERGESAVEPOINTRESULTS   YES
 *!option yes  !onlyif  %SAVEPOINTVALUE%==1
 * Note: make sure that it is possible to make the new merged gdx file,
 * e.g. make sure that the file *.gdx is not open in another application (like GAMD IDE).
@@ -426,7 +423,7 @@ $setglobal SOLVEMIP
 * when using "$Setglobal semislash /" make sure
 * that the use of either "parameter" or "table" in Balmorel.gms for any data file
 * corresponds to the data format used in the file.
-* NOTE: Rev.2.14: Not fully implemented yet, you MUST use "$Setglobal semislash ;".
+* NOTE: Rev.3.03: Not fully implemented yet, you MUST use "$Setglobal semislash ;".
 $setglobal semislash ";"
 *!fixedvalue ;
 **!option ;
@@ -434,7 +431,7 @@ $setglobal semislash ";"
 
 
 
-* Domain overloading: thE options specofy the domain (indexes) that the identifiyer is declared on.
+* Domain overloading: The options specify the domain (indexes) that the identifiyer is declared on.
 $setglobal GMINF_DOL CCCRRRAAA_FFF
 *!option  CCCRRRAAA_FFF
 *!option  YYY_CCCRRRAAA_FFF

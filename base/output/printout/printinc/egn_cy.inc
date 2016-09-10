@@ -40,7 +40,7 @@ PUT "Units: generation: GWh, capacities MW."//;
 put "Generation on new technologies (GWh):" //;
 egn_cy.LJ = 1;
 *                         |<------ OTLW characters ----->|
-PUT Y.TL:OTLW1:0;    PUT "                                " ; LOOP(C, PUT   "%PRINTSEPARATOR%"  C.TL:OTLW) ;
+PUT Y.TL:OTLWY:0;    PUT "                                " ; LOOP(C, PUT   "%PRINTSEPARATOR%"  C.TL:OTLW) ;
 *                         |<------ OTLW characters ----->|                        |<------ OTLW characters ----->|
 PUT  "%PRINTSEPARATOR%"  "                 Technology type"  "%PRINTSEPARATOR%"  "                            Fuel" /;
 
@@ -49,17 +49,17 @@ egn_cy.LJ = 2;
 LOOP(G,
 if(ignotetoh(g),
 if( sum(C,EGNqCY(C,G)) ne 0,
-  PUT OTLW1.ts  G.TL:OTLW;
+  PUT OTLWY.ts  G.TL:OTLW;
   LOOP(C, PUT   "%PRINTSEPARATOR%"  (EGNqCY(C,G) *IOF0001):OTLW:0 ;) ;    PUT     "%PRINTSEPARATOR%"  GDATA(G,'GDTYPE'):OTLW:0  "%PRINTSEPARATOR%"  GDATA(G,'GDFUEL'):OTLW:0 /;
 );
 ELSE
 if( sum(C,EGNqCY(C,G)) ne 0,
-  PUT PUT OTLW1.ts  G.TL:OTLW;
+  PUT PUT OTLWY.ts  G.TL:OTLW;
   LOOP(C, PUT  "%PRINTSEPARATOR%" (-EGNqCY(C,G) *IOF0001):OTLW:0  ;) ;    PUT     "%PRINTSEPARATOR%"  GDATA(G,'GDTYPE'):OTLW:0  "%PRINTSEPARATOR%"  GDATA(G,'GDFUEL'):OTLW:0 / ;
  );
 ));
 *              |<------ OTLW characters ----->|
-PUT OTLW1.ts  "TOTAL (note any minus sign)     " ; LOOP(C, PUT  "%PRINTSEPARATOR%"  ( sum(ignotetoh,EGNqCY(C,ignotetoh)*IOF0001)+ sum(igetoh,-EGNqCY(C,igetoh)*IOF0001)):OTLW:0 ; ); PUT //;
+PUT OTLWY.ts  "TOTAL (note any minus sign)     " ; LOOP(C, PUT  "%PRINTSEPARATOR%"  ( sum(ignotetoh,EGNqCY(C,ignotetoh)*IOF0001)+ sum(igetoh,-EGNqCY(C,igetoh)*IOF0001)):OTLW:0 ; ); PUT //;
 
 
 * ------------------------------------------------------------------------------
@@ -69,17 +69,17 @@ PUT  "New capacities (MW) "    / /;
 
 egn_cy.LJ = 1;
 *                      |<------ OTLW characters ----->|
-PUT Y.TL:OTLW1:0; PUT "                                " ; LOOP(C, PUT  "%PRINTSEPARATOR%" C.TL:OTLW) ;PUT /;
+PUT Y.TL:OTLWY:0; PUT "                                " ; LOOP(C, PUT  "%PRINTSEPARATOR%" C.TL:OTLW) ;PUT /;
 egn_cy.LJ = 2;
 
 LOOP(G,
 ISCALAR1=SUM(C,SUM(IA$ICA(C,IA), VGKN.L(IA,G)));
 if( ISCALAR1 GT 0,
-  PUT PUT OTLW1.ts  G.TL:OTLW;
+  PUT PUT OTLWY.ts  G.TL:OTLW;
   LOOP(C, PUT   "%PRINTSEPARATOR%"  (SUM(IA$ICA(C,IA), VGKN.L(IA,G))):OTLW:0 ;) ;  PUT     "%PRINTSEPARATOR%"  GDATA(G,'GDTYPE'):OTLW:0  "%PRINTSEPARATOR%"  GDATA(G,'GDFUEL'):OTLW:0 /;
    );
 );
 *              |<------ OTLW characters ----->|
-PUT OTLW1.ts  "TOTAL                           " ; LOOP(C, PUT  "%PRINTSEPARATOR%"  (SUM(IA$ICA(C,IA), SUM(G, VGKN.L(IA,G)))):OTLW:0 ;); PUT //;
+PUT OTLWY.ts  "TOTAL                           " ; LOOP(C, PUT  "%PRINTSEPARATOR%"  (SUM(IA$ICA(C,IA), SUM(G, VGKN.L(IA,G)))):OTLW:0 ;); PUT //;
 
 PUT ///;

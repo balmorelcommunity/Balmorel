@@ -1,7 +1,0 @@
-$include '../../base/addons/combtech/combbb1.inc';
-QNECOMBGLK
-QNECOMBSLO
-QNECOMBSUP
-QNHCOMBGLK
-QNHCOMBSLO
-QNHCOMBSUP

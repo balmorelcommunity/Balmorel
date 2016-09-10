@@ -2,7 +2,7 @@
 *-------------------------------------------------------------------------------
 
 * This file is part of the BALMOREL model.
-* File last time modified 13-05-2003 (hr), 20080414(hr), 20120914(hr), 20150304(hr)   
+* File last time modified 13-05-2003 (hr), 20080414(hr), 20120914(hr), 20150304(hr)
 
 
 * This file will print the model and solver status, the objective value, etc.,
@@ -73,7 +73,7 @@ PUT$(BALBASE2.SOLVESTAT EQ 1)  " Normal completion           ";
 PUT$(BALBASE2.SOLVESTAT EQ 2)  " Max iterations reached      ";
 PUT$(BALBASE2.SOLVESTAT EQ 3)  " Resource limit reached      ";
 PUT$(BALBASE2.SOLVESTAT GE 4)  " Solver quit or terminated - error no.  " BALBASE2.SOLVESTAT:3:0 ", consult GAMS documentation for details about SOLVESTAT." /;
-BALBASE2.SOLVESTAT:3:0 ;
+;
 
 PUT VOBJ.L:16:2 " ";
 PUT BALBASE2.ITERUSD:11:0 " " ;

@@ -1,6 +1,6 @@
 * File balgams.opt to the Balmorel model.
 * This file contains GAMS options.
-* This file is part of the Balmorel model, version 2.14.
+* This file is part of the Balmorel model, version 3.03.
 
 *===============================================================================
 * The following are options applying to the GAMS system (unless overwritten).

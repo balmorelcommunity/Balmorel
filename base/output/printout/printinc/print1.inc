@@ -1,6 +1,6 @@
 * File print1.inc.
 
-* File last time modified 27-09-2002 (rus) , 05-08-2003 (sns), hr 20110920, hr 20121001, 20141121(hr).
+* File last time modified 27-09-2002 (rus) , 05-08-2003 (sns), hr 20110920, hr 20121001, 20141121(hr), 20160203(hr).
 
 * This file is part of the Balmorel model, version 3.03 ()
 
@@ -25,7 +25,10 @@
 * The following is used for identification of your case if OCASEID was not previously declared:
 SCALAR OCASEID "Balmorel Demo-example - default CASE identification";
 
-SCALAR OIMONEY "EUR90" /1/;  !! Input currency name in the text field (e.g., "EUR90"). The numerical value is not used.
+* Enter here the currency used in data input:
+SCALAR OIMONEY "EUR90" /1/;                     !! Input currency name in the text field. The numerical value is not used.
+* Leave this default information:
+$if not declared OIMONEY SCALAR OIMONEY "Unknown" /1/;  !! Input currency name in the text field in case of no information. The numerical value is not used.
 
 PARAMETER OCARDSETA;  /* To hold the number of areas in the simulation */
 OCARDSETA=0;
@@ -37,7 +40,7 @@ LOOP(IR, OCARDSETR=OCARDSETR+1);
 
 PARAMETER OSCALAR1, OSCALAR2, OSCALAR3; /* Various general counters */
 
-* For printing: OTLW, OTLW1, OTLG, OTL1, OTLCRA for specifying more general field widths in printing:
+* For printing: OTLW, OTLG, OTL1, OTLCRA for specifying more general field widths in printing.
 * (O=Output, TLW=TextLabelWidth)
 * Note that the text strings (OTLW.ts) must contain the same number of blanks as the value indicates,
 * if you want to use this text string to privide empty space of same width as a ".TL:OTLW" provides.
@@ -46,15 +49,16 @@ PARAMETER OSCALAR1, OSCALAR2, OSCALAR3; /* Various general counters */
 * The advantage, depending on circumstances, of using the same values for all SETS
 * is homegenity (nice columns) in the output, the disadvantage is the potential superfluous space.
 
-* More set individual values are held in
+* More set individual values are held in the following scalars.
 *
-SCALAR OTLW     "                                " /32/;
-*SCALAR OTLW1   "    " /4/;                              !! OTLW1 is meant for text labels that are known to be that 'small' in Balmorel. Presently not in use.
-SCALAR OTLWG    "                                " /0/;  !! Note: For set GGG specifically. The value is set below
-SCALAR OTLWY    "    " /4/;                              !! Note: For set Y specifically.
-SCALAR OTLWCRA  "                                " /0/;  !! Note: For set CCCRRRAAA specifically. The value is set below
-OTLWG   = SMAX(GGG, CARD(GGG.TL));
-OTLWCRA = SMAX(CCCRRRAAA, CARD(CCCRRRAAA.TL));
+SCALAR OTLW     "                                " /32/; !! Default.
+SCALAR OTLWCRA  "                                " /0/;  !! Specific for SET CCCRRRAAA. The value is set below.
+SCALAR OTLWY    "    " /4/;                              !! Specific for SET YYY and Y. It is assumed that any element in YYY is represented by four characters (e.g. 2050).
+SCALAR OTLWS    "    " /3/;                              !! Specific for SET SSS and S. It is assumed that any element in SSS is represented by four characters (e.g. S52).
+SCALAR OTLWT    "    " /4/;                              !! Specific for SET TTT and T. It is assumed that any element in TTT is represented by four characters (e.g. T168).
+SCALAR OTLWG    "                                " /0/;  !! Specific for SET GGG and G. The value is set below.
+OTLWG   = SMAX(GGG, CARD(GGG.TL));                       !! Assign precisely the required width.
+OTLWCRA = SMAX(CCCRRRAAA, CARD(CCCRRRAAA.TL));           !! Assign precisely the required width.
 
 ALIAS(S,OALIASS);
 ALIAS(T,OALIAST);
@@ -82,8 +86,6 @@ FILE ezgn_cy    /"../output/printout/ezgn_cy.out"/;
 FILE esto_at    /"../output/printout/esto_at.out"/;
 FILE esto2_at   /"../output/printout/esto2_at.out"/;
 FILE hyrs_as    /"../output/printout/hyrs_as.out"/;
-
-
 * Heat generation
 FILE hg_cy      /"../output/printout/hg_cy.out"/;
 FILE hgo_cy     /"../output/printout/hgo_cy.out"/;
@@ -118,7 +120,7 @@ FILE hp_at      /"../output/printout/hp_at.out"/;
 FILE mco2_cy    /"../output/printout/mco2_cy.out"/;
 FILE mso2_cy    /"../output/printout/mso2_cy.out"/;
 FILE mnox_cy    /"../output/printout/mnox_cy.out"/;
-FILE EHMCO2qRT  /"../output/printout/EHMCO2qRT.out"/;   
+FILE ehmco2qrt  /"../output/printout/ehmco2qrt.out"/;
 
 *FILE egwater_rs /"../output/printout/egwater_rs.out"/; TODO (hr)
 

@@ -1,14 +1,11 @@
 * File bb123.sim to the Balmorel model.
 * This file is part of the Balmorel model, version 3.03 (November 2015; latest 20151127)
+* This file is $included at the end of Balmorel.gms (no other *.sim files included).
 
 * This file contains simulation structure for models BALBASE1, BALBASE2 and BALBASE3.
 * BALBASE1: optimisation simultaneuosly for all (S,T) in a year, exogenous investments.
 * BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
 * BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
-
-* This file is $included at the end of Balmorel.gms (no other *.sim files included).
-* The set S holds the seasons to be simulated in Balbase1 and Balbase2,
-* and set SSS holds the seasons to be simulated in Balbase3.
 
 
 *------------------------------------------------------------------------------
@@ -130,9 +127,9 @@ $label  bb2_label1
 
 
 VGE_T.UP(IA,IGKE,S,T)$IAGK_Y(IA,IGKE)=
- (IGKVACCTOY(IA,IGKE) + IGKFX_Y(IA,IGKE))*(IGKRATE(IA,IGKE,S,T));
+  (IGKVACCTOY(IA,IGKE) + IGKFX_Y(IA,IGKE))*(1$(NOT IGKRATE(IA,IGKE,S,T))+IGKRATE(IA,IGKE,S,T));
 VGH_T.UP(IA,IGKH,S,T)$IAGK_Y(IA,IGKH)=
- (IGKVACCTOY(IA,IGKH) + IGKFX_Y(IA,IGKH))*(IGKRATE(IA,IGKH,S,T));
+  (IGKVACCTOY(IA,IGKH) + IGKFX_Y(IA,IGKH))*(1$(NOT IGKRATE(IA,IGKH,S,T))+IGKRATE(IA,IGKH,S,T));
 
 
 $ifi %PLANTCLOSURES%==yes VDECOM.UP(IA,IGKE) = IGKVACCTOY(IA,IGKE) + IGKFX_Y(IA,IGKE);
@@ -167,10 +164,14 @@ $ifi %BB2%==yes );
 
 * Altered to include accumulated capacity. Includes only generation on existing or accumulated capacity, as new capacity is covered by VGEN_T and VGHN_T
 VGH_T.UP(IA,IGHSTO,S,T)$(IGKFX_Y(IA,IGHSTO) GT 0)=
- (IGKFX_Y(IA,IGHSTO)+IGKVACCTOY(IA,IGHSTO))/GDATA(IGHSTO,'GDSTOHUNLD');   /* GKDERATE taken into account later */
+ (IGKFX_Y(IA,IGHSTO)+IGKVACCTOY(IA,IGHSTO))/GDATA(IGHSTO,'GDSTOHUNLD');   !! GKDERATE taken into account later
 
-VGE_T.UP(IA,IGESTO,S,T)$(IGKFX_Y(IA,IGESTO) GT 0)=
- (IGKFX_Y(IA,IGESTO)+IGKVACCTOY(IA,IGESTO))/GDATA(IGESTO,'GDSTOHUNLD');   /* GKDERATE taken into account later */
+*Hans
+VGH_T.UP(IA,IGHSTOALL,S,T)$(IGKFX_Y(IA,IGHSTOALL) GT 0)=
+ (IGKFX_Y(IA,IGHSTOALL)+IGKVACCTOY(IA,IGHSTOALL))/GDATA(IGHSTOALL,'GDSTOHUNLD');   /* GKRATE taken into account later */
+
+VGE_T.UP(IA,IGESTOALL,S,T)$(IGKFX_Y(IA,IGESTOALL) GT 0)=
+ (IGKFX_Y(IA,IGESTOALL)+IGKVACCTOY(IA,IGESTOALL))/GDATA(IGESTOALL,'GDSTOHUNLD');   !! GKRATE taken into account later
 
 * Storage contents does not exceed upper limit (MWh):
 * Altered to include accumulated capacity. (In case investments are transfered from other simulation)
@@ -389,6 +390,8 @@ ITAX_KN(IA,IGE)$(IAGK_Y(IA,IGE) or IAGKN(IA,IGE))  = TAX_KN(Y,IA,IGE);
 
 *---- Annual updating of add-on parameters: -------------------------------------------------
 
+$INCLUDE '../../base/addons/_hooks/simau.inc';
+
 $ifi %bb3%==yes   IHYRSBB123G_Y(IA,S)       = HYRSG(Y,IA,S);
 $ifi %bb3%==yes   IWATERVAL_Y(IA,S)         = WATERVAL(Y,IA,S);
 $ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "..\..\base\addons\hyrsbb123\HYRSBB123sim1.inc";
@@ -512,9 +515,9 @@ $LABEL YESunit
 
 
 * This file will print the solver status for each season in the simulation:
-$ifi %bb1%==yes $INCLUDE '../../base/logerror/logerinc/balbase1.mss';
-$ifi %bb2%==yes $INCLUDE '../../base/logerror/logerinc/balbase2.mss';
-$ifi %bb3%==yes $INCLUDE '../../base/logerror/logerinc/balbase3.mss';
+$ifi %bb1%==yes $if errorfree $INCLUDE '../../base/logerror/logerinc/balbase1.mss';
+$ifi %bb2%==yes $if errorfree $INCLUDE '../../base/logerror/logerinc/balbase2.mss';
+$ifi %bb3%==yes $if errorfree $INCLUDE '../../base/logerror/logerinc/balbase3.mss';
 
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
@@ -569,20 +572,17 @@ $INCLUDE '../../base/logerror/logerinc/error4.inc';
 
 * Various results from the simulation of current year may be printed out:
 * Calculate and store intermediate results from current year:
-$ifi %PRINTFILES%==yes $INCLUDE '../../base/output/printout/printinc/prt3-bb1.inc';
+$ifi %PRINTFILES%==yes $if errorfree $INCLUDE '../../base/output/printout/printinc/prt3-bb1.inc';
 
 
 * Print for current year,
 * according to the specifications given in the following file:
 
-$ifi %PRINTFILES%==yes
-$ifi %bb1%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb1.inc';
+$if errorfree $ifi %PRINTFILES%==yes $ifi %bb1%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb1.inc';
 
-$ifi %PRINTFILES%==yes
-$ifi %bb2%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb2.inc';
+$if errorfree $ifi %PRINTFILES%==yes $ifi %bb2%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb2.inc';
 
-$ifi %PRINTFILES%==yes
-$ifi %bb3%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb1.inc';
+$if errorfree $ifi %PRINTFILES%==yes $ifi %bb3%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb1.inc';
 
 * The following file includes instructions for processing output to be used in
 * the Economic module.

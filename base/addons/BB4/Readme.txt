@@ -1,3 +1,4 @@
 * File readme.txt to the Balmorel model.
 
-The addon BB4 is not finished, when it is, it will be released. 
+The addon BB4 is handled as an addon, although it is a full model code in itself.
+This organization is to permit co-existence of the classical model (Balbase1, Balbare2, Balbaase3) with Balbase4. 

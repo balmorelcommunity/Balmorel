@@ -1,7 +1,7 @@
 * File: eg_cy.inc
 * This file is part of the Balmorel model.
 
-* Modified last time: 01-02-2002 by (rus), 16-02-2004 (sns,ld), 20060328(hr), 200804xx(hr), 20110508(hr), 20151120(hr)
+* Modified last time: 01-02-2002 by (rus), 16-02-2004 (sns,ld), 20060328(hr), 200804xx(hr), 20110508(hr), 20151120(hr), 20151210(hr)
 
 * This file will print a table containing annnual netto electricity generation
 * from all technologies in each country.
@@ -23,6 +23,7 @@ PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
 $ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
 $ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
 $ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+
 PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 
 $ifi %BB1%==yes PUT / "Annual net electricity generation, old and new technologies, (incl. negative electricity generation for heat pumps)." //;

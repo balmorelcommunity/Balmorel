@@ -23,7 +23,6 @@ $ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
 $ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
 $ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
 PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   /;
-
 $ifi %BB1%==yes PUT / "Annual net electricity generation at old (existing at the beginning of the year) technologies (incl. negative electricity generation for heat pumps)." //;
 $ifi %BB2%==yes PUT / "Annual net electricity generation at old (existing at the beginning of the year) technologies (incl. negative electricity generation for heat pumps)." //;
 $ifi %BB3%==yes PUT / "Annual net electricity generation at old (existing at the beginning of the year) technologies (incl. negative electricity generation for heat pumps)." //;

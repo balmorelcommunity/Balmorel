@@ -1,6 +1,6 @@
 * File hp_ay.inc.
 
-* Modified last time: 2005.11.18 (hr), 20060328(hr), 20080305(hr), 20150917(aroal).
+* Modified last time: 2005.11.18 (hr), 20060328(hr), 20080305(hr), 20150917(aroal), 20160407(hr)
 
 * This file will print a table containing
 * the annual weighted average marginal heat generation price by IA.
@@ -78,7 +78,7 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IA,
                + SUM(IGETOH$IAGK_Y(IA,IGETOH),VGH_T.L(IA,IGETOH,S,T))
                + SUM(IGETOH$IAGKN(IA,IGETOH),VGHN_T.L(IA,IGETOH,S,T))
                - VHSTOLOADT.L(IA,S,T)
-               + SUM(IGESTO$((IGKFX_Y(IA,IGESTO) GT 0) AND (GDATA(IGESTO,'GDCB') GT 0)), VGE_T.L(IA,IGESTO,S,T)/GDATA(IGESTO,'GDCB'));
+               + SUM(IGESTOALL$((IGKFX_Y(IA,IGESTOALL) GT 0) AND (GDATA(IGESTOALL,'GDCB') GT 0)), VGE_T.L(IA,IGESTOALL,S,T)/GDATA(IGESTOALL,'GDCB'));
 
             OSCALAR2 = OSCALAR2 + OSCALAR1 * IHOURSINST(S,T);
             OSCALAR3 = OSCALAR3 + OSCALAR1 * QHEQ.M(IA,S,T);

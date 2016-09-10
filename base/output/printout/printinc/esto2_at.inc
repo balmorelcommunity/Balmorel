@@ -1,7 +1,7 @@
 * File: esto2_at.inc
-* This file is part of the Balmorel model, version 2.12 Alpha (July 2005)).
+* This file is part of the Balmorel model.
 
-* Created 2005.07.31 (hr), 2005.10.29 (hr), 20060328(HR)
+* Created 2005.07.31 (hr), 2005.10.29 (hr), 20060328(HR), 20160407(hr)
 
 
 * This file will print a table containing content of short term electricity storages
@@ -35,7 +35,7 @@ PUT Y.TL:4 "        ";     LOOP(S,  LOOP(T, PUT T.TL:12 ) PUT ""); PUT /;
 esto2_at.LJ = 2;
 
 LOOP(C,
-LOOP(IA$(ICA(C,IA) AND (SUM(IGESTO,IGKFX_Y(IA,IGESTO)) GT 0)   ),
+LOOP(IA$(ICA(C,IA) AND (SUM(IGESTOALL,IGKFX_Y(IA,IGESTOALL)) GT 0)   ),
 PUT IA.TL:12 ;
 LOOP(S,
  LOOP(T,

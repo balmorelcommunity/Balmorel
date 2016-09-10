@@ -42,7 +42,7 @@ LOOP(G,
 
 if( sum(C,HGNqCY(C,G)) ne 0,
 
-  PUT G.TL:12 ;
+  PUT G.TL:32 ;
   LOOP(C, PUT (HGNqCY(C,G) *IOF0001):12:0 ;) ;
   PUT /;
    );

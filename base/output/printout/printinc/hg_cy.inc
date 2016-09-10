@@ -1,6 +1,6 @@
 * File: hg_cy.inc
 
-* Modified last time: 26-09-2002 by (rus), 16-02-2004 (ld), 20060328(hr), 20090121(hr)
+* Modified last time: 26-09-2002 by (rus), 16-02-2004 (ld), 20060328(hr), 20090121(hr), 20160407(hr)
 
 * This file will print a table containing annnual heat generation at all
 * technologies in each country and a table with use of heat storage.
@@ -39,7 +39,7 @@ hg_cy.LJ = 2;
 
 LOOP(G,
 
-if(not IGHSTO(G),
+if(not IGHSTOALL(G),
 
 
 
@@ -57,7 +57,7 @@ PUT "TOTAL                              " ; LOOP(C, PUT ( HZGqCY(C)*IOF0001):12:
 
 PUT "Annual heat taken from storage in " PUT Y.TL:4:0 ; PUT "  "; LOOP(C, PUT C.TL:12) ;PUT /;
 
-LOOP(IGHSTO(G),
+LOOP(IGHSTOALL(G),
 
 if( sum(C,HGqCY(C,G)) ne 0,
 
@@ -67,7 +67,7 @@ if( sum(C,HGqCY(C,G)) ne 0,
    );
 ) ;
 
-PUT "TOTAL                              " ; LOOP(C, PUT sum(IGHSTO(G), HGqCY(C,G)*IOF0001):12:0 ; ); PUT //;
+PUT "TOTAL                              " ; LOOP(C, PUT sum(IGHSTOALL(G), HGqCY(C,G)*IOF0001):12:0 ; ); PUT //;
 
 * PUT "Heat generation incl. heat storage " ; LOOP(C, PUT sum(G, HGqCY(C,G)*IOF0001):12:0 ; ); PUT //;
 

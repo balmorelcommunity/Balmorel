@@ -1,4 +1,4 @@
-* BATINCLUDE aggr_1_s_t.inc:
+* BATINCLUDE aggr_2_s_t.inc:
 * This file aggregates a timeseries with:
 *        - parameter name (e.g. DE_VAR_T), this is argument %1
 *        - one prefixed set (e.g. IA or IR), this is argument %2

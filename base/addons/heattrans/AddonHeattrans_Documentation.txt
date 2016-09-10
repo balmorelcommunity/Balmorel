@@ -1,0 +1,19 @@
+Addon heattrans for the Balmorel model.
+Originally developed by Hans Ravn.
+
+In the standard version of Balmorel the heat consumption and generation are specified at area level,
+and there is no possibility of transmitting heat from one area to another.
+The addon heattrans implements such heat transmission.
+
+It will be done in a way which is similar to the way electricity transmission between regions is modelled.
+Indeed, the main formal difference essentially is that electricity transmission code is duplicated
+where pairs of regions are replaced by pairs of areas, areas taking the place of regions,
+and the names of identifiers related to heat transmission contain the letter combination XH.
+
+Therefore any issues related to the application of heat transmission and to interpretation of the results
+will be closely related to similar issues with electricity transmission.
+
+The introduction of heat transmission has here been implemented
+using option heattrans, cf. balopt.opt.
+
+See The Balmorel Model Structure for further documentation.

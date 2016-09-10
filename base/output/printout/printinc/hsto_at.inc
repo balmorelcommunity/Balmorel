@@ -1,9 +1,9 @@
 * File: hsto_at.inc
-* This file is part of the Balmorel model, version 2.12 Alpha (July 2005).
+* This file is part of the Balmorel model.
 
 
 * Created 2001.03.20 (hrv), 16-02-2004 (ld)
-* Modified last time: 2005.07.31 (hr), 20060328(hr)
+* Modified last time: 2005.07.31 (hr), 20060328(hr), 20160407(hr)
 
 * This file will print a table containing content of short term heat storages
 * at the beginning of each time segment
@@ -54,7 +54,7 @@ hsto_at.LJ = 2;
 LOOP(C,
 LOOP(IA$ICA(C,IA),
 PUT IA.TL:18 " :   Storage capacity (MWh): "
-   (SUM(IGHSTO$(IGKFX_Y(IA,IGHSTO) GT 0),IGKFX_Y(IA,IGHSTO))):10:1/;
+   (SUM(IGHSTOALL$(IGKFX_Y(IA,IGHSTOALL) GT 0),IGKFX_Y(IA,IGHSTOALL))):10:1/;
 PUT "Content at beginning of time segment (MWh)"  /;
 PUT "            ";
 hsto_at.LJ = 1;
@@ -71,7 +71,7 @@ LOOP(T, PUT VHSTOVOLT.L(IA,S,T):12:1); PUT /;
 LOOP((ISALIAS,ITALIAS)$((ORD(ISALIAS) EQ 1) AND (ORD(ITALIAS) EQ 1)),
 PUT IA.TL:18 " :   Loading capacity (MW): "
     VHSTOLOADT.UP(IA,ISALIAS,ITALIAS):8:1 "   Unloading capcity (MW): "
-    SUM(IGHSTO,VGH_T.UP(IA,IGHSTO,ISALIAS,ITALIAS)):8:1/;
+    SUM(IGHSTOALL,VGH_T.UP(IA,IGHSTOALL,ISALIAS,ITALIAS)):8:1/;
 );
 PUT "Loading (+) and unloading (-) during time segment (MW):"  /;
 PUT "            ";
@@ -85,13 +85,13 @@ hsto_at.LJ = 2;
 LOOP(S,
 PUT S.TL:12  ;
 LOOP(T,
- PUT (VHSTOLOADT.L(IA,S,T)-SUM(IGHSTO,VGH_T.L(IA,IGHSTO,S,T)*GDATA(IGHSTO,'GDFE'))):12:3;
+ PUT (VHSTOLOADT.L(IA,S,T)-SUM(IGHSTOALL,VGH_T.L(IA,IGHSTOALL,S,T)*GDATA(IGHSTOALL,'GDFE'))):12:3;
 ) PUT /)
 PUT /"Loading (+) and unloading (-) during time segment (MWh):"  /;
 LOOP(S,
 PUT S.TL:12  ;
 LOOP(T,
-PUT ((VHSTOLOADT.L(IA,S,T)-SUM(IGHSTO,VGH_T.L(IA,IGHSTO,S,T)*GDATA(IGHSTO,'GDFE')))*IHOURSINST(S,T) / (IOF365*WEIGHT_S(S)/IWEIGHSUMS) ):12:3;
+PUT ((VHSTOLOADT.L(IA,S,T)-SUM(IGHSTOALL,VGH_T.L(IA,IGHSTOALL,S,T)*GDATA(IGHSTOALL,'GDFE')))*IHOURSINST(S,T) / (IOF365*WEIGHT_S(S)/IWEIGHSUMS) ):12:3;
 )PUT /)
 
 

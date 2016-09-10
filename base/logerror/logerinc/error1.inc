@@ -2,7 +2,7 @@
 
 * This file is part of the Balmorel model.
 
-* File last time modified 13-05-2003 (hrv), 20080414(hr), 20120914(hr), 20151104(hr)
+* File last time modified 13-05-2003 (hrv), 20080414(hr), 20120914(hr), 20160824(hr)
 
 
 * This file initiates check on the data and solution of the model.
@@ -35,6 +35,15 @@ PUT "Log created: " SYSTEM.DATE " " SYSTEM.TIME //;
 );
 
 
+* ------------------------------------------------------------------------------
+* Include information on applied addons for this model
+put "* ------------------------------------------------------------------------------" /;
+put "The following addons are applied in the present model instance"/;
+$include "..\..\base\addons\_hooks\hellolog.inc"
+put "* ------------------------------------------------------------------------------" /;
+* ------------------------------------------------------------------------------
+
+
 * Initialisation of auxiliary variables:
 * (No errcount1)
 SCALAR ERRCOUNT2 "Error count 2" /0/;
@@ -43,5 +52,3 @@ SCALAR ERRCOUNT4 "Error count 4" /0/;
 
 * Scalar to any use:
 SCALAR ERRSCALAR1 "Error count to any use";
-* Subset of GGG to any use:
-SET ERRSETGGG(GGG) "Subset of GGG to any use";

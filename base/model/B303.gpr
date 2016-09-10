@@ -8115,49 +8115,52 @@ PlaneRownr=-1
 [RP:Y]
 1=
 
-[RP:../../BASE/MODEL/BALMORELBB4]
-1=
-
-[RP:BALMOREL]
-1=profile = 1 cerr = 200 reslim=1000000
-2=profile = 1 cerr = 10 reslim=1000000
-3=profile = 1 cerr = 10
-4=profile = 1 cerr = 500
-5=profile = 1 cerr = 5
-6=profile = 1
-7=cerr = 10
-8=
-
 [RP:REMOVEIRRELEVANTAPROC]
 1=
 
+[RP:../../BASE/MODEL/BALMORELBB4]
+1=
+
+[RP:PRINT1]
+1=
+
+[RP:BALMOREL]
+1=PW=120
+2=PW=100
+3=PW=3000
+4=PW=72
+5=PW=50
+6=PW=36
+7=PW=360
+8=PW=260
+9=PW=200
+10=
+
 [MRUFILES]
-1=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\data\TAX_GH.inc
-2=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\codeforUserDataTransferToStandardBalmorel.inc
-3=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\logerror\logerinc\error1.inc
-4=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\logerror\logerinc\balbase1.mss
-5=C:\$_HansC\Topwaste\temp-longtermmarginals\marginalresults.gdx
-6=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\WTRRRVAR_T.gdx
-7=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\X3FX_VAR_T.gdx
-8=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\WND_VAR_T.gdx
+1=C:\$_HansC\BalmorelGitDTU\base\addons\TimeAggregation\aggr_1_s_t.inc
+2=C:\$_HansC\BalmorelGitDTU\base\addons\TimeAggregation\aggr_2_s_t.inc
+3=C:\$_HansC\BalmorelGitDTU\base\addons\TimeAggregation\timeaggr.inc
+4=C:\GAMS\win64\24.1\docs\bigdocs\gams2002\function.gms
+5=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\datamine\Balindex.txt
+6=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\output\inputout\INPUTDATAOUT.gdx
+7=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\bb123.sim
+8=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\balopt.opt
+9=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\Balmorel.lst
 
 [OPENWINDOW_1]
-FILE0=C:\$_HansC\Balmorel\Balmorel303\BUI-todo.txt
-FILE1=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\logerror\errors.out
-FILE2=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\logerror\logfile.out
-FILE3=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\../../base/model/BalmorelBB4.inc
-FILE4=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\all.gdx
-FILE5=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\Balmorel.gms
-FILE6=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\Balmorel.lst
-FILE7=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\balopt.opt
-FILE8=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\bb123.sim
-FILE9=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\output\inputout\INPUTDATAOUT.gdx
-FILE10=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\SPECIALHANS\Balindex.txt
-FILE11=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\datamine\Balindex.txt
-FILE12=C:\GAMS\win64\24.1\docs\bigdocs\gams2002\function.gms
-FILE13=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\Balmorel.gms
+FILE0=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combBB1.inc
+FILE1=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combBB2.inc
+FILE2=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combEQ.inc
+FILE3=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\comberr2.inc
+FILE4=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\comberror2_omdøbtogændret.inc
+FILE5=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combGassign.inc
+FILE6=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combSets.inc
+FILE7=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combSIM.inc
+FILE8=C:\$_HansC\BalmorelGitDTU\base\model\Balmorel.gms
+FILE9=C:\$_HansC\BalmorelGitDTU\base\model\balopt.opt
+FILE10=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combEQ.inc
 MAXIM=0
-TOP=15
-LEFT=31
-HEIGHT=585
-WIDTH=1299
+TOP=10
+LEFT=25
+HEIGHT=872
+WIDTH=1802

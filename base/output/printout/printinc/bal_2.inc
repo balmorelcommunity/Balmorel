@@ -1,7 +1,7 @@
 * File: bal_2.out
 * Printing to bal_1.out
 
-* Modified last time: 20070306 (lb)
+* Modified last time: 20070306 (lb), 20151210(hr)
 
 * Note: presently there are errors in the file, has to be recoded for version 3.03 or later. Therefore it is not included, cf. prt4-bb2.inc
 
@@ -108,7 +108,8 @@ PUT "*==========================================================================
 
 
 bal_1.LJ = 1;
-PUT "Electricity generation and infrastructure Mio EURO06 "PUT Y.TL:4:0; PUT "  ;" ; LOOP(C, PUT C.TL:12 PUT ";";) ;PUT /;
+PUT "Currency: Mio " OMONEY.TS "  with exchange rate to input currency: "  OMONEY:7:3  " ("OMONEY.TS"/"OIMONEY.TS")." /;
+PUT "Currency: " OMONEY.TS "  with exchange rate to input currency: "  OMONEY:7:3  " ("OMONEY.TS"/"OIMONEY.TS")." /;
 bal_1.LJ = 2;
 
 PUT "Total electricity generation (excl. heat pumps)            ;" ; LOOP(C, PUT ( OMONEY*SUM((IA,IGE)$((not IGETOH(IGE)) and IAGKN(IA,IGE) and ICA(C,IA)), GDATA(IGE,'GDINVCOST0')*VGKN.l(IA,IGE))):12:0 ; PUT ";";); PUT /;

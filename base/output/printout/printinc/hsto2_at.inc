@@ -1,7 +1,7 @@
 * File: hsto2_at.inc
 
 * Created 2001.03.20 (hrv), 16-02-2004 (ld)
-* Modified last time:  2005.07.31 (hr), 2005.10.29 (hr), 20060238(hr)
+* Modified last time:  2005.07.31 (hr), 2005.10.29 (hr), 20060238(hr), 20160407(hr)
 
 * This file will print a table containing content of short term heat storages
 * at the beginning of each time segment
@@ -33,7 +33,7 @@ PUT Y.TL:4 "        ";     LOOP(S,  LOOP(T, PUT T.TL:12 ) PUT ""); PUT /;
 hsto2_at.LJ = 2;
 
 LOOP(C,
-LOOP(IA$(ICA(C,IA) AND (SUM(IGHSTO,IGKFX_Y(IA,IGHSTO)) GT 0)   ),
+LOOP(IA$(ICA(C,IA) AND (SUM(IGHSTOALL,IGKFX_Y(IA,IGHSTOALL)) GT 0)   ),
 PUT IA.TL:12 ;
 LOOP(S,
  LOOP(T,
