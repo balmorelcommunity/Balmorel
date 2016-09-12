@@ -8,9 +8,7 @@
 **/*.bak
 **/*.out
 **/*.bat
-/simex/*.*
 /base/bui/gamsscr/*.*
 /base/data/**/*.*
 /base/output/economic/*.*
 /base/model/Balmorel.l*
-/CaseCombtech

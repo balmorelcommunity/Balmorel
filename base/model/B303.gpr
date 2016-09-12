@@ -8136,6 +8136,13 @@ PlaneRownr=-1
 9=PW=200
 10=
 
+[OPENWINDOW_1]
+MAXIM=0
+TOP=10
+LEFT=25
+HEIGHT=872
+WIDTH=1802
+
 [MRUFILES]
 1=C:\$_HansC\BalmorelGitDTU\base\addons\TimeAggregation\aggr_1_s_t.inc
 2=C:\$_HansC\BalmorelGitDTU\base\addons\TimeAggregation\aggr_2_s_t.inc
@@ -8146,21 +8153,3 @@ PlaneRownr=-1
 7=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\bb123.sim
 8=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\balopt.opt
 9=C:\$_HansC\Balmorel\Balmorel303\Odrive20151030\base\model\Balmorel.lst
-
-[OPENWINDOW_1]
-FILE0=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combBB1.inc
-FILE1=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combBB2.inc
-FILE2=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combEQ.inc
-FILE3=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\comberr2.inc
-FILE4=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\comberror2_omdøbtogændret.inc
-FILE5=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combGassign.inc
-FILE6=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combSets.inc
-FILE7=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combSIM.inc
-FILE8=C:\$_HansC\BalmorelGitDTU\base\model\Balmorel.gms
-FILE9=C:\$_HansC\BalmorelGitDTU\base\model\balopt.opt
-FILE10=C:\$_HansC\BalmorelGitDTU\base\addons\combtech\combEQ.inc
-MAXIM=0
-TOP=10
-LEFT=25
-HEIGHT=872
-WIDTH=1802
