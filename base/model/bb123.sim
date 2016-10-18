@@ -311,6 +311,15 @@ $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vannual.inc';
     ((DH(Y,IA) * DH_VAR_T(IA,S,T)) / IDH_SUMST(IA))$(IDH_SUMST(IA) GT 0);
 
 
+$ifi not %H2%==yes $goto H2demand
+
+IDH2_AREA_T_Y(IA,S,T)=((DH2(Y,IA)*DH2_VAR_T(IA,S,T))/IDH2_AREA_SUMST(IA))$(IDH2_AREA_SUMST(IA) GT 0);
+
+IDH2_REGION_T_Y(IR,S,T)=((DH2(Y,IR)*DH2_VAR_T(IR,S,T))/IDH2_REGION_SUMST(IR))$(IDH2_REGION_SUMST(IR) GT 0);
+
+
+$label H2demand
+
 * Elastic demands, upper bounds on the quantities of the individual steps.
 
 
@@ -411,6 +420,7 @@ $ifi %GAS%==yes $INCLUDE '../../base/addons/gas/annualupdate.inc';
 $ifi %HEATTRANS%==yes $INCLUDE '../../base/addons/heattrans/model/htannualupdate.inc'
 $ifi %FV%==yes $INCLUDE '../../base/addons/Fjernvarme/yearupdate_fv.inc';
 $ifi %POLICIES%==yes $include '../../base/addons/policies/pol_yearupdate.inc';
+$ifi %H2%==yes $INCLUDE '../../base/addons/Hydrogen/H2AnnualUpdate.inc';
 
 * Always MAKEWATER p.t.
 
@@ -434,6 +444,15 @@ $ifi %POLICIES%==yes $include '../../base/addons/policies/pol_yearupdate.inc';
 
 $ifi %bb1%==yes IAGKN(IA,G)=NO;
 $ifi %bb3%==yes IAGKN(IA,G)=NO;
+
+*Start level of hydrogen storage in season S fixed to value found in yearly simulation
+$ifi not %H2%==yes $goto noh2store
+$ifi %bb3%==yes VH2STOVOL_T.FX(IA,IGH2STO,IS3,'T001')=IH2STOVOL_START(IA,IGH2STO,IS3);
+
+* End level of hydrogen storage in season S fixed to start level in season S+1
+*$ifi %bb3%==yes VH2STOVOL_T.FX(IA,IGH2STO,IS3,'T168')=IH2STOVOL_END(IA,IGH2STO,IS3);
+*$ifi %bb3%==yes VH2STOVOL_T.LO(IA,IGH2STO,IS3,'T168')=IH2STOVOL_END(IA,IGH2STO,IS3)-1;
+$label noh2store
 
 *----- End of: The following equations can exclude various elements ....-------
 
@@ -563,6 +582,7 @@ $ifi %bb3%==yes execute "%batfileMERGESAVEPOINTRESULTS%";
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgeninput.inc';
 
 
+$ifi %H2%==yes $include '../../base/addons/Hydrogen/H2Sim.inc';
 
 * Certain checks may be made on the output:  /*Skal den flyttes ned eller andres?*/
 $INCLUDE '../../base/logerror/logerinc/error4.inc';
@@ -601,7 +621,7 @@ $ifi %bb1%==yes WATERVAL(Y,IA,S)  = QHYRSSEQ.m(IA,S);
 $ifi %bb2%==yes HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS))    = SUM(IGHYRS$IAGK_Y(IA,IGHYRS),SUM(T,IHOURSINST(S,T)*(VGE_T.L(IA,IGHYRS,S,T))));  !! todo: ny invest!
 $ifi %bb2%==yes VHYRS_SL(Y,IA,S)  = VHYRS_S.l(IA,S);
 $ifi %bb2%==yes WATERVAL(Y,IA,S)   = QHYRSSEQ.m(IA,S);
-
+$ifi %H2%==yes $INCLUDE '../../base/addons/Hydrogen/H2geninput.inc';
 
 
 
