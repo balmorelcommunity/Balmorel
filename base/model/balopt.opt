@@ -105,6 +105,10 @@ $Setglobal FV
 $setglobal COMBTECH
 *!option yes
 
+* Set demands for hydrogen consumption and enable hydrogen technologies.
+$Setglobal HYDROGEN
+*!option yes
+
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
 $setglobal X3V
 *!option yes
@@ -146,10 +150,6 @@ $setglobal AGKNDISC
 *!option yes
 *!onlyif %BB2%==yes
 *!onlyif %solvemip%==yes
-
-* Set demands for hydrogen consumption.
-$Setglobal H2
-*!option yes
 
 * Set short storages to be inter- or intra-seasonal
 * according to GDSTOINTERS in GDATA (default) or all or none

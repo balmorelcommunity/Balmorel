@@ -178,7 +178,7 @@ ALIAS(CCCRRRAAA,CCCRRRAAAALIAS);
 * They correspond in a one-to-one way with the internal sets IGCND, IGBRP etc. below.
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
-ACRONYMS   GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GHYRR, GWND, GSOLE, GSOLH, GWAVE, GH2STO, GETOH2, GCH4TOH2, GH2FUEL;
+ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GHYRR, GWND, GSOLE, GSOLH, GWAVE;
 
 * ACRONYMS for user defined fuels will be given as part of file FFF.inc
 
@@ -581,8 +581,6 @@ SET IGE(G)                 'Technologies generating electricity';
 SET IGH(G)                 'Technologies generating heat';
 SET IGBYPASS(G)            'Technologies that may apply turbine bypass mode (subject to option bypass)';
 
-$ifi %H2%==yes $include '../../base/addons/hydrogen/H2g.inc';
-
 * The following describes the main applications for the subsets:
 *
 * The sets:
@@ -729,9 +727,6 @@ $ifi not %bypass%==yes IGBYPASS(G) = NO;
 
 $include "..\..\base\addons\_hooks\isetdecdef.inc"
 
-* These internal parameters pertain to hydrogen technologies.
-
-$ifi %H2%==yes $include '../../base/addons/hydrogen/H2Gassign.inc';
 *---- Unit commitment --------------------------------------------------------------
 
 $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_datadecl.inc';
@@ -1329,6 +1324,9 @@ $if not EXIST '../data/OMONEY.inc' $INCLUDE '../../base/data/OMONEY.inc';
 *-------------------------------------------------------------------------------
 *----- Any parameters for addon to be placed here: -----------------------------
 *-------------------------------------------------------------------------------
+$INCLUDE '../../base/addons/_hooks/pardeclare.inc';
+$INCLUDE '../../base/addons/_hooks/pardefine.inc';
+
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/data/x3vdata.inc';
 $ifi %HEATTRANS%==yes $if     EXIST '../data/htrans.inc' $INCLUDE         '../data/htrans.inc';
 $ifi %HEATTRANS%==yes $if not EXIST '../data/htrans.inc' $INCLUDE '../../base/data/htrans.inc';
@@ -1338,8 +1336,6 @@ $ifi %POLICIES%==yes   $if not exist 'POLREQ.inc' $INCLUDE '../../base/addons/po
 
 $ifi %SYSTEMCOST%==yes   $if exist     '../data/BASELOADSERVICE.inc' $INCLUDE    '../data/BASELOADSERVICE.inc';
 $ifi %SYSTEMCOST%==yes   $if not exist '../data/BASELOADSERVICE.inc' $INCLUDE '../../base/data/BASELOADSERVICE.inc';
-$ifi %H2%==yes   $if exist '../addons/Hydrogen/H2data.inc' $INCLUDE '../addons/Hydrogen/H2data.inc';
-$ifi %H2%==yes   $if not exist '../../base/addons/Hydrogen/H2data.inc' $INCLUDE '../../base/addons/Hydrogen/H2data.inc';
 
 * This file (if exists) contains:
 * PARAMETER XHKINI(IAAAE,IAAAI)    'Initial heat transmission capacity between regions'
@@ -1534,19 +1530,6 @@ $ifi %BB3%==yes    IWAVESUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*WAVE_VAR_T(IA,S
 $ifi %BB3%==yes    IWTRRRSUM(IA)=SUM((SSS,T),  IHOURSINST(SSS,T)*WTRRRVAR_T(IA,SSS,T));
 $ifi %BB3%==yes    IWTRRSSUM(IA)=SUM(SSS, (WEIGHT_S(SSS)/IWEIGHSUMS)*WTRRSVAR_S(IA,SSS));
 
-$ifi not %H2%==yes $goto noh2timeweight
-
-PARAMETER IDH2_REGION_SUMST(RRR) 'Variation profile of H2 demand per region';
-$ifi %BB1%==yes    IDH2_REGION_SUMST(IR) = SUM((S,T), IHOURSINST(S,T)*DH2_VAR_T(IR,S,T));
-$ifi %BB2%==yes    IDH2_REGION_SUMST(IR) = SUM((S,T), IHOURSINST(S,T)*DH2_VAR_T(IR,S,T));
-$ifi %BB3%==yes    IDH2_REGION_SUMST(IR) = SUM((SSS,T), IHOURSINST(SSS,T)*DH2_VAR_T(IR,SSS,T));
-
-PARAMETER IDH2_AREA_SUMST(AAA) 'Variation profile of H2 demand per region';
-$ifi %BB1%==yes    IDH2_AREA_SUMST(IA) = SUM((S,T), IHOURSINST(S,T)*DH2_VAR_T(IA,S,T));
-$ifi %BB2%==yes    IDH2_AREA_SUMST(IA) = SUM((S,T), IHOURSINST(S,T)*DH2_VAR_T(IA,S,T));
-$ifi %BB3%==yes    IDH2_AREA_SUMST(IA) = SUM((SSS,T), IHOURSINST(SSS,T)*DH2_VAR_T(IA,SSS,T));
-
-$label noh2timeweight
 *-------------------------------------------------------------------------------
 * End of: Set the time weights depending on the model
 *-------------------------------------------------------------------------------
@@ -1658,6 +1641,8 @@ PARAMETER IGKNMAX_Y(AAA,G)       'Maximum capacity of new technologies (MW)';
 *----- Any internal sets and parameters for addon to be placed here: -----------
 *-------------------------------------------------------------------------------
 
+$INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
+
 * These internal parameters pertain to price sensitivy electricity exchange with third countries.
 $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vinternal.inc';
 * These internal parameters and sets pertain to heat transmission.
@@ -1669,7 +1654,7 @@ $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_intern.inc';
 * Discrete size investments addon
 $ifi %AGKNDISC%==yes   $include '../../base/addons/agkndisc/agkndiscinternal.inc';
 
-$ifi %H2%==yes $include '../../base/addons/Hydrogen/H2InternalParameters.inc';
+
 *-------------------------------------------------------------------------------
 *----- End: Any internal sets and parameters for addon to be placed here -------
 *-------------------------------------------------------------------------------
@@ -1808,6 +1793,7 @@ POSITIVE VARIABLE VQXK(IRRRE,IRRRI,S,T,IPLUSMINUS) 'Feasibility in Transmission 
 *-------------------------------------------------------------------------------
 $include "..\..\base\addons\_hooks\vardeclare.inc"
 
+$INCLUDE '../../base/addons/_hooks/vardeclare.inc';
 * These variables are for addon X3V (price sensitive third countries elec exchange
 $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vvariables.inc';
 * These variables are for addon heat transmission
@@ -1826,8 +1812,6 @@ $ifi %SYSTEMCOST%==yes $include '../../base/addons/SystemCost/var_syscost.inc';
 * These variables are for addon for hydro
 $ifi %HYRSBB123%==quantprice  $include "..\..\base\addons\hyrsbb123\hyrsbb123variables.inc";
 
-* These add-on variables pertain to hydrogen technology.
-$ifi %H2%==yes $include '../../base/addons/Hydrogen/H2variables.inc';
 
 *-------------------------------------------------------------------------------
 *----- End: Any variables for addon to be placed here: -------------------------
@@ -2133,14 +2117,13 @@ $ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3
               )
 
 * Add-on objective function contributions
+$INCLUDE '../../base/addons/_hooks/qobj.inc';
 
 $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vobj.inc';
 * This file contains Heat transmission induced additions to the objective function.
 $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htcosts.inc';
 * This file contains district heating induced additions to the objective function.
 $ifi %FV%==yes $include '../../base/addons/Fjernvarme/cost_fv.inc';
-* This file contains hydrogen induced additions to the objective function.
-$ifi %H2%==yes $include '../../base/addons/Hydrogen/H2costs.inc'
 * Unit commitmen add-on
 $ifi %UnitComm%==yes    $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
 
@@ -2169,8 +2152,6 @@ QEEQ(IR,IS3,T) ..
     - SUM(IA$(RRRAAA(IR,IA) AND SUM(IGESTO$(IAGK_Y(IA,IGESTO) OR IAGKN(IA,IGESTO)),1)),VESTOLOADT(IA,IS3,T))
     - SUM(IA$(RRRAAA(IR,IA) AND SUM(IGESTOS$(IAGK_Y(IA,IGESTOS) OR IAGKN(IA,IGESTOS)),1)),VESTOLOADTS(IA,IS3,T))
 $ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VIM_T(IR,X3VPLACE,X3VSTEP,IS3,T)))
-$ifi %H2%==yes  -SUM(IAGK_Y(IA,IGETOH2)$(RRRAAA(IR,IA)), VGE_T(IA,IGETOH2,IS3,T))
-$ifi %H2%==yes  -SUM(IAGKN(IA,IGETOH2)$(RRRAAA(IR,IA)), VGEN_T(IA,IGETOH2,IS3,T))
     =E=
       IX3FX_T_Y(IR,IS3,T)
     + (   (IDE_T_Y(IR,IS3,T)
@@ -2202,8 +2183,6 @@ QHEQ(IA,IS3,T)$(IDH_SUMST(IA) NE 0) ..
    + SUM(IGESTO$IAGK_Y(IA,IGESTO),(VGE_T(IA,IGESTO,IS3,T)/GDATA(IGESTO,'GDCB'))$GDATA(IGESTO,'GDCB'))  /* This may disappear, or stay plus similar for IGESTOs */
    - VHSTOLOADT(IA,IS3,T)$SUM(IGHSTO$(IAGK_Y(IA,IGHSTO) OR IAGKN(IA,IGHSTO)),1)
    - VHSTOLOADTS(IA,IS3,T)$SUM(IGHSTOS$(IAGK_Y(IA,IGHSTOS) OR IAGKN(IA,IGHSTOS)),1)
-$ifi %H2%==yes  +SUM(IGETOH2$IAGK_Y(IA,IGETOH2), VGH_T(IA,IGETOH2,IS3,T))
-$ifi %H2%==yes  +SUM(IGETOH2$IAGKN(IA,IGETOH2), VGHN_T(IA,IGETOH2,IS3,T))
     =E=
      (IDH_T_Y(IA,IS3,T)
         + SUM(DHF_U1$IDHFP_T(IA,IS3,T,DHF_U1),VDHF_T(IA,IS3,T,DHF_U1) )
@@ -2216,6 +2195,7 @@ $ifi %H2%==yes  +SUM(IGETOH2$IAGKN(IA,IGETOH2), VGHN_T(IA,IGETOH2,IS3,T))
 
 * Adds heat transmission if selected in the gas add-on
 $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htheatbalance.inc';
+$include "..\..\base\addons\_hooks\qheq.inc"
         - VQHEQ(IA,IS3,T,'IMINUS') + VQHEQ(IA,IS3,T,'IPLUS')
 * Adds district heating if selected
 $ifi %FV%==yes $include '../../base/addons/Fjernvarme/heatbalance_fv.inc';
@@ -2845,7 +2825,6 @@ $ifi %SYSTEMCOST%==yes  $include '../../base/addons/SystemCost/eq_syscost.inc';
 *-------------------------------------------------------------------------------
 *----- End: Any equations for addon to be placed here. -------------------------
 *-------------------------------------------------------------------------------
-$ifi %H2%==yes $include '../../base/addons/Hydrogen/H2equations.inc';
 
 
 
@@ -2924,7 +2903,6 @@ $ifi %UnitComm%==yes      $include '../../base/addons/unitcommitment/uc_modeladd
 $ifi %POLICIES%==yes $include '../../base/addons/policies/pol_eqn.inc';
 $ifi %REShareE%==yes QRESHAREE
 $ifi %SYSTEMCOST%==yes $include '../../base/addons/SystemCost/eqn_syscost.inc';
-$ifi %H2%==yes $INCLUDE '../../base/addons/Hydrogen/H2bb1.inc';
 
 *----- End: Any equations for addon to be placed here. -------------------------
 
@@ -3038,7 +3016,6 @@ $ifi %AGKNDISC%==yes  QAGKNDISCCONT
 $ifi %AGKNDISC%==yes  QAGKNDISC01
 $ifi %POLICIES%==yes $include '../../base/addons/policies/pol_eqn.inc';
 $ifi %SYSTEMCOST%==yes $include '../../base/addons/SystemCost/eqn_syscost.inc';
-$ifi %H2%==yes $INCLUDE '../../base/addons/Hydrogen/H2bb1.inc'
 *----- End: Any equations for addon to be placed here. -------------------------
 /;
 
@@ -3079,7 +3056,6 @@ $ifi %HYRSBB123%==quantprice   QHYRSG
 $ifi %HYRSBB123%==quantprice   QWATERVOLINI
 
 $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htbb1.inc';
-$ifi %H2%==yes $INCLUDE '../../base/addons/Hydrogen/H2bb3.inc';
 *----- End: Any equations for addon to be placed here. -------------------------
 /;
 
@@ -3146,6 +3122,8 @@ $ifi %bb2%==yes execute_unload  '../../simex/WATERVAL.gdx',WATERVAL;
 
 $ifi  %bb3%==yes $ifi not %HYRSBB123%==none $include  "../../base\addons\hyrsbb123\hyrsbb123unload.inc";
 
+$INCLUDE  '../../base/addons/_hooks/simex.inc';
+
 $ifi %MAKEINVEST%==yes execute_unload '../../base/data/GKVACC.gdx', GKVACC;
 $ifi %MAKEINVEST%==yes execute_unload '../../base/data/GKVACCDECOM.gdx', GKVACCDECOM;
 $ifi %MAKEINVEST%==yes execute_unload '../../base/data/GVKGN.gdx', GVKGN;
@@ -3153,7 +3131,6 @@ $ifi %MAKEINVEST%==yes execute_unload '../../base/data/XKACC.gdx', XKACC;
 
 
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgdx.inc';
-$ifi %H2%==yes execute_unload '../../base/addons/Hydrogen/H2STOVOL_START.gdx',H2STOVOL_START;
 *--- End: Results which can be transfered between simulations are placed here --
 
 

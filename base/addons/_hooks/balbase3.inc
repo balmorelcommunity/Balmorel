@@ -3,6 +3,7 @@
 $ifi not %bb3%==yes $goto endoffile
 
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/combtech_balbase3.inc";
+$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_balbase3.inc";
 
 
 

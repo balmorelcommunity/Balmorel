@@ -3,6 +3,7 @@
 $ifi %BB4%==yes $goto beginbb4
 
 $ifi %COMBTECH%==yes $include "..\..\base\addons\combtech\combtech_eqndecdef.inc"
+$ifi %HYDROGEN%==yes $include "../../base/addons/hydrogen/hydrogen_eqndecdef.inc"
 
 
 
