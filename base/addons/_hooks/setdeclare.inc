@@ -4,7 +4,7 @@ $ifi %BB4%==yes $goto beginbb4
 
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/combtech_setdeclare.inc";
 
-$ifi %COMBTECH%==yes  $include   "../../base/addons/flowbased/FB_setdeclare.inc";
+$ifi %FLOWBASED%==yes  $include   "../../base/addons/flowbased/flowbased_setdeclare.inc";
 $ifi not %BB4%==yes $goto endoffile
 
 $label  beginbb4

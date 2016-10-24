@@ -4,7 +4,7 @@ $ifi not %bb1%==yes $goto endoffile
 
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/combtech_balbase1.inc";
 
-$ifi %FLOWBASED%==yes  $include   "../../base/addons/flowbased/FB_Balbase123.inc";
+$ifi %FLOWBASED%==yes  $include   "../../base/addons/flowbased/flowbased_balbase1.inc";
 
 
 

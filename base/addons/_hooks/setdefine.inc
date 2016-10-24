@@ -3,4 +3,4 @@
 
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/combtech_setdefine.inc";
 
-$ifi %FLOWBASED%==yes  $include   "../../base/addons/flowbased/FB_setdefine.inc";
+$ifi %FLOWBASED%==yes  $include   "../../base/addons/flowbased/flowbased_setdefine.inc";

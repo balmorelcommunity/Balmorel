@@ -4,7 +4,7 @@ $ifi %BB4%==yes $goto beginbb4
 
 $ifi %COMBTECH%==yes $include "..\..\base\addons\combtech\combtech_eqndecdef.inc"
 
-$ifi %FLOWBASED%==yes $include "..\..\base\addons\flowbased\FB_EQDef.inc"
+$ifi %FLOWBASED%==yes $include "..\..\base\addons\flowbased\flowbased_eqndecdef.inc"
 
 
 

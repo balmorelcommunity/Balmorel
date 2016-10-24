@@ -4,4 +4,4 @@
 * $ifi %ADDONNAME%==yes    $include "../../base/addons/ADDONNAME/ADDONNAME_pardeclare.inc";
 
 
-$ifi %FlowBased%==yes    $include "../../base/addons/flowbased/FB_pardeclare.inc";
+$ifi %FlowBased%==yes    $include "../../base/addons/flowbased/flowbased_pardeclare.inc";

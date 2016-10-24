@@ -52,7 +52,7 @@ $ifi %combtech%==yes     ISCALAR1 = 1;
 $ifi %bypass%==yes    $include   "../../base/addons/bypass/bypass_hellolog.inc";
 $ifi %bypass%==yes       ISCALAR1 = 1;
 
-$ifi %FlowBased%==yes  $include   "../../base/addons/Flowbased/FB_hellolog.inc";
+$ifi %FlowBased%==yes  $include   "../../base/addons/flowbased/flowbased_hellolog.inc";
 $ifi %FlowBased%==yes  ISCALAR5 = 1;
 
 IF((ISCALAR1 EQ 0), PUT " - No addons applied"/; );
