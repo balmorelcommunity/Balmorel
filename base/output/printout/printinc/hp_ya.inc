@@ -1,6 +1,6 @@
 * File hp_ya.inc.
 
-* Modified last time: 01-02-2002 (rus), ... ,  20150130(hr),20150312(Weiming)
+* Modified last time: 01-02-2002 (rus), ... ,  20150130(hr),20150312(Weiming). 20161024 (hr): Guading against division-by-zero (search NA). Todo: detect the source for division-by-0, at do something about that.
 
 * This file will print a table containing
 * the annual weighted average marginal heat generation price by IA.
@@ -67,7 +67,7 @@ LOOP(IY411,
       ));
 
 
-      OHP_YA(IY411FIRST,IY411,IA)$(DH(IY411,IA) > 0)= OSCALAR3/OSCALAR2;
+      OHP_YA(IY411FIRST,IY411,IA)$(DH(IY411,IA) > 0)= OSCALAR3/(OSCALAR2$(OSCALAR2 NE 0) + NA$(OSCALAR2 EQ 0))
       PUT OHP_YA(IY411FIRST,IY411,IA):OTLWCRA:2;
 
     );PUT /;
