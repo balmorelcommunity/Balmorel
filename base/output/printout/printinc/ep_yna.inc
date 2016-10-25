@@ -1,6 +1,6 @@
 * File ep_yna.inc.
 
-* Modified 20150422(Weiming). 20161024: Guading against division-by-zero (search NA). Todo: detect the source for division-by-0, at do sokething about that (hr).
+* Modified 20150422(Weiming). 20161024 (hr): Guading against division-by-zero (search NA). Todo: detect the source for division-by-0, at do something about that.
 
 * This file will print a table containing
 * the annual weighted average marginal electricity price by aggregated countries.
@@ -41,7 +41,6 @@ PUT "Annual average electricity price, weighted by consumption quantity"//;
 
 PUT "Annual average electricity price, weighted by consumption quantity:" /;
 
-*OEP_YNA(IY411FIRST,IY411)
 
 LOOP(IY411FIRST,
 PUT "BB4 model starting year "  IY411FIRST.TL:4 "..............................:" //;
@@ -75,7 +74,7 @@ LOOP(IY411,
 
 
     );
- OEP_YNA(IY411FIRST,IY411)=OSCALAR3 / (OSCALAR2$(OSCALAR2 NE 0) + NA$(OSCALAR2 EQ 0));  
+ OEP_YNA(IY411FIRST,IY411)=OSCALAR3 / (OSCALAR2$(OSCALAR2 NE 0) + NA$(OSCALAR2 EQ 0));
  PUT OEP_YNA(IY411FIRST,IY411):OTLWCRA:2;
  PUT /;
   );PUT /;

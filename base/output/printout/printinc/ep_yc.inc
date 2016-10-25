@@ -1,6 +1,6 @@
 * File ep_yc.inc.
 
-* Modified 20150422(Weiming). 20161024: Guading against division-by-zero (search NA). Todo: detect the source for division-by-0, at do sokething about that (hr).
+* Modified 20150422(Weiming). 20161024 (hr): Guading against division-by-zero (search NA). Todo: detect the source for division-by-0, at do something about that.
 
 * This file will print a table containing
 * the annual weighted average marginal electricity price by C.
