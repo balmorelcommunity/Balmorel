@@ -298,8 +298,6 @@ PARAMETER GKFX(YYY,AAA,GGG)    'Capacity of exogenously given generation technol
 *-------------------------------------------------------------------------------
 
 SET IAGK_HASORPOT(Y,AAA,G) 'Technologies with existing or potentially invested capacity current year';
-* Add all technologies with positive generation capacity within a simulation year.
-*IAGK_HASORPOT(IA,G)$(SUM(Y,GKFX(Y,IA,G)))=yes;
 *$ifi %COMBTECH%==yes IAGK_HASORPOT(IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
 
 *-------------------------------------------------------------------------------
@@ -1079,8 +1077,7 @@ EQUATIONS
    QOBJ                     "Objective function"
    QEEQ(Y,RRR,S,T)          "Electricity generation equals demand (MW)"
    QHEQ(Y,AAA,S,T)          "Heat generation equals demand (MW)"
-   QGFEQ(Y,AAA,G,S,T)       "Calculate fuel consumption, existing units NOT IMPLEMENTED"
-   QGFNEQ(Y,AAA,G,S,T)      "Calculate fuel consumption, new units NOT IMPLEMENTED"
+   QGFEQ(Y,AAA,G,S,T)       "Calculate fuel consumption, existing units ()"
 
    QGCBGBPR(Y,AAA,G,S,T)    "CHP generation (back pressure) limited by Cb-line (MW)"
    QGCBGEXT(Y,AAA,G,S,T)    "CHP generation (extraction) limited by Cb-line (MW)"
@@ -1387,8 +1384,8 @@ QEEQ(IY411,IR,IS3,T) ..
 
       SUM(IA$RRRAAA(IR,IA), SUM(IGE$(IAGK_HASORPOT(IY411,IA,IGE) AND IGNOTETOH(IGE)),VGE_T(IY411,IA,IGE,IS3,T)))
     - SUM(IA$RRRAAA(IR,IA), SUM(IGETOH$IAGK_HASORPOT(IY411,IA,IGETOH), VGE_T(IY411,IA,IGETOH,IS3,T)))
+    - SUM(IA$RRRAAA(IR,IA), VESTOLOADT(IY411,IA,IS3,T)$SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),1))
     + SUM(IRE$IXK_HASORPOT(IY411,IRE,IR), VX_T(IY411,IRE,IR,IS3,T)*(1-XLOSS(IRE,IR)))
-    - SUM(IA$(RRRAAA(IR,IA) AND SUM(IGESTO,IAGK_HASORPOT(IY411,IA,IGESTO))),VESTOLOADT(IY411,IA,IS3,T))
 $ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VIM_T(IR,X3VPLACE,X3VSTEP,IS3,T)))
 * This file contains transport induced additions to the balance equation(KHED)
 $ifi %TSP%==yes $include "../../base/addons/Transport/TSPQEEQ.inc"
@@ -1414,7 +1411,6 @@ QHEQ(IY411,IA,IS3,T)$(IDH_SUMST(IA) NE 0) ..
    + SUM(IGBPR$IAGK_HASORPOT(IY411,IA,IGBPR),VGH_T(IY411,IA,IGBPR,IS3,T))
    + SUM(IGEXT$IAGK_HASORPOT(IY411,IA,IGEXT),VGH_T(IY411,IA,IGEXT,IS3,T))
    + SUM(IGHH$IAGK_HASORPOT(IY411,IA,IGHH),VGH_T(IY411,IA,IGHH,IS3,T))
-
    + SUM(IGETOH$IAGK_HASORPOT(IY411,IA,IGETOH),VGH_T(IY411,IA,IGETOH,IS3,T))
    - VHSTOLOADT(IY411,IA,IS3,T)$SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO),1)
     =E=
@@ -1430,6 +1426,21 @@ QHEQ(IY411,IA,IS3,T)$(IDH_SUMST(IA) NE 0) ..
 * Adds heat transmission if selected in the gas add-on
 $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htheatbalance.inc";
         - VQHEQ(IY411,IA,IS3,T,"IMINUS") + VQHEQ(IY411,IA,IS3,T,"IPLUS")
+;
+
+
+* Fuel consumption rate.
+QGFEQ(IY411,IA,G,IS3,T)$IAGK_HASORPOT(IY411,IA,G) ..
+     VGF_T(IY411,IA,G,IS3,T)
+  =E=
+   ( (VGE_T(IY411,IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGNOTETOH(G) AND IGE(G))
+    +(GDATA(G,'GDCV')*VGH_T(IY411,IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGH(G)
+    )$(NOT IGBYPASS(G))
+
++  ( ((GDATA(G,'GDCB')*((VGH_T(IY411,IA,G,IS3,T)*GDATA(G,'GDBYPASSC') + VGE_T(IY411,IA,G,IS3,T))/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G)))))
+   + ((GDATA(G,'GDCV')*((VGH_T(IY411,IA,G,IS3,T)*GDATA(G,'GDBYPASSC') + VGE_T(IY411,IA,G,IS3,T))/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G)))))
+   )$IGBYPASS(G)
+$ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_qgfeqadd.inc';
 ;
 
 *------ Generation technologies" electricity/heat operating area: --------------
@@ -2124,6 +2135,7 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
 *--- Balance equations ---------------------------------------------------------
                                 QEEQ
                                 QHEQ
+                                QGFEQ
 *--- Feasible generation region ------------------------------------------------
                                 QGCBGBPR
                                 QGCBGEXT
