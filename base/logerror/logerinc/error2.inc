@@ -736,11 +736,9 @@ IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
 ISCALAR1=ERRCOUNT2;
 LOOP(G,
 IF((GDATA(G,'GDFE') LT 0.1),
-PUT "Possible error in table GDATA:" ;
-PUT "   The fuel efficiency for technology " G.TL:32  " type " GDATA(G,'GDTYPE'):5
-PUT " is very small (" GDATA(G,'GDFE'):10:5 ").";
-IF((SUM(IA$IAGK(IA,G), 1)), PUT "    - The technology has installed capacity in a simulation year ";); !! (20150519(hr))
-PUT /;
+PUT "Error in table GDATA:" ;
+PUT "   The fuel efficiency for technology " G.TL:32
+PUT " is very small (" GDATA(G,'GDFE'):10:5 ")." /;
 ERRCOUNT2=ERRCOUNT2+1;
 ));
 IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
@@ -750,11 +748,9 @@ IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
 ISCALAR1=ERRCOUNT2;
 LOOP(IGETOH,
 IF( (GDATA(IGETOH,'GDFE') LT 0.8) OR (5 LT GDATA(IGETOH,'GDFE')),
-PUT "Possible error in table GDATA:" ;
-PUT "   The fuel efficiency for technology " IGETOH.TL:32  " type GETOH"
-PUT " is very small or very large (" GDATA(IGETOH,'GDFE'):10:5 ").";
-IF((SUM(IA$IAGK(IA,IGETOH), 1)), PUT "    - The technology has installed capacity in a simulation year ";); !! (20150519(hr))
-PUT /;
+PUT "Possible error in table GDATA:" /;
+PUT "   The fuel efficiency for technology " IGETOH.TL:32
+PUT " is very small or very large (" GDATA(IGETOH,'GDFE'):10:5 ")." /;
 ERRCOUNT2=ERRCOUNT2+1;
 ));
 IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
@@ -766,11 +762,7 @@ IF((1 LT (GDATA(IGEXT,'GDFE')*((GDATA(IGEXT,'GDCB')+1)/(GDATA(IGEXT,'GDCB')+GDAT
 PUT "Possible error in table GDATA:" ;
 PUT "   The fuel efficiency for technology " IGEXT.TL:32 " type GEXT "
 PUT " exceeds 100% in back pressure mode (value: "
-   (GDATA(IGEXT,'GDFE')*((GDATA(IGEXT,'GDCB')+1)/(GDATA(IGEXT,'GDCB')+GDATA(IGEXT,'GDCV')))):10:5
-   ") (derived from 'GDFE' value " GDATA(IGEXT,'GDFE'):8:5 " and  'GDCB' value " GDATA(IGEXT,'GDCB'):8:5 ").";
-
-IF((SUM(IA$IAGK(IA,IGEXT), 1)), PUT "    - The technology has installed capacity in a simulation year ";); !! (20150519(hr))
-PUT /;
+   (GDATA(IGEXT,'GDFE')*((GDATA(IGEXT,'GDCB')+1)/(GDATA(IGEXT,'GDCB')+GDATA(IGEXT,'GDCV')))):10:5 ")." /;
 ERRCOUNT2=ERRCOUNT2+1; );
 );
 IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
@@ -780,9 +772,7 @@ ISCALAR1=ERRCOUNT2;
 LOOP(IGEXT,
 IF( ((GDATA(IGEXT,'GDCB') LT 0)),
 PUT "Error in table GDATA:" ;
-PUT "   The GDCB-values for technology " IGEXT.TL:32 " type GEXT " " is negative.";
-IF((SUM(IA$IAGK(IA,IGEXT), 1)), PUT "    - The technology has installed capacity in a simulation year ";); !! (20150519(hr))
-PUT /;
+PUT "   The GDCB-values for technology " IGEXT.TL:4 " is negative."  /;
 ERRCOUNT2=ERRCOUNT2+1;
 ));
 IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
@@ -793,9 +783,7 @@ ISCALAR1=ERRCOUNT2;
 LOOP(IGHSTO,
 IF( ((GDATA(IGHSTO,'GDSTOHLOAD') LE 0)),
 PUT "Error in table GDATA:" ;
-PUT "   The GDSTOHLOAD-values for technology " IGHSTO.TL:32 " type GHSTO" " is not positive ("GDATA(IGHSTO,'GDSTOHLOAD'):10:5").";
-IF((SUM(IA$IAGK(IA,IGHSTO), 1)), PUT "    - The technology has installed capacity in a simulation year ";); !! (20150519(hr))
-PUT /;
+PUT "   The GDSTOHLOAD-values for technology " IGHSTO.TL:32 " is not positive ("GDATA(IGHSTO,'GDSTOHLOAD'):10:5")."  /;
 ERRCOUNT2=ERRCOUNT2+1;
 ));
 IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
@@ -805,9 +793,7 @@ ISCALAR1=ERRCOUNT2;
 LOOP(IGHSTO,
 IF( ((GDATA(IGHSTO,'GDSTOHUNLD') LE 0)),
 PUT "Error in table GDATA:" ;
-PUT "   The GDSTOHUNLD-values for technology " IGHSTO.TL:32 " type GHSTO" " is not positive ("GDATA(IGHSTO,'GDSTOHUNLD'):10:5").";
-IF((SUM(IA$IAGK(IA,IGHSTO), 1)), PUT "    - The technology has installed capacity in a simulation year ";); !! (20150519(hr))
-PUT /;
+PUT "   The GDSTOHUNLD-values for technology " IGHSTO.TL:32 " is not positive ("GDATA(IGHSTO,'GDSTOHUNLD'):10:5")."  /;
 ERRCOUNT2=ERRCOUNT2+1;
 ));
 IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
@@ -817,9 +803,7 @@ ISCALAR1=ERRCOUNT2;
 LOOP(IGESTO,
 IF( ((GDATA(IGESTO,'GDSTOHLOAD') LE 0)),
 PUT "Error in table GDATA:" ;
-PUT "   The GDSTOHLOAD-values for technology " IGESTO.TL:32 " type GESTO" " is not positive ("GDATA(IGESTO,'GDSTOHLOAD'):10:5").";
-IF((SUM(IA$IAGK(IA,IGESTO), 1)), PUT "    - The technology has installed capacity in a simulation year ";); !! (20150519(hr))
-PUT /;
+PUT "   The GDSTOHLOAD-values for technology " IGESTO.TL:32 " is not positive ("GDATA(IGESTO,'GDSTOHLOAD'):10:5")."  /;
 ERRCOUNT2=ERRCOUNT2+1;
 ));
 IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
@@ -829,9 +813,7 @@ ISCALAR1=ERRCOUNT2;
 LOOP(IGESTO,
 IF( ((GDATA(IGESTO,'GDSTOHUNLD') LE 0)),
 PUT "Error in table GDATA:" ;
-PUT "   The GDSTOHUNLD-values for technology " IGESTO.TL:32 " type GESTO" " is not positive ("GDATA(IGESTO,'GDSTOHUNLD'):10:5").";
-IF((SUM(IA$IAGK(IA,IGESTO), 1)), PUT "    - The technology has installed capacity in a simulation year ";); !! (20150519(hr))
-PUT /;
+PUT "   The GDSTOHUNLD-values for technology " IGESTO.TL:32 " is not positive ("GDATA(IGESTO,'GDSTOHUNLD'):10:5")."  /;
 ERRCOUNT2=ERRCOUNT2+1;
 ));
 IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);

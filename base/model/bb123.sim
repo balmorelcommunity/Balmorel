@@ -95,8 +95,6 @@ $ifi %ADDINVEST%==yes IXKVACCTOY(IRE,IRI)=XKACC(Y,IRE,IRI);
 IAGK_Y(IA,G)=NO;
 IAGK_Y(IA,G)=YES$(IGKVACCTOY(IA,G) + IGKFX_Y(IA,G));
 
-$ifi %COMBTECH%==YES  LOOP((IA,IGCOMB1)$IAGK_Y(IA,IGCOMB1), IAGK_Y(IA,IGCOMB2)$GGCOMB(IGCOMB1,IGCOMB2)=YES);
-
 
 $ifi not %bb2%==yes $goto bb2_label1
 
@@ -116,8 +114,6 @@ IAGKN(IA,G)$(GDATA(G,'GDFROMYEAR') GT YVALUE(Y)) = NO;
 
 * No new capacity if capacity is not specified to be found endogeneously:
 IAGKN(IA,IGKKNOWN) = NO;
-$ifi %COMBTECH%==yes  * No new capacity on secondary combination technologies:
-$ifi %COMBTECH%==yes    IAGKN(IA,IGCOMB2) = NO;
 
 $label  bb2_label1
 
@@ -135,7 +131,7 @@ VGH_T.UP(IA,IGKH,S,T)$IAGK_Y(IA,IGKH)=
 $ifi %PLANTCLOSURES%==yes VDECOM.UP(IA,IGKE) = IGKVACCTOY(IA,IGKE) + IGKFX_Y(IA,IGKE);
 $ifi %PLANTCLOSURES%==yes VDECOM.UP(IA,IGKH) = IGKVACCTOY(IA,IGKH) + IGKFX_Y(IA,IGKH);
 
-$ifi %COMBTECH%==YES  $INCLUDE '../../base/addons/combtech/combSIM.inc';
+$ifi %COMBTECH%==YES  $INCLUDE '../../base/addons/combtech/combtech_sim.inc';
 
 * Storage loading (MW) and unloading (MW) do not exceed capacity:
 

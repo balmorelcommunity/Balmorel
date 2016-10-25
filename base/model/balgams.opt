@@ -55,6 +55,7 @@ $OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF
 
 OPTIONS LIMROW=   100, LIMCOL=   100;
 
+OPTIONS RESLIM= 50000;
 
 *...............................................................................
 * SYSOUT controls the printing of the solved status in the list file.

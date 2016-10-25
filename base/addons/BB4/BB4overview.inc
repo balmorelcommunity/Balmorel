@@ -1,5 +1,5 @@
 * BB4overview.inc
-* Created 200906xx (hr).
+* Created 200906xx (hr), 20150513(hr), last revised 20160810(hr).
 *
 * This file will print a short overview of input data characteristics of the BalBase4 model in Balmorel.
 
@@ -10,86 +10,89 @@ put "General overview of input data may be found in inputout.out" /;
 put "The information printed here is valid only if the input is consistent, please verify this, e.g. see the errors.out file first." / / ;
 
 
-put "Years to be represented in models, set Y: "; LOOP(Y, PUT Y.TL:6 ); PUT / /;
-
-put "Each Balbase4 model will have " (Card(SIMYEARS)):3:0 " years (implied by set SIMYEARS)."/ /;
-
-put "The number of years between a year and the preceding year represented in model Balbase4 (as specified in parameter SIMDELTA) ('number' means ord's in Y):" ;
-loop(SIMYEARS, PUT (SIMDELTA(SIMYEARS)):3:0;); PUT / /;
-
-put "igen: ";
-loop(SIMYEARS,  put SIMYEARS.tl: 15  ; PUT (SIMDELTA(SIMYEARS)):3:0 "   "; ); PUT / /;
+put "Years to be represented in models are subsets of Y: "; LOOP(Y, PUT Y.TL:6 ); PUT / /;
 
 
+IF((CARD(YMODEL) GT 1),
+  PUT "Each Balbase4 model will have " (Card(YMODEL)):3:0 " years (implied by set YMODEL)."/ /;
+  PUT "The number of years between a year and the preceding year represented in model Balbase4 (parameter YMODELDELTA) ('number' derived from ord(Y)):"  /;
+  PUT "YMODELDELTA:    0";
+  LOOP(YMODEL$(1 LT ORD(YMODEL)), PUT (YMODELDELTA(YMODEL)):3:0;);  PUT / /;
+ELSE
+  PUT "There is only one year in each Balbase4 model." PUT / /;
+);
 
 * hans: pt er dette blot kopi fra BB4.sim (med undtagelse af Check), skal internaliseres!
 
 * Calculate simweights for each simyear:
-ALIAS(SIMYEARS, SIMYEARS3);
-LOOP(SIMYEARS,
-SIMWEIGHT(SIMYEARS) = SUM(SIMYEARS3$(ORD(SIMYEARS3) <= ORD(SIMYEARS)), SIMDELTA(SIMYEARS3))
+ALIAS(YMODEL, IYMODEL3);
+LOOP(YMODEL,
+  ISIMWEIGHT(YMODEL) = SUM(IYMODEL3$(ORD(IYMODEL3) <= ORD(YMODEL)), YMODELDELTA(IYMODEL3))
 );
 
 *Calculate ord() for each simyear
-ORD_IY(SIMYEARS) = 0;
-LOOP(SIMYEARS,
-ORD_IY(SIMYEARS) = SIMWEIGHT(SIMYEARS);
-$ifi not yes==yes  ORD_IY(SIMYEARS) = SUM(SIMYEARS3$(ORD(SIMYEARS3) <= ORD(SIMYEARS)), SIMDELTA(SIMYEARS3))
+IORD_IY(YMODEL) = 0;
+LOOP(YMODEL,
+IORD_IY(YMODEL) = ISIMWEIGHT(YMODEL);
+$ifi not yes==yes  IORD_IY(YMODEL) = SUM(IYMODEL3$(ORD(IYMODEL3) <= ORD(YMODEL)), YMODELDELTA(IYMODEL3))  !!  TODO!
 );
+
+
 
 
 * Checks:
 ISCALAR1=1;
-IF((CARD(SIMYEARS) > CARD(Y)),
+IF((CARD(YMODEL) > CARD(Y)),
 ISCALAR1=0;
-PUT "ERROR in SIMDELTA for BB4: (CARD(SIMYEARS) > CARD(Y)). No Balbase4 model will be generated" / /;
+PUT "ERROR in YMODELDELTA for BB4: (CARD(YMODEL) > CARD(Y)). No Balbase4 model will be generated" / /;
 );
-IF((SUM(SIMYEARS,SIMDELTA(SIMYEARS)) > CARD(Y)-1),
+IF((SUM(YMODEL,YMODELDELTA(YMODEL)) > CARD(Y)-1),
 ISCALAR1=0;
-      put "ERROR in SIMDELTA for BB4: The number of model years (cf. SIMYEARS) and the distance (cf. SIMDELTA) between them in Balbase4 is so large that no Balbase4 model will be generated."/;
+      put "ERROR in YMODELDELTA for BB4: The number of model years (cf. YMODEL) and the distance (cf. YMODELDELTA) between them in Balbase4 is so large that no Balbase4 model will be generated."/;
 );
 
 
 IF(ISCALAR1,
-LOOP(YALIAS$((CARD(YALIAS)-ORD(YALIAS) GE (SUM(SIMYEARS, SIMDELTA(SIMYEARS))))),
+ISCALAR3 = 0;
+IFIRSTYEARNEXTBB4 = SUM(Y$(ORD(Y) EQ 1), YVALUE(Y));
 
-* -----------------------------------------------------------------------------
-* Calculate ORD_IY, and subsets of Y:
-* IY411: the years in the present Balbase4 model
-* IY410: IY411 except last year.
-* IY401: IY411 except first year.
-* IY4FIRST(YALIAS): first year in IY411;
-* -----------------------------------------------------------------------------
+* The following main loop, its $conditions and the assignments within the loop must be identical to what is found in the .sim file for Balbase4
+*LOOP(IYALIAS$(((CARD(IYALIAS)-ORD(IYALIAS) GE (SUM(YMODEL$(ORD(YMODEL) GT 1), YMODELDELTA(YMODEL)))) AND (YVALUE(IYALIAS) GE IFIRSTYEARNEXTBB4))), !! ud test
+LOOP(IYALIAS$(CARD(IYALIAS)-ORD(IYALIAS) GE (SUM(YMODEL$(ORD(YMODEL) GT 1), YMODELDELTA(YMODEL)))),
 
-ORD_YALIAS = ORD(YALIAS);  /* The present first-year's ord() in set YALIAS */
-YVALUE_YALIAS = YVALUE(YALIAS);
-
-LOOP(SIMYEARS,
-   IF((ORD_IY(SIMYEARS) + 1 <= CARD(Y)-(CARD(SIMYEARS)-ORD(SIMYEARS))),
-     ORD_IY(SIMYEARS) = ORD_IY(SIMYEARS) + 1;
-   ELSE
-     ORD_IY(SIMYEARS) = CARD(Y)-(CARD(SIMYEARS)-ORD(SIMYEARS))
-   );
+ISCALAR1 = 0;
+LOOP(YMODEL,
+  ISCALAR1 = ISCALAR1 + YMODELDELTA(YMODEL)$(ORD(YMODEL) GT 1);
+  LOOP(IYALIAS44$(ORD(IYALIAS44) EQ (ORD(IYALIAS)+ISCALAR1)), IORD_IY(YMODEL) = ORD(IYALIAS44); );
 );
 
 IY411(Y) = NO;
-LOOP((SIMYEARS, Y)$(ORD_IY(SIMYEARS) = ORD(Y)),
-   IY411(Y)=yes;
-);
-IY410(Y) = NO;
-LOOP((SIMYEARS, Y)$((ORD_IY(SIMYEARS) = ORD(Y)) AND (ORD(SIMYEARS) < CARD(SIMYEARS))),
-   IY410(Y)=yes;
-);
-IY401(Y) = NO;
-LOOP((SIMYEARS, Y)$((ORD_IY(SIMYEARS) = ORD(Y)) AND (ORD(SIMYEARS) > 1)),
-   IY401(Y)=yes;
-);
+LOOP((YMODEL, Y)$(IORD_IY(YMODEL) = ORD(Y)), IY411(Y)=yes;);
 
-IY4FIRST(Y)=IY411(Y)-IY401(Y);
+*YMODELDELTA('') = 2;
 
-* Print:
-PUT "Balbase4 model number " (ord(YALIAS)):2:0 " is formulated over the following years: ";  LOOP(IY411, PUT IY411.TL:6); PUT / /;
+ISCALAR1 = 1;
+LOOP(IY411$(ISCALAR1 EQ 1), ISCALAR2 = YVALUE(IY411); ISCALAR1 = 0;);
+LOOP(IY402$(YVALUE(IY402) EQ ISCALAR2), IFIRSTYEARNEXTBB4 = ISCALAR2 + SUM(YMODEL$(ORD(YMODEL) EQ 1), YMODELDELTA(YMODEL)););
 
+*ISCALAR1 = 1;  !! test  alternativ
+*LOOP(IY411$(ISCALAR1 EQ 1), IFIRSTYEARNEXTBB4 = YVALUE(IY411); ISCALAR1 = 0;);  !! test  alternativ
+*IFIRSTYEARNEXTBB4 = ISCALAR2;  !! test
+*PUT "Next FIRSTYEAR  ", IFIRSTYEARNEXTBB4  "  eller? " IY411.ts;  !! test
+*PUT "  Using YMODELDELTA from YMODEL " ,  (SUM(YMODEL$(ORD(YMODEL) EQ 1), YMODELDELTA(YMODEL)))   /     ;    !! test
+
+
+ISCALAR3 = ISCALAR3 +1;
+PUT "Balbase4 model number " ISCALAR3:2:0 " is formulated over the years: ";  LOOP(IY411, PUT IY411.TL:6); PUT / /;
+
+
+
+); !! Main loop
+
+IF((ISCALAR2 EQ 1),
+  PUT "There is one BB4 model."//;
+ELSE
+  PUT "There are " ISCALAR3:2:0" BB4 models."//;
 );
 );
 

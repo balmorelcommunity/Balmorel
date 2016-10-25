@@ -120,12 +120,74 @@ FILE hp_at      /"../output/printout/hp_at.out"/;
 FILE mco2_cy    /"../output/printout/mco2_cy.out"/;
 FILE mso2_cy    /"../output/printout/mso2_cy.out"/;
 FILE mnox_cy    /"../output/printout/mnox_cy.out"/;
-FILE ehmco2qrt  /"../output/printout/ehmco2qrt.out"/;
+FILE ehmco2qrt  /"../output/printout/ehmco2qrt.out"/;   
+
+*Weiming
+* Electricity generation
+FILE eg_yat      /"../output/printout/eg_yat.out"/;
+PARAMETER OEG_YAT(Y,Y,AAA,G,S,T) "Electricicy generations by Areas and (S,T) (GWh)";
+FILE eg_yr      /"../output/printout/eg_yr.out"/;
+PARAMETER OEG_YR(Y,Y,RRR,G) "Electricicy generations by Regions(GWh)";
+FILE eg_yc     /"../output/printout/eg_yc.out"/;
+PARAMETER OEG_YC(Y,Y,CCC,G) "Electricicy generations by Countries(GWh)";
+FILE eg_yna     /"../output/printout/eg_yna.out"/;
+PARAMETER OEG_YNA(Y,Y,G) "Electricicy generations by all countries(GWh)";
+FILE eg_ynaf     /"../output/printout/eg_ynaf.out"/;
+PARAMETER OEG_YNAF(Y,Y,G) "Electricicy generations by all countries by fuel(GWh)";
+
+* Prices
+FILE ep_yrt      /"../output/printout/ep_yrt.out"/;
+PARAMETER OEP_YRT(Y,Y,RRR,S,T) "Electricicy prices by Regions and (S,T) (Money/Mwh)";
+FILE ep_yr      /"../output/printout/ep_yr.out"/;
+PARAMETER OEP_YR(Y,Y,RRR) "Electricicy prices by Regions and year (Money/Mwh)";
+FILE ep_yc      /"../output/printout/ep_yc.out"/;
+PARAMETER OEP_YC(Y,Y,C) "Electricicy prices by Countries and year (Money/Mwh)";
+FILE ep_yna      /"../output/printout/ep_yna.out"/;
+PARAMETER OEP_YNA(Y,Y) "Electricicy prices by all the countries and year (Money/Mwh)";
+FILE hp_yat     /"../output/printout/hp_yat.out"/;
+PARAMETER OHP_YAT(Y,Y,AAA,S,T) "Heat prices by Regions and (S,T) (Money/Mwh)";
+FILE hp_ya     /"../output/printout/hp_ya.out"/;
+PARAMETER OHP_YA(Y,Y,AAA) "Heat prices by Regions and year(Money/Mwh)";
+FILE hp_yc     /"../output/printout/hp_yc.out"/;
+PARAMETER OHP_YC(Y,Y,CCC) "Heat prices by Countries and year(Money/Mwh)";
+FILE hp_yna     /"../output/printout/hp_yna.out"/;
+PARAMETER OHP_YNA(Y,Y) "Heat prices by aggregated countries and year(Money/Mwh)";
+
+*Weiming: averaged electricity price
+FILE aep_yna     /"../output/printout/aep_yna.out"/;
+PARAMETER OAEP_YNA(Y,Y) "Averaged electricity prices by aggregated countries and year(Money/Mwh)";
 
 *FILE egwater_rs /"../output/printout/egwater_rs.out"/; TODO (hr)
 
 * Investments in technology:
-FILE gkn_ag     /"../output/printout/gkn_ag.out"/;
+FILE gkn_yag     /"../output/printout/gkn_yag.out"/;
+* No need for parameter, using VGKNACCUMNET directly.
+* PARAMETER OGKN_YYAG(Y,Y,AAA,GGG)       "New endogenous generation capacity each BB4 (debugging only) (MW)";             !! Mainly for debugging.
+* PARAMETER OGKNACCUMNET_YYAG(Y,Y,AAA,G) "New endogenous accumulated generation capacity each BB4 (debugging only) (MW)"; !! Mainly for debugging.
+
+FILE gkn_ynaf     /"../output/printout/gkn_ynaf.out"/;
+PARAMETER OGKN_YNAF(Y,Y,FFF) "New endogenous accumulated capacity by aggregated Countries by fuel(MW)";
+
+* Total capacity in technology
+FILE gk_yag     /"../output/printout/gk_yag.out"/;
+PARAMETER OGK_YAG(Y,Y,AAA,G) "Electricity capacity by Area(MW)";
+FILE gk_ycg     /"../output/printout/gk_ycg.out"/;
+PARAMETER OGK_YCG(Y,Y,CCC,G) "Electricity capacity by Countries(MW)";
+FILE gk_ynag     /"../output/printout/gk_ynag.out"/;
+PARAMETER OGK_YNAG(Y,Y,G) "Electricity capacity by aggregated Countries(MW)";
+FILE gk_ynaf     /"../output/printout/gk_ynaf.out"/;
+PARAMETER OGK_YNAF(Y,Y,FFF) "Electricity capacity by aggregated Countries by fuel(MW)";
+
+* Emissions
+FILE mco2_yc    /"../output/printout/mco2_yc.out"/;
+FILE mco2_yna    /"../output/printout/mco2_yna.out"/;
+FILE mpco2_yc    /"../output/printout/mpco2_yc.out"/;
+FILE mpco2_yna    /"../output/printout/mpco2_yna.out"/;
+
+*Demand
+FILe de_yc     /"../output/printout/de_yc.out"/;
+FILe de_yna     /"../output/printout/de_yna.out"/;
+
 
 * Calibration
 $ifi %DEFPCALIB%==yes FILE dfp_calib  /"../output/printout/dfp_calib.out"/;
@@ -160,6 +222,7 @@ PUT /"Overview of potential printout files with indication of content:"//;
 
 * The following list of files must be consitent with the file declarations above,
 * and the descriptions must be consistent with the contents of the corresponding files.
+$if %BB4%==yes $goto doBB4
 
 PUT "bal_1.out       "'"Energy balance by year and country"'/;
 PUT "eg_cy.out       "'"Annual net electricity generation, old and new technologies"'/;
@@ -198,6 +261,45 @@ PUT "mnox_cy.out     "'"Annual NOx emissions"'/;
 *PUT "gkn_ag.out      "'""'/;   TODO (hr)
 PUT "dfp_calib.out   "'"Used for calibration of demand functions for electricty and heat"'/;
 
+$label doBB4
+$if not %BB4%==yes $goto doneBB4
+PUT  "Doing BB4, printing for this model is not properly developed yet, the following will be unconditionally printed": /;
+PUT  "ep_yrt.out     "'"Electricicy prices by Regions and (S,T) (Money/Mwh)"' /;
+PUT  "ep_yr.out      "'"Electricicy prices by Regions and year (Money/Mwh)"'  /;
+PUT  "ep_yc.out      "'"Electricicy prices by Countries and year (Money/Mwh)"'  /;
+PUT  "ep_yna.out      "'"Electricicy prices by aggregated countries and year (Money/Mwh)"'  /;
+
+PUT  "aep_yna.out      "'"Averaged electricicy prices by aggregated countries and year (Money/Mwh)"'  /;
+
+
+PUT  "hp_yat.out     "'"Heat prices by Regions and (S,T) (Money/Mwh)"' /;
+PUT  "hp_ya.out      "'"Heat prices by Regions and year (Money/Mwh)"'  /;
+PUT  "hp_yc.out      "'"Heat prices by Countries and year (Money/Mwh)"'  /;
+PUT  "hp_yna.out      "'"Heat prices by aggregated countries and year (Money/Mwh)"'  /;
+
+PUT  "gkn_yag.out    "'"Endogenous investments for each Area and technology, all years in all BB4 models"' /;
+PUT  "gkn_ynaf.out    "'"Endogenous investments for aggregated countries and fuel type, all years in all BB4 models"' /;
+PUT  "gk_yag.out     "'"Capacity for each Area and technology, all years in all BB4 models"' /;
+PUT  "gk_ycg.out     "'"Capacity for each Country and technology, all years in all BB4 models"' /;
+PUT  "gk_ynag.out     "'"Capacity for aggregated countries and technology, all years in all BB4 models"' /;
+PUT  "gk_ynaf.out     "'"Capacity for aggregated countries and fuel, all years in all BB4 models"' /;
+
+PUT  "eg_yat.out     "'"Electricicy generations by Areas and (S,T) (GWh)"'   /;
+PUT  "eg_yr.out      "'"Electricicy generations by Regions (GWh)"'   /;
+PUT  "eg_yc.out      "'"Electricicy generations by Countries (GWh)"'   /;
+PUT  "eg_yna.out     "'"Electricicy generations all countries (GWh)"'   /;
+PUT  "eg_ynaf.out     "'"Electricicy generations all countries by fuel(GWh)"'   /;
+
+PUT  "mco2_yc.out     "'"Annual CO2 emissions by country"'   /;
+PUT  "mco2_yna.out    "'"Total Annual CO2 emissions(aggregated)"' /;
+PUT  "mpco2_yc.out     "'" CO2 shadow price by country"'      /;
+PUT  "mpco2_yna.out     "'" CO2 shadow price (aggregated)"'      /;
+
+PUT  "de_yc.out     "'" Electricity demand by country"'      /;
+PUT  "de_yna.out     "'" Electricity demand by aggregated country"'      /;
+
+
+$label doneBB4
 
 PUT /"The naming of the printout files is made according to the following idea:" / ;
 
