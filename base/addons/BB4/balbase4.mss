@@ -1,13 +1,12 @@
 * File balbase4.mss
 *-------------------------------------------------------------------------------
 
-* This file is part of the BALMOREL model, version 3.01  (xx 2009).
-* File last time modified 20090217(hr)
+* This file is part of the BALMOREL model, version 3.03  (xx 2014).
+* File last time modified 20150302(hr), 20160810(hr).
 
 
 * This file will print the model and solver status, the objective value, etc.,
 * for the model BALBASE4 for each year solved
-
 
 * This file will print the solver status, the objective value, etc.,
 * for each year solved.
@@ -15,11 +14,50 @@
 
 Put logfile
 
+* ------------------------------------------------------------------------------
+* General information ----------------------------------------------------------
+* ------------------------------------------------------------------------------
+
+PUT "* ------------------------------------------------------------------------------" / ;
+PUT "Overview of selected options as given in file balopt.opt: " /;
+
+* TODO: only examples are given. More consistent handling to be developed.
+
+PUT "  Option for model selection, " ;
+$ifi     %BB4%==yes PUT "Selected model: BB4" ;
+$ifi not %BB4%==yes PUT "NOT Selected model: BB4" ;
+
+PUT / "  Option 'bb4weighty' for relative weighting of the years when using BB4 set at: " "%bb4weighty%";
+PUT / "  Option 'TransInvest' for permitting investments in transmission capacity set at: " "%TransInvest%";
+PUT / "  Option 'HYRSBB123' for handling of hydro with storage when using BB3 set at: " "%HYRSBB123%";
+PUT / "  Option 'inputdatatxt' for printing an overview of the inputdata to file inputout.out set at: " "%inputdatatxt%";
+PUT / "  Option 'printfiles' for printing various simulation results to folder output set at: " "%printfiles%";
+PUT / "  Option 'savepointvalue' for saving a GDX file that contains the information on the current solution point set at: " "%savepointvalue%" ", see balopt.opt for more information";
+PUT / "  Option 'agkndisc' for making investments in technologies only at specified capacities set at: " "%agkndisc%";
+
+PUT / "Since BB4 is presently in developments phase, not all addons are reimplemented for this, and those that are may be only preliminary, so be careful." ;
+
+
+
+* TODO: MORE
+
+PUT / "* ------------------------------------------------------------------------------" / /;
+
+
+* ------------------------------------------------------------------------------
+* End: General information -----------------------------------------------------
+* ------------------------------------------------------------------------------
+
+
+* ------------------------------------------------------------------------------
+* BB4 specific -----------------------------------------------------------------
+* ------------------------------------------------------------------------------
+
 
 
 * Note: The below text: "Some Balmorel errors" is a keyword for communication with the BUI. Do not change.
-*IF((ORD(%YALIAS%) EQ 1),  hans 힟DRET
-IF((ORD(YALIAS) EQ 1),
+
+IF((ORD(IYALIAS) EQ 1),
 IF ((ERRCOUNT2 EQ 0),
 PUT "No obvious Balmorel errors detected in the input data before simulation." //
 ELSE
@@ -29,10 +67,11 @@ PUT "Some Balmorel errors were detected in the input data before simulation." " 
 
 
 
-*IF((ORD(%YALIAS%) EQ 1),            hans 힟DRET   flere steder
-IF((ORD(YALIAS) EQ 1),
+IF((ORD(IYALIAS) EQ 1),
   PUT "Solver status of the BALBASE4 model" //;
-     PUT CARD(YALIAS):4:0 ", at most, models to be solved."  //;
+  PUT CARD(IYALIAS):4:0 ", at most, models to be solved."  /;
+  PUT "See details of input data in output\inputout\inputout.out (if associated option is set), and in particular for BB4 see output\inputout\BB4overview.out." //;
+
 
   PUT "Year    Model status returned     " ;
   PUT "Solver status returned          " ;
@@ -40,19 +79,19 @@ IF((ORD(YALIAS) EQ 1),
   PUT "Iter. used " " No of infeas" " No of nonopt"PUT /;
 );
 
-IF((ORD(YALIAS) EQ 1),        /*  hans 힟DRET */
-  IF((CARD(YALIAS) GE 1),     /*  hans 힟DRET */
-  PUT "       (now to first SOLVE statement)" /;
+IF((ORD(IYALIAS) EQ 1),
+  IF((CARD(IYALIAS) GE 1),
+  PUT "        (Now to first SOLVE statement)" /;
 ));
 
 
 * Note: The below text: "Some Balmorel errors" is a keyword for communication with the BUI. Do not change.
 IF((ERRCOUNT3 GT 0),
-PUT "       Some Balmorel errors were detected before optimisation of year " YALIAS.TL:4". See the file errors.out." /;
+PUT "       Some Balmorel errors were detected before optimisation of year " IYALIAS.TL:4". See the file errors.out." /;
 );
 
 
-PUT YALIAS.TL:5 "  " ;
+PUT IYALIAS.TL:5 "  " ;
 PUT$(BALBASE4.MODELSTAT EQ 1)  " Optimal                     ";
 PUT$(BALBASE4.MODELSTAT EQ 2)  " Locally optimal             ";
 PUT$(BALBASE4.MODELSTAT EQ 3)  " Unbounded                   ";
@@ -84,13 +123,17 @@ PUT BALBASE4.ITERUSD:11:0 " " ;
 PUT BALBASE4.NUMINFES:12:0 " " ;
 PUT BALBASE4.NUMNOPT:13:0 /;
 
+* ------------------------------------------------------------------------------
+* End: BB4 specific ------------------------------------------------------------
+* ------------------------------------------------------------------------------
 
 
 * Note: The below text: "Some Balmorel errors" is a keyword for communication with the BUI. Do not change.
 IF((ERRCOUNT4 GT 0),
-PUT "       Some Balmorel errors were detected after optimisation from year " YALIAS.TL:4" in Balbase4. See the file errors.out." /;
+PUT "       Some Balmorel errors were detected after optimisation from year " IYALIAS.TL:4" in Balbase4. See the file errors.out." /;
 );
 
-IF((ORD(YALIAS) LT CARD(YALIAS)),
-  PUT "       (now to next SOLVE statement, maybe ... (to be made more clear ))" /;
+IF((ORD(IYALIAS) LT CARD(IYALIAS)),
+   PUT "        Model was over years ";
+   LOOP(IY411, PUT IY411.TL:6;);   PUT /;
 );

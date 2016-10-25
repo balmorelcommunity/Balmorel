@@ -1,9 +1,9 @@
 * File Balmorel.gms
-$TITLE Balmorel version 3.03 (June 2016; latest 20160817)
+$TITLE Balmorel version 3.03 (June 2016; latest 20160915)
 
-SCALAR IBALVERSN 'This version of Balmorel' /303.20160825/;
+SCALAR IBALVERSN 'This version of Balmorel' /303.20161003/;
 
-* This is a preliminary version of Balmorel 3.03. 
+* This is a preliminary version of Balmorel 3.03.
 * It is intended for review and commenting.
 * See a short list of changes since previous version 3.02 in base/documentation/Balmorel303.txt.
 * It is scheduled that a final version 3.03 will be available in August 2016.
@@ -32,7 +32,7 @@ $ifi not exist 'balopt.opt'  $include '../../base/model/balopt.opt';
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 * In case of Model Balbase4 the following included file substitutes the remaining part of the present file Balmorel.gms:
-$ifi %BB4%==yes $include '../../base/model/BalmorelBB4.inc';
+$ifi %BB4%==yes $include '../../base/model/Balmorelbb4.inc';
 $ifi %BB4%==yes $goto ENDOFMODEL
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -44,13 +44,14 @@ $ifi %BB4%==yes $goto ENDOFMODEL
 *-------------------------------------------------------------------------------
 
 
-* Annoying that displaying only a text string will not be accessible through the 'table of content' on the .lst file, therefore this
-SCALAR INFODISPLAY  "See information next:" /NA/;
-* Use like e.g. this:  DISPLAY INFODISPLAY, "Remember to study the comments at the top of Balmorel.gms!";
 * The following may be used in display, put or execute_unload statements (the text, not the value, holds relevant information)
-SCALAR SystemDate     "%system.date%"                 /0/;
-SCALAR SystemTime     "%system.time%"                 /0/;
-SCALAR SystemDateTime "%system.date%,  %system.time%" /0/;
+SCALAR SystemDate     "%system.date%"                 /NA/;
+SCALAR SystemTime     "%system.time%"                 /NA/;
+SCALAR SystemDateTime "%system.date%,  %system.time%" /NA/;
+
+* Displaying only a text string will not be accessible through the 'table of content' on the .lst file, therefore this
+SCALAR INFODISPLAY  "See information next:" /NA/;
+DISPLAY INFODISPLAY, "Balmorel run stared at", SystemDateTime;
 
 * Convenient Factors, typically relating Output and Input:
 SCALAR IOF1000    'Multiplier 1000'       /1000/;
@@ -64,7 +65,7 @@ SCALAR IOF8784    'Multiplier 8784'       /8784/;
 SCALAR IOF365     'Multiplier 365'        /365/;
 SCALAR IOF05      'Multiplier 0.5'        /0.5/;
 SCALAR IOF1_      'Multiplier 1 (used with QOBJ and derivation of marginal values)'   /1/;!! special, possibly to disappear in future versions
-* Scalars for occational use, their meaning will be context dependent :
+* Scalars for occational use, their meaning will be context dependent:
 SCALAR ISCALAR1   '(Context dependent)';
 SCALAR ISCALAR2   '(Context dependent)';
 SCALAR ISCALAR3   '(Context dependent)';
@@ -76,7 +77,7 @@ $INCLUDE '../../base/logerror/logerinc/error1.inc';
 
 
 *-------------------------------------------------------------------------------
-*---- End: Some generally applicable stuff ------------------------------------- 
+*---- End: Some generally applicable stuff -------------------------------------
 *-------------------------------------------------------------------------------
 
 
@@ -92,20 +93,24 @@ $INCLUDE '../../base/logerror/logerinc/error1.inc';
 * Declarations: ----------------------------------------------------------------
 
 * SETS:
+* Geography related:
 SET CCCRRRAAA         'All geographical entities (CCC + RRR + AAA)';
 SET CCC(CCCRRRAAA)    'All Countries';
 SET RRR(CCCRRRAAA)    'All regions';
 SET AAA(CCCRRRAAA)    'All areas';
 SET CCCRRR(CCC,RRR)   'Regions in countries';
 SET RRRAAA(RRR,AAA)   'Areas in regions';
+* Time related:
 SET YYY               'All years';
 SET SSS               'All seasons';
 SET TTT               'All time periods';
+* Technology and fuel related:
 SET GGG               'All generation technologies';
 SET GDATASET          'Generation technology data';
 SET FFF               'Fuels';
 SET FDATASET          'Characteristics of fuels';
 SET HYRSDATASET       'Characteristics of hydro reservoirs';
+* Demand related:
 SET DF_QP             'Quantity and price information for elastic demands';
 SET DEF               'Steps in elastic electricity demand';
 SET DEF_D1(DEF)       'Downwards steps in elastic el. demand, relative data format';
@@ -144,7 +149,7 @@ ALIAS(CCCRRRAAA,CCCRRRAAAALIAS);
 * New technology types may be added only if also code specifying their properties are added.
 ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GHYRR, GWND, GSOLE, GSOLH, GWAVE;
 
-* ACRONYMS for user defined fuels will be given in a $included file FFF.inc.
+* ACRONYMS for user defined fuels will be given as part of file FFF.inc
 
 *-------------------------------------------------------------------------------
 *----- Definitions of SETS and ACRONYMS that are given in the $included files:
@@ -396,7 +401,7 @@ SET IS3(S)   'Present season simulated in Balbase3';
 *-------------------------------------------------------------------------------
 
 *-------------------------------------------------------------------------------
-*----- Definitions of ALIASES that are needed for data entry:
+*----- Definitions of SETS and ALIASES that are needed for data entry:
 *-------------------------------------------------------------------------------
 
 * Duplication of sets for describing electricity exchange between regions:
@@ -517,11 +522,10 @@ SET IGHOB(G)               'Heat-only boilers';                                 
 SET IGETOH(G)              'Electric heaters, heatpumps, electrolysis plants';  !! Corresponding to acronym GETOH
 SET IGHSTO(G)              'Intra-seasonal heat storage technologies';          !! Corresponding to acronym GHSTO
 SET IGHSTOS(G)             'Inter-seasonal heat storage technologies';          !! Corresponding to acronym GHSTOS
-SET IGHSTOALL(G)           'All heat storage technologies';
+SET IGHSTOALL(G)           'All heat storage technologies (intra- plus inter-seasonal) (option dependent)';
 SET IGESTO(G)              'Intra-seasonal electricity storage technologies';   !! Corresponding to acronym GESTO
 SET IGESTOS(G)             'Inter-seasonal electricity storage technologies';   !! Corresponding to acronym GESTOS
-SET IGESTOALL(G)           'All electricity storage technologies';
-SET IGSTOS(G)              'Set of technologies (elec and heat) that have inter-seasonal storage (option dependent)';
+SET IGESTOALL(G)           'All electricity storage technologies (intra- plus inter-seasonal) (option dependent)';
 SET IGHYRS(G)              'Hydropower with reservoir';                         !! Corresponding to acronym GHYRS
 SET IGHYRR(G)              'Hydropower run-of-river no reservoir';              !! Corresponding to acronym GHYRR
 SET IGWND(G)               'Wind power technologies';                           !! Corresponding to acronym GWND
@@ -579,10 +583,6 @@ SET IGBYPASS(G)            'Technologies that may apply turbine bypass mode (sub
 * Under most circumstances an acronym is preferable, the list is given above.
 * If an acroym can not be used, use the numbers consistently as seen below.
 
-  IGSTOS(G) = NO; IGSTOS(G)$(GDATA (G,'GDSTOINTERS')) = YES;
-$ifi "%stolinks%"=="all"  IGSTOS(G) = YES;
-$ifi "%stolinks%"=="none" IGSTOS(G) = NO;
-
 
    IGCND(G)        = YES$((GDATA(G,'GDTYPE') EQ 1)  OR (GDATA(G,'GDTYPE') EQ GCND));
    IGBPR(G)        = YES$((GDATA(G,'GDTYPE') EQ 2)  OR (GDATA(G,'GDTYPE') EQ GBPR));
@@ -590,16 +590,21 @@ $ifi "%stolinks%"=="none" IGSTOS(G) = NO;
    IGHOB(G)        = YES$((GDATA(G,'GDTYPE') EQ 4)  OR (GDATA(G,'GDTYPE') EQ GHOB));
    IGETOH(G)       = YES$((GDATA(G,'GDTYPE') EQ 5)  OR (GDATA(G,'GDTYPE') EQ GETOH));
    IGHSTO(G)       = YES$((GDATA(G,'GDTYPE') EQ 6)  OR (GDATA(G,'GDTYPE') EQ GHSTO));
+   IGHSTOS(G)      = YES$(GDATA(G,'GDTYPE') EQ GHSTOS);
    IGESTO(G)       = YES$((GDATA(G,'GDTYPE') EQ 7)  OR (GDATA(G,'GDTYPE') EQ GESTO));
+   IGESTOS(G)      = YES$(GDATA(G,'GDTYPE') EQ GESTOS);
    IGHYRS(G)       = YES$((GDATA(G,'GDTYPE') EQ 8)  OR (GDATA(G,'GDTYPE') EQ GHYRS));
    IGHYRR(G)       = YES$((GDATA(G,'GDTYPE') EQ 9)  OR (GDATA(G,'GDTYPE') EQ GHYRR));
    IGWND(G)        = YES$((GDATA(G,'GDTYPE') EQ 10) OR (GDATA(G,'GDTYPE') EQ GWND));
    IGSOLE(G)       = YES$((GDATA(G,'GDTYPE') EQ 11) OR (GDATA(G,'GDTYPE') EQ GSOLE));
    IGSOLH(G)       = YES$((GDATA(G,'GDTYPE') EQ 12) OR (GDATA(G,'GDTYPE') EQ GSOLH));
    IGWAVE(G)       = YES$((GDATA(G,'GDTYPE') EQ 22) OR (GDATA(G,'GDTYPE') EQ GWAVE));
-   IGHSTOS(G)      = YES$((GDATA(G,'GDTYPE') EQ 23) OR (GDATA(G,'GDTYPE') EQ GHSTOS));
-   IGESTOS(G)      = YES$((GDATA(G,'GDTYPE') EQ 24) OR (GDATA(G,'GDTYPE') EQ GESTOS));
 
+* Assignments of IGESTO, IGESTOS, IGHSTO and IGHSTOS may be changed if option stointers has a non-default value.
+$ifi "%stointers%"=="all"  IGESTOS(IGESTO) = YES; IGHSTOS(IGHSTO) = YES;
+$ifi "%stointers%"=="all"  IGESTO(IGESTO) = NO;   IGHSTO(IGHSTO) = NO;
+$ifi "%stointers%"=="none" IGESTO(IGESTOS) = YES; IGHSTO(IGHSTOS) = YES;
+$ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
 
    IGHHNOSTO(G) = NO;   IGHHNOSTO(IGHOB)   = YES;  IGHHNOSTO(IGSOLH)= YES;
 
@@ -669,15 +674,13 @@ $ifi "%stolinks%"=="none" IGSTOS(G) = NO;
                          +IGETOH(G)
                          +IGHYRS(G);
 
-
    IGKFIND(G)  = YES$(GDATA(G,'GDKVARIABL') EQ 1);
    IGKKNOWN(G) = NOT IGKFIND(G);
 
-   IGSTOS(G) = NO; IGSTOS(G)$(GDATA (G,'GDSTOINTERS')) = YES;
-$ifi "%stolinks%"=="all"  IGSTOS(G) = YES;
-$ifi "%stolinks%"=="none" IGSTOS(G) = NO;
    IGBYPASS(G) = NO;
    IGBYPASS(IGBPR)$GDATA(IGBPR,'GDBYPASSC') = YES;
+
+* Assignments of IGBYPASS may be changed if option bypass has a non-default value.
 $ifi not %bypass%==yes IGBYPASS(G) = NO;
 
 
@@ -719,7 +722,7 @@ $ifi %SYSTEMCOST%==yes  $ifi not exist ../data/'sets_syscost.inc' $INCLUDE '../.
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFDATALISTING%
 
-PARAMETER GKFX(YYY,AAA,GGG)    'Capacity of existing generation technologies (MW)' %semislash%
+PARAMETER GKFX(YYY,AAA,GGG)    'Capacity of exogenously given generation technologies (MW)' %semislash%
 $if     EXIST '../data/gkfx.inc' $INCLUDE         '../data/GKFX.inc';
 $if not EXIST '../data/gkfx.inc' $INCLUDE '../../base/data/GKFX.inc';
 %semislash%;
@@ -1160,6 +1163,11 @@ $if not EXIST '../data/WEIGHT_S.inc' $INCLUDE '../../base/data/WEIGHT_S.inc';
 PARAMETER WEIGHT_T(TTT)                            'Weight (relative length) of each time period'   %semislash%
 $if     EXIST '../data/WEIGHT_T.inc' $INCLUDE         '../data/WEIGHT_T.inc';
 $if not EXIST '../data/WEIGHT_T.inc' $INCLUDE '../../base/data/WEIGHT_T.inc';
+%semislash%;
+
+PARAMETER CYCLESINS(S) 'Number of short term storage load cycles per season ((0;inf))'  %semislash%
+$if     EXIST '../data/CYCLESINS.inc' $INCLUDE         '../data/CYCLESINS.inc';
+$if not EXIST '../data/CYCLESINS.inc' $INCLUDE '../../base/data/CYCLESINS.inc';
 %semislash%;
 
 * GKDERATE substituted by GKRATE
@@ -1725,9 +1733,9 @@ POSITIVE VARIABLE VHSTOVOLTS(AAA,S,T)              'Inter-seasonal heat storage 
 POSITIVE VARIABLE VQEEQ(RRR,S,T,IPLUSMINUS)        'Feasibility in electricity balance equation QEEQ (MW)';
 POSITIVE VARIABLE VQHEQ(AAA,S,T,IPLUSMINUS)        'Feasibility in heat balance equantion QHEQ (MW)';
 POSITIVE VARIABLE VQESTOVOLT(AAA,S,T,IPLUSMINUS)   'Feasibility in intra-seasonal electricity storage equation QESTOVOLT (MWh)';
-POSITIVE VARIABLE VQESTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasonal electricity storage equation QESTOVOLT_S (MWh)';
+POSITIVE VARIABLE VQESTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasonal electricity storage equation QESTOVOLTS (MWh)';
 POSITIVE VARIABLE VQHSTOVOLT(AAA,S,T,IPLUSMINUS)   'Feasibility in intra-seasonal heat storage equation VQHSTOVOLT (MWh)';
-POSITIVE VARIABLE VQHSTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasonal heat storage equation VQHSTOVOLT_S (MWh)';
+POSITIVE VARIABLE VQHSTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasonal heat storage equation VQHSTOVOLTS (MWh)';
 POSITIVE VARIABLE VQHYRSSEQ(AAA,S,IPLUSMINUS)      'Feasibility of hydropower reservoir equation QHYRSSEQ (MWh)';
 POSITIVE VARIABLE VQGEQCF(C,FFF,IPLUSMINUS)        'Feasibility in Requered fuel usage per country constraint (MWh)'
 POSITIVE VARIABLE VQGMINCF(C,FFF)                  'Feasibility in Minimum fuel usage per country constraint (MWh)'
@@ -2245,7 +2253,7 @@ QGNGETOH(IAGKN(IA,IGETOH),IS3,T) ..
 
 * Generation on new capacity is constrained by the capacity,
 
-QGEKNT(IAGKN(IA,IGKE),IS3,T)$IGDISPATCH(IGKE)..                                 !! new
+QGEKNT(IAGKN(IA,IGKE),IS3,T)$IGDISPATCH(IGKE)..
   VGKN(IA,IGKE)*(1$(NOT IGKRATE(IA,IGKE,IS3,T)+IGKRATE(IA,IGKE,IS3,T)))/(1$(NOT IGESTOALL(IGKE))+GDATA(IGKE,'GDSTOHUNLD')$IGESTOALL(IGKE))
     =G=
   VGEN_T(IA,IGKE,IS3,T)
@@ -2385,7 +2393,8 @@ QHYRSMAXVOL(IA,S)$(HYRSDATA(IA,'HYRSMAXVOL',S) and SUM(IGHYRS$(IAGK_Y(IA,IGHYRS)
 
 QESTOVOLT(IA,S,T)$(SUM(IGESTO, IAGK_Y(IA,IGESTO)+IAGKN(IA,IGESTO)) AND IS3(S))..
     VESTOVOLT(IA,S,T++1) =E= VESTOVOLT(IA,S,T)
-  + IHOURSINST(S,T)*(CARD(S)/CARD(SSS))*(VESTOLOADT(IA,S,T)
+  + (IHOURSINST(S,T)*(CARD(S)/CARD(SSS))/CYCLESINS(S))*
+  ( VESTOLOADT(IA,S,T)
   - SUM(IGESTO$IAGK_Y(IA,IGESTO), VGE_T(IA,IGESTO,S,T)/GDATA(IGESTO,'GDFE'))
   - SUM(IGESTO$IAGKN(IA,IGESTO),VGEN_T(IA,IGESTO,S,T)/GDATA(IGESTO,'GDFE'))
   )
@@ -2394,16 +2403,19 @@ QESTOVOLT(IA,S,T)$(SUM(IGESTO, IAGK_Y(IA,IGESTO)+IAGKN(IA,IGESTO)) AND IS3(S))..
 
 QESTOVOLTS(IA,S,T)$(SUM(IGESTOS, IAGK_Y(IA,IGESTOS)+IAGKN(IA,IGESTOS)))..
     VESTOVOLTS(IA,S,T)
-  + IHOURSINST(S,T)*(CARD(S)/CARD(SSS))*(VESTOLOADTS(IA,S,T)
+  + (IHOURSINST(S,T)*(CARD(S)/CARD(SSS))/CYCLESINS(S))*
+  (VESTOLOADTS(IA,S,T)
   - SUM(IGESTOS$IAGK_Y(IA,IGESTOS), VGE_T(IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
-  - SUM(IGESTOS$IAGKN(IA,IGESTOS), VGEN_T(IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE')))
+  - SUM(IGESTOS$IAGKN(IA,IGESTOS), VGEN_T(IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
+  )
     =E=       VESTOVOLTS(IA,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IA,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
    - VQESTOVOLTS(IA,S,T,'IPLUS') + VQESTOVOLTS(IA,S,T,'IMINUS')
 ;
 
 QHSTOVOLT(IA,S,T)$(SUM(IGHSTO, IAGK_Y(IA,IGHSTO)+IAGKN(IA,IGHSTO)))..
     VHSTOVOLT(IA,S,T)
-  + IHOURSINST(S,T)*(CARD(S)/CARD(SSS))*(VHSTOLOADT(IA,S,T)
+  + (IHOURSINST(S,T)*(CARD(S)/CARD(SSS))/CYCLESINS(S))*
+  (VHSTOLOADT(IA,S,T)
   - SUM(IGHSTO$IAGK_Y(IA,IGHSTO), VGH_T(IA,IGHSTO,S,T)/GDATA(IGHSTO,'GDFE'))
   - SUM(IGHSTO$IAGKN(IA,IGHSTO), VGHN_T(IA,IGHSTO,S,T)/GDATA(IGHSTO,'GDFE'))
   )
@@ -2411,11 +2423,14 @@ QHSTOVOLT(IA,S,T)$(SUM(IGHSTO, IAGK_Y(IA,IGHSTO)+IAGKN(IA,IGHSTO)))..
   - VQHSTOVOLT(IA,S,T,'IPLUS') + VQHSTOVOLT(IA,S,T,'IMINUS')
 ;
 
+
 QHSTOVOLTS(IA,S,T)$(SUM(IGHSTOS, IAGK_Y(IA,IGHSTOS)+IAGKN(IA,IGHSTOS)))..
     VHSTOVOLTS(IA,S,T)
-  + IHOURSINST(S,T)*(CARD(S)/CARD(SSS))*(VHSTOLOADTS(IA,S,T)
+  + (IHOURSINST(S,T)*(CARD(S)/CARD(SSS))/CYCLESINS(S))*
+  (VHSTOLOADTS(IA,S,T)
   - SUM(IGHSTOS$IAGK_Y(IA,IGHSTOS), VGH_T(IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE'))
-  - SUM(IGHSTOS$IAGKN(IA,IGHSTOS), VGHN_T(IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE')))
+  - SUM(IGHSTOS$IAGKN(IA,IGHSTOS), VGHN_T(IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE'))
+  )
     =E=       VHSTOVOLTS(IA,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IA,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
    - VQHSTOVOLTS(IA,S,T,'IPLUS') + VQHSTOVOLTS(IA,S,T,'IMINUS')
 ;
@@ -3106,5 +3121,7 @@ $label ENDOFMODEL
 * Sometimes convenient to have it all (most recent values) at this point
 execute_unload "all_endofmodel.gdx";
 
+*----- End of file:------------------------------------------------------------
+$label endoffile
 
 
