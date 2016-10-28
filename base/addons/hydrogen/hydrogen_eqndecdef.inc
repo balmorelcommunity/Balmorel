@@ -1,18 +1,18 @@
 Equations
-   QGGETOH2(AAA,G,S,T)   'Hydrogen production - existing electrolysis plant'
-   QGNGETOH2(AAA,G,S,T)  'Hydrogen production - new electrolysis plant'
-   QHGETOH2(AAA,G,S,T)   'Hydrogen production - existing electrolysis plant'
-   QHNGETOH2(AAA,G,S,T)  'Hydrogen production - existing electrolysis plant'
+   QGGETOH2(AAA,G,S,T)       'Hydrogen production - existing electrolysis plant'
+   QGNGETOH2(AAA,G,S,T)      'Hydrogen production - new electrolysis plant'
+   QHGETOH2(AAA,G,S,T)       'Hydrogen production - existing electrolysis plant'
+   QHNGETOH2(AAA,G,S,T)      'Hydrogen production - new electrolysis plant'
    QH2STOVOL(AAA,G,S,T)      'Dynamic equation hydrogen storage - not used in BALBASE3'
-   QH2STOVOL_T(AAA,G,S,T)   'Dynamic equation hydrogen storage - used in BALBASE3'
-   QH2STOVOL_END(AAA,G,S,T)   'End level of hydrogen storage fixed to value found in yearly simulation - used in BALBASE3'
-   QH2STOMAXCON(AAA,G,S,T)      'Maximum hydrogen storage capacity - used in BALBASE1 and BALBASE2'
-   QH2STOMAXCON_T(AAA,G,S,T)      'Maximum hydrogen storage capacity - used in BALBASE3'
-   QH2STOMAXLOAD(AAA,G,S,T)      'Maximum loading capacity of hydrogen storage'
-   QH2STOMAXUNLD(AAA,G,S,T)      'Maximum unloading capacity of hydrogen storage'
-   QH2EQ(RRR,S,T)        'Hydrogen production equal demand'
-   QH2EQ_AREA(AAA,S,T)    'Hydrogen production equals demand at an areal level'
-   QGCH4KNT(AAA,G,S,T)   'Hydrogen production of steam reforming plants restricted by capacity'
+   QH2STOVOL_T(AAA,G,S,T)    'Dynamic equation hydrogen storage - used in BALBASE3'
+   QH2STOVOL_END(AAA,G,S,T)  'End level of hydrogen storage fixed to value found in yearly simulation - used in BALBASE3'
+   QH2STOMAXCON(AAA,G,S,T)   'Maximum hydrogen storage capacity - used in BALBASE1 and BALBASE2'
+   QH2STOMAXCON_T(AAA,G,S,T) 'Maximum hydrogen storage capacity - used in BALBASE3'
+   QH2STOMAXLOAD(AAA,G,S,T)  'Maximum loading capacity of hydrogen storage'
+   QH2STOMAXUNLD(AAA,G,S,T)  'Maximum unloading capacity of hydrogen storage'
+   QH2EQ(RRR,S,T)            'Hydrogen production equal demand'
+   QH2EQ_AREA(AAA,S,T)       'Hydrogen production equals demand at an areal level'
+   QGCH4KNT(AAA,G,S,T)       'Hydrogen production of steam reforming plants restricted by capacity'
 ;
 
 
@@ -31,11 +31,11 @@ QGNGETOH2(IAGKN(IA,IGETOH2),IS3,T) ..
 
 QHGETOH2(IAGK_Y(IA,IGETOH2),IS3,T)..
 
-       VGE_T(IA,IGETOH2,IS3,T) =E=VGH_T(IA,IGETOH2,IS3,T)*GDATA(IGETOH2,'GDCB');
+       VGE_T(IA,IGETOH2,IS3,T) =E= VGH_T(IA,IGETOH2,IS3,T)*GDATA(IGETOH2,'GDCB');
 
 QHNGETOH2(IAGKN(IA,IGETOH2),IS3,T)..
 
-        VGEN_T(IA,IGETOH2,IS3,T)=E=VGHN_T(IA,IGETOH2,IS3,T)*GDATA(IGETOH2,'GDCB');
+       VGEN_T(IA,IGETOH2,IS3,T)=E= VGHN_T(IA,IGETOH2,IS3,T)*GDATA(IGETOH2,'GDCB');
 
 
 * Hydrogen gas storage, dynamic balance for weekly time horizon:
@@ -129,7 +129,6 @@ QGCH4KNT(IAGKN(IA,IGCH4TOH2),IS3,T) ..
   VGKN(IA,IGCH4TOH2)*GKRATE(IA,IGCH4TOH2,IS3)
    =G= VGH2N_T(IA,IGCH4TOH2,IS3,T)
 ;
-
 
 
 * Hydrogen production equal demand on area level:
