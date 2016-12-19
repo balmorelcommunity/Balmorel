@@ -13,3 +13,8 @@ $label noX3VinFBCA
 
 $if     EXIST '../data/FBX3FXHUB.inc' $INCLUDE         '../data/FBX3FXHUB.inc';
 $if not EXIST '../data/FBX3FXHUB.inc' $INCLUDE '../../base/data/FBX3FXHUB.inc';
+
+$if     EXIST '../data/FB_NTCRRR.inc' $INCLUDE         '../data/FB_NTCRRR.inc';
+$if not EXIST '../data/FB_NTCRRR.inc' $INCLUDE '../../base/data/FB_NTCRRR.inc';
+
+

@@ -9,6 +9,7 @@ $if not EXIST '../data/FBRAM.inc' $INCLUDE '../../base/data/FBRAM.inc';
 *Change XKINI into INF between FBHUBs. Important! This statement must occur after XKINI is defined, otherwise will not function as intended.
 LOOP(IFBHUB,
        LOOP (FBHUB,
-               XKINI(YYY,IFBHUB,FBHUB)$(XKINI(YYY,IFBHUB,FBHUB)>0) = INF
+               XKINI(YYY,IFBHUB,FBHUB)$((XKINI(YYY,IFBHUB,FBHUB)>0) and (not FB_NTCRRR(IFBHUB,FBHUB)))= INF
        );
 );
+
