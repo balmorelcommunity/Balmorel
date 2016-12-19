@@ -4,7 +4,8 @@
 * This file will print a short overview of input data characteristics of the BalBase4 model in Balmorel.
 
 
-FILE BB4overview /..\output\inputout\BB4overview.out/;
+*FILE BB4overview /..\output\inputout\BB4overview.out/;
+FILE BB4overview /..\logerror\BB4overview.out/;
 put BB4overview "Overview of input data characteristics of the BalBase4 model in Balmorel.   " system.date "  " system.time /;
 put "General overview of input data may be found in inputout.out" /;
 put "The information printed here is valid only if the input is consistent, please verify this, e.g. see the errors.out file first." / / ;
@@ -96,5 +97,18 @@ ELSE
 );
 );
 
+IF((CARD(AGKN) EQ 0),
+  PUT "The model is run without endogenous investments in generation technologies." / /;
+ELSE
+  PUT "The model is run with endogenous investments in generation technologies." / /;
+);
+$ontext  Subject to option TransInvest - TODO
+IF((CARD(XKN) EQ 0),
+  PUT "The model is run without endogenous investments in transmission capacities." / /;
+ELSE
+  PUT "The model is run with endogenous investments in transmission capacities." / /;
+);
+$offtext
 
+PUT "More information to be found in files logerror\logfile.out and logerror\errors.out." /;
 putclose  BB4overview;
