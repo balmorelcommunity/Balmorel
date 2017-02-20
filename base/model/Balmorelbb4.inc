@@ -6,7 +6,7 @@
 * It will be available from www.balmorel.com under open source conditions.
 
 
-
+$ontext
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 *---- Some generally applicable stuff: -----------------------------------------
@@ -39,11 +39,13 @@ SCALAR ISCALAR3   '(Context dependent)';
 SCALAR ISCALAR4   '(Context dependent)';
 SCALAR ISCALAR5   '(Context dependent)';
 
+* This file contains initialisations of printing of log and error messages:
+$INCLUDE '../../base/logerror/logerinc/error1.inc';
 
 *-------------------------------------------------------------------------------
 *---- End: Some generally applicable stuff -------------------------------------
 *-------------------------------------------------------------------------------
-
+$offtext
 
 
 
@@ -153,6 +155,8 @@ SET IS33(S,S) "Mapping of S (first index) to the following S (second index)";
 * Duplication of sets for describing electricity exchange between regions:
 ALIAS (RRR,IRRRE,IRRRI);
 ALIAS (IR,IRE,IRI);
+* Duplication of sets for fuel.
+ALIAS (FFF,IFFFALIAS);
 
 * Duplication of sets for seasons and hours:
 ALIAS (Y,IYALIAS);
@@ -649,8 +653,6 @@ GINVCOST(IA,G)$((NOT GINVCOST(IA,G)) AND (SUM(Y,GKFX(Y,IA,G)) OR AGKN(IA,G))) = 
 * Time aggregation:
 $ifi %timeaggr%==yes  $include '../../base/addons/TimeAggregation/timeaggr.inc';
 
-* This file contains initialisations of printing of log and error messages:
-$INCLUDE '../../base/logerror/logerinc/error1.inc';
 
 * The following relates technology and fuel:
 SET IGF(GGG,FFF)   'Relation between technology type and fuel type';
@@ -767,7 +769,7 @@ $ifi %BB4%==yes    IWAVESUMST(IA)=SUM((S,T), IHOURSINST(S,T)*WAVE_VAR_T(IA,S,T))
 $ifi %BB4%==yes    ISOLHSUMST(IA)=SUM((S,T), IHOURSINST(S,T)*SOLH_VAR_T(IA,S,T));
 $ifi %BB4%==yes    IWAVESUMST(IA)=SUM((S,T), IHOURSINST(S,T)*WAVE_VAR_T(IA,S,T));
 $ifi %BB4%==yes    IWTRRRSUM(IA)=SUM((S,T), IHOURSINST(S,T)*WTRRRVAR_T(IA,S,T));
-$ifi %BB4%==yes    IWTRRSSUM(IA)=SUM(S, (IOF365*WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
+$ifi %BB4%==yes    IWTRRSSUM(IA)=SUM(S, (WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
 
 *-------------------------------------------------------------------------------
 * End of: Set the time weights depending on the model
@@ -1049,6 +1051,7 @@ POSITIVE VARIABLE VQKFUEL(Y,CCCRRRAAA,FFF)  "Feasibility in maximum installlable
 *-------------------------------------------------------------------------------
 *----- Any variables, and possibly equations, for addon to be placed here: -----
 
+$include "..\..\base\addons\_hooks\vardeclare.inc"
 
 *-------------------------------------------------------------------------------
 
@@ -1077,7 +1080,8 @@ EQUATIONS
    QOBJ                     "Objective function"
    QEEQ(Y,RRR,S,T)          "Electricity generation equals demand (MW)"
    QHEQ(Y,AAA,S,T)          "Heat generation equals demand (MW)"
-   QGFEQ(Y,AAA,G,S,T)       "Calculate fuel consumption, existing units ()"
+   QGFEQ(Y,AAA,G,S,T)       "Calculate fuel consumption, existing units (MW)"
+   QGFNEQ(Y,AAA,G,S,T)      "Calculate fuel consumption, new units NOT IMPLEMENTED (MW)"
 
    QGCBGBPR(Y,AAA,G,S,T)    "CHP generation (back pressure) limited by Cb-line (MW)"
    QGCBGEXT(Y,AAA,G,S,T)    "CHP generation (extraction) limited by Cb-line (MW)"

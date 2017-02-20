@@ -49,6 +49,7 @@ $setglobal CASEID BASE
 * If $Setglobal bb1 yes, the usual (S,T) time segments and no endogenous investment are chosen.
 * If $Setglobal bb2 yes, the usual (S,T) time segments and endogenous investment are chosen.
 * If $Setglobal bb3 yes, the no endogenous investment, forwards simulation is chosen.
+* If $Setglobal bb4 yes, BB4 is chosen.
 * Exactly one of the following Setgbobals must be assigned yes.
 *
 * bb1: use model BALBASE1: optimisation simultaneuosly for all (S,T) in a year, exogenous investments.
@@ -62,6 +63,14 @@ $setglobal bb3
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
 $setglobal bb4
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
+
+
+* During test period for BB4 make comparisons between BB4 and BB1, BB2, BB3.
+* The present implementation is for comparison of models (BB4 and one of BB1/BB2/BB3) with a single year (where results should be identical)
+* Not finished yet, but useful
+$setglobal testbb1234 yes
+*!option yes
+
 
 *===============================================================================
 *===============================================================================
@@ -467,6 +476,10 @@ $setglobal GKRATE_DOL AAA_GGG_SSS
 *!option  AAA_GGG_SSS
 *!option  AAA_GGG_SSS_TTT
 
+
+*-------------------------------------------------------------------------------
+* Active options will be reported to log file via file hellolog.inc
+*-------------------------------------------------------------------------------
 
 
 *-------------------------------------------------------------------------------

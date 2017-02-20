@@ -134,17 +134,24 @@ $ifi %PLANTCLOSURES%==yes VDECOM.UP(IA,IGKH) = IGKVACCTOY(IA,IGKH) + IGKFX_Y(IA,
 $ifi %COMBTECH%==YES  $INCLUDE '../../base/addons/combtech/combtech_sim.inc';
 
 * Storage loading (MW) and unloading (MW) do not exceed capacity:
-
-* Modified to account for storage investment options. Simple bounds
-* can only be set if no investment options exist.
+* Modified to account for storage investment options.
+* Simple bounds can only be set if no investment options exist.
 * Altered to include accumulated capacity. (In case investments are transfered from other simulation)
 $ifi not %BB2%==yes VHSTOLOADT.UP(IA,S,T)=
 $ifi not %BB2%==yes   SUM(IGHSTO$(IGKFX_Y(IA,IGHSTO) GT 0),
 $ifi not %BB2%==yes (IGKFX_Y(IA,IGHSTO)+IGKVACCTOY(IA,IGHSTO))/GDATA(IGHSTO,'GDSTOHLOAD'));
 
+$ifi not %BB2%==yes VHSTOLOADTS.UP(IA,S,T)=
+$ifi not %BB2%==yes   SUM(IGHSTOS$(IGKFX_Y(IA,IGHSTOS) GT 0),
+$ifi not %BB2%==yes (IGKFX_Y(IA,IGHSTOS)+IGKVACCTOY(IA,IGHSTOS))/GDATA(IGHSTOS,'GDSTOHLOAD'));
+
 $ifi not %BB2%==yes VESTOLOADT.UP(IA,S,T)=
 $ifi not %BB2%==yes   SUM(IGESTO$(IGKFX_Y(IA,IGESTO) GT 0),
 $ifi not %BB2%==yes (IGKFX_Y(IA,IGESTO)+IGKVACCTOY(IA,IGESTO))/GDATA(IGESTO,'GDSTOHLOAD'));
+
+$ifi not %BB2%==yes VESTOLOADTS.UP(IA,S,T)=
+$ifi not %BB2%==yes   SUM(IGESTOS$(IGKFX_Y(IA,IGESTOS) GT 0),
+$ifi not %BB2%==yes (IGKFX_Y(IA,IGESTOS)+IGKVACCTOY(IA,IGESTOS))/GDATA(IGESTOS,'GDSTOHLOAD'));
 
 * For efficiency reasons simple bounds are generated if no storage technology is available for investment in BB2:
 $ifi %BB2%==yes Loop(IA$(0=Sum(IGHSTO$IAGKN(IA,IGHSTO),1)),
@@ -222,9 +229,9 @@ VGHN_T.FX(IA,IGSOLH,S,T)$(NOT ISOLHSUMST(IA)) = 0;
 
 * Calculate hydro inflow to reservoirs in MWh/MW installed capacity (new and old):
 
-$ifi %bb1%==yes  IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (IOF365*WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
-$ifi %bb2%==yes  IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (IOF365*WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
-$ifi %bb3%==yes  IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (IOF365*WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
+$ifi %bb1%==yes  IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
+$ifi %bb2%==yes  IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
+$ifi %bb3%==yes  IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
 
 
 $ifi not %bb2%==yes $goto bb2_label2
@@ -613,6 +620,7 @@ $ifi %BB2%==yes GKVACCDECOM(Y,IA,IGKFIND) = GKVACC(Y,IA,IGKFIND) - SUM(IYALIAS$(
 $ifi %BB2%==yes IGKVACCEOY(IA,IGKFIND)= GKVACCDECOM(Y,IA,IGKFIND);
 
 XKACC(Y,IRE,IRI) = XKACC(Y-1,IRE,IRI)+VXKN.L(IRE,IRI) + VXKN.L(IRI,IRE);
+$include "..\..\base\addons\_hooks\varassign.inc"
 
 vge_t.l(ia,g,s,t)=0;
 vgh_t.l(ia,g,s,t)=0;

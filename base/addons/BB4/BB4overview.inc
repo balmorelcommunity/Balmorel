@@ -23,7 +23,7 @@ ELSE
   PUT "There is only one year in each Balbase4 model." PUT / /;
 );
 
-* hans: pt er dette blot kopi fra BB4.sim (med undtagelse af Check), skal internaliseres!
+* hans: pt er dette blot kopi fra BB4.sim (med undtagelse af Check), skal internaliseres! 
 
 * Calculate simweights for each simyear:
 ALIAS(YMODEL, IYMODEL3);

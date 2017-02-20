@@ -36,9 +36,9 @@ PUT "Log created: " SYSTEM.DATE " " SYSTEM.TIME //;
 
 
 * ------------------------------------------------------------------------------
-* Include information on applied addons for this model
+* Include information on applied models, addons and options
 put "* ------------------------------------------------------------------------------" /;
-put "The following addons are applied in the present model instance"/;
+*put "The following addons are applied in the present model instance"/;
 $include "..\..\base\addons\_hooks\hellolog.inc"
 put "* ------------------------------------------------------------------------------" /;
 * ------------------------------------------------------------------------------
