@@ -2335,6 +2335,11 @@ $ifi %INPUTDATAGDX2MDB%==yes execute "=GDX2ACCESS %relpathInputdata2GDX%INPUTDAT
 * NOTWORKING (i.e. you MUST have "$setglobal INPUTDATAGDX2XLS"): Note:  GAMS version 22.7 and later have better support for this....
 $ifi %INPUTDATAGDX2XLS%==yes  execute  "GDXXRW.EXE Input=%relpathInputdata2GDX%INPUTDATAOUT.gdx  Output=%relpathInputdata2GDX%INPUTDATAOUT.xls  @%relpathModel%inputdatagdx2xls.txt";
 
+$ifi %COMPARECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2SQLITE -i "%relpathoutput%%CASEID%-Results.gdx" -o "%relpathoutput%%CASEID%-Results.db"' ;
+$ifi not %COMPARECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2SQLITE -i "%relpathoutput%%CASEID%-Compare.gdx"-o "%relpathoutput%%CASEID%-Results.db"' ;
+
 
 *----- End of model:------------------------------------------------------------
 $label ENDOFMODEL
