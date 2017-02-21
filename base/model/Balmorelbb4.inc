@@ -5,6 +5,18 @@
 * The model is still under development.
 * It will be available from www.balmorel.com under open source conditions.
 
+* Efforts have been made to make a good model.
+* However, most probably the model is incomplete and subject to errors.
+* It is distributed with the idea that it will be usefull anyway,
+* and with the purpose of getting the essential feedback,
+* which in turn will permit the development of improved versions
+* to the benefit of other user.
+* Hopefully it will be applied in that spirit.
+
+* All GAMS code of the Balmorel model is distributed under ICS license,
+* see the license file in the base/model folder.
+
+
 
 $ontext
 *-------------------------------------------------------------------------------
