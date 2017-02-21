@@ -165,13 +165,19 @@ $ifi %BB2%==yes          SUM(IGESTO$(IGKFX_Y(IA,IGESTO) GT 0),
 $ifi %BB2%==yes  (IGKFX_Y(IA,IGESTO)+IGKVACCTOY(IA,IGESTO))/GDATA(IGESTO,'GDSTOHLOAD'));
 $ifi %BB2%==yes );
 
-* Altered to include accumulated capacity. Includes only generation on existing or accumulated capacity, as new capacity is covered by VGEN_T and VGHN_T
-VGH_T.UP(IA,IGHSTO,S,T)$(IGKFX_Y(IA,IGHSTO) GT 0)=
- (IGKFX_Y(IA,IGHSTO)+IGKVACCTOY(IA,IGHSTO))/GDATA(IGHSTO,'GDSTOHUNLD');   !! GKDERATE taken into account later
+$ifi %BB2%==yes Loop(IA$(0=Sum(IGHSTOS$IAGKN(IA,IGHSTOS),1)),
+$ifi %BB2%==yes  VHSTOLOADTS.UP(IA,S,T)=
+$ifi %BB2%==yes          SUM(IGHSTOS$(IGKFX_Y(IA,IGHSTOS) GT 0),
+$ifi %BB2%==yes  (IGKFX_Y(IA,IGHSTOS)+IGKVACCTOY(IA,IGHSTOS))/GDATA(IGHSTOS,'GDSTOHLOAD'));
+$ifi %BB2%==yes );
+$ifi %BB2%==yes Loop(IA$(0=Sum(IGESTOS$IAGKN(IA,IGESTOS),1)),
+$ifi %BB2%==yes  VESTOLOADTS.UP(IA,S,T)=
+$ifi %BB2%==yes          SUM(IGESTOS$(IGKFX_Y(IA,IGESTOS) GT 0),
+$ifi %BB2%==yes  (IGKFX_Y(IA,IGESTOS)+IGKVACCTOY(IA,IGESTOS))/GDATA(IGESTOS,'GDSTOHLOAD'));
+$ifi %BB2%==yes );
 
-*Hans
 VGH_T.UP(IA,IGHSTOALL,S,T)$(IGKFX_Y(IA,IGHSTOALL) GT 0)=
- (IGKFX_Y(IA,IGHSTOALL)+IGKVACCTOY(IA,IGHSTOALL))/GDATA(IGHSTOALL,'GDSTOHUNLD');   /* GKRATE taken into account later */
+ (IGKFX_Y(IA,IGHSTOALL)+IGKVACCTOY(IA,IGHSTOALL))/GDATA(IGHSTOALL,'GDSTOHUNLD');   !! GKRATE taken into account later
 
 VGE_T.UP(IA,IGESTOALL,S,T)$(IGKFX_Y(IA,IGESTOALL) GT 0)=
  (IGKFX_Y(IA,IGESTOALL)+IGKVACCTOY(IA,IGESTOALL))/GDATA(IGESTOALL,'GDSTOHUNLD');   !! GKRATE taken into account later
@@ -181,6 +187,8 @@ VGE_T.UP(IA,IGESTOALL,S,T)$(IGKFX_Y(IA,IGESTOALL) GT 0)=
 * Note: This code format may be simplified by using IAGKN for all model types, however for now this solution is more robust against coding errors.
 $ifi not %BB2%==yes VHSTOVOLT.UP(IA,S,T)=SUM(IGHSTO$(IGKFX_Y(IA,IGHSTO) GT 0),
 $ifi not %BB2%==yes    IGKFX_Y(IA,IGHSTO)+IGKVACCTOY(IA,IGHSTO));
+$ifi not %BB2%==yes VHSTOVOLTS.UP(IA,S,T)=SUM(IGHSTOS$(IGKFX_Y(IA,IGHSTOS) GT 0),
+$ifi not %BB2%==yes    IGKFX_Y(IA,IGHSTOS)+IGKVACCTOY(IA,IGHSTOS));
 
 * Altered to include accumulated capacity. (In case investments are transfered from other simulation)
 $ifi not %BB2%==yes VESTOVOLT.UP(IA,S,T)=SUM(IGESTO$(IGKFX_Y(IA,IGESTO) GT 0),
@@ -207,7 +215,6 @@ VGE_T.FX(IA,IGHYRR,S,T)$(NOT IWTRRRSUM(IA)) = 0;
 $ifi not %WNDSHUTDOWN%==yes VGE_T.FX(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA) * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
 $ifi     %WNDSHUTDOWN%==yes VGE_T.up(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA) * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
 VGE_T.FX(IA,IGWND,S,T)$(NOT IWND_SUMST(IA)) = 0;
-
 
 VGE_T.FX(IA,IGSOLE,S,T)$IAGK_Y(IA,IGSOLE) =
     ((SOLEFLH(IA) * (IGKVACCTOY(IA,IGSOLE) + IGKFX_Y(IA,IGSOLE))

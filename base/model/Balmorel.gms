@@ -6,7 +6,7 @@ SCALAR IBALVERSN 'This version of Balmorel' /303.20161003/;
 * This is a preliminary version of Balmorel 3.03.
 * It is intended for review and commenting.
 * See a short list of changes since previous version 3.02 in base/documentation/Balmorel303.txt.
-* It is scheduled that a final version 3.03 will be available in August 2016.
+* It is scheduled that a final version 3.03 will be available early 2017.
 
 
 *-------------------------------------------------------------------------------
@@ -28,14 +28,6 @@ $ifi not exist 'balgams.opt'  $include  '../../base/model/balgams.opt'
 
 $ifi     exist 'balopt.opt'  $include                  'balopt.opt';
 $ifi not exist 'balopt.opt'  $include '../../base/model/balopt.opt';
-
-*-------------------------------------------------------------------------------
-*-------------------------------------------------------------------------------
-* In case of Model Balbase4 the following included file substitutes the remaining part of the present file Balmorel.gms:
-$ifi %BB4%==yes $include '../../base/model/Balmorelbb4.inc';
-$ifi %BB4%==yes $goto ENDOFMODEL
-*-------------------------------------------------------------------------------
-*-------------------------------------------------------------------------------
 
 
 *-------------------------------------------------------------------------------
@@ -73,12 +65,24 @@ SCALAR ISCALAR3   '(Context dependent)';
 SCALAR ISCALAR4   '(Context dependent)';
 SCALAR ISCALAR5   '(Context dependent)';
 
-* This file contains initialisations of printing of log and error messages:
+* Initialisations of printing of log and error files and messages:
 $INCLUDE '../../base/logerror/logerinc/error1.inc';
+
 
 *-------------------------------------------------------------------------------
 *---- End: Some generally applicable stuff -------------------------------------
 *-------------------------------------------------------------------------------
+
+
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+* In case of Model Balbase4 the following included file substitutes the remaining part of the present file Balmorel.gms:
+$ifi %BB4%==yes $include '../../base/model/Balmorelbb4.inc';
+$ifi %BB4%==yes $goto ENDOFMODEL
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+
 
 
 *-------------------------------------------------------------------------------
@@ -1541,7 +1545,7 @@ $ifi %DHFPCALIB%==yes  + DHFP_CALIB(IA,S,T)
 ;
 
 * Demand of electricity (MW) and heat (MW) current simulation year:
-PARAMETER IDE_T_Y(RRR,S,T)      'Nominal electricity demand (MW) time segment (S,T)   current simulation year',
+PARAMETER IDE_T_Y(RRR,S,T)      'Nominal electricity demand (MW) time segment (S,T) current simulation year',
           IDH_T_Y(AAA,S,T)      'Nominal heat demand (MW) time segment (S,T) current simulation year';
 * Generation capacity (MW) at the beginning of current simulation year,
 * specified by GKFX and by accumulated endogeneous investments, respectively:
@@ -1697,8 +1701,10 @@ GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = 0;
 
 execute_unload '%relpathModel%..\output\temp\1INPUT_B303.gdx';
 
+$include "..\..\base\addons\_hooks\checkassumptions.inc"
+
 * No need to proceed further if there are compilation errors in the data:
-$ifi not errorfree $abort "Balmorel execution aborted because of data errors"
+$ifi not errorfree $abort "Balmorel execution aborted because of data errors (Message from Balmorel.gms)"
 
 *------------------------------
 
@@ -2161,7 +2167,7 @@ $ifi %FV%==yes $include '../../base/addons/Fjernvarme/heatbalance_fv.inc';
 
 * Fuel consumption rate.
 QGFEQ(IA,G,IS3,T)$IAGK_Y(IA,G) ..
-     VGF_T(IA,G,IS3,T)
+    VGF_T(IA,G,IS3,T)
   =E=
    ( (VGE_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGNOTETOH(G) AND IGE(G))
     +(GDATA(G,'GDCV')*VGH_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGH(G)
@@ -2175,7 +2181,7 @@ $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_qgfeqadd.inc'
 
 * Fuel consumption rate calculated on new units.
 QGFNEQ(IA,G,IS3,T)$IAGKN(IA,G) ..
-      VGFN_T(IA,G,IS3,T)
+    VGFN_T(IA,G,IS3,T)
   =E=
    ( (VGEN_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGNOTETOH(G) AND IGE(G))
     +(GDATA(G,'GDCV')*VGHN_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGH(G)
