@@ -2088,7 +2088,7 @@ $ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3
                +SUM((IA,FFF)$IGMINF_Y(IA,FFF), VQGMAXAF(IA,FFF)    )
                +SUM((IA,FFF)$IGMAXF_Y(IA,FFF), VQGMINAF(IA,FFF)    )
 
-               +SUM((IRE,IRI,S,T)$((IXKINI_Y(IRE,IRI) OR IXKN(IRI,IRE) OR IXKN(IRE,IRI)) AND (IXKINI_Y(IRE,IRI) NE INF) ), VQXK(IRE,IRI,S,T,'IPLUS')+VQXK(IRE,IRI,S,T,'IMINUS') )
+               +SUM((IRE,IRI,IS3,T)$((IXKINI_Y(IRE,IRI) OR IXKN(IRI,IRE) OR IXKN(IRE,IRI)) AND (IXKINI_Y(IRE,IRI) NE INF) ), VQXK(IRE,IRI,IS3,T,'IPLUS')+VQXK(IRE,IRI,IS3,T,'IMINUS') )
               )
 
 * Add-on objective function contributions
@@ -2099,11 +2099,11 @@ $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htcosts.inc';
 * This file contains district heating induced additions to the objective function.
 $ifi %FV%==yes $include '../../base/addons/Fjernvarme/cost_fv.inc';
 * Unit commitmen add-on
-$ifi %UnitComm%==yes      $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
+$ifi %UnitComm%==yes    $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
 
-$ifi %POLICIES%==yes   $include '../../base/addons/policies/pol_cost.inc';
-$ifi %SYSTEMCOST%==yes   $include '../../base/addons/SystemCost/cost_syscost.inc';
-$ifi %UnitComm%==yes      $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
+$ifi %POLICIES%==yes    $include '../../base/addons/policies/pol_cost.inc';
+$ifi %SYSTEMCOST%==yes  $include '../../base/addons/SystemCost/cost_syscost.inc';
+$ifi %UnitComm%==yes    $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
 $ifi %BB3%==yes  $ifi %HYRSBB123%==price      $include  '../../base/addons/hyrsbb123/hyrsbb123addobj.inc'
 $ifi %BB3%==yes  $ifi %HYRSBB123%==quantprice $include  '../../base/addons/hyrsbb123/hyrsbb123addobj.inc'
 
@@ -2391,7 +2391,7 @@ QHYMAXG(IA,IS3,T)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS))..
 
 * Hydro storage within limits:
 
-QHYRSMINVOL(IA,S)$(HYRSDATA(IA,'HYRSMINVOL',S) and SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) or IAGKN(IA,IGHYRS)),1))..
+QHYRSMINVOL(IA,S)$(HYRSDATA(IA,'HYRSMINVOL',S) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
 
       VHYRS_S(IA,S) =G= HYRSDATA(IA,'HYRSMINVOL',S) * WTRRSFLH(IA) *
         (SUM(IGHYRS,(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
@@ -2399,7 +2399,7 @@ QHYRSMINVOL(IA,S)$(HYRSDATA(IA,'HYRSMINVOL',S) and SUM(IGHYRS$(IAGK_Y(IA,IGHYRS)
 
 * Hydro reservoir content - maximum level
 
-QHYRSMAXVOL(IA,S)$(HYRSDATA(IA,'HYRSMAXVOL',S) and SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) or IAGKN(IA,IGHYRS)),1))..
+QHYRSMAXVOL(IA,S)$(HYRSDATA(IA,'HYRSMAXVOL',IS3) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
 
        HYRSDATA(IA,'HYRSMAXVOL',S) * WTRRSFLH(IA) *
         (SUM(IGHYRS,(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
@@ -2407,9 +2407,9 @@ QHYRSMAXVOL(IA,S)$(HYRSDATA(IA,'HYRSMAXVOL',S) and SUM(IGHYRS$(IAGK_Y(IA,IGHYRS)
 
 *------------ Short term heat and electricity storages:-------------------------
 
-QESTOVOLT(IA,S,T)$(SUM(IGESTO, IAGK_Y(IA,IGESTO)+IAGKN(IA,IGESTO)) AND IS3(S))..
-    VESTOVOLT(IA,S,T++1) =E= VESTOVOLT(IA,S,T)
-  + (IHOURSINST(S,T)*(CARD(S)/CARD(SSS))/CYCLESINS(S))*
+QESTOVOLT(IA,IS3,T)$(SUM(IGESTO, IAGK_Y(IA,IGESTO)+IAGKN(IA,IGESTO)) AND IS3(S))..
+    VESTOVOLT(IA,IS3,T++1) =E= VESTOVOLT(IA,S,T)
+  + (IHOURSINST(IS3,T)*(CARD(S)/CARD(SSS))/CYCLESINS(S))*
   ( VESTOLOADT(IA,S,T)
   - SUM(IGESTO$IAGK_Y(IA,IGESTO), VGE_T(IA,IGESTO,S,T)/GDATA(IGESTO,'GDFE'))
   - SUM(IGESTO$IAGKN(IA,IGESTO),VGEN_T(IA,IGESTO,S,T)/GDATA(IGESTO,'GDFE'))
@@ -2556,7 +2556,7 @@ QKFUELR(IR,FFF)$FKPOT(IR,FFF)..
 
 QKFUELA(IA,FFF)$FKPOT(IA,FFF) ..
         SUM(IAGK_Y(IA,G)$IGF(G,FFF),  IGKVACCTOY(IA,G))
-      + SUM(IAGK_Y(IA,G)$IGF(G,FFF), IGKFXYMAX(IA,G))
+      + SUM(IAGK_Y(IA,G)$IGF(G,FFF),  IGKFXYMAX(IA,G))
       + SUM(IAGKN(IA,G)$IGF(G,FFF),   VGKN(IA,G))
         =L=  FKPOT(IA,FFF);
 
