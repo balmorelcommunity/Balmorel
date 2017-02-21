@@ -3012,7 +3012,7 @@ MODEL BALBASE3 'Balmorel model without endogeneous investments, simulating each 
                                 QGGETOH
                                 QGCBGBPRBYPASS1
                                 QGCBGBPRBYPASS2
-*--- Storage balance, intra-season only  ----------------------------------
+*--- Storage balance, intra-season only  ---------------------------------------
                                 QESTOVOLT
                                 QHSTOVOLT
 *--- Transmission capacity -----------------------------------------------------
