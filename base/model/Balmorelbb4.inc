@@ -5,61 +5,6 @@
 * The model is still under development.
 * It will be available from www.balmorel.com under open source conditions.
 
-* Efforts have been made to make a good model.
-* However, most probably the model is incomplete and subject to errors.
-* It is distributed with the idea that it will be usefull anyway,
-* and with the purpose of getting the essential feedback,
-* which in turn will permit the development of improved versions
-* to the benefit of other user.
-* Hopefully it will be applied in that spirit.
-
-* All GAMS code of the Balmorel model is distributed under ICS license,
-* see the license file in the base/model folder.
-
-
-
-$ontext
-*-------------------------------------------------------------------------------
-*-------------------------------------------------------------------------------
-*---- Some generally applicable stuff: -----------------------------------------
-*-------------------------------------------------------------------------------
-
-
-* The following may be used in display, put or execute_unload statements (the text, not the value, holds relevant information)
-SCALAR SystemDateTime "System date and time at start of execution: %system.date%,  %system.time%" /NA/;
-DISPLAY "Balmorel: ", SystemDateTime;
-
-* Displaying only a text string will not be accessible through the 'table of content' on the .lst file, therefore this
-SCALAR INFODISPLAY  "See information next:" /NA/;
-
-* Convenient Factors, typically relating Output and Input:
-SCALAR IOF1000    'Multiplier 1000'       /1000/;
-SCALAR IOF1000000 'Multiplier 1000000'    /1000000/;
-SCALAR IOF0001    'Multiplier 0.001'      /0.001/;
-SCALAR IOF0000001 'Multiplier 0.000001'   /0.000001/;
-SCALAR IOF3P6     'Multiplier 3.6'        /3.6/;
-SCALAR IOF24      'Multiplier 24'         /24/;
-SCALAR IOF8760    'Multiplier 8760'       /8760/;
-SCALAR IOF8784    'Multiplier 8784'       /8784/;
-SCALAR IOF365     'Multiplier 365'        /365/;
-SCALAR IOF05      'Multiplier 0.5'        /0.5/;
-SCALAR IOF1_      'Multiplier 1 (used with QOBJ and derivation of marginal values)'   /1/;!! special, possibly to disappear in future versions
-* Scalars for occational use, their meaning will be context dependent:
-SCALAR ISCALAR1   '(Context dependent)';
-SCALAR ISCALAR2   '(Context dependent)';
-SCALAR ISCALAR3   '(Context dependent)';
-SCALAR ISCALAR4   '(Context dependent)';
-SCALAR ISCALAR5   '(Context dependent)';
-
-* This file contains initialisations of printing of log and error messages:
-$INCLUDE '../../base/logerror/logerinc/error1.inc';
-
-*-------------------------------------------------------------------------------
-*---- End: Some generally applicable stuff -------------------------------------
-*-------------------------------------------------------------------------------
-$offtext
-
-
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------

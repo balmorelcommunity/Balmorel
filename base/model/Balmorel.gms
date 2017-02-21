@@ -48,8 +48,6 @@ $ifi not exist 'balopt.opt'  $include '../../base/model/balopt.opt';
 
 
 * The following may be used in display, put or execute_unload statements (the text, not the value, holds relevant information)
-SCALAR SystemDate     "%system.date%"                 /NA/;
-SCALAR SystemTime     "%system.time%"                 /NA/;
 SCALAR SystemDateTime "%system.date%,  %system.time%" /NA/;
 
 * Displaying only a text string will not be accessible through the 'table of content' on the .lst file, therefore this
