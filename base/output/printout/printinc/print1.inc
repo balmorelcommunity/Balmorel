@@ -59,9 +59,9 @@ SCALAR OTLWT    "    " /4/;                              !! Specific for SET TTT
 SCALAR OTLWG    "                                " /32/; !! Specific for SET GGG and G. The value is checked below.
 * Check consistency between the required width and the length of the (all ' ') text string:
 ISCALAR1 = SMAX(GGG, CARD(GGG.TL));                      !! Find the required width.
-ABORT$(ISCALAR1 GT OTLWG)   "The length of an element in GGG is larger than assumed, this will prevent nice printfile output. Please ensure consistency in file base\printout\printinc\print1.inc ";
+IF((ISCALAR1 GT OTLWG),   DISPLAY INFODISPLAY, "The length of an element in GGG is larger than assumed by OTLWG, this will prevent nice printfile output. Please ensure consistency in file base\printout\printinc\print1.inc"; );
 ISCALAR2 = SMAX(CCCRRRAAA, CARD(CCCRRRAAA.TL));          !! Assign precisely the required width.
-ABORT$(ISCALAR2 GT OTLWCRA) "The length of an element in CCCRRRAAA is larger than assumed, this will prevent nice printfile output. Please ensure consistency in file base\printout\printinc\print1.inc ";
+IF((ISCALAR2 GT OTLWCRA), DISPLAY INFODISPLAY, "The length of an element in CCCRRRAAA is larger than assumed by OTLWCRA, this will prevent nice printfile output. Please ensure consistency in file base\printout\printinc\print1.inc"; );
 
 ALIAS(S,OALIASS);
 ALIAS(T,OALIAST);
