@@ -245,10 +245,11 @@ $ifi %bb4%==yes  ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) /
 * Transmision investments is subject to control by the option TransInvest,
 * therefore set a default and update if investments are intended.
 IXKN(IRE,IRI) = NO;
-* Update IXKN if investments are intended.
+* Update IXKN if investments are intended. Note that the conditions may differ in the two flow direction.
 * Note default data entry: if INF or 0 or nothing is given in an entry this means that no transmission
 * capacity can be established between the two associated regions in the given direction;
 * if the value is EPS then transmission investment is possible but with no associated investment cost.
+* If a real non-zero value is fiven then investment is possible with that cost.
 $ifi %TransInvest%==yes IXKN(IRE,IRI) = YES$(XINVCOST(IRE,IRI) AND (XINVCOST(IRE,IRI) LT INF));
 
 * Update IXKE_HASORPOT based on exogenously given or potential investment
@@ -256,7 +257,7 @@ IXK_HASORPOT(IY411,IRE,IRI) = YES$XKFX(IY411,IRE,IRI);
 IXK_HASORPOT(Y,IRE,IRI)$IXKN(IRE,IRI) = YES;
 * Update bounds:
 * Complement to equation QXK_UP for the case with no endogenous transmission investments.
-VX_T.UP(IY411,IRE,IRI,S,T)$(IXKN(IRE,IRI) AND (NOT IXKN(IRE,IRI))) = XKFX(IY411,IRE,IRI)*IXKRATE(IRE,IRI,S,T);
+VX_T.UP(IY411,IRE,IRI,S,T)$(NOT IXKN(IRE,IRI)) = XKFX(IY411,IRE,IRI)*IXKRATE(IRE,IRI,S,T);
 VXKNACCUMNET.FX(IY411,IRE,IRI)$(IXKN(IRE,IRI) AND (NOT IXK_HASORPOT(IY411,IRE,IRI))) = 0;  !! Should not be necessary if condition on IAGKN(IA,G) is properly used in .gms code.
 
 IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);
