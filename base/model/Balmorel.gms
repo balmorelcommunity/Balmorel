@@ -1752,7 +1752,7 @@ POSITIVE VARIABLE VQESTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasona
 POSITIVE VARIABLE VQHSTOVOLT(AAA,S,T,IPLUSMINUS)   'Feasibility in intra-seasonal heat storage equation VQHSTOVOLT (MWh)';
 POSITIVE VARIABLE VQHSTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasonal heat storage equation VQHSTOVOLTS (MWh)';
 POSITIVE VARIABLE VQHYRSSEQ(AAA,S,IPLUSMINUS)      'Feasibility of hydropower reservoir equation QHYRSSEQ (MWh)';
-POSITIVE VARIABLE VQHYRSMINMAXVOL(AAA,S,IPLUSMINUS)'Feasibility of hydropower reservoir minimum (IPLUSMINUS) and maximim (IPLUSMINUS) content (MWh)';
+POSITIVE VARIABLE VQHYRSMINMAXVOL(AAA,S,IPLUSMINUS)'Feasibility of hydropower reservoir minimum (IPLUSMINUS) and maximum (IPLUSMINUS) content (MWh)';
 POSITIVE VARIABLE VQGEQCF(C,FFF,IPLUSMINUS)        'Feasibility in Requered fuel usage per country constraint (MWh)'
 POSITIVE VARIABLE VQGMINCF(C,FFF)                  'Feasibility in Minimum fuel usage per country constraint (MWh)'
 POSITIVE VARIABLE VQGMAXCF(C,FFF)                  'Feasibility in Maximum fuel usage per country constraint (MWh)'
@@ -3013,7 +3013,7 @@ MODEL BALBASE3 'Balmorel model without endogeneous investments, simulating each 
                                 QGGETOH
                                 QGCBGBPRBYPASS1
                                 QGCBGBPRBYPASS2
-*--- Storage restrictions, hydro -----------------------------------------------
+*--- Storage bounds, hydro -----------------------------------------------------
                                 QHYRSMINVOL
                                 QHYRSMAXVOL
 *--- Storage balance, intra-season only  ---------------------------------------
