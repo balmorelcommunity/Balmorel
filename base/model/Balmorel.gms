@@ -1752,6 +1752,7 @@ POSITIVE VARIABLE VQESTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasona
 POSITIVE VARIABLE VQHSTOVOLT(AAA,S,T,IPLUSMINUS)   'Feasibility in intra-seasonal heat storage equation VQHSTOVOLT (MWh)';
 POSITIVE VARIABLE VQHSTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasonal heat storage equation VQHSTOVOLTS (MWh)';
 POSITIVE VARIABLE VQHYRSSEQ(AAA,S,IPLUSMINUS)      'Feasibility of hydropower reservoir equation QHYRSSEQ (MWh)';
+POSITIVE VARIABLE VQHYRSMINMAXVOL(AAA,S,IPLUSMINUS)'Feasibility of hydropower reservoir minimum (IPLUSMINUS) and maximim (IPLUSMINUS) content (MWh)';
 POSITIVE VARIABLE VQGEQCF(C,FFF,IPLUSMINUS)        'Feasibility in Requered fuel usage per country constraint (MWh)'
 POSITIVE VARIABLE VQGMINCF(C,FFF)                  'Feasibility in Minimum fuel usage per country constraint (MWh)'
 POSITIVE VARIABLE VQGMAXCF(C,FFF)                  'Feasibility in Maximum fuel usage per country constraint (MWh)'
@@ -2391,19 +2392,19 @@ QHYMAXG(IA,IS3,T)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS))..
 
 * Hydro storage within limits:
 
-QHYRSMINVOL(IA,S)$(HYRSDATA(IA,'HYRSMINVOL',S) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
+QHYRSMINVOL(IA,IS3)$(HYRSDATA(IA,'HYRSMINVOL',IS3) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
 
-      VHYRS_S(IA,S) =G= HYRSDATA(IA,'HYRSMINVOL',S) * WTRRSFLH(IA) *
+      VHYRS_S(IA,IS3) =G= HYRSDATA(IA,'HYRSMINVOL',IS3) * WTRRSFLH(IA) *
         (SUM(IGHYRS,(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
-        -VQHYRSSEQ(IA,S,'IMINUS'));
+        -VQHYRSMINMAXVOL(IA,IS3,'IMINUS'));
 
 * Hydro reservoir content - maximum level
 
-QHYRSMAXVOL(IA,S)$(HYRSDATA(IA,'HYRSMAXVOL',IS3) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
+QHYRSMAXVOL(IA,IS3)$(HYRSDATA(IA,'HYRSMAXVOL',IS3) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
 
-       HYRSDATA(IA,'HYRSMAXVOL',S) * WTRRSFLH(IA) *
+       HYRSDATA(IA,'HYRSMAXVOL',IS3) * WTRRSFLH(IA) *
         (SUM(IGHYRS,(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
-        -VQHYRSSEQ(IA,S,'IPLUS'))=G= VHYRS_S(IA,S);
+        -VQHYRSMINMAXVOL(IA,IS3,'IPLUS'))=G= VHYRS_S(IA,IS3);
 
 *------------ Short term heat and electricity storages:-------------------------
 
@@ -3012,6 +3013,9 @@ MODEL BALBASE3 'Balmorel model without endogeneous investments, simulating each 
                                 QGGETOH
                                 QGCBGBPRBYPASS1
                                 QGCBGBPRBYPASS2
+*--- Storage restrictions, hydro -----------------------------------------------
+                                QHYRSMINVOL
+                                QHYRSMAXVOL
 *--- Storage balance, intra-season only  ---------------------------------------
                                 QESTOVOLT
                                 QHSTOVOLT
