@@ -54,6 +54,7 @@ SCALAR INFODISPLAY  "See information next:" /NA/;
 DISPLAY INFODISPLAY, "Balmorel run stared at", SystemDateTime;
 
 * Convenient Factors, typically relating Output and Input:
+SCALAR IOF100     'Multiplier 100'        /100/;
 SCALAR IOF1000    'Multiplier 1000'       /1000/;
 SCALAR IOF1000000 'Multiplier 1000000'    /1000000/;
 SCALAR IOF0001    'Multiplier 0.001'      /0.001/;
@@ -74,7 +75,6 @@ SCALAR ISCALAR5   '(Context dependent)';
 
 * This file contains initialisations of printing of log and error messages:
 $INCLUDE '../../base/logerror/logerinc/error1.inc';
-
 
 *-------------------------------------------------------------------------------
 *---- End: Some generally applicable stuff -------------------------------------
@@ -1469,7 +1469,7 @@ $ifi %BB1%==yes    ISOLESUMST(IA)=SUM((S,T), IHOURSINST(S,T)*SOLE_VAR_T(IA,S,T))
 $ifi %BB1%==yes    ISOLHSUMST(IA)=SUM((S,T), IHOURSINST(S,T)*SOLH_VAR_T(IA,S,T));
 $ifi %BB1%==yes    IWAVESUMST(IA)=SUM((S,T), IHOURSINST(S,T)*WAVE_VAR_T(IA,S,T));
 $ifi %BB1%==yes    IWTRRRSUM(IA)=SUM((S,T),  IHOURSINST(S,T)*WTRRRVAR_T(IA,S,T));
-$ifi %BB1%==yes    IWTRRSSUM(IA)=SUM(S, (IOF365*WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
+$ifi %BB1%==yes    IWTRRSSUM(IA)=SUM(S, (WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
 
 $ifi %BB2%==yes    IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 $ifi %BB2%==yes    IWEIGHSUMT = SUM(T, WEIGHT_T(T));
@@ -1482,7 +1482,7 @@ $ifi %BB2%==yes    ISOLESUMST(IA)=SUM((S,T), IHOURSINST(S,T)*SOLE_VAR_T(IA,S,T))
 $ifi %BB2%==yes    ISOLHSUMST(IA)=SUM((S,T), IHOURSINST(S,T)*SOLH_VAR_T(IA,S,T));
 $ifi %BB2%==yes    IWAVESUMST(IA)=SUM((S,T), IHOURSINST(S,T)*WAVE_VAR_T(IA,S,T));
 $ifi %BB2%==yes    IWTRRRSUM(IA)=SUM((S,T),  IHOURSINST(S,T)*WTRRRVAR_T(IA,S,T));
-$ifi %BB2%==yes    IWTRRSSUM(IA)=SUM(S, (IOF365*WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
+$ifi %BB2%==yes    IWTRRSSUM(IA)=SUM(S, (WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
 
 $ifi %BB3%==yes    IWEIGHSUMS = SUM(SSS, WEIGHT_S(SSS));
 $ifi %BB3%==yes    IWEIGHSUMT = SUM(T, WEIGHT_T(T));
@@ -1495,7 +1495,7 @@ $ifi %BB3%==yes    ISOLESUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*SOLE_VAR_T(IA,S
 $ifi %BB3%==yes    ISOLHSUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*SOLH_VAR_T(IA,SSS,T));
 $ifi %BB3%==yes    IWAVESUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*WAVE_VAR_T(IA,SSS,T));
 $ifi %BB3%==yes    IWTRRRSUM(IA)=SUM((SSS,T),  IHOURSINST(SSS,T)*WTRRRVAR_T(IA,SSS,T));
-$ifi %BB3%==yes    IWTRRSSUM(IA)=SUM(SSS, (IOF365*WEIGHT_S(SSS)/IWEIGHSUMS)*WTRRSVAR_S(IA,SSS));
+$ifi %BB3%==yes    IWTRRSSUM(IA)=SUM(SSS, (WEIGHT_S(SSS)/IWEIGHSUMS)*WTRRSVAR_S(IA,SSS));
 
 *-------------------------------------------------------------------------------
 * End of: Set the time weights depending on the model
@@ -1752,6 +1752,7 @@ POSITIVE VARIABLE VQXK(IRRRE,IRRRI,S,T,IPLUSMINUS) 'Feasibility in Transmission 
 *-------------------------------------------------------------------------------
 *----- Any variables for addon to be placed here: ------------------------------
 *-------------------------------------------------------------------------------
+$include "..\..\base\addons\_hooks\vardeclare.inc"
 
 * These variables are for addon X3V (price sensitive third countries elec exchange
 $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vvariables.inc';
@@ -3114,7 +3115,9 @@ $ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDA
 
 
 *----- End of model:------------------------------------------------------------
+$include "..\..\base\addons\_hooks\endofmodel_pre.inc"
 $label ENDOFMODEL
+$include "..\..\base\addons\_hooks\endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
 
 

@@ -19,27 +19,8 @@ Put logfile
 * ------------------------------------------------------------------------------
 
 PUT "* ------------------------------------------------------------------------------" / ;
-PUT "Overview of selected options as given in file balopt.opt: " /;
-
-* TODO: only examples are given. More consistent handling to be developed.
-
-PUT "  Option for model selection, " ;
-$ifi     %BB4%==yes PUT "Selected model: BB4" ;
-$ifi not %BB4%==yes PUT "NOT Selected model: BB4" ;
-
-PUT / "  Option 'bb4weighty' for relative weighting of the years when using BB4 set at: " "%bb4weighty%";
-PUT / "  Option 'TransInvest' for permitting investments in transmission capacity set at: " "%TransInvest%";
-PUT / "  Option 'HYRSBB123' for handling of hydro with storage when using BB3 set at: " "%HYRSBB123%";
-PUT / "  Option 'inputdatatxt' for printing an overview of the inputdata to file inputout.out set at: " "%inputdatatxt%";
-PUT / "  Option 'printfiles' for printing various simulation results to folder output set at: " "%printfiles%";
-PUT / "  Option 'savepointvalue' for saving a GDX file that contains the information on the current solution point set at: " "%savepointvalue%" ", see balopt.opt for more information";
-PUT / "  Option 'agkndisc' for making investments in technologies only at specified capacities set at: " "%agkndisc%";
 
 PUT / "Since BB4 is presently in developments phase, not all addons are reimplemented for this, and those that are may be only preliminary, so be careful." ;
-
-
-
-* TODO: MORE
 
 PUT / "* ------------------------------------------------------------------------------" / /;
 

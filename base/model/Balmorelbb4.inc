@@ -6,7 +6,7 @@
 * It will be available from www.balmorel.com under open source conditions.
 
 
-
+$ontext
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 *---- Some generally applicable stuff: -----------------------------------------
@@ -39,11 +39,13 @@ SCALAR ISCALAR3   '(Context dependent)';
 SCALAR ISCALAR4   '(Context dependent)';
 SCALAR ISCALAR5   '(Context dependent)';
 
+* This file contains initialisations of printing of log and error messages:
+$INCLUDE '../../base/logerror/logerinc/error1.inc';
 
 *-------------------------------------------------------------------------------
 *---- End: Some generally applicable stuff -------------------------------------
 *-------------------------------------------------------------------------------
-
+$offtext
 
 
 
@@ -153,6 +155,8 @@ SET IS33(S,S) "Mapping of S (first index) to the following S (second index)";
 * Duplication of sets for describing electricity exchange between regions:
 ALIAS (RRR,IRRRE,IRRRI);
 ALIAS (IR,IRE,IRI);
+* Duplication of sets for fuel.
+ALIAS (FFF,IFFFALIAS);
 
 * Duplication of sets for seasons and hours:
 ALIAS (Y,IYALIAS);
@@ -315,9 +319,9 @@ PARAMETER DISLOSS_E(RRR)               'Loss in electricity distribution (fracti
 PARAMETER DISLOSS_H(AAA)               'Loss in heat distribution (fraction)';
 PARAMETER DISCOST_E(RRR)               'Cost of electricity distribution (Money/MWh)';
 PARAMETER DISCOST_H(AAA)               'Cost of heat distribution (Money/MWh)';
-PARAMETER FKPOT(CCCRRRAAA,FFF)         'Fuel potential restriction by geography (MW); default: 0 implies irrelevant, EPS implies no potential';
-PARAMETER FGEMIN(CCCRRRAAA,FFF)        'Minimum electricity generation by fuel (MWh)';
-PARAMETER FGEMAX(CCCRRRAAA,FFF)        'Maximum electricity generation by fuel (MWh)';
+PARAMETER FKPOT(CCCRRRAAA,FFF)         'Fuel potential restriction by geography (default 0 implies irrelevant, EPS implies no potential) (MW)';
+PARAMETER FGEMIN(CCCRRRAAA,FFF)        'Minimum electricity generation by fuel (default 0 implies irrelevant, EPS implies no potential) (MWh)';
+PARAMETER FGEMAX(CCCRRRAAA,FFF)        'Maximum electricity generation by fuel (default 0 implies irrelevant, EPS implies no potential) (MWh)';
 
 
 PARAMETER FKMIN(YYY,CCCRRRAAA,FFF)     'Minimum capacity by fuel per year (MW)'  !! not really used presently
@@ -328,11 +332,11 @@ PARAMETER FKMINNA(YYY,FFF)             'Minimum capacity by fuel per year (MW)' 
 PARAMETER FKMAXNA(YYY,FFF)             'Maximum capacity by fuel per year (MW)'  !! not really used presently
 PARAMETER FKEQNA(YYY,FFF)              'Exact capacity by fuel per year (MW)'    !! not really used presently
 
-$ifi %GMINF_DOL%==CCCRRRAAA_FFF         PARAMETER GMINF(CCCRRRAAA,FFF)             'Minimum annual (any year) fuel use by geography and fuel and (GJ)';
-$ifi %GMINF_DOL%==YYY_CCCRRRAAA_FFF     PARAMETER GMINF(YYY,CCCRRRAAA,FFF)         'Minimum annual fuel use by year, geography and fuel and (GJ)';
-$ifi %GMAXF_DOL%==CCCRRRAAA_FFF         PARAMETER GMAXF(CCCRRRAAA,FFF)             'Maximum annual (any year) fuel use by geography and fuel and (GJ)';
-$ifi %GMAXF_DOL%==YYY_CCCRRRAAA_FFF     PARAMETER GMAXF(YYY,CCCRRRAAA,FFF)         'Maximum annual fuel use by year, geography and fuel and (GJ)';
-$ifi %GEQF_DOL%==CCCRRRAAA_FFF          PARAMETER GEQF(CCCRRRAAA,FFF)              'Exact annual (any year) fuel use by geography and fuel (GJ)';
+$ifi %GMINF_DOL%==CCCRRRAAA_FFF         PARAMETER GMINF(CCCRRRAAA,FFF)             'Minimum annual (any year) fuel use by geography and fuel and (default 0 implies irrelevant, EPS implies no potential) (GJ)';
+$ifi %GMINF_DOL%==YYY_CCCRRRAAA_FFF     PARAMETER GMINF(YYY,CCCRRRAAA,FFF)         'Minimum annual fuel use by year, geography and fuel and (default 0 implies irrelevant, EPS implies no potential) (GJ)';
+$ifi %GMAXF_DOL%==CCCRRRAAA_FFF         PARAMETER GMAXF(CCCRRRAAA,FFF)             'Maximum annual (any year) fuel use by geography and fuel and (default 0 implies irrelevant, EPS implies no potential) (GJ)';
+$ifi %GMAXF_DOL%==YYY_CCCRRRAAA_FFF     PARAMETER GMAXF(YYY,CCCRRRAAA,FFF)         'Maximum annual fuel use by year, geography and fuel and (default 0 implies irrelevant, EPS implies no potential) (GJ)';
+$ifi %GEQF_DOL%==CCCRRRAAA_FFF          PARAMETER GEQF(CCCRRRAAA,FFF)              'Exact annual (any year) fuel use by geography and fuel (default 0 implies irrelevant, EPS implies no potential) (GJ)';
 $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF      PARAMETER GEQF(YYY,CCCRRRAAA,FFF)          'Exact annual fuel use by year, geography and fuel and (GJ)';
 PARAMETER WTRRSFLH(AAA)                'Full load hours for hydro reservoir plants (hours)';
 PARAMETER WTRRRFLH(AAA)                'Full load hours for hydro run-of-river plants (hours)';
@@ -649,8 +653,6 @@ GINVCOST(IA,G)$((NOT GINVCOST(IA,G)) AND (SUM(Y,GKFX(Y,IA,G)) OR AGKN(IA,G))) = 
 * Time aggregation:
 $ifi %timeaggr%==yes  $include '../../base/addons/TimeAggregation/timeaggr.inc';
 
-* This file contains initialisations of printing of log and error messages:
-$INCLUDE '../../base/logerror/logerinc/error1.inc';
 
 * The following relates technology and fuel:
 SET IGF(GGG,FFF)   'Relation between technology type and fuel type';
@@ -767,7 +769,7 @@ $ifi %BB4%==yes    IWAVESUMST(IA)=SUM((S,T), IHOURSINST(S,T)*WAVE_VAR_T(IA,S,T))
 $ifi %BB4%==yes    ISOLHSUMST(IA)=SUM((S,T), IHOURSINST(S,T)*SOLH_VAR_T(IA,S,T));
 $ifi %BB4%==yes    IWAVESUMST(IA)=SUM((S,T), IHOURSINST(S,T)*WAVE_VAR_T(IA,S,T));
 $ifi %BB4%==yes    IWTRRRSUM(IA)=SUM((S,T), IHOURSINST(S,T)*WTRRRVAR_T(IA,S,T));
-$ifi %BB4%==yes    IWTRRSSUM(IA)=SUM(S, (IOF365*WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
+$ifi %BB4%==yes    IWTRRSSUM(IA)=SUM(S, (WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
 
 *-------------------------------------------------------------------------------
 * End of: Set the time weights depending on the model
@@ -1049,6 +1051,7 @@ POSITIVE VARIABLE VQKFUEL(Y,CCCRRRAAA,FFF)  "Feasibility in maximum installlable
 *-------------------------------------------------------------------------------
 *----- Any variables, and possibly equations, for addon to be placed here: -----
 
+$include "..\..\base\addons\_hooks\vardeclare.inc"
 
 *-------------------------------------------------------------------------------
 
@@ -1077,7 +1080,8 @@ EQUATIONS
    QOBJ                     "Objective function"
    QEEQ(Y,RRR,S,T)          "Electricity generation equals demand (MW)"
    QHEQ(Y,AAA,S,T)          "Heat generation equals demand (MW)"
-   QGFEQ(Y,AAA,G,S,T)       "Calculate fuel consumption, existing units ()"
+   QGFEQ(Y,AAA,G,S,T)       "Calculate fuel consumption, existing units (MW)"
+   QGFNEQ(Y,AAA,G,S,T)      "Calculate fuel consumption, new units NOT IMPLEMENTED (MW)"
 
    QGCBGBPR(Y,AAA,G,S,T)    "CHP generation (back pressure) limited by Cb-line (MW)"
    QGCBGEXT(Y,AAA,G,S,T)    "CHP generation (extraction) limited by Cb-line (MW)"
@@ -1342,10 +1346,10 @@ $ifi %BB2%==yes       +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSSEQ(IA,
 *   TODO    +SUM((IA,IGKFIND)$IAGKN(IA,IGKFIND), (VQGKNACCUMNET(Y,IA,IGKFIND,"IPLUS")+VQGKNACCUMNET(Y,IA,IGKFIND,"IMINUS")))
      +SUM((IA,IGKFIND)$IAGKN(IA,IGKFIND), (VQGKNACCUMGROSS(Y,IA,IGKFIND,"IPLUS")+VQGKNACCUMGROSS(Y,IA,IGKFIND,"IMINUS")))
 *   TODO      +SUM((IRE,IRI), VQXKNACCUMNET(Y,IRE,IRI,"IPLUS")+VQXKNACCUMNET(Y,IRE,IRI,"IMINUS"))  Presently out, because QGKNACCUMNET(unfinished), use QGKNACCUMgross  for now
-     +SUM((IRE,IRI), VQXKNACCUMGROSS(Y,IRE,IRI,"IPLUS")+VQXKNACCUMGROSS(Y,IRE,IRI,"IMINUS"))
+     +SUM((IRE,IRI)$IXKN(IRE,IRI), VQXKNACCUMGROSS(Y,IRE,IRI,"IPLUS")+VQXKNACCUMGROSS(Y,IRE,IRI,"IMINUS"))
 
-     +SUM((IA,IGDISPATCH(IGKENOSTO),IS3,T), (VQGKE_UP(Y,IA,IGKENOSTO,IS3,T,"IMINUS")+VQGKE_UP(Y,IA,IGKENOSTO,IS3,T,"IPLUS")))
-     +SUM((IA,IGDISPATCH(IGKHNOSTO),IS3,T), (VQGKH_UP(Y,IA,IGKHNOSTO,IS3,T,"IMINUS")+VQGKH_UP(Y,IA,IGKHNOSTO,IS3,T,"IPLUS")))
+     +SUM((IA,IGDISPATCH(IGKENOSTO),IS3,T)$IAGKN(IA,IGKENOSTO), (VQGKE_UP(Y,IA,IGKENOSTO,IS3,T,"IMINUS")+VQGKE_UP(Y,IA,IGKENOSTO,IS3,T,"IPLUS")))
+     +SUM((IA,IGDISPATCH(IGKHNOSTO),IS3,T)$IAGKN(IA,IGKHNOSTO), (VQGKH_UP(Y,IA,IGKHNOSTO,IS3,T,"IMINUS")+VQGKH_UP(Y,IA,IGKHNOSTO,IS3,T,"IPLUS")))
      +SUM((IRE,IRI,IS3,T)$IXKN(IRE,IRI), (VQXK_UP(Y,IRE,IRI,IS3,T,"IMINUS")+VQXK_UP(Y,IRE,IRI,IS3,T,"IPLUS")))
 
      +SUM((C,FFF)$FKPOT(C,FFF),   VQKFUEL(Y,C,FFF))
@@ -1890,7 +1894,7 @@ QXK_UP(IY411,IRE,IRI,IS3,T)$IXKN(IRE,IRI)..
 * of previous endogenous investment (cf. QGKACCUMNET).
 
 QXKNACCUMNET(IY411,IRE,IRI)$IXKN(IRE,IRI)..
-  VXKNACCUMNET(IY411,IRE,IRI)  !! End of this year"s VXKNACCUMNET (available at beginning of next year)
+  VXKNACCUMNET(IY411,IRE,IRI)  !! End of this year's VXKNACCUMNET (available at beginning of next year)'
      =E=
   SUM(IY402$IY411PREVY(IY411,IY402), VXKNACCUMNET(IY402,IRE,IRI)) + VXKN(IY411,IRE,IRI)  !! VXKNVACCUMNET available at end of previous(i.e., start of this) year PLUS investment during this year
   + VQXKNACCUMNET(IY411,IRE,IRI,"IPLUS") - VQXKNACCUMNET(IY411,IRE,IRI,"IMINUS")
@@ -2324,6 +2328,8 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute "move merged.gdx %relpathoutput%%CASE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "move %CASEID%.gdx %relpathoutput%%CASEID%.gdx";
 $ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute "=gdx2access %relpathoutput%%CASEID%-Results.gdx";
 
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute "=GDX2SQLITE -i %relpathoutput%%CASEID%-Results.gdx -o %relpathoutput%%CASEID%-Results.db";
+
 $ifi %comparewithbase%==yes   putclose  fileCOMPAREWITHBASEbat "move  " "%relpathModel%""..\..\output\BASE.gdx "  "%relpathoutput%BASE.gdx";
 
 *--- End: Results collection and comparison ------------------------------------
@@ -2341,10 +2347,10 @@ $label ENDOFMODEL
 *----- End of model ------------------------------------------------------------
 
 
-* Sometimes convenient to have it all (most recent values) at this point
+* Sometimes convenient to have it all (with most recent values) at this point
 execute_unload "all_endofmodel.gdx";
 
-DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile file." ;
+DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile: <case>\logerror\logfile.out." ;
 
 *----- End of file:------------------------------------------------------------
 $label endoffile

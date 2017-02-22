@@ -1,6 +1,6 @@
 * File print1.inc.
 
-* File last time modified 27-09-2002 (rus) , 05-08-2003 (sns), hr 20110920, hr 20121001, 20141121(hr), 20160203(hr).
+* File last time modified 27-09-2002 (rus) , 05-08-2003 (sns), hr 20110920, hr 20121001, 20141121(hr), 20160203(hr), 20161208(hr).
 
 * This file is part of the Balmorel model, version 3.03 ()
 
@@ -52,13 +52,16 @@ PARAMETER OSCALAR1, OSCALAR2, OSCALAR3; /* Various general counters */
 * More set individual values are held in the following scalars.
 *
 SCALAR OTLW     "                                " /32/; !! Default.
-SCALAR OTLWCRA  "                                " /0/;  !! Specific for SET CCCRRRAAA. The value is set below.
+SCALAR OTLWCRA  "                                " /32/; !! Specific for SET CCCRRRAAA. The value is checked below.
 SCALAR OTLWY    "    " /4/;                              !! Specific for SET YYY and Y. It is assumed that any element in YYY is represented by four characters (e.g. 2050).
 SCALAR OTLWS    "    " /3/;                              !! Specific for SET SSS and S. It is assumed that any element in SSS is represented by four characters (e.g. S52).
 SCALAR OTLWT    "    " /4/;                              !! Specific for SET TTT and T. It is assumed that any element in TTT is represented by four characters (e.g. T168).
-SCALAR OTLWG    "                                " /0/;  !! Specific for SET GGG and G. The value is set below.
-OTLWG   = SMAX(GGG, CARD(GGG.TL));                       !! Assign precisely the required width.
-OTLWCRA = SMAX(CCCRRRAAA, CARD(CCCRRRAAA.TL));           !! Assign precisely the required width.
+SCALAR OTLWG    "                                " /32/; !! Specific for SET GGG and G. The value is checked below.
+* Check consistency between the required width and the length of the (all ' ') text string:
+ISCALAR1 = SMAX(GGG, CARD(GGG.TL));                      !! Find the required width.
+ABORT$(ISCALAR1 GT OTLWG)   "The length of an element in GGG is larger than assumed, this will prevent nice printfile output. Please ensure consistency in file base\printout\printinc\print1.inc ";
+ISCALAR2 = SMAX(CCCRRRAAA, CARD(CCCRRRAAA.TL));          !! Assign precisely the required width.
+ABORT$(ISCALAR2 GT OTLWCRA) "The length of an element in CCCRRRAAA is larger than assumed, this will prevent nice printfile output. Please ensure consistency in file base\printout\printinc\print1.inc ";
 
 ALIAS(S,OALIASS);
 ALIAS(T,OALIAST);
@@ -120,7 +123,7 @@ FILE hp_at      /"../output/printout/hp_at.out"/;
 FILE mco2_cy    /"../output/printout/mco2_cy.out"/;
 FILE mso2_cy    /"../output/printout/mso2_cy.out"/;
 FILE mnox_cy    /"../output/printout/mnox_cy.out"/;
-FILE ehmco2qrt  /"../output/printout/ehmco2qrt.out"/;   
+FILE ehmco2qrt  /"../output/printout/ehmco2qrt.out"/;
 
 *Weiming
 * Electricity generation

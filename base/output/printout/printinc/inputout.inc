@@ -42,8 +42,8 @@ PUT "and is therefore only an alternative presentation of the input data. "//;
 
 PUT "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" /;
 PUT "+++             THIS FILE IS NOT FINISHED - THERE MAY BE ERRORS                         +++" /;
-PUT "+++     (Last revised by hr 2003.09.05, 2004.04.19, 2005.07.31, 2005.10.31, 2008.xy     +++" /;
-PUT "+++     (20090324, , 20110120, 20120902, 20121129, 20150216, 20160204, 20160407    )    +++" /;
+PUT "+++     (Last revised by hr 2003.09.05, 2004, 2005, 2005, 2008, 2009, 2011, 2012, 2015, +++" /;
+PUT "+++     (20160204, 20160407, 20161208                                )                  +++" /;
 PUT "+++                                Note carefully:                                      +++" /;
 PUT "+++      The present file is not necessarily updated for present Balmorel version       +++" /;
 PUT "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" //;
@@ -709,35 +709,30 @@ PUT "---------------------------------------------------------------------------
 PUT "(400-11)  Hydro power:" /;
 PUT "          For hydro power with storage:   Storage capacity (GWh), nominal water energy available one year (GWh) and hydro power capacity (MW) " Y.TL:4 ":" /;
 PUT "          For hydro power run-of-river:   Nominal water energy available one year (GWh) and hydro power capacity (MW) " Y.TL:4 ":" /;
-* $ifi %GKRATE_DOL%==  AAA_GGG_SSS_TTT need to write some warning? Todo.
 PUT "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------" //;
 
 PUT OTLWCRA.TS "  .............With storage.............            ..........Run-of-river......" /;
-PUT OTLWCRA.TS "        GWh      GWh        MW        MW                 GWh        MW        MW" /;
+PUT OTLWCRA.TS "       GWh       GWh        MW        MW                 GWh        MW        MW" /;
 PUT OTLWCRA.TS "                       Nominal     Rated                       Nominal     Rated" /;
-
 
 LOOP(C,
 LOOP(IR$CCCRRR(C,IR),
-PUT IR.TL:OTLWCRA ;
+  PUT IR.TL:OTLWCRA;
 * IGHYRS:
-   PUT  (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRS, WTRRSFLH(IA)*GKFX(Y,IA,IGHYRS)))/IOF1000):10:0;
+   PUT  (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRS, GKFX(Y,IA,IGHYRS)))/IOF1000):10:0;
    PUT  (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRS, GKFX(Y,IA,IGHYRS)* WTRRSFLH(IA)))/IOF1000):10:0  ;
    PUT  (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRS, GKFX(Y,IA,IGHYRS)))):10:0 ;
    LOOP(S$(ORD(S) EQ 1),  LOOP(T$(ORD(T) EQ 1),
-$ifi %GKRATE_DOL%==AAA_GGG_SSS      PUT (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRS, GKFX(Y,IA,IGHYRS)*GKRATE(IA,IGHYRS,S)))):10:0
-$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  PUT (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRS, GKFX(Y,IA,IGHYRS)*GKRATE(IA,IGHYRS,S,T)))):10:0
-    ));
-
-PUT "                    ";
+       PUT (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRS, GKFX(Y,IA,IGHYRS)*(1$(NOT IGKRATE(IA,IGHYRS,S,T))+IGKRATE(IA,IGHYRS,S,T))))):10:0
+   ));
+  PUT "          ";
 * IGHYRR:
-PUT  (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRR, GKFX(Y,IA,IGHYRR)* WTRRRFLH(IA)))/IOF1000):10:0  ;
+  PUT  (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRR, GKFX(Y,IA,IGHYRR)* WTRRRFLH(IA)))/IOF1000):10:0  ;
      PUT (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRR, GKFX(Y,IA,IGHYRR)))):10:0 ;
       LOOP(S$(ORD(S) EQ 1),  LOOP(T$(ORD(T) EQ 1),
-$ifi %GKRATE_DOL%==  AAA_GGG_SSS      PUT (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRR, GKFX(Y,IA,IGHYRR)*GKRATE(IA,IGHYRR,S)))):10:0
-$ifi %GKRATE_DOL%==  AAA_GGG_SSS_TTT  PUT (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRR, GKFX(Y,IA,IGHYRR)*GKRATE(IA,IGHYRR,S,T)))):10:0
+        PUT (SUM(IA$RRRAAA(IR,IA),SUM(IGHYRR, GKFX(Y,IA,IGHYRR)*(1$(NOT IGKRATE(IA,IGHYRR,S,T))+IGKRATE(IA,IGHYRR,S,T))))):10:0
      ));
-PUT /;
+  PUT /;
 ));
 PUT //;
 );
@@ -1436,7 +1431,7 @@ PUT Y.TL:12;
 PUT /;
 );  PUT /;);
 PUT //;
-
+                              
 IF(((OSCALAR2+1) LE OSCALAR1),
 * Second half:
 INPUTOUT.LJ = 1;

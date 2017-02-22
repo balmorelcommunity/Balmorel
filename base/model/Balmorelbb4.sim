@@ -31,9 +31,10 @@ VDECOM.l(Y,IA,G)      = 0;
 * Simple idea is to give equal weights:
 $ifi "%bb4weighty%"=="same"      IWEIGHTY(Y) = 1;
 * More complex weighting of the individual years (years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)):
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$(ORD(Y) EQ 1) = (YVALUE(Y+1)-YVALUE(Y)-1)+1;
+$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$(ORD(Y) EQ 1) = 1$(CARD(Y) EQ 1) + ((YVALUE(Y+1)-YVALUE(Y)-1)+1)$(CARD(Y) GT 1);
 $ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) GT 1) AND (ORD(Y) LT CARD(Y))) = (YVALUE(Y) - YVALUE(Y-1) -1)/2  + (YVALUE(Y+1) - YVALUE(Y) -1)/2    +1;
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$(ORD(Y) EQ CARD(Y)) = (YVALUE(Y)-YVALUE(Y-1)-1)+1 ;
+$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) EQ CARD(Y)) AND (CARD(Y) GT 1)) = ((YVALUE(Y)-YVALUE(Y-1)-1)+1);
+
 
 *IFIRSTYEARNEXTBB4 = SUM(Y$(ORD(Y) EQ 1), YVALUE(Y)); !! todo not in use
 IY411PREVY(Y,Y-1)= YES;
@@ -172,8 +173,6 @@ IAGKNY(IY411,IA,G)$(YVALUE(IY411) LT GDATA(G,'GDFROMYEAR'))=NO;
 IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);
 IAGK_HASORPOT(IY411,IA,G)$IAGKN(IA,G) = YES;
 
-VGKNACCUMNET.FX(IY411,IA,G)$(NOT IAGKN(IA,G))   = 0; !! Should not be necessary if condition on IAGKN(IA,G) is properly used in .gms code.
-VGKNACCUMGROSS.FX(IY411,IA,G)$(NOT IAGKN(IA,G)) = 0; !! Should not be necessary if condition on IAGKN(IA,G) is properly used in .gms code.
 
 *-------------------------------------------------------------------------------
 * End: Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT -----------------------------
@@ -237,7 +236,7 @@ VGE_T.FX(IY411,IA,IGWAVE,S,T)$(GKFX(IY411,IA,IGWAVE) AND (NOT IAGKN(IA,IGWAVE)))
 * Calculate hydro inflow to reservoirs in MWh/MW installed capacity (new and old):
 
 $ifi %bb4%==yes  IHYINF_S(IA,S)=
-$ifi %bb4%==yes  ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (IOF365*WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
+$ifi %bb4%==yes  ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
 
 *---- End: Bounds on generation technologies -----------------------------------
 
@@ -257,14 +256,11 @@ IXK_HASORPOT(IY411,IRE,IRI) = YES$XKFX(IY411,IRE,IRI);
 IXK_HASORPOT(Y,IRE,IRI)$IXKN(IRE,IRI) = YES;
 * Update bounds:
 * Complement to equation QXK_UP for the case with no endogenous transmission investments.
-VX_T.UP(IY411,IRE,IRI,S,T)$(NOT IXKN(IRE,IRI)) = XKFX(IY411,IRE,IRI)*IXKRATE(IRE,IRI,S,T);
-VXKNACCUMNET.FX(IY411,IRE,IRI)$(NOT IXK_HASORPOT(IY411,IRE,IRI)) = 0;  !! Should not be necessary if condition on IAGKN(IA,G) is properly used in .gms code.
+VX_T.UP(IY411,IRE,IRI,S,T)$(IXKN(IRE,IRI) AND (NOT IXKN(IRE,IRI))) = XKFX(IY411,IRE,IRI)*IXKRATE(IRE,IRI,S,T);
+VXKNACCUMNET.FX(IY411,IRE,IRI)$(IXKN(IRE,IRI) AND (NOT IXK_HASORPOT(IY411,IRE,IRI))) = 0;  !! Should not be necessary if condition on IAGKN(IA,G) is properly used in .gms code.
 
 IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);
 IAGK_HASORPOT(IY411,IA,G)$IAGKN(IA,G) = YES;
-
-VGKNACCUMNET.FX(IY411,IA,G)$(NOT IAGKN(IA,G))   = 0;
-VGKNACCUMGROSS.FX(IY411,IA,G)$(NOT IAGKN(IA,G)) = 0;
 
 
 * Set the fixed exchange with third regions:
@@ -359,9 +355,7 @@ $ifi     %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;  !! =========
 * End: SOLVE
 *-------------------------------------------------------------------------------
 
-*$ifi %bb4%==yes $INCLUDE '../../base/logerror/logerinc/balbase4.mss';  To use this when finished
-$ifi %bb4%==yes $if errorfree $INCLUDE '../../base/addons/BB4/balbase4.mss';
-
+$ifi %bb4%==yes $INCLUDE '../../base/logerror/logerinc/balbase4.mss';
 
 
 * ------------------------------------------------------------------------------
@@ -404,10 +398,10 @@ $ifi %printfiles%==yes $if errorfree $include "..\..\base\output\printout\printi
 * --- Prepare the next BB4 model -----------------------------------------------
 * ------------------------------------------------------------------------------
 
-VGKNACCUMNET.FX(IY411FIRST,IA,G)   = VGKNACCUMNET.L(IY411FIRST,IA,G);
-VGKNACCUMGROSS.FX(IY411FIRST,IA,G) = VGKNACCUMGROSS.L(IY411FIRST,IA,G);
-
-VXKNACCUMNET.FX(IY411FIRST,IRRRE,IRRRI) =VXKNACCUMNET.L(IY411FIRST,IRRRE,IRRRI);
+VGKNACCUMNET.FX(IY411FIRST,IA,G)$IAGKN(IA,G)   = VGKNACCUMNET.L(IY411FIRST,IA,G);
+VGKNACCUMGROSS.FX(IY411FIRST,IA,G)$IAGKN(IA,G) = VGKNACCUMGROSS.L(IY411FIRST,IA,G);
+VXKNACCUMNET.FX(IY411FIRST,IRE,IRI)$IXKN(IRE,IRI) = VXKNACCUMNET.L(IY411FIRST,IRE,IRI);
+$include "..\..\base\addons\_hooks\varassign.inc"
 
 * ------------------------------------------------------------------------------
 * --- End: Prepare the next BB4 model ------------------------------------------

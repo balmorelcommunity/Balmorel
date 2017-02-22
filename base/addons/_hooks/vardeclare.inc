@@ -1,4 +1,3 @@
 * Location of variable declations used in add-ons
 
-* Example of a generic line for addon integration (replace ADDONNAME for a specific add-on):
-* $ifi %ADDONNAME%==yes    $include "../../base/addons/ADDONNAME/ADDONNAME_vardeclare.inc";
+$ifi %testbb1234%==yes    $include "../../base/addons/bb1234compare/bb1234_vardeclare.inc";
