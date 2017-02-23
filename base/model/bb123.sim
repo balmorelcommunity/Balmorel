@@ -12,6 +12,13 @@
 * INITIALISATIONS FOR THE ANNUAL UPDATING PART:
 *------------------------------------------------------------------------------
 
+* If merging of savepoint files is to be performed,
+* make sure that there are no gdx files initially in applied folders:
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm *.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ..\output\temp\*.gdx";
+$If not dexist fulldirectoryname gamsstatement.
+
+
 * Initialize the first year in the simulation:
 
 * IGKVACCTOY are the capacities (MW), for accumulated endogeneously
@@ -402,9 +409,9 @@ ITAX_KN(IA,IGE)$(IAGK_Y(IA,IGE) or IAGKN(IA,IGE))  = TAX_KN(Y,IA,IGE);
 
 $INCLUDE '../../base/addons/_hooks/simau.inc';
 
-$ifi %bb3%==yes   IHYRSBB123G_Y(IA,S)       = HYRSG(Y,IA,S);
-$ifi %bb3%==yes   IWATERVAL_Y(IA,S)         = WATERVAL(Y,IA,S);
-$ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "..\..\base\addons\hyrsbb123\HYRSBB123sim1.inc";
+$ifi %bb3%==yes  $ifi not %HYRSBB123%==none  IHYRSBB123G_Y(IA,S)       = HYRSG(Y,IA,S);
+$ifi %bb3%==yes  $ifi not %HYRSBB123%==none  IWATERVAL_Y(IA,S)         = WATERVAL(Y,IA,S);
+$ifi %bb3%==yes  $ifi %HYRSBB123%==quantprice  $include "..\..\base\addons\hyrsbb123\HYRSBB123sim1.inc";
 
 
 $ifi %GAS%==yes $INCLUDE '../../base/addons/gas/annualupdate.inc';
@@ -546,26 +553,23 @@ $ifi %bb3%==yes ); /* LOOP(IS3LOOPSET,...) */
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 
-* bb1 and bb2:
-* Save yearly basis (as saved by SAVEPOINT) and move to gdx directory:
-
+* bb1 and bb2: Save yearly basis (as saved by SAVEPOINT) and move to temp directory:
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE1_p.gdx" '  '"%relpathModel%..\output\temp\'Y.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb1%==yes  execute   "%batfileMERGESAVEPOINTRESULTS%";
-
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb2%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE2_p.gdx" '  '"%relpathModel%..\output\temp\'Y.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb2%==yes execute  "%batfileMERGESAVEPOINTRESULTS%";
 
-
-**$ifi %bb3%==yes execute_unload 'BALBASE3.gdx'
-**$ifi %bb3%==yes $INCLUDE '../../base/model/symlist.inc';
-$ifi %bb3%==yes execute 'rm BALBASE3_p*';
+* bb3: Merge yearly basis (as saved by SAVEPOINT and renamed) and move merged.gdx to temp directory:
+$ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb3%==yes execute "gdxmerge *.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb3%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '%relpathModel%''merged.gdx '  '%relpathModel%..\output\temp\'Y.tl:0:0 '.gdx';
+$ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb3%==yes execute "%batfileMERGESAVEPOINTRESULTS%";
 
 
@@ -655,3 +659,6 @@ $ifi %REShareEH%==yes $include  '../../base/addons/REShareEH/printinc/RESEHPrt4.
 $ifi %ECONOMIC%==yes $INCLUDE '../../base/processing/economic/eco_writetbl.inc';
 * Earnings
 * $ifi %PLANTCLOSURES%==yes $include '../../base/printinc/earningsout.inc';
+
+
+$label endoffile

@@ -12,13 +12,17 @@ $TITLE Balmorel version 3.03 (June 2016; latest 20160915)
 * All GAMS code of the Balmorel model is distributed under ICS license,
 * see the license file in the base/model folder.
 
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+
 SCALAR IBALVERSN 'This version of Balmorel' /303.20161003/;
 
 * This is a preliminary version of Balmorel 3.03.
 * It is intended for review and commenting.
 * See a short list of changes since previous version 3.02 in base/documentation/Balmorel303.txt.
 * It is scheduled that a final version 3.03 will be available early 2017.
-
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -1659,7 +1663,6 @@ $ifi %inputdatatxt%== yesnosolve $goto ENDOFMODEL
 * Unload input data to gdx file:
 $ifi exist '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"' rm '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"'
 
-* Note that the execute_unload command will also identify variables and equations
 $ifi %INPUTDATA2GDX%==yes execute_unload '%relpathInputdata2GDX%INPUTDATAOUT.gdx';
 * Transfer inputdata a seperate Access file (only possible if %INPUTDATA2GDX%==yes):
 $ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
@@ -1708,7 +1711,6 @@ GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = 0;
 * Note that this is a compile time operation, such that only the 'direct' data
 * definitions (and no assignments) are reflected:
 
-execute_unload '%relpathModel%..\output\temp\1INPUT_B303.gdx';
 
 $include "..\..\base\addons\_hooks\checkassumptions.inc"
 
@@ -3108,18 +3110,16 @@ $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgdx.inc';
 
 *--- Results collection and comparison -----------------------------------------
 * Merge simulation years:
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathModel%..\output\temp\*.gdx"';
-
-* Rename merged.gdx to case identification.
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%CASEID%.gdx"';
 $ifi %COMPARECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%CASEID%.gdx"';
-$ifi not %COMPARECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%CASEID%.gdx" "%relpathModel%..\..\%COMPAREWITH%\output\%COMPARECASE%.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\temp\*.gdx"';
 $ifi %COMPARECASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-Results.gdx"';
+
+$ifi not %COMPARECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%CASEID%.gdx" "%relpathModel%..\..\%COMPAREWITH%\output\%COMPARECASE%.gdx"';
 $ifi not %COMPARECASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-Compare.gdx"';
+
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move %CASEID%.gdx "%relpathoutput%%CASEID%.gdx"';
 $ifi %COMPARECASE%==NONE
 $ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-Results.gdx"';
@@ -3144,8 +3144,9 @@ $include "..\..\base\addons\_hooks\endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
 
 
-* Sometimes convenient to have it all (most recent values) at this point
-execute_unload "all_endofmodel.gdx";
+* Sometimes convenient to have it all (most recent values) at this point.
+* However, it may be detrimental to e.g. merging of gdx files, so better move to other place.
+* execute_unload "all_endofmodel.gdx";
 
 *----- End of file:------------------------------------------------------------
 $label endoffile
