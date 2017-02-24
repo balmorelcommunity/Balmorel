@@ -1,4 +1,3 @@
-
 * This file holds options that are used to control model functionality,
 * including extentions in the form of addons, and interplay between models.
 
@@ -11,7 +10,6 @@
 * thus, you can not use e.g., $ontext..$offtext or /*..*/ or // or !!.
 * Further, if you work with BUI, this file will not be $included into Balmorel.gms,
 * instead the file Balopt.bui will be $included. See the description elsewhere.
-
 
 
 *===============================================================================
@@ -32,7 +30,7 @@ $setglobal PROJECTID
 * BASE. Normally the model in the base directory will be called BASE while
 * any variants will have names as appropriate. Model results in the form of GDX files
 * (or Access MDBs) will have the CASEID as filename with the appropriate extension.
-*
+* Note that CASEID MUST be identical to folder name of the diretory holding the case.
 *
 $setglobal CASEID BASE
 *!option !fixedvalue
@@ -326,7 +324,7 @@ $setglobal PRINTSEPARATOR ';'
 *!option ','
 
 *-------------------------------------------------------------------------------
-*-------------------------------------------------------------------------------
+* Results collection for the present case
 *-------------------------------------------------------------------------------
 
 * The following will establish a mechanism that will save annual optimization results
@@ -340,6 +338,8 @@ $setglobal PRINTSEPARATOR ';'
 * MERGESAVEPOINTRESULTS
 * MERGEDSAVEPOINTRESULTS2MDB
 * MERGEDSAVEPOINTRESULTS2XLS: presently not working, we are waiting for GAMS version 22.7, which has better support for this.
+* MERGECASE/MERGEWITH
+* DIFFCASE/DIFFWITH
 *
 * Savepoint: the GAMS command "Modelname.Savepoint=number;"
 * The savepoint attribute tells GAMS to save a GDX file that contains the information on the current solution point.
@@ -354,12 +354,11 @@ $setglobal PRINTSEPARATOR ';'
 *
 $setglobal SAVEPOINTVALUE 1
 *!option 0
-*!option 1   !mustif  %MERGESAVEPOINTRESULTS%==yes  !mustif  %MERGEDSAVEPOINTRESULTS2GDX%==yes
+*!option 1   !mustif  %MERGESAVEPOINTRESULTS%==yes  !mustif  %MERGEDSAVEPOINTRESULTS2GDX%==yes   !mustif  %MERGEDSAVEPOINTRESULTS2XLS%==yes   !mustif not %MERGECASE%==none  !mustif not %DIFFCASE%==none
 *!option 2   !text Note: nothing implemented nor tested, so do not use it.
 *
-*
 * In order not to confuse results from different executions, delete all old gdx-files:
-$ifi %SAVEPOINTVALUE%==1  execute "del %relpathModel%..\output\temp\*.gdx";
+$ifi %SAVEPOINTVALUE%==1  execute "del %relpathModel%%relpathoutput%temp\*.gdx";
 
 
 * Use the $setglobal MERGESAVEPOINTRESULTS to choose whether to merge annual/seasonal results or not:
@@ -390,30 +389,33 @@ $setglobal MERGEDSAVEPOINTRESULTS2SQLITE yes
 * Comparison between Cases:
 *-------------------------------------------------------------------------------
 
-* COMPAREWITH defines the folder(.) to look for the case with which to merge results.
-* If the case is in the output folder of variant 'myvariant' ......
-* options to "VARIANT" (without the quotes).
-* COMPARECASE defines the name of the case in that folder.
-* If COMPARECASE is NONE, then the case is not merged with other cases.
-*
-$setglobal COMPAREWITH BASE
-*!option !fixedvalue
-$setglobal COMPARECASE NONE
-*!option !fixedvalue
-*
-* The following will merge (or compare) two results, of which one (presently) is the base case
-* (from which follows that it only makes sense if the present case as not the base case.)
-* With  "$Setglobal comparewithbase yes" this will be done, otherwise not.
-* If done, the result will be placed in .. , in the form of a GDX file.
-* [With "$Setglobal ..." this may then be transferred to a MDB file]
-$setglobal COMPAREWITHBASE
-*!option yes
-*
-* Then prepare for the necessary details:
-$setglobal batfileCOMPAREWITHBASE %relpathModel%COMPAREWITHBASE.bat
-*!option !fixedvalue
-file     fileCOMPAREWITHBASEbat /  %batfileCOMPAREWITHBASE%  /;
-putclose fileCOMPAREWITHBASEbat;     /*overflodig?*/
+* The following will merge and/or compare two results.
+* With  option MERGECASE is set to NONE this will be not be done, otherwise it will.
+* If done, the result will be in the output folder of the present case in the form of a GDX file.
+* With option MERGEDSAVEPOINTRESULTS2MDB" this may then be transferred to a MDB file.
+* All output go to the output folder of the present case.
+* Similar considerations for DIFFCASE.
+
+$setglobal MERGECASE  none
+*!option none  !text Comparison will not be made
+*!option <case name>
+* MERGEWITH defines the case with which to merge results.
+$setglobal MERGEWITH CaseNonversioned
+*!option <case name>   !mustif not %MERGECASE%==none
+
+* The diff uses gdxdiff. The diffile only shows items that meaningfull can be compared,
+* non-compared items are reported in the Balmorel.log file.
+$setglobal DIFFCASE  none
+*!option none  !text Comparison will not be made
+*!option <case name>
+
+$setglobal DIFFWITH CaseNonversioned
+*!option none  !text Comparison will not be made
+*!option <case name>  !mustif not %DIFFCASE%==none
+
+* Then prepare for the necessary details:  TODO
+file     fileMERGEWITHBASEbat /  %batfileMERGEWITHBASE%  /;
+putclose fileMERGEWITHBASEbat;
 
 
 

@@ -17,7 +17,7 @@ $TITLE Balmorel version 3.03 (June 2016; latest 20160915)
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 
-SCALAR IBALVERSN 'This version of Balmorel' /303.20161003/;
+SCALAR IBALVERSN 'This version of Balmorel' /303.20170224/;
 
 * This is a preliminary version of Balmorel 3.03.
 * It is intended for review and commenting.
@@ -3108,33 +3108,23 @@ $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgdx.inc';
 *--- End: Results which can be transfered between simulations are placed here --
 
 
-*--- Results collection and comparison -----------------------------------------
-* Merge simulation years:
-$ifi %COMPARECASE%==NONE
+*--- Results collection for this case ------------------------------------------
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\temp\*.gdx"';
-$ifi %COMPARECASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-Results.gdx"';
-
-$ifi not %COMPARECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%CASEID%.gdx" "%relpathModel%..\..\%COMPAREWITH%\output\%COMPARECASE%.gdx"';
-$ifi not %COMPARECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-Compare.gdx"';
-
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move %CASEID%.gdx "%relpathoutput%%CASEID%.gdx"';
-$ifi %COMPARECASE%==NONE
 $ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-Results.gdx"';
-$ifi not %COMPARECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-Compare.gdx"';
-$ifi %COMPARECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2SQLITE -i "%relpathoutput%%CASEID%-Results.gdx" -o "%relpathoutput%%CASEID%-Results.db"' ;
-$ifi not %COMPARECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2SQLITE -i "%relpathoutput%%CASEID%-Compare.gdx"-o "%relpathoutput%%CASEID%-Results.db"' ;
 
+*--- Results collection and comparison for differents cases --------------------
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%MERGEWITH%\output\%MERGEWITH%-results.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-resmerged.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-resmerged.gdx"';
 
-*--- End: Results collection and comparison ------------------------------------
-$ifi %INPUTDATA2GDX%==yes execute 'move "%relpathModel%..\output\temp\1INPUT.gdx" "%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
-* Transfer inputdata a seperate Access file:
-$ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%DIFFWITH%\output\%DIFFWITH%-results.gdx"';
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move diffile.gdx "%relpathoutput%%CASEID%-diff.gdx"';
 
 
 *----- End of model:------------------------------------------------------------
