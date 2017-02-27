@@ -24,6 +24,8 @@ ISCALAR1 = 0;
 $ifi %testbb1234%==yes   $include   "../../base/addons/bb1234compare/bb1234_hellolog.inc";
 $ifi %testbb1234%==yes   ISCALAR1 = 1;
 
+$ifi %hyrsbb123%==yes   $include   "../../base/addons/hyrsbb123/hyrsbb123_hellolog.inc";
+$ifi %hyrsbb123%==yes   ISCALAR1 = 1;
 
 /* more .. todo
 WNDSHUTDOWN
@@ -77,7 +79,7 @@ $label endBB4
 
 * ==============================================================================
 
-put / "The following options (not related to addons) are applied:";
+put / "The following options (not related to addons) have the following option values:";
 PUT / " - Option 'HYRSBB123'      for handling of hydro with storage when using BB3 set at: " "%HYRSBB123%";
 PUT / " - Option 'inputdatatxt'   for printing an overview of the inputdata to file inputout.out set at: " "%inputdatatxt%";
 PUT / " - Option 'printfiles'     for printing various simulation results to folder output set at: " "%printfiles%";
