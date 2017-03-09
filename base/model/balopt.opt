@@ -53,7 +53,7 @@ $setglobal CASEID BASE
 * Exactly one of the following Setgbobals must be assigned yes.
 *
 * bb1: use model BALBASE1: optimisation simultaneuosly for all (S,T) in a year, exogenous investments.
-$setglobal bb1  yes
+$setglobal bb1 yes
 *!option yes      !notif %BB2%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb2: use model BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
 $setglobal bb2
@@ -61,7 +61,7 @@ $setglobal bb2
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
 $setglobal bb3
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
-$setglobal bb4
+$setglobal bb4  
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
 
 
@@ -380,6 +380,9 @@ $ifi %SAVEPOINTVALUE%==1  execute "del %relpathModel%*.gdx";
 
 
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
+*!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
+
+$setglobal MERGEDSAVEPOINTRESULTS2SQLITE yes
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
 

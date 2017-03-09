@@ -3106,6 +3106,10 @@ $ifi %COMPARECASE%==NONE
 $ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-Results.gdx"';
 $ifi not %COMPARECASE%==NONE
 $ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-Compare.gdx"';
+$ifi %COMPARECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2SQLITE -i "%relpathoutput%%CASEID%-Results.gdx" -o "%relpathoutput%%CASEID%-Results.db"' ;
+$ifi not %COMPARECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2SQLITE -i "%relpathoutput%%CASEID%-Compare.gdx"-o "%relpathoutput%%CASEID%-Results.db"' ;
 
 
 *--- End: Results collection and comparison ------------------------------------
