@@ -2289,32 +2289,36 @@ $ifi %X3V%==yes $INCLUDE "../../base/addons/x3v/model/x3vgdx.inc";
 * Merge simulation years:
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "gdxmerge %relpathModel%..\output\temp\*.gdx";
 
-* Rename merged.gdx to case identification.
-*$ifi %GDXMERGEYMODEL%==yes  execute "move merged.gdx %relpathGDXYMODEL%%CASEID%.gdx";
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "move merged.gdx %CASEID%.gdx";
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "gdxmerge %CASEID%.gdx";
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "move merged.gdx %relpathoutput%%CASEID%-Results.gdx";
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "move %CASEID%.gdx %relpathoutput%%CASEID%.gdx";
-$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute "=gdx2access %relpathoutput%%CASEID%-Results.gdx";
+*--- Results collection for this case ------------------------------------------
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\temp\*.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%.gdx"';
 
-$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute "=GDX2SQLITE -i %relpathoutput%%CASEID%-Results.gdx -o %relpathoutput%%CASEID%-Results.db";
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\%CASEID%.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-results.gdx"'
 
-$ifi %comparewithbase%==yes   putclose  fileCOMPAREWITHBASEbat "move  " "%relpathModel%""..\..\output\BASE.gdx "  "%relpathoutput%BASE.gdx";
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-results.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutput%%CASEID%-results.gdx" -o "%relpathoutput%%CASEID%-results.db"';
 
-*--- End: Results collection and comparison ------------------------------------
+*--- Results collection and comparison for differents cases --------------------
 
-$ifi %INPUTDATA2GDX%==yes execute 'move "%relpathModel%..\output\temp\1INPUT.gdx" "%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
-* Transfer inputdata a seperate Access file:
-$ifi %INPUTDATAGDX2MDB%==yes execute "=GDX2ACCESS %relpathInputdata2GDX%INPUTDATAOUT.gdx";
-* Transfer to Excel, read the identifiers to be transferred from file inputdatagdx2xls.txt:
-* NOTWORKING (i.e. you MUST have "$setglobal INPUTDATAGDX2XLS"): Note:  GAMS version 22.7 and later have better support for this....
-$ifi %INPUTDATAGDX2XLS%==yes  execute  "GDXXRW.EXE Input=%relpathInputdata2GDX%INPUTDATAOUT.gdx  Output=%relpathInputdata2GDX%INPUTDATAOUT.xls  @%relpathModel%inputdatagdx2xls.txt";
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%.gdx" "%relpathModel%..\..\%MERGEWITH%\output\%MERGEWITH%.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-resmerged.gdx"';
 
-$ifi %COMPARECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2SQLITE -i "%relpathoutput%%CASEID%-Results.gdx" -o "%relpathoutput%%CASEID%-Results.db"' ;
-$ifi not %COMPARECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2SQLITE -i "%relpathoutput%%CASEID%-Compare.gdx"-o "%relpathoutput%%CASEID%-Results.db"' ;
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-resmerged.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutput%%CASEID%-resmerged.gdx" -o "%relpathoutput%%CASEID%-resmerged.db"';
 
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%DIFFWITH%\output\%DIFFWITH%-results.gdx"';
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move diffile.gdx "%relpathoutput%%CASEID%-diff.gdx"';
 
 *----- End of model:------------------------------------------------------------
 $label ENDOFMODEL

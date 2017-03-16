@@ -45,6 +45,13 @@ $ifi     exist 'balopt.opt'  $include                  'balopt.opt';
 $ifi not exist 'balopt.opt'  $include '../../base/model/balopt.opt';
 
 
+* If merging of savepoint files is to be performed,
+* make sure that there are no gdx files initially in applied folders:
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm *.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ..\output\temp\*.gdx";
+$ifi     dexist "..\output\temp"   execute 'rm "..\output\temp\*.*"';
+$ifi not dexist "..\output\temp"   execute 'md "..\output\temp"';
+
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 *---- Some generally applicable stuff: -----------------------------------------
@@ -1665,7 +1672,10 @@ $ifi exist '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"' rm '"%relpathInputdata2GDX
 
 $ifi %INPUTDATA2GDX%==yes execute_unload '%relpathInputdata2GDX%INPUTDATAOUT.gdx';
 * Transfer inputdata a seperate Access file (only possible if %INPUTDATA2GDX%==yes):
+
 $ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
+
+$ifi %MERGEINPUTDATA%==yes execute_unload '..\output\temp\1INPUT.gdx';
 
 *-------------------------------------------------------------------------------
 * End: Possibly write input data, prepare output file possibilities
@@ -3110,16 +3120,29 @@ $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgdx.inc';
 
 *--- Results collection for this case ------------------------------------------
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\temp\*.gdx"';
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-Results.gdx"';
-$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-Results.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%.gdx"';
+
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\%CASEID%.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-results.gdx"'
+
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-results.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutput%%CASEID%-results.gdx" -o "%relpathoutput%%CASEID%-results.db"';
 
 *--- Results collection and comparison for differents cases --------------------
+
 $ifi not %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%MERGEWITH%\output\%MERGEWITH%-results.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%.gdx" "%relpathModel%..\..\%MERGEWITH%\output\%MERGEWITH%.gdx"';
 $ifi not %MERGECASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-resmerged.gdx"';
+
 $ifi not %MERGECASE%==NONE
 $ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-resmerged.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutput%%CASEID%-resmerged.gdx" -o "%relpathoutput%%CASEID%-resmerged.db"';
 
 $ifi not %DIFFCASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%DIFFWITH%\output\%DIFFWITH%-results.gdx"';

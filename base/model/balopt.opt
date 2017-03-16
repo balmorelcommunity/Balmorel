@@ -57,7 +57,7 @@ $setglobal bb1 yes
 $setglobal bb2
 *!option yes      !notif %BB1%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
-$setglobal bb3
+$setglobal bb3 
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
 $setglobal bb4  
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
@@ -231,7 +231,7 @@ $setglobal relpathtemp "..\output\temp\"
 * ------------------------------------------------------------------------------
 * For model BB3 it is possible to use values found from BB1 or BB2 solutions to specify use of hydro power
 * that corresponds (possibly approximately) to that found in a BB1 or BB2 solution.
-$setglobal HYRSBB123 none
+$setglobal HYRSBB123 quant
 *!option quant         !Text "Use seasonal quantities of hydro generation (from HYRSG.gdx??) in BB3 ('primal decomposition')"
 *!mayif %BB3%==yes
 *!option price         !Text "Use seasonal prices for hydro generation (from WATERVAL.gdx) in BB3 ('dual decomposition')"
@@ -299,6 +299,10 @@ $setglobal INPUTDATAGDX2MDB
 * Note: if you have established a link from another Access database to inputdataout.mdb
 * close all tables in it before executing Balmorel in order to ensure updating of the links.
 
+* Merge input data with the output into the gdx file %CASEID%.gdx
+$setglobal MERGEINPUTDATA yes
+*!option yes 
+
 
 * Transfer the input data in gdx format to Microsoft Excel format:
 * NOTWORKING: presently.
@@ -337,6 +341,7 @@ $setglobal PRINTSEPARATOR ';'
 * SAVEPOINTVALUE, cf. above
 * MERGESAVEPOINTRESULTS
 * MERGEDSAVEPOINTRESULTS2MDB
+* MERGEDSAVEPOINTRESULTS2SQLITE
 * MERGEDSAVEPOINTRESULTS2XLS: presently not working, we are waiting for GAMS version 22.7, which has better support for this.
 * MERGECASE/MERGEWITH
 * DIFFCASE/DIFFWITH
