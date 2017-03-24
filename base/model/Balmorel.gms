@@ -1,13 +1,28 @@
 * File Balmorel.gms
 $TITLE Balmorel version 3.03 (June 2016; latest 20160915)
 
-SCALAR IBALVERSN 'This version of Balmorel' /303.20161003/;
+* Efforts have been made to make a good model.
+* However, most probably the model is incomplete and subject to errors.
+* It is distributed with the idea that it will be usefull anyway,
+* and with the purpose of getting the essential feedback,
+* which in turn will permit the development of improved versions
+* to the benefit of other user.
+* Hopefully it will be applied in that spirit.
+
+* All GAMS code of the Balmorel model is distributed under ICS license,
+* see the license file in the base/model folder.
+
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+
+SCALAR IBALVERSN 'This version of Balmorel' /303.20170224/;
 
 * This is a preliminary version of Balmorel 3.03.
 * It is intended for review and commenting.
 * See a short list of changes since previous version 3.02 in base/documentation/Balmorel303.txt.
-* It is scheduled that a final version 3.03 will be available in August 2016.
-
+* It is scheduled that a final version 3.03 will be available early 2017.
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -29,14 +44,13 @@ $ifi not exist 'balgams.opt'  $include  '../../base/model/balgams.opt'
 $ifi     exist 'balopt.opt'  $include                  'balopt.opt';
 $ifi not exist 'balopt.opt'  $include '../../base/model/balopt.opt';
 
-*-------------------------------------------------------------------------------
-*-------------------------------------------------------------------------------
-* In case of Model Balbase4 the following included file substitutes the remaining part of the present file Balmorel.gms:
-$ifi %BB4%==yes $include '../../base/model/Balmorelbb4.inc';
-$ifi %BB4%==yes $goto ENDOFMODEL
-*-------------------------------------------------------------------------------
-*-------------------------------------------------------------------------------
 
+* If merging of savepoint files is to be performed,
+* make sure that there are no gdx files initially in applied folders:
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm *.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ..\output\temp\*.gdx";
+$ifi     dexist "..\output\temp"   execute 'rm "..\output\temp\*.*"';
+$ifi not dexist "..\output\temp"   execute 'md "..\output\temp"';
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -45,8 +59,6 @@ $ifi %BB4%==yes $goto ENDOFMODEL
 
 
 * The following may be used in display, put or execute_unload statements (the text, not the value, holds relevant information)
-SCALAR SystemDate     "%system.date%"                 /NA/;
-SCALAR SystemTime     "%system.time%"                 /NA/;
 SCALAR SystemDateTime "%system.date%,  %system.time%" /NA/;
 
 * Displaying only a text string will not be accessible through the 'table of content' on the .lst file, therefore this
@@ -73,12 +85,24 @@ SCALAR ISCALAR3   '(Context dependent)';
 SCALAR ISCALAR4   '(Context dependent)';
 SCALAR ISCALAR5   '(Context dependent)';
 
-* This file contains initialisations of printing of log and error messages:
+* Initialisations of printing of log and error files and messages:
 $INCLUDE '../../base/logerror/logerinc/error1.inc';
+
 
 *-------------------------------------------------------------------------------
 *---- End: Some generally applicable stuff -------------------------------------
 *-------------------------------------------------------------------------------
+
+
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+* In case of Model Balbase4 the following included file substitutes the remaining part of the present file Balmorel.gms:
+$ifi %BB4%==yes $include '../../base/model/Balmorelbb4.inc';
+$ifi %BB4%==yes $goto ENDOFMODEL
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+
 
 
 *-------------------------------------------------------------------------------
@@ -1541,7 +1565,7 @@ $ifi %DHFPCALIB%==yes  + DHFP_CALIB(IA,S,T)
 ;
 
 * Demand of electricity (MW) and heat (MW) current simulation year:
-PARAMETER IDE_T_Y(RRR,S,T)      'Nominal electricity demand (MW) time segment (S,T)   current simulation year',
+PARAMETER IDE_T_Y(RRR,S,T)      'Nominal electricity demand (MW) time segment (S,T) current simulation year',
           IDH_T_Y(AAA,S,T)      'Nominal heat demand (MW) time segment (S,T) current simulation year';
 * Generation capacity (MW) at the beginning of current simulation year,
 * specified by GKFX and by accumulated endogeneous investments, respectively:
@@ -1646,10 +1670,12 @@ $ifi %inputdatatxt%== yesnosolve $goto ENDOFMODEL
 * Unload input data to gdx file:
 $ifi exist '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"' rm '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"'
 
-* Note that the execute_unload command will also identify variables and equations
 $ifi %INPUTDATA2GDX%==yes execute_unload '%relpathInputdata2GDX%INPUTDATAOUT.gdx';
 * Transfer inputdata a seperate Access file (only possible if %INPUTDATA2GDX%==yes):
+
 $ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
+
+$ifi %MERGEINPUTDATA%==yes execute_unload '..\output\temp\1INPUT.gdx';
 
 *-------------------------------------------------------------------------------
 * End: Possibly write input data, prepare output file possibilities
@@ -1695,10 +1721,11 @@ GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = 0;
 * Note that this is a compile time operation, such that only the 'direct' data
 * definitions (and no assignments) are reflected:
 
-execute_unload '%relpathModel%..\output\temp\1INPUT_B303.gdx';
+
+$include "..\..\base\addons\_hooks\checkassumptions.inc"
 
 * No need to proceed further if there are compilation errors in the data:
-$ifi not errorfree $abort "Balmorel execution aborted because of data errors"
+$ifi not errorfree $abort "Balmorel execution aborted because of data errors (Message from Balmorel.gms)"
 
 *------------------------------
 
@@ -1737,6 +1764,7 @@ POSITIVE VARIABLE VQESTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasona
 POSITIVE VARIABLE VQHSTOVOLT(AAA,S,T,IPLUSMINUS)   'Feasibility in intra-seasonal heat storage equation VQHSTOVOLT (MWh)';
 POSITIVE VARIABLE VQHSTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasonal heat storage equation VQHSTOVOLTS (MWh)';
 POSITIVE VARIABLE VQHYRSSEQ(AAA,S,IPLUSMINUS)      'Feasibility of hydropower reservoir equation QHYRSSEQ (MWh)';
+POSITIVE VARIABLE VQHYRSMINMAXVOL(AAA,S,IPLUSMINUS)'Feasibility of hydropower reservoir minimum (IPLUSMINUS) and maximum (IPLUSMINUS) content (MWh)';
 POSITIVE VARIABLE VQGEQCF(C,FFF,IPLUSMINUS)        'Feasibility in Requered fuel usage per country constraint (MWh)'
 POSITIVE VARIABLE VQGMINCF(C,FFF)                  'Feasibility in Minimum fuel usage per country constraint (MWh)'
 POSITIVE VARIABLE VQGMAXCF(C,FFF)                  'Feasibility in Maximum fuel usage per country constraint (MWh)'
@@ -2073,7 +2101,7 @@ $ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3
                +SUM((IA,FFF)$IGMINF_Y(IA,FFF), VQGMAXAF(IA,FFF)    )
                +SUM((IA,FFF)$IGMAXF_Y(IA,FFF), VQGMINAF(IA,FFF)    )
 
-               +SUM((IRE,IRI,S,T)$((IXKINI_Y(IRE,IRI) OR IXKN(IRI,IRE) OR IXKN(IRE,IRI)) AND (IXKINI_Y(IRE,IRI) NE INF) ), VQXK(IRE,IRI,S,T,'IPLUS')+VQXK(IRE,IRI,S,T,'IMINUS') )
+               +SUM((IRE,IRI,IS3,T)$((IXKINI_Y(IRE,IRI) OR IXKN(IRI,IRE) OR IXKN(IRE,IRI)) AND (IXKINI_Y(IRE,IRI) NE INF) ), VQXK(IRE,IRI,IS3,T,'IPLUS')+VQXK(IRE,IRI,IS3,T,'IMINUS') )
               )
 
 * Add-on objective function contributions
@@ -2084,11 +2112,11 @@ $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htcosts.inc';
 * This file contains district heating induced additions to the objective function.
 $ifi %FV%==yes $include '../../base/addons/Fjernvarme/cost_fv.inc';
 * Unit commitmen add-on
-$ifi %UnitComm%==yes      $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
+$ifi %UnitComm%==yes    $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
 
-$ifi %POLICIES%==yes   $include '../../base/addons/policies/pol_cost.inc';
-$ifi %SYSTEMCOST%==yes   $include '../../base/addons/SystemCost/cost_syscost.inc';
-$ifi %UnitComm%==yes      $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
+$ifi %POLICIES%==yes    $include '../../base/addons/policies/pol_cost.inc';
+$ifi %SYSTEMCOST%==yes  $include '../../base/addons/SystemCost/cost_syscost.inc';
+$ifi %UnitComm%==yes    $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
 $ifi %BB3%==yes  $ifi %HYRSBB123%==price      $include  '../../base/addons/hyrsbb123/hyrsbb123addobj.inc'
 $ifi %BB3%==yes  $ifi %HYRSBB123%==quantprice $include  '../../base/addons/hyrsbb123/hyrsbb123addobj.inc'
 
@@ -2161,7 +2189,7 @@ $ifi %FV%==yes $include '../../base/addons/Fjernvarme/heatbalance_fv.inc';
 
 * Fuel consumption rate.
 QGFEQ(IA,G,IS3,T)$IAGK_Y(IA,G) ..
-     VGF_T(IA,G,IS3,T)
+    VGF_T(IA,G,IS3,T)
   =E=
    ( (VGE_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGNOTETOH(G) AND IGE(G))
     +(GDATA(G,'GDCV')*VGH_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGH(G)
@@ -2175,7 +2203,7 @@ $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_qgfeqadd.inc'
 
 * Fuel consumption rate calculated on new units.
 QGFNEQ(IA,G,IS3,T)$IAGKN(IA,G) ..
-      VGFN_T(IA,G,IS3,T)
+    VGFN_T(IA,G,IS3,T)
   =E=
    ( (VGEN_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGNOTETOH(G) AND IGE(G))
     +(GDATA(G,'GDCV')*VGHN_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGH(G)
@@ -2376,30 +2404,30 @@ QHYMAXG(IA,IS3,T)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS))..
 
 * Hydro storage within limits:
 
-QHYRSMINVOL(IA,S)$(HYRSDATA(IA,'HYRSMINVOL',S) and SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) or IAGKN(IA,IGHYRS)),1))..
+QHYRSMINVOL(IA,IS3)$(HYRSDATA(IA,'HYRSMINVOL',IS3) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
 
-      VHYRS_S(IA,S) =G= HYRSDATA(IA,'HYRSMINVOL',S) * WTRRSFLH(IA) *
+      VHYRS_S(IA,IS3) =G= HYRSDATA(IA,'HYRSMINVOL',IS3) * WTRRSFLH(IA) *
         (SUM(IGHYRS,(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
-        -VQHYRSSEQ(IA,S,'IMINUS'));
+        -VQHYRSMINMAXVOL(IA,IS3,'IMINUS'));
 
 * Hydro reservoir content - maximum level
 
-QHYRSMAXVOL(IA,S)$(HYRSDATA(IA,'HYRSMAXVOL',S) and SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) or IAGKN(IA,IGHYRS)),1))..
+QHYRSMAXVOL(IA,IS3)$(HYRSDATA(IA,'HYRSMAXVOL',IS3) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
 
-       HYRSDATA(IA,'HYRSMAXVOL',S) * WTRRSFLH(IA) *
+       HYRSDATA(IA,'HYRSMAXVOL',IS3) * WTRRSFLH(IA) *
         (SUM(IGHYRS,(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
-        -VQHYRSSEQ(IA,S,'IPLUS'))=G= VHYRS_S(IA,S);
+        -VQHYRSMINMAXVOL(IA,IS3,'IPLUS'))=G= VHYRS_S(IA,IS3);
 
 *------------ Short term heat and electricity storages:-------------------------
 
-QESTOVOLT(IA,S,T)$(SUM(IGESTO, IAGK_Y(IA,IGESTO)+IAGKN(IA,IGESTO)) AND IS3(S))..
-    VESTOVOLT(IA,S,T++1) =E= VESTOVOLT(IA,S,T)
-  + (IHOURSINST(S,T)*(CARD(S)/CARD(SSS))/CYCLESINS(S))*
-  ( VESTOLOADT(IA,S,T)
-  - SUM(IGESTO$IAGK_Y(IA,IGESTO), VGE_T(IA,IGESTO,S,T)/GDATA(IGESTO,'GDFE'))
-  - SUM(IGESTO$IAGKN(IA,IGESTO),VGEN_T(IA,IGESTO,S,T)/GDATA(IGESTO,'GDFE'))
+QESTOVOLT(IA,IS3,T)$SUM(IGESTO, IAGK_Y(IA,IGESTO)+IAGKN(IA,IGESTO))..
+    VESTOVOLT(IA,IS3,T++1) =E= VESTOVOLT(IA,IS3,T)
+  + (IHOURSINST(IS3,T)*(CARD(S)/CARD(SSS))/CYCLESINS(IS3))*
+  ( VESTOLOADT(IA,IS3,T)
+  - SUM(IGESTO$IAGK_Y(IA,IGESTO), VGE_T(IA,IGESTO,IS3,T)/GDATA(IGESTO,'GDFE'))
+  - SUM(IGESTO$IAGKN(IA,IGESTO),VGEN_T(IA,IGESTO,IS3,T)/GDATA(IGESTO,'GDFE'))
   )
-  - VQESTOVOLT(IA,S,T,'IPLUS') + VQESTOVOLT(IA,S,T,'IMINUS')
+  - VQESTOVOLT(IA,IS3,T,'IPLUS') + VQESTOVOLT(IA,IS3,T,'IMINUS')
 ;
 
 QESTOVOLTS(IA,S,T)$(SUM(IGESTOS, IAGK_Y(IA,IGESTOS)+IAGKN(IA,IGESTOS)))..
@@ -2413,15 +2441,15 @@ QESTOVOLTS(IA,S,T)$(SUM(IGESTOS, IAGK_Y(IA,IGESTOS)+IAGKN(IA,IGESTOS)))..
    - VQESTOVOLTS(IA,S,T,'IPLUS') + VQESTOVOLTS(IA,S,T,'IMINUS')
 ;
 
-QHSTOVOLT(IA,S,T)$(SUM(IGHSTO, IAGK_Y(IA,IGHSTO)+IAGKN(IA,IGHSTO)))..
-    VHSTOVOLT(IA,S,T)
-  + (IHOURSINST(S,T)*(CARD(S)/CARD(SSS))/CYCLESINS(S))*
-  (VHSTOLOADT(IA,S,T)
-  - SUM(IGHSTO$IAGK_Y(IA,IGHSTO), VGH_T(IA,IGHSTO,S,T)/GDATA(IGHSTO,'GDFE'))
-  - SUM(IGHSTO$IAGKN(IA,IGHSTO), VGHN_T(IA,IGHSTO,S,T)/GDATA(IGHSTO,'GDFE'))
+QHSTOVOLT(IA,IS3,T)$(SUM(IGHSTO, IAGK_Y(IA,IGHSTO)+IAGKN(IA,IGHSTO)))..
+    VHSTOVOLT(IA,IS3,T)
+  + (IHOURSINST(IS3,T)*(CARD(S)/CARD(SSS))/CYCLESINS(IS3))*
+  (VHSTOLOADT(IA,IS3,T)
+  - SUM(IGHSTO$IAGK_Y(IA,IGHSTO), VGH_T(IA,IGHSTO,IS3,T)/GDATA(IGHSTO,'GDFE'))
+  - SUM(IGHSTO$IAGKN(IA,IGHSTO), VGHN_T(IA,IGHSTO,IS3,T)/GDATA(IGHSTO,'GDFE'))
   )
-    =E=       VHSTOVOLT(IA,S,T++1)
-  - VQHSTOVOLT(IA,S,T,'IPLUS') + VQHSTOVOLT(IA,S,T,'IMINUS')
+    =E=       VHSTOVOLT(IA,IS3,T++1)
+  - VQHSTOVOLT(IA,IS3,T,'IPLUS') + VQHSTOVOLT(IA,IS3,T,'IMINUS')
 ;
 
 
@@ -2541,7 +2569,7 @@ QKFUELR(IR,FFF)$FKPOT(IR,FFF)..
 
 QKFUELA(IA,FFF)$FKPOT(IA,FFF) ..
         SUM(IAGK_Y(IA,G)$IGF(G,FFF),  IGKVACCTOY(IA,G))
-      + SUM(IAGK_Y(IA,G)$IGF(G,FFF), IGKFXYMAX(IA,G))
+      + SUM(IAGK_Y(IA,G)$IGF(G,FFF),  IGKFXYMAX(IA,G))
       + SUM(IAGKN(IA,G)$IGF(G,FFF),   VGKN(IA,G))
         =L=  FKPOT(IA,FFF);
 
@@ -2997,7 +3025,10 @@ MODEL BALBASE3 'Balmorel model without endogeneous investments, simulating each 
                                 QGGETOH
                                 QGCBGBPRBYPASS1
                                 QGCBGBPRBYPASS2
-*--- Storage restrictions ------------------------------------------------------
+*--- Storage bounds, hydro -----------------------------------------------------
+                                QHYRSMINVOL
+                                QHYRSMAXVOL
+*--- Storage balance, intra-season only  ---------------------------------------
                                 QESTOVOLT
                                 QHSTOVOLT
 *--- Transmission capacity -----------------------------------------------------
@@ -3087,35 +3118,36 @@ $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgdx.inc';
 *--- End: Results which can be transfered between simulations are placed here --
 
 
-*--- Results collection and comparison -----------------------------------------
-* Merge simulation years:
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathModel%..\output\temp\*.gdx"';
+*--- Results collection for this case ------------------------------------------
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\temp\*.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%.gdx"';
 
-* Rename merged.gdx to case identification.
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%CASEID%.gdx"';
-$ifi %COMPARECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%CASEID%.gdx"';
-$ifi not %COMPARECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%CASEID%.gdx" "%relpathModel%..\..\%COMPAREWITH%\output\%COMPARECASE%.gdx"';
-$ifi %COMPARECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-Results.gdx"';
-$ifi not %COMPARECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-Compare.gdx"';
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move %CASEID%.gdx "%relpathoutput%%CASEID%.gdx"';
-$ifi %COMPARECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-Results.gdx"';
-$ifi not %COMPARECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-Compare.gdx"';
-$ifi %COMPARECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2SQLITE -i "%relpathoutput%%CASEID%-Results.gdx" -o "%relpathoutput%%CASEID%-Results.db"' ;
-$ifi not %COMPARECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2SQLITE -i "%relpathoutput%%CASEID%-Compare.gdx"-o "%relpathoutput%%CASEID%-Results.db"' ;
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\%CASEID%.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-results.gdx"'
 
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-results.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutput%%CASEID%-results.gdx" -o "%relpathoutput%%CASEID%-results.db"';
 
-*--- End: Results collection and comparison ------------------------------------
-$ifi %INPUTDATA2GDX%==yes execute 'move "%relpathModel%..\output\temp\1INPUT.gdx" "%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
-* Transfer inputdata a seperate Access file:
-$ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
+*--- Results collection and comparison for differents cases --------------------
+
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%.gdx" "%relpathModel%..\..\%MERGEWITH%\output\%MERGEWITH%.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-resmerged.gdx"';
+
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%-resmerged.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutput%%CASEID%-resmerged.gdx" -o "%relpathoutput%%CASEID%-resmerged.db"';
+
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%DIFFWITH%\output\%DIFFWITH%-results.gdx"';
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move diffile.gdx "%relpathoutput%%CASEID%-diff.gdx"';
 
 
 *----- End of model:------------------------------------------------------------
@@ -3125,8 +3157,9 @@ $include "..\..\base\addons\_hooks\endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
 
 
-* Sometimes convenient to have it all (most recent values) at this point
-execute_unload "all_endofmodel.gdx";
+* Sometimes convenient to have it all (most recent values) at this point.
+* However, it may be detrimental to e.g. merging of gdx files, so better move to other place.
+* execute_unload "all_endofmodel.gdx";
 
 *----- End of file:------------------------------------------------------------
 $label endoffile
