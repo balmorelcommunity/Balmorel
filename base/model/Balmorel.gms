@@ -543,6 +543,7 @@ $if not EXIST '../data/gdata.inc' $INCLUDE '../../base/data/gdata.inc';
 
 *-------------------------------------------------------------------------------
 * Definitions of internal sets relative to technologies,
+* The sets are defined based on information in PARAMETER GDATA.
 
 * The following are convenient internal subsets of generation technologies:
 
@@ -1363,12 +1364,11 @@ $if not EXIST '../data/PENALTYQ.inc' $INCLUDE '../../base/data/PENALTYQ.inc';
 *-------------------------------------------------------------------------------
 * Reduce size of the large parameters:
 DE_VAR_T(RRR,SSS,TTT)$(not IR(RRR)) = 0;
-DE_VAR_T(RRR,SSS,TTT)$(not IR(RRR)) = 0;
 DH_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 X3FX_VAR_T(RRR,SSS,TTT)$(not IR(RRR)) = 0;
 WND_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 SOLE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
-SOLE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
+SOLH_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 WAVE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 WTRRRVAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 
@@ -1433,7 +1433,6 @@ GDATA(IGHOB,'GDCV') = 1;
 * Specifying the relation between technology type and fuel type in IGF:
 
 IGF(G,FFF)=YES$(GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'));
-IGF(G,FFF)=YES$(GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDNB'));   /* This assignent line may in future versions become invalid, only fuels Acronyms will remain supported. */
 IGF(G,FFF)$(GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'))=YES;
 
 PARAMETER IGKRATE(AAA,G,S,T)     "Rating of technology capacities (non-negative, typically less than or equal to 0); default/1/, eps for 0)";
