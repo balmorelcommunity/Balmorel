@@ -197,6 +197,7 @@ PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics';
 
 *-------------------------------------------------------------------------------
 * Definitions of internal sets relative to technologies,
+* The sets are defined based on information in PARAMETER GDATA.
 
 * The following are convenient internal subsets of generation technologies:
 
@@ -207,7 +208,7 @@ SET IGHOB(G)               'Heat-only boilers';                                 
 SET IGETOH(G)              'Electric heaters, heatpumps, electrolysis plants';  !! Corresponding to acronym GETOH
 SET IGHSTO(G)              'Intra-seasonal heat storage technologies';          !! Corresponding to acronym GHSTO
 SET IGHSTOS(G)             'Inter-seasonal heat storage technologies';          !! Corresponding to acronym GHSTOS
-SET IGHSTOALL(G)           'All heat storage technologies';
+SET IGHSTOALL(G)           'All heat storage technologies (intra- plus inter-seasonal) (option dependent)';
 SET IGESTO(G)              'Intra-seasonal electricity storage technologies';   !! Corresponding to acronym GESTO
 SET IGESTOS(G)             'Inter-seasonal electricity storage technologies';   !! Corresponding to acronym GESTOS
 SET IGESTOALL(G)           'All electricity storage technologies (intra- plus inter-seasonal) (option dependent)';
@@ -508,6 +509,7 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
 
    IGKENOSTO(G)     =   IGKE(G)
                          -IGESTO(G);
+                         -IGESTOS(G);
 
    IGKFIND(G)  = YES$(GDATA(G,'GDKVARIABL') EQ 1);
    IGKKNOWN(G) = NOT IGKFIND(G);
@@ -561,9 +563,9 @@ $ifi %bb3%==yes $include '../../base/addons/hyrsbb123/hyrsbb123includebb12data.i
 
 SCALAR PENALTYQ  'Penalty on violation of equation (non-negative)';
 
-$ifi %BB4%==yes SET YMODEL "YMODEL is a set used to derive the years from Y in each Balbase4 model";
-$ifi %BB4%==yes ALIAS(YMODEL, IYMODEL4)
-$ifi %BB4%==yes PARAMETER YMODELDELTA(YMODEL) "Number of years between a year and the preceding year represented in model Balbase4 ('number' means difference between the ord in Y)";
+SET YMODEL "YMODEL is a set used to derive the years from Y in each Balbase4 model";
+ALIAS(YMODEL, IYMODEL4)
+PARAMETER YMODELDELTA(YMODEL) "Number of years between a year and the preceding year represented in model Balbase4 ('number' means difference between the ord in Y)";
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFCODELISTING%
 
@@ -595,16 +597,15 @@ ALIAS (Y,IYALIAS);
 
 ALIAS (S,ISALIAS);
 ALIAS (T,ITALIAS);
-$ifi %BB4%==yes ALIAS (Y,IYALIAS44);        !! TODO name
-$ifi %BB4%==yes ALIAS (Y,IY402);            !! IY402  TODO  name
-$ifi %BB4%==yes SET IY411(Y)                'IY411 The years in current Balbase4 model';
-$ifi %BB4%==yes SET IY410(Y)                'IY410 The years in the current Balbase4 model except the last year' ;
-$ifi %BB4%==yes SET IY401(Y)                'IY401 The years in the current Balbase4 model except the first year' ;
-$ifi %BB4%==yes SET IY411FIRST(Y)           "The first year in the current Balbase4 model";
-$ifi %BB4%==yes PARAMETER IY4XINVCOSTWEIGHT(Y)    "Discounted weight of future annuity payments on transmission investment relative to the first year in current BB4 model (~)";
-$ifi %BB4%==yes SET IY411PREVY(Y,Y)         "For any given element in IY411 (index 1): the previous element in Y (index 2)";
-$ifi %BB4%==yes SET IYFIRST(Y)              "The first year in Y";
-$ifi %BB4%==yes IYFIRST(Y)$(ORD(Y) EQ 1) = YES;
+ALIAS (Y,IYALIAS44);        !! TODO name
+ALIAS (Y,IY402);            !! IY402  TODO  name
+SET IY411(Y)                'IY411 The years in current Balbase4 model';
+SET IY410(Y)                'IY410 The years in the current Balbase4 model except the last year' ;
+SET IY401(Y)                'IY401 The years in the current Balbase4 model except the first year' ;
+SET IY411FIRST(Y)           "The first year in the current Balbase4 model";
+SET IY411PREVY(Y,Y)         "For any given element in IY411 (index 1): the previous element in Y (index 2)";
+SET IYFIRST(Y)              "The first year in Y";
+IYFIRST(Y)$(ORD(Y) EQ 1) = YES;
 
 *-------------------------------------------------------------------------------
 * Application of default data:
@@ -629,7 +630,7 @@ SET IGF(GGG,FFF)   'Relation between technology type and fuel type';
 * Internal scalars:
 
 
-$ifi %BB4%==yes SCALAR IFIRSTYEARNEXTBB4 "First year in the next Balbase4 model";
+SCALAR IFIRSTYEARNEXTBB4 "First year in the next Balbase4 model";
 *------------------------------------------------------------------------------
 * Internal sets:
 
@@ -902,15 +903,17 @@ GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS))) = 0;
 *GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = INF;    Presently not implemented.
 
 
-
+* Discounting
 * One, implicitly given in ANNUITY, represent the companies' perception of financing costs, alternatives, expectations to profit, etc.
 * The other, given as DISCOUNTRATE, represents society's perception of how future years' costs and benefits shall be evaluated today.
 * IDISCOUNTFACTOR gives the relative weight of years.
 PARAMETER IDISCOUNTFACTOR(Y) "Discount factor for weighting future years relative to the first year in Y (~)";
 LOOP(Y$(ORD(Y) EQ 1),ISCALAR1 =  YVALUE(Y));
 IDISCOUNTFACTOR(Y)$Y(Y) = power((DISCOUNTRATE+1),(ISCALAR1-YVALUE(Y)));
-PARAMETER IY4INVCOSTWEIGHT(Y)    "Discounted weight of future annuity payments on an investment this year (~) (not in use)";
-PARAMETER IY4GINVCOSTWEIGHT(Y,G) "Discounted weight of future annuity payments on an investment relative to the first year in present BB4 model (~)";
+
+PARAMETER IY4GINVCOSTWEIGHT(Y,G)  "Discounted weight of future annuity payments on an investment relative to the first year in present BB4 model (~)";
+PARAMETER IY4XINVCOSTWEIGHT(Y)    "Discounted weight of future annuity payments on transmission investment relative to the first year in current BB4 model (~)";
+
 
 * Transfer ID values from data files to internal parameters for domain overloaded IDs.
 * Note that the default value is 1, this is assigned here if nothing or 0 is entered in data file.
@@ -945,8 +948,8 @@ execute_unload '%relpathModel%..\output\temp\1INPUT.gdx';
 * Begin BB4 group
 * SCALAR IORD_YALIAS "The ord() (relative to Y) of the first year of the present Balbase4 model NOT IN USE";
 *SCALAR IYVALUE_YALIAS "";
-$ifi %BB4%==yes PARAMETER ISIMWEIGHT(YMODEL) "Weighting of the individual years in a BB4 model. Presently not in use as intended (used only in BB4overview.inc).";
-$ifi %BB4%==yes PARAMETER IORD_IY(YMODEL)    "The ord of the years Y over which the present Balbase4 model is formulated (used only in BB4overview.inc).";
+PARAMETER ISIMWEIGHT(YMODEL) "Weighting of the individual years in a BB4 model. Presently not in use as intended (used only in BB4overview.inc).";
+PARAMETER IORD_IY(YMODEL)    "The ord of the years Y over which the present Balbase4 model is formulated (used only in BB4overview.inc).";
 ** End BB4 group
 
 
@@ -996,22 +999,22 @@ POSITIVE VARIABLE VQHYMAXG(Y,AAA,S,T,IPLUSMINUS)   "Feasibility of QHYMAXG (MW)"
 
 *POSITIVE VARIABLE VGE2LEVEL(Y,AAA,G,S,DAYTYPE)    "Average load of slowly regulating production (MW)";
 * Exclusively for Balbase4:
-$ifi %BB4%==yes   POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)         "Accumulated new investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
-$ifi %BB4%==yes   POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)       "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
-$ifi %BB4%==yes   POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)   "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
+POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)         "Accumulated new investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
+POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)       "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
+POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)   "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
 *$ifi %BB4%==yes   POSITIVE VARIABLE VXKACCUMGROSS(Y,IRRRE,IRRRI) "RELEVANT? Accumulated new transmission investments this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
 
-$ifi %BB4%==yes   POSITIVE VARIABLE VQGKNACCUMNET(Y,AAA,G,IPLUSMINUS)          "Feasibility in electricity generation capacity accumulation (MW)";
-$ifi %BB4%==yes   POSITIVE VARIABLE VQGKNACCUMGROSS(Y,AAA,G,IPLUSMINUS)        "Feasibility in electricity generation capacity accumulation (MW)";
-$ifi %BB4%==yes   POSITIVE VARIABLE VQXKNACCUMNET(Y,IRRRE,IRRRI,IPLUSMINUS)    "Feasibility in electricity transmission capacity accumulation (MW)";
-$ifi %BB4%==yes   POSITIVE VARIABLE VQXKNACCUMGROSS(Y,IRRRE,IRRRI,IPLUSMINUS)  "Feasibility in electricity transmission capacity accumulation (MW)";
+POSITIVE VARIABLE VQGKNACCUMNET(Y,AAA,G,IPLUSMINUS)          "Feasibility in electricity generation capacity accumulation (MW)";
+POSITIVE VARIABLE VQGKNACCUMGROSS(Y,AAA,G,IPLUSMINUS)        "Feasibility in electricity generation capacity accumulation (MW)";
+POSITIVE VARIABLE VQXKNACCUMNET(Y,IRRRE,IRRRI,IPLUSMINUS)    "Feasibility in electricity transmission capacity accumulation (MW)";
+POSITIVE VARIABLE VQXKNACCUMGROSS(Y,IRRRE,IRRRI,IPLUSMINUS)  "Feasibility in electricity transmission capacity accumulation (MW)";
 
-$ifi %BB4%==yes   POSITIVE VARIABLE VQHYRSMINVOL(Y,AAA,S,IPLUSMINUS)           "Feasibility of QHYRSMINVOL (MWh)";
-$ifi %BB4%==yes   POSITIVE VARIABLE VQHYRSMAXVOL(Y,AAA,S,IPLUSMINUS)           "Feasibility of QHYRSMAXVOL (MWh)";
+POSITIVE VARIABLE VQHYRSMINVOL(Y,AAA,S,IPLUSMINUS)           "Feasibility of QHYRSMINVOL (MWh)";
+POSITIVE VARIABLE VQHYRSMAXVOL(Y,AAA,S,IPLUSMINUS)           "Feasibility of QHYRSMAXVOL (MWh)";
 
-$ifi %BB4%==yes   POSITIVE VARIABLE VQGKE_UP(Y,AAA,G,S,T,IPLUSMINUS)            "Feasibility in electricity generation limited by capacity (MW)";
-$ifi %BB4%==yes   POSITIVE VARIABLE VQGKH_UP(Y,AAA,G,S,T,IPLUSMINUS)            "Feasibility in heat generation limited by capacity (MW)";
-$ifi %BB4%==yes   POSITIVE VARIABLE VQXK_UP(Y,IRRRE,IRRRI,S,T,IPLUSMINUS)      "Feasibility in electricity transmission limited by capacity (MW)";
+POSITIVE VARIABLE VQGKE_UP(Y,AAA,G,S,T,IPLUSMINUS)            "Feasibility in electricity generation limited by capacity (MW)";
+POSITIVE VARIABLE VQGKH_UP(Y,AAA,G,S,T,IPLUSMINUS)            "Feasibility in heat generation limited by capacity (MW)";
+POSITIVE VARIABLE VQXK_UP(Y,IRRRE,IRRRI,S,T,IPLUSMINUS)      "Feasibility in electricity transmission limited by capacity (MW)";
 
 POSITIVE VARIABLE VQKFUEL(Y,CCCRRRAAA,FFF)  "Feasibility in maximum installlable capacity (country, region and area)"
 
@@ -1128,23 +1131,23 @@ EQUATIONS
 
 
 *Balbase4: ---------------------------------------------------------------------
-$ifi %BB4%==yes   QGKNACCUMNET(Y,AAA,G)             "NOT FINISHED Accumulated new investments minus decommissioning of previous investments due to lifetime expiration available at beginning of next year (MW)"
-$ifi %BB4%==yes   QGKNACCUMGROSS(Y,AAA,G)           "Accumulated new investments available at beginning of next year (MW)"
-$ifi %BB4%==yes   QGKE_UP(Y,AAA,G,S,T)              "Capacity constraint on electricity generation (MW)"
-$ifi %BB4%==yes   QGKH_UP(Y,AAA,G,S,T)              "Capacity constraint on heat generation (MW)"
-$ifi %BB4%==yes   QEGKCOMB1UP(Y,AAA,G,S,T)          "capacity constraint on electricity - combination (MW)"
-$ifi %BB4%==yes   QEGKCOMB2UP(Y,AAA,G,S,T)          "capacity constraint on electricity - combination (MW)"
-$ifi %BB4%==yes   QHGKCOMB1UP(Y,AAA,G,S,T)          "capacity constraint on heat - combination (MW)"
-$ifi %BB4%==yes   QHGKCOMB2UP(AAA,G,G,Y,S,T)        "capacity constraint on heat - combination (MW)"
-$ifi %BB4%==yes   QHYRRDISPATCH(Y,AAA,G,S,T)        "Hydro run on river can not be dispatched (MW)"
-$ifi %BB4%==yes   QWNDDISPATCH(Y,AAA,G,S,T)         "Wind power can not be dispatched (MW)"
-$ifi %BB4%==yes   QSOLEDISPATCH(Y,AAA,G,S,T)        "Solar electricity generation can not be dispatched (MW)"
-$ifi %BB4%==yes   QSOLHDISPATCH(Y,AAA,G,S,T)        "Solar heat generation can not be dispatched (MW)"
-$ifi %BB4%==yes   QWAVEDISPATCH(Y,AAA,G,S,T)        "Wave electricity generation can not be dispatched (MW)"
-$ifi %BB4%==yes   QXKN(Y,IRRRE,IRRRI)               "New transmission investment  - NOT IMPLEMENTED PRESENTLYT (MW)"
-$ifi %BB4%==yes   QXKNACCUMNET(Y,IRRRE,IRRRI)       "NOT FINISHED, TODO, Accumulated new transmission investments available at beginning of next year (MW)"
-$ifi %BB4%==yes   QXKNACCUMGROSS(Y,IRRRE,IRRRI)     "Accumulated new transmission investments available at beginning of next year (MW)"
-$ifi %BB4%==yes   QXK_UP(Y,IRRRE,IRRRI,S,T)         "Capacity constraint on electricity transmission (MW)"
+QGKNACCUMNET(Y,AAA,G)             "NOT FINISHED Accumulated new investments minus decommissioning of previous investments due to lifetime expiration available at beginning of next year (MW)"
+QGKNACCUMGROSS(Y,AAA,G)           "Accumulated new investments available at beginning of next year (MW)"
+QGKE_UP(Y,AAA,G,S,T)              "Capacity constraint on electricity generation (MW)"
+QGKH_UP(Y,AAA,G,S,T)              "Capacity constraint on heat generation (MW)"
+QEGKCOMB1UP(Y,AAA,G,S,T)          "capacity constraint on electricity - combination (MW)"
+QEGKCOMB2UP(Y,AAA,G,S,T)          "capacity constraint on electricity - combination (MW)"
+QHGKCOMB1UP(Y,AAA,G,S,T)          "capacity constraint on heat - combination (MW)"
+QHGKCOMB2UP(AAA,G,G,Y,S,T)        "capacity constraint on heat - combination (MW)"
+QHYRRDISPATCH(Y,AAA,G,S,T)        "Hydro run on river can not be dispatched (MW)"
+QWNDDISPATCH(Y,AAA,G,S,T)         "Wind power can not be dispatched (MW)"
+QSOLEDISPATCH(Y,AAA,G,S,T)        "Solar electricity generation can not be dispatched (MW)"
+QSOLHDISPATCH(Y,AAA,G,S,T)        "Solar heat generation can not be dispatched (MW)"
+QWAVEDISPATCH(Y,AAA,G,S,T)        "Wave electricity generation can not be dispatched (MW)"
+QXKN(Y,IRRRE,IRRRI)               "New transmission investment  - NOT IMPLEMENTED PRESENTLYT (MW)"
+QXKNACCUMNET(Y,IRRRE,IRRRI)       "NOT FINISHED, TODO, Accumulated new transmission investments available at beginning of next year (MW)"
+QXKNACCUMGROSS(Y,IRRRE,IRRRI)     "Accumulated new transmission investments available at beginning of next year (MW)"
+QXK_UP(Y,IRRRE,IRRRI,S,T)         "Capacity constraint on electricity transmission (MW)"
 
 *-------------------------------------------------------------------------------
 *----- Any equations declarations for addon to be placed here: -----------------
@@ -1359,6 +1362,9 @@ QEEQ(IY411,IR,IS3,T) ..
     - SUM(IA$RRRAAA(IR,IA), SUM(IGETOH$IAGK_HASORPOT(IY411,IA,IGETOH), VGE_T(IY411,IA,IGETOH,IS3,T)))
     - SUM(IA$RRRAAA(IR,IA), VESTOLOADT(IY411,IA,IS3,T)$SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),1))
     + SUM(IRE$IXK_HASORPOT(IY411,IRE,IR), VX_T(IY411,IRE,IR,IS3,T)*(1-XLOSS(IRE,IR)))
+    - SUM(IA$RRRAAA(IR,IA),SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),VESTOLOADT(IY411,IA,IS3,T)))
+    - SUM(IA$RRRAAA(IR,IA),SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),VESTOLOADTS(IY411,IA,IS3,T)))
+
 $ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VIM_T(IR,X3VPLACE,X3VSTEP,IS3,T)))
 * This file contains transport induced additions to the balance equation(KHED)
 $ifi %TSP%==yes $include "../../base/addons/Transport/TSPQEEQ.inc"
@@ -1386,6 +1392,7 @@ QHEQ(IY411,IA,IS3,T)$(IDH_SUMST(IA) NE 0) ..
    + SUM(IGHH$IAGK_HASORPOT(IY411,IA,IGHH),VGH_T(IY411,IA,IGHH,IS3,T))
    + SUM(IGETOH$IAGK_HASORPOT(IY411,IA,IGETOH),VGH_T(IY411,IA,IGETOH,IS3,T))
    - VHSTOLOADT(IY411,IA,IS3,T)$SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO),1)
+   - VHSTOLOADTS(IY411,IA,IS3,T)$SUM(IGHSTOS$IAGK_HASORPOT(IY411,IA,IGHSTOS),1)
     =E=
      (IDH_T(IY411,IA,IS3,T)
         + SUM(DHF_U1,VDHF_T(IY411,IA,IS3,T,DHF_U1) )
@@ -2030,7 +2037,6 @@ QSOLEDISPATCH(IY411,IA,IGSOLE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLE) AND ISOLESU
          + VGKN(IY411,IA,IGSOLE)$IAGKNY(IY411,IA,IGSOLE)
          + SUM(IY402$IY411PREVY(IY411,IY402),VGKNACCUMNET(IY402,IA,IGSOLE))
                  )  * SOLE_VAR_T(IA,IS3,T) * IGKRATE(IA,IGSOLE,IS3,T)) / ISOLESUMST(IA)
-
 ;
 
 QSOLHDISPATCH(IY411,IA,IGSOLH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLH) AND ISOLHSUMST(IA))..
@@ -2040,9 +2046,8 @@ QSOLHDISPATCH(IY411,IA,IGSOLH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLH) AND ISOLHSU
      + VGKN(IY411,IA,IGSOLH)$IAGKNY(IY411,IA,IGSOLH)
      + SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGSOLH))
                             ) * SOLH_VAR_T(IA,IS3,T) * IGKRATE(IA,IGSOLH,IS3,T))/ ISOLHSUMST(IA)
-
-
 ;
+
 * Wave technology
 QWAVEDISPATCH(IY411,IA,IGWAVE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWAVE) AND IWAVESUMST(IA))..
          VGE_T(IY411,IA,IGWAVE,IS3,T) =L=
@@ -2321,7 +2326,9 @@ $ifi not %DIFFCASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move diffile.gdx "%relpathoutput%%CASEID%-diff.gdx"';
 
 *----- End of model:------------------------------------------------------------
+$include "..\..\base\addons\_hooks\endofmodel_pre.inc"
 $label ENDOFMODEL
+$include "..\..\base\addons\_hooks\endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
 
 

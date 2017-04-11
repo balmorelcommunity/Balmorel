@@ -314,6 +314,13 @@ $setglobal INPUTDATAGDX2XLS
 * Output from model solutions:
 *-------------------------------------------------------------------------------
 
+* A quick way to get (some of) the relevant information is to make a gdx file with all information.
+* This option will provide unloading of all that is available at the end of Balmorel.gms.
+*
+$setglobal all_endofmodelgdx  yes
+*!option yes     !Save the file all_endofmodel.gdx to the model folder
+
+
 * Make some output in text format to show some results of an execution.
 * The detailed code for the writing of the files is given in /output/printout/printinc.
 * Setting "yes" for PRINTFILES will make some standard printout files to folder \output\printout\.

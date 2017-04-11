@@ -2,7 +2,7 @@
 
 * This file is part of the Balmorel model.
 
-* File last time modified 17-05-2002 (rus), 2005.07.31 (hr), 2005.12.17 (hr), 20080414(hr), 20120319(hr), 20120914(hr), 20150312(hr), 20150503(hr), 20150519(hr), 20150703(hr), 20160407(hr), 20160826(hr)
+* File last time modified 17-05-2002 (rus), 2005.07.31 (hr), 2005.12.17 (hr), 20080414(hr), 20120319(hr), 20120914(hr), 20150312(hr), 20150503(hr), 20150519(hr), 20150703(hr), 20160407(hr), 20160826(hr), 20170328(hr)
 * Note: The comments below in this file are not updated to reflect the file strucutre introduced with Balmorel version 3.xx.
 
 
@@ -817,6 +817,29 @@ PUT "   The GDSTOHUNLD-values for technology " IGESTO.TL:32 " is not positive ("
 ERRCOUNT2=ERRCOUNT2+1;
 ));
 IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
+
+* GDLIFETIME should be a positive integer
+ISCALAR5 = 3; !! Maximum number of error messages
+* Is there a value:
+ISCALAR1=ERRCOUNT2;
+LOOP(G$((NOT GDATA(G,'GDLIFETIME')) AND (ERRCOUNT2 LT (ISCALAR1+ISCALAR5))),
+PUT "Error in table GDATA:" ;
+PUT "   The GDLIFETIME value for technology "   G.TL:32 " must be a positive integer - it has no value."   /;
+ERRCOUNT2=ERRCOUNT2+1;
+);
+IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
+* Is it positive and integer:
+ISCALAR1=ERRCOUNT2;
+LOOP(G$((GDATA(G,'GDLIFETIME')) AND (ERRCOUNT2 LT (ISCALAR1+ISCALAR5))),
+IF(((MOD(GDATA(G,'GDLIFETIME'),1) NE 0) OR (GDATA(G,'GDLIFETIME') LT 0)),
+PUT "Error in table GDATA:" ;
+PUT "   The GDLIFETIME value for technology "   G.TL:32 " must be a positive integer, value is " GDATA(G,'GDLIFETIME') "."   /;
+ERRCOUNT2=ERRCOUNT2+1;
+););
+
+IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
+
+
 
 /*
 * GDCB-values should be positive for electricity storages:
