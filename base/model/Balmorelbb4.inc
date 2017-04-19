@@ -1,6 +1,6 @@
 * File BalmorelBB4.inc for handling the Balbase4 model in Balmorel.
-* First version 2009(hr) based on DTU Master project by Morten Middelboe Pedersen and ...  under supervision by Hans Ravn.
-* Present version 20150428(hr), 20150430(Weiming), 20151217(hr), 20160810(hr).
+* First version 2009(hr) based on DTU Master project by Jesper Felstedt & Morten Middelboe Pedersen under supervision by Hans Ravn.
+* Present version 20150428(hr), 20150430(Weiming), 20151217(hr), 20160810(hr), 20170419 (Juan and hr).
 * Thanks to Weiming Xiong, Andreas von Recklinghausen and others for good contributions.
 * The model is still under development.
 * It will be available from www.balmorel.com under open source conditions.
@@ -410,117 +410,6 @@ IS33(S,ISALIAS)$((ORD(S) EQ CARD(S)) AND (ORD(ISALIAS) EQ 1)) = YES; !! CIRCULAR
 
 * The following sets concern combination technologies.
 
-* The following describes the main applications for the subsets:
-*
-* The sets:
-* IGCND,IGBPR,IGEXT,IGHOB,IGETOH,IGHSTO,IGESTO,IGHYRS,IGHYRR,IGWND,IGSOLE,IGSOLH, IGWAVE
-* are directly extracted from GDATA(G,'GDTYPE') and are used to reference technology types.
-*
-* IGHH and IGEE are used in the balance equations and for output control.
-* IGHHNOSTO and IGEENOSTO is not currently used for anything.
-* IGNOTETOH is used for O&M cost in the objective function, in the balance
-* equation, in heat storage balance equations and in various output functions.
-* IGKH and IGKE are used for capacity restrictions and for certain output files.
-* IGKHNOSTO and IGKENOSTO are used for output.
-* IGDISPATCH is used capacity restrictions and output.
-* IGKKNOWN is used to exclude investment options.
-* IGKFIND is used to single out investment options.
-* IGEH is used for CHP specific taxes.
-* IGE and IGH are used all over.
-
-* The sets are defined based on information in PARAMETER GDATA.
-* The specifications of technology type 'GDTYPE' in GDATA may use an acronym or a number.
-* Under most circumstances an acronym is preferable, the list is given above.
-* If an acronym can not be used, use the numbers consistently as seen below.
-
-   IGCND(G)    = YES$((GDATA(G,'GDTYPE') EQ 1)  OR (GDATA(G,'GDTYPE') EQ GCND));
-   IGBPR(G)    = YES$((GDATA(G,'GDTYPE') EQ 2)  OR (GDATA(G,'GDTYPE') EQ GBPR));
-   IGEXT(G)    = YES$((GDATA(G,'GDTYPE') EQ 3)  OR (GDATA(G,'GDTYPE') EQ GEXT));
-   IGHOB(G)    = YES$((GDATA(G,'GDTYPE') EQ 4)  OR (GDATA(G,'GDTYPE') EQ GHOB));
-   IGETOH(G)   = YES$((GDATA(G,'GDTYPE') EQ 5)  OR (GDATA(G,'GDTYPE') EQ GETOH));
-   IGHSTO(G)   = YES$((GDATA(G,'GDTYPE') EQ 6)  OR (GDATA(G,'GDTYPE') EQ GHSTO));
-   IGHSTOS(G)  = YES$((GDATA(G,'GDTYPE') EQ 23) OR (GDATA(G,'GDTYPE') EQ GHSTOS));
-   IGESTO(G)   = YES$((GDATA(G,'GDTYPE') EQ 7)  OR (GDATA(G,'GDTYPE') EQ GESTO));
-   IGESTOS(G)  = YES$(GDATA(G,'GDTYPE') EQ GESTOS);
-   IGHYRS(G)   = YES$((GDATA(G,'GDTYPE') EQ 8)  OR (GDATA(G,'GDTYPE') EQ GHYRS));
-   IGHYRR(G)   = YES$((GDATA(G,'GDTYPE') EQ 9)  OR (GDATA(G,'GDTYPE') EQ GHYRR));
-   IGWND(G)    = YES$((GDATA(G,'GDTYPE') EQ 10) OR (GDATA(G,'GDTYPE') EQ GWND));
-   IGSOLE(G)   = YES$((GDATA(G,'GDTYPE') EQ 11) OR (GDATA(G,'GDTYPE') EQ GSOLE));
-   IGSOLH(G)   = YES$((GDATA(G,'GDTYPE') EQ 12) OR (GDATA(G,'GDTYPE') EQ GSOLH));
-   IGWAVE(G)   = YES$((GDATA(G,'GDTYPE') EQ 22) OR (GDATA(G,'GDTYPE') EQ GWAVE));
-
-* Assignments of IGESTO, IGESTOS, IGHSTO and IGHSTOS may be changed if option stointers has a non-default value.
-$ifi "%stointers%"=="all"  IGESTOS(IGESTO) = YES; IGHSTOS(IGHSTO) = YES;
-$ifi "%stointers%"=="all"  IGESTO(IGESTO) = NO;   IGHSTO(IGHSTO) = NO;
-$ifi "%stointers%"=="none" IGESTO(IGESTOS) = YES; IGHSTO(IGHSTOS) = YES;
-$ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
-
-   IGHHNOSTO(G) = NO;   IGHHNOSTO(IGHOB)   = YES;  IGHHNOSTO(IGSOLH)= YES;
-
-   IGHSTOALL(G) =       IGHSTO(G)
-                         +IGHSTOS(G);
-
-   IGHH(G)      =       IGHHNOSTO(G)
-                         +IGHSTOALL(G);
-
-   IGNOTETOH(G)= NOT IGETOH(G);
-
-   IGDISPATCH(G)    =   IGCND(G)
-                         +IGBPR(G)
-                         +IGEXT(G)
-                         +IGHOB(G)
-                         +IGESTO(G)
-                         +IGHSTO(G)
-                         +IGHSTOS(G)
-                         +IGETOH(G)
-                         +IGHYRS(G);
-
-   IGEE(G)          =   IGCND(G)
-                         +IGHYRS(G)
-                         +IGHYRR(G)
-                         +IGWND(G)
-                         +IGSOLE(G)
-                         +IGWAVE(G)
-                         +IGESTO(G)
-                         +IGESTOS(G);
-
-   IGESTOALL(G) =       IGESTO(G)
-                         +IGESTOS(G);
-
-   IGEENOSTO(G)     =   IGCND(G)
-                         +IGHYRS(G)
-                         +IGHYRR(G)
-                         +IGWND(G)
-                         +IGSOLE(G)
-                         +IGWAVE(G);
-
-   IGKHNOSTO(G)     =   IGETOH(G)
-                         +IGHHNOSTO(G);
-
-   IGKH(G)          =   IGKHNOSTO(G)
-                         +IGHSTOALL(G);
-
-   IGKE(G)          =   IGCND(G)
-                         +IGBPR(G)
-                         +IGEXT(G)
-                         +IGESTO(G)
-                         +IGHYRS(G)
-                         +IGHYRR(G)
-                         +IGWND(G)
-                         +IGSOLE(G)
-                         +IGWAVE(G);
-
-   IGKENOSTO(G)     =   IGKE(G)
-                         -IGESTO(G)
-                         -IGESTOS(G);
-
-   IGKFIND(G)  = YES$(GDATA(G,'GDKVARIABL') EQ 1);
-   IGKKNOWN(G) = NOT IGKFIND(G);
-
-   IGEH(G) = IGBPR(G)+IGEXT(G)+IGETOH(G);
-   IGE(G)=IGEE(G)+IGEH(G);
-   IGH(G)=IGHH(G)+IGEH(G);
-
 * Assignments of IGBYPASS may be changed if option bypass has a non-default value.
 $ifi not %bypass%==yes IGBYPASS(G) = NO;
 
@@ -914,8 +803,6 @@ PARAMETER IDISCOUNTFACTOR(Y) "Discount factor for weighting future years relativ
 LOOP(Y$(ORD(Y) EQ 1),ISCALAR1 =  YVALUE(Y));
 IDISCOUNTFACTOR(Y)$Y(Y) = power((DISCOUNTRATE+1),(ISCALAR1-YVALUE(Y)));
 
-PARAMETER IY4GINVCOSTWEIGHT(Y,G)  "Discounted weight of future annuity payments on an investment relative to the first year in present BB4 model (~)";
-PARAMETER IY4XINVCOSTWEIGHT(Y)    "Discounted weight of future annuity payments on transmission investment relative to the first year in current BB4 model (~)";
 
 
 * Transfer ID values from data files to internal parameters for domain overloaded IDs.
@@ -1204,7 +1091,7 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 * Transmission cost:
 
    + SUM((IRE,IRI)$IXK_HASORPOT(Y,IRE,IRI),
-       SUM((IS3,T), IHOURSINST(IS3,T) * (VX_T(Y,IRE,IRI,IS3,T) * XCOST(IRE,IRI))))*IY4XINVCOSTWEIGHT(Y)  !! wm 20150512
+       SUM((IS3,T), IHOURSINST(IS3,T) * (VX_T(Y,IRE,IRI,IS3,T) * XCOST(IRE,IRI))))
 
 
 * Investment costs, new generation and storage capacity:
@@ -1213,7 +1100,7 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 *   discounted back to the first year in the present BB4 model, this latter is represented by factor IY4GINVCOSTWEIGHT below.
 *   Discounting further back from first year in the present BB4 model to the first year in Y is handled by the factor IDISCOUNTFACTOR(Y) above.
 *   The relative weight of the years is represented by   TODO: sammenlign med SONYstick:
-   + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), IY4GINVCOSTWEIGHT(Y,G)*VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))))
+   + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))))
 
 
 $ifi %AGKNDISC%==yes  $include "../../base/addons/bb4/agkndisc/agkndiscaddqobj.inc";
@@ -2250,6 +2137,7 @@ QOBJ.SCALE=IOF1000000;
 *----- End of definition of models ---------------------------------------------
 *-------------------------------------------------------------------------------
 
+
 $ifi %COMBTECH%==yes  $INCLUDE  "../../base/addons/combtech/comberr2.inc";
 $ifi %BB4%==yes       $INCLUDE  "../../base/addons/BB4/errorBB4.inc";
 
@@ -2280,7 +2168,14 @@ $ifi %CREATETIME%==yes $goto ENDOFMODEL
 $ifi %bb4%==yes $INCLUDE "../../base/addons/BB4/BB4overview.inc";
 
 
+*-------------------------------------------------------------------------------
 $ifi %bb4%==yes $INCLUDE "../../base/model/Balmorelbb4.sim";
+*-------------------------------------------------------------------------------
+
+$ifi %bb4%==yes execute_unload  "../../simex/HYRSG.gdx", HYRSG;
+$ifi %bb4%==yes execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
+$ifi %bb4%==yes execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
+
 
 
 $ifi %MAKEINVEST%==yes execute_unload "../../base/data/GKVACC.gdx", GKVACC;
@@ -2334,9 +2229,6 @@ $label ENDOFMODEL
 $include "..\..\base\addons\_hooks\endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
 
-
-* Sometimes convenient to have it all (with most recent values) at this point
-execute_unload "all_endofmodel.gdx";
 
 DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile: <case>\logerror\logfile.out." ;
 

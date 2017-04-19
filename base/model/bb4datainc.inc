@@ -13,7 +13,9 @@
 * - Acronyms: acronyms for generation technologies are found in Balmorel.gms
 *             acronyms for fuels are found in the data file FFF.inc
 * - Options (also for addon) are used with $ifi statements and option names
-* - The three internal IDs: ICA, IR and IA are assigned in this file, as the only ones.
+* - The IDs for geography internal sets ICA, IR and IA are assigned in this file
+* - The IDs for technology internal sets (IGCND etc.) are assigned in this file
+
 
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%
 * (see file balgams.opt):
@@ -57,8 +59,9 @@ SET C(CCC)    'Countries in the simulation'  %semislash%
 $if     EXIST '../data/C.inc' $INCLUDE         '../data/C.inc';
 $if not EXIST '../data/C.inc' $INCLUDE '../../base/data/C.inc';
 
+* ------------------------------------------------------------------------------
 %ONOFFCODELISTING%
-* (Text and assignment in file dataincBB4.inc:)
+* (Text and assignment of geography related subsets in file dataincBB4.inc:)
 * The three internal IDs: IDs ICA, IR and IA are assigned as early as possible, based on available data.
 * This permits application of ICA, IR and IA rather than RRR and AAA
 * in assignments in all remaining data files (to limit calculation time and storage use).
@@ -69,15 +72,12 @@ $if not EXIST '../data/C.inc' $INCLUDE '../../base/data/C.inc';
 ICA(CCC,AAA) = YES$(SUM(RRR$(RRRAAA(RRR,AAA) AND CCCRRR(CCC,RRR)),1) GT 0);
 IR(RRR) = YES$(SUM(C,CCCRRR(C,RRR)));
 IA(AAA) = YES$(SUM(C,ICA(C,AAA)));
-* (Text and assignment in file dataincBB4.inc end.)
+* (Text and assignment of geography related subsets in file dataincBB4.inc end.)
 %ONOFFDATALISTING%
+* ------------------------------------------------------------------------------
 
 * No need to continue if there are errors
-$if not errorfree $abort "Balmorel processing aborted after inclusion of file dataincBB4.inc due to geography data errors";
-
-
-
-* TESTING END ------------------------------------------------------------------
+$if not errorfree $abort "Balmorel processing aborted after inclusion of file dataincBB4.inc due to geography related data errors";
 
 
 SET YYY                'All years'  %semislash%
@@ -95,6 +95,21 @@ $if     EXIST '../data/TTT.inc' $INCLUDE      '../data/TTT.inc';
 $if not EXIST '../data/TTT.inc' $INCLUDE '../../base/data/TTT.inc';
 %semislash%;
 
+SET FFF                'Fuels'  %semislash%
+$if     EXIST '../data/FFF.inc' $INCLUDE      '../data/FFF.inc';
+$if not EXIST '../data/FFF.inc' $INCLUDE '../../base/data/FFF.inc';
+%semislash%;
+
+SET FDATASET           'Characteristics of fuels ' %semislash%
+$if     EXIST '../data/FDATASET.inc' $INCLUDE      '../data/FDATASET.inc';
+$if not EXIST '../data/FDATASET.inc' $INCLUDE '../../base/data/FDATASET.inc';
+%semislash%;
+
+PARAMETER FDATA(FFF,FDATASET)    'Fuel specific values'  %semislash%
+$if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
+$if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
+%semislash%;
+
 SET GGG                'All generation technologies'   %semislash%
 $if     EXIST '../data/GGG.inc' $INCLUDE      '../data/GGG.inc';
 $if not EXIST '../data/GGG.inc' $INCLUDE '../../base/data/GGG.inc';
@@ -105,15 +120,147 @@ $if     EXIST '../data/GDATASET.inc' $INCLUDE      '../data/GDATASET.inc';
 $if not EXIST '../data/GDATASET.inc' $INCLUDE '../../base/data/GDATASET.inc';
 %semislash%;
 
-SET FFF                'Fuels'  %semislash%
-$if     EXIST '../data/FFF.inc' $INCLUDE      '../data/FFF.inc';
-$if not EXIST '../data/FFF.inc' $INCLUDE '../../base/data/FFF.inc';
+SET G(GGG)    'Generation technologies in the simulation'  %semislash%
+$if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
+$if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 %semislash%;
 
-SET FDATASET           'Characteristics of fuels ' %semislash%
-$if     EXIST '../data/FDATASET.inc' $INCLUDE      '../data/FDATASET.inc';
-$if not EXIST '../data/FDATASET.inc' $INCLUDE '../../base/data/FDATASET.inc';
-%semislash%;
+
+PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
+$if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
+$if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
+
+* ------------------------------------------------------------------------------
+%ONOFFCODELISTING%
+* (Text and assignment of technology related subsets in file dataincbb4.inc:)
+* The sets:
+* IGCND,IGBPR,IGEXT,IGHOB,IGETOH,IGHSTO,IGESTO,IGHSTOS,IGESTOS,IGHYRS,IGHYRR,IGWND,IGSOLE,IGSOLH,IGWAVE
+* are directly extracted from GDATA(G,'GDTYPE') and are used to reference
+* technology types.
+*
+* IGHH and IGEE are used in the balance equations and for output control.
+* IGHHNOSTO and IGEENOSTO is not currently used for anything.
+*
+* IGNOTETOH is used for O&M cost in the objective function, in the balance
+* equation, in heat storage balance equations and in various output functions.
+* IGKH and IGKE are used for capacity restrictions and for certain output files.
+* IGKHNOSTO and IGKENOSTO are used for output.
+* IGDISPATCH is used capacity restrictions and output.
+* IGKKNOWN is used to exclude investment options.
+* IGKFIND is used to single out investment options.
+* IGEH is used for CHP specific taxes.
+* IGE and IGH are used all over.
+
+* The sets are defined based on information in PARAMETER GDATA.
+
+* The specifications of technology type 'GDTYPE' in GDATA may use an acronym or a number.
+* Under most circumstances an acronym is preferable, the list is given above.
+* If an acronym can not be used, use the numbers consistently as seen below.
+
+
+   IGCND(G)    = YES$(GDATA(G,'GDTYPE') EQ GCND);
+   IGBPR(G)    = YES$(GDATA(G,'GDTYPE') EQ GBPR);
+   IGEXT(G)    = YES$(GDATA(G,'GDTYPE') EQ GEXT);
+   IGHOB(G)    = YES$(GDATA(G,'GDTYPE') EQ GHOB);
+   IGETOH(G)   = YES$(GDATA(G,'GDTYPE') EQ GETOH);
+   IGHSTO(G)   = YES$(GDATA(G,'GDTYPE') EQ GHSTO);
+   IGHSTOS(G)  = YES$(GDATA(G,'GDTYPE') EQ GHSTOS);
+   IGESTO(G)   = YES$(GDATA(G,'GDTYPE') EQ GESTO);
+   IGESTOS(G)  = YES$(GDATA(G,'GDTYPE') EQ GESTOS);
+   IGHYRS(G)   = YES$(GDATA(G,'GDTYPE') EQ GHYRS);
+   IGHYRR(G)   = YES$(GDATA(G,'GDTYPE') EQ GHYRR);
+   IGWND(G)    = YES$(GDATA(G,'GDTYPE') EQ GWND);
+   IGSOLE(G)   = YES$(GDATA(G,'GDTYPE') EQ GSOLE);
+   IGSOLH(G)   = YES$(GDATA(G,'GDTYPE') EQ GSOLH);
+   IGWAVE(G)   = YES$(GDATA(G,'GDTYPE') EQ GWAVE);
+
+* Assignments of IGESTO, IGESTOS, IGHSTO and IGHSTOS may be changed if option stointers has a non-default value.
+$ifi "%stointers%"=="all"  IGESTOS(IGESTO) = YES; IGHSTOS(IGHSTO) = YES;
+$ifi "%stointers%"=="all"  IGESTO(IGESTO) = NO;   IGHSTO(IGHSTO) = NO;
+$ifi "%stointers%"=="none" IGESTO(IGESTOS) = YES; IGHSTO(IGHSTOS) = YES;
+$ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
+
+   IGHHNOSTO(G) = NO;   IGHHNOSTO(IGHOB)   = YES;  IGHHNOSTO(IGSOLH)= YES;
+
+   IGHSTOALL(G) =       IGHSTO(G)
+                         +IGHSTOS(G);
+
+   IGHH(G)      =       IGHHNOSTO(G)
+                         +IGHSTOALL(G);
+
+   IGKHNOSTO(G)     =   IGETOH(G)
+                         +IGHHNOSTO(G);
+
+   IGKH(G)          =   IGKHNOSTO(G)
+                         +IGHSTOALL(G);
+
+   IGEENOSTO(G)     =   IGCND(G)     !! In contrast to heat related technologies above,
+                         +IGHYRS(G)  !! with elec related technologies a more enumeration approach is taken
+                         +IGHYRR(G)  !! for illustrative purposes
+                         +IGWND(G)
+                         +IGSOLE(G)
+                         +IGWAVE(G);
+
+   IGEE(G)          =   IGCND(G)
+                         +IGHYRS(G)
+                         +IGHYRR(G)
+                         +IGWND(G)
+                         +IGSOLE(G)
+                         +IGWAVE(G)
+                         +IGESTO(G)
+                         +IGESTOS(G);
+
+   IGESTOALL(G) =       IGESTO(G)
+                         +IGESTOS(G);
+
+   IGKE(G)          =   IGCND(G)
+                         +IGBPR(G)
+                         +IGEXT(G)
+                         +IGESTO(G)
+                         +IGESTOS(G)
+                         +IGHYRS(G)
+                         +IGHYRR(G)
+                         +IGWND(G)
+                         +IGSOLE(G)
+                         +IGWAVE(G);
+
+   IGKENOSTO(G)     =   IGKE(G)
+                         -IGESTO(G)
+                          -IGESTOS(G);
+
+   IGNOTETOH(G)= NOT IGETOH(G);
+
+   IGEH(G) = IGBPR(G)+IGEXT(G)+IGETOH(G);
+   IGE(G)=IGEE(G)+IGEH(G);
+   IGH(G)=IGHH(G)+IGEH(G);
+
+   IGDISPATCH(G)    =   IGCND(G)
+                         +IGBPR(G)
+                         +IGEXT(G)
+                         +IGHOB(G)
+                         +IGESTO(G)
+                         +IGESTOS(G)
+                         +IGHSTO(G)
+                         +IGHSTOS(G)
+                         +IGETOH(G)
+                         +IGHYRS(G);
+
+   IGKFIND(G)  = YES$(GDATA(G,'GDKVARIABL') EQ 1);
+   IGKKNOWN(G) = NOT IGKFIND(G);
+
+   IGBYPASS(G) = NO;
+   IGBYPASS(IGBPR)$GDATA(IGBPR,'GDBYPASSC') = YES;
+
+* Assignments of IGBYPASS may be changed if option bypass has a non-default value.
+$ifi not %bypass%==yes IGBYPASS(G) = NO;
+
+* (Text and assignment of technology related subsets in file dataincbb4.inc end.)
+%ONOFFDATALISTING%
+* ------------------------------------------------------------------------------
+
+* No need to continue if there are errors
+$if not errorfree $abort "Balmorel processing aborted after inclusion of file dataincBB4.inc due to technology related data errors";
+
 
 SET HYRSDATASET  'Characteristics of hydro reservoirs' %semislash%
 $if     EXIST '../data/HYRSDATASET.inc' $INCLUDE      '../data/HYRSDATASET.inc';
@@ -200,11 +347,6 @@ $if     EXIST '../data/MPOLSET.inc' $INCLUDE      '../data/MPOLSET.inc';
 $if not EXIST '../data/MPOLSET.inc' $INCLUDE '../../base/data/MPOLSET.inc';
 %semislash%;
 
-SET G(GGG)    'Generation technologies in the simulation'  %semislash%
-$if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
-$if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
-%semislash%;
-
 SET AGKN(AAA,GGG)   'Areas for possible location of new technologies'   %semislash%
 $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
@@ -250,9 +392,6 @@ $if     EXIST '../data/ECONSETCATEGORY.inc' $INCLUDE         '../data/ECONSETCAT
 $if not EXIST '../data/ECONSETCATEGORY.inc' $INCLUDE '../../base/data/ECONSETCATEGORY.inc';
 %semislash%                            */
 
-PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
-$if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
-$if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 
 
 
@@ -321,15 +460,9 @@ $if     EXIST '../data/gkfx.inc' $INCLUDE      '../data/gkfx.inc';
 $if not EXIST '../data/gkfx.inc' $INCLUDE '../../base/data/gkfx.inc';
 %semislash%;
 
-
 PARAMETER YVALUE(YYY)   'Numerical value of the years labels'  %semislash%
 $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
 $if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
-%semislash%;
-
-PARAMETER FDATA(FFF,FDATASET)    'Fuel specific values'  %semislash%
-$if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
-$if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
 %semislash%;
 
 PARAMETER FMAXINVEST(CCC,FFF)   'Maximum investment (MW) by fuel type for each year simulated'    %semislash%

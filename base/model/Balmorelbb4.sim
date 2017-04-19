@@ -112,6 +112,7 @@ LOOP(IY411$(ISCALAR1 EQ 1), ISCALAR2 = YVALUE(IY411); ISCALAR1 = 0;);
 *LOOP(IY402$(YVALUE(IY402) EQ ISCALAR2), IFIRSTYEARNEXTBB4 = ISCALAR2 + SUM(YMODEL$(ORD(YMODEL) EQ 1), YMODELDELTA(YMODEL)););   todo
 
 
+$ontext
 * IY4GREMAINYWEIGHT(Y,G)  "Discounted weight of future annuity payments on an investment relative to the first year in present BB4 model (~)":
 * TODO: missing that some G will reach lifetime inside iy411, cf. IY4GREMAINY above, TODO
 IY4GINVCOSTWEIGHT(IY411,IGKFIND) = SUM(Y$(IY411(Y) AND (YVALUE(Y) GE YVALUE(IY411))), IDISCOUNTFACTOR(Y));!! Hans 20150205; TODO: missing that some G will reach lifetime inside iy411, cf. IY4GREMAINY above, TODO
@@ -124,7 +125,7 @@ LOOP(IY411FIRST,IY4XINVCOSTWEIGHT(IY411) = IY4XINVCOSTWEIGHT(IY411)/IDISCOUNTFAC
 
 LOOP(IY411FIRST,IY4GINVCOSTWEIGHT(IY411,IGKFIND) = 1);
 LOOP(IY411FIRST,IY4XINVCOSTWEIGHT(IY411) = 1);
-
+$offtext
 
 
 *-------------------------------------------------------------------------------
@@ -203,6 +204,11 @@ $ifi %AGKNDISC%==yes IAGKNDISC_YAG(IY411,IA,G)$(YVALUE(IY411) LT GDATA(G,'GDFROM
 VGE_T.UP(IY411,IA,IGDISPATCH(IGKE),S,T)$(GKFX(IY411,IA,IGKE) AND (NOT IAGKN(IA,IGKE))) = GKFX(IY411,IA,IGKE)*IGKRATE(IA,IGKE,S,T);
 VGH_T.UP(IY411,IA,IGDISPATCH(IGKH),S,T)$(GKFX(IY411,IA,IGKH) AND (NOT IAGKN(IA,IGKH))) = GKFX(IY411,IA,IGKH)*IGKRATE(IA,IGKH,S,T);
 
+$ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,IGDISPATCH(IGKE),S,T)     = VGE_T.UP(IY411,ia,IGKE,s,t);
+$ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,IGDISPATCH(IGKE),S,T)     = VGH_T.UP(IY411,ia,IGKE,s,t);
+$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_1.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
+
+
 * Storage loading (MW) and unloading (MW) do not exceed capacity.
 * Complements to equations QESTOLOADTLIM and QHSTOLOADTLIM for the case with no endogenous IGESTO and IGHSTO investments.
 VESTOLOADT.UP(IY411,IA,S,T)$(SUM(IGESTO,GKFX(IY411,IA,IGESTO)) AND (NOT SUM(IGESTO$IAGKN(IA,IGESTO),1))) =
@@ -216,6 +222,11 @@ VESTOVOLT.UP(IY411,IA,S,T)$(SUM(IGESTO,GKFX(IY411,IA,IGESTO)) AND (NOT SUM(IGEST
 VHSTOVOLT.UP(IY411,IA,S,T)$(SUM(IGHSTO,GKFX(IY411,IA,IGHSTO)) AND (NOT SUM(IGHSTO$IAGKN(IA,IGHSTO),1))) =
   SUM(IGHSTO$(GKFX(IY411,IA,IGHSTO) GT 0), IGKRATE(IA,IGHSTO,S,T)*GKFX(IY411,IA,IGHSTO));
 
+$ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_2.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
+
+
 * Test: dette er modificertefar bb123,sim:
 * Nyt, kopiere/modified  fra bb123.sim  ER DET TEST ELLER HVA?
 VGH_T.UP(IY411,IA,IGHSTOALL,S,T)$(GKFX(IY411,IA,IGHSTOALL) GT 0)=
@@ -223,6 +234,11 @@ VGH_T.UP(IY411,IA,IGHSTOALL,S,T)$(GKFX(IY411,IA,IGHSTOALL) GT 0)=
 
 VGE_T.UP(IY411,IA,IGESTOALL,S,T)$(GKFX(IY411,IA,IGESTOALL) GT 0)=
  (GKFX(IY411,IA,IGESTOALL) /*+IGKVACCTOY(IA,IGESTOALL) erstattes med hvad?  */)/GDATA(IGESTOALL,'GDSTOHUNLD');   !! GKRATE taken into account later
+
+$ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_3.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
+* test slut
 
 * Existing windpower, hydro-run-of-river, solarpower, solarheat and wavepower can not be dispatched.
 * Complement to equation QWNDDISPATCH for the case with no endogenous IGWND investments.
@@ -240,6 +256,10 @@ VGH_T.FX(IY411,IA,IGSOLH,S,T)$(GKFX(IY411,IA,IGSOLH) AND (NOT IAGKN(IA,IGSOLH)))
 * Complement to equation QWAVEDISPATCH for the case with no endogenous IGWAVE investments.
 VGE_T.FX(IY411,IA,IGWAVE,S,T)$(GKFX(IY411,IA,IGWAVE) AND (NOT IAGKN(IA,IGWAVE))) =
    ((WAVEFLH(IA) * GKFX(IY411,IA,IGWAVE) * IGKRATE(IA,IGWAVE,S,T) * WAVE_VAR_T(IA,S,T)) / IWAVESUMST(IA))$IWAVESUMST(IA);
+
+$ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_5.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
 
 
 * Calculate hydro inflow to reservoirs in MWh/MW installed capacity (new and old):
@@ -421,11 +441,23 @@ $include "..\..\base\addons\_hooks\varassign.inc"
 *------------------------------------------------------------------------------
 *                    END OF SIMULATION FOR CURRENT BB4 MODEL
 *------------------------------------------------------------------------------
-); /* LOOP(IYALIAS,...) */
+); !! LOOP(IYALIAS,...)
 *------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 * END: LOOP OVER ALL THE FIRSTYEARS IN ALL MODELS BALBASE4
 *-------------------------------------------------------------------------------
+
+
+*------------------------------------------------------------------------------
+*                GENERATE INPUT FILES FOR BB3 FROM RESULTS OF BB4
+*------------------------------------------------------------------------------
+
+* For hydro with reservoir save the following, to be used in model BalBase3 by addon hyrsbb123:
+* Preliminary code.
+$ifi %bb4%==yes  HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHOURSINST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
+$ifi %bb4%==yes  VHYRS_SL(Y,IA,S)  = VHYRS_S.l(Y,IA,S);
+$ifi %bb4%==yes  WATERVAL(Y,IA,S)  = QHYRSSEQ.m(Y,IA,S);
+
 
 *-------------------------------------------------------------------------------
 * End of file
