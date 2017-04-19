@@ -1,6 +1,7 @@
 * File Balmorel.gms
 $TITLE Balmorel version 3.03 (June 2016; latest 20160915)
 
+SCALAR IBALVERSN 'This version of Balmorel' /303.20170419/;
 * Efforts have been made to make a good model.
 * However, most probably the model is incomplete and subject to errors.
 * It is distributed with the idea that it will be usefull anyway,
@@ -17,7 +18,6 @@ $TITLE Balmorel version 3.03 (June 2016; latest 20160915)
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 
-SCALAR IBALVERSN 'This version of Balmorel' /303.20170224/;
 
 * This is a preliminary version of Balmorel 3.03.
 * It is intended for review and commenting.
@@ -27,6 +27,7 @@ SCALAR IBALVERSN 'This version of Balmorel' /303.20170224/;
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
+
 
 * GAMS options are $included from file balgams.opt.
 * In order to make them apply globally, the option $ONGLOBAL will first be set here:
@@ -1727,6 +1728,7 @@ GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = 0;
 * Note that this is a compile time operation, such that only the 'direct' data
 * definitions (and no assignments) are reflected:
 
+$include "..\..\base\addons\_hooks\checkassumptions.inc"
 
 $include "..\..\base\addons\_hooks\checkassumptions.inc"
 
