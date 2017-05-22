@@ -50,7 +50,6 @@ $ifi not exist 'balopt.opt'  $include '../../base/model/balopt.opt';
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm *.gdx";
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ..\output\temp\*.gdx";
 $ifi     dexist "..\output\temp"   execute 'rm "..\output\temp\*.*"';
-$ifi not dexist "..\output\temp"   execute 'md "..\output\temp"';
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -87,6 +86,14 @@ SCALAR ISCALAR5   '(Context dependent)';
 
 * Initialisations of printing of log and error files and messages:
 $INCLUDE '../../base/logerror/logerinc/error1.inc';
+
+* Ensuring existence of needed output folders:
+$ifi not dexist "..\..\simex"            execute 'md "..\..\simex"';
+$ifi not dexist "..\logerror\logerinc"   execute 'md "..\logerror\logerinc"';
+$ifi not dexist "..\output\economic"     execute 'md "..\output\economic"';
+$ifi not dexist "..\output\inputout"     execute 'md "..\output\inputout"';
+$ifi not dexist "..\output\printout"     execute 'md "..\output\printout"';
+$ifi not dexist "..\output\temp"         execute 'md "..\output\temp"';
 
 
 *-------------------------------------------------------------------------------
