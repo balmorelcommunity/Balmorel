@@ -530,14 +530,8 @@ IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
 
 
 
-
-*-------------------------------------------------------------------------------
-*--- DATA IN THE FILE geogr.inc: -----------------------------------------------
-
-
-
-
 *---DEFP_BASE AND DHFP_BASE: ---------------------------------------------------
+$ifi not %dflex%==yes $goto dflexend
 ISCALAR1=ERRCOUNT2;
 *IF((CARD(DEF) GT 0),  20150519(hr) replaced by next
 IF(((CARD(DEF_D1)+CARD(DEF_U1)+CARD(DEF_D2)+CARD(DEF_U2)+CARD(DEF_D3)+CARD(DEF_U3)) GT 0),
@@ -556,6 +550,7 @@ ERRCOUNT2=ERRCOUNT2+1;
 
 
 *---SET DEF_DSTEPS AND DEF_USTEPS-----------------------------------------------
+
 *---TABLE DEF_ELAST AND DHF_ELAST-----------------------------------------------
 * Electricity:
 IF((CARD(DEF_D1)+CARD(DEF_U1) GT 0),
@@ -658,13 +653,8 @@ IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
 
 
 *---SET DEF_D1 AND DEF_U1-------------------------------------------------------
+$label dflexend
 *---END TABLE DEF_STEPS AND DEF_STEPS-------------------------------------------
-
-
-*--- END OF DATA IN THE FILE goegr.inc -----------------------------------------
-*-------------------------------------------------------------------------------
-
-
 
 
 

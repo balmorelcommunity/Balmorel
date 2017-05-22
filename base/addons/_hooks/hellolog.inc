@@ -19,13 +19,16 @@ $ifi %BB4%==yes          put "Balbase4 (BB4)." /;
 put / "The following addons are applied:" /;
 
 
-ISCALAR1 = 0;
+ISCALAR1 = 0;   !! For this reason: DO NOT use ISCALAR1 in any addon code!
 
 $ifi %testbb1234%==yes   $include   "../../base/addons/bb1234compare/bb1234_hellolog.inc";
 $ifi %testbb1234%==yes   ISCALAR1 = 1;
 
-$ifi %hyrsbb123%==yes   $include   "../../base/addons/hyrsbb123/hyrsbb123_hellolog.inc";
-$ifi %hyrsbb123%==yes   ISCALAR1 = 1;
+$ifi %hyrsbb123%==yes    $include   "../../base/addons/hyrsbb123/hyrsbb123_hellolog.inc";
+$ifi %hyrsbb123%==yes    ISCALAR1 = 1;
+
+$ifi %dflex%==yes        $include "../../base/addons/demandflex/dflex_hellolog.inc";
+
 
 /* more .. todo
 WNDSHUTDOWN
