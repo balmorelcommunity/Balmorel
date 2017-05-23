@@ -431,7 +431,7 @@ IS33(S,ISALIAS)$((ORD(S) EQ CARD(S)) AND (ORD(ISALIAS) EQ 1)) = YES; !! CIRCULAR
 * The sets are defined based on information in PARAMETER GDATA.
 * The specifications of technology type 'GDTYPE' in GDATA may use an acronym or a number.
 * Under most circumstances an acronym is preferable, the list is given above.
-* If an acroym can not be used, use the numbers consistently as seen below.
+* If an acronym can not be used, use the numbers consistently as seen below.
 
    IGCND(G)    = YES$((GDATA(G,'GDTYPE') EQ 1)  OR (GDATA(G,'GDTYPE') EQ GCND));
    IGBPR(G)    = YES$((GDATA(G,'GDTYPE') EQ 2)  OR (GDATA(G,'GDTYPE') EQ GBPR));
@@ -439,7 +439,7 @@ IS33(S,ISALIAS)$((ORD(S) EQ CARD(S)) AND (ORD(ISALIAS) EQ 1)) = YES; !! CIRCULAR
    IGHOB(G)    = YES$((GDATA(G,'GDTYPE') EQ 4)  OR (GDATA(G,'GDTYPE') EQ GHOB));
    IGETOH(G)   = YES$((GDATA(G,'GDTYPE') EQ 5)  OR (GDATA(G,'GDTYPE') EQ GETOH));
    IGHSTO(G)   = YES$((GDATA(G,'GDTYPE') EQ 6)  OR (GDATA(G,'GDTYPE') EQ GHSTO));
-   IGHSTOS(G)  = YES$(GDATA(G,'GDTYPE') EQ GHSTOS);
+   IGHSTOS(G)  = YES$((GDATA(G,'GDTYPE') EQ 23) OR (GDATA(G,'GDTYPE') EQ GHSTOS));
    IGESTO(G)   = YES$((GDATA(G,'GDTYPE') EQ 7)  OR (GDATA(G,'GDTYPE') EQ GESTO));
    IGESTOS(G)  = YES$(GDATA(G,'GDTYPE') EQ GESTOS);
    IGHYRS(G)   = YES$((GDATA(G,'GDTYPE') EQ 8)  OR (GDATA(G,'GDTYPE') EQ GHYRS));
@@ -448,7 +448,6 @@ IS33(S,ISALIAS)$((ORD(S) EQ CARD(S)) AND (ORD(ISALIAS) EQ 1)) = YES; !! CIRCULAR
    IGSOLE(G)   = YES$((GDATA(G,'GDTYPE') EQ 11) OR (GDATA(G,'GDTYPE') EQ GSOLE));
    IGSOLH(G)   = YES$((GDATA(G,'GDTYPE') EQ 12) OR (GDATA(G,'GDTYPE') EQ GSOLH));
    IGWAVE(G)   = YES$((GDATA(G,'GDTYPE') EQ 22) OR (GDATA(G,'GDTYPE') EQ GWAVE));
-   IGHSTOS(G) = YES$((GDATA(G,'GDTYPE') EQ 23) OR (GDATA(G,'GDTYPE') EQ GHSTOS));
 
 * Assignments of IGESTO, IGESTOS, IGHSTO and IGHSTOS may be changed if option stointers has a non-default value.
 $ifi "%stointers%"=="all"  IGESTOS(IGESTO) = YES; IGHSTOS(IGHSTO) = YES;
@@ -458,11 +457,11 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
 
    IGHHNOSTO(G) = NO;   IGHHNOSTO(IGHOB)   = YES;  IGHHNOSTO(IGSOLH)= YES;
 
-   IGHSTOALL(G) =       +IGHSTO(G)
-                        +IGHSTOS(G);
+   IGHSTOALL(G) =       IGHSTO(G)
+                         +IGHSTOS(G);
 
    IGHH(G)      =       IGHHNOSTO(G)
-                       +IGHSTOALL(G);
+                         +IGHSTOALL(G);
 
    IGNOTETOH(G)= NOT IGETOH(G);
 
@@ -482,7 +481,11 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
                          +IGWND(G)
                          +IGSOLE(G)
                          +IGWAVE(G)
-                         +IGESTO(G);
+                         +IGESTO(G)
+                         +IGESTOS(G);
+
+   IGESTOALL(G) =       IGESTO(G)
+                         +IGESTOS(G);
 
    IGEENOSTO(G)     =   IGCND(G)
                          +IGHYRS(G)
@@ -494,7 +497,7 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
    IGKHNOSTO(G)     =   IGETOH(G)
                          +IGHHNOSTO(G);
 
-   IGKH(G)          =     IGKHNOSTO(G)
+   IGKH(G)          =   IGKHNOSTO(G)
                          +IGHSTOALL(G);
 
    IGKE(G)          =   IGCND(G)
@@ -508,7 +511,7 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
                          +IGWAVE(G);
 
    IGKENOSTO(G)     =   IGKE(G)
-                         -IGESTO(G);
+                         -IGESTO(G)
                          -IGESTOS(G);
 
    IGKFIND(G)  = YES$(GDATA(G,'GDKVARIABL') EQ 1);
