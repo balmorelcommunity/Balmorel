@@ -166,12 +166,14 @@ LOOP((FFF,G)$IGF(G,FFF),
 * In contrast to IAGKN, IAGKNY depends on the year (viz., according to GDFROMYEAR).
 IAGKNY(IY411,IA,G) = IAGKN(IA,G);
 * No new capacity if capacity is not yet available this year (IAGKNY only):
-IAGKNY(IY411,IA,G)$(YVALUE(IY411) LT GDATA(G,'GDFROMYEAR'))=NO;
+IAGKNY(IY411,IA,G)$((YVALUE(IY411) LT GDATA(G,'GDFROMYEAR')) OR (YVALUE(IY411) GT GDATA(G,'GDLASTYEAR')))=NO;  !! Hans
 * TODO: consider if necessary and/or expedient to set .FX=0 for tech in IAGKN but not in IAGKNY (such tech presently appear in QOBJ, QHEQ and QEEQ)
 
 * Update IAGK_HASORPOT based on exogenously given (GKFX) or potential (IAGKN) investment (IAGKN is AGKN sharpened by fuel potential (FKPOT)).
+
+IAGK_HASORPOT(Y,IA,G) = NO;
 IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);
-IAGK_HASORPOT(IY411,IA,G)$IAGKN(IA,G) = YES;
+IAGK_HASORPOT(IY411,IA,G)$IAGKNY(IY411,IA,G) = YES;
 
 
 *-------------------------------------------------------------------------------
@@ -214,6 +216,13 @@ VESTOVOLT.UP(IY411,IA,S,T)$(SUM(IGESTO,GKFX(IY411,IA,IGESTO)) AND (NOT SUM(IGEST
 VHSTOVOLT.UP(IY411,IA,S,T)$(SUM(IGHSTO,GKFX(IY411,IA,IGHSTO)) AND (NOT SUM(IGHSTO$IAGKN(IA,IGHSTO),1))) =
   SUM(IGHSTO$(GKFX(IY411,IA,IGHSTO) GT 0), IGKRATE(IA,IGHSTO,S,T)*GKFX(IY411,IA,IGHSTO));
 
+* Test: dette er modificertefar bb123,sim:
+* Nyt, kopiere/modified  fra bb123.sim  ER DET TEST ELLER HVA?
+VGH_T.UP(IY411,IA,IGHSTOALL,S,T)$(GKFX(IY411,IA,IGHSTOALL) GT 0)=
+ (GKFX(IY411,IA,IGHSTOALL) /*+IGKVACCTOY(IA,IGHSTOALL) erstattes med hvad? */)/GDATA(IGHSTOALL,'GDSTOHUNLD');   !! GKRATE taken into account later
+
+VGE_T.UP(IY411,IA,IGESTOALL,S,T)$(GKFX(IY411,IA,IGESTOALL) GT 0)=
+ (GKFX(IY411,IA,IGESTOALL) /*+IGKVACCTOY(IA,IGESTOALL) erstattes med hvad?  */)/GDATA(IGESTOALL,'GDSTOHUNLD');   !! GKRATE taken into account later
 
 * Existing windpower, hydro-run-of-river, solarpower, solarheat and wavepower can not be dispatched.
 * Complement to equation QWNDDISPATCH for the case with no endogenous IGWND investments.
@@ -407,6 +416,7 @@ $include "..\..\base\addons\_hooks\varassign.inc"
 * ------------------------------------------------------------------------------
 * --- End: Prepare the next BB4 model ------------------------------------------
 * ------------------------------------------------------------------------------
+
 
 *------------------------------------------------------------------------------
 *                    END OF SIMULATION FOR CURRENT BB4 MODEL
