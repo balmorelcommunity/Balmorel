@@ -1,8 +1,8 @@
 * File error3.inc
 
-* This file is part of the Balmorel model, version 2.10 Pre-Alpha (May 2002).
+* This file is part of the Balmorel model.
 
-* File last time modified 17-05-2002 (rus), 20080414(hr)
+* File last time modified 17-05-2002 (rus), 20080414(hr), 20120914(hr), 20150519(hr)
 
 
 * This file contains check on input data.
@@ -17,7 +17,7 @@
 
 PUT ERRORFILE;
 
-PUT / "The input was investigated for obvious errors before optimisation of year " Y.TL:4 ":" /;
+PUT / "The input was investigated for additional obvious errors before optimisation of year " Y.TL:4 ":" /;
 ERRCOUNT3=0;
 
 
@@ -90,12 +90,12 @@ ERRCOUNT3=ERRCOUNT3+1;
 * The conclusion is printed:
 
 IF ((ERRCOUNT3 EQ 0),
-PUT "No obvious errors detected before optimisation of year " Y.TL:4 "." /;
+PUT "No obvious additional errors detected before optimisation of year " Y.TL:4 "." /;
 ELSE
 IF ((ERRCOUNT3 EQ 1),
-PUT "An error was detected before optimisation of year " Y.TL:4  "." /;
+PUT "An additional error was detected before optimisation of year " Y.TL:4  "." /;
 ELSE
-PUT ERRCOUNT3:5:0 " errors were detected before optimisation of year " Y.TL:4  "." /;
+PUT ERRCOUNT3:5:0 " additional errors were detected before optimisation of year " Y.TL:4  "." /;
 );
 PUT "See the file error3.inc for details about errors."
 PUT //;
@@ -104,9 +104,9 @@ PUT //;
 put LOGFILE;
 * Note: The below text: "Some Balmorel errors" is a keyword for communication with the BUI. Do not change.
 IF ((ERRCOUNT3 EQ 0),
-PUT "No obvious errors detected before optimisation of year " Y.TL:4 "." /;
+PUT "No obvious additional errors detected before optimisation of year " Y.TL:4 "." /;
 ELSE
-PUT "Some Balmorel errors were detected before optimisation of year " Y.TL:4  "." /;
+PUT "Some additional Balmorel errors were detected before optimisation of year " Y.TL:4  "." /;
 );
 PUT "See the file errors.out for details about errors."
 PUT //;

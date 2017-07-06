@@ -13,13 +13,19 @@
 * The printing of a specific output may be inactivated by commenting out
 * the relevant file below and activated by removing the outcommenting.
 
+
+* Skip the remaining part of the file if the model did not solve properly:
+$ifi %BB1%==yes IF(BALBASE1.MODELSTAT GT 2, Put logfile; PUT "Skipped file prt4-bb1.INC" / / ;  ELSE
+$ifi %BB3%==yes IF(BALBASE3.MODELSTAT GT 2, Put logfile; PUT "Skipped file prt4-bb1.INC" / / ;  ELSE
+
+
 *------------------------------------------------------------------------------
 * Print for current simulation year:
 *------------------------------------------------------------------------------
 
 * Calibration
-$include "../../base/output/printout/printinc/dfp_calib.inc";
-
+$ifi %DEFPCALIB%==yes $include "../../base/output/printout/printinc/dfp_calib.inc";
+                                                                                  
 * Key figures
 $include "../../base/output/printout/printinc/bal_1.inc";
 $include "../../base/output/printout/printinc/bal_2.inc";
@@ -27,7 +33,7 @@ $ifi %GAS%==yes $include "../../base/addons/gas/gasbal_1.inc";
 
 * Electricity generation
 $ include "../../base/output/printout/printinc/eg_cy.inc";
-$ include "../../base/output/printout/printinc/eg_gfcy.inc";
+*$ include "../../base/output/printout/printinc/eg_gfcy.inc";
 $ include "../../base/output/printout/printinc/ego_cy.inc";
 $ include "../../base/output/printout/printinc/ezgo_cy.inc";
 $ include "../../base/output/printout/printinc/eg_gat.inc";
@@ -58,6 +64,7 @@ $ include "../../base/output/printout/printinc/ehf_gay.inc";
 $ include "../../base/output/printout/printinc/ehf_fcy.inc";
 $ include "../../base/output/printout/printinc/f_fcy.inc";
 * $ include "../../base/output/printout/printinc/ehf_gfcy.inc";  removed 201105xx.
+$ include "../../base/output/printout/printinc/hyrs_as.inc";
 
 
 * Prices
@@ -75,5 +82,8 @@ $ include "../../base/output/printout/printinc/hp_at.inc";
 *$ include "../../base/output/printout/printinc/mnox_cy.inc";
 
 
+* Skipped to here if the model did not solve properly:
+$ifi %BB1%==yes  );
+$ifi %BB3%==yes  );
 
-$ include "../../base/output/printout/printinc/EGWATER_RS.INC";
+

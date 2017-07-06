@@ -408,7 +408,7 @@ PARAMETERS
     XBOTTLEIN(IRRRE,IRRRI,S,T) 'Bottle neck income (internal)'
 
 * Lars: Indfoert flaskehalsindtaegter til 3. lande.
-$ifi %X3V%==yes XBOTTLEX3V(RRR,X3VPLACE0,S,T) 'Bottle neck income (3. countries price dependent)'
+$ifi "%X3V%"=="yes" XBOTTLEX3V(RRR,X3VPLACE0,S,T) 'Bottle neck income (3. countries price dependent)'
     XBOTTLEX3(RRR,S,T) 'Bottle neck income (3. countries price independent)'
 
 
@@ -727,6 +727,10 @@ $ifi %X3V%==yes XBOTTLEX3V(RRR,X3VPLACE0,S,T) 'Bottle neck income (3. countries 
 *..............................................................................
 
 * Total amount of CO2 (t), SO2 (t), and NOx (kg) emission each year in country:
+
+*   CO2 in each region for each time period
+    EHM1qRT(RRR,S,T)
+
 
 *   CO2 in each country for each year
     EHM1qCY(C)

@@ -64,10 +64,10 @@ bal_1.LJ = 2;
 PUT "Total endogenous gas production                  ;" ; LOOP(C, PUT ( 0+IOF0001*SUM((S,T), VSUP.l('Nybro',s,t)*IHOURSINST(S,T))$SAMEAS(C,'Denmark')    ):12:0 ; PUT ";";); PUT /;
 PUT "Consumption of natural gas                       ;" ; LOOP(C, PUT ( IOF0001*SUM((IA,S,T), VGUD.l(IA,s,t)*IHOURSINST(S,T))$SAMEAS(C,'Denmark')+IOF0001*SUM((TRANSIT,S,T), VTRANSIT.l(TRANSIT,s,t)*IHOURSINST(S,T))$SAMEAS(C,'Sweden')    ):12:0 ; PUT ";";); PUT /;
 PUT " - for electricity and district heating          ;" ; LOOP(C, PUT ( IOF0001*SUM((IA,S,T)$ICA(C,IA),
-          IHOURSINST(S,T)*sum(IGE$(IAGKN(IA,IGE) and GDATA(IGE,'GDFUEL') EQ 2), VGEN_T.l(IA,IGE,S,T)/(GDATA(IGE,'GDFE')* GEFFDERATE(IGE,IA)) )
-         +IHOURSINST(S,T)*sum(IGH$(IAGKN(IA,IGH) and GDATA(IGH,'GDFUEL') EQ 2), GDATA(IGH,'GDCV')*VGHN_T.l(IA,IGH,S,T)/(GDATA(IGH,'GDFE')* GEFFDERATE(IGH,IA)) )
-         +IHOURSINST(S,T)*sum(IGE$(IAGK_Y(IA,IGE) and GDATA(IGE,'GDFUEL') EQ 2),VGE_T.l(IA,IGE,S,T)/(GDATA(IGE,'GDFE')* GEFFDERATE(IGE,IA)) )
-         +IHOURSINST(S,T)*sum(IGH$(IAGK_Y(IA,IGH) and GDATA(IGH,'GDFUEL') EQ 2),GDATA(IGH,'GDCV')*VGH_T.l(IA,IGH,S,T) /(GDATA(IGH,'GDFE')* GEFFDERATE(IGH,IA)) ) )  ):12:0 ; PUT ";";); PUT /;
+          IHOURSINST(S,T)*sum(IGE$(IAGKN(IA,IGE) and GDATA(IGE,'GDFUEL') EQ 2), VGEN_T.l(IA,IGE,S,T)/(GDATA(IGE,'GDFE')* (1-GEFFDERATE(IGE,IA))) )
+         +IHOURSINST(S,T)*sum(IGH$(IAGKN(IA,IGH) and GDATA(IGH,'GDFUEL') EQ 2), GDATA(IGH,'GDCV')*VGHN_T.l(IA,IGH,S,T)/(GDATA(IGH,'GDFE')* (1-GEFFDERATE(IGH,IA))) )
+         +IHOURSINST(S,T)*sum(IGE$(IAGK_Y(IA,IGE) and GDATA(IGE,'GDFUEL') EQ 2),VGE_T.l(IA,IGE,S,T)/(GDATA(IGE,'GDFE')* (1-GEFFDERATE(IGE,IA))) )
+         +IHOURSINST(S,T)*sum(IGH$(IAGK_Y(IA,IGH) and GDATA(IGH,'GDFUEL') EQ 2),GDATA(IGH,'GDCV')*VGH_T.l(IA,IGH,S,T) /(GDATA(IGH,'GDFE')* (1-GEFFDERATE(IGH,IA))) ) )  ):12:0 ; PUT ";";); PUT /;
 PUT " - other consumption                             ;" ; LOOP(C, PUT ( IOF0001*SUM((IA,S,T)$ICA(C,IA), (IDGRES_Y(IA,S,T)+IDGOTH_Y(IA,S,T))*IHOURSINST(S,T)) ):12:0 ; PUT ";";); PUT /;
 PUT "Exports of natural gas                           ;" ; LOOP(C, PUT ( 0+IOF0001*SUM((SOURCE,S,T), VEXP.l(SOURCE,S)*IHOURSINST(S,T))$SAMEAS(C,'Denmark')+IOF0001*SUM((TRANSIT,S,T), VTRANSIT.l(TRANSIT,S,T)*IHOURSINST(S,T))$SAMEAS(C,'Denmark')    ):12:0 ; PUT ";";); PUT /;
 PUT "Imports of natural gas                           ;" ; LOOP(C, PUT ( 0+IOF0001*SUM((SOURCE,S,T)$(not SAMEAS(SOURCE,'Nybro')), VSUP.l(SOURCE,S,T)*IHOURSINST(S,T))$SAMEAS(C,'Denmark')+IOF0001*SUM((TRANSIT,S,T), VTRANSIT.l(TRANSIT,S,T)*IHOURSINST(S,T))$SAMEAS(C,'Sweden')    ):12:0 ; PUT ";";); PUT /;

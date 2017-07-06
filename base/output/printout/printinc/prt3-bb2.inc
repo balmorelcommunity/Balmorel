@@ -1,7 +1,8 @@
 * File prt3-bb2.inc.
 * For updating parameters holding results for simulations with endogeneous investments.
+* Note: Actually this file is also presently used for simulations without endogeneous investments, cf. prt2-bb1.inc.
 
-* File last time modified 27-09-2002 (rus), 15-05-2003 (hr), 08-08-2003 (hr), 20090203(hr), 20110508(hr)
+* File last time modified 27-09-2002 (rus), 15-05-2003 (hr), 08-08-2003 (hr), 20090203(hr), 20110508(hr), 20160407(hr)
 
 * This file is part of the Balmorel model.
 
@@ -12,6 +13,13 @@
 * This file contains routines for handling of intermediate information that may be usefull output.
 
 * -----------------------------------------------------------------------------
+
+* Skip the remaining part of the file if the model did not solve properly:
+$ifi %BB1%==yes IF(BALBASE1.MODELSTAT GT 2, Put logfile; PUT "Skipped file prt3-bb2.INC" / / ;  ELSE
+$ifi %BB2%==yes IF(BALBASE2.MODELSTAT GT 2, Put logfile; PUT "Skipped file prt3-bb2.INC" / / ;  ELSE
+$ifi %BB3%==yes IF(BALBASE3.MODELSTAT GT 2, Put logfile; PUT "Skipped file prt3-bb2.INC" / / ;  ELSE
+
+
 
 * Calculate and store results from current year:
 
@@ -553,7 +561,7 @@ $ifi %X3V%==yes IHOURSINST(S,T) * SUM((X3VPLACE,X3VSTEP)$X3VX(IR,X3VPLACE),VX3VE
 * from all (old and new) technologies (MWh):
 
 *   in each area for each time period
-    HZGqAT(IA,S,T) = SUM(G, HGqAT(IA,G,S,T))-SUM(IGHSTO,HGqAT(IA,IGHSTO,S,T));
+    HZGqAT(IA,S,T) = SUM(G, HGqAT(IA,G,S,T))-SUM(IGHSTOALL,HGqAT(IA,IGHSTOALL,S,T));
 
 *   in each area for each season
     HZGqAS(IA,S) = SUM(T, HZGqAT(IA,S,T));
@@ -594,7 +602,7 @@ $ifi %X3V%==yes IHOURSINST(S,T) * SUM((X3VPLACE,X3VSTEP)$X3VX(IR,X3VPLACE),VX3VE
 * from old technologies (MWh):
 
 *   in each area for each time period
-    HZGOqAT(IA,S,T) = SUM(G, HGOqAT(IA,G,S,T))-SUM(IGHSTO,HGOqAT(IA,IGHSTO,S,T)) ;
+    HZGOqAT(IA,S,T) = SUM(G, HGOqAT(IA,G,S,T))-SUM(IGHSTOALL,HGOqAT(IA,IGHSTOALL,S,T)) ;
 
 *   in each area for each season
     HZGOqAS(IA,S) = SUM(T, HZGOqAT(IA,S,T));
@@ -635,7 +643,7 @@ $ifi %X3V%==yes IHOURSINST(S,T) * SUM((X3VPLACE,X3VSTEP)$X3VX(IR,X3VPLACE),VX3VE
 * from new technologies (MWh):
 
 *   in each area for each time period
-    HZGNqAT(IA,S,T) = SUM(G, HGNqAT(IA,G,S,T))-SUM(IGHSTO,HGNqAT(IA,IGHSTO,S,T));
+    HZGNqAT(IA,S,T) = SUM(G, HGNqAT(IA,G,S,T))-SUM(IGHSTOALL,HGNqAT(IA,IGHSTOALL,S,T));
 
 *   in each area for each season
     HZGNqAS(IA,S) = SUM(T, HZGNqAT(IA,S,T));
@@ -689,9 +697,7 @@ $ifi %X3V%==yes IHOURSINST(S,T) * SUM((X3VPLACE,X3VSTEP)$X3VX(IR,X3VPLACE),VX3VE
 * Fuel consumption (MWh):
 
 *   in each area per time period
-    EHFqAT(IA,G,S,T)$(EGqAT(IA,G,S,T)+HGqAT(IA,G,S,T)) =
-          ((EGqAT(IA,G,S,T) + GDATA(G,'GDCV') * HGqAT(IA,G,S,T)) /
-           (GDATA(G,'GDFE') * GEFFDERATE(IA,G)));
+    EHFqAT(IA,G,S,T)$(IAGK_Y(IA,G) or IAGKN(IA,G)) = IHOURSINST(S,T) * (VGF_T.L(IA,G,S,T) + VGFN_T.L(IA,G,S,T));
 
 *   in each area for each season
     EHFqAS(IA,G,S)   = SUM(T, EHFqAT(IA,G,S,T));
@@ -716,10 +722,19 @@ $ifi %X3V%==yes IHOURSINST(S,T) * SUM((X3VPLACE,X3VSTEP)$X3VX(IR,X3VPLACE),VX3VE
 
 *   in each country for each year
     EHFqCY(C,G)     = SUM(IR$(CCCRRR(C,IR)),EHFqRY(IR,G));
- 
+
+* Fuel emissions in each region per time period
+EHM1qRT(IR,S,T)=SUM(IA$RRRAAA(IR,IA),(SUM(FFF,FDATA(FFF,'FDCO2')*
+   (SUM(G$(IAGK_Y(IA,G) AND (GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'))), IOF3P6 * VGF_T.L(IA,G,S,T))
+    +SUM(G$(IAGKN(IA,G)  AND (GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'))), IOF3P6 * VGFN_T.L(IA,G,S,T))
+))));
+
+
 *..............................................................................
 * Earnings by plant (Mio OMONEY)
 $ifi %DECOMPEFF%==yes $include '../../base/printinc/earnings.inc';
+
+* Hans midletidgt ud   $include '../../base/output/printout/printinc/econ.inc';
 
 
 
@@ -735,36 +750,42 @@ Note: The calculation of EHM1qCY(C), EHM2qCY(C) and EHM3qCY(C) moved to the resp
       SUM((G,S,T), IHOURSINST(S,T) * (IM_CO2(G)/1000) * 3.6 *
       SUM(IA$ICA(C,IA),(VGE_T.L(IA,G,S,T) + VGEN_T.L(IA,G,S,T)
       + GDATA(G,'GDCV')*(VGH_T.L(IA,G,S,T) + VGHN_T.L(IA,G,S,T))) /
-      (GDATA(G,'GDFE')* GEFFDERATE(IA,G))));
+      (GDATA(G,'GDFE')* (1-GEFFDERATE(IA,G)))));
 
 *   SO2 emissions in each country for each year
     EHM2qCY(C)  =
       SUM((G,S,T), IHOURSINST(S,T) * (IM_SO2(G)/1000) * 3.6 *
       SUM(IA$ICA(C,IA),(VGE_T.L(IA,G,S,T) + VGEN_T.L(IA,G,S,T)
       + GDATA(G,'GDCV')*(VGH_T.L(IA,G,S,T) + VGHN_T.L(IA,G,S,T))) /
-      (GDATA(G,'GDFE')* GEFFDERATE(IA,G)) ));
+      (GDATA(G,'GDFE')* (1-GEFFDERATE(IA,G))) ));
 
 *   NOx emissions in each country for each year
     EHM3qCY(C)  =
       SUM((G,S,T), IHOURSINST(S,T) * (GDATA(G,'GDNOX')/1000000)*3.6*
       SUM(IA$ICA(C,IA),(VGE_T.L(IA,G,S,T) + VGEN_T.L(IA,G,S,T)
       + GDATA(G,'GDCV')*(VGH_T.L(IA,G,S,T) + VGHN_T.L(IA,G,S,T))) /
-      (GDATA(G,'GDFE')* GEFFDERATE(IA,G)) ));
+      (GDATA(G,'GDFE')* (1-GEFFDERATE(IA,G))) ));
 /*
 *   CH4 emissions in each country for each year
     EHM4qCY(C)  =
       SUM((G,S,T), IHOURSINST(S,T) * (GDATA(G,'GDCH4')/1000000)*3.6*
       SUM(IA$ICA(C,IA),(VGE_T.L(IA,G,S,T) + VGEN_T.L(IA,G,S,T)
       + GDATA(G,'GDCV')*(VGH_T.L(IA,G,S,T) + VGHN_T.L(IA,G,S,T))) /
-      (GDATA(G,'GDFE')* GEFFDERATE(IA,G)) ));
+      (GDATA(G,'GDFE')* (1-GEFFDERATE(IA,G))) ));
 
 *   N2O emissions in each country for each year
     EHM5qCY(C)  =
       SUM((G,S,T), IHOURSINST(S,T) * (IM_N2O(G)/1000) * 3.6 *
       SUM(IA$ICA(C,IA),(VGE_T.L(IA,G,S,T) + VGEN_T.L(IA,G,S,T)
       + GDATA(G,'GDCV')*(VGH_T.L(IA,G,S,T) + VGHN_T.L(IA,G,S,T))) /
-      (GDATA(G,'GDFE')* GEFFDERATE(IA,G)) ));
+      (GDATA(G,'GDFE')* (1-GEFFDERATE(IA,G))) ));
 
 */
 $OFFTEXT
 *..............................................................................
+
+
+* Skipped to here if the model did not solve properly:
+$ifi %BB1%==yes );
+$ifi %BB2%==yes );
+$ifi %BB3%==yes );

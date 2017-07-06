@@ -19,15 +19,14 @@ ehf_fcy.pw = 32000;
 PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
 PUT "File name:            " "%PRINTSEPARATOR%" "ehf_fcy.out" /;
 PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
-PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   /;
-$ifi %BB1%==yes PUT "Using model:          " "%PRINTSEPARATOR%" "Balbase1" /;
-$ifi %BB2%==yes PUT "Using model:          " "%PRINTSEPARATOR%" "Balbase2" /;
-$ifi %BB3%==yes PUT "Using model:          " "%PRINTSEPARATOR%" "Balbase3" /;
-$ifi %BB4%==yes PUT "Using model:          " "%PRINTSEPARATOR%" "Balbase4 - RESULTS ARE NOT VALID FOR THIS MODEL" /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 
-$ifi %BB1%==yes PUT / "Annual fuel consumption by fuels and countries." //;
+$ifi %BB1%==yes PUT / "Annual fuel consumption by fuels and countries, old plus." //;
 $ifi %BB2%==yes PUT / "Annual fuel consumption by fuels and countries, old plus new technologies." //;
-$ifi %BB3%==yes PUT / "Annual fuel consumption by fuels and countries." //;
+$ifi %BB3%==yes PUT / "Annual fuel consumption by fuels and countries, old plus." //;
 
 PUT "Units: GWh" //;
 
@@ -35,24 +34,16 @@ PUT "Units: GWh" //;
 
 * End of file headings.
 * ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
-* ------------------------------------------------------------------------------------
 
 * -----------------------------------------------------------------------------
 
 ehf_fcy.LJ = 1;
-PUT Y.TL:OTLW1   OTLW.ts  ; LOOP(C, PUT "%PRINTSEPARATOR%" C.TL:OTLW) ; PUT /;
+PUT Y.TL:OTLWY   OTLW.ts  ; LOOP(C, PUT "%PRINTSEPARATOR%" C.TL:OTLW) ; PUT /;
 ehf_fcy.LJ = 2;
 
 LOOP(FFF,
 
-  PUT  PUT OTLW1.ts FFF.TL:OTLW ;
+  PUT  PUT OTLWY.ts FFF.TL:OTLW ;
   LOOP(C,
    OSCALAR1=0;
 *  LOOP(ignotetoh$(GDATA(ignotetoh,'GDFUEL') EQ FDATA(FFF,'FDNB')),  OSCALAR1=OSCALAR1 + EHFqCY(C,ignotetoh) );

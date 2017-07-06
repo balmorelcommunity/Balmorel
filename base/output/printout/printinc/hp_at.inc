@@ -16,25 +16,21 @@ PUT hp_at;
 
 if ((hp_at.pw LT 32000),
 hp_at.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            hp_at.out" /;
-PUT "Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "hp_at.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 
-PUT "Heat generation price for each (S,T)." /;
+PUT "Heat price for each (S,T)." /;
 PUT "Currency: " OMONEY.TS "  with exchange rate to input currency: "  OMONEY:7:3  " ("OMONEY.TS"/EUR90)." /;
 PUT "Units: "; PUT OMONEY.ts "/MWh" //;
 );
 
 * End of file headings.
 * ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
 * ------------------------------------------------------------------------------------
 
 * -----------------------------------------------------------------------------

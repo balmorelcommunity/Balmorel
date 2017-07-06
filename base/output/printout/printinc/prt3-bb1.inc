@@ -19,7 +19,6 @@
 * will be insignificant.
 * Presently therefore the file  prt3-bb2.inc  is used:
 
-*$include "../../base/printout/printinc/prt3-bb2.inc"
 $include "../../base/output/printout/printinc/prt3-bb2.inc"
 
 * ------------------------------------------------------------------------------

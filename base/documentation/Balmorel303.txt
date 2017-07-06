@@ -1,0 +1,70 @@
+This document describes recent changes of Balmorel.
+
+Further documentation for Balmorel may be found at www.Balmorel.com.
+
+* ------------------------------------------------------------------------------
+Changes between 3.02 and 3.03 (20160623). Main changes only.
+All identifiers with "zzzDERATE" have been replaced by "zzzRATE"
+    as response to factual practice by some users,
+    and because RATE provides wider range of values (e.g. greater than 1) than DERATE
+    zzzRATE input data may be obtained from zzzDERATE as zzzRATE = 1-zzzDERATE.
+HYRSDATAS renamed HYRSDATASET
+Removed DAYTYPE, SCENARIO, SCENARSIM, IDAYSIN_S, IHOURSIN24.
+Added  ALIAS: (CCCRRRAAA,CCCRRRAAAALIAS), (IR,IRE,IRI), (FFF,IFFFALIAS), (S,IS3LOOPSET).
+Added acronyms GSOLH, GWAVE, GHSTOS, GESTOS for new technology types.
+GHSTOS and GESTOS are for inter-seasonal storage types that link between seasons, while intra-seasonal storage types GHSTO and GESTO no not.
+Added internal sets IGHSTOALL, IGESTOALL, IGWAVE, IAGK, WAVE_VAR_T, IWAVESUMST, WAVEFLH, VGF_T, VGFN_T, QHYMAXG.
+Added a number of VQxxx variables.
+Added a number of tax data possibilities.
+Used acronyms more consistently in relation to GDTYPE and fueltype.
+In particulare note that the data file FFF.inc contains (as an exception) two types of info: SET FFF and ACRONYMS (the elements in FFF and the acronyms must be identical)
+Use of default values (to possibly reduce size of input data files or as first shot on workable data) have been introduced in a number of parameters:
+    GEFFRATE, XKRATE, GKRATE, GKNMAX, IGKRATE, IXKRATE (GOMVCOST, GOMFCOST and GINVCOST as previously).
+Use of domain overloading to permit choise of level of detail in input data files to not require more data than needed for a specific application or than available:
+    GMINF, GMAXF, GEQF, XKRATE, GKRATE. Cf. balopt.opt.
+Modified equations  QESTOVOLT, QESTOVOLTS, QHSTOVOLT, QHSTOVOLTS introducing factor (CARD(S)/CARD(SSS)).
+New: ALIAS(CCCRRRAAA,CCCRRRAAAALIAS); ALIAS (FFF,IFFFALIAS);
+Reduced the size of the large parameters by assigning 0 to unused entries.
+Not all addons are alive and documented, some will be deleted others documented (put otherwise: a slight mess).
+
+Deleted SET SCENARIO, SCENARSIM
+
+
+
+New options (cf. file model/options.inc):
+unitcomm    unit commitment
+stolinks:   permits overwriting the seasonal inter-/intra- linking for heat and electricity storages
+HYRSBB123:  details on handling hydro storage in Babase3
+bypass:     Bypass of 'turbine' (electricity production) on backpressure units.
+timeaggr:   refinemetns on time aggregation (from (SSS,TTT) to (S,T))
+GMINF_DOL, GMAXF_DOL, GEQF_DOL, XKRATE_DOL: Permit domain overloading - The options specify the domain (indexes) that the identifiyer is declared on.
+
+
+
+
+
+
+* ------------------------------------------------------------------------------
+
+Changes between 3.01, 3.02 (302.20110530) and 3.02 (302.20110920):
+
+File Balmorel.gms:
+   Fixed bug: QGKNSOLE and QGKNSOLH: changed index on VGKN
+   Fixed bug: QGKNSOLH: changed VGEN_T to VGHN_T.
+   Fixed assignment bug of IGF.
+   Fixed minor bugs.
+File bb123.sim: Fixed bug: VGEN_T.FX(IA,IGSOLH,S,T)$(NOT ISOLHSUMST(IA)) = 0; changed to VGHN_T.FX(IA,IGSOLH,S,T)$(NOT ISOLHSUMST(IA)) = 0;.
+File Balopt.opt:
+   Introduced PRINTSEPARATOR for permitting insertion of separators like ';' for use with e.g. copy-paste to Excel.
+   Applied PRINTSEPARATOR in some, but not all, print files in folder printinc.
+File print1.inc:
+   Introduced scalars OTLW, OTLW1, OTLG and OTL1 for specification of field widths in relation to printing.
+   Applied OTLW, OTLW1, OTLG and OTL1 in some, but not all, relevant print files.
+   (OTLG and OTL1 were added for 3.02 (20110920) as the only change relative to 3.02 (20110530).)
+Print files:
+   Renamed some files:  ehf_cy.inc to ehf_gcy.inc,  ehf_ry.inc to ehf_gry.inc, ehf_ay.inc to ehf_gay.inc, ehf2_cy.inc to ehf_fcy.inc.
+   Made consequential and additional minor other changes in these and other files.
+   Removed file ehf_gfcy.inc and references to it.
+   Revised prt3-bb2.inc with respect to sequence of technologies, from All/Old/New to Old/New/All, calculated All as sum of Old and New,
+   and provided better handling with respect to $IAGK_Y and $IAGKN.
+--------------------------------------------------------------------------------

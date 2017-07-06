@@ -1,7 +1,7 @@
 * File: f_fcy.inc
 * This file is part of the Balmorel model.
 
-* Modified last time: 01-02-2002 by (rus), 16-02-2004 (ld), 20060328(hr), 200804xx(hr), 20110508(hr)
+* Modified last time: 01-02-2002 by (rus), 16-02-2004 (ld), 20060328(hr), 200804xx(hr), 20110508(hr), 20150512(hr)
 
 * This file will print a table containing annual net electricity generation from all technologies in each country.
 * (Incl. the negative electricity generation for heat pumps)
@@ -18,12 +18,10 @@ f_fcy.pw = 32000;
 PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
 PUT "File name:            " "%PRINTSEPARATOR%" "f_fcy.out" /;
 PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
-PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   /;
-
-$ifi %BB1%==yes PUT "Using model:          " "%PRINTSEPARATOR%" "Balbase1" /;
-$ifi %BB2%==yes PUT "Using model:          " "%PRINTSEPARATOR%" "Balbase2" /;
-$ifi %BB3%==yes PUT "Using model:          " "%PRINTSEPARATOR%" "Balbase3" /;
-$ifi %BB4%==yes PUT "Using model:          " "%PRINTSEPARATOR%" "Balbase4 - RESULTS ARE NOT VALID FOR THIS MODEL" /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 
 $ifi %BB1%==yes PUT / "Annual fuel use by fuel type and country. Annual electricity and heat output by fuel type and country. Output/input relation." //;
 $ifi %BB2%==yes PUT / "Annual fuel use by fuel type and country. Annual electricity and heat output by fuel type and country. Old plus new technologies. Output/input relation." //;
@@ -34,14 +32,6 @@ PUT "Units: GWh" //;
 );
 
 * End of file headings.
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT  "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT  "*==============================================================================="//;
-);
-* End of scenario heading
 * ------------------------------------------------------------------------------------
 
 * -----------------------------------------------------------------------------
@@ -70,10 +60,10 @@ ISCALAR2=0;
 LOOP(C,
 ISCALAR1=SUM(IA$ICA(C,IA),
       SUM((IS3,T), IHOURSINST(IS3,T)*(
-             SUM(IGE$IGF(IGE,FFF),    VGE_T.L(IA,IGE,IS3,T)/(GDATA(IGE,'GDFE')* GEFFDERATE(IA,IGE)) )
-            +SUM(IGH$IGF(IGH,FFF),    GDATA(IGH,'GDCV')*VGH_T.L(IA,IGH,IS3,T)/(GDATA(IGH,'GDFE')*GEFFDERATE(IA,IGH)))
-            +SUM(IGE$IGF(IGE,FFF),    VGEN_T.L(IA,IGE,IS3,T)/(GDATA(IGE,'GDFE')* GEFFDERATE(IA,IGE)))
-            +SUM(IGH$IGF(IGH,FFF),    GDATA(IGH,'GDCV')*VGHN_T.L(IA,IGH,IS3,T)/(GDATA(IGH,'GDFE')*GEFFDERATE(IA,IGH)))
+             SUM(IGE$(IGF(IGE,FFF) AND IAGK(IA,IGE)),    VGE_T.L(IA,IGE,IS3,T)/(GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))) )
+            +SUM(IGH$(IGF(IGH,FFF) AND IAGK(IA,IGH)),    GDATA(IGH,'GDCV')*VGH_T.L(IA,IGH,IS3,T)/(GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
+            +SUM(IGE$(IGF(IGE,FFF) AND AGKN(IA,IGE)),    VGEN_T.L(IA,IGE,IS3,T)/(GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
+            +SUM(IGH$(IGF(IGH,FFF) AND AGKN(IA,IGH)),    GDATA(IGH,'GDCV')*VGHN_T.L(IA,IGH,IS3,T)/(GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
 )));
 PUT (ISCALAR1*IOF0001):OTLW:0  "%PRINTSEPARATOR%";
 ISCALAR2=ISCALAR2+ISCALAR1;
@@ -126,10 +116,10 @@ ISCALAR2=0;   /* To become sum over countries */
 LOOP(C,
 ISCALAR1=SUM(IA$ICA(C,IA),
       SUM((IS3,T), IHOURSINST(IS3,T)*(
-             SUM(IGE$IGF(IGE,FFF),    VGE_T.L(IA,IGE,IS3,T)/(GDATA(IGE,'GDFE')* GEFFDERATE(IA,IGE)) )
-            +SUM(IGH$IGF(IGH,FFF),    GDATA(IGH,'GDCV')*VGH_T.L(IA,IGH,IS3,T)/(GDATA(IGH,'GDFE')*GEFFDERATE(IA,IGH)))
-            +SUM(IGE$IGF(IGE,FFF),    VGEN_T.L(IA,IGE,IS3,T)/(GDATA(IGE,'GDFE')* GEFFDERATE(IA,IGE)))
-            +SUM(IGH$IGF(IGH,FFF),    GDATA(IGH,'GDCV')*VGHN_T.L(IA,IGH,IS3,T)/(GDATA(IGH,'GDFE')*GEFFDERATE(IA,IGH)))
+             SUM(IGE$(IGF(IGE,FFF) AND IAGK(IA,IGE)), VGE_T.L(IA,IGE,IS3,T)/(GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))) )
+            +SUM(IGH$(IGF(IGH,FFF) AND IAGK(IA,IGH)), GDATA(IGH,'GDCV')*VGH_T.L(IA,IGH,IS3,T)/(GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
+            +SUM(IGE$(IGF(IGE,FFF) AND AGKN(IA,IGE)), VGEN_T.L(IA,IGE,IS3,T)/(GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
+            +SUM(IGH$(IGF(IGH,FFF) AND AGKN(IA,IGH)), GDATA(IGH,'GDCV')*VGHN_T.L(IA,IGH,IS3,T)/(GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
 )));
 PUT (ISCALAR1*IOF0001):OTLW:0  "%PRINTSEPARATOR%";
 ISCALAR2=ISCALAR2+ISCALAR1;

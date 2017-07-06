@@ -15,10 +15,13 @@ PUT hgn_cy;
 
 if ((hgn_cy.pw LT 32000),
 hgn_cy.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            hgn_cy.out" /;
-PUT "Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "hgn_cy.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   /;
 
 PUT "Annual heat generation from new technologies" //;
 
@@ -27,14 +30,6 @@ PUT "Units: GWh" //;
 );
 
 * End of file headings.
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
 * ------------------------------------------------------------------------------------
 
 * -----------------------------------------------------------------------------
@@ -47,7 +42,7 @@ LOOP(G,
 
 if( sum(C,HGNqCY(C,G)) ne 0,
 
-  PUT G.TL:12 ;
+  PUT G.TL:32 ;
   LOOP(C, PUT (HGNqCY(C,G) *IOF0001):12:0 ;) ;
   PUT /;
    );

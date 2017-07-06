@@ -15,25 +15,22 @@ PUT EP_RT;
 
 if ((ep_rt.pw LT 32000),
 ep_rt.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            EP_RT.OUT" /;
-PUT "Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "ep_rt.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 
-PUT "Electricity generation price for each S and T" /;
-PUT "Currency: " OMONEY.TS "  with exchange rate to input currency: "  OMONEY:7:3  " ("OMONEY.TS"/EUR90)." /;
+PUT "Electricity price for each S and T" /;
+PUT "Currency: " OMONEY.TS "  with exchange rate to input currency: "  OMONEY:7:3  " ("OMONEY.TS"/"OIMONEY.TS")." /;
 PUT "Units: "; PUT OMONEY.ts "/MWh" //;
 );
 
 * End of file headings.
 * ------------------------------------------------------------------------------------
 * If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
 * ------------------------------------------------------------------------------------
 
 * -----------------------------------------------------------------------------

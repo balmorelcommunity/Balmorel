@@ -16,27 +16,19 @@ PUT eg_gfcy;
 
 if ((eg_gfcy.pw LT 32000),
 eg_gfcy.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            eg_gfcy.out" /;
-PUT "File created:         " SYSTEM.DATE " " SYSTEM.TIME /;
-PUT "Case-identification:  " OCASEID.TS //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "eg_gfcy.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
 
 PUT "Annual net electricity generation" /;
 PUT "(Incl. negative electricity generation for heat pumps)" /;
 PUT "Units: GWh" //;
 
 );
-
-* End of file headings.
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
-* ------------------------------------------------------------------------------------
 
 * ------------------------------------------------------------------------------------
 
@@ -130,7 +122,7 @@ if( SUM(C,EGqCY(C,G)) NE 0,
 ));
 * fejl PUT "TOTAL       " ; LOOP(C, PUT ( sum(ignotetoh,EGqCY(C,ignotetoh)*IOF0001) + sum(igetoh,-EGqCY(C,igetoh)*IOF0001)):16:0 ; ); PUT //;          /*sarah*/
 
-put / "Bio-fired:  here preliminarily defined as MUNI_WASTE, STRAW, WOOD and WOOD_WASTE"/;
+put / "Bio-fired:  here preliminarily defined as MUNIWASTE, STRAW, WOOD and WOODWASTE"/;
 LOOP(G$(IGF(G,'MUNIWASTE') OR IGF(G,'STRAW') OR IGF(G,'WOOD') OR IGF(G,'WOODWASTE')),
 if(ignotetoh(g),
 if( SUM(C,EGqCY(C,G)) NE 0,
@@ -150,7 +142,7 @@ if( SUM(C,EGqCY(C,G)) NE 0,
 
 
 put / "GAS: "/;
-LOOP(G$IGF(G,'natgas'),
+LOOP(G$IGF(G,'NATGAS'),
 if(ignotetoh(g),
 if( SUM(C,EGqCY(C,G)) NE 0,
   PUT G.TL:OTLW  "    " ;

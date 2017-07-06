@@ -19,8 +19,8 @@ Rev_H(Y,IAGK_Y(IA,IGH))$(IDH_SUMST(IA) NE 0)  =  OMONEY*Sum((S,T),
                                          )/IOF1000000;
 
 Fuel_C(Y,IAGK_Y(IA,G)) = OMONEY*(SUM(FFF$(GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDNB')),
-                                         IFUELP_Y(IA,FFF) * IOF3P6 * SUM((S,T), IHOURSINST(S,T)*VGE_T.l(IA,G,S,T)/(GDATA(G,'GDFE')* GEFFDERATE(IA,G)))$IGE(G)
-                                        +IFUELP_Y(IA,FFF) * IOF3P6 * SUM((S,T), IHOURSINST(S,T)*GDATA(G,'GDCV')*VGH_T.l(IA,G,S,T)/(GDATA(G,'GDFE')*GEFFDERATE(IA,G)))$IGH(G)
+                                         IFUELP_Y(IA,FFF) * IOF3P6 * SUM((S,T), IHOURSINST(S,T)*VGE_T.l(IA,G,S,T)/(GDATA(G,'GDFE')* (1-GEFFDERATE(IA,G))))$IGE(G)
+                                        +IFUELP_Y(IA,FFF) * IOF3P6 * SUM((S,T), IHOURSINST(S,T)*GDATA(G,'GDCV')*VGH_T.l(IA,G,S,T)/(GDATA(G,'GDFE')*(1-GEFFDERATE(IA,G))=)$IGH(G)
                                          ))/IOF1000000
                                 +OMONEY*SUM((IR,S,T)$RRRAAA(IR,IA),
                                    IOF1000000*QEEQ.m(IR,S,T)*(VGE_T.l(IA,G,S,T))/IOF1000000
@@ -35,25 +35,25 @@ FOM_C(Y,IAGK_Y(IA,G))  = OMONEY*IOF1000*((IGKVACCTOY(G,IA) + IGKFX_Y(G,IA) - VDE
 
 CO2Costs(Y,IAGK_Y(IA,G)) = OMONEY*sum(C$ICA(C,IA), ITAX_CO2_Y(C)*SUM((S,T), IHOURSINST(S,T) * (IM_CO2(G)/1000) * IOF3P6 *
                                 (VGE_T.L(IA,G,S,T) + GDATA(G,'GDCV')*VGH_T.L(IA,G,S,T))/
-                                                 (GDATA(G,'GDFE')* GEFFDERATE(IA,G))))/IOF1000000;
+                                                 (GDATA(G,'GDFE')* (1-GEFFDERATE(IA,G)))))/IOF1000000;
 
 Tax_C(Y,IAGK_Y(IA,G))  = OMONEY*(
                                  Sum(C$ICA(C,IA),
                                          ITAX_SO2_Y(C)*SUM((S,T), IHOURSINST(S,T) * (IM_SO2(G)/1000) * IOF3P6 *
                                                  (VGE_T.L(IA,G,S,T)+ GDATA(G,'GDCV')*VGH_T.L(IA,G,S,T)) /
-                                                 (GDATA(G,'GDFE')* GEFFDERATE(IA,G)) )
+                                                 (GDATA(G,'GDFE')* (1-GEFFDERATE(IA,G))) )
 
                                         +ITAX_NOX_Y(C)*SUM((S,T), IHOURSINST(S,T) * (GDATA(G,'GDNOX')/1000000)*IOF3P6*
                                                  (VGE_T.L(IA,G,S,T)+ GDATA(G,'GDCV')*VGH_T.L(IA,G,S,T)) /
-                                                         (GDATA(G,'GDFE')* GEFFDERATE(IA,G)))
+                                                         (GDATA(G,'GDFE')* (1-GEFFDERATE(IA,G))))
 
                                         +SUM((FFF,S,T)$(GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDNB')),
-                                              IHOURSINST(S,T) * TAX_F(FFF,C) * IOF3P6 * VGE_T.l(IA,G,S,T) / (GDATA(G,'GDFE') * GEFFDERATE(IA,G)))$IGE(G)
+                                              IHOURSINST(S,T) * TAX_F(FFF,C) * IOF3P6 * VGE_T.l(IA,G,S,T) / (GDATA(G,'GDFE') * (1-GEFFDERATE(IA,G))))$IGE(G)
                                         +SUM((FFF,S,T)$(GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDNB')),
-                                              IHOURSINST(S,T) * TAX_F(FFF,C) * IOF3P6*GDATA(G,'GDCV')* VGH_T.l(IA,G,S,T)/(GDATA(G,'GDFE') * GEFFDERATE(IA,G)))$IGH(G)
+                                              IHOURSINST(S,T) * TAX_F(FFF,C) * IOF3P6*GDATA(G,'GDCV')* VGH_T.l(IA,G,S,T)/(GDATA(G,'GDFE') * (1-GEFFDERATE(IA,G))))$IGH(G)
                                    )
         + SUM((S,T),  TAX_GH(IA,G) *IHOURSINST(S,T)  * IOF3P6 * VGH_T.l(IA,G,S,T))$IGH(G)
-        + SUM((S,T),  TAX_FHO(IA,G)*IHOURSINST(S,T)  * IOF3P6 * GDATA(G,'GDCV')* VGH_T.l(IA,G,S,T)/(GDATA(G,'GDFE') * GEFFDERATE(IA,G)))$(IGHOB(G) or IGETOH(G))
+        + SUM((S,T),  TAX_FHO(IA,G)*IHOURSINST(S,T)  * IOF3P6 * GDATA(G,'GDCV')* VGH_T.l(IA,G,S,T)/(GDATA(G,'GDFE') * (1-GEFFDERATE(IA,G))))$(IGHOB(G) or IGETOH(G))
 
                  )/IOF1000000;
 

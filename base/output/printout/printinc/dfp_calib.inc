@@ -15,10 +15,15 @@ dfp_calib.PW = 255;
 
 if ((dfp_calib.pw LT 32000),
 dfp_calib.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            dfp_calib.OUT" /;
-PUT "Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "dfp_calib.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+
+
 PUT "This file was created as part of the calibration proces" /;
 PUT "for the Balmorel model. "  /;
 PUT "The tables below (or some modification thereof) and their associated text "/;

@@ -1,8 +1,8 @@
 * File balbase1.mss
 *-------------------------------------------------------------------------------
 
-* This file is part of the BALMOREL model, version 2.12 Alpha (July 2005).
-* File last time modified 13-05-2003 (hr), 20080414(hr)
+* This file is part of the BALMOREL model.
+* File last time modified 13-05-2003 (hr), 20080414(hr), 20120914(hr), 20150304(hr)   
 
 
 * This file will print the model and solver status, the objective value, etc.,
@@ -12,19 +12,25 @@
 
 Put logfile;
 
+* Skip the remaining part of the file if the model did not solve properly:
+$ifi %BB1%==yes IF(BALBASE1.MODELSTAT GT 2, PUT "Skipped file balbase1.mss due to BALBASE1.MODELSTAT GT 2" / / ;  ELSE
+
+
+
+
 * Note: The below text: "Some Balmorel errors" is a keyword for communication with the BUI. Do not change.
 IF((ORD(Y) EQ 1),
 IF ((ERRCOUNT2 EQ 0),
 PUT "No obvious Balmorel errors detected in the input data before simulation."
 ELSE
-PUT "Some Balmorel errors were detected in the input data before simulation." " See the file errors.out.//"
+PUT "Some Balmorel errors were detected in the input data before simulation." " See the file errors.out."  //;
 ));
 
 
 
 IF((ORD(Y) EQ 1),
   PUT "Solver status of the BALBASE1 model each year in the simulation" //;
-     PUT CARD(Y):4:0 " years to be simulated."  //;
+  PUT CARD(Y):4:0 " years to be simulated."  //;
 
   PUT "Year    Model status returned     " ;
   PUT "Solver status returned          " ;
@@ -64,12 +70,12 @@ PUT$(BALBASE1.MODELSTAT EQ 16) " Solved                      ";
 PUT$(BALBASE1.MODELSTAT EQ 17) " Solved singular             ";
 PUT$(BALBASE1.MODELSTAT EQ 18) " Unbounded no solution       ";
 PUT$(BALBASE1.MODELSTAT EQ 19) " Infeasible no solution      ";
-PUT$(BALBASE1.MODELSTAT GE 20) " Error no. " BALBASE1.MODELSTAT:3:0 " ";
+PUT$(BALBASE1.MODELSTAT GE 20) " Error no. " BALBASE1.MODELSTAT:3:0 ", consult GAMS documentation for details about MODELSTAT." /;
 
 PUT$(BALBASE1.SOLVESTAT EQ 1)  " Normal completion           ";
 PUT$(BALBASE1.SOLVESTAT EQ 2)  " Max iterations reached      ";
 PUT$(BALBASE1.SOLVESTAT EQ 3)  " Resource limit reached      ";
-PUT$(BALBASE1.SOLVESTAT GE 4)  " Non optimal - error no.  " BALBASE1.SOLVESTAT:3:0
+PUT$(BALBASE1.SOLVESTAT GE 4)  " Solver quit or terminated - error no.  " BALBASE1.SOLVESTAT:3:0 ", consult GAMS documentation for details about SOLVESTAT." /;
 ;
 
 PUT VOBJ.L:16:2 " ";
@@ -87,3 +93,5 @@ PUT "       Some Balmorel errors were detected after optimisation of year " Y.TL
 IF((ORD(Y) LT CARD(Y)),
   PUT "       (now to next SOLVE statement)" /;
 );
+* Skipped to here if the model did not solve properly:
+$ifi %BB1%==yes  );

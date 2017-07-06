@@ -1,6 +1,6 @@
 * File ep_ry.inc.
 
-* Modified last time: 01-02-2002 (rus), 16-02-2004 (ld), 2005.11.20 (hr), 20060328(hr), 20080305(hr)
+* Modified last time: 01-02-2002 (rus), 16-02-2004 (ld), 2005.11.20 (hr), 20060328(hr), 20080305(hr), 20120812(hr)
 
 * This file will print a table containing
 * the annual weighted average marginal electricity price by IR.
@@ -16,27 +16,21 @@ PUT ep_ry;
 
 if ((ep_ry.pw LT 32000),
 ep_ry.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            ep_ry.out" /;
-PUT "Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "ep_ry.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 
-PUT "Annual weighted average electricity price." /;
-PUT "Currency: " OMONEY.TS "  with exchange rate to input currency: "  OMONEY:7:3  " ("OMONEY.TS"/EUR90)." /;
+PUT "Annual electricity price, several versions." /;
+PUT "Currency: " OMONEY.TS "  with exchange rate to input currency: "  OMONEY:7:3  " ("OMONEY.TS"/"OIMONEY.TS")." /;
 PUT "Units: "; PUT OMONEY.ts "/MWh" //;
 
 );
 
 * End of file headings.
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
-* ------------------------------------------------------------------------------------
 * -----------------------------------------------------------------------------
 
 
@@ -71,14 +65,14 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IR,
             - SUM(IAGKN(IA,IGE)$((RRRAAA(IR,IA)) AND IGETOH(IGE)), VGEN_T.L(IA,IGE,S,T))
             + SUM(IRE$(IXKINI_Y(IRE,IR) OR IXKN(IRE,IR) OR IXKN(IR,IRE)), VX_T.L(IRE,IR,S,T)*(1-XLOSS(IRE,IR)))
             - SUM(IA$RRRAAA(IR,IA),VESTOLOADT.L(IA,S,T))
-$ifi %X3V%==yes     + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VIM_T.L(IR,X3VPLACE,X3VSTEP,S,T)))
+$ifi "%X3V%"=="yes"     + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VIM_T.L(IR,X3VPLACE,X3VSTEP,S,T)))
 ;
 
             OSCALAR2 = OSCALAR2 + OSCALAR1 * IHOURSINST(S,T);
             OSCALAR3 = OSCALAR3 + OSCALAR1 * QEEQ.M(IR,S,T);
       ));
 
-     IF((OSCALAR2 GT EPS),
+     IF((OSCALAR2 GT 0),
       PUT (OMONEY*(IOF1_*OSCALAR3 / OSCALAR2)):12:2 ;
 
     ELSE
@@ -111,7 +105,7 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IR,
       ));
 
 
-     IF((OSCALAR2 GT EPS),
+     IF((OSCALAR2 GT 0),
       PUT (OMONEY*(IOF1_*OSCALAR3 / OSCALAR2)):12:2 ;
 
     ELSE

@@ -15,10 +15,13 @@ PUT mso2_cy;
 
 if ((mso2_cy.pw LT 32000),
 mso2_cy.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            mso2_cy.out" /;
-PUT "Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "mso2_cy.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 
 PUT "Annual SO2 emissions" //;
 
@@ -31,15 +34,6 @@ PUT "SO2     "; LOOP(C, PUT C.TL:12) ; PUT /;
 );
 
 * End of file headings.
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
-* ------------------------------------------------------------------------------------
 
 * -----------------------------------------------------------------------------
 
@@ -47,9 +41,9 @@ mso2_cy.LJ = 2;
 
 PUT Y.TL:4:0; PUT "    "; LOOP(C, PUT (
 
-      SUM((G,S,T), IHOURSINST(S,T) * (IM_SO2(G)/1000) * IOF3P6 *
-      SUM(IA$(ICA(C,IA) AND (GDATA(G,'GDFE')* GEFFDERATE(IA,G))),(VGE_T.L(IA,G,S,T) + VGEN_T.L(IA,G,S,T)
-      + GDATA(G,'GDCV')*(VGH_T.L(IA,G,S,T) + VGHN_T.L(IA,G,S,T))) /
-      (GDATA(G,'GDFE')* GEFFDERATE(IA,G)) ))
+      SUM((IA,G,S,T)$((IAGK_Y(IA,G) or IAGKN(IA,G)) and ICA(C,IA)), IHOURSINST(S,T) * (IM_SO2(G)/IOF1000) * IOF3P6 *(
+       VGF_T.l(IA,G,S,T)$IAGK_Y(IA,G)
+      +VGF_T.l(IA,G,S,T)$(VGKN.l(IA,G) and IAGKN(IA,G))    )
+      )
 
 ):12:0 ); PUT /;

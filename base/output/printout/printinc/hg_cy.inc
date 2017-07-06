@@ -1,6 +1,6 @@
 * File: hg_cy.inc
 
-* Modified last time: 26-09-2002 by (rus), 16-02-2004 (ld), 20060328(hr), 20090121(hr)
+* Modified last time: 26-09-2002 by (rus), 16-02-2004 (ld), 20060328(hr), 20090121(hr), 20160407(hr)
 
 * This file will print a table containing annnual heat generation at all
 * technologies in each country and a table with use of heat storage.
@@ -14,10 +14,13 @@ PUT hg_cy;
 
 if ((hg_cy.pw LT 32000),
 hg_cy.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            hg_cy.out" /;
-PUT "Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "hg_cy.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   /;
 
 PUT "Annual heat generation and heat taken from heat storage" //;
 
@@ -26,14 +29,6 @@ PUT "Units: GWh" //;
 );
 
 * End of file headings.
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
 * ------------------------------------------------------------------------------------
 
 * -----------------------------------------------------------------------------
@@ -44,7 +39,7 @@ hg_cy.LJ = 2;
 
 LOOP(G,
 
-if(not IGHSTO(G),
+if(not IGHSTOALL(G),
 
 
 
@@ -62,7 +57,7 @@ PUT "TOTAL                              " ; LOOP(C, PUT ( HZGqCY(C)*IOF0001):12:
 
 PUT "Annual heat taken from storage in " PUT Y.TL:4:0 ; PUT "  "; LOOP(C, PUT C.TL:12) ;PUT /;
 
-LOOP(IGHSTO(G),
+LOOP(IGHSTOALL(G),
 
 if( sum(C,HGqCY(C,G)) ne 0,
 
@@ -72,11 +67,11 @@ if( sum(C,HGqCY(C,G)) ne 0,
    );
 ) ;
 
-PUT "TOTAL                              " ; LOOP(C, PUT sum(IGHSTO(G), HGqCY(C,G)*IOF0001):12:0 ; ); PUT //;
+PUT "TOTAL                              " ; LOOP(C, PUT sum(IGHSTOALL(G), HGqCY(C,G)*IOF0001):12:0 ; ); PUT //;
 
 * PUT "Heat generation incl. heat storage " ; LOOP(C, PUT sum(G, HGqCY(C,G)*IOF0001):12:0 ; ); PUT //;
 
-****************************
+
 
 
 

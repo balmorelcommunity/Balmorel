@@ -1,8 +1,8 @@
 * File error1.inc
 
-* This file is part of the Balmorel model, version 2.10 Alpha (May 2003).
+* This file is part of the Balmorel model.
 
-* File last time modified 13-05-2003 (hrv), 20080414(hr)
+* File last time modified 13-05-2003 (hrv), 20080414(hr), 20120914(hr), 20160824(hr)
 
 
 * This file initiates check on the data and solution of the model.
@@ -10,12 +10,13 @@
 
 * Output related to errors in data and solution.
 * This file will contain information about errors in input data, if any:
-FILE ERRORFILE         /..\LogError\errors.out/;
+FILE errorfile         /..\logerror\errors.out/;
 if ((ERRORFILE.pw LT 32000),
 ERRORFILE.pw = 32000;
 PUT ERRORFILE;
 PUT "File errors.out: Detailed description of Balmorel errors."/;
 PUT "Version:      " SYSTEM.TITLE /;
+PUT "The applied GAMS release is " (system.gamsrelease):5 " and the applied GAMS version is " (system.gamsversion):6 /;
 PUT "File created: " SYSTEM.DATE " " SYSTEM.TIME //;
 );
 
@@ -23,14 +24,24 @@ PUT "File created: " SYSTEM.DATE " " SYSTEM.TIME //;
 * and about the solver status for each year of the simulation
 * including the objective function value:
 
-FILE logfile          /..\LogError\logfile.out/;
+FILE logfile          /..\logerror\logfile.out/;
 if ((logfile.pw LT 32000),
 logfile.pw = 32000;
 PUT logfile;
 PUT "File logfile.out."/;
 PUT "Version:      " SYSTEM.TITLE /;
+PUT "The applied GAMS release is " (system.gamsrelease):5 " and the applied GAMS version is " (system.gamsversion):6 /;
 PUT "Log created: " SYSTEM.DATE " " SYSTEM.TIME //;
 );
+
+
+* ------------------------------------------------------------------------------
+* Include information on applied models, addons and options
+put "* ------------------------------------------------------------------------------" /;
+*put "The following addons are applied in the present model instance"/;
+$include "..\..\base\addons\_hooks\hellolog.inc"
+put "* ------------------------------------------------------------------------------" /;
+* ------------------------------------------------------------------------------
 
 
 * Initialisation of auxiliary variables:
@@ -41,5 +52,3 @@ SCALAR ERRCOUNT4 "Error count 4" /0/;
 
 * Scalar to any use:
 SCALAR ERRSCALAR1 "Error count to any use";
-* Subset of GGG to any use:
-SET ERRSETGGG(GGG) "Subset of GGG to any use";

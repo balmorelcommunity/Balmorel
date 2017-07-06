@@ -16,25 +16,19 @@ put / /  "Hallodo"//;
 
 if ((eg_gat.pw LT 32000),
 eg_gat.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            eg_gat.out" /;
-PUT "File created:         " SYSTEM.DATE " " SYSTEM.TIME /;
-PUT "Case-identification:  " OCASEID.TS //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "eg_gat.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 PUT '"Electricity production (MWh and MW) on units during each time segment"'//;
 );
 
 * End of headings.
 
 * -----------------------------------------------------------------------------
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
-* ------------------------------------------------------------------------------------
 
 
 PUT '"Electricity production (MWh) on units during each time segment:"'//;

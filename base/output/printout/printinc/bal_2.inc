@@ -1,8 +1,11 @@
 * File: bal_2.out
+* Printing to bal_1.out
 
-* Modified last time: 20070306 (lb)
+* Modified last time: 20070306 (lb), 20151210(hr)
 
-* This file will print a table containing a energy balance for each country
+* Note: presently there are errors in the file, has to be recoded for version 3.03 or later. Therefore it is not included, cf. prt4-bb2.inc
+
+* This file will print a table containing an energy balance for each country
 
 
 
@@ -15,10 +18,13 @@ PUT bal_1;
 
 if ((bal_1.pw LT 32000),
 bal_1.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            bal_1.out" /;
-PUT "Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "bal_1.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
 
 
 PUT "Energy balance" //;
@@ -28,23 +34,14 @@ PUT "Units: GWh" //;
 
 * End of file headings.
 
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
-* ------------------------------------------------------------------------------------
 
 bal_1.LJ = 1;
 PUT "Electricity balance for "PUT Y.TL:4:0; PUT "                     ;" ; LOOP(C, PUT C.TL:12 PUT ";";) ;PUT /;
 bal_1.LJ = 2;
 
 PUT "Total electricity generation (excl. heat pumps)  ;" ; LOOP(C, PUT ( EZGqCY(C)*IOF0001):12:0 ; PUT ";";); PUT /;
-PUT " - nuclear                                       ;" ; LOOP(C, PUT ( SUM((IA,IGNUC,S,T)$((IAGK_Y(IA,IGNUC) or AGKN(IA,IGNUC)) and ICA(C,IA)),(VGE_T.l(IA,IGNUC,S,T)+VGEN_T.l(IA,IGNUC,S,T))*IHOURSINST(S,T))*IOF0001):12:0 ; PUT ";";); PUT /;
-PUT " - other thermal                                 ;" ; LOOP(C, PUT ( SUM((IA,IGE,S,T)$((IAGK_Y(IA,IGE) or AGKN(IA,IGE)) and ICA(C,IA) and not (GDATA(IGE,'GDTYPE')=5) and not IGWND(IGE) and not IGHYRR(IGE) and not IGHYRS(IGE) and not IGNUC(IGE)),(VGE_T.l(IA,IGE,S,T)+VGEN_T.l(IA,IGE,S,T))*IHOURSINST(S,T))*IOF0001):12:0 ; PUT ";";); PUT /;
+PUT " - nuclear                                       ;" ; LOOP(C, PUT ( SUM((IA,G,S,T)$(IGF(G,'NUCLEAR') and (IAGK_Y(IA,G) or AGKN(IA,G)) and ICA(C,IA)),(VGE_T.l(IA,G,S,T)+VGEN_T.l(IA,G,S,T))*IHOURSINST(S,T))*IOF0001):12:0 ; PUT ";";); PUT /;
+PUT " - other thermal                                 ;" ; LOOP(C, PUT ( SUM((IA,IGE,S,T)$((IAGK_Y(IA,IGE) or AGKN(IA,IGE)) and ICA(C,IA) and not (GDATA(IGE,'GDTYPE')=5) and not IGWND(IGE) and not IGHYRR(IGE) and not IGHYRS(IGE) and not IGF(IGE,'NUCLEAR')),(VGE_T.l(IA,IGE,S,T)+VGEN_T.l(IA,IGE,S,T))*IHOURSINST(S,T))*IOF0001):12:0 ; PUT ";";); PUT /;
 PUT " - hydro                                         ;" ; LOOP(C, PUT ( SUM((IA,G,S,T)$((IAGK_Y(IA,G) or AGKN(IA,G)) and (IGHYRR(G) or IGHYRS(G)) and ICA(C,IA)),(VGE_T.l(IA,G,S,T)+VGEN_T.l(IA,G,S,T))*IHOURSINST(S,T))*IOF0001):12:0 ; PUT ";";); PUT /;
 PUT " - wind                                          ;" ; LOOP(C, PUT ( SUM((IA,IGWND,S,T)$((IAGK_Y(IA,IGWND) or AGKN(IA,IGWND)) and ICA(C,IA)),(VGE_T.l(IA,IGWND,S,T)+VGEN_T.l(IA,IGWND,S,T))*IHOURSINST(S,T))*IOF0001):12:0 ; PUT ";";); PUT /;
 PUT " (hereof CHP)                                    ;" ; LOOP(C, PUT ( SUM((IA,G,S,T)$((IAGK_Y(IA,G) or AGKN(IA,G)) and (IGEXT(G) or IGBPR(G)) and ICA(C,IA)),(VGE_T.l(IA,G,S,T)+VGEN_T.l(IA,G,S,T))*IHOURSINST(S,T))*IOF0001):12:0 ; PUT ";";); PUT /;
@@ -81,14 +78,6 @@ PUT "Investments" //;
 * End of file headings.
 
 * ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
-* ------------------------------------------------------------------------------------
 
 bal_1.LJ = 1;
 PUT "Electricity generation and infrastructure MW el "PUT Y.TL:4:0; PUT "  ;" ; LOOP(C, PUT C.TL:12 PUT ";";) ;PUT /;
@@ -119,7 +108,8 @@ PUT "*==========================================================================
 
 
 bal_1.LJ = 1;
-PUT "Electricity generation and infrastructure Mio EURO06 "PUT Y.TL:4:0; PUT "  ;" ; LOOP(C, PUT C.TL:12 PUT ";";) ;PUT /;
+PUT "Currency: Mio " OMONEY.TS "  with exchange rate to input currency: "  OMONEY:7:3  " ("OMONEY.TS"/"OIMONEY.TS")." /;
+PUT "Currency: " OMONEY.TS "  with exchange rate to input currency: "  OMONEY:7:3  " ("OMONEY.TS"/"OIMONEY.TS")." /;
 bal_1.LJ = 2;
 
 PUT "Total electricity generation (excl. heat pumps)            ;" ; LOOP(C, PUT ( OMONEY*SUM((IA,IGE)$((not IGETOH(IGE)) and IAGKN(IA,IGE) and ICA(C,IA)), GDATA(IGE,'GDINVCOST0')*VGKN.l(IA,IGE))):12:0 ; PUT ";";); PUT /;

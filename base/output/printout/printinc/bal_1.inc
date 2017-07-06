@@ -15,28 +15,23 @@ PUT bal_1;
 
 if ((bal_1.pw LT 32000),
 bal_1.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:             bal_1.out" /;
-PUT "Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "Case-identification: '" OCASEID.TS "'" //;
-
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "bal_1.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
 
 PUT "Energy balance" //;
 PUT "Units: GWh" //;
 
+
+
+
 );
 
 * End of file headings.
-
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
-* ------------------------------------------------------------------------------------
 
 bal_1.LJ = 1;
 PUT "Energy balance for "PUT Y.TL:4:0; PUT "                          " ; LOOP(C, PUT C.TL:12) ;PUT /;

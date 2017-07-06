@@ -13,17 +13,20 @@ PUT EG2_CY;
 
 if ((EG2_CY.PW LT 32000),
 EG2_CY.PW = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            EG2_CY.OUT" /;
-PUT "File created:         " SYSTEM.DATE " " SYSTEM.TIME /;
-PUT "Case-identification:  " OCASEID.TS //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "eg2_cy.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 PUT '"Electricity production (MWh and MW) on units during each time segment"'//;
 );
 
 * End of file headings.
 * ------------------------------------------------------------------------------------
 * If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),  
+IF((CARD(SCENARIO) GT 1),
 PUT /"*==============================================================================="/;
 PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
 PUT "*==============================================================================="//;

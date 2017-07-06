@@ -14,10 +14,13 @@ put xbottle;
 
 if ((xbottle.pw LT 32000),
 xbottle.pw=32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            xbottle.out" /;
-PUT "Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "xbottle.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 
 PUT "Bottle neck information........" //;
 put "Observe: bottle neck income on a transmission line between regions IRE and IRI in a time segment (S,T) calculated as "/;
@@ -28,18 +31,10 @@ put "Note: transmission losses are disregarded in this version."//;
 
 * End of file headings.
 * ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
-* ------------------------------------------------------------------------------------
 
 * -----------------------------------------------------------------------------
 
-PUT "  Bottle neck income, " omoney.ts //;
+PUT "  Bottle neck income, " omoney.ts " for " Y.TL:4 //;
 
 * If iscalar1 is 0 then bottle neck income for both directions on a line are summed
 * If iscalar1 is not 0 then the bottle neck income is given for the two directions separately.

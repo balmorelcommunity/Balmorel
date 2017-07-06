@@ -18,10 +18,13 @@ PUT eflex_rst;
 
 if ((eflex_rst.PW LT 32000),
 eflex_rst.PW = 32000;
-PUT "* Version:              " SYSTEM.TITLE /;
-PUT "* File name:            eflex_rst.out" /;
-PUT "* Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "* Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "eflex_rst.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
 
 PUT "* Amount of flexible electricity consumption activated for each S and T" /;
 );

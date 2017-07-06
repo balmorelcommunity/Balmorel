@@ -13,10 +13,13 @@ $ontext
 * First print headings:
 if ((priceadd_sc.PW LT 32000),
 priceadd_sc.PW = 32000;
-PUT "* Version:              " SYSTEM.TITLE /;
-PUT "* File name:            priceadd_sc.out" /;
-PUT "* Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "* Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "priceadd_sc.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 
 PUT "* Marginal value FIXED_TRANS" /;
 );

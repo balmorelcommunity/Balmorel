@@ -1,7 +1,7 @@
 * File: hsto2_at.inc
 
 * Created 2001.03.20 (hrv), 16-02-2004 (ld)
-* Modified last time:  2005.07.31 (hr), 2005.10.29 (hr), 20060238(hr)
+* Modified last time:  2005.07.31 (hr), 2005.10.29 (hr), 20060238(hr), 20160407(hr)
 
 * This file will print a table containing content of short term heat storages
 * at the beginning of each time segment
@@ -14,22 +14,18 @@ PUT hsto2_at;
 
 if ((hsto2_at.pw LT 32000),
 hsto2_at.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            hsto2_at.GRF" /;
-PUT "File created:         " SYSTEM.DATE " " SYSTEM.TIME /;
-PUT "Case-identification:  " OCASEID.TS //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "hsto2_at.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
+
 PUT '"Short term heat storage contents (MWh) at the beginning of each time segment"'////;
 );
 
 * End of file headings.
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
 * ------------------------------------------------------------------------------------
 
 hsto2_at.LJ = 1;
@@ -37,7 +33,7 @@ PUT Y.TL:4 "        ";     LOOP(S,  LOOP(T, PUT T.TL:12 ) PUT ""); PUT /;
 hsto2_at.LJ = 2;
 
 LOOP(C,
-LOOP(IA$(ICA(C,IA) AND (SUM(IGHSTO,IGKFX_Y(IA,IGHSTO)) GT 0)   ),
+LOOP(IA$(ICA(C,IA) AND (SUM(IGHSTOALL,IGKFX_Y(IA,IGHSTOALL)) GT 0)   ),
 PUT IA.TL:12 ;
 LOOP(S,
  LOOP(T,

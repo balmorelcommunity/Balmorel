@@ -1,6 +1,6 @@
 * File hp_ay.inc.
 
-* Modified last time: 2005.11.18 (hr), 20060328(hr), 20080305(hr)
+* Modified last time: 2005.11.18 (hr), 20060328(hr), 20080305(hr), 20150917(aroal), 20160407(hr)
 
 * This file will print a table containing
 * the annual weighted average marginal heat generation price by IA.
@@ -15,10 +15,13 @@ PUT hp_ay;
 
 if ((hp_ay.pw LT 32000),
 hp_ay.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            hp_ay.out" /;
-PUT "Time-stamp:          '" SYSTEM.DATE " " SYSTEM.TIME "'" /;
-PUT "Case-identification: '" OCASEID.TS "'" //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "hp_ay.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 
 PUT "Annual average heat price." /;
 PUT "Currency: " OMONEY.TS "  with exchange rate to input currency: "  OMONEY:7:3  " ("OMONEY.TS"/EUR90)." /;
@@ -28,15 +31,6 @@ PUT "Units: "; PUT OMONEY.ts "/MWh" //;
 );
 
 * End of file headings.
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
-* ------------------------------------------------------------------------------------
 
 * -----------------------------------------------------------------------------
 
@@ -57,10 +51,6 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IA,
 PUT //;
 
 
-
-
-
-
 * -----------------------------------------------------------------------------
 
 PUT "Annual average heat price, weighted by production quantity:"/;
@@ -77,7 +67,6 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IA,
 
 
        LOOP(S,  LOOP(T,
-*            OSCALAR1 = SUM(IGH, VGH_T.L(IA,IGH,S,T)+VGHN_T.L(IA,IGH,S,T));
 * Note: The expression for OSCALAR1 is identical to the left hand side of heat equation:
             OSCALAR1 =
                   SUM(IGBPR$IAGK_Y(IA,IGBPR),VGH_T.L(IA,IGBPR,S,T))
@@ -89,14 +78,12 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IA,
                + SUM(IGETOH$IAGK_Y(IA,IGETOH),VGH_T.L(IA,IGETOH,S,T))
                + SUM(IGETOH$IAGKN(IA,IGETOH),VGHN_T.L(IA,IGETOH,S,T))
                - VHSTOLOADT.L(IA,S,T)
-               + SUM(IGESTO$((IGKFX_Y(IA,IGESTO) GT 0) AND (GDATA(IGESTO,'GDCB') GT 0)), VGE_T.L(IA,IGESTO,S,T)/GDATA(IGESTO,'GDCB'));
+               + SUM(IGESTOALL$((IGKFX_Y(IA,IGESTOALL) GT 0) AND (GDATA(IGESTOALL,'GDCB') GT 0)), VGE_T.L(IA,IGESTOALL,S,T)/GDATA(IGESTOALL,'GDCB'));
 
             OSCALAR2 = OSCALAR2 + OSCALAR1 * IHOURSINST(S,T);
-            OSCALAR3 = OSCALAR3 + OSCALAR1 * IHOURSINST(S,T) * QHEQ.M(IA,S,T);
-
+            OSCALAR3 = OSCALAR3 + OSCALAR1 * QHEQ.M(IA,S,T);
 
       ));
-*TEST PUT  / IA.TL "  MMM PROD, COST =  " OSCALAR2    OSCALAR3  /;
 
      IF((OSCALAR2 GT 1),
       PUT (OMONEY*(IOF1_*OSCALAR3 / OSCALAR2)):OTLW:2 ;
@@ -132,7 +119,7 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IA,
             OSCALAR3 = OSCALAR3 + OSCALAR1 * QHEQ.M(IA,S,T);
       ));
 
-     IF((OSCALAR2 GT EPS),
+     IF((OSCALAR2 GT 0),
       PUT (OMONEY*(IOF1_*OSCALAR3 / OSCALAR2)):OTLW:2 ;
 
     ELSE

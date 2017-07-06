@@ -15,10 +15,13 @@ PUT EPNXT_RT;
 
 if ((epnxt_rt.pw LT 32000),
 epnxt_rt.pw = 32000;
-PUT "Version:              " SYSTEM.TITLE /;
-PUT "File name:            EPNXT_RT.OUT" /;
-PUT "File created:         " SYSTEM.DATE " " SYSTEM.TIME /;
-PUT "Case-identification:  " OCASEID.TS //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "epnxt_rt.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   //;
 
 PUT "Marginal electricity generation cost of 'the next' unit." /
 PUT "Currency: " OMONEY.TS "  with exchange rate to input currency: "  OMONEY:7:3  " ("OMONEY.TS"/EUR90)." /;
@@ -27,14 +30,6 @@ PUT "The output of the table is in (" OMONEY.ts "/MWh)" //;
 );
 
 * End of file headings.
-* ------------------------------------------------------------------------------------
-* If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),
-PUT /"*==============================================================================="/;
-PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
-PUT "*==============================================================================="//;
-);
-* End of scenario heading
 * ------------------------------------------------------------------------------------
 
 * -----------------------------------------------------------------------------
@@ -55,10 +50,10 @@ LOOP(IR,
       LOOP(IA$RRRAAA(IR,IA),
         LOOP(IGEE$((IGKVACCTOY(IA,IGEE) + IGKFX_Y(IA,IGEE) + VGKN.L(IA,IGEE)) GT 0),
           IF(((VGE_T.M(IA,IGEE,S,T) GT 0) OR (VGEN_T.M(IA,IGEE,S,T) GT 0)),
-            IF(((VGE_T.M(IA,IGEE,S,T) LT OSCALAR1) AND (VGE_T.M(IA,IGEE,S,T) gT eps)),
+            IF(((VGE_T.M(IA,IGEE,S,T) LT OSCALAR1) AND (VGE_T.M(IA,IGEE,S,T) GT 0)),
               OSCALAR1=VGE_T.M(IA,IGEE,S,T);
             );
-            IF(((VGEN_T.M(IA,IGEE,S,T) LT OSCALAR1) AND (VGEN_T.M(IA,IGEE,S,T) gT eps)),
+            IF(((VGEN_T.M(IA,IGEE,S,T) LT OSCALAR1) AND (VGEN_T.M(IA,IGEE,S,T) GT 0)),
               OSCALAR1=VGEN_T.M(IA,IGEE,S,T);
             );
           );
@@ -66,9 +61,9 @@ LOOP(IR,
       );
 
       IF((OSCALAR1 LT INF),
-        PUT (OMONEY*IOF1_*( OSCALAR1 + OSCALAR2 )/(IDAYSIN_S(S)*IHOURSIN24(T))):11:3 " "
+        PUT (OMONEY*IOF1_*( OSCALAR1 + OSCALAR2 )/(IHOURSINST(S,T))):11:3 " "
       ELSE
-        PUT (OMONEY*IOF1_*( OSCALAR2 )/(IDAYSIN_S(S)*IHOURSIN24(T))):11:3 "*" ;
+        PUT (OMONEY*IOF1_*( OSCALAR2 )/(IHOURSINST(S,T))):11:3 "*" ;
       );
     );
     PUT /;
@@ -98,7 +93,7 @@ LOOP((S,T),
             (OMONEY*IOF1_*(MAX(VGE_T.M(IA,IGEE,S,T),VGEN_T.M(IA,IGEE,S,T)))/(IDAYSIN_S(S)*IHOURSIN24(T))):12:3
             (OMONEY*IOF1_*((MAX(VGE_T.M(IA,IGEE,S,T),VGEN_T.M(IA,IGEE,S,T)))+QEEQ.M(IR,S,T))/(IDAYSIN_S(S)*IHOURSIN24(T))):12:3
             (VGE_T.L(IA,IGEE,S,T)+VGEN_T.L(IA,IGEE,S,T)):12:3
-             ((IGKVACCTOY(IA,IGEE) + IGKFX_Y(IA,IGEE) + VGKN.L(IA,IGEE))*GKDERATE(IGEE,IA,S)):12:3;
+             ((IGKVACCTOY(IA,IGEE) + IGKFX_Y(IA,IGEE) + VGKN.L(IA,IGEE))*(1-GKDERATE(IGEE,IA,S))):12:3;
         PUT /;
       )
     )

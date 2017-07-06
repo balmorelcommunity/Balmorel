@@ -1,6 +1,6 @@
 * File balgams.opt to the Balmorel model.
 * This file contains GAMS options.
-* This file is part of the Balmorel model, version 2.14.
+* This file is part of the Balmorel model, version 3.03.
 
 *===============================================================================
 * The following are options applying to the GAMS system (unless overwritten).
@@ -53,8 +53,9 @@ $OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF
 * Defaults are LIMROW=3, LIMCOL=3;
 * The statement "LIMROW=0" turns the listing off:
 
-OPTIONS LIMROW=   1000, LIMCOL=   1000;
+OPTIONS LIMROW=   100, LIMCOL=   100;
 
+OPTIONS RESLIM= 50000;
 
 *...............................................................................
 * SYSOUT controls the printing of the solved status in the list file.
@@ -78,8 +79,12 @@ $ondollar
 *-------------------------------------------------------------------------------
 
 *...............................................................................
+* Comments:
 * ONINLINE makes it possible to comment out parts using /*  */. MUST be present:
 $ONINLINE
+
+* ONEOLCOM makes it possible to start a comment with !!, it stretches to end-of-line. MUST be present:
+$ONEOLCOM
 
 *...............................................................................
 * Handling of empty sets:
@@ -93,22 +98,18 @@ $ONEMPTY
 * Solver related options:
 *-------------------------------------------------------------------------------
 
-OPTION LP=CPLEX;
-OPTION MIP=CPLEX;
-OPTION MCP=PATH;
+* OPTCR controls the precision of the solution. If optcr is greater than o,
+* a good not necessarily optimal solution will be accepted
+* Useful for inspection of details.
+option optcr = 0.000001
 
-* ITERLIM specifies the maximum number of iteration by the solver
-OPTIONS ITERLIM=2000000;
+*-------------------------------------------------------------------------------
+* set Cplex solver. Illustration only. Consult GAMS manuals.
 
-* RESLIM specifies the maximum time (usually seconds) used by the solver
-OPTIONS RESLIM=100000;
+* Set USEOPTIONFILE to either 1 or 0. 1 indicates to use the cplex.opt file
+* defined below. 0 indicates no option file.
 
-* OPTCR controls the precision of the solution. If optcr is greater than 0,
-* a good but not necessarily optimal solution will be accepted
-option optcr = 0.00
-
-*...............................................................................
-* Set for Cplex solver
+$Setglobal USEOPTIONFILE 0
 
 *file cp /cplex.opt/;
 *put cp;

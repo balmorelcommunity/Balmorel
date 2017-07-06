@@ -11,17 +11,20 @@ PUT eghydro_scsr;
 
 if ((eghydro_scsr.PW LT 32000),
 eghydro_scsr.PW = 32000;
-PUT "*Version:              " SYSTEM.TITLE /;
-PUT "*File name:            eghydro_scsr.OUT" /;
-PUT "*File created:         " SYSTEM.DATE " " SYSTEM.TIME /;
-PUT "*Case-identification:  " OCASEID.TS //;
+PUT "Version:              " "%PRINTSEPARATOR%" SYSTEM.TITLE /;
+PUT "File name:            " "%PRINTSEPARATOR%" "eghydro_scsrt.out" /;
+PUT "Time-stamp:           " "%PRINTSEPARATOR%" SYSTEM.DATE " " SYSTEM.TIME  /;
+$ifi %BB1%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE1"/;
+$ifi %BB2%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE2"/;
+$ifi %BB3%==yes PUT "Solved:               " "%PRINTSEPARATOR%" "BALBASE3"/;
 PUT '*"Electricity production MWh on waterpower units during each season"'//;
+PUT "Case-identification:  " "%PRINTSEPARATOR%" OCASEID.TS   /;
 );
 
 * End of headings.
 * ------------------------------------------------------------------------------------
 * If scenarios (i.e., more than base case) print scenario heading:
-IF((CARD(SCENARIO) GT 1),  
+IF((CARD(SCENARIO) GT 1),
 PUT /"*==============================================================================="/;
 PUT "*       "   SCENARIO.TL "      " SCENARIO.TE(SCENARIO) /;
 PUT "*==============================================================================="//;
