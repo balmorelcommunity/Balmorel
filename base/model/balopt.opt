@@ -1,0 +1,420 @@
+* File balopt.opt for the Balmorel model.
+
+* This file holds options that are used to control model functionality,
+* including extentions in the form of addons, and interplay between models.
+
+* Note: in final version all relevant control settings will be indicated
+* by an *!option statement, e.g. "*!option yes" and other instructions.
+* Unless otherwise indicated, it will not be possible to give any option value
+* (i.e, an empty text string).
+
+* Note: If you work with BUI, the only way to enter a comment in this file
+* is to use a '*' as the first character on the line;
+* thus, you can not use e.g., $ontext..$offtext or /*..*/ or // or !!.
+
+* Further, if you work with BUI, this file will not be $included into Balmorel.gms,
+* instead the file Balopt.bui will be $included. See the description elsewhere.
+
+
+* Versions - the following is preliminary to ahndle not-finished differences between versions,
+* specifically relative to handling of loss in distribution and transmission:
+$Setglobal loss  301
+*!option 212
+*!option 301
+
+
+
+
+*===============================================================================
+*===============================================================================
+* Model choices:
+*===============================================================================
+*===============================================================================
+
+*-------------------------------------------------------------------------------
+* The following global variables concern the choice of model.
+* If $Setglobal bb1 yes, the usual (S,T) time segments and no endogenous investment are chosen.
+* If $Setglobal bb2 yes, the usual (S,T) time segments and endogenous investment are chosen.
+* If $Setglobal bb3 yes, the no endogenous investment, forwards simulation is chosen.
+* Exactly one of the following Setgbobals must be assigned yes.
+
+$Setglobal bb1   yes
+$Setglobal bb2
+$Setglobal bb3
+
+
+
+*-------------------------------------------------------------------------------
+
+
+
+*===============================================================================
+*===============================================================================
+* Basic models details:
+*===============================================================================
+*===============================================================================
+
+*-------------------------------------------------------------------------------
+* The following global variables concern the choice of details in some of the models.
+* Specify a specific detail by assigning yes.
+* Note that some of the choices are mutually dependent.
+
+
+* Disable investments in electricity transmission capacity
+$Setglobal NOELTRANSINV yes
+*!option yes
+
+
+* Allow wind turbines to shut down
+$Setglobal WNDSHUTDOWN yes
+*!option yes
+
+
+
+
+*===============================================================================
+*===============================================================================
+* Addon modules:
+*===============================================================================
+*===============================================================================
+
+*-------------------------------------------------------------------------------
+* The following global variables concern the choice of add-on modules to include.
+* Include a module by assigning   yes .
+* Note that some of the choices are mutually dependent.
+
+* Rev.2.14: Presently most of the addons are commented out -
+* they may or may not be working (at least with an appropriate data set),
+* however, it has not been checked.
+
+$Setglobal COMBTECH
+$Setglobal ECONOMIC
+$Setglobal BASELOADSERVICE
+$Setglobal X3V
+*$Setglobal MP
+*$Setglobal GAS
+*$Setglobal QUAD
+*$Setglobal WELFARE
+*$Setglobal H2
+*$Setglobal transport
+*$Setglobal NAP
+$Setglobal DECOMP
+* DECOMPEFF indicates that technology is decomissioned on the basis of profitability.
+* When revenues can no longer cover both variable and fixed operating costs, capacity is decomissioned.
+*$Setglobal DECOMPEFF
+*$Setglobal CAES
+*$Setglobal HEATTRANS
+
+*$Setglobal RENEWTARGET
+*$Setglobal FOSSILTARGET
+*$Setglobal WINDTARGET
+$ifi %BB3%==yes $Setglobal FOSSILTARGET no
+$ifi %BB3%==yes $Setglobal RENEWTARGET no
+$ifi %BB3%==yes $Setglobal WINDTARGET no
+
+$Setglobal REShareE
+*!option yes
+*!notif %REShareEH%==yes
+
+$Setglobal REShareEH
+*!option yes
+*!notif %REShareE%==yes
+
+
+$setglobal AGKNDISC
+*!option yes
+*!onlyif %BB2%==yes
+*!onlyif %solvemip%==yes
+
+
+
+* With newQ set to yes a number of equations will be included into model BALBASE1.
+* So far this is undocumented and preliminary.
+$Setglobal newQ
+*!option yes
+
+
+*===============================================================================
+*===============================================================================
+* Some interaction between models:
+*===============================================================================
+*===============================================================================
+* The following options are related to interplay between models,
+* e.g. one model output serving as input to another model.
+
+
+*-------------------------------------------------------------------------------
+* Options timeaggr,CREATETIME,CREATEDTIME control automatic aggregation of time segments.
+
+$Setglobal timeaggr
+*!option yes
+
+* Used to find suitable temporal resolution
+$Setglobal CREATETIME
+$Setglobal CREATEDTIME
+$ifi %CREATETIME%==yes $Setglobal bb1 no
+$ifi %CREATETIME%==yes $Setglobal bb2 no
+$ifi %CREATETIME%==yes $Setglobal bb3 yes
+$ifi %CREATETIME%==yes $Setglobal timeaggr no
+
+*-------------------------------------------------------------------------------
+* Lars:
+$Setglobal quickfix yes
+
+
+*-------------------------------------------------------------------------------
+* (bb1 or bb2 only) Create an input file for water to be available
+* in specific weeks for use in BB3
+$Setglobal MAKEWATER  yes
+*!option yes    !mayif bb1==yes   !mayif bb2==yes !notif bb3==yes
+
+$Setglobal WATERVAL
+*!option yes  !onlyif bb3==yes
+
+
+*-------------------------------------------------------------------------------
+* Make investments
+* Used in a BB2 model to generate additional capacity for other models
+$Setglobal MAKEINVEST
+*!option yes
+
+* Used in a BB1 or BB3 model to load investments as generated in BB2
+$Setglobal ADDINVEST
+*!option yes
+
+$ifi     %bb2%==yes $Setglobal ADDINVEST no
+$ifi not %bb2%==yes $Setglobal MAKEINVEST no
+
+
+*-------------------------------------------------------------------------------
+
+
+*===============================================================================
+*===============================================================================
+* Output:
+*===============================================================================
+*===============================================================================
+
+
+*-------------------------------------------------------------------------------
+* Some of the actions producing output from the BUI will require establishment of
+* absolute paths. The following settings will ensure that if you work from the GAMS IDE
+* (with the GAMS Project located in the model folder) then the absolute paths will be established correctly.
+* Set relative (to model directory) paths to relevant folders:
+* No choices, they must be set as shown. Note the format.
+* They are to be used as illustrated below and elsewhere in the code.
+
+$setglobal  relpathModel            ""
+$setglobal  relpathoutput           "..\output\"
+$setglobal  relpathInputdata2GDX    "..\output\inputout\"
+$setglobal  relpathtemp             "..\output\temp\"
+
+* More may come ...
+
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+
+* It may be convenient under some circumstances to have the applied input data in other forms,
+* this may be achieved by the following mechanism.
+
+* Make a summary of the input data in text format to file inputout.out:
+$Setglobal inputdatatxt  yes
+*!option ""          !description do not make it
+*!option yes         !description make it when solving
+*!option yesnosolve  !description make it but do not solve
+
+
+* Save the input data in gdx format for further processing by Gdx utilities,
+* e.g. viewing (Gdxviewer), comparing (Gdxdiff), or transferring to other data formats like Excel or Access.
+* Note that this will be done as a  compile time operation,
+* such that only the 'direct' data definitions (and no assignments) are reflected.
+$Setglobal INPUTDATA2GDX
+*!option yes
+
+
+* Transfer the input data in gdx format to a Microsoft Access database  ..\output\inputout\inputdataout.mdb:
+$Setglobal INPUTDATAGDX2MDB
+*!option yes    !onlyif  %INPUTDATA2GDX%==yes
+* Note: if you have established a link from another Access database to inputdataout.mdb
+* close all tables in it before executing Balmorel in order to ensure updating of the links.
+
+
+* Transfer the input data in gdx format to Microsoft Excel format:
+* NOTWORKING: we are waiting for GAMS version 22.7, which has better support for this.
+$Setglobal INPUTDATAGDX2XLS
+*!option  ""
+*!option  ""
+
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+* Make some output in text format to show some results of an execution.
+* The detailed code for the writing of the files is given in /output/printout/printinc.
+* Setting "yes" for PRINTFILES will make some standard printout files to folder \output\printout\.
+$Setglobal PRINTFILES yes
+*!option yes
+
+* PRINTSEPARATOR is a single character used for separating columns in printfiles,
+* convenient e.g. to use ';' for copy-paste to Excel.
+$Setglobal PRINTSEPARATOR  ';'
+*!option ' '
+*!option ';'
+*!option ','
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+
+* The following will establish a mechanism that will save annual optimization results
+* from bb1 and bb2 (seasonal for bb3) as gdx files; at the end they may be merged to one gdx file.
+* This merged file may then be transferred to an Access database or to Excel.
+* It is to be seen in conjunction with saving annual results in file bb123.sim,
+* which is accomplished using savepoint with value 1, cf '$Setglobal SAVEPOINTVALUE'.
+
+* The following closely linked controls are used:
+* SAVEPOINTVALUE, cf. above
+* MERGESAVEPOINTRESULTS
+* MERGEDSAVEPOINTRESULTS2MDB
+* MERGEDSAVEPOINTRESULTS2XLS: presently not working, we are waiting for GAMS version 22.7, which has better support for this.
+
+
+* Savepoint: the GAMS command "Modelname.Savepoint=number;"
+* The savepoint attribute tells GAMS to save a GDX file that contains the information on the current solution point.
+* One can save the information from just the last solve or from every solve.
+* The points that are saved can be used to provide an advanced basis, an integer program starting point or a NLP starting point.
+* Numeric input is expected with the allowable numeric values being:
+* 0 no point gdx file is to be saved
+* 1 a point gdx file is to be saved from the last solve in the GAMS model
+* 2 a point gdx file is to be saved from every solve in the GAMS model
+* The value specified by $Setglobal SAVEPOINTVALUE will be used for savepoint.
+* To be used with subsequent handling of output.
+$Setglobal SAVEPOINTVALUE 0
+*!option 0
+*!option 1   !mustif  %MERGESAVEPOINTRESULTS%==yes  !mustif%MERGEDSAVEPOINTRESULTS2GDX%==yes
+*!option 2 Note: nothing implemented nor tested, so do not use it.
+*!select1
+
+* In order not to confuse results from different executions, delete all old gdx-files:
+$ifi %SAVEPOINTVALUE%==1  execute "del %relpathModel%..\output\temp\*.gdx";
+
+
+* Use the $setglobal MERGESAVEPOINTRESULTS to choose whether to merge annual/seasonal results or not:
+$setglobal  MERGESAVEPOINTRESULTS
+*!option yes  *!onlyif  %SAVEPOINTVALUE%==1
+* Note: make sure that it is possible to make the new merged gdx file,
+* e.g. make sure that the file *.gdx is not open in another application (like GAMD IDE).
+
+* Then prepare for the necessary details:
+$SETGLOBAL  batfileMERGESAVEPOINTRESULTS    %relpathModel%MERGESAVEPOINTRESULTS.bat
+*!option !freetext / !fixedtext  !mustif %MERGESAVEPOINTRESULTS%==yes
+file     fileMERGESAVEPOINTRESULTSbat /  %batfileMERGESAVEPOINTRESULTS%  /;
+*!option !freetext *!mustif %MERGESAVEPOINTRESULTS%==yes
+putclose fileMERGESAVEPOINTRESULTSbat;     /*overflodig?*/
+
+
+* The following is a clean-up in relation to previous runs, changing extension from gdx til bak.    UNoDVENDIGT med *bak!? Men det er dog nodvendig med oprydning
+* rev.2.14 12345: to be moved? no execution in the option file!
+*$ifi %MOVEyRESULTSbb1bb2% ==yes  execute "del %relpathoutput%\*.bak";
+*$ifi %MERGESOLVERESULTS% ==yes  execute "rename %relpathoutput%\*.gdx *.bak";
+$ifi %SAVEPOINTVALUE%==1  execute "del %relpathModel%*.gdx";
+
+
+$Setglobal MERGEDSAVEPOINTRESULTS2MDB
+*!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
+*-------------------------------------------------------------------------------
+
+
+*-------------------------------------------------------------------------------
+
+* hans12345: bemark, at dette kan hondteres elegantere i BUI.
+* CASEID is the case identification string. It can be assigned freely, however, if
+* the case is a base case to which other cases should be compared the name should be
+* BASECASE. Normally the model in the base directory will be called BASECASE while
+* any variants will have names as appropriate. Model results in the form of GDX files
+* (or ACCESS MDBs) will have the CASEID as filename with the appropriate extension.
+* The CASEID is also used to distinguish cases in the WELFARE addon.
+
+
+$Setglobal CASEID  BASE
+*!option !freetext
+
+*-------------------------------------------------------------------------------
+
+* COMPAREWITH defines the folder(.) to look for the case with which to merge results.
+* If the case is in the output folder of variant 'myvariant' ......
+* options to "VARIANT" (without the quotes).
+* COMPARECASE defines the name of the case in that folder.
+* If COMPARECASE is NONE(?), then the case is not merged with other cases.
+
+$Setglobal COMPAREWITH BASE
+*!option !freetext
+$Setglobal COMPARECASE TEST1
+*!option !freetext !option NONE
+
+* alternativ lige nu:
+* The following will merge (or compare?) two results, of which one (presently) is the base case
+* (from which follows that it only makes sense if the presnet case as not the base case.)
+* With  "$Setglobal comparewithbase yes" this will be done, otherwise not.
+* If done, the result will be placed in .. , in the form of a GDX file.
+* [With "$Setglobal ..." this may then be transferred to a MDB file?]
+$Setglobal COMPAREWITHBASE
+*!option yes
+
+
+* Then prepare for the necessary details:
+$SETGLOBAL  batfileCOMPAREWITHBASE    %relpathModel%COMPAREWITHBASE.bat
+*!option !freetext / !fixedtext  !mustif %COMPAREWITHBASE%==yes
+file     fileCOMPAREWITHBASEbat /  %batfileCOMPAREWITHBASE%  /;
+*!option !freetext *!mustif %COMPAREWITHBASE%==yes
+putclose fileCOMPAREWITHBASEbat;     /*overflodig?*/
+
+
+
+
+*===============================================================================
+*===============================================================================
+* The model type's implication for solver type
+*===============================================================================
+*===============================================================================
+
+$Setglobal SOLVEMIP
+*!option yes
+*!mustfi %AGKNDISC%==yes
+
+
+
+*===============================================================================
+*===============================================================================
+* Input data:
+*===============================================================================
+*===============================================================================
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+* Option semislash is used to control input data format for text files.
+* With "$Setglobal semislash ;" the input files must include
+* the declaration statement initially and must terminate with a "/;".
+* With "$Setglobal semislash /" the input files do not contain this, but only data.
+* Note that parameters and tables are identical declarations, however,
+* when using "$Setglobal semislash /" make sure
+* that the use of either "parameter" or "table" in Balmorel.gms for any data file
+* corresponds to the data format used in the file.
+* NOTE: Rev.2.14: Not fully implemented yet, you MUST use "$Setglobal semislash ;".
+$Setglobal semislash ";"
+*!optiononly ;
+**!option ;
+
+* The following global variables concern the choice of data year wrt. time series.
+* Exactly one of the following sets must be assigned yes
+* Rev.2.14: to disappear.
+
+$Setglobal WxH2001     yes
+$Setglobal WxH2002
+$Setglobal WxH2003
+
+
+
+*-------------------------------------------------------------------------------
+* End of Balopt.opt
+*-------------------------------------------------------------------------------

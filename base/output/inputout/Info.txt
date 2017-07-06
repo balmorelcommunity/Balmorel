@@ -1,0 +1,1 @@
+This files ensures creation of the necessary folder structure.

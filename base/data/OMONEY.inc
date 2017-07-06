@@ -1,0 +1,1 @@
+SCALAR OMONEY "EUR07" / 1.389 /;

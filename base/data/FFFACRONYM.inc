@@ -1,0 +1,28 @@
+* File for holding fuel acronyms for the Balmorel model, version 3.01 (April 2009).
+
+ACRONYMS
+  NUCLEAR
+  NATGAS
+  COAL
+  LIGNITE
+  FUELOIL
+  LIGHTOIL
+  ORIMULSION
+  SHALE
+  PEAT
+  MUNIWASTE
+  STRAW
+  WOOD
+  WOODWASTE
+  WIND
+  WATER
+  SUN
+  ELECTRIC
+  DUMMY
+  COAL2
+  WATERRES
+  HEAT
+  HYDROGEN
+;
+
+ 
