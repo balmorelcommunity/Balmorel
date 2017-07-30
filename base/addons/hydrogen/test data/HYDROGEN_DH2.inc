@@ -1,4 +1,4 @@
-PARAMETER DH2(YYY,CCCRRRAAA)  'Yearly demand for hydrogen at a Regional level(MWh of H2)'
+PARAMETER HYDROGEN_DH2(YYY,CCCRRRAAA)  'Yearly demand for hydrogen at a Regional level(MWh of H2)'
 
 /
 
@@ -11,69 +11,69 @@ PARAMETER DH2(YYY,CCCRRRAAA)  'Yearly demand for hydrogen at a Regional level(MW
 *Demand is estimated according to the biogas potential for DK and
 *assuming in East and West the same % of biogas is upgraded through methanation
 
-2014   .   DK_E_Rural       0
-2014   .   DK_W_Rural       0
-2020   .   DK_E_Rural       34806
-2020   .   DK_W_Rural       462426
-2025   .   DK_E_Rural       63811
-2025   .   DK_W_Rural       847780
-2030   .   DK_E_Rural       92817
-2030   .   DK_W_Rural       1233135
-2035   .   DK_E_Rural       121822
-2035   .   DK_W_Rural       1618490
-2040   .   DK_E_Rural       228982
-2040   .   DK_W_Rural       3042189
-2045   .   DK_E_Rural       336142
-2045   .   DK_W_Rural       4465889
-2050   .   DK_E_Rural       443302
-2050   .   DK_W_Rural       5889589
+2014   .   DK2_Rural       0
+2014   .   DK1_Rural       0
+2020   .   DK2_Rural       34806
+2020   .   DK1_Rural       462426
+2025   .   DK2_Rural       63811
+2025   .   DK1_Rural       847780
+2030   .   DK2_Rural       92817
+2030   .   DK1_Rural       1233135
+2035   .   DK2_Rural       121822
+2035   .   DK1_Rural       1618490
+2040   .   DK2_Rural       228982
+2040   .   DK1_Rural       3042189
+2045   .   DK2_Rural       336142
+2045   .   DK1_Rural       4465889
+2050   .   DK2_Rural       443302
+2050   .   DK1_Rural       5889589
 
 
 *Hydrogen consumption for biorefineries. Biorefinery distribution is exogenously given, following the indications of the FV modellen
 
-2025   .   DK_E_Large       480177
-2025   .   DK_W_Large       480177
-2030   .   DK_E_Large       911219
-2030   .   DK_W_Large       1009487
-2035   .   DK_E_Large       1327835
-2035   .   DK_W_Large       1553224                          
-2040   .   DK_E_Large       2465087
-2040   .   DK_E_Medium      81490
-2040   .   DK_W_Large       2825003
-2040   .   DK_W_Medium      101863
-2045   .   DK_E_Large       3569992
-2045   .   DK_E_Medium      196153
-2045   .   DK_W_Large       4056453
-2045   .   DK_W_Medium      243230
-2050   .   DK_E_Large       4676301
-2050   .   DK_E_Medium      315736
-2050   .   DK_W_Large       5273639
-2050   .   DK_W_Medium      392536
+2025   .   DK2_Large       480177
+2025   .   DK1_Large       480177
+2030   .   DK2_Large       911219
+2030   .   DK1_Large       1009487
+2035   .   DK2_Large       1327835
+2035   .   DK1_Large       1553224
+2040   .   DK2_Large       2465087
+2040   .   DK2_Medium      81490
+2040   .   DK1_Large       2825003
+2040   .   DK1_Medium      101863
+2045   .   DK2_Large       3569992
+2045   .   DK2_Medium      196153
+2045   .   DK1_Large       4056453
+2045   .   DK1_Medium      243230
+2050   .   DK2_Large       4676301
+2050   .   DK2_Medium      315736
+2050   .   DK1_Large       5273639
+2050   .   DK1_Medium      392536
 
 $ontext
 
 *B I O M A S S    S C E N A R I O
 
-2014   .   DK_E_Rural       0
-2014   .   DK_W_Rural       0
-2020   .   DK_E_Rural       5142
-2020   .   DK_W_Rural       68313
-2025   .   DK_E_Rural       9427
-2025   .   DK_W_Rural       125241
-2030   .   DK_E_Rural       13712
-2030   .   DK_W_Rural       182168
-2035   .   DK_E_Rural       17996
-2035   .   DK_W_Rural       239096
-2040   .   DK_E_Rural       21329
-2040   .   DK_W_Rural       283373
-2045   .   DK_E_Rural       24662
-2045   .   DK_W_Rural       327650
-2050   .   DK_E_Rural       27995
-2050   .   DK_W_Rural       371927
+2014   .   DK2_Rural       0
+2014   .   DK1_Rural       0
+2020   .   DK2_Rural       5142
+2020   .   DK1_Rural       68313
+2025   .   DK2_Rural       9427
+2025   .   DK1_Rural       125241
+2030   .   DK2_Rural       13712
+2030   .   DK1_Rural       182168
+2035   .   DK2_Rural       17996
+2035   .   DK1_Rural       239096
+2040   .   DK2_Rural       21329
+2040   .   DK1_Rural       283373
+2045   .   DK2_Rural       24662
+2045   .   DK1_Rural       327650
+2050   .   DK2_Rural       27995
+2050   .   DK1_Rural       371927
 
 $offtext
 
-
+$ontext
 *------------------------------------------------------
 *DATA THAT ARE NOT SCENARIO DEPENDANT
 *------------------------------------------------------
@@ -167,7 +167,7 @@ $offtext
 2050   .    SE_S          7593
 2050   .    FI_R          90081
 
-
+$offtext 
 
 /;
 
