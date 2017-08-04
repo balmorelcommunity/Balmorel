@@ -1,11 +1,11 @@
 PARAMETER HYDROGEN_DH2(YYY,CCCRRRAAA)  'Yearly demand for hydrogen from the transport sector'   %semislash%
 $if     EXIST '../data/HYDROGEN_DH2.inc' $INCLUDE         '../data/HYDROGEN_DH2.inc';
-$if not EXIST '../data/HYDROGEN_DH2.inc' $INCLUDE '../../base/addons/hydrogen/test data/HYDROGEN_DH2.inc';
+$if not EXIST '../data/HYDROGEN_DH2.inc' $INCLUDE '../../base/data/HYDROGEN_DH2.inc';
 %semislash%;
 
 PARAMETER HYDROGEN_DH2_VAR_T(CCCRRRAAA,SSS,TTT) 'Variation profile of H2 demand per region'  %semislash%
 $if     EXIST '../data/HYDROGEN_DH2_VAR_T.inc' $INCLUDE         '../data/HYDROGEN_DH2_VAR_T.inc';
-$if not EXIST '../data/HYDROGEN_DH2_VAR_T.inc' $INCLUDE '../../base/addons/hydrogen/test data/HYDROGEN_DH2_VAR_T.inc';
+$if not EXIST '../data/HYDROGEN_DH2_VAR_T.inc' $INCLUDE '../../base/data/HYDROGEN_DH2_VAR_T.inc';
 %semislash%;
 
 PARAMETER HYDROGEN_STOVOL_START(Y,AAA,G,SSS)    'Start level of hydrogen storage';
