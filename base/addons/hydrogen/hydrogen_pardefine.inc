@@ -1,3 +1,11 @@
+PARAMETER HYDROGEN_GDATA(GGG,GDATASET)  'Hydrogen technologies characteristics'   %semislash%
+$if     EXIST '../data/HYDROGEN_GDATA.inc' $INCLUDE         '../data/HYDROGEN_GDATA.inc';
+$if not EXIST '../data/HYDROGEN_GDATA.inc' $INCLUDE '../../base/data/HYDROGEN_GDATA.inc';
+%semislash%;
+
+* Make HYDROGEN_GDATA part of GDATA:
+GDATA(GGG,GDATASET)= GDATA(GGG,GDATASET) + HYDROGEN_GDATA(GGG,GDATASET);
+
 PARAMETER HYDROGEN_DH2(YYY,CCCRRRAAA)  'Yearly demand for hydrogen from the transport sector'   %semislash%
 $if     EXIST '../data/HYDROGEN_DH2.inc' $INCLUDE         '../data/HYDROGEN_DH2.inc';
 $if not EXIST '../data/HYDROGEN_DH2.inc' $INCLUDE '../../base/data/HYDROGEN_DH2.inc';
