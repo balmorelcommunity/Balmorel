@@ -379,9 +379,11 @@ $ifi not %TransInvest%==yes  VX_T.FX(IY411,IRE,IRI,S,T)=0;
 * SOLVE
 *-------------------------------------------------------------------------------
 
-* This option must be active especially for BB1 and BB2 since this outputs the
+* This option must be active especially for BB1 and BB2 since this outputs the     REVISE
 * solution basis, which is used for generating results database.
 OPTION Savepoint=1;
+
+BALBASE4.optfile = %USEOPTIONFILE%;
 
 vge_t.up(iy411,ia,g,s,t)=77777;
 vgh_t.up(iy411,ia,g,s,t)=77777;
