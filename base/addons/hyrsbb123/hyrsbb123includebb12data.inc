@@ -7,9 +7,9 @@
 $ifi not %BB3%==yes        $goto label_enofhyrsbb123includebb12data
 $ifi     %HYRSBB123%==none $goto label_enofhyrsbb123includebb12data
 
-execute_load '..\..\simex\HYRSG.gdx',    HYRSG;
-execute_load '..\..\simex\WATERVAL.gdx', WATERVAL;
-execute_load '..\..\simex\VHYRS_SL.gdx', VHYRS_SL;
+execute_load '../../simex/HYRSG.gdx',    HYRSG;
+execute_load '../../simex/WATERVAL.gdx', WATERVAL;
+execute_load '../../simex/VHYRS_SL.gdx', VHYRS_SL;
 
 * Trim with respect to S for the case that S in BB3 is a proper subset of the S used in BB1\BB2, for nicety of output only:
 HYRSG(Y,AAA,SSS)$(not S(SSS))    = 0;
