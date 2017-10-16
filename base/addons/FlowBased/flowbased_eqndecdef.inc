@@ -1,9 +1,9 @@
 
+EQUATIONS
+ QFBNEX(RRR,S,T)			    'Find net exchange for each hub in FB simulation'
+ QFBLIM(FBLINE,S,T) 			'PTDF Constraints for each Line'
 
-EQUATION QFBNEX(RRR,S,T)			    'Find net exchange for each hub in FB simulation'
-EQUATION QFBLIM(FBLINE,S,T) 			'PTDF Constraints for each Line'
-
-
+;
 
 
 QFBNEX(FBHUB,IS3,T)..
