@@ -1,10 +1,10 @@
 * Location of variable declations used in addons
-* Latest revision 20170419 (hr)
+* Latest revision 20171023(hr)
 
 $ifi %testbb1234%==yes            $include "../../base/addons/bb1234compare/bb1234_vardeclare.inc";
 
-$ifi %HYRSBB123%==quantprice      $include   "../../base/addons/hyrsbb123/hyrsbb123variables.inc";
+$ifi %HYRSBB123%==quantprice      $include "../../base/addons/hyrsbb123/hyrsbb123variables.inc";
 
-$ifi %dflexquant%==yes   $include "../../base/addons/demandflex/dflex_vardeclare.inc";
+$ifi %dflexquant%==yes            $include "../../base/addons/demandflexquant/dflexquant_vardeclare.inc";
 
 

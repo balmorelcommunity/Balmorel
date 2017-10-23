@@ -21,14 +21,13 @@ put / "The following addons are applied:" /;
 
 ISCALAR1 = 0;   !! For this reason: DO NOT use ISCALAR1 in any addon code!
 
-$ifi %testbb1234%==yes   $include   "../../base/addons/bb1234compare/bb1234_hellolog.inc";
-$ifi %testbb1234%==yes   ISCALAR1 = 1;
+$ifi %testbb1234%==yes            $include   "../../base/addons/bb1234compare/bb1234_hellolog.inc";
+$ifi %testbb1234%==yes            ISCALAR1 = 1;
 
-$ifi %hyrsbb123%==yes    $include   "../../base/addons/hyrsbb123/hyrsbb123_hellolog.inc";
-$ifi %hyrsbb123%==yes    ISCALAR1 = 1;
+$ifi %hyrsbb123%==yes             $include   "../../base/addons/hyrsbb123/hyrsbb123_hellolog.inc";
+$ifi %hyrsbb123%==yes             ISCALAR1 = 1;
 
-$ifi %dflexquant%==yes   $include "../../base/addons/demandflex/dflex_hellolog.inc";
-$ifi %dflexquant%==yes   ISCALAR1 = 1; 
+
 
 /* more .. todo
 WNDSHUTDOWN
@@ -71,6 +70,13 @@ $label  BB4here
 $ifi %combtech%==yes     put " - *** Addon combtech not implemented for addon BB4   " /;
 
 $ifi %bypass%==yes       put " - *** Addon bypass not implemented for addon BB4   " /;
+
+$ifi %dflexquant%==yes            $include "../../base/addons/demandflexquant/dflexquant_hellolog.inc";
+$ifi %dflexquant%==yes            ISCALAR1 = 1;
+
+$ifi not %forcedoutage%==''       $include "../../base/addons/forcedoutage/forcedoutage_hellolog.inc";
+$ifi not %forcedoutage%==''       ISCALAR1 = 1;
+
 
 
 
