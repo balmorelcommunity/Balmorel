@@ -27,8 +27,8 @@ $ifi %testbb1234%==yes   ISCALAR1 = 1;
 $ifi %hyrsbb123%==yes    $include   "../../base/addons/hyrsbb123/hyrsbb123_hellolog.inc";
 $ifi %hyrsbb123%==yes    ISCALAR1 = 1;
 
-$ifi %dflex%==yes        $include "../../base/addons/demandflex/dflex_hellolog.inc";
-
+$ifi %dflexquant%==yes   $include "../../base/addons/demandflex/dflex_hellolog.inc";
+$ifi %dflexquant%==yes   ISCALAR1 = 1; 
 
 /* more .. todo
 WNDSHUTDOWN

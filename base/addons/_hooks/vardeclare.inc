@@ -5,6 +5,6 @@ $ifi %testbb1234%==yes            $include "../../base/addons/bb1234compare/bb12
 
 $ifi %HYRSBB123%==quantprice      $include   "../../base/addons/hyrsbb123/hyrsbb123variables.inc";
 
-$ifi %dflex%==yes    $include "../../base/addons/demandflex/dflex_vardeclare.inc";
+$ifi %dflexquant%==yes   $include "../../base/addons/demandflex/dflex_vardeclare.inc";
 
 

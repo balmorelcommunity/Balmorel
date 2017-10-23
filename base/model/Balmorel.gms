@@ -841,22 +841,22 @@ $ifi %X3V%==yes PARAMETER X3VQEX(RRR,X3VPLACE0,X3VSTEP0,SSS,TTT)        'Limit (
 
 PARAMETER M_POL(YYY,MPOLSET,CCC)                   'Emission policy data (various units, cf. MPOLSET)';
 * Time series on (SSS,TTT):
-PARAMETER WEIGHT_S(SSS)                            'Weight (relative length) of each season';
-PARAMETER WEIGHT_T(TTT)                            'Weight (relative length) of each time period';
+PARAMETER WEIGHT_S(SSS)                            'Weight (relative length) of each season (~)';
+PARAMETER WEIGHT_T(TTT)                            'Weight (relative length) of each time period (~)';
 $ifi %GKRATE_DOL%==AAA_GGG_SSS                     PARAMETER GKRATE(AAA,GGG,SSS)         "Capacity rating (non-negative, typically close to 1; default/1/, eps for 0)";
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT                 PARAMETER GKRATE(AAA,GGG,SSS,TTT)     "Capacity rating (non-negative, typically close to 1; default/1/, eps for 0)";
-PARAMETER DE_VAR_T(RRR,SSS,TTT)                    'Variation in electricity demand';
-PARAMETER DH_VAR_T(AAA,SSS,TTT)                    'Variation in heat demand';
-PARAMETER WTRRSVAR_S(AAA,SSS)                      'Variation of the water inflow to reservoirs';
-PARAMETER WTRRRVAR_T(AAA,SSS,TTT)                  'Variation of generation of hydro run-of-river';
-PARAMETER WND_VAR_T(AAA,SSS,TTT)                   'Variation of the wind generation';
-PARAMETER SOLE_VAR_T(AAA,SSS,TTT)                  'Variation of the solar generation';
-PARAMETER WAVE_VAR_T(AAA,SSS,TTT)                  'Variation of the wave generation'
-PARAMETER X3FX_VAR_T(RRR,SSS,TTT)                  'Variation in fixed exchange with 3. region';
-PARAMETER HYPPROFILS(AAA,SSS)                      'Hydro with storage seasonal price profile';
-PARAMETER DEF_STEPS(RRR,SSS,TTT,DF_QP,DEF)         'Elastic electricity demands';
+PARAMETER DE_VAR_T(RRR,SSS,TTT)                    'Variation in electricity demand (~)';
+PARAMETER DH_VAR_T(AAA,SSS,TTT)                    'Variation in heat demand (~)';
+PARAMETER WTRRSVAR_S(AAA,SSS)                      'Variation of the water inflow to reservoirs (~)';
+PARAMETER WTRRRVAR_T(AAA,SSS,TTT)                  'Variation of generation of hydro run-of-river (~)';
+PARAMETER WND_VAR_T(AAA,SSS,TTT)                   'Variation of the wind electricity generation (~)';
+PARAMETER SOLE_VAR_T(AAA,SSS,TTT)                  'Variation of the solar electricity generation (~)';
+PARAMETER WAVE_VAR_T(AAA,SSS,TTT)                  'Variation of the wave electricity generation (~)'
+PARAMETER X3FX_VAR_T(RRR,SSS,TTT)                  'Variation in fixed electricity exchange with 3. region (~)';
+PARAMETER HYPPROFILS(AAA,SSS)                      'Hydro with storage exogenous seasonal electricity price profile (Money/MWh)';
+PARAMETER DEF_STEPS(RRR,SSS,TTT,DF_QP,DEF)         'Elastic electricity demands ()';
 $ifi %DEFPCALIB%==yes PARAMETER DEFP_CALIB(RRR,SSS,TTT)  'Calibrate the price side of electricity demand';
-PARAMETER DHF_STEPS(AAA,SSS,TTT,DF_QP,DHF)         'Elastic heat demands';
+PARAMETER DHF_STEPS(AAA,SSS,TTT,DF_QP,DHF)         'Elastic heat demands ()';
 $ifi %DHFPCALIB%==yes PARAMETER DHFP_CALIB(AAA,SSS,TTT)  'Calibrate the price side of heat demand';
 $ifi %YIELDREQUIREMENT%==yes  PARAMETER YIELDREQ(GGG) 'Differentiates yield requirements for different technologies';
 
