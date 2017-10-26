@@ -12,7 +12,6 @@ IHYRSBB123BB12GACCUM(IA) = IHYRSBB123BB12GACCUM(IA) + HYRSG(Y,IA,IS3LOOPSET);
 *hydroinflow(ia,IS3LOOPSET) =  IHYINF_S(IA,IS3LOOPSET) * SUM(IGHYRS$IAGK_Y(IA,IGHYRS), (IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)));
 *hydroinflow(ia,s) =           IHYINF_S(IA,S)          * SUM(IGHYRS$IAGK_Y(IA,IGHYRS), (IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)));
 
-iscalar1 =  ord( IS3LOOPSET ); display "inde i IS3LOOPSET ord() ", iscalar1;
 
 * Set volume deviation relative to BB1/BB2for the next season:
 * The following adjustment distributes the hydro energy deviation evenly over the remaining seasons.
@@ -29,10 +28,10 @@ IHYRSBB123VOLINI(IA,IS3LOOPSET+1) = ( IHYRSBB123VOLINI(IA,IS3LOOPSET)
 * Since variable VHYRS_S is declared as positive it will create infeasibilities if IHYRSBB123VOLINI were negative, therefore correct if negative.
 ISCALAR1 = SMIN(IA,IHYRSBB123VOLINI(IA,IS3LOOPSET+1));
 IF((ISCALAR1 < 0),
-   DISPLAY "Warning: SMIN(IA,IS3LOOPSET+1) is negative " ;
+   DISPLAY INFODISPLAY, "Warning: SMIN(IA,IS3LOOPSET+1) is negative " ;
    PUT ERRORFILE "Warning from addon hyrsbb123, file hyrsbb123sim3.inc:"/;
    PUT " BB3 simulation would like to have negative hydro storage volume after simulation of Season ", IS3LOOPSET.TL:4, ", most negative value would be ", ISCALAR1:6:0 /;
-   PUT "   Hydro starage levels were artificially increased bu that amount."//;
+   PUT "   Hydro starage levels were artificially increased by that amount."//;
 );
 
 

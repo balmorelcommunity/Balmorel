@@ -10,7 +10,6 @@
 * Note: although not necessary, there are a number of "$ifi %BB4%==yes" conditions,
 * this is to make some of the differences relative to bb123.sim more visible.
 
-
 *-------------------------------------------------------------------------------
 * INITIALISATIONS BEFORE LOOPING OVER $YALIAS%:
 *-------------------------------------------------------------------------------
@@ -112,6 +111,7 @@ LOOP(IY411$(ISCALAR1 EQ 1), ISCALAR2 = YVALUE(IY411); ISCALAR1 = 0;);
 *LOOP(IY402$(YVALUE(IY402) EQ ISCALAR2), IFIRSTYEARNEXTBB4 = ISCALAR2 + SUM(YMODEL$(ORD(YMODEL) EQ 1), YMODELDELTA(YMODEL)););   todo
 
 
+$ontext
 * IY4GREMAINYWEIGHT(Y,G)  "Discounted weight of future annuity payments on an investment relative to the first year in present BB4 model (~)":
 * TODO: missing that some G will reach lifetime inside iy411, cf. IY4GREMAINY above, TODO
 IY4GINVCOSTWEIGHT(IY411,IGKFIND) = SUM(Y$(IY411(Y) AND (YVALUE(Y) GE YVALUE(IY411))), IDISCOUNTFACTOR(Y));!! Hans 20150205; TODO: missing that some G will reach lifetime inside iy411, cf. IY4GREMAINY above, TODO
@@ -124,7 +124,7 @@ LOOP(IY411FIRST,IY4XINVCOSTWEIGHT(IY411) = IY4XINVCOSTWEIGHT(IY411)/IDISCOUNTFAC
 
 LOOP(IY411FIRST,IY4GINVCOSTWEIGHT(IY411,IGKFIND) = 1);
 LOOP(IY411FIRST,IY4XINVCOSTWEIGHT(IY411) = 1);
-
+$offtext
 
 
 *-------------------------------------------------------------------------------
@@ -172,8 +172,12 @@ IAGKNY(IY411,IA,G)$((YVALUE(IY411) LT GDATA(G,'GDFROMYEAR')) OR (YVALUE(IY411) G
 * Update IAGK_HASORPOT based on exogenously given (GKFX) or potential (IAGKN) investment (IAGKN is AGKN sharpened by fuel potential (FKPOT)).
 
 IAGK_HASORPOT(Y,IA,G) = NO;
-IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);
-IAGK_HASORPOT(IY411,IA,G)$IAGKNY(IY411,IA,G) = YES;
+IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);       display "first assign ",IAGK_HASORPOT  ;
+IAGK_HASORPOT(IY411,IA,G)$IAGKNY(IY411,IA,G) = YES;     display "last assign ",IAGK_HASORPOT  ;
+
+*  QHYRSSEQ(IA,S)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS) or IAGKN(IA,IGHYRS))..
+*P_QHYRSSEQ(iA,S)=0;
+*P_QHYRSSEQ(iA,S)$(SUM(IGHYRS,IAGK_Y(IA,IGHYRS) or IAGKN(IA,IGHYRS))) =7; display P_QHYRSSEQ;
 
 
 *-------------------------------------------------------------------------------
@@ -203,6 +207,11 @@ $ifi %AGKNDISC%==yes IAGKNDISC_YAG(IY411,IA,G)$(YVALUE(IY411) LT GDATA(G,'GDFROM
 VGE_T.UP(IY411,IA,IGDISPATCH(IGKE),S,T)$(GKFX(IY411,IA,IGKE) AND (NOT IAGKN(IA,IGKE))) = GKFX(IY411,IA,IGKE)*IGKRATE(IA,IGKE,S,T);
 VGH_T.UP(IY411,IA,IGDISPATCH(IGKH),S,T)$(GKFX(IY411,IA,IGKH) AND (NOT IAGKN(IA,IGKH))) = GKFX(IY411,IA,IGKH)*IGKRATE(IA,IGKH,S,T);
 
+$ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,IGDISPATCH(IGKE),S,T)     = VGE_T.UP(IY411,ia,IGKE,s,t);
+$ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,IGDISPATCH(IGKE),S,T)     = VGH_T.UP(IY411,ia,IGKE,s,t);
+$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_1.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
+
+
 * Storage loading (MW) and unloading (MW) do not exceed capacity.
 * Complements to equations QESTOLOADTLIM and QHSTOLOADTLIM for the case with no endogenous IGESTO and IGHSTO investments.
 VESTOLOADT.UP(IY411,IA,S,T)$(SUM(IGESTO,GKFX(IY411,IA,IGESTO)) AND (NOT SUM(IGESTO$IAGKN(IA,IGESTO),1))) =
@@ -216,13 +225,18 @@ VESTOVOLT.UP(IY411,IA,S,T)$(SUM(IGESTO,GKFX(IY411,IA,IGESTO)) AND (NOT SUM(IGEST
 VHSTOVOLT.UP(IY411,IA,S,T)$(SUM(IGHSTO,GKFX(IY411,IA,IGHSTO)) AND (NOT SUM(IGHSTO$IAGKN(IA,IGHSTO),1))) =
   SUM(IGHSTO$(GKFX(IY411,IA,IGHSTO) GT 0), IGKRATE(IA,IGHSTO,S,T)*GKFX(IY411,IA,IGHSTO));
 
-* Test: dette er modificertefar bb123,sim:
-* Nyt, kopiere/modified  fra bb123.sim  ER DET TEST ELLER HVA?
-VGH_T.UP(IY411,IA,IGHSTOALL,S,T)$(GKFX(IY411,IA,IGHSTOALL) GT 0)=
- (GKFX(IY411,IA,IGHSTOALL) /*+IGKVACCTOY(IA,IGHSTOALL) erstattes med hvad? */)/GDATA(IGHSTOALL,'GDSTOHUNLD');   !! GKRATE taken into account later
 
-VGE_T.UP(IY411,IA,IGESTOALL,S,T)$(GKFX(IY411,IA,IGESTOALL) GT 0)=
- (GKFX(IY411,IA,IGESTOALL) /*+IGKVACCTOY(IA,IGESTOALL) erstattes med hvad?  */)/GDATA(IGESTOALL,'GDSTOHUNLD');   !! GKRATE taken into account later
+
+
+
+$ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_2.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
+
+$ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_3.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
+* test slut
 
 * Existing windpower, hydro-run-of-river, solarpower, solarheat and wavepower can not be dispatched.
 * Complement to equation QWNDDISPATCH for the case with no endogenous IGWND investments.
@@ -240,6 +254,10 @@ VGH_T.FX(IY411,IA,IGSOLH,S,T)$(GKFX(IY411,IA,IGSOLH) AND (NOT IAGKN(IA,IGSOLH)))
 * Complement to equation QWAVEDISPATCH for the case with no endogenous IGWAVE investments.
 VGE_T.FX(IY411,IA,IGWAVE,S,T)$(GKFX(IY411,IA,IGWAVE) AND (NOT IAGKN(IA,IGWAVE))) =
    ((WAVEFLH(IA) * GKFX(IY411,IA,IGWAVE) * IGKRATE(IA,IGWAVE,S,T) * WAVE_VAR_T(IA,S,T)) / IWAVESUMST(IA))$IWAVESUMST(IA);
+
+$ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
+$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_5.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
 
 
 * Calculate hydro inflow to reservoirs in MWh/MW installed capacity (new and old):
@@ -269,8 +287,8 @@ IXK_HASORPOT(Y,IRE,IRI)$IXKN(IRE,IRI) = YES;
 VX_T.UP(IY411,IRE,IRI,S,T)$(NOT IXKN(IRE,IRI)) = XKFX(IY411,IRE,IRI)*IXKRATE(IRE,IRI,S,T);
 VXKNACCUMNET.FX(IY411,IRE,IRI)$(IXKN(IRE,IRI) AND (NOT IXK_HASORPOT(IY411,IRE,IRI))) = 0;  !! Should not be necessary if condition on IAGKN(IA,G) is properly used in .gms code.
 
-IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);
-IAGK_HASORPOT(IY411,IA,G)$IAGKN(IA,G) = YES;
+IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);         display "andetsteds: first assign ",IAGK_HASORPOT  ;
+IAGK_HASORPOT(IY411,IA,G)$IAGKN(IA,G) = YES;              display "andetsteds: last assign ",IAGK_HASORPOT  ;
 
 
 * Set the fixed exchange with third regions:
@@ -282,9 +300,7 @@ $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vannual.inc';
 
 *---- End Bounds on transmission -----------------------------------------------
 
-
-*---- Bounds on flexible demands: ----------------------------------------------
-
+*---- Demands: ----------------------------------------------------------------
 * Set the demand for electricity and heat for the years in model BALBASE4:
 * Note that IDE_SUMST is the total load expressed according to DE_VAR_T:
 
@@ -293,6 +309,14 @@ IDE_T(IY411,IR,S,T) =
 IDH_T(IY411,IA,S,T) =
   ((DH(IY411,IA) * DH_VAR_T(IA,S,T)) / IDH_SUMST(IA))$(IDH_SUMST(IA) GT 0);
 
+*---- End Demands --------------------------------------------------------------
+
+*---- Bounds on flexible demands: ----------------------------------------------
+
+
+$include "..\..\base\addons\_hooks\varloupfx.inc"
+
+$ontext                                                                         moved to _hooks - still under development
 * Elastic demands, upper bounds on the quantities of the individual steps.
 
 VDEF_T.UP(IY411,IR,S,T,DEF_D1)$(ORD(DEF_D1) LT CARD(DEF_D1))=
@@ -325,7 +349,7 @@ VDHF_T.UP(IY411,IA,S,T,DHF_U1)$((1 LT ORD(DHF_U1)) AND (ORD(DHF_U1) LT CARD(DHF_
 VDHF_T.UP(IY411,IA,S,T,DHF_U1)$(ORD(DHF_U1) EQ CARD(DHF_U1))= INF;
 
 *---- End: Bounds on flexible demands: -----------------------------------------
-
+$offtext
 
 *-------------------------------------------------------------------------------
 *---- Annual updating wrt. options and add-on parameters: ----------------------
@@ -354,9 +378,16 @@ $ifi not %TransInvest%==yes  VX_T.FX(IY411,IRE,IRI,S,T)=0;
 * SOLVE
 *-------------------------------------------------------------------------------
 
-* This option must be active especially for BB1 and BB2 since this outputs the
+* This option must be active especially for BB1 and BB2 since this outputs the     REVISE
 * solution basis, which is used for generating results database.
 OPTION Savepoint=1;
+
+BALBASE4.optfile = %USEOPTIONFILE%;
+
+vge_t.up(iy411,ia,g,s,t)=77777;
+vgh_t.up(iy411,ia,g,s,t)=77777;
+
+
 
 $ifi not %SOLVEMIP%==yes SOLVE BALBASE4 USING LP  MINIMIZING VOBJ;  !! =====================
 $ifi     %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;  !! =====================
@@ -432,11 +463,23 @@ $include "../../base/addons/_hooks/varassign.inc"
 *------------------------------------------------------------------------------
 *                    END OF SIMULATION FOR CURRENT BB4 MODEL
 *------------------------------------------------------------------------------
-); /* LOOP(IYALIAS,...) */
+); !! LOOP(IYALIAS,...)
 *------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 * END: LOOP OVER ALL THE FIRSTYEARS IN ALL MODELS BALBASE4
 *-------------------------------------------------------------------------------
+
+
+*------------------------------------------------------------------------------
+*                GENERATE INPUT FILES FOR BB3 FROM RESULTS OF BB4
+*------------------------------------------------------------------------------
+
+* For hydro with reservoir save the following, to be used in model BalBase3 by addon hyrsbb123:
+* Preliminary code.
+$ifi %bb4%==yes  HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHOURSINST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
+$ifi %bb4%==yes  VHYRS_SL(Y,IA,S)  = VHYRS_S.l(Y,IA,S);
+$ifi %bb4%==yes  WATERVAL(Y,IA,S)  = QHYRSSEQ.m(Y,IA,S);
+
 
 *-------------------------------------------------------------------------------
 * End of file
