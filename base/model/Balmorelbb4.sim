@@ -265,6 +265,8 @@ $ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_5.gdx" IBB1234_VG
 $ifi %bb4%==yes  IHYINF_S(IA,S)=
 $ifi %bb4%==yes  ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
 
+$include "..\..\base\addons\_hooks\varloupfx.inc"
+
 *---- End: Bounds on generation technologies -----------------------------------
 
 *---- Bounds on transmission: --------------------------------------------------
@@ -300,56 +302,6 @@ $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vannual.inc';
 
 *---- End Bounds on transmission -----------------------------------------------
 
-*---- Demands: ----------------------------------------------------------------
-* Set the demand for electricity and heat for the years in model BALBASE4:
-* Note that IDE_SUMST is the total load expressed according to DE_VAR_T:
-
-IDE_T(IY411,IR,S,T) =
-  ((DE(IY411,IR) * DE_VAR_T(IR,S,T)) / IDE_SUMST(IR))$(IDE_SUMST(IR) GT 0);
-IDH_T(IY411,IA,S,T) =
-  ((DH(IY411,IA) * DH_VAR_T(IA,S,T)) / IDH_SUMST(IA))$(IDH_SUMST(IA) GT 0);
-
-*---- End Demands --------------------------------------------------------------
-
-*---- Bounds on flexible demands: ----------------------------------------------
-
-
-$include "..\..\base\addons\_hooks\varloupfx.inc"
-
-$ontext                                                                         moved to _hooks - still under development
-* Elastic demands, upper bounds on the quantities of the individual steps.
-
-VDEF_T.UP(IY411,IR,S,T,DEF_D1)$(ORD(DEF_D1) LT CARD(DEF_D1))=
-  IDE_T(IY411,IR,S,T)*
-  (DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D1+1)-DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D1));
-VDEF_T.UP(IY411,IR,S,T,DEF_D1)$((ORD(DEF_D1) EQ CARD(DEF_D1)) AND (1 LT CARD(DEF_D1)))=
-  IDE_T(IY411,IR,S,T)*(1-DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D1));
-VDEF_T.UP(IY411,IR,S,T,DEF_U1)$((ORD(DEF_U1) EQ 1) AND (1 LT CARD(DEF_U1)))=
-  IDE_T(IY411,IR,S,T)*(DEF_STEPS(IR,S,T,'DF_QUANT',DEF_U1)-1);
-VDEF_T.UP(IY411,IR,S,T,DEF_U1)$(1 LT ORD(DEF_U1))=
-  IDE_T(IY411,IR,S,T)*
-  (DEF_STEPS(IR,S,T,'DF_QUANT',DEF_U1)-DEF_STEPS(IR,S,T,'DF_QUANT',DEF_U1-1));
-VDEF_T.UP(IY411,IR,S,T,DEF_D2)$(ord(def_d2) eq card(def_d2)) = DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D2);
-VDEF_T.UP(IY411,IR,S,T,DEF_D2)$(ord(def_d2) lt card(def_d2)) = DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D2)- DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D2+1);
-VDEF_T.UP(IY411,IR,S,T,DEF_U2) = DEF_STEPS(IR,S,T,'DF_QUANT',DEF_U2);
-VDEF_T.UP(IY411,IR,S,T,DEF_U3) = IDE_T(IY411,IR,S,T)*DEF_STEPS(IR,S,T,'DF_QUANT',DEF_U3);
-VDEF_T.UP(IY411,IR,S,T,DEF_D3) = IDE_T(IY411,IR,S,T)*DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D3);
-
-VDHF_T.UP(IY411,IA,S,T,DHF_D1)$(ORD(DHF_D1) EQ 1)= INF;
-VDHF_T.UP(IY411,IA,S,T,DHF_D1)$((1 LT ORD(DHF_D1)) AND (ORD(DHF_D1) LT CARD(DHF_D1)))=
-  IDH_T(IY411,IA,S,T)*
-  (DHF_STEPS(IA,S,T,'DF_QUANT',DHF_D1+1)-DHF_STEPS(IA,S,T,'DF_QUANT',DHF_D1));
-VDHF_T.UP(IY411,IA,S,T,DHF_D1)$((ORD(DHF_D1) EQ CARD(DHF_D1)) AND (1 LT CARD(DHF_D1)))=
-  IDH_T(IY411,IA,S,T)*(1-DHF_STEPS(IA,S,T,'DF_QUANT',DHF_D1));
-VDHF_T.UP(IY411,IA,S,T,DHF_U1)$((ORD(DHF_U1) EQ 1) AND (1 LT CARD(DHF_D1)))=
-  IDH_T(IY411,IA,S,T)*(DHF_STEPS(IA,S,T,'DF_QUANT',DHF_U1)-1);
-VDHF_T.UP(IY411,IA,S,T,DHF_U1)$((1 LT ORD(DHF_U1)) AND (ORD(DHF_U1) LT CARD(DHF_U1)))=
-  IDH_T(IY411,IA,S,T)*
-  (DHF_STEPS(IA,S,T,'DF_QUANT',DHF_U1)-DHF_STEPS(IA,S,T,'DF_QUANT',DHF_U1-1));
-VDHF_T.UP(IY411,IA,S,T,DHF_U1)$(ORD(DHF_U1) EQ CARD(DHF_U1))= INF;
-
-*---- End: Bounds on flexible demands: -----------------------------------------
-$offtext
 
 *-------------------------------------------------------------------------------
 *---- Annual updating wrt. options and add-on parameters: ----------------------
@@ -410,13 +362,12 @@ $ifi not %system.filesys%==MSNT $goto endofMSNTmove
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move "%relpathModel%''BALBASE4_p.gdx" '  '"%relpathModel%%relpathoutput%temp/'IYALIAS.tl:0:0 '.gdx"';
- 
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes  execute  "%batfileMERGESAVEPOINTRESULTS%";
 
 $label endofMSNTmove
 
-$ifi not %system.filesys%==UNIX $goto endofMSNTmove
+$ifi not %system.filesys%==UNIX $goto endofUNIXmove
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''BALBASE4_p.gdx" "%relpathModel%%relpathoutput%temp/'IYALIAS.tl:0:0 '.gdx"';
