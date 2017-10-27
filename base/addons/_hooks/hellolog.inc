@@ -50,10 +50,10 @@ stointers
 $ifi %BB4%==yes $goto BB4here
 
 * This is for non-BB4:  --------------------------------------------------------
-$ifi %combtech%==yes  $include   "../../base/addons/combtech/combtech_hellolog.inc";
+$ifi %combtech%==yes     $include   "../../base/addons/combtech/combtech_hellolog.inc";
 $ifi %combtech%==yes     ISCALAR1 = 1;
 
-$ifi %bypass%==yes    $include   "../../base/addons/bypass/bypass_hellolog.inc";
+$ifi %bypass%==yes       $include   "../../base/addons/bypass/bypass_hellolog.inc";
 $ifi %bypass%==yes       ISCALAR1 = 1;
 
 $ifi %FlowBased%==yes  $include   "../../base/addons/flowbased/flowbased_hellolog.inc";
