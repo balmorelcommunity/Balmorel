@@ -738,18 +738,18 @@ $if not EXIST '../data/DHFP_BASE.inc' $INCLUDE '../../base/data/DHFP_BASE.inc';
 *-------------------------------------------------------------------------------
 *---- Annual electricity demand : ---------------------------------------------
 *-------------------------------------------------------------------------------
-PARAMETER DE(YYY,RRR)    'Annual electricity consumption (MWh)' %semislash%
-$if     EXIST '../data/DE.inc' $INCLUDE         '../data/DE.inc';
-$if not EXIST '../data/DE.inc' $INCLUDE '../../base/data/DE.inc';
+PARAMETER DE(YYY,RRR,DEUSER)    'Annual electricity consumption (MWh)' %semislash%
+$if     EXIST '../data/de.inc' $INCLUDE         '../data/de.inc';
+$if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
 %semislash%;
 
 
 *-------------------------------------------------------------------------------
 *---- Annual heat demand: -----------------------------------------------------
 *-------------------------------------------------------------------------------
-PARAMETER DH(YYY,AAA)    'Annual heat consumption (MWh)'  %semislash%
-$if     EXIST '../data/DH.inc' $INCLUDE         '../data/DH.inc';
-$if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
+PARAMETER DH(YYY,AAA,DHUSER)    'Annual heat consumption (MWh)'  %semislash%
+$if     EXIST '../data/dh.inc' $INCLUDE         '../data/dh.inc';
+$if not EXIST '../data/dh.inc' $INCLUDE '../../base/data/dh.inc';
 %semislash%;
 
 
