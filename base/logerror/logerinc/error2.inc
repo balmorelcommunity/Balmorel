@@ -95,14 +95,10 @@ IF((ISCALAR1 LT ERRCOUNT2),  PUT "#" /; );
 *---END TABLE XCOST AND TABLE XLOSS---------------------------------------------
 
 
-
-
-
-
-
 *-------------------------------------------------------------------------------
 *---DATA IN THE FILE var.inc:---------------------------------------------------
 
+ISCALAR1 = ERRCOUNT2;
 * The values in WEIGHT_S(S) and WEIGHT_T(T) must all be positive
 LOOP(S,
 IF((WEIGHT_S(S) LE 0),
@@ -117,30 +113,45 @@ ERRCOUNT2=ERRCOUNT2+1; );
 );
 ISCALAR1 = ERRCOUNT2; IF((ISCALAR1 LT ERRCOUNT2),  PUT "#"/; );
 
-* Hans 20150225:
+* Hans 20171030 - demand dependent on user groups added.
+ISCALAR1 = ERRCOUNT2;
+IF((NOT DEUSER('RESE')),
+  PUT "Set DEUSER should have element RESE indicating electricity demand not included in any other user group ('residual electricity demand')" /;
+ERRCOUNT2=ERRCOUNT2+1; );
+
+IF((NOT DHUSER('RESH')),
+  PUT "Set DHUSER should have element RESH indicating heat demand not included in any other user group ('residual heat demand')" /;
+ERRCOUNT2=ERRCOUNT2+1; );
+IF((ISCALAR1 LT ERRCOUNT2), PUT "#"/; );
+
+
+* Hans 20150225; rev. 20171030 (demand user groups):
 ISCALAR1 = ERRCOUNT2;
 * There must be values in variation file DE_VAR_T if DE is positive.
 LOOP(RRR,
-  IF((SUM(YYY,DE(YYY,RRR))),  !! DE is positive for some YYY
-    IF((IDE_SUMST(RRR) EQ 0), !! Checking IDE_SUMST rather than DE_VAR_T (easier and OK if basic code is correct)
-      PUT "Electricity demand variation DE_VAR_T must have positive values for all RRR with positive demand DE, it seems not to have for " RRR.TL:32;
+ LOOP(DEUSER,
+  IF((SUM(YYY,DE(YYY,RRR,DEUSER))),  !! DE is positive for some YYY
+    IF((IDE_SUMST(RRR,DEUSER) EQ 0), !! Checking IDE_SUMST rather than DE_VAR_T (easier and OK if basic code is correct)
+      PUT "Electricity demand variation DE_VAR_T must have positive values for all RRR and user groups with positive demand DE, it seems not to have for " RRR.TL:32 ", User group "  DEUSER.TE(DEUSER):12;
       IF((NOT IR(RRR)), PUT " - Region is not in model";);  !! Hans 20150519(hr)
       PUT /;
       ERRCOUNT2=ERRCOUNT2+1;
-);););
+););););
 IF((ISCALAR1 LT ERRCOUNT2), PUT "#"/; );
 
 ISCALAR1 = ERRCOUNT2;
 * There must be values in variation file DH_VAR_T if DH is positive.
 LOOP(AAA,
-  IF((SUM(YYY,DH(YYY,AAA))),  !! DH is positive for some YYY
-    IF((IDH_SUMST(AAA) EQ 0), !! Checking IDE_SUMST rather than DH_VAR_T (easier and OK if basic code is correct)
-      PUT "Heat demand variation DH_VAR_T must have positive values for all AAA with positive demand DH, it seems not to have for " AAA.TL:32;
+ LOOP(DHUSER,
+  IF((SUM(YYY,DH(YYY,AAA,DHUSER))),  !! DH is positive for some YYY
+    IF((IDH_SUMST(AAA,DHUSER) EQ 0), !! Checking IDE_SUMST rather than DH_VAR_T (easier and OK if basic code is correct)
+      PUT "Heat demand variation DH_VAR_T must have positive values for all AAA and user groups with positive demand DH, it seems not to have for " AAA.TL:32", User group "  DHUSER.TE(DHUSER):12;
       IF((NOT IA(AAA)), PUT " - Area is not in model";);  !! Hans 20150519(hr)
       PUT /;
       ERRCOUNT2=ERRCOUNT2+1;
-);););
+););););
 IF((ISCALAR1 LT ERRCOUNT2), PUT "#"/; );
+
 
 ISCALAR1 = ERRCOUNT2;
 * There must be values in variation file X3FX_VAR_T if X3FX is positive.
@@ -220,25 +231,26 @@ IF((ISCALAR1 LT ERRCOUNT2), PUT "#"/;);
 ISCALAR4=0.1; !! Serves as check value, the quotient should not be more than ISCALAR4 from 1
 ISCALAR1=ERRCOUNT2;
 * Electricity demand profile DE_VAR_T:
-LOOP(IR$(SMAX(Y,DE(Y,IR))),
-  IF((IDE_SUMST(IR) EQ 0),
-    PUT "Error: There is positive electicity demand DE but no demand profile DE_VAR_T: Area "  IR.TL:OTLWCRA /;
+LOOP(IR,
+ LOOP(DEUSER$(SMAX(Y,DE(Y,IR,DEUSER))),
+  IF((IDE_SUMST(IR,DEUSER) EQ 0),
+    PUT "Error: There is positive electicity demand DE but no demand profile DE_VAR_T: Region "  IR.TL:OTLWCRA ", user group " DEUSER.TE(DEUSER):12 /;
     ERRCOUNT2=ERRCOUNT2+1;
   ELSE
-    ISCALAR3=(SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,S,T)))/SMAX((S,T),DE_VAR_T(IR,S,T));   !! To become FLH1: the one used.
-    ISCALAR5 = (SUM((SSS,TTT), DE_VAR_T(IR,SSS,TTT)))/SMAX((SSS,TTT),DE_VAR_T(IR,SSS,TTT)); !! To become FLH2: as should be. Assuming all IHOURSINST(SSS,TTT) are 1.
+    ISCALAR3=(SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,DEUSER,S,T)))/SMAX((S,T),DE_VAR_T(IR,DEUSER,S,T));   !! To become FLH1: the one used.
+    ISCALAR5 = (SUM((SSS,TTT), DE_VAR_T(IR,DEUSER,SSS,TTT)))/SMAX((SSS,TTT),DE_VAR_T(IR,DEUSER,SSS,TTT)); !! To become FLH2: as should be. Assuming all IHOURSINST(SSS,TTT) are 1.
     ISCALAR2 = ISCALAR3/ISCALAR5;
     IF((ABS(ISCALAR2-1) GT ISCALAR4),
 *     Problem: the quotient is more than ISCALAR4 from 1:
       PUT "Possible Error: The Full Load Hours calculated on (S,T) from the variation profile DE_VAR_T ";  !! FLH1
-      PUT "is not close to the Full Load Hours calculated on (SSS,TTT) for region "IR.TL:OTLWCRA ": "  ISCALAR3:4:0" against " ISCALAR5:4:0;  !! FLH2
+      PUT "is not close to the Full Load Hours calculated on (SSS,TTT) for region "IR.TL:OTLWCRA ", user group " DEUSER.TL:12 ": "  ISCALAR3:4:0" against " ISCALAR5:4:0;  !! FLH2
       IF((ISCALAR3 GT ISCALAR5) or 1,
-        PUT ": The electricity demand variation DE_VAR_T(S,T) appears mostly to be closer to the peak than expected from DE_VAR_T(SSS,TTT)." /;
+        PUT ": The electricity demand variation DE_VAR_T(,,S,T) appears mostly to be closer to the peak than expected from DE_VAR_T(,,SSS,TTT)." /;
       ELSE
-        PUT ": The electricity demand variation DE_VAR_T(S,T) appears mostly to be more far from the peak than expected from DE_VAR_T(SSS,TTT)." /;
+        PUT ": The electricity demand variation DE_VAR_T(,,S,T) appears mostly to be more far from the peak than expected from DE_VAR_T(,,SSS,TTT)." /;
       );
       ERRCOUNT2=ERRCOUNT2+1;
-);););
+););););
 IF((ISCALAR1 LT ERRCOUNT2),
 PUT "   The above check on reasonable consistency between the FLHs calculated from the input variation profile over (SSS,TTT) (the whole year) and over (S,T) (the time segments selected):"/;
 PUT "   For the calculation and check to make sense is must be assumed that DE_VAR_T and DH_VAR_T are given for a whole year, i.e., CARD(SSS)*CARD(TTT) = 8736 ('whole' year)."/;
@@ -249,25 +261,27 @@ PUT "#"/;
 );
 
 * Heat demand profile DH_VAR_T:
-LOOP(IA$(SMAX(Y,DH(Y,IA))),
-  IF((IDH_SUMST(IA) EQ 0),
-    PUT "Error: There is positive heat demand DH but no demand profile DH_VAR_T: Area "  IA.TL:OTLWCRA /;
+ISCALAR1=ERRCOUNT2;
+LOOP(IA,
+LOOP(DHUSER$(SMAX(Y,DH(Y,IA,DHUSER))),
+  IF((IDH_SUMST(IA,DHUSER) EQ 0),
+    PUT "Error: There is positive heat demand DH but no demand profile DH_VAR_T: Area "  IA.TL:OTLWCRA ", user group " DHUSER.TE(DHUSER):12 /;
     ERRCOUNT2=ERRCOUNT2+1;
   ELSE
-    ISCALAR3=(SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,S,T)))/SMAX((S,T),DH_VAR_T(IA,S,T));   !! To become FLH1: the one used.
-    ISCALAR5 = (SUM((SSS,TTT), DH_VAR_T(IA,SSS,TTT)))/SMAX((SSS,TTT),DH_VAR_T(IA,SSS,TTT)); !! To become FLH2: as should be. Assuming all IHOURSINST(SSS,TTT) are 1.
+    ISCALAR3=(SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,DHUSER,S,T)))/SMAX((S,T),DH_VAR_T(IA,DHUSER,S,T));   !! To become FLH1: the one used.
+    ISCALAR5 = (SUM((SSS,TTT), DH_VAR_T(IA,DHUSER,SSS,TTT)))/SMAX((SSS,TTT),DH_VAR_T(IA,DHUSER,SSS,TTT)); !! To become FLH2: as should be. Assuming all IHOURSINST(SSS,TTT) are 1.
     ISCALAR2 = ISCALAR3/ISCALAR5;
     IF((ABS(ISCALAR2-1) GT ISCALAR4),
 *     Problem: the quotient is more than ISCALAR4 from 1:
       PUT "Possible Error: The Full Load Hours calculated on (S,T) from the variation profile DH_VAR_T ";
-      PUT "is not close to the Full Load Hours calculated on (SSS,TTT) for area   "IA.TL:OTLWCRA ": "  ISCALAR3:4:0" against " ISCALAR5:4:0;
+      PUT "is not close to the Full Load Hours calculated on (SSS,TTT) for area   "IA.TL:OTLWCRA ", user group " DHUSER.TL:12 ": "  ISCALAR3:4:0" against " ISCALAR5:4:0;
       IF((ISCALAR3 GT ISCALAR5),
-        PUT ": The heat demand variation DH_VAR_T(S,T) appears mostly to be closer to the peak than expected from DH_VAR_T(AAA,SSS,TTT)." /;
+        PUT ": The heat demand variation DH_VAR_T,,S,T) appears mostly to be closer to the peak than expected from DH_VAR_T(,,SSS,TTT)." /;
       ELSE
-        PUT ": The heat demand variation DH_VAR_T(S,T) appears mostly to be more far from the peak than expected from DH_VAR_T(AAA,SSS,TTT)." /;
+        PUT ": The heat demand variation DH_VAR_T(,,S,T) appears mostly to be more far from the peak than expected from DH_VAR_T(,,SSS,TTT)." /;
       );
       ERRCOUNT2=ERRCOUNT2+1;
-);););
+););););
 IF((ISCALAR1 LT ERRCOUNT2),
 PUT "   The above check on reasonable consistency between the FLHs calculated from the input variation profile over (SSS,TTT) (the whole year) and over (S,T) (the time segments selected):"/;
 PUT "   For the calculation and check to make sense is must be assumed that DE_VAR_T and DH_VAR_T are given for a whole year, i.e., CARD(SSS)*CARD(TTT) = 8736 ('whole' year)."/;
@@ -1092,3 +1106,5 @@ PUT "See the file errors.out for details about the error."
 );
 PUT / "* ------------------------------------------------------------------------------" / ;
 PUT //;
+
+$label endoffile
