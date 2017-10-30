@@ -312,12 +312,13 @@ $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vannual.inc';
 * Note that IDE_SUMST is the total load expressed according to DE_VAR_T:
 
   IDE_T_Y(IR,S,T) =
-    ((DE(Y,IR) * DE_VAR_T(IR,S,T)) / IDE_SUMST(IR))$(IDE_SUMST(IR) GT 0);
+    SUM(DEUSER, (DE(Y,IR,DEUSER) * DE_VAR_T(IR,DEUSER,S,T) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0));
 
   IDH_T_Y(IA,S,T) =
-    ((DH(Y,IA) * DH_VAR_T(IA,S,T)) / IDH_SUMST(IA))$(IDH_SUMST(IA) GT 0);
+    SUM(DHUSER, (DH(Y,IA,DHUSER) * DH_VAR_T(IA,DHUSER,S,T) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0));
 
 
+$ONTEXT not implemented presently
 * Elastic demands, upper bounds on the quantities of the individual steps.
 
 
@@ -362,7 +363,7 @@ VDHF_T.UP(IA,S,T,DHF_U1)$((1 LT ORD(DHF_U1)) AND (ORD(DHF_U1) LT CARD(DHF_U1)))=
 (DHF_STEPS(IA,S,T,'DF_QUANT',DHF_U1)-DHF_STEPS(IA,S,T,'DF_QUANT',DHF_U1-1));
 
 VDHF_T.UP(IA,S,T,DHF_U1)$(ORD(DHF_U1) EQ CARD(DHF_U1))= INF;
-
+$offtext
 
 * ---- Fuel prices: -----------------------------------------------------------
 
