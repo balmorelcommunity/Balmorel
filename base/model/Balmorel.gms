@@ -154,8 +154,10 @@ SET FFF               'Fuels';
 SET FDATASET          'Characteristics of fuels';
 SET HYRSDATASET       'Characteristics of hydro reservoirs';
 * Demand related:
-SET DF_QP             'Quantity and price information for elastic demands';
+SET DEUSER            "Electricity demand user groups. Set must include element RESE for holding demand not included in any other user group";
+SET DHUSER            "Heat demand user groups. Set must include element RESH for holding demand not included in any other user group";
 /*  addon dflexquant
+SET DF_QP             'Quantity and price information for elastic demands';
 SET DEF               'Steps in elastic electricity demand';
 SET DEF_D1(DEF)       'Downwards steps in elastic el. demand, relative data format';
 SET DEF_U1(DEF)       'Upwards steps in elastic el. demand, relative data format';
@@ -275,6 +277,12 @@ SET HYRSDATASET  'Characteristics of hydro reservoirs' %semislash%
 $if     EXIST '../data/HYRSDATASET.inc' $INCLUDE         '../data/HYRSDATASET.inc';
 $if not EXIST '../data/HYRSDATASET.inc' $INCLUDE '../../base/data/HYRSDATASET.inc';
 %semislash%;
+
+SET DEUSER      "Electricity demand user groups. Set must include element RESE for holding demand not included in any other user group"  %semislash%
+$if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DEUSER.inc';
+$if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DEUSER.inc';
+%semislash%;
+
 
 SET DF_QP  'Quantity and price information for elastic demands' %semislash%
 $if     EXIST '../data/DF_QP.inc' $INCLUDE         '../data/DF_QP.inc';
