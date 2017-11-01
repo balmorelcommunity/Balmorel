@@ -1365,6 +1365,9 @@ $if not EXIST '../data/OMONEY.inc' $INCLUDE '../../base/data/OMONEY.inc';
 *-------------------------------------------------------------------------------
 *----- Any parameters for addon to be placed here: -----------------------------
 *-------------------------------------------------------------------------------
+$include "../../base/addons/_hooks/pardeclare.inc"
+$include "../../base/addons/_hooks/pardefine.inc"
+
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/data/x3vdata.inc';
 $ifi %HEATTRANS%==yes $if     EXIST '../data/htrans.inc' $INCLUDE         '../data/htrans.inc';
 $ifi %HEATTRANS%==yes $if not EXIST '../data/htrans.inc' $INCLUDE '../../base/data/htrans.inc';
