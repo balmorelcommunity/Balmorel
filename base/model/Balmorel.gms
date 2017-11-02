@@ -33,6 +33,9 @@ SCALAR IBALVERSN 'This version of Balmorel' /303.20170419/;
 * In order to make them apply globally, the option $ONGLOBAL will first be set here:
 $ONGLOBAL
 
+$ifi %system.filesys%==UNIX
+execute 'chmod  -R ug+rw "../.."';
+
 * The balgams file holds control settings for GAMS.
 * Use local file if it exists, otherwise use the one in folder  ../../base/model/.
 $ifi     exist 'balgams.opt'  $include  'balgams.opt';
@@ -44,24 +47,6 @@ $ifi not exist 'balgams.opt'  $include  '../../base/model/balgams.opt'
 
 $ifi     exist 'balopt.opt'  $include                  'balopt.opt';
 $ifi not exist 'balopt.opt'  $include '../../base/model/balopt.opt';
-
-
-* If merging of savepoint files is to be performed,
-* make sure that there are no gdx files initially in applied folders:
-$ifi %system.filesys%==UNIX
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm *.gdx";
-$ifi %system.filesys%==MSNT
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del *.gdx";
-$ifi %system.filesys%==UNIX
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ../output/temp/*.gdx";
-$ifi %system.filesys%==MSNT
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ../output/temp/*.gdx";
-$ifi %system.filesys%==UNIX
-$ifi     dexist "../output/temp"   execute 'rm "../output/temp/*.*"';
-$ifi %system.filesys%==MSNT
-$ifi     dexist "../output/temp"   execute 'del "../output/temp/*.*"';
-
-
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -1104,8 +1089,8 @@ $if not EXIST '../data/DHFP_BASE.inc' $INCLUDE '../../base/data/DHFP_BASE.inc';
 *---- Annual electricity demand : ----------------------------------------------
 *-------------------------------------------------------------------------------
 PARAMETER DE(YYY,RRR,DEUSER)    'Annual electricity consumption (MWh)' %semislash%
-$if     EXIST '../data/de.inc' $INCLUDE         '../data/de.inc';
-$if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
+$if     EXIST '../data/DE.inc' $INCLUDE         '../data/DE.inc';
+$if not EXIST '../data/DE.inc' $INCLUDE '../../base/data/DE.inc';
 %semislash%;
 
 
@@ -1113,8 +1098,8 @@ $if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
 *---- Annual heat demand: ------------------------------------------------------
 *-------------------------------------------------------------------------------
 PARAMETER DH(YYY,AAA,DHUSER)    'Annual heat consumption (MWh)'  %semislash%
-$if     EXIST '../data/dh.inc' $INCLUDE         '../data/dh.inc';
-$if not EXIST '../data/dh.inc' $INCLUDE '../../base/data/dh.inc';
+$if     EXIST '../data/DH.inc' $INCLUDE         '../data/DH.inc';
+$if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
 %semislash%;
 
 

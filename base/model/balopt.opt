@@ -372,10 +372,6 @@ $setglobal SAVEPOINTVALUE 1
 *!option 0
 *!option 1   !mustif  %MERGESAVEPOINTRESULTS%==yes  !mustif  %MERGEDSAVEPOINTRESULTS2GDX%==yes   !mustif  %MERGEDSAVEPOINTRESULTS2XLS%==yes   !mustif not %MERGECASE%==none  !mustif not %DIFFCASE%==none
 *!option 2   !text Note: nothing implemented nor tested, so do not use it.
-*
-* In order not to confuse results from different executions, delete all old gdx-files:
-$ifi %SAVEPOINTVALUE%==1  execute "del %relpathModel%%relpathoutput%temp\*.gdx";
-
 
 * Use the $setglobal MERGESAVEPOINTRESULTS to choose whether to merge annual/seasonal results or not:
 $setglobal MERGESAVEPOINTRESULTS   YES
@@ -388,11 +384,6 @@ $setglobal batfileMERGESAVEPOINTRESULTS %relpathModel%MERGESAVEPOINTRESULTS.bat
 *!option !fixedvalue
 file     fileMERGESAVEPOINTRESULTSbat /  %batfileMERGESAVEPOINTRESULTS%  /;
 putclose fileMERGESAVEPOINTRESULTSbat;
-
-
-* The following is a clean-up in relation to previous runs.
-$ifi %SAVEPOINTVALUE%==1  execute "del %relpathModel%*.gdx";
-
 
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
