@@ -214,6 +214,18 @@ $setglobal bb4weighty shareYYY
 * No choices, they must be set as shown. Note the format.
 * They are to be used as illustrated below and elsewhere in the code.
 *
+$ifi not %system.filesys%==UNIX  $goto endofUNIXrelpaths
+$setglobal relpathModel ""
+*!fixedvalue
+$setglobal relpathoutput "../output/"
+*!fixedvalue
+$setglobal relpathInputdata2GDX "../output/inputout/"
+*!fixedvalue
+$setglobal relpathtemp "../output/temp/"
+*!fixedvalue
+$label endofUNIXrelpaths
+
+$ifi not %system.filesys%==MSNT  $goto endofMSNTrelpaths
 $setglobal relpathModel ""
 *!fixedvalue
 $setglobal relpathoutput "..\output\"
@@ -222,6 +234,7 @@ $setglobal relpathInputdata2GDX "..\output\inputout\"
 *!fixedvalue
 $setglobal relpathtemp "..\output\temp\"
 *!fixedvalue
+$label endofMSNTrelpaths
 
 
 *===============================================================================
@@ -324,6 +337,15 @@ $setglobal INPUTDATAGDX2XLS
 $setglobal all_endofmodelgdx
 *!option yes     !Save the file all_endofmodel.gdx to the model folder
 
+* Print out welfare results
+$Setglobal welfare
+*!option yes
+
+* Allow for limited printout of inputdata and results, as defined by files syminput.inc and symoutput.inc, respectively.
+* Only in effect for BB3
+$Setglobal limitedresults
+*!option yes
+
 
 * Make some output in text format to show some results of an execution.
 * The detailed code for the writing of the files is given in /output/printout/printinc.
@@ -380,11 +402,21 @@ $setglobal MERGESAVEPOINTRESULTS   YES
 * e.g. make sure that the file *.gdx is not open in another application (like GAMD IDE).
 *
 * Then prepare for the necessary details:
+$ifi %system.filesys%==MSNT
 $setglobal batfileMERGESAVEPOINTRESULTS %relpathModel%MERGESAVEPOINTRESULTS.bat
 *!option !fixedvalue
-file     fileMERGESAVEPOINTRESULTSbat /  %batfileMERGESAVEPOINTRESULTS%  /;
+$ifi %system.filesys%==MSNT
+file fileMERGESAVEPOINTRESULTSbat /  %batfileMERGESAVEPOINTRESULTS%  /;
+$ifi %system.filesys%==MSNT
 putclose fileMERGESAVEPOINTRESULTSbat;
 
+$ifi %system.filesys%==UNIX
+$setglobal bashfileMERGESAVEPOINTRESULTS %relpathModel%MERGESAVEPOINTRESULTS.sh
+*!option !fixedvalue
+$ifi %system.filesys%==UNIX
+file fileMERGESAVEPOINTRESULTSbash / %bashfileMERGESAVEPOINTRESULTS% /;
+$ifi %system.filesys%==UNIX
+putclose fileMERGESAVEPOINTRESULTSbash;
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
