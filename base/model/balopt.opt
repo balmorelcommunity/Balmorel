@@ -51,22 +51,22 @@ $setglobal CASEID BASE
 * Exactly one of the following Setgbobals must be assigned yes.
 *
 * bb1: use model BALBASE1: optimisation simultaneuosly for all (S,T) in a year, exogenous investments.
-$setglobal bb1 yes
+$setglobal bb1
 *!option yes      !notif %BB2%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb2: use model BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
-$setglobal bb2
+$setglobal bb2 yes
 *!option yes      !notif %BB1%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
-$setglobal bb3 
+$setglobal bb3
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
-$setglobal bb4  
+$setglobal bb4
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
 
 
 * During test period for BB4 make comparisons between BB4 and BB1, BB2, BB3.
 * The present implementation is for comparison of models (BB4 and one of BB1/BB2/BB3) with a single year (where results should be identical)
 * Not finished yet, but useful
-$setglobal testbb1234 yes
+$setglobal testbb1234
 *!option yes
 
 
@@ -85,7 +85,7 @@ $setglobal NOELTRANSINV yes
 *!option yes
 
 * Allow wind turbines to shut down
-$setglobal WNDSHUTDOWN 
+$setglobal WNDSHUTDOWN
 *!option yes
 
 * This variable includes addon for distric heating
@@ -106,7 +106,7 @@ $setglobal COMBTECH
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN
+$Setglobal HYDROGEN yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
@@ -301,7 +301,7 @@ $setglobal INPUTDATAGDX2MDB
 
 * Merge input data with the output into the gdx file %CASEID%.gdx
 $setglobal MERGEINPUTDATA yes
-*!option yes 
+*!option yes
 
 
 * Transfer the input data in gdx format to Microsoft Excel format:
