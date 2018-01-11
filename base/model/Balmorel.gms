@@ -460,7 +460,7 @@ ALIAS (T,ITALIAS);
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
 *-------------------------------------------------------------------------------
 
-
+$include "..\..\base\addons\_hooks\acronyms.inc"
 $include "..\..\base\addons\_hooks\setdeclare.inc"
 $include "..\..\base\addons\_hooks\setdefine.inc"
 
@@ -540,6 +540,10 @@ $if     EXIST '../data/gdata.inc' $INCLUDE         '../data/gdata.inc';
 $if not EXIST '../data/gdata.inc' $INCLUDE '../../base/data/gdata.inc';
 %ONOFFCODELISTING%
 
+*-------------------------------------------------------------------------------
+*------------- Any GDATA additions for addon to be placed here: ----------------
+*-------------------------------------------------------------------------------
+$include "..\..\base\addons\_hooks\gdataadditions.inc"
 
 *-------------------------------------------------------------------------------
 * Definitions of internal sets relative to technologies,

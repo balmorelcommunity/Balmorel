@@ -1,11 +1,3 @@
-PARAMETER HYDROGEN_GDATA(HYDROGEN_GGG,GDATASET)  'Hydrogen technologies characteristics'   %semislash%
-$if     EXIST '../data/HYDROGEN_GDATA.inc' $INCLUDE         '../data/HYDROGEN_GDATA.inc';
-$if not EXIST '../data/HYDROGEN_GDATA.inc' $INCLUDE '../../base/data/HYDROGEN_GDATA.inc';
-%semislash%;
-
-* Make HYDROGEN_GDATA part of GDATA:
-GDATA(HYDROGEN_GGG,GDATASET)= HYDROGEN_GDATA(HYDROGEN_GGG,GDATASET);
-
 PARAMETER HYDROGEN_DH2(YYY,CCCRRRAAA)  'Yearly demand for hydrogen from the transport sector'   %semislash%
 $if     EXIST '../data/HYDROGEN_DH2.inc' $INCLUDE         '../data/HYDROGEN_DH2.inc';
 $if not EXIST '../data/HYDROGEN_DH2.inc' $INCLUDE '../../base/data/HYDROGEN_DH2.inc';
@@ -19,5 +11,3 @@ $if not EXIST '../data/HYDROGEN_DH2_VAR_T.inc' $INCLUDE '../../base/data/HYDROGE
 PARAMETER HYDROGEN_STOVOL_START(Y,AAA,G,SSS)    'Start level of hydrogen storage';
 * Include start filling level of hydrogen storage obtained from yearly simulation
 $ifi %bb3%==yes execute_load '../../simex/HYDROGEN_STOVOL_START.gdx', HYDROGEN_STOVOL_START;
-
-
