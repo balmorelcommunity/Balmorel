@@ -7,6 +7,8 @@
 * BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
 * BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
 
+* Initialisation of the compare facility for welfare:
+$ifi %welfare%==yes $INCLUDE "..\..\base\addons\welfare\welfarecmp\compprint1.inc";
 
 *------------------------------------------------------------------------------
 * INITIALISATIONS FOR THE ANNUAL UPDATING PART:
@@ -540,9 +542,9 @@ $ifi %bb3%==yes ); /* LOOP(IS3LOOPSET,...) */
 *-------------------------------------------------------------------------------
 
 * bb1 and bb2: Save yearly basis (as saved by SAVEPOINT) and move to temp directory:
-
-$ifi not %system.filesys%==MSNT $goto endofMSNTmerge
 * This section aims to manipulate output files in a Windows-based file system
+$ifi not %system.filesys%==MSNT $goto endofMSNTmerge
+
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE1_p.gdx" '  '"%relpathModel%%relpathoutput%temp/'Y.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
@@ -555,16 +557,22 @@ $ifi %bb2%==yes execute  "%batfileMERGESAVEPOINTRESULTS%";
 
 * bb3: Merge yearly basis (as saved by SAVEPOINT and renamed) and move merged.gdx to temp directory:
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb3%==yes execute_unload 'BALBASE3.gdx';
-$ifi %MERGESAVEPOINTRESU1LTS%==yes
-$ifi %bb3%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '%relpathModel%''BALBASE3.gdx '  '%relpathModel%../output/temp/'Y.tl:0:0 '.gdx';
+$ifi %BB3%==yes execute 'rm BALBASE3_p*';
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb3%==yes execute "%batfileMERGESAVEPOINTRESULTS%";
+$ifi %BB3%==yes execute_unload 'BALBASE3.gdx'
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes $ifi %limitedresults%==yes $INCLUDE '../../base/model/symoutput.inc';
+;
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '%relpathModel%''BALBASE3.gdx '  '%relpathModel%../output/temp/'Y.tl:0:0 '.gdx';
+$ifi %MERGEINPUTDATA%==yes
+$ifi %BB3%==yes execute "%batfileMERGESAVEPOINTRESULTS%";
 
 $label endofMSNTmerge
 
-$ifi not %system.filesys%==UNIX  $goto endofUNIXmerge
 * This section aims to manipulate output files in a UNIX-based file system
+$ifi not %system.filesys%==UNIX  $goto endofUNIXmerge
+
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''BALBASE1_p.gdx" "%relpathModel%%relpathoutput%temp/'Y.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
@@ -581,7 +589,12 @@ $ifi %bb2%==yes execute  './"%bashfileMERGESAVEPOINTRESULTS%"';
 
 * bb3: Merge yearly basis (as saved by SAVEPOINT and renamed) and move merged.gdx to temp directory:
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb3%==yes execute_unload 'BALBASE3.gdx';
+$ifi %BB3%==yes execute 'rm BALBASE3_p*';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes execute_unload 'BALBASE3.gdx'
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes $ifi %limitedresults%==yes $INCLUDE '../../base/model/symoutput.inc';
+;
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb3%==yes putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv  "%relpathModel%''BALBASE3.gdx"  %relpathModel%../output/temp/'Y.tl:0:0 '.gdx';
 $ifi %MERGESAVEPOINTRESULTS%==yes
@@ -613,9 +626,13 @@ $if errorfree $ifi %PRINTFILES%==yes $ifi %bb2%==yes   $INCLUDE '../../base/outp
 
 $if errorfree $ifi %PRINTFILES%==yes $ifi %bb3%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb1.inc';
 
+
+
+* The Welfare module
+$ifi %welfare%==yes $INCLUDE '../../base/addons/welfare/welfarecmp/compprint3.inc';
 * The following file includes instructions for processing output to be used in
 * the Economic module.
-$ifi %ECONOMIC%==yes $INCLUDE '../../base/processing/economic/eco_process.inc';
+*$ifi %ECONOMIC%==yes $INCLUDE '../../base/processing/economic/eco_process.inc';
 
 * Case specific output printing:
 $ifi EXIST 'caseprint.inc' $include 'caseprint.inc';
@@ -673,7 +690,8 @@ $ifi %REShareEH%==yes $include  '../../base/addons/REShareEH/printinc/RESEHPrt4.
 * The following files are included only when comparing, i.e. not in basecase.
 * The code is tricky, it is based on existence of file welfare.inc only in relation to base folder:
 
-$ifi %ECONOMIC%==yes $INCLUDE '../../base/processing/economic/eco_writetbl.inc';
+$ifi %welfare%==yes $INCLUDE '../../base/addons/welfare/welfarecmp/welfarebb3.inc';
+*$ifi %ECONOMIC%==yes $INCLUDE '../../base/processing/economic/eco_writetbl.inc';
 * Earnings
 * $ifi %PLANTCLOSURES%==yes $include '../../base/printinc/earningsout.inc';
 

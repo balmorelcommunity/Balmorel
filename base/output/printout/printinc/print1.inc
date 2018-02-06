@@ -199,7 +199,7 @@ $ifi %DEFPCALIB%==yes FILE dfp_calib  /"../output/printout/dfp_calib.out"/;
 * -----------------------------------------------------------------------
 * Block (B):
 * Delete all existing printout files before printing any new ones:
-execute 'rm  "../output/printout/*.*';
+execute "rm  ../output/printout/*.*";
 
 * -----------------------------------------------------------------------
 * Block (C):
