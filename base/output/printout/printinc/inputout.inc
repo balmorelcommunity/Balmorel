@@ -1431,7 +1431,7 @@ PUT Y.TL:12;
 PUT /;
 );  PUT /;);
 PUT //;
-                              
+
 IF(((OSCALAR2+1) LE OSCALAR1),
 * Second half:
 INPUTOUT.LJ = 1;
@@ -1920,7 +1920,7 @@ OESUPPCURV(IR,OESUPPSTEP)$((ORD(OESUPPSTEP)*OISCALAR1) GT OISCALAR3)=-INF;
 );  /* End of LOOP(Y$((ORD(Y) EQ 1), ... */
 PUT /;
 
-
+                  display OESUPPCURV;
 
 
 LOOP(Y$(ORD(Y) EQ 1),
@@ -1937,7 +1937,7 @@ PUT "         may be neglected, and the supply may be reduced. "/;
 PUT "--------------------------------------------------------------------------------"//;
 );
 
-PUT /;
+PUT /;                                                                          !! Heading: MW and Region
 PUT "":(OTLWCRA-2)  "MW";
 LOOP(C,
 LOOP(IR$CCCRRR(C,IR),

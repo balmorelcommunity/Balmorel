@@ -52,21 +52,21 @@ LOOP(IY411,
   OSCALAR3=0;  /* To become total cost       */
   OSCALAR2=0;  /* To become total consumption */
          LOOP(IA$ICA(C,IA),
+           LOOP(DHUSER,
 
-
-                 LOOP(S,  LOOP(T,
-                         OSCALAR1 = (IDH_T(IY411,IA,S,T)
-                                         + SUM(DHF_U1,VDHF_T.L(IY411,IA,S,T,DHF_U1) )
-                                         - SUM(DHF_D1,VDHF_T.L(IY411,IA,S,T,DHF_D1) )
-                                         + SUM(DHF_U2,VDHF_T.L(IY411,IA,S,T,DHF_U2) )
-                                         - SUM(DHF_D2,VDHF_T.L(IY411,IA,S,T,DHF_D2) )
-                                         + SUM(DHF_U3,VDHF_T.L(IY411,IA,S,T,DHF_U3) )
-                                         - SUM(DHF_D3,VDHF_T.L(IY411,IA,S,T,DHF_D3) )
+                 LOOP(IS3,  LOOP(T,
+                         OSCALAR1 = (IDH_T(IY411,IA,DHUSER,IS3,T)
+$ifi %dflexquant%==yes   + SUM(DHF_U1,VDHF_T.L(IY411,IA,DHUSER,IS3,T,DHF_U1) )
+$ifi %dflexquant%==yes   - SUM(DHF_D1,VDHF_T.L(IY411,IA,DHUSER,IS3,T,DHF_D1) )
+$ifi %dflexquant%==yes   + SUM(DHF_U2,VDHF_T.L(IY411,IA,DHUSER,IS3,T,DHF_U2) )
+$ifi %dflexquant%==yes   - SUM(DHF_D2,VDHF_T.L(IY411,IA,DHUSER,IS3,T,DHF_D2) )
+$ifi %dflexquant%==yes   + SUM(DHF_U3,VDHF_T.L(IY411,IA,DHUSER,IS3,T,DHF_U3) )
+$ifi %dflexquant%==yes   - SUM(DHF_D3,VDHF_T.L(IY411,IA,DHUSER,IS3,T,DHF_D3) )
                                      ) / (1-DISLOSS_H(IA));
 
-                         OSCALAR2 = OSCALAR2 + OSCALAR1 * IHOURSINST(S,T);
-                         OSCALAR3 = OSCALAR3 + OSCALAR1 * OHP_YAT(IY411FIRST,IY411,IA,S,T)*IHOURSINST(S,T);
-                 ));
+                         OSCALAR2 = OSCALAR2 + OSCALAR1 * IHOURSINST(IS3,T);
+                         OSCALAR3 = OSCALAR3 + OSCALAR1 * OHP_YAT(IY411FIRST,IY411,IA,IS3,T)*IHOURSINST(IS3,T);
+                 )));
 
         );
   OHP_YC(IY411FIRST,IY411,C)$(OSCALAR2 > 0)= OSCALAR3/OSCALAR2;
@@ -86,7 +86,7 @@ LOOP(IY411,
 
 $ontext
 
-OHP_YA(IY411FIRST,IY411,IA) = SUM((S,T),OHP_YAT(IY411FIRST,IY411,IA,S,T));
+OHP_YA(IY411FIRST,IY411,IA) = SUM((IS3,T),OHP_YAT(IY411FIRST,IY411,IA,IS3,T));
 
 PUT "Annual average heat price, simple time weighted average:" /;
 
@@ -115,7 +115,7 @@ hp_ay.LJ = 2;
 
 PUT Y.TL:4:0; PUT "        "; LOOP(IA,
      if(DH(Y,IA),       /* Note: using DH(Y,IA) may not always be perfect ... */
-        PUT ((OMONEY*IOF1_/IOF8760)*SUM((S,T), QHEQ.M(IA,S,T))):OTLW:2 ;
+        PUT ((OMONEY*IOF1_/IOF8760)*SUM((IS3,T), QHEQ.M(IA,IS3,T))):OTLW:2 ;
      ELSE
         PUT OTLW.ts;
      )
@@ -138,23 +138,23 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IA,
      OSCALAR2=0;  /* To become total production */
 
 
-       LOOP(S,  LOOP(T,
-*            OSCALAR1 = SUM(IGH, VGH_T.L(IA,IGH,S,T)+VGHN_T.L(IA,IGH,S,T));
+       LOOP(IS3,  LOOP(T,
+*            OSCALAR1 = SUM(IGH, VGH_T.L(IA,IGH,IS3,T)+VGHN_T.L(IA,IGH,IS3,T));
 * Note: The expression for OSCALAR1 is identical to the left hand side of heat equation:
             OSCALAR1 =
-                  SUM(IGBPR$IAGK_Y(IA,IGBPR),VGH_T.L(IA,IGBPR,S,T))
-               + SUM(IGBPR$IAGKN(IA,IGBPR),VGHN_T.L(IA,IGBPR,S,T))
-               + SUM(IGEXT$IAGK_Y(IA,IGEXT),VGH_T.L(IA,IGEXT,S,T))
-               + SUM(IGEXT$IAGKN(IA,IGEXT),VGHN_T.L(IA,IGEXT,S,T))
-               + SUM(IGHH$IAGK_Y(IA,IGHH),VGH_T.L(IA,IGHH,S,T))
-               + SUM(IGHH$IAGKN(IA,IGHH),VGHN_T.L(IA,IGHH,S,T))
-               + SUM(IGETOH$IAGK_Y(IA,IGETOH),VGH_T.L(IA,IGETOH,S,T))
-               + SUM(IGETOH$IAGKN(IA,IGETOH),VGHN_T.L(IA,IGETOH,S,T))
-               - VHSTOLOADT.L(IA,S,T)
-               + SUM(IGESTO$((IGKFX_Y(IA,IGESTO) GT 0) AND (GDATA(IGESTO,'GDCB') GT 0)), VGE_T.L(IA,IGESTO,S,T)/GDATA(IGESTO,'GDCB'));
+                  SUM(IGBPR$IAGK_Y(IA,IGBPR),VGH_T.L(IA,IGBPR,IS3,T))
+               + SUM(IGBPR$IAGKN(IA,IGBPR),VGHN_T.L(IA,IGBPR,IS3,T))
+               + SUM(IGEXT$IAGK_Y(IA,IGEXT),VGH_T.L(IA,IGEXT,IS3,T))
+               + SUM(IGEXT$IAGKN(IA,IGEXT),VGHN_T.L(IA,IGEXT,IS3,T))
+               + SUM(IGHH$IAGK_Y(IA,IGHH),VGH_T.L(IA,IGHH,IS3,T))
+               + SUM(IGHH$IAGKN(IA,IGHH),VGHN_T.L(IA,IGHH,IS3,T))
+               + SUM(IGETOH$IAGK_Y(IA,IGETOH),VGH_T.L(IA,IGETOH,IS3,T))
+               + SUM(IGETOH$IAGKN(IA,IGETOH),VGHN_T.L(IA,IGETOH,IS3,T))
+               - VHSTOLOADT.L(IA,IS3,T)
+               + SUM(IGESTO$((IGKFX_Y(IA,IGESTO) GT 0) AND (GDATA(IGESTO,'GDCB') GT 0)), VGE_T.L(IA,IGESTO,IS3,T)/GDATA(IGESTO,'GDCB'));
 
-            OSCALAR2 = OSCALAR2 + OSCALAR1 * IHOURSINST(S,T);
-            OSCALAR3 = OSCALAR3 + OSCALAR1 * IHOURSINST(S,T) * QHEQ.M(IA,S,T);
+            OSCALAR2 = OSCALAR2 + OSCALAR1 * IHOURSINST(IS3,T);
+            OSCALAR3 = OSCALAR3 + OSCALAR1 * IHOURSINST(IS3,T) * QHEQ.M(IA,IS3,T);
 
 
       ));
@@ -186,12 +186,12 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IA,
      OSCALAR3=0;  /* To become total cost        */
      OSCALAR2=0;  /* To become total consumption */
 
-       LOOP(S,  LOOP(T,
-            OSCALAR1 = (IDH_T_Y(IA,S,T)
-                      + SUM(DHF_U1,VDHF_T.L(IA,S,T,DHF_U1) )
-                      - SUM(DHF_D1,VDHF_T.L(IA,S,T,DHF_D1) )) / (1-DISLOSS_H(IA));
-            OSCALAR2 = OSCALAR2 + OSCALAR1 * IHOURSINST(S,T);
-            OSCALAR3 = OSCALAR3 + OSCALAR1 * QHEQ.M(IA,S,T);
+       LOOP(IS3,  LOOP(T,
+            OSCALAR1 = (IDH_T_Y(IA,IS3,T)
+                      + SUM(DHF_U1,VDHF_T.L(IA,IS3,T,DHF_U1) )
+                      - SUM(DHF_D1,VDHF_T.L(IA,IS3,T,DHF_D1) )) / (1-DISLOSS_H(IA));
+            OSCALAR2 = OSCALAR2 + OSCALAR1 * IHOURSINST(IS3,T);
+            OSCALAR3 = OSCALAR3 + OSCALAR1 * QHEQ.M(IA,IS3,T);
       ));
 
      IF((OSCALAR2 GT 0),
