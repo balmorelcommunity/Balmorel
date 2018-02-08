@@ -175,7 +175,12 @@ IAGK_HASORPOT(Y,IA,G) = NO;
 IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);
 IAGK_HASORPOT(IY411,IA,G)$IAGKNY(IY411,IA,G) = YES;
 
-$ifi %COMBTECH%==yes IAGK_HASORPOT(IY411,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(IY411,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
+*----COMBTECH----
+$ifi %COMBTECH%==yes IAGK_HASORPOT(IY411,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(IY411,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;  !!TODO
+*Quick fix
+*$ifi %COMBTECH%==yes IAGK_HASORPOT(IY411,IA,'GCND_NATGAS2_CT-MUNIWASTE')=yes;
+*$ifi %COMBTECH%==yes IAGK_HASORPOT(IY411,IA,IGCOMB2)=yes;
+*---ENDOF COMBTECH
 
 *-------------------------------------------------------------------------------
 * End: Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT -----------------------------
@@ -255,6 +260,11 @@ VGE_T.FX(IY411,IA,IGWAVE,S,T)$(GKFX(IY411,IA,IGWAVE) AND (NOT IAGKN(IA,IGWAVE)))
 $ifi %bb4%==yes  IHYINF_S(IA,S)=
 $ifi %bb4%==yes  ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
 
+
+* Technologies that are not allowed for investments should have VGKNACCUMNET as 0:
+
+VGKNACCUMNET.FX(IY411,IA,G)$(NOT IAGKNY(IY411,IA,G))=0;
+
 *---- End: Bounds on generation technologies -----------------------------------
 
 *---- Bounds on transmission: --------------------------------------------------
@@ -276,9 +286,6 @@ IXK_HASORPOT(Y,IRE,IRI)$IXKN(IRE,IRI) = YES;
 * Complement to equation QXK_UP for the case with no endogenous transmission investments.
 VX_T.UP(IY411,IRE,IRI,S,T)$(NOT IXKN(IRE,IRI)) = XKFX(IY411,IRE,IRI)*IXKRATE(IRE,IRI,S,T);
 VXKNACCUMNET.FX(IY411,IRE,IRI)$(IXKN(IRE,IRI) AND (NOT IXK_HASORPOT(IY411,IRE,IRI))) = 0;  !! Should not be necessary if condition on IAGKN(IA,G) is properly used in .gms code.
-
-IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);
-IAGK_HASORPOT(IY411,IA,G)$IAGKN(IA,G) = YES;
 
 
 * Set the fixed exchange with third regions:
