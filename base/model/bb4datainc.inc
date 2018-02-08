@@ -281,12 +281,12 @@ $if not EXIST '../data/X3VX.inc' $INCLUDE      '../../base/data/X3VX.inc';
 $label X3V_label1
 
 
-$ifi %COMBTECH%==yes
-$if     EXIST '../data/ggcomb.inc' $INCLUDE         '../data/ggcomb.inc';
-$ifi %COMBTECH%==yes
-$if not EXIST '../data/ggcomb.inc' $INCLUDE '../../base/data/ggcomb.inc';
+*$ifi %COMBTECH%==yes
+*$if     EXIST '../data/ggcomb.inc' $INCLUDE         '../data/ggcomb.inc';
+*$ifi %COMBTECH%==yes
+*$if not EXIST '../data/ggcomb.inc' $INCLUDE '../../base/data/ggcomb.inc';
 
-$ifi %COMBTECH%==yes   $include '../../base/addons/combtech/combGassign.inc';
+*$ifi %COMBTECH%==yes   $include '../../base/addons/combtech/combGassign.inc';
 
 
 * Addon AGKNDISC: discrete size investment in technologies:

@@ -175,7 +175,7 @@ $ifi %bb3%==yes SET TWEEKEND(TTT)   /T121*T168/;
 
 *-------------------------------------------------------------------------------
 *----- Any internal sets for addon to be placed here: --------------------------
-
+$include "..\..\base\addons\_hooks\setdeclare.inc"
 
 *----- End: Any internal sets for addon to be placed here: ---------------------
 *-------------------------------------------------------------------------------
@@ -243,6 +243,8 @@ SET IGBYPASS(G)            'Technologies that may apply turbine bypass mode (sub
 * be using values of GDATA(G,'GDTYPE'). Check addons referenced here to maximize
 * consistency and avoid conflicts. It is encouraged to avoid using the '-' set
 * operator and instead use the '+' operator for compound assignments.
+
+
 
 *---- Unit commitment --------------------------------------------------------------
 
@@ -524,6 +526,20 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
 * Assignments of IGBYPASS may be changed if option bypass has a non-default value.
 $ifi not %bypass%==yes IGBYPASS(G) = NO;
 
+*-------------------------------------------------------------------------------
+*----- Any internal sets assignments for addon to be placed here: --------------
+*-------------------------------------------------------------------------------
+* NOTE: When making new generation technology types. Some add-ons may already
+* be using values of GDATA(G,'GDTYPE'). Check addons referenced here to maximize
+* consistency and avoid conflicts. It is encouraged to avoid using the '-' set
+* operator and instead use the '+' operator for compound assignments.
+
+$include "..\..\base\addons\_hooks\isetdecdef.inc"
+
+
+*-------------------------------------------------------------------------------
+*----- End: Any internal sets assignments for addon to be placed here ----------
+*-------------------------------------------------------------------------------
 
 *-------------------------------------------------------------------------------
 *---- Investments: --------------------------------------------------------------
@@ -649,7 +665,7 @@ SET IAGKNY(Y,AAA,G) 'Area, technology where technology may be invested based on 
 
 
 * No investment in secondary combination technologies:
-$ifi %COMBTECH%==yes    IAGKNY(IA,IGCOMB2)=NO;
+$ifi %COMBTECH%==yes    IAGKNY(Y,IA,IGCOMB2)=NO;
 
 SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IMINUS  Violation of equation downwards/;
 * Note: When placed on the left hand side of the equation
@@ -1451,12 +1467,12 @@ $ifi     %COMBTECH%==yes  (NOT IGCOMB2(IGEXT)) ..
      )*IGKRATE(IA,IGEXT,IS3,T)
          - VGH_T(IY411,IA,IGEXT,IS3,T) * GDATA(IGEXT,"GDCV")
 
-$ifi %COMBTECH%==yes  * This will have a value in case of a combination technology. TODO
-$ifi %COMBTECH%==yes    + SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGH_T(IY411,IA,IGCOMB2,IS3,T) * GDATA(IGCOMB2,"GDCV"))$IGCOMB1(IGEXT)   TODO
+$ifi %COMBTECH%==yes  * This will have a value in case of a combination technology. !!TODO
+$ifi %COMBTECH%==yes    + SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGH_T(IY411,IA,IGCOMB2,IS3,T) * GDATA(IGCOMB2,"GDCV"))$IGCOMB1(IGEXT)   !!TODO
     =G=
    VGE_T(IY411,IA,IGEXT,IS3,T)
-$ifi %COMBTECH%==yes  * Add secondary generation if combination technologies are used     TODO
-$ifi %COMBTECH%==yes  + SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGE_T(IY411,IA,IGCOMB2,IS3,T))$IGCOMB1(IGEXT)  TODO
+$ifi %COMBTECH%==yes  * Add secondary generation if combination technologies are used     !!TODO
+$ifi %COMBTECH%==yes  + SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGE_T(IY411,IA,IGCOMB2,IS3,T))$IGCOMB1(IGEXT)  !!TODO
 ;
 
 
@@ -2065,8 +2081,10 @@ QWAVEDISPATCH(IY411,IA,IGWAVE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWAVE) AND IWAVESU
 *----- Any equations for addon to be placed here: ------------------------------
 *-------------------------------------------------------------------------------
 
+$include "..\..\base\addons\_hooks\eqndecdef.inc"
+
 * These add-on equations pertain to combination technologies.
-$ifi %COMBTECH%==yes $include "../../base/addons/combtech/combEQ.inc";
+*$ifi %COMBTECH%==yes $include "../../base/addons/combtech/combEQ.inc";
 
 * These add-on equations pertain to price sensitive electricity exchange with
 * third countries.
@@ -2195,10 +2213,13 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
 $ontext
 *--- Operational restrictions --------------------------------------------------
 *                               QGE2LEVEL
-
+$offtext
 
 *----- Any equations for addon to be placed here: ------------------------------
 
+$include "..\..\base\addons\_hooks\balbase4.inc"
+
+$ontext
 *--- Investment restricitions --------------------------------------------------
                                 QMAXINVESTCF
 *                               QMAXINVESTGROWTHCG
@@ -2218,7 +2239,7 @@ $offtext
 
 
 $ifi %BB4%==yes QGKNACCUMGROSS
-*$ifi %BB4%==yes QGKNACCUMNET   !! TODO
+$ifi %BB4%==yes QGKNACCUMNET   !! TODO
 $ifi %BB4%==yes QXKNACCUMNET
 *--- Capacity constraints on generation (MW) -----------------------------------
 $ifi %BB4%==yes    QGKE_UP
@@ -2250,7 +2271,7 @@ QOBJ.SCALE=IOF1000000;
 *----- End of definition of models ---------------------------------------------
 *-------------------------------------------------------------------------------
 
-$ifi %COMBTECH%==yes  $INCLUDE  "../../base/addons/combtech/comberr2.inc";
+$ifi %COMBTECH%==yes  $INCLUDE  "../../base/addons/combtech/combtech_error2.inc";
 $ifi %BB4%==yes       $INCLUDE  "../../base/addons/BB4/errorBB4.inc";
 
 * The following file contains definitions of a number of temporary parameters

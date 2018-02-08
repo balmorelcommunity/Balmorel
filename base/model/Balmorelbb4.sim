@@ -175,6 +175,7 @@ IAGK_HASORPOT(Y,IA,G) = NO;
 IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);
 IAGK_HASORPOT(IY411,IA,G)$IAGKNY(IY411,IA,G) = YES;
 
+$ifi %COMBTECH%==yes IAGK_HASORPOT(IY411,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(IY411,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
 
 *-------------------------------------------------------------------------------
 * End: Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT -----------------------------
@@ -184,6 +185,9 @@ IAGK_HASORPOT(IY411,IA,G)$IAGKNY(IY411,IA,G) = YES;
 
 *-------------------------------------------------------------------------------
 * Addons:
+
+
+
 * Discrete technology investmenst:
 $ifi %AGKNDISC%==yes IAGKNDISC_YAG(IY411,IA,G) = AGKNDISC_AG(IA,G);  !! Input data, independent of Year
 $ifi %AGKNDISC%==yes IAGKNDISC_YAG(IY411,IA,IGKKNOWN) = NO;          !! No new capacity if notIGKFIND (but should not be allowed in input data)
@@ -202,6 +206,10 @@ $ifi %AGKNDISC%==yes IAGKNDISC_YAG(IY411,IA,G)$(YVALUE(IY411) LT GDATA(G,'GDFROM
 * Complements to equations QGKE_UP and QGKH_UP for the case with no endogenous IGKE and IGKH investments.
 VGE_T.UP(IY411,IA,IGDISPATCH(IGKE),S,T)$(GKFX(IY411,IA,IGKE) AND (NOT IAGKN(IA,IGKE))) = GKFX(IY411,IA,IGKE)*IGKRATE(IA,IGKE,S,T);
 VGH_T.UP(IY411,IA,IGDISPATCH(IGKH),S,T)$(GKFX(IY411,IA,IGKH) AND (NOT IAGKN(IA,IGKH))) = GKFX(IY411,IA,IGKH)*IGKRATE(IA,IGKH,S,T);
+
+*COMTECH
+
+*$ifi %COMBTECH%==YES  $INCLUDE '../../base/addons/combtech/BB4/combtech_sim.inc'; !!todo error with endogenous investments (possible solution to send these equations to the code)
 
 * Storage loading (MW) and unloading (MW) do not exceed capacity.
 * Complements to equations QESTOLOADTLIM and QHSTOLOADTLIM for the case with no endogenous IGESTO and IGHSTO investments.
@@ -379,13 +387,13 @@ $ifi not %system.filesys%==MSNT $goto endofMSNTmove
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move "%relpathModel%''BALBASE4_p.gdx" '  '"%relpathModel%%relpathoutput%temp/'IYALIAS.tl:0:0 '.gdx"';
- 
+
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes  execute  "%batfileMERGESAVEPOINTRESULTS%";
 
 $label endofMSNTmove
 
-$ifi not %system.filesys%==UNIX $goto endofMSNTmove
+$ifi not %system.filesys%==UNIX $goto endofUNIXmove
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''BALBASE4_p.gdx" "%relpathModel%%relpathoutput%temp/'IYALIAS.tl:0:0 '.gdx"';
