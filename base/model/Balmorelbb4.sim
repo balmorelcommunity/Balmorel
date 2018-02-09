@@ -258,9 +258,10 @@ $ifi %bb4%==yes  IHYINF_S(IA,S)=
 $ifi %bb4%==yes  ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
 
 
-* Technologies that are not allowed for investments MUST have VGKNACCUMNET as 0:
+* Technologies that are not allowed for investments MUST have VGKNACCUMNET and VGKNACCUMGROSS  as 0:
 
-VGKNACCUMNET.FX(IY411,IA,G)$(NOT IAGKNY(IY411,IA,G))=0;
+VGKNACCUMNET.FX(IY411,IA,G)$(NOT IAGKN(IA,G))=0;
+VGKNACCUMGROSS.FX(IY411,IA,G)$(NOT IAGKN(IA,G))=0;
 
 *---- End: Bounds on generation technologies -----------------------------------
 
