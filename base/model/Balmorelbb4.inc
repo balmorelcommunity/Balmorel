@@ -84,6 +84,8 @@ SET ECONSETCATEGORY   'Set for econ'  !! todo
 
 * Internal set IGGGALIAS may be used in the $included data files:
 ALIAS(GGG,IGGGALIAS);
+* Internal set IGALIAS may be used in the $included data files:
+ALIAS(G,IGALIAS);
 * Set CCCRRRAAAALIAS may be used in the $included data files:
 ALIAS(CCCRRRAAA,CCCRRRAAAALIAS);
 

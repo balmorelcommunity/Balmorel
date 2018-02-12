@@ -4,7 +4,10 @@ SET IGCOMB1(G)              'Combination technologies, primary, for addon combte
 SET IGCOMB2(G)              'Combination technologies, secondary with primary in G, for addon combtech';
 SET GGCOMB(GGG,GGG      )   'Combination techologies in the same combination, for addon combtech';
 
+loop((G,IGALIAS)$GGCOMB(G,IGALIAS),
 IGCOMB1(G) = YES$(GDATA(G,'GDCOMB') EQ 1);
-IGCOMB2(G) = YES$(GDATA(G,'GDCOMB') EQ 2);
+IGCOMB2(IGALIAS) = YES$(GDATA(IGALIAS,'GDCOMB') EQ 2);
+
+);
 
 
