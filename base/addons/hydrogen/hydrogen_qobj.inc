@@ -27,7 +27,7 @@ revenue sale of hydrogen to the transport sector
 + SUM(DH2F_U,VDH2F_T(IA,IS3,T,DH2F_U) )
 *        - SUM(DH2F_D,VDH2F_T(IA,IS3,T,DH2F_D) )
 *
-$offtext 
+$offtext
 
 + PENALTYQ*(SUM((IR,IS3,T),(VHYDROGEN_QH2EQ(IR,IS3,T,'IMINUS')+VHYDROGEN_QH2EQ(IR,IS3,T,'IPLUS'))))
 
