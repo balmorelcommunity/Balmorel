@@ -51,7 +51,7 @@ $setglobal CASEID BASE
 * Exactly one of the following Setgbobals must be assigned yes.
 *
 * bb1: use model BALBASE1: optimisation simultaneuosly for all (S,T) in a year, exogenous investments.
-$setglobal bb1     yes 
+$setglobal bb1 yes
 *!option yes      !notif %BB2%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb2: use model BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
 $setglobal bb2
@@ -93,7 +93,7 @@ $Setglobal FV
 *!option yes
 
 * Allow demand elasticity
-$setglobal DFLEXQUANT yes
+$setglobal DFLEXQUANT
 *!option yes
 
 *-------------------------------------------------------------------------------

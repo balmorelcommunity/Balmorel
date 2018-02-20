@@ -85,6 +85,10 @@ $ifi "%X3V%"=="yes"     + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VIM_T.L(
 
 
 PUT "Annual average electricity price, weighted by consumption quantity:"/;
+
+*TODO!!
+
+$ontext
 ep_ry.LJ = 1;
 PUT "YEAR        " ; LOOP(IR,  PUT IR.TL:12) ; PUT /;
 ep_ry.LJ = 2;
@@ -113,5 +117,6 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IR,
       ); );
   PUT //;
 
+$offtext
 
 * -----------------------------------------------------------------------------

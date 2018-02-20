@@ -144,127 +144,6 @@ $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 
 * ------------------------------------------------------------------------------
 %ONOFFCODELISTING%
-* (Text and assignment of technology related subsets in file dataincbb4.inc:)
-* The sets:
-* IGCND,IGBPR,IGEXT,IGHOB,IGETOH,IGHSTO,IGESTO,IGHSTOS,IGESTOS,IGHYRS,IGHYRR,IGWND,IGSOLE,IGSOLH,IGWAVE
-* are directly extracted from GDATA(G,'GDTYPE') and are used to reference
-* technology types.
-*
-* IGHH and IGEE are used in the balance equations and for output control.
-* IGHHNOSTO and IGEENOSTO is not currently used for anything.
-*
-* IGNOTETOH is used for O&M cost in the objective function, in the balance
-* equation, in heat storage balance equations and in various output functions.
-* IGKH and IGKE are used for capacity restrictions and for certain output files.
-* IGKHNOSTO and IGKENOSTO are used for output.
-* IGDISPATCH is used capacity restrictions and output.
-* IGKKNOWN is used to exclude investment options.
-* IGKFIND is used to single out investment options.
-* IGEH is used for CHP specific taxes.
-* IGE and IGH are used all over.
-
-* The sets are defined based on information in PARAMETER GDATA.
-
-* The specifications of technology type 'GDTYPE' in GDATA may use an acronym or a number.
-* Under most circumstances an acronym is preferable, the list is given above.
-* If an acronym can not be used, use the numbers consistently as seen below.
-
-
-   IGCND(G)    = YES$(GDATA(G,'GDTYPE') EQ GCND);
-   IGBPR(G)    = YES$(GDATA(G,'GDTYPE') EQ GBPR);
-   IGEXT(G)    = YES$(GDATA(G,'GDTYPE') EQ GEXT);
-   IGHOB(G)    = YES$(GDATA(G,'GDTYPE') EQ GHOB);
-   IGETOH(G)   = YES$(GDATA(G,'GDTYPE') EQ GETOH);
-   IGHSTO(G)   = YES$(GDATA(G,'GDTYPE') EQ GHSTO);
-   IGHSTOS(G)  = YES$(GDATA(G,'GDTYPE') EQ GHSTOS);
-   IGESTO(G)   = YES$(GDATA(G,'GDTYPE') EQ GESTO);
-   IGESTOS(G)  = YES$(GDATA(G,'GDTYPE') EQ GESTOS);
-   IGHYRS(G)   = YES$(GDATA(G,'GDTYPE') EQ GHYRS);
-   IGHYRR(G)   = YES$(GDATA(G,'GDTYPE') EQ GHYRR);
-   IGWND(G)    = YES$(GDATA(G,'GDTYPE') EQ GWND);
-   IGSOLE(G)   = YES$(GDATA(G,'GDTYPE') EQ GSOLE);
-   IGSOLH(G)   = YES$(GDATA(G,'GDTYPE') EQ GSOLH);
-   IGWAVE(G)   = YES$(GDATA(G,'GDTYPE') EQ GWAVE);
-
-* Assignments of IGESTO, IGESTOS, IGHSTO and IGHSTOS may be changed if option stointers has a non-default value.
-$ifi "%stointers%"=="all"  IGESTOS(IGESTO) = YES; IGHSTOS(IGHSTO) = YES;
-$ifi "%stointers%"=="all"  IGESTO(IGESTO) = NO;   IGHSTO(IGHSTO) = NO;
-$ifi "%stointers%"=="none" IGESTO(IGESTOS) = YES; IGHSTO(IGHSTOS) = YES;
-$ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
-
-   IGHHNOSTO(G) = NO;   IGHHNOSTO(IGHOB)   = YES;  IGHHNOSTO(IGSOLH)= YES;
-
-   IGHSTOALL(G) =       IGHSTO(G)
-                         +IGHSTOS(G);
-
-   IGHH(G)      =       IGHHNOSTO(G)
-                         +IGHSTOALL(G);
-
-   IGKHNOSTO(G)     =   IGETOH(G)
-                         +IGHHNOSTO(G);
-
-   IGKH(G)          =   IGKHNOSTO(G)
-                         +IGHSTOALL(G);
-
-   IGEENOSTO(G)     =   IGCND(G)     !! In contrast to heat related technologies above,
-                         +IGHYRS(G)  !! with elec related technologies a more enumeration approach is taken
-                         +IGHYRR(G)  !! for illustrative purposes
-                         +IGWND(G)
-                         +IGSOLE(G)
-                         +IGWAVE(G);
-
-   IGEE(G)          =   IGCND(G)
-                         +IGHYRS(G)
-                         +IGHYRR(G)
-                         +IGWND(G)
-                         +IGSOLE(G)
-                         +IGWAVE(G)
-                         +IGESTO(G)
-                         +IGESTOS(G);
-
-   IGESTOALL(G) =       IGESTO(G)
-                         +IGESTOS(G);
-
-   IGKE(G)          =   IGCND(G)
-                         +IGBPR(G)
-                         +IGEXT(G)
-                         +IGESTO(G)
-                         +IGESTOS(G)
-                         +IGHYRS(G)
-                         +IGHYRR(G)
-                         +IGWND(G)
-                         +IGSOLE(G)
-                         +IGWAVE(G);
-
-   IGKENOSTO(G)     =   IGKE(G)
-                         -IGESTO(G)
-                          -IGESTOS(G);
-
-   IGNOTETOH(G)= NOT IGETOH(G);
-
-   IGEH(G) = IGBPR(G)+IGEXT(G)+IGETOH(G);
-   IGE(G)=IGEE(G)+IGEH(G);
-   IGH(G)=IGHH(G)+IGEH(G);
-
-   IGDISPATCH(G)    =   IGCND(G)
-                         +IGBPR(G)
-                         +IGEXT(G)
-                         +IGHOB(G)
-                         +IGESTO(G)
-                         +IGESTOS(G)
-                         +IGHSTO(G)
-                         +IGHSTOS(G)
-                         +IGETOH(G)
-                         +IGHYRS(G);
-
-   IGKFIND(G)  = YES$(GDATA(G,'GDKVARIABL') EQ 1);
-   IGKKNOWN(G) = NOT IGKFIND(G);
-
-   IGBYPASS(G) = NO;
-   IGBYPASS(IGBPR)$GDATA(IGBPR,'GDBYPASSC') = YES;
-
-* Assignments of IGBYPASS may be changed if option bypass has a non-default value.
-$ifi not %bypass%==yes IGBYPASS(G) = NO;
 
 * (Text and assignment of technology related subsets in file dataincbb4.inc end.)
 %ONOFFDATALISTING%
@@ -295,7 +174,7 @@ SET AGKN(AAA,GGG)   'Areas for possible location of new technologies'   %semisla
 $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
-                AGKN(AAA,GGG)=0; !! TODO: here? 
+                AGKN(AAA,GGG)=0; !! TODO: here?
 SET Y(YYY)    'Years in the simulation'   %semislash%
 $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
 $if not EXIST '../data/Y.inc' $INCLUDE '../../base/data/Y.inc';

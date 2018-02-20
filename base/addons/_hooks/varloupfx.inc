@@ -2,5 +2,7 @@
 
 $ifi %dflexquant%==yes          $include "../../base/addons/demandflexquant/dflexquant_varloupfx.inc";
 
+$ontext
+*todo
 $ifi not %forcedoutage%==''     $include "../../base/addons/forcedoutage/forcedoutage_code.inc";
-
+$offtext
