@@ -79,6 +79,8 @@ $ifi %combtech%==yes     put " - *** Addon combtech not implemented for addon BB
 
 $ifi %bypass%==yes       put " - *** Addon bypass not implemented for addon BB4   " /;
 
+$ifi %dflexquant%==yes            $include "../../base/addons/demandflexquant/dflexquant_hellolog.inc";
+$ifi %dflexquant%==yes            ISCALAR1 = 1;
 
 $ifi %forcedoutage%==singlehour       $include "../../base/addons/forcedoutage/forcedoutage_hellolog.inc";
 $ifi %forcedoutage%==singlehour       ISCALAR1 = 1;

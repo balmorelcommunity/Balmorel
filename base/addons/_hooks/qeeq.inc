@@ -2,7 +2,6 @@
 * Latest revision 20170419 (hr)
 
 
-
 $ifi not %bb4%==yes $goto bb4end
 
 * The following implemented only for bb4

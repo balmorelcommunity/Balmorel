@@ -92,6 +92,10 @@ $setglobal WNDSHUTDOWN
 $Setglobal FV
 *!option yes
 
+* Allow demand elasticity
+$setglobal DFLEXQUANT yes
+*!option yes
+
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of add-on modules to include.
 * Include a module by assigning   yes .
