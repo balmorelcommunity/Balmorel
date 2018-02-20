@@ -57,16 +57,16 @@ $setglobal bb1 yes
 $setglobal bb2
 *!option yes      !notif %BB1%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
-$setglobal bb3 
+$setglobal bb3
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
-$setglobal bb4  
+$setglobal bb4
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
 
 
 * During test period for BB4 make comparisons between BB4 and BB1, BB2, BB3.
 * The present implementation is for comparison of models (BB4 and one of BB1/BB2/BB3) with a single year (where results should be identical)
 * Not finished yet, but useful
-$setglobal testbb1234 
+$setglobal testbb1234
 *!option yes
 
 
@@ -81,15 +81,19 @@ $setglobal testbb1234
 * Note that some of the choices are mutually dependent.
 
 * Disable investments in electricity transmission capacity
-$setglobal NOELTRANSINV 
+$setglobal NOELTRANSINV
 *!option yes
 
 * Allow wind turbines to shut down
-$setglobal WNDSHUTDOWN 
+$setglobal WNDSHUTDOWN
 *!option yes
 
 * This variable includes addon for distric heating
 $Setglobal FV
+*!option yes
+
+* Allow demand elasticity
+$setglobal DFLEXQUANT yes
 *!option yes
 
 *-------------------------------------------------------------------------------
@@ -318,7 +322,7 @@ $setglobal INPUTDATAGDX2MDB
 
 * Merge input data with the output into the gdx file %CASEID%.gdx
 $setglobal MERGEINPUTDATA yes
-*!option yes 
+*!option yes
 
 
 * Transfer the input data in gdx format to Microsoft Excel format:
@@ -420,7 +424,7 @@ putclose fileMERGESAVEPOINTRESULTSbash;
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
-$setglobal MERGEDSAVEPOINTRESULTS2SQLITE 
+$setglobal MERGEDSAVEPOINTRESULTS2SQLITE
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
 
