@@ -50,4 +50,6 @@ $offtext
       IOF3P6 * VHYDROGEN_GH2N_T(IA,IHYDROGEN_GCH4TOH2,IS3,T) / (GDATA(IHYDROGEN_GCH4TOH2,'GDFE') ) ) * (ITAX_CO2_Y(C))))
 
 
-* Costs of the H2 storage is missing
+* Variable O&M costs of the H2 storage is missing - not defined in GDATA and
+* hence not included here. Fixed O&M and investment costs are included in
+* Balmorel.gms

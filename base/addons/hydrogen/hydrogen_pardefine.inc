@@ -16,8 +16,11 @@ PARAMETER HYDROGEN_H2TOF(GGG) 'Hydrogen to fuel factor'  %semislash%
 $if     EXIST '../data/HYDROGEN_H2TOF.inc' $INCLUDE         '../data/HYDROGEN_H2TOF.inc';
 $if not EXIST '../data/HYDROGEN_H2TOF.inc' $INCLUDE '../../base/data/HYDROGEN_H2TOF.inc';
 %semislash%
-         
+
 $onmulti
 $if     EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE         '../data/HYDROGEN_AGKN.inc';
 $if not EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE '../../base/data/HYDROGEN_AGKN.inc';
+
+$if     EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE         '../data/HYDROGEN_FDATA.inc';
+$if not EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE '../../base/data/HYDROGEN_FDATA.inc';
 $offmulti
