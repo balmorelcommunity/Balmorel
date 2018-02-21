@@ -35,7 +35,7 @@ $ifi %BB4%==yes PUT "Electricity prices are in undiscounted values." //;
 * ------------------------------------------------------------------------------------
 * If scenarios (i.e., more than base case) print scenario heading:
 * ------------------------------------------------------------------------------------
-
+                                                                                          
 * -----------------------------------------------------------------------------
 
 OEP_YRT(IY411FIRST,IY411,IR,S,T) = OMONEY*IOF1_*QEEQ.M(IY411,IR,S,T)/(IHOURSINST(S,T)*IDISCOUNTFACTOR(IY411)*IWEIGHTY(IY411));

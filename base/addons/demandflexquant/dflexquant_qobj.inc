@@ -1,0 +1,25 @@
+* File dflexquant_qobj.inc for the Balmorel model.
+* For use with addon dflexquant
+* Latest revision 20171023 (hr)
+
+
+* Changes in utility of consumers relative to electricity consumption:
+    + SUM(DEUSER, SUM((IS3,T), IHOURSINST(IS3,T) * SUM(IR,
+        SUM(DEF_D1, VDEF_T(Y,IR,DEUSER,IS3,T,DEF_D1) * IDEFP_T(IR,DEUSER,IS3,T,DEF_D1) )
+     +  SUM(DEF_D2, VDEF_T(Y,IR,DEUSER,IS3,T,DEF_D2) * IDEFP_T(IR,DEUSER,IS3,T,DEF_D2) )
+     +  SUM(DEF_D3, VDEF_T(Y,IR,DEUSER,IS3,T,DEF_D3) * IDEFP_T(IR,DEUSER,IS3,T,DEF_D3) )
+     -  SUM(DEF_U1, VDEF_T(Y,IR,DEUSER,IS3,T,DEF_U1) * IDEFP_T(IR,DEUSER,IS3,T,DEF_U1) )
+     -  SUM(DEF_U2, VDEF_T(Y,IR,DEUSER,IS3,T,DEF_U2) * IDEFP_T(IR,DEUSER,IS3,T,DEF_U2) )
+     -  SUM(DEF_U3, VDEF_T(Y,IR,DEUSER,IS3,T,DEF_U3) * IDEFP_T(IR,DEUSER,IS3,T,DEF_U3) )
+     )))
+
+* Changes in utility of consumers relative to heat consumption:
+    + SUM(DHUSER, SUM((IS3,T), IHOURSINST(IS3,T) * SUM(IA,
+        SUM(DHF_D1, VDHF_T(Y,IA,DHUSER,IS3,T,DHF_D1) * IDHFP_T(IA,DHUSER,IS3,T,DHF_D1) )
+     +  SUM(DHF_D2, VDHF_T(Y,IA,DHUSER,IS3,T,DHF_D2) * IDHFP_T(IA,DHUSER,IS3,T,DHF_D2) )
+     +  SUM(DHF_D3, VDHF_T(Y,IA,DHUSER,IS3,T,DHF_D3) * IDHFP_T(IA,DHUSER,IS3,T,DHF_D3) )
+     -  SUM(DHF_U1, VDHF_T(Y,IA,DHUSER,IS3,T,DHF_U1) * IDHFP_T(IA,DHUSER,IS3,T,DHF_U1) )
+     -  SUM(DHF_U2, VDHF_T(Y,IA,DHUSER,IS3,T,DHF_U2) * IDHFP_T(IA,DHUSER,IS3,T,DHF_U2) )
+     -  SUM(DHF_U3, VDHF_T(Y,IA,DHUSER,IS3,T,DHF_U3) * IDHFP_T(IA,DHUSER,IS3,T,DHF_U3) )
+     )))
+

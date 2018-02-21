@@ -33,12 +33,12 @@ $ifi %BB3%==yes IF(BALBASE3.MODELSTAT GT 2, Put logfile; PUT "Skipped file prt3-
 
 *   in each region each time period (MWh)
     EDqRT(IR,S,T) =  IHOURSINST(S,T) * (IDE_T_Y(IR,S,T)
-         + SUM(DEF_U1,VDEF_T.l(IR,S,T,DEF_U1) )
+       /*  + SUM(DEF_U1,VDEF_T.l(IR,S,T,DEF_U1) )  Now DEF is addon dflexquant - not implemented. Todo
          - SUM(DEF_D1,VDEF_T.l(IR,S,T,DEF_D1) )
          + SUM(DEF_U2,VDEF_T.l(IR,S,T,DEF_U2) )
          - SUM(DEF_D2,VDEF_T.l(IR,S,T,DEF_D2) )
          + SUM(DEF_U3,VDEF_T.l(IR,S,T,DEF_U3) )
-         - SUM(DEF_D3,VDEF_T.l(IR,S,T,DEF_D3) )  );
+         - SUM(DEF_D3,VDEF_T.l(IR,S,T,DEF_D3) ) */ );
 
 *   in each region each season (MWh)
     EDqRS(IR,S) = SUM(T, EDqRT(IR,S,T));
@@ -420,12 +420,12 @@ $ifi %X3V%==yes IHOURSINST(S,T) * SUM((X3VPLACE,X3VSTEP)$X3VX(IR,X3VPLACE),VX3VE
 
 
     HDqAT(IA,S,T) = IHOURSINST(S,T) * ( IDH_T_Y(IA,S,T)
-         + SUM(DHF_U1,VDHF_T.l(IA,S,T,DHF_U1) )
+       /* + SUM(DHF_U1,VDHF_T.l(IA,S,T,DHF_U1) )  Now DEF is addon dflexquant - not implemented. Todo
          - SUM(DHF_D1,VDHF_T.l(IA,S,T,DHF_D1) )
          + SUM(DHF_U2,VDHF_T.l(IA,S,T,DHF_U2) )
          - SUM(DHF_D2,VDHF_T.l(IA,S,T,DHF_D2) )
          + SUM(DHF_U3,VDHF_T.l(IA,S,T,DHF_U3) )
-         - SUM(DHF_D3,VDHF_T.l(IA,S,T,DHF_D3) )  );
+         - SUM(DHF_D3,VDHF_T.l(IA,S,T,DHF_D3) ) */ );
 
 *   in each area each season
     HDqAS(IA,S)  = SUM(T, HDqAT(IA,S,T));

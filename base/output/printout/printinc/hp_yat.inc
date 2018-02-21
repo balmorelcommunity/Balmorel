@@ -43,6 +43,7 @@ LOOP(IY411FIRST,
 PUT "BB4 model starting year "  IY411FIRST.TL:4 "..............................:" //;
 LOOP(IY411,
 LOOP(IA,
+  LOOP(DHUSER,
   HP_YAT.LJ = 2;
   PUT  IY411.TL:9:0; PUT IA.TL:OTLWCRA;
   HP_YAT.LJ = 1;
@@ -51,7 +52,7 @@ LOOP(IA,
       FOR(ISCALAR1=1 TO (OTLWCRA-3) BY 1, PUT " ";);
       PUT S.TL:12;
       LOOP(T,
-         IF(IDH_T(IY411,IA,S,T),
+         IF(IDH_T(IY411,IA,DHUSER,S,T),
             PUT OHP_YAT(IY411FIRST,IY411,IA,S,T):12:4;
         ELSE
            PUT " '(No dem.)'";
@@ -59,6 +60,7 @@ LOOP(IA,
       )
       PUT /;
     );PUT /;
+) PUT //;
 ) PUT //;
 ) PUT //;
 );
