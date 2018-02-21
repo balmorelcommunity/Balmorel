@@ -86,6 +86,8 @@ SET ECONSETCATEGORY   'Set for econ'  !! todo
 
 * Internal set IGGGALIAS may be used in the $included data files:
 ALIAS(GGG,IGGGALIAS);
+* Internal set IGALIAS may be used in the $included data files:
+ALIAS(G,IGALIAS);
 * Set CCCRRRAAAALIAS may be used in the $included data files:
 ALIAS(CCCRRRAAA,CCCRRRAAAALIAS);
 
@@ -181,7 +183,7 @@ $ifi %bb3%==yes SET TWEEKEND(TTT)   /T121*T168/;
 
 *-------------------------------------------------------------------------------
 *----- Any internal sets for addon to be placed here: --------------------------
-
+$include "..\..\base\addons\_hooks\setdeclare.inc"
 
 *----- End: Any internal sets for addon to be placed here: ---------------------
 *-------------------------------------------------------------------------------
@@ -252,6 +254,8 @@ SET IGBYPASS(G)            "Technologies that may apply turbine bypass mode (sub
 * be using values of GDATA(G,'GDTYPE'). Check addons referenced here to maximize
 * consistency and avoid conflicts. It is encouraged to avoid using the '-' set
 * operator and instead use the '+' operator for compound assignments.
+
+
 
 *---- Unit commitment --------------------------------------------------------------
 
@@ -514,7 +518,7 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
 
    IGKENOSTO(G)     =   IGKE(G)
                          -IGESTO(G)
-                          -IGESTOS(G);
+                         -IGESTOS(G);
 
    IGNOTETOH(G)= NOT IGETOH(G);
 
@@ -543,6 +547,20 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
 * Assignments of IGBYPASS may be changed if option bypass has a non-default value.
 $ifi not %bypass%==yes IGBYPASS(G) = NO;
 
+*-------------------------------------------------------------------------------
+*----- Any internal sets assignments for addon to be placed here: --------------
+*-------------------------------------------------------------------------------
+* NOTE: When making new generation technology types. Some add-ons may already
+* be using values of GDATA(G,'GDTYPE'). Check addons referenced here to maximize
+* consistency and avoid conflicts. It is encouraged to avoid using the '-' set
+* operator and instead use the '+' operator for compound assignments.
+
+$include "..\..\base\addons\_hooks\isetdecdef.inc"
+
+
+*-------------------------------------------------------------------------------
+*----- End: Any internal sets assignments for addon to be placed here ----------
+*-------------------------------------------------------------------------------
 
 *-------------------------------------------------------------------------------
 *---- Investments: --------------------------------------------------------------
@@ -668,7 +686,7 @@ SET IAGKNY(Y,AAA,G) 'Area, technology where technology may be invested based on 
 
 
 * No investment in secondary combination technologies:
-$ifi %COMBTECH%==yes    IAGKNY(IA,IGCOMB2)=NO;
+$ifi %COMBTECH%==yes    IAGKNY(Y,IA,IGCOMB2)=NO;
 
 SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IMINUS  Violation of equation downwards/;
 * Note: When placed on the left hand side of the equation
@@ -735,7 +753,7 @@ PARAMETER IHOURSINST(SSS,T)   'Length of time segment (hours)';
 
 PARAMETER IDE_SUMST(RRR,DEUSER) 'Annual amount of nominal electricity demand (MWh)';
 PARAMETER IDH_SUMST(AAA,DHUSER) 'Annual amount of nominal heat demand (MWh)';
-PARAMETER IX3FXSUMST(RRR)       'Annual amount of fixed electricity export to third countries relative to X3FX_VAR_T and (S,T) (MWh)';
+PARAMETER IX3FXSUMST(RRR)     'Annual amount of fixed electricity export to third countries relative to X3FX_VAR_T and (S,T) (MWh)';
 
 * Sums for finding the wind and solar generated electricity generation
 * as expressed in the units of the weights and demands used in input:
@@ -987,37 +1005,37 @@ PARAMETER IORD_IY(YMODEL)    "The ord of the years Y over which the present Balb
 *  Declaration of VARIABLES:
 *-------------------------------------------------------------------------------
 
-FREE     VARIABLE VOBJ                                       "Objective function value (MMoney)"; !! Unit seems to be Money
-POSITIVE VARIABLE VGE_T(Y,AAA,G,S,T)                         "Electricity generation (MW)";
-POSITIVE VARIABLE VGH_T(Y,AAA,G,S,T)                         "Heat generation (MW)";
-POSITIVE VARIABLE VGF_T(Y,AAA,G,S,T)                         "Fuel consumption rate (), existing units"
-POSITIVE VARIABLE VX_T(Y,IRRRE,IRRRI,S,T)                    "Electricity export from region IRRRE to IRRRI (MW)";
-POSITIVE VARIABLE VGKN(Y,AAA,G)                              "New generation capacity (MW)";  !! se kommentarer til YYY  i bb4.sim Hans TODO
-POSITIVE VARIABLE VXKN(Y,IRRRE,IRRRI)                        "New electricity transmission capacity (MW)";
-POSITIVE VARIABLE VDECOM(YYY,AAA,G)                          "Decommissioned capacity(MW). NOT IN USE PRESENTLY";
-POSITIVE VARIABLE VGHYPMS_T(Y,AAA,S,T)                       "Contents of pumped hydro storage (MWh)";
-POSITIVE VARIABLE VHYRS_S(Y,AAA,S)                           "Hydro energy equivalent at the start of the season (MWh)";
-POSITIVE VARIABLE VESTOLOADT(Y,AAA,S,T)                      "Intra-seasonal electricity storage loading (MW)";
-POSITIVE VARIABLE VESTOLOADTS(Y,AAA,S,T)                     "Inter-seasonal electricity storage loading (MW)";
-POSITIVE VARIABLE VHSTOLOADT(Y,AAA,S,T)                      "Intra-seasonal heat storage loading (MW)";
-POSITIVE VARIABLE VHSTOLOADTS(Y,AAA,S,T)                     "Inter-seasonal heat storage loading (MW)";
-POSITIVE VARIABLE VESTOVOLT(Y,AAA,S,T)                       "Electricity storage contents at beginning of time segment (MWh)";
-POSITIVE VARIABLE VESTOVOLTS(Y,AAA,S,T)                      "Electricity storage contents at beginning of time segment (MWh)";
-POSITIVE VARIABLE VHSTOVOLT(Y,AAA,S,T)                       "Heat storage contents at beginning of time segment (MWh)";
-POSITIVE VARIABLE VHSTOVOLTS(Y,AAA,S,T)                      "Heat storage contents at beginning of time segment (MWh)";
-POSITIVE VARIABLE VQEEQ(Y,RRR,S,T,IPLUSMINUS)                "Feasibility in electricity balance QEEQ (IMINUS is short of el, IPLUS is surplus el) (MW)";
-POSITIVE VARIABLE VQHEQ(Y,AAA,S,T,IPLUSMINUS)                "Feasibility in heat balance QHEQ (IMINUS is short of heat, IPLUS is surplus heat) (MW)";
+FREE     VARIABLE VOBJ                             "Objective function value (MMoney)"; !! Unit seems to be Money
+POSITIVE VARIABLE VGE_T(Y,AAA,G,S,T)               "Electricity generation (MW)";
+POSITIVE VARIABLE VGH_T(Y,AAA,G,S,T)               "Heat generation (MW)";
+POSITIVE VARIABLE VGF_T(Y,AAA,G,S,T)               "Fuel consumption rate (), existing units"
+POSITIVE VARIABLE VX_T(Y,IRRRE,IRRRI,S,T)          "Electricity export from region IRRRE to IRRRI (MW)";
+POSITIVE VARIABLE VGKN(Y,AAA,G)                    "New generation capacity (MW)";  !! se kommentarer til YYY  i bb4.sim Hans TODO
+POSITIVE VARIABLE VXKN(Y,IRRRE,IRRRI)              "New electricity transmission capacity (MW)";
+POSITIVE VARIABLE VDECOM(YYY,AAA,G)                "Decommissioned capacity(MW). NOT IN USE PRESENTLY";
+POSITIVE VARIABLE VGHYPMS_T(Y,AAA,S,T)             "Contents of pumped hydro storage (MWh)";
+POSITIVE VARIABLE VHYRS_S(Y,AAA,S)                 "Hydro energy equivalent at the start of the season (MWh)";
+POSITIVE VARIABLE VESTOLOADT(Y,AAA,S,T)            "Intra-seasonal electricity storage loading (MW)";
+POSITIVE VARIABLE VESTOLOADTS(Y,AAA,S,T)           "Inter-seasonal electricity storage loading (MW)";
+POSITIVE VARIABLE VHSTOLOADT(Y,AAA,S,T)            "Intra-seasonal heat storage loading (MW)";
+POSITIVE VARIABLE VHSTOLOADTS(Y,AAA,S,T)           "Inter-seasonal heat storage loading (MW)";
+POSITIVE VARIABLE VESTOVOLT(Y,AAA,S,T)             "Electricity storage contents at beginning of time segment (MWh)";
+POSITIVE VARIABLE VESTOVOLTS(Y,AAA,S,T)            "Electricity storage contents at beginning of time segment (MWh)";
+POSITIVE VARIABLE VHSTOVOLT(Y,AAA,S,T)             "Heat storage contents at beginning of time segment (MWh)";
+POSITIVE VARIABLE VHSTOVOLTS(Y,AAA,S,T)            "Heat storage contents at beginning of time segment (MWh)";
+POSITIVE VARIABLE VQEEQ(Y,RRR,S,T,IPLUSMINUS)      "Feasibility in electricity balance QEEQ (IMINUS is short of el, IPLUS is surplus el) (MW)";
+POSITIVE VARIABLE VQHEQ(Y,AAA,S,T,IPLUSMINUS)      "Feasibility in heat balance QHEQ (IMINUS is short of heat, IPLUS is surplus heat) (MW)";
 POSITIVE VARIABLE VQESTOVOLT(Y,AAA,S,T,IPLUSMINUS)           "Feasibility in intra-seasonal electricity storage equation QESTOVOLT (MWh)";
 POSITIVE VARIABLE VQESTOVOLTS(Y,AAA,S,T,IPLUSMINUS)          "Feasibility in inter-seasonal electricity storage equation QESTOVOLTS (MWh)";
 POSITIVE VARIABLE VQHSTOVOLT(Y,AAA,S,T,IPLUSMINUS)           "Feasibility in intra-seasonal heat storage equation VQHSTOVOLT (MWh)";
 POSITIVE VARIABLE VQHSTOVOLTS(Y,AAA,S,T,IPLUSMINUS)          "Feasibility in inter-seasonal heat storage equation VQHSTOVOLTS (MWh)";
-POSITIVE VARIABLE VQHYRSSEQ(Y,AAA,S,IPLUSMINUS)              "Feasibility of QHYRSSEQ (MWh)";
-POSITIVE VARIABLE VQHYMAXG(Y,AAA,S,T,IPLUSMINUS)             "Feasibility of QHYMAXG (MW)";
-*POSITIVE VARIABLE VGE2LEVEL(Y,AAA,G,S,DAYTYPE)              "Average load of slowly regulating production (MW)";
+POSITIVE VARIABLE VQHYRSSEQ(Y,AAA,S,IPLUSMINUS)    "Feasibility of QHYRSSEQ (MWh)";
+POSITIVE VARIABLE VQHYMAXG(Y,AAA,S,T,IPLUSMINUS)   "Feasibility of QHYMAXG (MW)";
+*POSITIVE VARIABLE VGE2LEVEL(Y,AAA,G,S,DAYTYPE)    "Average load of slowly regulating production (MW)";
 * Exclusively for Balbase4:
-POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)                      "Accumulated new investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
-POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)                    "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
-POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)                "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
+POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)         "Accumulated new investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
+POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)       "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
+POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)   "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
 *$ifi %BB4%==yes   POSITIVE VARIABLE VXKACCUMGROSS(Y,IRRRE,IRRRI) "RELEVANT? Accumulated new transmission investments this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
 
 POSITIVE VARIABLE VQGKNACCUMNET(Y,AAA,G,IPLUSMINUS)          "Feasibility in electricity generation capacity accumulation (MW)";
@@ -1028,11 +1046,11 @@ POSITIVE VARIABLE VQXKNACCUMGROSS(Y,IRRRE,IRRRI,IPLUSMINUS)  "Feasibility in ele
 POSITIVE VARIABLE VQHYRSMINVOL(Y,AAA,S,IPLUSMINUS)           "Feasibility of QHYRSMINVOL (MWh)";
 POSITIVE VARIABLE VQHYRSMAXVOL(Y,AAA,S,IPLUSMINUS)           "Feasibility of QHYRSMAXVOL (MWh)";
 
-POSITIVE VARIABLE VQGKE_UP(Y,AAA,G,S,T,IPLUSMINUS)           "Feasibility in electricity generation limited by capacity (MW)";
-POSITIVE VARIABLE VQGKH_UP(Y,AAA,G,S,T,IPLUSMINUS)           "Feasibility in heat generation limited by capacity (MW)";
+POSITIVE VARIABLE VQGKE_UP(Y,AAA,G,S,T,IPLUSMINUS)            "Feasibility in electricity generation limited by capacity (MW)";
+POSITIVE VARIABLE VQGKH_UP(Y,AAA,G,S,T,IPLUSMINUS)            "Feasibility in heat generation limited by capacity (MW)";
 POSITIVE VARIABLE VQXK_UP(Y,IRRRE,IRRRI,S,T,IPLUSMINUS)      "Feasibility in electricity transmission limited by capacity (MW)";
 
-POSITIVE VARIABLE VQKFUEL(Y,CCCRRRAAA,FFF)                   "Feasibility in maximum installlable capacity (country, region and area)"
+POSITIVE VARIABLE VQKFUEL(Y,CCCRRRAAA,FFF)  "Feasibility in maximum installlable capacity (country, region and area)"
 
 
 
@@ -1295,10 +1313,10 @@ $ifi %BB2%==yes       +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSSEQ(IA,
      +SUM((IA,IS3)$(HYRSDATA(IA,"HYRSMAXVOL",IS3) AND SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),1)),(VQHYRSMAXVOL(Y,IA,IS3,'IMINUS')))
      +SUM((IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)), VQHYMAXG(Y,IA,IS3,T,'IMINUS'))
 * TODO: sammenlign med SONYstick:
-*   TODO    +SUM((IA,IGKFIND)$IAGKN(IA,IGKFIND), (VQGKNACCUMNET(Y,IA,IGKFIND,'IPLUS')+VQGKNACCUMNET(Y,IA,IGKFIND,'IMINUS')))
-     +SUM((IA,IGKFIND)$IAGKN(IA,IGKFIND), (VQGKNACCUMGROSS(Y,IA,IGKFIND,'IPLUS')+VQGKNACCUMGROSS(Y,IA,IGKFIND,'IMINUS')))
-*   TODO      +SUM((IRE,IRI), VQXKNACCUMNET(Y,IRE,IRI,'IPLUS')+VQXKNACCUMNET(Y,IRE,IRI,'IMINUS'))  Presently out, because QGKNACCUMNET(unfinished), use QGKNACCUMgross  for now
-     +SUM((IRE,IRI)$IXKN(IRE,IRI), VQXKNACCUMGROSS(Y,IRE,IRI,'IPLUS')+VQXKNACCUMGROSS(Y,IRE,IRI,'IMINUS'))
+     +SUM((IA,IGKFIND)$IAGKN(IA,IGKFIND), (VQGKNACCUMNET(Y,IA,IGKFIND,"IPLUS")+VQGKNACCUMNET(Y,IA,IGKFIND,"IMINUS"))) !!TO DO VGKNACCUMNET IS NOT FINISHED
+     +SUM((IA,IGKFIND)$IAGKN(IA,IGKFIND), (VQGKNACCUMGROSS(Y,IA,IGKFIND,"IPLUS")+VQGKNACCUMGROSS(Y,IA,IGKFIND,"IMINUS")))
+*   TODO      +SUM((IRE,IRI), VQXKNACCUMNET(Y,IRE,IRI,"IPLUS")+VQXKNACCUMNET(Y,IRE,IRI,"IMINUS"))  Presently out, because QGKNACCUMNET(unfinished), use QGKNACCUMgross  for now
+     +SUM((IRE,IRI)$IXKN(IRE,IRI), VQXKNACCUMGROSS(Y,IRE,IRI,"IPLUS")+VQXKNACCUMGROSS(Y,IRE,IRI,"IMINUS"))
 
      +SUM((IA,IGDISPATCH(IGKENOSTO),IS3,T)$IAGKN(IA,IGKENOSTO), (VQGKE_UP(Y,IA,IGKENOSTO,IS3,T,'IMINUS')+VQGKE_UP(Y,IA,IGKENOSTO,IS3,T,'IPLUS')))
      +SUM((IA,IGDISPATCH(IGKHNOSTO),IS3,T)$IAGKN(IA,IGKHNOSTO), (VQGKH_UP(Y,IA,IGKHNOSTO,IS3,T,'IMINUS')+VQGKH_UP(Y,IA,IGKHNOSTO,IS3,T,'IPLUS')))
@@ -1430,12 +1448,13 @@ $ifi     %COMBTECH%==yes  (NOT IGCOMB2(IGEXT)) ..
      )*IGKRATE(IA,IGEXT,IS3,T)
          - VGH_T(IY411,IA,IGEXT,IS3,T) * GDATA(IGEXT,'GDCV')
 
-$ifi %COMBTECH%==yes  * This will have a value in case of a combination technology. TODO
-$ifi %COMBTECH%==yes    + SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGH_T(IY411,IA,IGCOMB2,IS3,T) * GDATA(IGCOMB2,'GDCV'))$IGCOMB1(IGEXT)   TODO
+
+$ifi %COMBTECH%==yes  * This will have a value in case of a combination technology. !!TODO
+$ifi %COMBTECH%==yes    + SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGH_T(IY411,IA,IGCOMB2,IS3,T) * GDATA(IGCOMB2,"GDCV"))$IGCOMB1(IGEXT)   !!TODO
     =G=
    VGE_T(IY411,IA,IGEXT,IS3,T)
-$ifi %COMBTECH%==yes  * Add secondary generation if combination technologies are used     TODO
-$ifi %COMBTECH%==yes  + SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGE_T(IY411,IA,IGCOMB2,IS3,T))$IGCOMB1(IGEXT)  TODO
+$ifi %COMBTECH%==yes  * Add secondary generation if combination technologies are used     !!TODO
+$ifi %COMBTECH%==yes  + SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGE_T(IY411,IA,IGCOMB2,IS3,T))$IGCOMB1(IGEXT)  !!TODO
 ;
 
 
@@ -2044,8 +2063,10 @@ QWAVEDISPATCH(IY411,IA,IGWAVE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWAVE) AND IWAVESU
 *----- Any equations for addon to be placed here: ------------------------------
 *-------------------------------------------------------------------------------
 
+$include "..\..\base\addons\_hooks\eqndecdef.inc"
+
 * These add-on equations pertain to combination technologies.
-$ifi %COMBTECH%==yes $include "../../base/addons/combtech/combEQ.inc";
+*$ifi %COMBTECH%==yes $include "../../base/addons/combtech/combEQ.inc";
 
 * These add-on equations pertain to price sensitive electricity exchange with
 * third countries.
@@ -2174,10 +2195,13 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
 $ontext
 *--- Operational restrictions --------------------------------------------------
 *                               QGE2LEVEL
-
+$offtext
 
 *----- Any equations for addon to be placed here: ------------------------------
 
+$include "..\..\base\addons\_hooks\balbase4.inc"
+
+$ontext
 *--- Investment restricitions --------------------------------------------------
                                 QMAXINVESTCF
 *                               QMAXINVESTGROWTHCG
@@ -2197,7 +2221,7 @@ $offtext
 
 
 $ifi %BB4%==yes QGKNACCUMGROSS
-*$ifi %BB4%==yes QGKNACCUMNET   !! TODO
+$ifi %BB4%==yes QGKNACCUMNET   !! TODO
 $ifi %BB4%==yes QXKNACCUMNET
 *--- Capacity constraints on generation (MW) -----------------------------------
 $ifi %BB4%==yes    QGKE_UP
@@ -2229,8 +2253,7 @@ QOBJ.SCALE=IOF1000000;
 *----- End of definition of models ---------------------------------------------
 *-------------------------------------------------------------------------------
 
-
-$ifi %COMBTECH%==yes  $INCLUDE  "../../base/addons/combtech/comberr2.inc";
+$ifi %COMBTECH%==yes  $INCLUDE  "../../base/addons/combtech/combtech_error2.inc";
 $ifi %BB4%==yes       $INCLUDE  "../../base/addons/BB4/errorBB4.inc";
 
 * The following file contains definitions of a number of temporary parameters

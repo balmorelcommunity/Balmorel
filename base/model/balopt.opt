@@ -59,7 +59,7 @@ $setglobal bb2
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
 $setglobal bb3 yes
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
-$setglobal bb4
+$setglobal bb4 yes
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
 
 
@@ -106,7 +106,7 @@ $setglobal DFLEXQUANT
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH
+$setglobal COMBTECH  yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
