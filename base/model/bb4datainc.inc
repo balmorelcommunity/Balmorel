@@ -243,14 +243,6 @@ $if not EXIST '../data/X3VX.inc' $INCLUDE      '../../base/data/X3VX.inc';
 $label X3V_label1
 
 
-*$ifi %COMBTECH%==yes
-*$if     EXIST '../data/ggcomb.inc' $INCLUDE         '../data/ggcomb.inc';
-*$ifi %COMBTECH%==yes
-*$if not EXIST '../data/ggcomb.inc' $INCLUDE '../../base/data/ggcomb.inc';
-
-*$ifi %COMBTECH%==yes   $include '../../base/addons/combtech/combGassign.inc';
-
-
 * Addon AGKNDISC: discrete size investment in technologies:
 $ifi not %AGKNDISC%==yes  $goto label_AGKNDISC1
 
@@ -840,10 +832,6 @@ PARAMETER HYPPROFILS(AAA,SSS)                      'Hydro with storage seasonal 
 $if     EXIST '../data/HYPPROFILS.inc' $INCLUDE      '../data/HYPPROFILS.inc';
 $if not EXIST '../data/HYPPROFILS.inc' $INCLUDE '../../base/data/HYPPROFILS.inc';
 %semislash%;
-
-
-$ifi %COMBTECH%==yes $if     EXIST '../data/GGCOMB.inc' $INCLUDE         '../data/GGCOMB.inc';
-$ifi %COMBTECH%==yes $if not EXIST '../data/GGCOMB.inc' $INCLUDE '../../base/data/GGCOMB.inc';
 
 
 $ifi %bb3%==yes WEIGHT_T(T)=1;
