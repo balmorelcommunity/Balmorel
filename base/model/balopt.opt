@@ -57,7 +57,7 @@ $setglobal bb1
 $setglobal bb2
 *!option yes      !notif %BB1%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
-$setglobal bb3
+$setglobal bb3 yes
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
 $setglobal bb4 yes
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
@@ -90,6 +90,10 @@ $setglobal WNDSHUTDOWN
 
 * This variable includes addon for distric heating
 $Setglobal FV
+*!option yes
+
+* Allow demand elasticity
+$setglobal DFLEXQUANT
 *!option yes
 
 *-------------------------------------------------------------------------------

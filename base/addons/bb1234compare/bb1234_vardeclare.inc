@@ -8,8 +8,8 @@ POSITIVE VARIABLE IBB1234_VX_T(Y,IRRRE,IRRRI,S,T)            "Electricity export
 POSITIVE VARIABLE IBB1234_VGKN(Y,AAA,G)                      "New generation capacity (MW)";  !! se kommentarer til YYY  i bb4.sim Hans TODO
 POSITIVE VARIABLE IBB1234_VXKN(Y,IRRRE,IRRRI)                "New electricity transmission capacity (MW)";
 POSITIVE VARIABLE IBB1234_VDECOM(YYY,AAA,G)                  "Decommissioned capacity(MW). NOT IN USE PRESENTLY";
-POSITIVE VARIABLE IBB1234_VDEF_T(Y,RRR,S,T,DEF)              "Flexible electricity demands (MW)";
-POSITIVE VARIABLE IBB1234_VDHF_T(Y,AAA,S,T,DHF)              "Flexible heat demands (MW)";
+$ifi %dflexquant%==yes POSITIVE VARIABLE IBB1234_VDEF_T(Y,RRR,DEUSER,S,T,DEF)  "Flexible electricity demands (MW)";
+$ifi %dflexquant%==yes POSITIVE VARIABLE IBB1234_VDHF_T(Y,AAA,DHUSER,S,T,DHF)  "Flexible heat demands (MW)";
 POSITIVE VARIABLE IBB1234_VGHYPMS_T(Y,AAA,S,T)               "Contents of pumped hydro storage (MWh)";
 POSITIVE VARIABLE IBB1234_VHYRS_S(Y,AAA,S)                   "Hydro energy equivalent at the start of the season (MWh)";
 POSITIVE VARIABLE IBB1234_VESTOLOADT(Y,AAA,S,T)              "Intra-seasonal electricity storage loading (MW)";

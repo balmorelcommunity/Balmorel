@@ -56,7 +56,7 @@ SCALAR OTLWCRA  "                                " /32/; !! Specific for SET CCC
 SCALAR OTLWY    "    " /4/;                              !! Specific for SET YYY and Y. It is assumed that any element in YYY is represented by four characters (e.g. 2050).
 SCALAR OTLWS    "    " /3/;                              !! Specific for SET SSS and S. It is assumed that any element in SSS is represented by four characters (e.g. S52).
 SCALAR OTLWT    "    " /4/;                              !! Specific for SET TTT and T. It is assumed that any element in TTT is represented by four characters (e.g. T168).
-SCALAR OTLWG    "                                " /32/; !! Specific for SET GGG and G. The value is checked below.
+SCALAR OTLWG    "                                                                " /64/; !! Specific for SET GGG and G. The value is checked below.
 * Check consistency between the required width and the length of the (all ' ') text string:
 ISCALAR1 = SMAX(GGG, CARD(GGG.TL));                      !! Find the required width.
 IF((ISCALAR1 GT OTLWG),   DISPLAY INFODISPLAY, "The length of an element in GGG is larger than assumed by OTLWG, this will prevent nice printfile output. Please ensure consistency in file base\printout\printinc\print1.inc"; );
@@ -227,7 +227,7 @@ PUT /"Overview of potential printout files with indication of content:"//;
 * and the descriptions must be consistent with the contents of the corresponding files.
 $if %BB4%==yes $goto doBB4
 
-PUT "bal_1.out       "'"Energy balance by year and country"'/;
+PUT "bal_1.out       "'"Energy balance by year and country"'/;                                    !!  TODO: incomplete list (?)
 PUT "eg_cy.out       "'"Annual net electricity generation, old and new technologies"'/;
 PUT "eg_gfcy.out     "'"Annual net electricity generation"'/;
 PUT "eg_gat.out      "'"Electricity production on units during each time segment"'/;
@@ -266,40 +266,55 @@ PUT "dfp_calib.out   "'"Used for calibration of demand functions for electricty 
 
 $label doBB4
 $if not %BB4%==yes $goto doneBB4
+
+
+* This is a bad place, but ...
+PARAMETER IDE_T(Y,RRR,DEUSER,S,T) "Nominal hourly electricity demand (MW)";
+PARAMETER IDH_T(Y,AAA,DHUSER,S,T) "Nominal hourly heat demand (MW)";
+IDE_T(Y,IR,DEUSER,S,T) = ((DE(Y,IR,DEUSER) * DE_VAR_T(IR,DEUSER,S,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0);
+IDH_T(Y,IA,DHUSER,S,T) = ((DH(Y,IA,DHUSER) * DH_VAR_T(IA,DHUSER,S,T)) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0);
+* Testing an idea:
+PARAMETER DE__YCU(Y,C,DEUSER) "Electricicy consumption by Year, Country and user group (Mwh)";
+PARAMETER EP__YRT(Y,RRR,S,T)  "Electricicy prices by Year, Region and (S,T) (Money/Mwh)";
+
+
 PUT  "Doing BB4, printing for this model is not properly developed yet, the following will be unconditionally printed": /;
-PUT  "ep_yrt.out     "'"Electricicy prices by Regions and (S,T) (Money/Mwh)"' /;
-PUT  "ep_yr.out      "'"Electricicy prices by Regions and year (Money/Mwh)"'  /;
-PUT  "ep_yc.out      "'"Electricicy prices by Countries and year (Money/Mwh)"'  /;
-PUT  "ep_yna.out      "'"Electricicy prices by aggregated countries and year (Money/Mwh)"'  /;
+PUT  "ep_yrt.out     "'"Electricicy prices by Year, Regions and (S,T) (Money/Mwh)"' /;
+PUT  "ep_yr.out      "'"Electricicy prices by Year, Regions and year (Money/Mwh)"'  /;
+PUT  "ep_yc.out      "'"Electricicy prices by Year, Countries and year (Money/Mwh)"'  /;
+PUT  "ep_yna.out     "'"Electricicy prices by Year, aggregated countries and year (Money/Mwh)"'  /;
 
 PUT  "aep_yna.out      "'"Averaged electricicy prices by aggregated countries and year (Money/Mwh)"'  /;
 
 
-PUT  "hp_yat.out     "'"Heat prices by Regions and (S,T) (Money/Mwh)"' /;
-PUT  "hp_ya.out      "'"Heat prices by Regions and year (Money/Mwh)"'  /;
-PUT  "hp_yc.out      "'"Heat prices by Countries and year (Money/Mwh)"'  /;
-PUT  "hp_yna.out      "'"Heat prices by aggregated countries and year (Money/Mwh)"'  /;
+PUT  "hp_yat.out     "'"Heat prices by Year, Region and (S,T) (Money/Mwh)"' /;
+PUT  "hp_ya.out      "'"Heat prices by Year and Region (Money/Mwh)"'  /;
+PUT  "hp_yc.out      "'"Heat prices by Year and Country (Money/Mwh)"'  /;
+PUT  "hp_yna.out     "'"Heat prices by Year, aggregated countries (Money/Mwh)"'  /;  !! TODO check text
 
 PUT  "gkn_yag.out    "'"Endogenous investments for each Area and technology, all years in all BB4 models"' /;
-PUT  "gkn_ynaf.out    "'"Endogenous investments for aggregated countries and fuel type, all years in all BB4 models"' /;
+PUT  "gkn_ynaf.out   "'"Endogenous investments for aggregated countries and fuel type, all years in all BB4 models"' /;
 PUT  "gk_yag.out     "'"Capacity for each Area and technology, all years in all BB4 models"' /;
 PUT  "gk_ycg.out     "'"Capacity for each Country and technology, all years in all BB4 models"' /;
-PUT  "gk_ynag.out     "'"Capacity for aggregated countries and technology, all years in all BB4 models"' /;
-PUT  "gk_ynaf.out     "'"Capacity for aggregated countries and fuel, all years in all BB4 models"' /;
+PUT  "gk_ynag.out    "'"Capacity for aggregated countries and technology, all years in all BB4 models"' /;
+PUT  "gk_ynaf.out    "'"Capacity for aggregated countries and fuel, all years in all BB4 models"' /;
 
-PUT  "eg_yat.out     "'"Electricicy generations by Areas and (S,T) (GWh)"'   /;
-PUT  "eg_yr.out      "'"Electricicy generations by Regions (GWh)"'   /;
-PUT  "eg_yc.out      "'"Electricicy generations by Countries (GWh)"'   /;
-PUT  "eg_yna.out     "'"Electricicy generations all countries (GWh)"'   /;
-PUT  "eg_ynaf.out     "'"Electricicy generations all countries by fuel(GWh)"'   /;
+PUT  "eg_yat.out     "'"Electricicy generations by Year, Areas and (S,T) (GWh)"'   /;
+PUT  "eg_yr.out      "'"Electricicy generations by Year, Regions (GWh)"'   /;
+PUT  "eg_yc.out      "'"Electricicy generations by Year, Countries (GWh)"'   /;
+PUT  "eg_yna.out     "'"Electricicy generations by Year, countries (GWh)"'   /;
+PUT  "eg_ynaf.out    "'"Electricicy generations by Year, countries by fuel(GWh)"'   /;
 
-PUT  "mco2_yc.out     "'"Annual CO2 emissions by country"'   /;
-PUT  "mco2_yna.out    "'"Total Annual CO2 emissions(aggregated)"' /;
-PUT  "mpco2_yc.out     "'" CO2 shadow price by country"'      /;
-PUT  "mpco2_yna.out     "'" CO2 shadow price (aggregated)"'      /;
+PUT  "mco2_yc.out     "'"Annual CO2 emissions by country"'   /;                  !! TODO text
+PUT  "mco2_yna.out    "'"Total Annual CO2 emissions(aggregated)"' /;             !! TODO text
+PUT  "mpco2_yc.out    "'" CO2 shadow price by country"'      /;                  !! TODO text
+PUT  "mpco2_yna.out   "'" CO2 shadow price (aggregated)"'      /;               !! TODO text
 
-PUT  "de_yc.out     "'" Electricity demand by country"'      /;
-PUT  "de_yna.out     "'" Electricity demand by aggregated country"'      /;
+PUT  "de_yc.out       "'" Electricity demand by Year and country"'      /;
+PUT  "de_yna.out      "'" Electricity demand by aggregated country"'      /;    !! TODO text
+
+$ifi %DEFPCALIB%==yes  PUT "dfp_calib.out   "'"Used for calibration of demand functions for electricty and heat"'/;
+
 
 
 $label doneBB4
