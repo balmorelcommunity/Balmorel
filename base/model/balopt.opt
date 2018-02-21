@@ -51,13 +51,13 @@ $setglobal CASEID BASE
 * Exactly one of the following Setgbobals must be assigned yes.
 *
 * bb1: use model BALBASE1: optimisation simultaneuosly for all (S,T) in a year, exogenous investments.
-$setglobal bb1 yes
+$setglobal bb1
 *!option yes      !notif %BB2%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb2: use model BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
 $setglobal bb2
 *!option yes      !notif %BB1%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
-$setglobal bb3
+$setglobal bb3 yes
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
 $setglobal bb4
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
