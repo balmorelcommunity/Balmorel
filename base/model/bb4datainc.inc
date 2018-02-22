@@ -13,7 +13,9 @@
 * - Acronyms: acronyms for generation technologies are found in Balmorel.gms
 *             acronyms for fuels are found in the data file FFF.inc
 * - Options (also for addon) are used with $ifi statements and option names
-* - The three internal IDs: ICA, IR and IA are assigned in this file, as the only ones.
+* - The IDs for geography internal sets ICA, IR and IA are assigned in this file
+* - The IDs for technology internal sets (IGCND etc.) are assigned in this file
+
 
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%
 * (see file balgams.opt):
@@ -57,8 +59,9 @@ SET C(CCC)    'Countries in the simulation'  %semislash%
 $if     EXIST '../data/C.inc' $INCLUDE         '../data/C.inc';
 $if not EXIST '../data/C.inc' $INCLUDE '../../base/data/C.inc';
 
+* ------------------------------------------------------------------------------
 %ONOFFCODELISTING%
-* (Text and assignment in file dataincBB4.inc:)
+* (Text and assignment of geography related subsets in file dataincBB4.inc:)
 * The three internal IDs: IDs ICA, IR and IA are assigned as early as possible, based on available data.
 * This permits application of ICA, IR and IA rather than RRR and AAA
 * in assignments in all remaining data files (to limit calculation time and storage use).
@@ -69,15 +72,14 @@ $if not EXIST '../data/C.inc' $INCLUDE '../../base/data/C.inc';
 ICA(CCC,AAA) = YES$(SUM(RRR$(RRRAAA(RRR,AAA) AND CCCRRR(CCC,RRR)),1) GT 0);
 IR(RRR) = YES$(SUM(C,CCCRRR(C,RRR)));
 IA(AAA) = YES$(SUM(C,ICA(C,AAA)));
-* (Text and assignment in file dataincBB4.inc end.)
+* (Text and assignment of geography related subsets in file dataincBB4.inc end.)
 %ONOFFDATALISTING%
+* ------------------------------------------------------------------------------
 
+* ------------------------------------------------------------------------------
 * No need to continue if there are errors
-$if not errorfree $abort "Balmorel processing aborted after inclusion of file dataincBB4.inc due to geography data errors";
-
-
-
-* TESTING END ------------------------------------------------------------------
+$if not errorfree $abort "Balmorel processing aborted after inclusion of file dataincBB4.inc due to geography related data errors";
+* ------------------------------------------------------------------------------
 
 
 SET YYY                'All years'  %semislash%
@@ -95,14 +97,14 @@ $if     EXIST '../data/TTT.inc' $INCLUDE      '../data/TTT.inc';
 $if not EXIST '../data/TTT.inc' $INCLUDE '../../base/data/TTT.inc';
 %semislash%;
 
-SET GGG                'All generation technologies'   %semislash%
-$if     EXIST '../data/GGG.inc' $INCLUDE      '../data/GGG.inc';
-$if not EXIST '../data/GGG.inc' $INCLUDE '../../base/data/GGG.inc';
+SET DEUSER             'Electricity demand user groups. Set must include element RESE for holding demand not included in any other user group'  %semislash%
+$if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DEUSER.inc';
+$if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DEUSER.inc';
 %semislash%;
 
-SET GDATASET           'Generation technology data' %semislash%
-$if     EXIST '../data/GDATASET.inc' $INCLUDE      '../data/GDATASET.inc';
-$if not EXIST '../data/GDATASET.inc' $INCLUDE '../../base/data/GDATASET.inc';
+SET DHUSER             'Heat demand user groups. Set must include element RESH for holding demand not included in any other user group'  %semislash%
+$if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DHUSER.inc';
+$if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DHUSER.inc';
 %semislash%;
 
 SET FFF                'Fuels'  %semislash%
@@ -115,6 +117,44 @@ $if     EXIST '../data/FDATASET.inc' $INCLUDE      '../data/FDATASET.inc';
 $if not EXIST '../data/FDATASET.inc' $INCLUDE '../../base/data/FDATASET.inc';
 %semislash%;
 
+PARAMETER FDATA(FFF,FDATASET)    'Fuel specific values'  %semislash%
+$if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
+$if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
+%semislash%;
+
+SET GGG                'All generation technologies'   %semislash%
+$if     EXIST '../data/GGG.inc' $INCLUDE      '../data/GGG.inc';
+$if not EXIST '../data/GGG.inc' $INCLUDE '../../base/data/GGG.inc';
+%semislash%;
+
+SET GDATASET           'Generation technology data' %semislash%
+$if     EXIST '../data/GDATASET.inc' $INCLUDE      '../data/GDATASET.inc';
+$if not EXIST '../data/GDATASET.inc' $INCLUDE '../../base/data/GDATASET.inc';
+%semislash%;
+
+SET G(GGG)    'Generation technologies in the simulation'  %semislash%
+$if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
+$if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
+%semislash%;
+
+
+PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
+$if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
+$if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
+
+* ------------------------------------------------------------------------------
+%ONOFFCODELISTING%
+
+* (Text and assignment of technology related subsets in file dataincbb4.inc end.)
+%ONOFFDATALISTING%
+* ------------------------------------------------------------------------------
+
+* ------------------------------------------------------------------------------
+* No need to continue if there are errors
+$if not errorfree $abort "Balmorel processing aborted after inclusion of file dataincBB4.inc due to technology related data errors";
+* ------------------------------------------------------------------------------
+
+
 SET HYRSDATASET  'Characteristics of hydro reservoirs' %semislash%
 $if     EXIST '../data/HYRSDATASET.inc' $INCLUDE      '../data/HYRSDATASET.inc';
 $if not EXIST '../data/HYRSDATASET.inc' $INCLUDE '../../base/data/HYRSDATASET.inc';
@@ -125,91 +165,16 @@ $if     EXIST '../data/DF_QP.inc' $INCLUDE      '../data/DF_QP.inc';
 $if not EXIST '../data/DF_QP.inc' $INCLUDE '../../base/data/DF_QP.inc';
 %semislash%;
 
-SET DEF  'Steps in elastic electricity demand'  %semislash%
-$if     EXIST '../data/DEF.inc' $INCLUDE      '../data/DEF.inc';
-$if not EXIST '../data/DEF.inc' $INCLUDE '../../base/data/DEF.inc';
-%semislash%;
-
-SET DEF_D1(DEF)   'Downwards steps in elastic el. demand, relative data format' %semislash%
-$if     EXIST '../data/DEF_D1.inc' $INCLUDE      '../data/DEF_D1.inc';
-$if not EXIST '../data/DEF_D1.inc' $INCLUDE '../../base/data/DEF_D1.inc';
-%semislash%;
-
-SET DEF_U1(DEF)   'Upwards steps in elastic el. demand, relative data format' %semislash%
-$if     EXIST '../data/DEF_U1.inc' $INCLUDE      '../data/DEF_U1.inc';
-$if not EXIST '../data/DEF_U1.inc' $INCLUDE '../../base/data/DEF_U1.inc';
-%semislash%;
-
-SET DEF_D2(DEF)   'Downwards steps in elastic el. demand, absolute Money and MW-incremental data format'%semislash%
-$if     EXIST '../data/DEF_D2.inc' $INCLUDE      '../data/DEF_D2.inc';
-$if not EXIST '../data/DEF_D2.inc' $INCLUDE '../../base/data/DEF_D2.inc';
-%semislash%;
-
-SET DEF_U2(DEF)   'Upwards steps in elastic el. demand, absolute Money and MW-incremental data format' %semislash%
-$if     EXIST '../data/DEF_U2.inc' $INCLUDE      '../data/DEF_U2.inc';
-$if not EXIST '../data/DEF_U2.inc' $INCLUDE '../../base/data/DEF_U2.inc';
-%semislash%;
-
-SET DEF_D3(DEF)   'Downwards steps in elastic el. demand, absolute Money and fraction of nominal demand data format' %semislash%
-$if     EXIST '../data/DEF_D3.inc' $INCLUDE      '../data/DEF_D3.inc';
-$if not EXIST '../data/DEF_D3.inc' $INCLUDE '../../base/data/DEF_D3.inc';
-%semislash%;
-
-SET DEF_U3(DEF)   'Upwards steps in elastic el. demand, absolute Money and fraction of nominal demand data format' %semislash%
-$if     EXIST '../data/DEF_U3.inc' $INCLUDE      '../data/DEF_U3.inc';
-$if not EXIST '../data/DEF_U3.inc' $INCLUDE '../../base/data/DEF_U3.inc';
-%semislash%;
-
-SET DHF  'Steps in elastic heat demand' %semislash%
-$if     EXIST '../data/DHF.inc' $INCLUDE      '../data/DHF.inc';
-$if not EXIST '../data/DHF.inc' $INCLUDE '../../base/data/DHF.inc';
-%semislash%;
-
-SET DHF_D1(DHF)    'Downwards steps in elastic heat demand, relative data format' %semislash%
-$if     EXIST '../data/DHF_D1.inc' $INCLUDE      '../data/DHF_D1.inc';
-$if not EXIST '../data/DHF_D1.inc' $INCLUDE '../../base/data/DHF_D1.inc';
-%semislash%;
-
-SET DHF_U1(DHF)    'Upwards steps in elastic heat demand, relative data format' %semislash%
-$if     EXIST '../data/DHF_U1.inc' $INCLUDE      '../data/DHF_U1.inc';
-$if not EXIST '../data/DHF_U1.inc' $INCLUDE '../../base/data/DHF_U1.inc';
-%semislash%;
-
-SET DHF_D2(DHF)    'Downwards steps in elastic heat demand, absolute Money and MW-incremental data format' %semislash%
-$if     EXIST '../data/DHF_D2.inc' $INCLUDE      '../data/DHF_D2.inc';
-$if not EXIST '../data/DHF_D2.inc' $INCLUDE '../../base/data/DHF_D2.inc';
-%semislash%;
-
-SET DHF_U2(DHF)    'Upwards steps in elastic heat demand, absolute Money and MW-incremental data format' %semislash%
-$if     EXIST '../data/DHF_U2.inc' $INCLUDE      '../data/DHF_U2.inc';
-$if not EXIST '../data/DHF_U2.inc' $INCLUDE '../../base/data/DHF_U2.inc';
-%semislash%;
-
-SET DHF_D3(DHF)    'Downwards steps in elastic heat demand, absolute Money and fraction of nominal demand data format' %semislash%
-$if     EXIST '../data/DHF_D3.inc' $INCLUDE      '../data/DHF_D3.inc';
-$if not EXIST '../data/DHF_D3.inc' $INCLUDE '../../base/data/DHF_D3.inc';
-%semislash%;
-
-SET DHF_U3(DHF)    'Upwards steps in elastic heat demand, absolute Money and fraction of nominal demand data format' %semislash%
-$if     EXIST '../data/DHF_U3.inc' $INCLUDE      '../data/DHF_U3.inc';
-$if not EXIST '../data/DHF_U3.inc' $INCLUDE '../../base/data/DHF_U3.inc';
-%semislash%;
-
 SET MPOLSET  'Emission and other policy data'   %semislash%
 $if     EXIST '../data/MPOLSET.inc' $INCLUDE      '../data/MPOLSET.inc';
 $if not EXIST '../data/MPOLSET.inc' $INCLUDE '../../base/data/MPOLSET.inc';
-%semislash%;
-
-SET G(GGG)    'Generation technologies in the simulation'  %semislash%
-$if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
-$if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 %semislash%;
 
 SET AGKN(AAA,GGG)   'Areas for possible location of new technologies'   %semislash%
 $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
-
+                AGKN(AAA,GGG)=0; !! TODO: here?
 SET Y(YYY)    'Years in the simulation'   %semislash%
 $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
 $if not EXIST '../data/Y.inc' $INCLUDE '../../base/data/Y.inc';
@@ -250,9 +215,6 @@ $if     EXIST '../data/ECONSETCATEGORY.inc' $INCLUDE         '../data/ECONSETCAT
 $if not EXIST '../data/ECONSETCATEGORY.inc' $INCLUDE '../../base/data/ECONSETCATEGORY.inc';
 %semislash%                            */
 
-PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
-$if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
-$if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 
 
 
@@ -281,14 +243,6 @@ $if not EXIST '../data/X3VX.inc' $INCLUDE      '../../base/data/X3VX.inc';
 $label X3V_label1
 
 
-$ifi %COMBTECH%==yes
-$if     EXIST '../data/ggcomb.inc' $INCLUDE         '../data/ggcomb.inc';
-$ifi %COMBTECH%==yes
-$if not EXIST '../data/ggcomb.inc' $INCLUDE '../../base/data/ggcomb.inc';
-
-$ifi %COMBTECH%==yes   $include '../../base/addons/combtech/combGassign.inc';
-
-
 * Addon AGKNDISC: discrete size investment in technologies:
 $ifi not %AGKNDISC%==yes  $goto label_AGKNDISC1
 
@@ -315,21 +269,114 @@ $if not EXIST '../data/AGKNDISCDATA.inc' $INCLUDE '../../base/data/AGKNDISCDATA.
 $label label_AGKNDISC1
 * End: Addon AGKNDISC: discrete size investment in technologies.
 
+$ifi not %dflexquant%==yes $goto dflexquantend
+* ------------------------------------------------------------------------------
+SET DEF  'Steps in elastic electricity demand'  %semislash%
+$if     EXIST '../data/DEF.inc' $INCLUDE      '../data/DEF.inc';
+$if not EXIST '../data/DEF.inc' $INCLUDE '../../base/data/DEF.inc';
+%semislash%;
+
+SET DEF_D1(DEF)   'Downwards steps in elastic el. demand, relative data format' %semislash%
+$if     EXIST '../data/DEF_D1.inc' $INCLUDE      '../data/DEF_D1.inc';
+$if not EXIST '../data/DEF_D1.inc' $INCLUDE '../../base/data/DEF_D1.inc';
+%semislash%;
+
+SET DEF_U1(DEF)   'Upwards steps in elastic el. demand, relative data format' %semislash%
+$if     EXIST '../data/DEF_U1.inc' $INCLUDE      '../data/DEF_U1.inc';
+$if not EXIST '../data/DEF_U1.inc' $INCLUDE '../../base/data/DEF_U1.inc';
+%semislash%;
+
+SET DEF_D2(DEF)   'Downwards steps in elastic el. demand, absolute Money and MW-incremental data format'%semislash%
+$if     EXIST '../data/DEF_D2.inc' $INCLUDE      '../data/DEF_D2.inc';
+$if not EXIST '../data/DEF_D2.inc' $INCLUDE '../../base/data/DEF_D2.inc';
+%semislash%;
+
+SET DEF_U2(DEF)   'Upwards steps in elastic el. demand, absolute Money and MW-incremental data format' %semislash%
+$if     EXIST '../data/DEF_U2.inc' $INCLUDE      '../data/DEF_U2.inc';
+$if not EXIST '../data/DEF_U2.inc' $INCLUDE '../../base/data/DEF_U2.inc';
+%semislash%;
+
+SET DEF_D3(DEF)   'Downwards steps in elastic el. demand, absolute Money and fraction of nominal demand data format' %semislash%
+$if     EXIST '../data/DEF_D3.inc' $INCLUDE      '../data/DEF_D3.inc';
+$if not EXIST '../data/DEF_D3.inc' $INCLUDE '../../base/data/DEF_D3.inc';
+%semislash%;
+
+SET DEF_U3(DEF)   'Upwards steps in elastic el. demand, absolute Money and fraction of nominal demand data format' %semislash%
+$if     EXIST '../data/DEF_U3.inc' $INCLUDE      '../data/DEF_U3.inc';
+$if not EXIST '../data/DEF_U3.inc' $INCLUDE '../../base/data/DEF_U3.inc';
+%semislash%;
+
+PARAMETER DEF_STEPS(RRR,DEUSER,SSS,TTT,DF_QP,DEF)         'Elastic electricity demands'   %semislash%
+$if     EXIST '../data/DEF_STEPS.inc' $INCLUDE      '../data/DEF_STEPS.inc';
+$if not EXIST '../data/DEF_STEPS.inc' $INCLUDE '../../base/data/DEF_STEPS.inc';
+%semislash%;
+
+SET DHF  'Steps in elastic heat demand' %semislash%
+$if     EXIST '../data/DHF.inc' $INCLUDE      '../data/DHF.inc';
+$if not EXIST '../data/DHF.inc' $INCLUDE '../../base/data/DHF.inc';
+%semislash%;
+
+SET DHF_D1(DHF)    'Downwards steps in elastic heat demand, relative data format' %semislash%
+$if     EXIST '../data/DHF_D1.inc' $INCLUDE      '../data/DHF_D1.inc';
+$if not EXIST '../data/DHF_D1.inc' $INCLUDE '../../base/data/DHF_D1.inc';
+%semislash%;
+
+SET DHF_U1(DHF)    'Upwards steps in elastic heat demand, relative data format' %semislash%
+$if     EXIST '../data/DHF_U1.inc' $INCLUDE      '../data/DHF_U1.inc';
+$if not EXIST '../data/DHF_U1.inc' $INCLUDE '../../base/data/DHF_U1.inc';
+%semislash%;
+
+SET DHF_D2(DHF)    'Downwards steps in elastic heat demand, absolute Money and MW-incremental data format' %semislash%
+$if     EXIST '../data/DHF_D2.inc' $INCLUDE      '../data/DHF_D2.inc';
+$if not EXIST '../data/DHF_D2.inc' $INCLUDE '../../base/data/DHF_D2.inc';
+%semislash%;
+
+SET DHF_U2(DHF)    'Upwards steps in elastic heat demand, absolute Money and MW-incremental data format' %semislash%
+$if     EXIST '../data/DHF_U2.inc' $INCLUDE      '../data/DHF_U2.inc';
+$if not EXIST '../data/DHF_U2.inc' $INCLUDE '../../base/data/DHF_U2.inc';
+%semislash%;
+
+SET DHF_D3(DHF)    'Downwards steps in elastic heat demand, absolute Money and fraction of nominal demand data format' %semislash%
+$if     EXIST '../data/DHF_D3.inc' $INCLUDE      '../data/DHF_D3.inc';
+$if not EXIST '../data/DHF_D3.inc' $INCLUDE '../../base/data/DHF_D3.inc';
+%semislash%;
+
+SET DHF_U3(DHF)    'Upwards steps in elastic heat demand, absolute Money and fraction of nominal demand data format' %semislash%
+$if     EXIST '../data/DHF_U3.inc' $INCLUDE      '../data/DHF_U3.inc';
+$if not EXIST '../data/DHF_U3.inc' $INCLUDE '../../base/data/DHF_U3.inc';
+%semislash%;
+
+PARAMETER DHF_STEPS(AAA,DHUSER,SSS,TTT,DF_QP,DHF)         'Elastic heat demands'   %semislash%
+$if     EXIST '../data/DHF_STEPS.inc' $INCLUDE      '../data/DHF_STEPS.inc';
+$if not EXIST '../data/DHF_STEPS.inc' $INCLUDE '../../base/data/DHF_STEPS.inc';
+%semislash%;
+* ------------------------------------------------------------------------------
+$label dflexquantend
+
+$ifi %DEFPCALIB%==yes PARAMETER DEFP_CALIB(RRR,SSS,TTT)                  'Calibrate the price side of electricity demand'   %semislash%
+$ifi %DEFPCALIB%==yes $if     EXIST '../data/DEFP_CALIB.inc' $INCLUDE      '../data/DEFP_CALIB.inc';
+$ifi %DEFPCALIB%==yes $if not EXIST '../data/DEFP_CALIB.inc' $INCLUDE '../../base/data/DEFP_CALIB.inc';
+$ifi %DEFPCALIB%==yes %semislash%;
+
+$ifi %DHFPCALIB%==yes PARAMETER DHFP_CALIB(AAA,SSS,TTT)                  'Calibrate the price side of heat demand'   %semislash%
+$ifi %DHFPCALIB%==yes $if     EXIST '../data/DHFP_CALIB.inc' $INCLUDE      '../data/DHFP_CALIB.inc';
+$ifi %DHFPCALIB%==yes $if not EXIST '../data/DHFP_CALIB.inc' $INCLUDE '../../base/data/DHFP_CALIB.inc';
+$ifi %DHFPCALIB%==yes %semislash%;
+
+*-------------------------------------------------------------------------------
+*--- End: Any declarations and definitions of sets, aliases and acronyms for addon
+*-------------------------------------------------------------------------------
+
+
 
 PARAMETER GKFX(YYY,AAA,GGG)    'Capacity of existing generation technologies (MW)' %semislash%
 $if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
 $if not EXIST '../data/GKFX.inc' $INCLUDE '../../base/data/GKFX.inc';
 %semislash%;
 
-
 PARAMETER YVALUE(YYY)   'Numerical value of the years labels'  %semislash%
 $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
 $if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
-%semislash%;
-
-PARAMETER FDATA(FFF,FDATASET)    'Fuel specific values'  %semislash%
-$if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
-$if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
 %semislash%;
 
 PARAMETER FMAXINVEST(CCC,FFF)   'Maximum investment (MW) by fuel type for each year simulated'    %semislash%
@@ -505,12 +552,12 @@ $if     EXIST '../data/TAX_F.inc' $INCLUDE      '../data/TAX_F.inc';
 $if not EXIST '../data/TAX_F.inc' $INCLUDE '../../base/data/TAX_F.inc';
 %semislash%;
 
-PARAMETER TAX_DE(CCC)    'Consumers tax on electricity consumption (Money/MWh)'  %semislash%
+PARAMETER TAX_DE(CCC,DEUSER)    'Consumers tax on electricity consumption (Money/MWh)'  %semislash%
 $if     EXIST '../data/TAX_DE.inc' $INCLUDE      '../data/TAX_DE.inc';
 $if not EXIST '../data/TAX_DE.inc' $INCLUDE '../../base/data/TAX_DE.inc';
 %semislash%;
 
-PARAMETER TAX_DH(CCC)    'Consumers tax on heat consumption (Money/MWh)'  %semislash%
+PARAMETER TAX_DH(CCC,DHUSER)    'Consumers tax on heat consumption (Money/MWh)'  %semislash%
 $if     EXIST '../data/TAX_DH.inc' $INCLUDE      '../data/TAX_DH.inc';
 $if not EXIST '../data/TAX_DH.inc' $INCLUDE '../../base/data/TAX_DH.inc';
 %semislash%;
@@ -572,18 +619,18 @@ $if not EXIST '../data/DHFP_BASE.inc' $INCLUDE '../../base/data/DHFP_BASE.inc';
 *-------------------------------------------------------------------------------
 *---- Annual electricity demand : ---------------------------------------------
 *-------------------------------------------------------------------------------
-PARAMETER DE(YYY,RRR)    'Annual electricity consumption (MWh)' %semislash%
-$if     EXIST '../data/DE.inc' $INCLUDE         '../data/DE.inc';
-$if not EXIST '../data/DE.inc' $INCLUDE '../../base/data/DE.inc';
+PARAMETER DE(YYY,RRR,DEUSER)    'Annual electricity consumption (MWh)' %semislash%
+$if     EXIST '../data/de.inc' $INCLUDE         '../data/de.inc';
+$if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
 %semislash%;
 
 
 *-------------------------------------------------------------------------------
 *---- Annual heat demand: -----------------------------------------------------
 *-------------------------------------------------------------------------------
-PARAMETER DH(YYY,AAA)    'Annual heat consumption (MWh)'  %semislash%
-$if     EXIST '../data/DH.inc' $INCLUDE         '../data/DH.inc';
-$if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
+PARAMETER DH(YYY,AAA,DHUSER)    'Annual heat consumption (MWh)'  %semislash%
+$if     EXIST '../data/dh.inc' $INCLUDE         '../data/dh.inc';
+$if not EXIST '../data/dh.inc' $INCLUDE '../../base/data/dh.inc';
 %semislash%;
 
 
@@ -735,12 +782,12 @@ $if not EXIST '../data/GKRATE.inc' $INCLUDE '../../base/data/GKRATE.inc';
 GKRATE(IA,G,S)$(NOT GKRATE(IA,G,S)) = 1;
 
 
-PARAMETER DE_VAR_T(RRR,SSS,TTT)                    'Variation in electricity demand'   %semislash%
+PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)                    'Variation in electricity demand'   %semislash%
 $if     EXIST '../data/DE_VAR_T.inc' $INCLUDE      '../data/DE_VAR_T.inc';
 $if not EXIST '../data/DE_VAR_T.inc' $INCLUDE '../../base/data/DE_VAR_T.inc';
 %semislash%;
 
-PARAMETER DH_VAR_T(AAA,SSS,TTT)                    'Variation in heat demand'   %semislash%
+PARAMETER DH_VAR_T(AAA,DHUSER,SSS,TTT)                    'Variation in heat demand'   %semislash%
 $if     EXIST '../data/DH_VAR_T.inc' $INCLUDE      '../data/DH_VAR_T.inc';
 $if not EXIST '../data/DH_VAR_T.inc' $INCLUDE '../../base/data/DH_VAR_T.inc';
 %semislash%;
@@ -785,30 +832,6 @@ PARAMETER HYPPROFILS(AAA,SSS)                      'Hydro with storage seasonal 
 $if     EXIST '../data/HYPPROFILS.inc' $INCLUDE      '../data/HYPPROFILS.inc';
 $if not EXIST '../data/HYPPROFILS.inc' $INCLUDE '../../base/data/HYPPROFILS.inc';
 %semislash%;
-
-PARAMETER DEF_STEPS(RRR,SSS,TTT,DF_QP,DEF)         'Elastic electricity demands'   %semislash%
-$if     EXIST '../data/DEF_STEPS.inc' $INCLUDE      '../data/DEF_STEPS.inc';
-$if not EXIST '../data/DEF_STEPS.inc' $INCLUDE '../../base/data/DEF_STEPS.inc';
-%semislash%;
-
-$ifi %DEFPCALIB%==yes PARAMETER DEFP_CALIB(RRR,SSS,TTT)                  'Calibrate the price side of electricity demand'   %semislash%
-$ifi %DEFPCALIB%==yes $if     EXIST '../data/DEFP_CALIB.inc' $INCLUDE      '../data/DEFP_CALIB.inc';
-$ifi %DEFPCALIB%==yes $if not EXIST '../data/DEFP_CALIB.inc' $INCLUDE '../../base/data/DEFP_CALIB.inc';
-$ifi %DEFPCALIB%==yes %semislash%;
-
-PARAMETER DHF_STEPS(AAA,SSS,TTT,DF_QP,DHF)         'Elastic heat demands'   %semislash%
-$if     EXIST '../data/DHF_STEPS.inc' $INCLUDE      '../data/DHF_STEPS.inc';
-$if not EXIST '../data/DHF_STEPS.inc' $INCLUDE '../../base/data/DHF_STEPS.inc';
-%semislash%;
-
-$ifi %DHFPCALIB%==yes PARAMETER DHFP_CALIB(AAA,SSS,TTT)                  'Calibrate the price side of heat demand'   %semislash%
-$ifi %DHFPCALIB%==yes $if     EXIST '../data/DHFP_CALIB.inc' $INCLUDE      '../data/DHFP_CALIB.inc';
-$ifi %DHFPCALIB%==yes $if not EXIST '../data/DHFP_CALIB.inc' $INCLUDE '../../base/data/DHFP_CALIB.inc';
-$ifi %DHFPCALIB%==yes %semislash%;
-
-
-$ifi %COMBTECH%==yes $if     EXIST '../data/GGCOMB.inc' $INCLUDE         '../data/GGCOMB.inc';
-$ifi %COMBTECH%==yes $if not EXIST '../data/GGCOMB.inc' $INCLUDE '../../base/data/GGCOMB.inc';
 
 
 $ifi %bb3%==yes WEIGHT_T(T)=1;

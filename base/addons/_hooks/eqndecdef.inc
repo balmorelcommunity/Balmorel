@@ -6,7 +6,7 @@ $ifi %COMBTECH%==yes $include "..\..\base\addons\combtech\combtech_eqndecdef.inc
 $ifi %HYDROGEN%==yes $include "../../base/addons/hydrogen/hydrogen_eqndecdef.inc"
 
 $ifi %FLOWBASED%==yes $include "..\..\base\addons\flowbased\flowbased_eqndecdef.inc"
-
+$ifi %BB3%==yes $ifi not %HYRSBB123%==none     $include "..\..\base\addons\hyrsbb123\hyrsbb123equations.inc";
 
 
 $ifi not %BB4%==yes $goto endoffile

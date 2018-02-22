@@ -7,6 +7,8 @@
 * Consumption weighting used.
 
 
+DISPLAY INFODISPLAY, "SKIPPED PRINTING FROM %SYSTEM.INCNAME% ";
+$GOTO ENDOFFILE
 
 * -----------------------------------------------------------------------------
 
@@ -351,4 +353,5 @@ $ifi %BB4%==yes )
 $offtext
 
 * -----------------------------------------------------------------------------
+$LABEL ENDOFFILE
 
