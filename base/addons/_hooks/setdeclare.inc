@@ -1,9 +1,10 @@
 * File setdeclare.inc for handling SET declarations for Balmorel addons
+*HYDROGEN not checked for BB4
+$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_setdeclare.inc";
 
 $ifi %BB4%==yes $goto beginbb4
 
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/combtech_setdeclare.inc";
-$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_setdeclare.inc";
 
 $ifi not %HYRSBB123%==none   $include   "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
 
