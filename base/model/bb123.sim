@@ -7,6 +7,8 @@
 * BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
 * BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
 
+* Initialisation of the compare facility for welfare:
+$ifi %welfare%==yes $INCLUDE "..\..\base\addons\welfare\welfarecmp\compprint1.inc";
 
 *------------------------------------------------------------------------------
 * INITIALISATIONS FOR THE ANNUAL UPDATING PART:
@@ -404,7 +406,7 @@ $INCLUDE '../../base/addons/_hooks/simau.inc';
 
 $ifi %bb3%==yes  $ifi not %HYRSBB123%==none  IHYRSBB123G_Y(IA,S)       = HYRSG(Y,IA,S);
 $ifi %bb3%==yes  $ifi not %HYRSBB123%==none  IWATERVAL_Y(IA,S)         = WATERVAL(Y,IA,S);
-$ifi %bb3%==yes  $ifi %HYRSBB123%==quantprice  $include "..\..\base\addons\hyrsbb123\HYRSBB123sim1.inc";
+$ifi %bb3%==yes  $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/HYRSBB123sim1.inc";
 
 
 $ifi %GAS%==yes $INCLUDE '../../base/addons/gas/annualupdate.inc';
@@ -475,7 +477,7 @@ $ifi %bb3%==yes IS3(S)=NO;
 $ifi %bb3%==yes IS3(S)$(ORD(S) EQ ORD(IS3LOOPSET))=YES;
 
 * Hydro storage:
-$ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "..\..\base\addons\hyrsbb123\HYRSBB123sim2.inc";
+$ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/HYRSBB123sim2.inc";
 
 
 
@@ -496,7 +498,7 @@ $ifi %bb3%==yes * unless you need the associated marginal values:
 $ifi %NOELTRANSINV%==yes IXKN(IRI,IRE)=NO;
 
 * Hydro storage:
-$ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "..\..\base\addons\hyrsbb123\HYRSBB123sim2.inc";
+$ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/HYRSBB123sim2.inc";
 
 
 * This option must be active especially for BB1 and BB2 since this outputs the
@@ -530,7 +532,7 @@ $ifi %bb3%==yes  SOLVE BALBASE3 USING LP MINIMIZING VOBJ;
 
 
 * Hydro storage:
-$ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "..\..\base\addons\hyrsbb123\HYRSBB123sim3.inc";
+$ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/HYRSBB123sim3.inc";
 
 
 * This file will print the solver status for each season in the simulation:
@@ -549,24 +551,67 @@ $ifi %bb3%==yes ); /* LOOP(IS3LOOPSET,...) */
 *-------------------------------------------------------------------------------
 
 * bb1 and bb2: Save yearly basis (as saved by SAVEPOINT) and move to temp directory:
+* This section aims to manipulate output files in a Windows-based file system
+$ifi not %system.filesys%==MSNT $goto endofMSNTmerge
+
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE1_p.gdx" '  '"%relpathModel%%relpathoutput%temp\'Y.tl:0:0 '.gdx"';
+$ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE1_p.gdx" '  '"%relpathModel%%relpathoutput%temp/'Y.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb1%==yes  execute   "%batfileMERGESAVEPOINTRESULTS%";
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb2%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE2_p.gdx" '  '"%relpathModel%%relpathoutput%temp\'Y.tl:0:0 '.gdx"';
+$ifi %bb2%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE2_p.gdx" '  '"%relpathModel%%relpathoutput%temp/'Y.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb2%==yes execute  "%batfileMERGESAVEPOINTRESULTS%";
 
 * bb3: Merge yearly basis (as saved by SAVEPOINT and renamed) and move merged.gdx to temp directory:
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb3%==yes execute_unload 'BALBASE3.gdx';
+$ifi %BB3%==yes execute 'rm BALBASE3_p*';
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb3%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '%relpathModel%''BALBASE3.gdx '  '%relpathModel%..\output\temp\'Y.tl:0:0 '.gdx';
+$ifi %BB3%==yes execute_unload 'BALBASE3.gdx'
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb3%==yes execute "%batfileMERGESAVEPOINTRESULTS%";
+$ifi %BB3%==yes $ifi %limitedresults%==yes $INCLUDE '../../base/model/symoutput.inc';
+;
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '%relpathModel%''BALBASE3.gdx '  '%relpathModel%../output/temp/'Y.tl:0:0 '.gdx';
+$ifi %MERGEINPUTDATA%==yes
+$ifi %BB3%==yes execute "%batfileMERGESAVEPOINTRESULTS%";
 
+$label endofMSNTmerge
+
+* This section aims to manipulate output files in a UNIX-based file system
+$ifi not %system.filesys%==UNIX  $goto endofUNIXmerge
+
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''BALBASE1_p.gdx" "%relpathModel%%relpathoutput%temp/'Y.tl:0:0 '.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb1%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb1%==yes  execute   './"%bashfileMERGESAVEPOINTRESULTS%"';
+
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb2%==yes putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv  "%relpathModel%''BALBASE2_p.gdx"  "%relpathModel%%relpathoutput%temp/'Y.tl:0:0 '.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb2%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb2%==yes execute  './"%bashfileMERGESAVEPOINTRESULTS%"';
+
+* bb3: Merge yearly basis (as saved by SAVEPOINT and renamed) and move merged.gdx to temp directory:
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes execute 'rm BALBASE3_p*';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes execute_unload 'BALBASE3.gdx'
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes $ifi %limitedresults%==yes $INCLUDE '../../base/model/symoutput.inc';
+;
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb3%==yes putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv  "%relpathModel%''BALBASE3.gdx"  %relpathModel%../output/temp/'Y.tl:0:0 '.gdx';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb3%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb3%==yes execute './"%bashfileMERGESAVEPOINTRESULTS%"';
+
+$label endofUNIXmerge
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgeninput.inc';
@@ -574,7 +619,7 @@ $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgeninput.inc';
 
 $ifi %H2%==yes $include '../../base/addons/Hydrogen/H2Sim.inc';
 
-* Certain checks may be made on the output:  /*Skal den flyttes ned eller andres?*/
+* Certain checks may be m;ade on the output:  /*Skal den flyttes ned eller andres?*/
 $INCLUDE '../../base/logerror/logerinc/error4.inc';
 
 * Various results from the simulation of current year may be printed out:
@@ -591,9 +636,13 @@ $if errorfree $ifi %PRINTFILES%==yes $ifi %bb2%==yes   $INCLUDE '../../base/outp
 
 $if errorfree $ifi %PRINTFILES%==yes $ifi %bb3%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb1.inc';
 
+
+
+* The Welfare module
+$ifi %welfare%==yes $INCLUDE '../../base/addons/welfare/welfarecmp/compprint3.inc';
 * The following file includes instructions for processing output to be used in
 * the Economic module.
-$ifi %ECONOMIC%==yes $INCLUDE '../../base/processing/economic\eco_process.inc';
+*$ifi %ECONOMIC%==yes $INCLUDE '../../base/processing/economic/eco_process.inc';
 
 * Case specific output printing:
 $ifi EXIST 'caseprint.inc' $include 'caseprint.inc';
@@ -624,7 +673,7 @@ $ifi %BB2%==yes GKVACCDECOM(Y,IA,IGKFIND) = GKVACC(Y,IA,IGKFIND) - SUM(IYALIAS$(
 $ifi %BB2%==yes IGKVACCEOY(IA,IGKFIND)= GKVACCDECOM(Y,IA,IGKFIND);
 
 XKACC(Y,IRE,IRI) = XKACC(Y-1,IRE,IRI)+VXKN.L(IRE,IRI) + VXKN.L(IRI,IRE);
-$include "..\..\base\addons\_hooks\varassign.inc"
+$include "../../base/addons/_hooks/varassign.inc"
 
 vge_t.l(ia,g,s,t)=0;
 vgh_t.l(ia,g,s,t)=0;
@@ -651,7 +700,8 @@ $ifi %REShareEH%==yes $include  '../../base/addons/REShareEH/printinc/RESEHPrt4.
 * The following files are included only when comparing, i.e. not in basecase.
 * The code is tricky, it is based on existence of file welfare.inc only in relation to base folder:
 
-$ifi %ECONOMIC%==yes $INCLUDE '../../base/processing/economic/eco_writetbl.inc';
+$ifi %welfare%==yes $INCLUDE '../../base/addons/welfare/welfarecmp/welfarebb3.inc';
+*$ifi %ECONOMIC%==yes $INCLUDE '../../base/processing/economic/eco_writetbl.inc';
 * Earnings
 * $ifi %PLANTCLOSURES%==yes $include '../../base/printinc/earningsout.inc';
 

@@ -375,13 +375,24 @@ $ifi %bb4%==yes $INCLUDE '../../base/logerror/logerinc/balbase4.mss';
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
+$ifi not %system.filesys%==MSNT $goto endofMSNTmove
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '%relpathModel%''BALBASE4_p.gdx '  '%relpathModel%..\output\temp\'IYALIAS.tl:0:0 '.gdx';
+$ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move "%relpathModel%''BALBASE4_p.gdx" '  '"%relpathModel%%relpathoutput%temp/'IYALIAS.tl:0:0 '.gdx"';
+ 
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes  execute  "%batfileMERGESAVEPOINTRESULTS%";
 
+$label endofMSNTmove
 
+$ifi not %system.filesys%==UNIX $goto endofMSNTmove
+
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''BALBASE4_p.gdx" "%relpathModel%%relpathoutput%temp/'IYALIAS.tl:0:0 '.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb4%==yes  execute  "./%bashfileMERGESAVEPOINTRESULTS%";
+
+$label endofUNIXmove
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgeninput.inc';
@@ -397,7 +408,7 @@ $INCLUDE '../../base/addons/BB4/errorBB4.inc';
 * Case specific output printing:
 $ifi EXIST 'caseprint.inc' $include 'caseprint.inc';
 
-$ifi %printfiles%==yes $if errorfree $include "..\..\base\output\printout\printinc\prtbb4.inc";
+$ifi %printfiles%==yes $if errorfree $include "../../base/output/printout/printinc/prtbb4.inc";
 
 * ------------------------------------------------------------------------------
 * --- End: Verify and Save results ---------------------------------------------
@@ -411,7 +422,7 @@ $ifi %printfiles%==yes $if errorfree $include "..\..\base\output\printout\printi
 VGKNACCUMNET.FX(IY411FIRST,IA,G)$IAGKN(IA,G)   = VGKNACCUMNET.L(IY411FIRST,IA,G);
 VGKNACCUMGROSS.FX(IY411FIRST,IA,G)$IAGKN(IA,G) = VGKNACCUMGROSS.L(IY411FIRST,IA,G);
 VXKNACCUMNET.FX(IY411FIRST,IRE,IRI)$IXKN(IRE,IRI) = VXKNACCUMNET.L(IY411FIRST,IRE,IRI);
-$include "..\..\base\addons\_hooks\varassign.inc"
+$include "../../base/addons/_hooks/varassign.inc"
 
 * ------------------------------------------------------------------------------
 * --- End: Prepare the next BB4 model ------------------------------------------

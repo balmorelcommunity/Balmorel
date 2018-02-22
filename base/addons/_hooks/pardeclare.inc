@@ -1,3 +1,7 @@
 * Location of parameter declarations used in add-ons
 
-$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_pardeclare.inc";
+* Example of a generic line for addon integration (replace ADDONNAME for a specific add-on):
+* $ifi %ADDONNAME%==yes    $include "../../base/addons/ADDONNAME/ADDONNAME_pardeclare.inc";
+
+
+$ifi %FlowBased%==yes    $include "../../base/addons/flowbased/flowbased_pardeclare.inc";$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_pardeclare.inc";

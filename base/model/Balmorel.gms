@@ -44,12 +44,19 @@ $ifi not exist 'balgams.opt'  $include  '../../base/model/balgams.opt'
 $ifi     exist 'balopt.opt'  $include                  'balopt.opt';
 $ifi not exist 'balopt.opt'  $include '../../base/model/balopt.opt';
 
+$ifi %system.filesys%==UNIX
+execute 'chmod  -R ug+rw "../.."';
 
 * If merging of savepoint files is to be performed,
 * make sure that there are no gdx files initially in applied folders:
+$ifi %system.filesys%==UNIX
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm *.gdx";
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ..\output\temp\*.gdx";
-$ifi     dexist "..\output\temp"   execute 'rm "..\output\temp\*.*"';
+$ifi %system.filesys%==MSNT
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del *.gdx";
+$ifi %system.filesys%==UNIX
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ../output/temp/*.gdx";
+$ifi %system.filesys%==MSNT
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ..\output\temp\*.gdx";
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -88,12 +95,12 @@ SCALAR ISCALAR5   '(Context dependent)';
 $INCLUDE '../../base/logerror/logerinc/error1.inc';
 
 * Ensuring existence of needed output folders:
-$ifi not dexist "..\..\simex"            execute 'md "..\..\simex"';
-$ifi not dexist "..\logerror\logerinc"   execute 'md "..\logerror\logerinc"';
-$ifi not dexist "..\output\economic"     execute 'md "..\output\economic"';
-$ifi not dexist "..\output\inputout"     execute 'md "..\output\inputout"';
-$ifi not dexist "..\output\printout"     execute 'md "..\output\printout"';
-$ifi not dexist "..\output\temp"         execute 'md "..\output\temp"';
+$ifi not dexist "../../simex"            execute 'mkdir "../../simex"';
+$ifi not dexist "../logerror/logerinc"   execute 'mkdir "../logerror/logerinc"';
+$ifi not dexist "../output/economic"     execute 'mkdir "../output/economic"';
+$ifi not dexist "../output/inputout"     execute 'mkdir "../output/inputout"';
+$ifi not dexist "../output/printout"     execute 'mkdir "../output/printout"';
+$ifi not dexist "../output/temp"         execute 'mkdir "../output/temp"';
 
 
 *-------------------------------------------------------------------------------
@@ -463,8 +470,8 @@ ALIAS (T,ITALIAS);
 *-------------------------------------------------------------------------------
 
 $include "..\..\base\addons\_hooks\acronyms.inc"
-$include "..\..\base\addons\_hooks\setdeclare.inc"
-$include "..\..\base\addons\_hooks\setdefine.inc"
+$include "../../base/addons/_hooks/setdeclare.inc"
+$include "../../base/addons/_hooks/setdefine.inc"
 
 * Addon AGKNDISC: discrete size investment in technologies:
 $ifi not %AGKNDISC%==yes  $goto label_AGKNDISC1
@@ -492,7 +499,7 @@ $if not EXIST '../data/AGKNDISCGDATA.inc' $INCLUDE '../../base/data/AGKNDISCGDAT
 $label label_AGKNDISC1
 * End: Addon AGKNDISC: discrete size investment in technologies.
 
-$ifi not %HYRSBB123%==none   $include "..\..\base\addons\hyrsbb123\hyrsbb123internals.inc";
+$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
 
 *-------------------------------------------------------------------------------
 * End: Any declarations and definitions of sets, aliases and acronyms for addon
@@ -538,8 +545,8 @@ $ifi %FV%==yes $include '../../base/addons/Fjernvarme/sets_fv.inc';
 PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFDATALISTING%
-$if     EXIST '../data/gdata.inc' $INCLUDE         '../data/gdata.inc';
-$if not EXIST '../data/gdata.inc' $INCLUDE '../../base/data/gdata.inc';
+$if     EXIST '../data/gdata.inc' $INCLUDE         '../data/GDATA.inc';
+$if not EXIST '../data/gdata.inc' $INCLUDE '../../base/data/GDATA.inc';
 %ONOFFCODELISTING%
 
 *-------------------------------------------------------------------------------
@@ -731,7 +738,7 @@ $ifi not %bypass%==yes IGBYPASS(G) = NO;
 * operator and instead use the '+' operator for compound assignments.
 
 
-$include "..\..\base\addons\_hooks\isetdecdef.inc"
+$include "../../base/addons/_hooks/isetdecdef.inc"
 
 *---- Unit commitment --------------------------------------------------------------
 
@@ -1081,8 +1088,8 @@ $if not EXIST '../data/DHFP_BASE.inc' $INCLUDE '../../base/data/DHFP_BASE.inc';
 *---- Annual electricity demand : ----------------------------------------------
 *-------------------------------------------------------------------------------
 PARAMETER DE(YYY,RRR)    'Annual electricity consumption (MWh)' %semislash%
-$if     EXIST '../data/de.inc' $INCLUDE         '../data/de.inc';
-$if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
+$if     EXIST '../data/de.inc' $INCLUDE         '../data/DE.inc';
+$if not EXIST '../data/de.inc' $INCLUDE '../../base/data/DE.inc';
 %semislash%;
 
 
@@ -1090,8 +1097,8 @@ $if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
 *---- Annual heat demand: ------------------------------------------------------
 *-------------------------------------------------------------------------------
 PARAMETER DH(YYY,AAA)    'Annual heat consumption (MWh)'  %semislash%
-$if     EXIST '../data/dh.inc' $INCLUDE         '../data/dh.inc';
-$if not EXIST '../data/dh.inc' $INCLUDE '../../base/data/dh.inc';
+$if     EXIST '../data/dh.inc' $INCLUDE         '../data/DH.inc';
+$if not EXIST '../data/dh.inc' $INCLUDE '../../base/data/DH.inc';
 %semislash%;
 
 
@@ -1188,8 +1195,8 @@ $if not EXIST '../data/FUELPRICE.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
 *-------------------------------------------------------------------------------
 
 PARAMETER M_POL(YYY,MPOLSET,CCC)    'Emission policy data (various units, cf. MPOLSET)'   %semislash%
-$if     EXIST '../data/m_pol.inc' $INCLUDE         '../data/m_pol.inc';
-$if not EXIST '../data/m_pol.inc' $INCLUDE '../../base/data/m_pol.inc';
+$if     EXIST '../data/m_pol.inc' $INCLUDE         '../data/M_POL.inc';
+$if not EXIST '../data/m_pol.inc' $INCLUDE '../../base/data/M_POL.inc';
 %semislash%;
 
 *-------------------------------------------------------------------------------
@@ -1336,8 +1343,8 @@ $if not EXIST '../data/OMONEY.inc' $INCLUDE '../../base/data/OMONEY.inc';
 *-------------------------------------------------------------------------------
 *----- Any parameters for addon to be placed here: -----------------------------
 *-------------------------------------------------------------------------------
-$INCLUDE '../../base/addons/_hooks/pardeclare.inc';
-$INCLUDE '../../base/addons/_hooks/pardefine.inc';
+$include "../../base/addons/_hooks/pardeclare.inc"
+$include "../../base/addons/_hooks/pardefine.inc"
 
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/data/x3vdata.inc';
 $ifi %HEATTRANS%==yes $if     EXIST '../data/htrans.inc' $INCLUDE         '../data/htrans.inc';
@@ -1691,14 +1698,26 @@ $ifi %inputdatatxt%== yes        $INCLUDE '../../base/output/printout/printinc/i
 $ifi %inputdatatxt%== yesnosolve $INCLUDE '../../base/output/printout/printinc/inputout.inc';
 $ifi %inputdatatxt%== yesnosolve $goto ENDOFMODEL
 * Unload input data to gdx file:
-$ifi exist '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"' rm '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"'
+$ifi %system.filesys%==UNIX
+$ifi exist '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"' rm '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
+$ifi %system.filesys%==MSNT
+$ifi exist '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"' del '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
 
 $ifi %INPUTDATA2GDX%==yes execute_unload '%relpathInputdata2GDX%INPUTDATAOUT.gdx';
 * Transfer inputdata a seperate Access file (only possible if %INPUTDATA2GDX%==yes):
 
 $ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
 
-$ifi %MERGEINPUTDATA%==yes execute_unload '..\output\temp\1INPUT.gdx';
+$ifi %MERGEINPUTDATA%==yes
+$ifi NOT (%BB3%==yes) execute_unload '../output/temp/1INPUT.gdx';
+
+$ifi %MERGEINPUTDATA%==yes
+$ifi %BB3%==yes $ifi not (%limitedresults%==yes) execute_unload '../output/temp/1INPUT.gdx';
+
+$ifi %MERGEINPUTDATA%==yes
+$ifi %BB3%==yes $ifi %limitedresults%==yes execute_unload '../output/temp/1INPUT.gdx'
+$ifi %MERGEINPUTDATA%==yes
+$ifi %BB3%==yes $ifi %limitedresults%==yes $INCLUDE '../../base/model/syminput.inc';
 
 *-------------------------------------------------------------------------------
 * End: Possibly write input data, prepare output file possibilities
@@ -1745,7 +1764,7 @@ GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = 0;
 * definitions (and no assignments) are reflected:
 
 
-$include "..\..\base\addons\_hooks\checkassumptions.inc"
+$include "../../base/addons/_hooks/checkassumptions.inc"
 
 * No need to proceed further if there are compilation errors in the data:
 $ifi not errorfree $abort "Balmorel execution aborted because of data errors (Message from Balmorel.gms)"
@@ -1805,7 +1824,7 @@ POSITIVE VARIABLE VQXK(IRRRE,IRRRI,S,T,IPLUSMINUS) 'Feasibility in Transmission 
 *-------------------------------------------------------------------------------
 *----- Any variables for addon to be placed here: ------------------------------
 *-------------------------------------------------------------------------------
-$include "..\..\base\addons\_hooks\vardeclare.inc"
+$include "../../base/addons/_hooks/vardeclare.inc"
 
 $INCLUDE '../../base/addons/_hooks/vardeclare.inc';
 * These variables are for addon X3V (price sensitive third countries elec exchange
@@ -1824,7 +1843,7 @@ $ifi %POLICIES%==yes $include '../../base/addons/policies/pol_var.inc';
 * These variables are for addon system costs
 $ifi %SYSTEMCOST%==yes $include '../../base/addons/SystemCost/var_syscost.inc';
 * These variables are for addon for hydro
-$ifi %HYRSBB123%==quantprice  $include "..\..\base\addons\hyrsbb123\hyrsbb123variables.inc";
+$ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/hyrsbb123variables.inc";
 
 
 *-------------------------------------------------------------------------------
@@ -1937,7 +1956,7 @@ $ifi %REShareEH%==yes QREShareEH(CCCREShareEH)     'Minimum share of electricity
 $ifi %AGKNDISC%==yes QAGKNDISC01(AAA,G)            'At most one of the specified discrete capacity size investments is chosen (Addon AGKNDISC)';
 $ifi %AGKNDISC%==yes QAGKNDISCCONT(AAA,G)          'The invested capacity must be one of the specified sizes or zero (MW) (Addon AGKNDISC)';
 
-$ifi %BB3%==yes $ifi not %HYRSBB123%==none         $include "..\..\base\addons\hyrsbb123\hyrsbb123equations.inc";
+$ifi %BB3%==yes $ifi not %HYRSBB123%==none         $include "../../base/addons/hyrsbb123/hyrsbb123equations.inc";
 ;
 
 *-------------------------------------------------------------------------------
@@ -2184,7 +2203,7 @@ $ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VIM_T(IR,X3VPLAC
      )/(1-DISLOSS_E(IR)))
       + SUM(IRI$(IXKINI_Y(IR,IRI) OR IXKN(IR,IRI) OR IXKN(IRI,IR)),VX_T(IR,IRI,IS3,T))
 $ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VEX_T(IR,X3VPLACE,X3VSTEP,IS3,T)))
-$include "..\..\base\addons\_hooks\qeeq.inc"
+$include "../../base/addons/_hooks/qeeq.inc"
       - VQEEQ(IR,IS3,T,'IMINUS') + VQEEQ(IR,IS3,T,'IPLUS')
 ;
 
@@ -2835,7 +2854,7 @@ QGMAXINVEST2(C,IGKFIND)$GROWTHCAP(C,IGKFIND)..
 *----- Any equations for addon to be placed here: ------------------------------
 *-------------------------------------------------------------------------------
 
-$include "..\..\base\addons\_hooks\eqndecdef.inc"
+$include "../../base/addons/_hooks/eqndecdef.inc"
 
 * These add-on equations pertain to district heating.
 $ifi %FV%==yes $include '../../base/addons/Fjernvarme/eq_fv.inc';
@@ -2927,7 +2946,7 @@ MODEL BALBASE1 'Balmorel model without endogeneous investments'
 
 *                                QSELFSUFFICIENCY
 *----- Any equations for addon to be placed here: ------------------------------
-$include "..\..\base\addons\_hooks\balbase1.inc"
+$include "../../base/addons/_hooks/balbase1.inc"
 * Eventually the following addons will be handled through the above inclusion of _hooks.inc
 $ifi %FV%==yes $include '../../base/addons/Fjernvarme/eqN_fv.inc';
 $ifi %X3VfxQ%==yes              QX3VBAL
@@ -3026,7 +3045,7 @@ MODEL BALBASE2  'Balmorel model with endogeneous investments'
 *--- Operational restrictions --------------------------------------------------
 *                               QSELFSUFFICIENCY
 *----- Any equations for addon to be placed here: ------------------------------
-$include "..\..\base\addons\_hooks\balbase2.inc"
+$include "../../base/addons/_hooks/balbase2.inc"
 * Eventually the following addons will be handled through the above inclusion of _hooks.inc
 
 *--- Capacity restrictions for decommissioning ----------------------------------
@@ -3082,7 +3101,7 @@ MODEL BALBASE3 'Balmorel model without endogeneous investments, simulating each 
 *--- Transmission capacity -----------------------------------------------------
                                 QXK
 *----- Any equations for addon to be placed here: ------------------------------
-$include "..\..\base\addons\_hooks\balbase3.inc"
+$include "../../base/addons/_hooks/balbase3.inc"
 * Eventually the following addons will be handled through the above inclusion of _hooks.inc
 
 $ifi %HYRSBB123%==quant        QHYRSG
@@ -3154,7 +3173,7 @@ $ifi %bb2%==yes execute_unload  '../../simex/HYRSG.gdx',HYRSG;
 $ifi %bb2%==yes execute_unload  '../../simex/VHYRS_SL.gdx',VHYRS_SL;
 $ifi %bb2%==yes execute_unload  '../../simex/WATERVAL.gdx',WATERVAL;
 
-$ifi  %bb3%==yes $ifi not %HYRSBB123%==none $include  "../../base\addons\hyrsbb123\hyrsbb123unload.inc";
+$ifi  %bb3%==yes $ifi not %HYRSBB123%==none $include  "../../base/addons/hyrsbb123/hyrsbb123unload.inc";
 
 $INCLUDE  '../../base/addons/_hooks/simex.inc';
 
@@ -3169,7 +3188,12 @@ $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgdx.inc';
 
 
 *--- Results collection for this case ------------------------------------------
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\temp\*.gdx"';
+
+$ifi not %system.filesys%==MSNT $goto endofMSNToutput
+*The following section until $label endofMSNToutput is related to Windows output only
+*Please use only backslash \ instead of forward slash / in this section until the label
+
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%temp\*.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%.gdx"';
 
 $ifi %MERGECASE%==NONE
@@ -3185,7 +3209,7 @@ $ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutpu
 *--- Results collection and comparison for differents cases --------------------
 
 $ifi not %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%.gdx" "%relpathModel%..\..\%MERGEWITH%\output\%MERGEWITH%.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%.gdx" "%relpathModel%..\..\%MERGEWITH%/output\%MERGEWITH%.gdx"';
 $ifi not %MERGECASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-resmerged.gdx"';
 
@@ -3195,15 +3219,53 @@ $ifi not %MERGECASE%==NONE
 $ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutput%%CASEID%-resmerged.gdx" -o "%relpathoutput%%CASEID%-resmerged.db"';
 
 $ifi not %DIFFCASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%DIFFWITH%\output\%DIFFWITH%-results.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%DIFFWITH%/output/%DIFFWITH%-results.gdx"';
 $ifi not %DIFFCASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move diffile.gdx "%relpathoutput%%CASEID%-diff.gdx"';
 
+$label endofMSNToutput
+
+$ifi not %system.filesys%==UNIX $goto endofUNIXoutput
+*The following section until $label endofUNIXoutput is related to UNIX output only
+*Please use only forward slash / instead of backslash \ in this section until the label
+
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/temp/*.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%.gdx"';
+
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/%CASEID%.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%-results.gdx"'
+
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access ./"%relpathoutput%%CASEID%-results.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i ./"%relpathoutput%%CASEID%-results.gdx" -o ./"%relpathoutput%%CASEID%-results.db"';
+
+*--- Results collection and comparison for differents cases --------------------
+
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge ./"%relpathoutput%%CASEID%.gdx" ./"%relpathModel%../../%MERGEWITH%/output/%MERGEWITH%.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%-resmerged.gdx"';
+
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access ./"%relpathoutput%%CASEID%-resmerged.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i ./"%relpathoutput%%CASEID%-resmerged.gdx" -o ./"%relpathoutput%%CASEID%-resmerged.db"';
+
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff ./"%relpathoutput%%CASEID%-results.gdx" ./"%relpathModel%../../%DIFFWITH%/output/%DIFFWITH%-results.gdx"';
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./diffile.gdx ./"%relpathoutput%%CASEID%-diff.gdx"';
+
+
+$label endofUNIXoutput
 
 *----- End of model:------------------------------------------------------------
-$include "..\..\base\addons\_hooks\endofmodel_pre.inc"
+$include "../../base/addons/_hooks/endofmodel_pre.inc"
 $label ENDOFMODEL
-$include "..\..\base\addons\_hooks\endofmodel_post.inc"
+$include "../../base/addons/_hooks/endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
 
 

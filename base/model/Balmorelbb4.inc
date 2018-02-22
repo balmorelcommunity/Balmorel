@@ -144,7 +144,7 @@ ALIAS (T,ITALIAS);
 
 
 * Addon AGKNDISC: discrete size investment in technologies:
-$ifi %AGKNDISC%==yes $include  "..\..\base\addons\bb4\agkndisc\agkndiscdeclarations.inc";
+$ifi %AGKNDISC%==yes $include  "../../base/addons/bb4/agkndisc/agkndiscdeclarations.inc";
 
 
 * Duplication of sets for describing possible heat exchange between areas (option HEATTRANS).
@@ -152,7 +152,7 @@ $ifi %HEATTRANS%==yes ALIAS (AAA,IAAAE,IAAAI);
 $ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
 
 
-$ifi not %HYRSBB123%==none   $include "..\..\base\addons\hyrsbb123\hyrsbb123internals.inc";
+$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
 
 *-------------------------------------------------------------------------------
 * End: Any declarations and definitions of sets, aliases and acronyms for addon
@@ -389,7 +389,7 @@ PARAMETER WATERVAL(YYY,AAA,SSS)     'Water value (in input Money) to be transfer
 * ------------------------------------------------------------------------------
 * All remaining (cf. ... .inc above) data files af included from the following file
 $ifi     exist "bb4datainc.inc" $include                   "bb4datainc.inc";
-$ifi not exist "bb4datainc.inc" $include  "..\..\base\model\bb4datainc.inc";
+$ifi not exist "bb4datainc.inc" $include  "../../base/model/bb4datainc.inc";
 
 
 * The two specifications of fuel type 'FDACRONYM' and 'FDNB', have relative merits.
@@ -687,7 +687,7 @@ PARAMETER   IM_CO2RE(G) 'CO2 emission coefficient for fuel, renewable part (kg/G
 PARAMETER   IM_SO2(G)   'SO2 emission coefficient for fuel (kg/GJ)';
 PARAMETER   IM_N2O(G)   'NO2 emission coefficient for fuel (kg/GJ)';
 
-LOOP(FFF, !! TODO: Check forbedringen af kode som givet på SONYstick
+LOOP(FFF, !! TODO: Check forbedringen af kode som givet p\E5 SONYstick
   IM_CO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDCO2');
   IM_CO2RE(G)$IGF(G,FFF) = FDATA(FFF,'FDCO2')*FDATA(FFF,'FDRE');
   IM_SO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDSO2')$(GDATA(G,'GDDESO2') EQ 0) +
@@ -944,7 +944,7 @@ $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF          IGEQF(Y,CCCRRRAAA,FFF) = GEQF(Y,CCCR
 * Unload input data to gdx and possibly MDB files.
 * Note that this is a compile time operation, such that only the 'direct' data
 * definitions (and no assignments) are reflected:
-execute_unload '%relpathModel%..\output\temp\1INPUT.gdx';
+execute_unload '%relpathModel%../output/temp/1INPUT.gdx';
 
 *------------------------------
 
@@ -1026,12 +1026,12 @@ POSITIVE VARIABLE VQKFUEL(Y,CCCRRRAAA,FFF)  "Feasibility in maximum installlable
 *-------------------------------------------------------------------------------
 *----- Any variables, and possibly equations, for addon to be placed here: -----
 
-$include "..\..\base\addons\_hooks\vardeclare.inc"
+$include "../../base/addons/_hooks/vardeclare.inc"
 
 *-------------------------------------------------------------------------------
 
 * Discrete size investments: (both variables and equations are in this file)
-$ifi %AGKNDISC%==yes $include "..\..\base\addons\bb4\agkndisc\agkndiscvarsequas.inc";
+$ifi %AGKNDISC%==yes $include "../../base/addons/bb4/agkndisc/agkndiscvarsequas.inc";
 
 *-------------------------------------------------------------------------------
 *----- End: Any variables, and possibly equations, for addon to be placed here:
@@ -2263,7 +2263,7 @@ $ifi %ECONOMIC%==yes $INCLUDE "../../base/processing/economic/eco_def.inc";
 
 
 *-------------------------------------------------------------------------------
-* Control of formats for variable and equation listing:   VIRKER IKKE , ØV!
+* Control of formats for variable and equation listing:   VIRKER IKKE , \D8V!
 $ifi not %displaylistformat% == yes $goto label_Notdisplaylistformat
 OPTION QOBJ:8:0:1;
 OPTION QEEQ:8:0:1;
@@ -2295,14 +2295,17 @@ $ifi %X3V%==yes $INCLUDE "../../base/addons/x3v/model/x3vgdx.inc";
 
 *--- Results collection and comparison -----------------------------------------
 * Merge simulation years:
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "gdxmerge %relpathModel%..\output\temp\*.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "gdxmerge %relpathModel%../output/temp/*.gdx";
 
 *--- Results collection for this case ------------------------------------------
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\temp\*.gdx"';
+
+$ifi not %system.filesys%==MSNT $goto endofMSNToutput
+
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/temp/*.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%.gdx"';
 
 $ifi %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\%CASEID%.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/%CASEID%.gdx"';
 $ifi %MERGECASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-results.gdx"'
 
@@ -2314,7 +2317,7 @@ $ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutpu
 *--- Results collection and comparison for differents cases --------------------
 
 $ifi not %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%.gdx" "%relpathModel%..\..\%MERGEWITH%\output\%MERGEWITH%.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%.gdx" "%relpathModel%../../%MERGEWITH%/output/%MERGEWITH%.gdx"';
 $ifi not %MERGECASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-resmerged.gdx"';
 
@@ -2324,21 +2327,57 @@ $ifi not %MERGECASE%==NONE
 $ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutput%%CASEID%-resmerged.gdx" -o "%relpathoutput%%CASEID%-resmerged.db"';
 
 $ifi not %DIFFCASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%DIFFWITH%\output\%DIFFWITH%-results.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%../../%DIFFWITH%/output/%DIFFWITH%-results.gdx"';
 $ifi not %DIFFCASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move diffile.gdx "%relpathoutput%%CASEID%-diff.gdx"';
 
+$label endofMSNToutput
+*------------------------------------------------------------------------------------------------------------------
+$ifi not %system.filesys%==UNIX $goto endofUNIXoutput
+
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/temp/*.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%.gdx"';
+
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/%CASEID%.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%-results.gdx"'
+
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access ./"%relpathoutput%%CASEID%-results.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i ./"%relpathoutput%%CASEID%-results.gdx" -o ./"%relpathoutput%%CASEID%-results.db"';
+
+*--- Results collection and comparison for differents cases --------------------
+
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge ./"%relpathoutput%%CASEID%.gdx" ./"%relpathModel%../../%MERGEWITH%/output/%MERGEWITH%.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%-resmerged.gdx"';
+
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access ./"%relpathoutput%%CASEID%-resmerged.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i ./"%relpathoutput%%CASEID%-resmerged.gdx" -o ./"%relpathoutput%%CASEID%-resmerged.db"';
+
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff ./"%relpathoutput%%CASEID%-results.gdx" ./"%relpathModel%../../%DIFFWITH%/output/%DIFFWITH%-results.gdx"';
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./diffile.gdx ./"%relpathoutput%%CASEID%-diff.gdx"';
+
+$label endofUNIXoutput
+
 *----- End of model:------------------------------------------------------------
-$include "..\..\base\addons\_hooks\endofmodel_pre.inc"
+$include "../../base/addons/_hooks/endofmodel_pre.inc"
 $label ENDOFMODEL
-$include "..\..\base\addons\_hooks\endofmodel_post.inc"
+$include "../../base/addons/_hooks/endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
 
 
 * Sometimes convenient to have it all (with most recent values) at this point
 execute_unload "all_endofmodel.gdx";
 
-DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile: <case>\logerror\logfile.out." ;
+DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile: <case>/logerror/logfile.out." ;
 
 *----- End of file:------------------------------------------------------------
 $label endoffile

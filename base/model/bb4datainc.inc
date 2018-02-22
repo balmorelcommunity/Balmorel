@@ -317,8 +317,8 @@ $label label_AGKNDISC1
 
 
 PARAMETER GKFX(YYY,AAA,GGG)    'Capacity of existing generation technologies (MW)' %semislash%
-$if     EXIST '../data/gkfx.inc' $INCLUDE      '../data/gkfx.inc';
-$if not EXIST '../data/gkfx.inc' $INCLUDE '../../base/data/gkfx.inc';
+$if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
+$if not EXIST '../data/GKFX.inc' $INCLUDE '../../base/data/GKFX.inc';
 %semislash%;
 
 
@@ -573,8 +573,8 @@ $if not EXIST '../data/DHFP_BASE.inc' $INCLUDE '../../base/data/DHFP_BASE.inc';
 *---- Annual electricity demand : ---------------------------------------------
 *-------------------------------------------------------------------------------
 PARAMETER DE(YYY,RRR)    'Annual electricity consumption (MWh)' %semislash%
-$if     EXIST '../data/de.inc' $INCLUDE         '../data/de.inc';
-$if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
+$if     EXIST '../data/DE.inc' $INCLUDE         '../data/DE.inc';
+$if not EXIST '../data/DE.inc' $INCLUDE '../../base/data/DE.inc';
 %semislash%;
 
 
@@ -582,8 +582,8 @@ $if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
 *---- Annual heat demand: -----------------------------------------------------
 *-------------------------------------------------------------------------------
 PARAMETER DH(YYY,AAA)    'Annual heat consumption (MWh)'  %semislash%
-$if     EXIST '../data/dh.inc' $INCLUDE         '../data/dh.inc';
-$if not EXIST '../data/dh.inc' $INCLUDE '../../base/data/dh.inc';
+$if     EXIST '../data/DH.inc' $INCLUDE         '../data/DH.inc';
+$if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
 %semislash%;
 
 
@@ -695,14 +695,14 @@ $if not EXIST '../data/FUELPRICE.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
 *-------------------------------------------------------------------------------
 
 PARAMETER M_POL(YYY,MPOLSET,CCC)    'Emission policy data'   %semislash%
-$if     EXIST '../data/m_pol.inc' $INCLUDE         '../data/m_pol.inc';
-$if not EXIST '../data/m_pol.inc' $INCLUDE '../../base/data/m_pol.inc';
+$if     EXIST '../data/M_POL.inc' $INCLUDE         '../data/M_POL.inc';
+$if not EXIST '../data/M_POL.inc' $INCLUDE '../../base/data/M_POL.inc';
 %semislash%;
 
 /*
 PARAMETER M_POLNA(YYY,MPOLSET)    'Emission policy data'   %semislash%
-$if     EXIST '../data/m_polna.inc' $INCLUDE         '../data/m_polna.inc';
-$if not EXIST '../data/m_polna.inc' $INCLUDE '../../base/data/m_polna.inc';
+$if     EXIST '../data/M_POLNA.inc' $INCLUDE         '../data/M_POLNA.inc';
+$if not EXIST '../data/M_POLNA.inc' $INCLUDE '../../base/data/M_POLNA.inc';
 %semislash%;  */    M_POLNA(YYY,MPOLSET)=0;
 
 *-------------------------------------------------------------------------------
@@ -807,8 +807,8 @@ $ifi %DHFPCALIB%==yes $if not EXIST '../data/DHFP_CALIB.inc' $INCLUDE '../../bas
 $ifi %DHFPCALIB%==yes %semislash%;
 
 
-$ifi %COMBTECH%==yes $if     EXIST '../data/ggcomb.inc' $INCLUDE         '../data/ggcomb.inc';
-$ifi %COMBTECH%==yes $if not EXIST '../data/ggcomb.inc' $INCLUDE '../../base/data/ggcomb.inc';
+$ifi %COMBTECH%==yes $if     EXIST '../data/GGCOMB.inc' $INCLUDE         '../data/GGCOMB.inc';
+$ifi %COMBTECH%==yes $if not EXIST '../data/GGCOMB.inc' $INCLUDE '../../base/data/GGCOMB.inc';
 
 
 $ifi %bb3%==yes WEIGHT_T(T)=1;
