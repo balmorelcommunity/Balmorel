@@ -19,6 +19,4 @@ $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_setdec
 
 $ifi %dflexquant%==yes       $include "../../base/addons/demandflexquant/dflexquant_set.inc";
 
-
-
 $label endoffile

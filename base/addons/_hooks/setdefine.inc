@@ -19,6 +19,4 @@ $label bb4_begin
 
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_setdefine.inc";
 
-
-
 $label endoffile
