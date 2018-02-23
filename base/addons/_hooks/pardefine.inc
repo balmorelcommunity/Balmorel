@@ -9,3 +9,5 @@ $ifi %FLOWBASED%==yes $include    "../../base/addons/flowbased/flowbased_pardefi
 
 
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_pardefine.inc";
+*This is only tested for BB1 and BB2:
+$ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/combtech_pardefine.inc";

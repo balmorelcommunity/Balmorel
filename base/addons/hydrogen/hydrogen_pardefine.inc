@@ -21,6 +21,9 @@ $onmulti
 $if     EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE         '../data/HYDROGEN_AGKN.inc';
 $if not EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE '../../base/data/HYDROGEN_AGKN.inc';
 
-$if     EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE         '../data/HYDROGEN_FDATA.inc';
-$if not EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE '../../base/data/HYDROGEN_FDATA.inc';
+$if     EXIST '../data/HYDROGEN_FDATA.inc' $INCLUDE         '../data/HYDROGEN_FDATA.inc';
+$if not EXIST '../data/HYDROGEN_FDATA.inc' $INCLUDE '../../base/data/HYDROGEN_FDATA.inc';
+
+$if     EXIST '../data/HYDROGEN_FUELPRICE.inc' $INCLUDE         '../data/HYDROGEN_FUELPRICE.inc';
+$if not EXIST '../data/HYDROGEN_FUELPRICE.inc' $INCLUDE '../../base/data/HYDROGEN_FUELPRICE.inc';
 $offmulti
