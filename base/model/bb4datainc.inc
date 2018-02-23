@@ -107,16 +107,19 @@ $if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DHUSER.inc';
 $if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DHUSER.inc';
 %semislash%;
 
+$onmulti
 SET FFF                'Fuels'  %semislash%
 $if     EXIST '../data/FFF.inc' $INCLUDE      '../data/FFF.inc';
 $if not EXIST '../data/FFF.inc' $INCLUDE '../../base/data/FFF.inc';
 %semislash%;
+$offmulti
 
 SET FDATASET           'Characteristics of fuels ' %semislash%
 $if     EXIST '../data/FDATASET.inc' $INCLUDE      '../data/FDATASET.inc';
 $if not EXIST '../data/FDATASET.inc' $INCLUDE '../../base/data/FDATASET.inc';
 %semislash%;
 
+$onmulti
 PARAMETER FDATA(FFF,FDATASET)    'Fuel specific values'  %semislash%
 $if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
 $if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
@@ -126,21 +129,23 @@ SET GGG                'All generation technologies'   %semislash%
 $if     EXIST '../data/GGG.inc' $INCLUDE      '../data/GGG.inc';
 $if not EXIST '../data/GGG.inc' $INCLUDE '../../base/data/GGG.inc';
 %semislash%;
+$offmulti
 
 SET GDATASET           'Generation technology data' %semislash%
 $if     EXIST '../data/GDATASET.inc' $INCLUDE      '../data/GDATASET.inc';
 $if not EXIST '../data/GDATASET.inc' $INCLUDE '../../base/data/GDATASET.inc';
 %semislash%;
 
+$onmulti
 SET G(GGG)    'Generation technologies in the simulation'  %semislash%
 $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
 $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 %semislash%;
 
-
 PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
 $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
+$offmulti
 
 * ------------------------------------------------------------------------------
 %ONOFFCODELISTING%
@@ -170,11 +175,13 @@ $if     EXIST '../data/MPOLSET.inc' $INCLUDE      '../data/MPOLSET.inc';
 $if not EXIST '../data/MPOLSET.inc' $INCLUDE '../../base/data/MPOLSET.inc';
 %semislash%;
 
+$onmulti
 SET AGKN(AAA,GGG)   'Areas for possible location of new technologies'   %semislash%
 $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
                 AGKN(AAA,GGG)=0; !! TODO: here?
+$offmulti
 SET Y(YYY)    'Years in the simulation'   %semislash%
 $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
 $if not EXIST '../data/Y.inc' $INCLUDE '../../base/data/Y.inc';

@@ -2,7 +2,10 @@
 
 SET IGCOMB1(G)              'Combination technologies, primary, for addon combtech';
 SET IGCOMB2(G)              'Combination technologies, secondary with primary in G, for addon combtech';
-*SET GGCOMB(GGG,GGG      )   'Combination techologies in the same combination, for addon combtech';
+SET GGCOMB(GGG,GGG      )   'Combination techologies in the same combination, for addon combtech';
+
+$if     EXIST '../data/COMBTECH_GGCOMB.inc' $INCLUDE         '../data/COMBTECH_GGCOMB.inc';
+$if not EXIST '../data/COMBTECH_GGCOMB.inc' $INCLUDE '../../base/data/COMBTECH_GGCOMB.inc';
 
 *This can be moved to Balmorel.gms
 Alias(G,IGALIAS);
