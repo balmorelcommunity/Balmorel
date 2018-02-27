@@ -203,6 +203,7 @@ $include "..\..\base\addons\_hooks\setdeclare.inc"
 *------------------------------------------------------------------------------
 PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics";
 
+
 *-------------------------------------------------------------------------------
 * Definitions of internal sets relative to technologies,
 * The sets are defined based on information in PARAMETER GDATA.

@@ -141,11 +141,18 @@ SET G(GGG)    'Generation technologies in the simulation'  %semislash%
 $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
 $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 %semislash%;
-
+$offmulti
 PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
 $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
-$offmulti
+
+
+*This could be placed more elegantly elsewhere
+*-------------------------------------------------------------------------------
+*------------- Any GDATA additions for addon to be placed here: ----------------
+*-------------------------------------------------------------------------------
+$include "..\..\base\addons\_hooks\gdataadditions.inc"
+
 
 * ------------------------------------------------------------------------------
 %ONOFFCODELISTING%
