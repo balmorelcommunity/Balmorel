@@ -5,4 +5,16 @@ $ifi %BB3%==yes     $ifi %HYRSBB123%==quantprice $include  "../../base/addons/hy
 
 $ifi %dflexquant%==yes   $include "../../base/addons/demandflexquant/dflexquant_qobj.inc";
 
+$ifi %BB4%==yes $goto beginbb4
+
 $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/hydrogen_qobj.inc";
+
+$ifi not %BB4%==yes $goto endoffile
+
+$label  beginbb4
+
+$ifi not %bb4%==yes $goto endoffile
+
+$ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_qobj.inc";
+
+$label endoffile

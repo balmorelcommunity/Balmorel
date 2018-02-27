@@ -14,6 +14,6 @@ $ifi not %BB4%==yes $goto endoffile
 $label  beginbb4
 
 $ifi %COMBTECH%==yes $include "..\..\base\addons\combtech\bb4\combtech_eqndecdef.inc"
-
+$ifi %HYDROGEN%==yes $include "../../base/addons/hydrogen/bb4/hydrogen_eqndecdef.inc"
 
 $label endoffile

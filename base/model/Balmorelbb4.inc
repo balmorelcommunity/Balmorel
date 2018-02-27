@@ -146,7 +146,7 @@ ALIAS (T,ITALIAS);
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
 *-------------------------------------------------------------------------------
 
-
+$include "..\..\base\addons\_hooks\acronyms.inc"
 $include "..\..\base\addons\_hooks\setdeclare.inc"
 $include "..\..\base\addons\_hooks\setdefine.inc"
 
@@ -1004,7 +1004,7 @@ PARAMETER IORD_IY(YMODEL)    "The ord of the years Y over which the present Balb
 *-------------------------------------------------------------------------------
 *  Declaration of VARIABLES:
 *-------------------------------------------------------------------------------
-
+Display GDATA;
 FREE     VARIABLE VOBJ                             "Objective function value (MMoney)"; !! Unit seems to be Money
 POSITIVE VARIABLE VGE_T(Y,AAA,G,S,T)               "Electricity generation (MW)";
 POSITIVE VARIABLE VGH_T(Y,AAA,G,S,T)               "Heat generation (MW)";
@@ -2281,7 +2281,6 @@ $ifi %CREATETIME%==yes $goto ENDOFMODEL
 
 
 $ifi %bb4%==yes $INCLUDE "../../base/addons/BB4/BB4overview.inc";
-
 
 *-------------------------------------------------------------------------------
 $ifi %bb4%==yes $INCLUDE "../../base/model/Balmorelbb4.sim";

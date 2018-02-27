@@ -2,7 +2,7 @@
 
 $ifi not %bb4%==yes $goto endoffile
 
-
+$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_balbase4.inc";
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_balbase4.inc";
 
 
