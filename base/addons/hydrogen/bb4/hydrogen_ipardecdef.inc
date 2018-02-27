@@ -1,7 +1,7 @@
 PARAMETERS
    IHYDROGEN_DH2_SUMST(RRR)               'Variation profile of H2 demand per region'
-   IHYDROGEN_DH2_REGION_T_Y(RRR,SSS,TTT)  'Variation of H2 demand in each region along the year'
-   IHYDROGEN_DH2_AREA_T_Y(AAA,SSS,TTT)    'Variation of H2 demand in each region along the year'
+   IHYDROGEN_DH2_REGION_T_Y(YYY,RRR,SSS,TTT)  'Variation of H2 demand in each region along the year'
+   IHYDROGEN_DH2_AREA_T_Y(YYY,AAA,SSS,TTT)    'Variation of H2 demand in each region along the year'
    IHYDROGEN_STOVOL_START(AAA,G,SSS)    'Start level of hydrogen storage'
    IHYDROGEN_STOVOL_END(AAA,G,SSS)      'End level of hydrogen storage'
 ;
@@ -15,3 +15,7 @@ PARAMETER IHYDROGEN_DH2_AREA_SUMST(AAA) 'Variation profile of H2 demand per regi
 $ifi %BB1%==yes    IHYDROGEN_DH2_AREA_SUMST(IA) = SUM((S,T), IHOURSINST(S,T)*HYDROGEN_DH2_VAR_T(IA,S,T));
 $ifi %BB2%==yes    IHYDROGEN_DH2_AREA_SUMST(IA) = SUM((S,T), IHOURSINST(S,T)*HYDROGEN_DH2_VAR_T(IA,S,T));
 $ifi %BB3%==yes    IHYDROGEN_DH2_AREA_SUMST(IA) = SUM((SSS,T), IHOURSINST(SSS,T)*HYDROGEN_DH2_VAR_T(IA,SSS,T));
+
+
+IHYDROGEN_DH2_REGION_T_Y(YYY,IR,S,T) = HYDROGEN_DH2(YYY,IR)*HYDROGEN_DH2_VAR_T(IR,S,T);
+IHYDROGEN_DH2_AREA_T_Y(YYY,IA,S,T)  = HYDROGEN_DH2(YYY,IA)*HYDROGEN_DH2_VAR_T(IA,S,T);

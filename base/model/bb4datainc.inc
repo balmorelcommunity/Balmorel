@@ -187,7 +187,7 @@ SET AGKN(AAA,GGG)   'Areas for possible location of new technologies'   %semisla
 $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
-                AGKN(AAA,GGG)=0; !! TODO: here?
+                
 $offmulti
 SET Y(YYY)    'Years in the simulation'   %semislash%
 $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';

@@ -867,6 +867,7 @@ PARAMETER IGROWTHCAPCG(C,G)  'Limit on growth of technology dependent on years b
 *-------------------------------------------------------------------------------
 
 $include "..\..\base\addons\_hooks\pardefine.inc"
+$INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
 
 * These internal parameters pertain to price sensitivy electricity exchange with
 * third countries.
@@ -2380,7 +2381,9 @@ $include "../../base/addons/_hooks/endofmodel_pre.inc"
 $label ENDOFMODEL
 $include "../../base/addons/_hooks/endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
-
+* Sometimes convenient to have it all (most recent values) at this point.
+* However, it may be detrimental to e.g. merging of gdx files, so better move to other place.
+execute_unload "all_endofmodel.gdx";
 
 DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile: <case>/logerror/logfile.out." ;
 
