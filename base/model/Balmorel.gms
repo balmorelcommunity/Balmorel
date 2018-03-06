@@ -1846,7 +1846,6 @@ POSITIVE VARIABLE VQHSTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasona
 POSITIVE VARIABLE VQHYRSSEQ(AAA,S,IPLUSMINUS)      'Feasibility of hydropower reservoir equation QHYRSSEQ (MWh)';
 POSITIVE VARIABLE VQHYRSMINMAXVOL(AAA,S,IPLUSMINUS)'Feasibility of hydropower reservoir minimum (IPLUSMINUS) and maximum (IPLUSMINUS) content (MWh)';
 POSITIVE VARIABLE VQGEQCF(C,FFF,IPLUSMINUS)        'Feasibility in Requered fuel usage per country constraint (MWh)'
-*Ida addition
 POSITIVE VARIABLE VQGMAXC3F(C,FFF,IFFFALIAS,IFFFALIAS2) 'Feasibility in Maximum fuel usage per country constraint for a share of three fuels (MWh)'
 POSITIVE VARIABLE VQGMINCF(C,FFF)                  'Feasibility in Minimum fuel usage per country constraint (MWh)'
 POSITIVE VARIABLE VQGMAXCF(C,FFF)                  'Feasibility in Maximum fuel usage per country constraint (MWh)'
@@ -2176,7 +2175,7 @@ $ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3
                +SUM((IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))), (VQHEQ(IA,IS3,T,'IMINUS')+VQHEQ(IA,IS3,T,'IPLUS')))
 
                +SUM((C,FFF)$IGEQF_Y(C,FFF) , VQGEQCF(C,FFF,'IPLUS')+VQGEQCF(C,FFF,'IMINUS')    )
-*Ida addition
+
                +SUM((C,FFF,IFFFALIAS,IFFFALIAS2)$GMAX3F(C,FFF,IFFFALIAS,IFFFALIAS2), VQGMAXC3F(C,FFF,IFFFALIAS,IFFFALIAS2)     )
 
                +SUM((C,FFF)$IGMINF_Y(C,FFF), VQGMINCF(C,FFF)      )
@@ -3306,11 +3305,6 @@ $include "../../base/addons/_hooks/endofmodel_pre.inc"
 $label ENDOFMODEL
 $include "../../base/addons/_hooks/endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
-
-
-* Sometimes convenient to have it all (most recent values) at this point.
-* However, it may be detrimental to e.g. merging of gdx files, so better move to other place.
-* execute_unload "all_endofmodel.gdx";
 
 *----- End of file:------------------------------------------------------------
 $label endoffile
