@@ -41,8 +41,6 @@ EQUATIONS
 ;
 
 
-
-
 * Existing capacity:  ----------------------------------------------------------
 
 * Existing combtech, sum of fuel (MW) use any (S,T) limited by rated capacity (MW) on primal (0 for irrelevant, eps for 0) ({eps,(0;1]})

@@ -57,7 +57,7 @@ $setglobal bb1
 $setglobal bb2
 *!option yes      !notif %BB1%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
-$setglobal bb3 yes
+$setglobal bb3
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
 $setglobal bb4 yes
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
@@ -109,6 +109,10 @@ $setglobal DFLEXQUANT
 $setglobal COMBTECH  yes
 *!option yes
 
+* Set demands for hydrogen consumption and enable hydrogen technologies.
+$Setglobal HYDROGEN  yes
+*!option yes
+
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
 $setglobal X3V
 *!option yes
@@ -150,10 +154,6 @@ $setglobal AGKNDISC
 *!option yes
 *!onlyif %BB2%==yes
 *!onlyif %solvemip%==yes
-
-* Set demands for hydrogen consumption.
-$Setglobal H2
-*!option yes
 
 * Use the flow-based capacity allocation methodology
 $Setglobal FlowBased
@@ -337,7 +337,7 @@ $setglobal INPUTDATAGDX2XLS
 * A quick way to get (some of) the relevant information is to make a gdx file with all information.
 * This option will provide unloading of all that is available at the end of Balmorel.gms.
 *
-$setglobal all_endofmodelgdx
+$setglobal all_endofmodelgdx 
 *!option yes     !Save the file all_endofmodel.gdx to the model folder
 
 * Print out welfare results
@@ -409,7 +409,7 @@ $ifi %system.filesys%==MSNT
 $setglobal batfileMERGESAVEPOINTRESULTS %relpathModel%MERGESAVEPOINTRESULTS.bat
 *!option !fixedvalue
 $ifi %system.filesys%==MSNT
-file fileMERGESAVEPOINTRESULTSbat /  %batfileMERGESAVEPOINTRESULTS%  /;
+file     fileMERGESAVEPOINTRESULTSbat /  %batfileMERGESAVEPOINTRESULTS%  /;
 $ifi %system.filesys%==MSNT
 putclose fileMERGESAVEPOINTRESULTSbat;
 

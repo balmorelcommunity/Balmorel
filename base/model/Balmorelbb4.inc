@@ -146,7 +146,7 @@ ALIAS (T,ITALIAS);
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
 *-------------------------------------------------------------------------------
 
-
+$include "..\..\base\addons\_hooks\acronyms.inc"
 $include "..\..\base\addons\_hooks\setdeclare.inc"
 $include "..\..\base\addons\_hooks\setdefine.inc"
 
@@ -202,6 +202,7 @@ $include "..\..\base\addons\_hooks\setdeclare.inc"
 *---- Technology data: ---------------------------------------------------------
 *------------------------------------------------------------------------------
 PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics";
+
 
 *-------------------------------------------------------------------------------
 * Definitions of internal sets relative to technologies,
@@ -867,6 +868,7 @@ PARAMETER IGROWTHCAPCG(C,G)  'Limit on growth of technology dependent on years b
 *-------------------------------------------------------------------------------
 
 $include "..\..\base\addons\_hooks\pardefine.inc"
+$INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
 
 * These internal parameters pertain to price sensitivy electricity exchange with
 * third countries.
@@ -2293,7 +2295,6 @@ $ifi %CREATETIME%==yes $goto ENDOFMODEL
 
 $ifi %bb4%==yes $INCLUDE "../../base/addons/BB4/BB4overview.inc";
 
-
 *-------------------------------------------------------------------------------
 $ifi %bb4%==yes $INCLUDE "../../base/model/Balmorelbb4.sim";
 *-------------------------------------------------------------------------------
@@ -2391,7 +2392,6 @@ $include "../../base/addons/_hooks/endofmodel_pre.inc"
 $label ENDOFMODEL
 $include "../../base/addons/_hooks/endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
-
 
 
 DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile: <case>/logerror/logfile.out." ;

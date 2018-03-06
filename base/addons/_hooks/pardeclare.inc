@@ -5,3 +5,15 @@
 
 
 $ifi %FlowBased%==yes    $include "../../base/addons/flowbased/flowbased_pardeclare.inc";
+
+$ifi %BB4%==yes $goto beginbb4
+
+$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_pardeclare.inc";
+
+$ifi not %BB4%==yes $goto endoffile
+
+$label  beginbb4
+
+$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_pardeclare.inc";
+
+$label endoffile

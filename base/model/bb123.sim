@@ -149,7 +149,8 @@ VGH_T.UP(IA,IGKH,S,T)$IAGK_Y(IA,IGKH)=
 $ifi %PLANTCLOSURES%==yes VDECOM.UP(IA,IGKE) = IGKVACCTOY(IA,IGKE) + IGKFX_Y(IA,IGKE);
 $ifi %PLANTCLOSURES%==yes VDECOM.UP(IA,IGKH) = IGKVACCTOY(IA,IGKH) + IGKFX_Y(IA,IGKH);
 
-$ifi %COMBTECH%==YES  $INCLUDE '../../base/addons/combtech/combtech_sim.inc';
+$INCLUDE '../../base/addons/_hooks/sim.inc';
+*$ifi %COMBTECH%==YES  $INCLUDE '../../base/addons/combtech/combtech_sim.inc';
 
 * Storage loading (MW) and unloading (MW) do not exceed capacity:
 * Modified to account for storage investment options.
@@ -454,6 +455,15 @@ $ifi %POLICIES%==yes $include '../../base/addons/policies/pol_yearupdate.inc';
 $ifi %bb1%==yes IAGKN(IA,G)=NO;
 $ifi %bb3%==yes IAGKN(IA,G)=NO;
 
+*Start level of hydrogen storage in season S fixed to value found in yearly simulation
+$ifi not %H2%==yes $goto noh2store
+$ifi %bb3%==yes VH2STOVOL_T.FX(IA,IGH2STO,IS3,'T001')=IH2STOVOL_START(IA,IGH2STO,IS3);
+
+* End level of hydrogen storage in season S fixed to start level in season S+1
+*$ifi %bb3%==yes VH2STOVOL_T.FX(IA,IGH2STO,IS3,'T168')=IH2STOVOL_END(IA,IGH2STO,IS3);
+*$ifi %bb3%==yes VH2STOVOL_T.LO(IA,IGH2STO,IS3,'T168')=IH2STOVOL_END(IA,IGH2STO,IS3)-1;
+$label noh2store
+
 *----- End of: The following equations can exclude various elements ....-------
 
 *----- End of update parameters and bounds for current simulation year --------
@@ -625,6 +635,7 @@ $label endofUNIXmerge
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgeninput.inc';
 
 
+$ifi %H2%==yes $include '../../base/addons/Hydrogen/H2Sim.inc';
 
 * Certain checks may be made on the output:  /*Skal den flyttes ned eller andres?*/
 $INCLUDE '../../base/logerror/logerinc/error4.inc';
@@ -667,7 +678,7 @@ $ifi %bb1%==yes WATERVAL(Y,IA,S)  = QHYRSSEQ.m(IA,S);
 $ifi %bb2%==yes HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS))    = SUM(IGHYRS$IAGK_Y(IA,IGHYRS),SUM(T,IHOURSINST(S,T)*(VGE_T.L(IA,IGHYRS,S,T))));  !! todo: ny invest!
 $ifi %bb2%==yes VHYRS_SL(Y,IA,S)  = VHYRS_S.l(IA,S);
 $ifi %bb2%==yes WATERVAL(Y,IA,S)   = QHYRSSEQ.m(IA,S);
-
+$ifi %H2%==yes $INCLUDE '../../base/addons/Hydrogen/H2geninput.inc';
 
 
 
