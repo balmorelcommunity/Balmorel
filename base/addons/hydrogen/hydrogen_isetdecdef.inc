@@ -1,7 +1,7 @@
 Set IHYDROGEN_GH2STO(G)           'Hydrogen storage';
-Set IHYDROGEN_GETOH2(G)           'Electrolysis plants';
-Set IHYDROGEN_GEHTOH2(G)          'SOEC using both electricity and heat to produce H2';
-Set IHYDROGEN_GCH4TOH2(G)         'Steam reforming technologies producing hydrogen from natural gas';
+Set IHYDROGEN_GETOH2(G)           'Electrolysis plants - capacity on electricity';
+Set IHYDROGEN_GEHTOH2(G)          'SOEC using both electricity and heat to produce H2 - capacity on electricity';
+Set IHYDROGEN_GCH4TOH2(G)         'Steam reforming technologies producing hydrogen from natural gas - capacity on hydrogen';
 Set IHYDROGEN_GH2FUEL(G)          'Power plants using hydrogen as fuel';
 *IDA new additions
 SET IHYDROGEN_GH2TOE(G)           'Solid oxide fuel cells'

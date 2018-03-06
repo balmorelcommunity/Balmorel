@@ -149,7 +149,8 @@ VGH_T.UP(IA,IGKH,S,T)$IAGK_Y(IA,IGKH)=
 $ifi %PLANTCLOSURES%==yes VDECOM.UP(IA,IGKE) = IGKVACCTOY(IA,IGKE) + IGKFX_Y(IA,IGKE);
 $ifi %PLANTCLOSURES%==yes VDECOM.UP(IA,IGKH) = IGKVACCTOY(IA,IGKH) + IGKFX_Y(IA,IGKH);
 
-$ifi %COMBTECH%==YES  $INCLUDE '../../base/addons/combtech/combtech_sim.inc';
+$INCLUDE '../../base/addons/_hooks/sim.inc';
+*$ifi %COMBTECH%==YES  $INCLUDE '../../base/addons/combtech/combtech_sim.inc';
 
 * Storage loading (MW) and unloading (MW) do not exceed capacity:
 * Modified to account for storage investment options.

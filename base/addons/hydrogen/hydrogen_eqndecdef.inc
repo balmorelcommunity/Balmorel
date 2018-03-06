@@ -19,7 +19,7 @@ Equations
    QHYDROGEN_STOMAXUNLD(AAA,G,S,T)  'Maximum unloading capacity of hydrogen storage'
    QHYDROGEN_EQ(RRR,S,T)            'Hydrogen production equal demand'
    QHYDROGEN_EQ_AREA(AAA,S,T)       'Hydrogen production equals demand at an areal level'
-   QHYDROGEN_GCH4KNT(AAA,G,S,T)       'Hydrogen production of steam reforming plants restricted by capacity'
+   QHYDROGEN_GCH4KNT(AAA,G,S,T)       'Hydrogen production of new steam reforming plants restricted by capacity'
 ;
 
 
@@ -62,6 +62,12 @@ QHYDROGEN_HGEHTOH2(IAGK_Y(IA,IHYDROGEN_GEHTOH2),IS3,T)..
 QHYDROGEN_HNGEHTOH2(IAGKN(IA,IHYDROGEN_GEHTOH2),IS3,T)..
 
        VGEN_T(IA,IHYDROGEN_GEHTOH2,IS3,T)=E= VGHN_T(IA,IHYDROGEN_GEHTOH2,IS3,T)*GDATA(IHYDROGEN_GEHTOH2,'GDCB');
+
+* Hydrogen production from steam reforming restricted by capacity
+QHYDROGEN_GCH4KNT(IAGKN(IA,IHYDROGEN_GCH4TOH2),IS3,T) ..
+  VGKN(IA,IHYDROGEN_GCH4TOH2)*GKRATE(IA,IHYDROGEN_GCH4TOH2,IS3)
+   =G= VHYDROGEN_GH2N_T(IA,IHYDROGEN_GCH4TOH2,IS3,T)
+;
 
 
 * Hydrogen gas storage, dynamic balance for weekly time horizon:
@@ -153,13 +159,6 @@ QHYDROGEN_EQ(IR,IS3,T)..
 *        + SUM(HYDROGEN_DH2F_U,VHYDROGEN_DH2F_T(IR,IS3,T,HYDROGEN_DH2F_U) )
 *        - SUM(HYDROGEN_DH2F_D,VHYDROGEN_DH2F_T(IR,IS3,T,HYDROGEN_DH2F_D) )
          - VHYDROGEN_QH2EQ(IR,IS3,T,'IMINUS') + VHYDROGEN_QH2EQ(IR,IS3,T,'IPLUS')
-;
-Display HYDROGEN_H2TOF;
-
-* Hydrogen production from steam reforming restricted by capacity
-QHYDROGEN_GCH4KNT(IAGKN(IA,IHYDROGEN_GCH4TOH2),IS3,T) ..
-  VGKN(IA,IHYDROGEN_GCH4TOH2)*GKRATE(IA,IHYDROGEN_GCH4TOH2,IS3)
-   =G= VHYDROGEN_GH2N_T(IA,IHYDROGEN_GCH4TOH2,IS3,T)
 ;
 
 

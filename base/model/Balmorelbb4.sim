@@ -219,7 +219,7 @@ $ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_1.gdx" IBB1234_VG
 
 
 *COMBTECH
-
+$include "..\..\base\addons\_hooks\sim.inc"
 *$ifi %COMBTECH%==YES  $INCLUDE '../../base/addons/combtech/BB4/combtech_sim.inc'; !!todo error with endogenous investments (possible solution to send these equations to the code)
 
 * Storage loading (MW) and unloading (MW) do not exceed capacity.
