@@ -151,6 +151,7 @@ IAGKN(IA,G) = AGKN(IA,G);
 * This is to be checket in error2.inc: TODO. For now, overwrite to make sure:  No new capacity if capacity is not specified to be found endogeneously:
 IAGKN(IA,IGKKNOWN) = NO;
 * Fuel limitations: No new capacity nor new generation if zero fuel potential.
+
 LOOP((FFF,G)$IGF(G,FFF),
   LOOP(C$FKPOT(C,FFF), !! Default convention on FKPOT: 0 implies no restriction, 'EPS' implies zero MW.
     LOOP(IA$ICA(C,IA), IF((FKPOT(C,FFF) EQ 0), IAGKN(IA,G) = NO;); )); !! Because it is EPS
@@ -159,21 +160,28 @@ LOOP((FFF,G)$IGF(G,FFF),
   LOOP(IA$FKPOT(IA,FFF),
     IF((FKPOT(IA,FFF) EQ 0), IAGKN(IA,G) = NO;); ); !! Because it is EPS
 );
+
+
 * Actually, conditions like IWND_SUMST(IA) could be part of IAGK or IAGKN for IGWND, etc. for other xxx_SUMST(IA):
 * IWND_SUMST, ISOLESUMST, ISOLHSUMST, IWAVESUMST, IWTRRSSUM, IWTRRRSUM.
 * TODO, maybe. But, also this will be a quickfix, because it should be caught in error2.inc, and User should correct.  todo
 
-* In contrast to IAGKN, IAGKNY depends on the year (viz., according to GDFROMYEAR).
-IAGKNY(IY411,IA,G) = IAGKN(IA,G);
-* No new capacity if capacity is not yet available this year (IAGKNY only):
-IAGKNY(IY411,IA,G)$((YVALUE(IY411) LT GDATA(G,'GDFROMYEAR')) OR (YVALUE(IY411) GT GDATA(G,'GDLASTYEAR')))=NO;  !! Hans
-* TODO: consider if necessary and/or expedient to set .FX=0 for tech in IAGKN but not in IAGKNY (such tech presently appear in QOBJ, QHEQ and QEEQ)
 
-* Update IAGK_HASORPOT based on exogenously given (GKFX) or potential (IAGKN) investment (IAGKN is AGKN sharpened by fuel potential (FKPOT)).
+*Definition of IAGK_HASORPOT based on potential production
 
+IAGKNY(Y,IA,G) = IAGKN(IA,G); !!1st definition for correct assignment of IAGK_HASORPOT
+IAGKNY(Y,IA,G)$(YVALUE(Y) LT GDATA(G,'GDFROMYEAR'))=NO; !!1st definition for correct assignment of IAGK_HASORPOT
 IAGK_HASORPOT(Y,IA,G) = NO;
 IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);       display "first assign ",IAGK_HASORPOT  ;
-IAGK_HASORPOT(IY411,IA,G)$IAGKNY(IY411,IA,G) = YES;     display "last assign ",IAGK_HASORPOT  ;
+IAGK_HASORPOT(Y,IA,G)$IAGKNY(Y,IA,G) = YES;     display "last assign ",IAGK_HASORPOT  ;
+
+* In contrast to IAGKN, IAGKNY depends on the year (viz., according to GDFROMYEAR).
+* No new capacity if capacity is not yet available this year (IAGKNY only):
+IAGKNY(Y,IA,G) = NO; !!reset of set
+IAGKNY(IY411,IA,G) = IAGKN(IA,G);
+IAGKNY(IY411,IA,G)$((YVALUE(IY411) LT GDATA(G,'GDFROMYEAR')) OR (YVALUE(IY411) GT GDATA(G,'GDLASTYEAR')))=NO;  !! Hans
+
+* TODO: consider if necessary and/or expedient to set .FX=0 for tech in IAGKN but not in IAGKNY (such tech presently appear in QOBJ, QHEQ and QEEQ)
 
 *----COMBTECH----
 $ifi %COMBTECH%==yes IAGK_HASORPOT(IY411,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(IY411,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
@@ -289,25 +297,51 @@ VGKNACCUMGROSS.FX(IY411,IA,G)$(NOT IAGKN(IA,G))=0;
 
 * Transmision investments is subject to control by the option TransInvest,
 * therefore set a default and update if investments are intended.
-IXKN(IRE,IRI) = NO;
+
+* Update IXKE_HASORPOT based on exogenously given or potential investment
+
+IXK_HASORPOT(Y,IRE,IRI) = NO;
+IXK_HASORPOT(IY411,IRE,IRI) = YES$XKFX(IY411,IRE,IRI);
+IXKN(Y,IRE,IRI) = NO;
+$ifi %TransInvest%==yes IXKN(Y,IRE,IRI) = YES$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF));
+$ifi %TransInvest%==yes IXK_HASORPOT(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI) = YES;
+
+***This loop makes sure that if you invest in on line in the year Y, you can use this line in the future, even if you do not allow for investments on this line in the future
+LOOP(Y$(ORD(Y) GT 1),
+                     LOOP(IRE,
+                               LOOP(IRI,
+                                        IF((XINVCOST(Y--1,IRE,IRI) AND (XINVCOST(Y--1,IRE,IRI) LT INF)),
+                                                                    IXK_HASORPOT(Y,IRE,IRI)=IXKN(Y--1,IRE,IRI);
+
+                                        );
+                                        LOOP(IYALIAS2$((ORD(IYALIAS2) GT ORD(Y)) AND (ORD(IYALIAS2) NE CARD(IYALIAS2))),
+                                                                    IXK_HASORPOT(Y++1,IRE,IRI)=IXK_HASORPOT(Y,IRE,IRI);
+                                        );
+
+                               );
+                     );
+);
+
+
+
 * Update IXKN if investments are intended. Note that the conditions may differ in the two flow direction.
 * Note default data entry: if INF or 0 or nothing is given in an entry this means that no transmission
 * capacity can be established between the two associated regions in the given direction;
 * if the value is EPS then transmission investment is possible but with no associated investment cost.
 * If a real non-zero value is fiven then investment is possible with that cost.
-$ifi %TransInvest%==yes IXKN(IRE,IRI) = YES$(XINVCOST(IRE,IRI) AND (XINVCOST(IRE,IRI) LT INF));
+$ifi %TransInvest%==yes IXKN(Y,IRE,IRI)=NO; !!Reset of set
+$ifi %TransInvest%==yes IXKN(IY411,IRE,IRI) = YES$(XINVCOST(IY411,IRE,IRI) AND (XINVCOST(IY411,IRE,IRI) LT INF));
 
-* Update IXKE_HASORPOT based on exogenously given or potential investment
-IXK_HASORPOT(IY411,IRE,IRI) = YES$XKFX(IY411,IRE,IRI);
-IXK_HASORPOT(Y,IRE,IRI)$IXKN(IRE,IRI) = YES;
+
+
 * Update bounds:
 * Complement to equation QXK_UP for the case with no endogenous transmission investments.
-VX_T.UP(IY411,IRE,IRI,S,T)$(NOT IXKN(IRE,IRI)) = XKFX(IY411,IRE,IRI)*IXKRATE(IRE,IRI,S,T);
-VXKNACCUMNET.FX(IY411,IRE,IRI)$(IXKN(IRE,IRI) AND (NOT IXK_HASORPOT(IY411,IRE,IRI))) = 0;  !! Should not be necessary if condition on IAGKN(IA,G) is properly used in .gms code.
+$ifi not %TransInvest%==yes VX_T.UP(IY411,IRE,IRI,S,T)$IXK_HASORPOT(IY411,IRE,IRI) = XKFX(IY411,IRE,IRI)*IXKRATE(IRE,IRI,S,T);
+
+VXKNACCUMNET.FX(IY411,IRE,IRI)$(NOT IXKN(IY411,IRE,IRI)) = 0;
+VXKN.FX(IY411,IRE,IRI)$(NOT IXKN(IY411,IRE,IRI))=0;
 
 
-IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);         display "andetsteds: first assign ",IAGK_HASORPOT  ;
-IAGK_HASORPOT(IY411,IA,G)$IAGKN(IA,G) = YES;              display "andetsteds: last assign ",IAGK_HASORPOT  ;
 
 * Set the fixed exchange with third regions:
 
@@ -326,7 +360,7 @@ $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vannual.inc';
 * Electricity transmission between regions within countries and between
 * countries may be excluded by the following statement:
 
-$ifi not %TransInvest%==yes  VX_T.FX(IY411,IRE,IRI,S,T)=0;
+* VX_T.FX(IY411,IRE,IRI,S,T)=0;
 
 * Electricity transmission between countries may be excluded
 * by the following statement:
@@ -351,9 +385,6 @@ $ifi not %TransInvest%==yes  VX_T.FX(IY411,IRE,IRI,S,T)=0;
 OPTION Savepoint=1;
 
 BALBASE4.optfile = %USEOPTIONFILE%;
-
-vge_t.up(iy411,ia,g,s,t)=77777;
-vgh_t.up(iy411,ia,g,s,t)=77777;
 
 
 
@@ -419,7 +450,7 @@ $ifi %printfiles%==yes $if errorfree $include "../../base/output/printout/printi
 
 VGKNACCUMNET.FX(IY411FIRST,IA,G)$IAGKN(IA,G)   = VGKNACCUMNET.L(IY411FIRST,IA,G);
 VGKNACCUMGROSS.FX(IY411FIRST,IA,G)$IAGKN(IA,G) = VGKNACCUMGROSS.L(IY411FIRST,IA,G);
-VXKNACCUMNET.FX(IY411FIRST,IRE,IRI)$IXKN(IRE,IRI) = VXKNACCUMNET.L(IY411FIRST,IRE,IRI);
+VXKNACCUMNET.FX(IY411FIRST,IRE,IRI)$IXKN(IY411FIRST,IRE,IRI) = VXKNACCUMNET.L(IY411FIRST,IRE,IRI);
 $include "../../base/addons/_hooks/varassign.inc"
 
 * ------------------------------------------------------------------------------

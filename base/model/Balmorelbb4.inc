@@ -353,7 +353,7 @@ PARAMETER DH(YYY,AAA,DHUSER)           "Annual heat consumption (MWh)";
 *---- Transmission data: -------------------------------------------------------
 PARAMETER XKINI(YYY,IRRRE,IRRRI)       "Capacity of exogenously given transmission capacity between regions (MW)"; !! Previous name; for data consistensy, kept for data inclusion for this specific version.    todo
 PARAMETER XKFX(YYY,IRRRE,IRRRI)        "Capacity of exogenously given transmission capacity between regions (MW)"; !! New suggested name for XKINI. XKFX data copied to XKFX in bb4datainc.inc.
-PARAMETER XINVCOST(IRRRE,IRRRI)        "Investment cost in new transmission capacity, default: INF or 0: no investment, EPS or positive: possible with stated cost (Money/MW)";
+PARAMETER XINVCOST(YYY,IRRRE,IRRRI)        "Investment cost in new transmission capacity, default: INF or 0: no investment, EPS or positive: possible with stated cost (Money/MW)";
 PARAMETER XCOST(IRRRE,IRRRI)           "Transmission cost between regions (Money/MWh)";
 PARAMETER XLOSS(IRRRE,IRRRI)           "Transmission loss between regions (fraction)";
 
@@ -635,6 +635,7 @@ WTRRRVAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 
 * Aliases relative to time:
 ALIAS (Y,IYALIAS);
+ALIAS (Y,IYALIAS2);
 
 ALIAS (S,ISALIAS);
 ALIAS (T,ITALIAS);
@@ -677,7 +678,7 @@ SCALAR IFIRSTYEARNEXTBB4 "First year in the next Balbase4 model";
 
 
 SET IAGKFX(Y,AAA,G)    'Area, technology with positive endogenous capacity current simulation year';
-SET IXKN(IRRRE,IRRRI)  'Pair of regions that may get new transmission capacity';
+SET IXKN(Y,IRRRE,IRRRI)  'Pair of regions that may get new transmission capacity, yearly dependent';
 
 
 * Specification of where new endogenous generation capacity may be located:
@@ -1006,7 +1007,7 @@ PARAMETER IORD_IY(YMODEL)    "The ord of the years Y over which the present Balb
 *-------------------------------------------------------------------------------
 *  Declaration of VARIABLES:
 *-------------------------------------------------------------------------------
-Display GDATA;
+
 FREE     VARIABLE VOBJ                             "Objective function value (MMoney)"; !! Unit seems to be Money
 POSITIVE VARIABLE VGE_T(Y,AAA,G,S,T)               "Electricity generation (MW)";
 POSITIVE VARIABLE VGH_T(Y,AAA,G,S,T)               "Heat generation (MW)";
@@ -1184,6 +1185,8 @@ QXKN(Y,IRRRE,IRRRI)               "New transmission investment  - NOT IMPLEMENTE
 QXKNACCUMNET(Y,IRRRE,IRRRI)       "NOT FINISHED, TODO, Accumulated new transmission investments available at beginning of next year (MW)"
 QXKNACCUMGROSS(Y,IRRRE,IRRRI)     "Accumulated new transmission investments available at beginning of next year (MW)"
 QXK_UP(Y,IRRRE,IRRRI,S,T)         "Capacity constraint on electricity transmission (MW)"
+QXINVSYMMETRY(Y,IRRRE,IRRRI)      "Transmission investments are set symetric(MW)"
+
 
 *-------------------------------------------------------------------------------
 *----- Any equations declarations for addon to be placed here: -----------------
@@ -1254,7 +1257,7 @@ $ifi %AGKNDISC%==yes  $include "../../base/addons/bb4/agkndisc/agkndiscaddqobj.i
 * Investment costs, new transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):
 * TODO: sammenlign med SONYstick:
-    + SUM((IRE,IRI)$IXKN(IRI,IRE), VXKN(Y,IRE,IRI)*XINVCOST(IRE,IRI)*
+    + SUM((IRE,IRI)$IXKN(Y,IRI,IRE), VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
       (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C)))))
 * Emission taxes
 
@@ -1307,6 +1310,8 @@ $ifi %BB2%==yes       +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSSEQ(IA,
 
      +SUM((IA,IS3,T)$(SUM(IGHSTO$IAGK_HASORPOT(Y,IA,IGHSTO),1)), (VQHSTOVOLT(Y,IA,IS3,T,'IMINUS')+VQHSTOVOLT(Y,IA,IS3,T,'IPLUS')))
      +SUM((IA,IS3,T)$(SUM(IGESTO$IAGK_HASORPOT(Y,IA,IGESTO),1)), (VQESTOVOLT(Y,IA,IS3,T,'IMINUS')+VQESTOVOLT(Y,IA,IS3,T,'IPLUS')))
+     +SUM((IA,IS3,T)$(SUM(IGHSTOS$IAGK_HASORPOT(Y,IA,IGHSTOS),1)), (VQHSTOVOLTS(Y,IA,IS3,T,'IMINUS')+VQHSTOVOLTS(Y,IA,IS3,T,'IPLUS')))
+     +SUM((IA,IS3,T)$(SUM(IGESTOS$IAGK_HASORPOT(Y,IA,IGESTOS),1)), (VQESTOVOLTS(Y,IA,IS3,T,'IMINUS')+VQESTOVOLTS(Y,IA,IS3,T,'IPLUS')))
      +SUM((IR,IS3,T), (VQEEQ(Y,IR,IS3,T,'IMINUS')+VQEEQ(Y,IR,IS3,T,'IPLUS')))
      +SUM((IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))), (VQHEQ(Y,IA,IS3,T,'IMINUS')+VQHEQ(Y,IA,IS3,T,'IPLUS')))
 
@@ -1316,13 +1321,13 @@ $ifi %BB2%==yes       +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSSEQ(IA,
      +SUM((IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)), VQHYMAXG(Y,IA,IS3,T,'IMINUS'))
 * TODO: sammenlign med SONYstick:
      +SUM((IA,IGKFIND)$IAGKN(IA,IGKFIND), (VQGKNACCUMNET(Y,IA,IGKFIND,"IPLUS")+VQGKNACCUMNET(Y,IA,IGKFIND,"IMINUS"))) !!TO DO VGKNACCUMNET IS NOT FINISHED
-     +SUM((IA,IGKFIND)$IAGKN(IA,IGKFIND), (VQGKNACCUMGROSS(Y,IA,IGKFIND,"IPLUS")+VQGKNACCUMGROSS(Y,IA,IGKFIND,"IMINUS")))
-*   TODO      +SUM((IRE,IRI), VQXKNACCUMNET(Y,IRE,IRI,"IPLUS")+VQXKNACCUMNET(Y,IRE,IRI,"IMINUS"))  Presently out, because QGKNACCUMNET(unfinished), use QGKNACCUMgross  for now
-     +SUM((IRE,IRI)$IXKN(IRE,IRI), VQXKNACCUMGROSS(Y,IRE,IRI,"IPLUS")+VQXKNACCUMGROSS(Y,IRE,IRI,"IMINUS"))
+*     +SUM((IA,IGKFIND)$IAGKN(IA,IGKFIND), (VQGKNACCUMGROSS(Y,IA,IGKFIND,"IPLUS")+VQGKNACCUMGROSS(Y,IA,IGKFIND,"IMINUS")))
+     +SUM((IRE,IRI)$IXKN(Y,IRE,IRI), VQXKNACCUMNET(Y,IRE,IRI,"IPLUS")+VQXKNACCUMNET(Y,IRE,IRI,"IMINUS"))  !!TO DO VXKNACCUMNET IS NOT FINISHED
+*    +SUM((IRE,IRI)$IXKN(Y,IRE,IRI), VQXKNACCUMGROSS(Y,IRE,IRI,"IPLUS")+VQXKNACCUMGROSS(Y,IRE,IRI,"IMINUS")) !!EQUATION NOT DEFINED
 
      +SUM((IA,IGDISPATCH(IGKENOSTO),IS3,T)$IAGKN(IA,IGKENOSTO), (VQGKE_UP(Y,IA,IGKENOSTO,IS3,T,'IMINUS')+VQGKE_UP(Y,IA,IGKENOSTO,IS3,T,'IPLUS')))
      +SUM((IA,IGDISPATCH(IGKHNOSTO),IS3,T)$IAGKN(IA,IGKHNOSTO), (VQGKH_UP(Y,IA,IGKHNOSTO,IS3,T,'IMINUS')+VQGKH_UP(Y,IA,IGKHNOSTO,IS3,T,'IPLUS')))
-     +SUM((IRE,IRI,IS3,T)$IXKN(IRE,IRI), (VQXK_UP(Y,IRE,IRI,IS3,T,'IMINUS')+VQXK_UP(Y,IRE,IRI,IS3,T,'IPLUS')))
+     +SUM((IRE,IRI,IS3,T)$IXK_HASORPOT(Y,IRE,IRI), (VQXK_UP(Y,IRE,IRI,IS3,T,'IMINUS')+VQXK_UP(Y,IRE,IRI,IS3,T,'IPLUS')))
 
      +SUM((C,FFF)$FKPOT(C,FFF),   VQKFUEL(Y,C,FFF))
      +SUM((IR,FFF)$FKPOT(IR,FFF), VQKFUEL(Y,IR,FFF))
@@ -1382,7 +1387,7 @@ $ifi %TSP%==yes $include "../../base/addons/Transport/TSPQEEQ.inc"
 *         + SUM(DEF_U3,VDEF_T(IY411,IR,IS3,T,DEF_U3) )
 *         - SUM(DEF_D3,VDEF_T(IY411,IR,IS3,T,DEF_D3) )
           )/(1-DISLOSS_E(IR)))
-      + SUM(IRI$(XKFX(IY411,IR,IRI) OR IXKN(IR,IRI) OR IXKN(IRI,IR)),VX_T(IY411,IR,IRI,IS3,T))
+      + SUM(IRI$IXK_HASORPOT(IY411,IR,IRI),VX_T(IY411,IR,IRI,IS3,T))
 $ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VEX_T(IR,X3VPLACE,X3VSTEP,IS3,T)))
 
 $include "..\..\base\addons\_hooks\qeeq.inc"
@@ -1856,9 +1861,8 @@ QKEQFNA(IY411,FFF)$FKEQNA(IY411,FFF).. !! 0 implies no restriction, "EPS" implie
 
 * Electricity transmission is limited by transmission capacity:
 
-* QXK_UP(IY411,IRE,IRI,IS3,T)$IXK_HASORPOT(IY411,IRE,IRI)..
+QXK_UP(IY411,IRE,IRI,IS3,T)$IXK_HASORPOT(IY411,IRE,IRI)..
 * Complement to assigning VX_T.UP for the case with endogenous transmission investments.
-QXK_UP(IY411,IRE,IRI,IS3,T)$IXKN(IRE,IRI)..
 
     IXKRATE(IRE,IRI,IS3,T)*(
         XKFX(IY411,IRE,IRI)
@@ -1872,11 +1876,17 @@ QXK_UP(IY411,IRE,IRI,IS3,T)$IXKN(IRE,IRI)..
 * Note that it is assumed that there are no endogenous decommissioning
 * of previous endogenous investment (cf. QGKACCUMNET).
 
-QXKNACCUMNET(IY411,IRE,IRI)$IXKN(IRE,IRI)..
+QXKNACCUMNET(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
   VXKNACCUMNET(IY411,IRE,IRI)  !! End of this year's VXKNACCUMNET (available at beginning of next year)'
      =E=
   SUM(IY402$IY411PREVY(IY411,IY402), VXKNACCUMNET(IY402,IRE,IRI)) + VXKN(IY411,IRE,IRI)  !! VXKNVACCUMNET available at end of previous(i.e., start of this) year PLUS investment during this year
   + VQXKNACCUMNET(IY411,IRE,IRI,'IPLUS') - VQXKNACCUMNET(IY411,IRE,IRI,'IMINUS')
+;
+
+QXINVSYMMETRY(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
+   VXKN(IY411,IRI,IRE)
+         =E=
+   VXKN(IY411,IRE,IRI)
 ;
 
 
@@ -2222,13 +2232,14 @@ $ifi %REShareEH%==yes QREShareEH
 $offtext
 
 
-$ifi %BB4%==yes QGKNACCUMGROSS
+*$ifi %BB4%==yes QGKNACCUMGROSS
 $ifi %BB4%==yes QGKNACCUMNET   !! TODO
-$ifi %BB4%==yes QXKNACCUMNET
+$ifi %BB4%==yes    $ifi %TransInvest%==yes  QXKNACCUMNET
 *--- Capacity constraints on generation (MW) -----------------------------------
 $ifi %BB4%==yes    QGKE_UP
 $ifi %BB4%==yes    QGKH_UP
 $ifi %BB4%==yes    $ifi %TransInvest%==yes  QXK_UP
+$ifi %BB4%==yes    $ifi %TransInvest%==yes  QXINVSYMMETRY
 $ifi %BB4%==yes    QHYRRDISPATCH
 $ifi %BB4%==yes    QWNDDISPATCH
 $ifi %BB4%==yes    QSOLEDISPATCH
@@ -2381,6 +2392,7 @@ $include "../../base/addons/_hooks/endofmodel_pre.inc"
 $label ENDOFMODEL
 $include "../../base/addons/_hooks/endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
+
 
 DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile: <case>/logerror/logfile.out." ;
 
