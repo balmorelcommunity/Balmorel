@@ -174,7 +174,7 @@ SET AGKN(AAA,GGG)   'Areas for possible location of new technologies'   %semisla
 $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
-                AGKN(AAA,GGG)=0; !! TODO: here?
+
 SET Y(YYY)    'Years in the simulation'   %semislash%
 $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
 $if not EXIST '../data/Y.inc' $INCLUDE '../../base/data/Y.inc';
@@ -647,7 +647,7 @@ $if not EXIST '../data/XKINI.inc' $INCLUDE '../../base/data/XKINI.inc';
 PARAMETER XKFX(YYY,IRRRE,IRRRI)  'Capacity of exogenously given transmission capacity between regions (MW)'; !! New suggested name for XKINI. XKFX data copie3d to XKFX.
 XKFX(YYY,IRRRE,IRRRI) = XKINI(YYY,IRRRE,IRRRI);
 
-PARAMETER XINVCOST(IRRRE,IRRRI)   'Investment cost in new transmission capacity, default: INF or 0: no investment, EPS or positive: possible with stated cost (Money/MW)'    %semislash%
+PARAMETER XINVCOST(YYY,IRRRE,IRRRI)   'Investment cost in new transmission capacity, default: INF or 0: no investment, EPS or positive: possible with stated cost (Money/MW)'    %semislash%
 $if     EXIST '../data/XINVCOST.inc' $INCLUDE         '../data/XINVCOST.inc';
 $if not EXIST '../data/XINVCOST.inc' $INCLUDE '../../base/data/XINVCOST.inc';
 %semislash%;
