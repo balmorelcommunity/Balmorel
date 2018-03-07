@@ -3224,6 +3224,12 @@ $ifi %MAKEINVEST%==yes execute_unload '../../base/data/XKACC.gdx', XKACC;
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgdx.inc';
 *--- End: Results which can be transfered between simulations are placed here --
 
+*----- End of model:------------------------------------------------------------
+$include "../../base/addons/_hooks/endofmodel_pre.inc"
+$label ENDOFMODEL
+$include "../../base/addons/_hooks/endofmodel_post.inc"
+*----- End of model ------------------------------------------------------------
+
 
 *--- Results collection for this case ------------------------------------------
 
@@ -3300,11 +3306,6 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./diffile.gdx ./"%relpathoutput%%
 
 $label endofUNIXoutput
 
-*----- End of model:------------------------------------------------------------
-$include "../../base/addons/_hooks/endofmodel_pre.inc"
-$label ENDOFMODEL
-$include "../../base/addons/_hooks/endofmodel_post.inc"
-*----- End of model ------------------------------------------------------------
 
 *----- End of file:------------------------------------------------------------
 $label endoffile

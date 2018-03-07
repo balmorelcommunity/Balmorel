@@ -337,7 +337,7 @@ $setglobal INPUTDATAGDX2XLS
 * A quick way to get (some of) the relevant information is to make a gdx file with all information.
 * This option will provide unloading of all that is available at the end of Balmorel.gms.
 *
-$setglobal all_endofmodelgdx 
+$setglobal all_endofmodelgdx
 *!option yes     !Save the file all_endofmodel.gdx to the model folder
 
 * Print out welfare results
@@ -420,13 +420,6 @@ $ifi %system.filesys%==UNIX
 file fileMERGESAVEPOINTRESULTSbash / %bashfileMERGESAVEPOINTRESULTS% /;
 $ifi %system.filesys%==UNIX
 putclose fileMERGESAVEPOINTRESULTSbash;
-
-* The following is a clean-up in relation to previous runs.
-$ifi %system.filesys%==UNIX
-$ifi %SAVEPOINTVALUE%==1  execute "rm %relpathModel%*.gdx"
-$ifi %system.filesys%==MSNT
-$ifi %SAVEPOINTVALUE%==1  execute "del %relpathModel%*.gdx";
-
 
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
