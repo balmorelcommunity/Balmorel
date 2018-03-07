@@ -106,11 +106,11 @@ $setglobal DFLEXQUANT
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH  yes
+$setglobal COMBTECH yes
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN  yes
+$Setglobal HYDROGEN yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
@@ -337,7 +337,7 @@ $setglobal INPUTDATAGDX2XLS
 * A quick way to get (some of) the relevant information is to make a gdx file with all information.
 * This option will provide unloading of all that is available at the end of Balmorel.gms.
 *
-$setglobal all_endofmodelgdx 
+$setglobal all_endofmodelgdx yes
 *!option yes     !Save the file all_endofmodel.gdx to the model folder
 
 * Print out welfare results

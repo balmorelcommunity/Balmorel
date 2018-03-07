@@ -2317,15 +2317,25 @@ $ifi %X3V%==yes $INCLUDE "../../base/addons/x3v/model/x3vgdx.inc";
 * Merge simulation years:
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "gdxmerge %relpathModel%../output/temp/*.gdx";
 
+
+*----- End of model:------------------------------------------------------------
+$include "../../base/addons/_hooks/endofmodel_pre.inc"
+$label ENDOFMODEL
+$include "../../base/addons/_hooks/endofmodel_post.inc"
+*----- End of model ------------------------------------------------------------
+
+
 *--- Results collection for this case ------------------------------------------
 
 $ifi not %system.filesys%==MSNT $goto endofMSNToutput
+*The following section until $label endofMSNToutput is related to Windows output only
+*Please use only backslash \ instead of forward slash / in this section until the label
 
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/temp/*.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%temp\*.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%.gdx"';
 
 $ifi %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/%CASEID%.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\%CASEID%.gdx"';
 $ifi %MERGECASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-results.gdx"'
 
@@ -2337,7 +2347,7 @@ $ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutpu
 *--- Results collection and comparison for differents cases --------------------
 
 $ifi not %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%.gdx" "%relpathModel%../../%MERGEWITH%/output/%MERGEWITH%.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%.gdx" "%relpathModel%..\..\%MERGEWITH%/output\%MERGEWITH%.gdx"';
 $ifi not %MERGECASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-resmerged.gdx"';
 
@@ -2347,13 +2357,15 @@ $ifi not %MERGECASE%==NONE
 $ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutput%%CASEID%-resmerged.gdx" -o "%relpathoutput%%CASEID%-resmerged.db"';
 
 $ifi not %DIFFCASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%../../%DIFFWITH%/output/%DIFFWITH%-results.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%DIFFWITH%/output/%DIFFWITH%-results.gdx"';
 $ifi not %DIFFCASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move diffile.gdx "%relpathoutput%%CASEID%-diff.gdx"';
 
 $label endofMSNToutput
-*------------------------------------------------------------------------------------------------------------------
+
 $ifi not %system.filesys%==UNIX $goto endofUNIXoutput
+*The following section until $label endofUNIXoutput is related to UNIX output only
+*Please use only forward slash / instead of backslash \ in this section until the label
 
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/temp/*.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%.gdx"';
@@ -2385,13 +2397,8 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff ./"%relpathoutput%%CASEID%-r
 $ifi not %DIFFCASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./diffile.gdx ./"%relpathoutput%%CASEID%-diff.gdx"';
 
-$label endofUNIXoutput
 
-*----- End of model:------------------------------------------------------------
-$include "../../base/addons/_hooks/endofmodel_pre.inc"
-$label ENDOFMODEL
-$include "../../base/addons/_hooks/endofmodel_post.inc"
-*----- End of model ------------------------------------------------------------
+$label endofUNIXoutput
 
 
 DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile: <case>/logerror/logfile.out." ;
