@@ -524,7 +524,6 @@ $if not EXIST '../data/AGKNDISCGDATA.inc' $INCLUDE '../../base/data/AGKNDISCGDAT
 $label label_AGKNDISC1
 * End: Addon AGKNDISC: discrete size investment in technologies.
 
-$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
 
 *-------------------------------------------------------------------------------
 * End: Any declarations and definitions of sets, aliases and acronyms for addon
@@ -1993,7 +1992,6 @@ $ifi %REShareEH%==yes QREShareEH(CCCREShareEH)     'Minimum share of electricity
 $ifi %AGKNDISC%==yes QAGKNDISC01(AAA,G)            'At most one of the specified discrete capacity size investments is chosen (Addon AGKNDISC)';
 $ifi %AGKNDISC%==yes QAGKNDISCCONT(AAA,G)          'The invested capacity must be one of the specified sizes or zero (MW) (Addon AGKNDISC)';
 
-$ifi %BB3%==yes $ifi not %HYRSBB123%==none         $include "../../base/addons/hyrsbb123/hyrsbb123equations.inc";
 ;
 
 *-------------------------------------------------------------------------------
@@ -3141,10 +3139,6 @@ MODEL BALBASE3 'Balmorel model without endogeneous investments, simulating each 
 *----- Any equations for addon to be placed here: ------------------------------
 $include "../../base/addons/_hooks/balbase3.inc"
 * Eventually the following addons will be handled through the above inclusion of _hooks.inc
-
-$ifi %HYRSBB123%==quant        QHYRSG
-$ifi %HYRSBB123%==quantprice   QHYRSG
-$ifi %HYRSBB123%==quantprice   QWATERVOLINI
 
 $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htbb1.inc';
 *----- End: Any equations for addon to be placed here. -------------------------
