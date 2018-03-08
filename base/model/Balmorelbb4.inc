@@ -1108,13 +1108,21 @@ EQUATIONS
    QHSTOVOLT(Y,AAA,S,T)     "Intra-seasonal heat storage dynamic equation (MWh)"
    QHSTOVOLTS(Y,AAA,S,T)    "Inter-seasonal heat storage dynamic equation (MWh)"
 
-   QHSTOLOADT(Y,AAA,S,T)    "Heat storage loading less than heat production (MW)"
-   QHSTOLOADTLIM(Y,AAA,S,T) "Upper limit to heat storage loading (MW)"
-   QESTOLOADTLIM(Y,AAA,S,T) "Upper limit to electricity storage loading (MW)"
-   QHSTOVOLTLIM(Y,AAA,S,T)  "Heat storage capacity limit (MWh)"
-   QESTOVOLTLIM(Y,AAA,S,T)  "Electricity storage capacity limit (MWh)"
-   QHSTOVGHTLIM(Y,AAA,G,S,T)"Heat storage output limit (MW)"
-   QESTOVGETLIM(Y,AAA,G,S,T)"Electricity storage output limit (MW)"
+   QHSTOLOADT(Y,AAA,S,T)    "Intra-seasonal Heat storage loading less than heat production (MW)"
+   QHSTOLOADTLIM(Y,AAA,S,T) "Intra-seasonal Upper limit to heat storage loading (MW)"
+   QESTOLOADTLIM(Y,AAA,S,T) "Intra-seasonal Upper limit to electricity storage loading (MW)"
+   QHSTOVOLTLIM(Y,AAA,S,T)  "Intra-seasonal Heat storage capacity limit (MWh)"
+   QESTOVOLTLIM(Y,AAA,S,T)  "Intra-seasonal Electricity storage capacity limit (MWh)"
+   QHSTOVGHTLIM(Y,AAA,G,S,T)"Intra-seasonal Heat storage output limit (MW)"
+   QESTOVGETLIM(Y,AAA,G,S,T)"Intra-seasonal Electricity storage output limit (MW)"
+   QHSTOLOADTS(Y,AAA,S,T)    "Inter-seasonal Heat storage loading less than heat production (MW)"
+   QHSTOLOADTLIMS(Y,AAA,S,T) "Inter-seasonal Upper limit to heat storage loading (MW)"
+   QESTOLOADTLIMS(Y,AAA,S,T) "Inter-seasonal Upper limit to electricity storage loading (MW)"
+   QHSTOVOLTLIMS(Y,AAA,S,T)  "Inter-seasonal Heat storage capacity limit (MWh)"
+   QESTOVOLTLIMS(Y,AAA,S,T)  "Inter-seasonal Electricity storage capacity limit (MWh)"
+   QHSTOVGHTLIMS(Y,AAA,G,S,T)"Inter-seasonal Heat storage output limit (MW)"
+   QESTOVGETLIMS(Y,AAA,G,S,T)"Inter-seasonal Electricity storage output limit (MW)"
+
 
    QKEFUELC(Y,C,FFF)        "Maximum electricty capacity by year, country and fuel ()"  !!  () todo
    QKEFUELR(Y,RRR,FFF)      "Maximum electricty capacity by year, region and fuel ()"  !!  () todo
@@ -1594,6 +1602,15 @@ QHSTOLOADT(IY411,IA,IS3,T)$(SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO),1))..
    VHSTOLOADT(IY411,IA,IS3,T)
 ;
 
+QHSTOLOADTS(IY411,IA,IS3,T)$(SUM(IGHSTOS$IAGK_HASORPOT(IY411,IA,IGHSTOS),1))..
+* This equation is believed to be superfluous, as storage loading is
+* restricted to be less than generation minus demand in the heat balance equation.
+* However, until this is certain, the equation is maintained.
+   SUM(IGH$IAGK_HASORPOT(IY411,IA,IGH), VGH_T(IY411,IA,IGH,IS3,T))
+         =G=
+   VHSTOLOADTS(IY411,IA,IS3,T)
+;
+
 
 
 * "Upper limit to heat storage loading (MW)"
@@ -1609,6 +1626,21 @@ QHSTOLOADTLIM(IY411,IA,IS3,T)$(SUM(IGHSTO$IAGKN(IA,IGHSTO),1))..
    )
          =G=
    VHSTOLOADT(IY411,IA,IS3,T)
+;
+
+* "Upper limit to heat storage loading (MW)"
+QHSTOLOADTLIMS(IY411,IA,IS3,T)$(SUM(IGHSTOS$IAGKN(IA,IGHSTOS),1))..
+* Existing, accumulated new previous capacity and new investment this year
+* Complement to assigning VHSTOLOADTS.UP for the case with endogenous IGHSTOS investments.
+   SUM(IGHSTOS$IAGKN(IA,IGHSTOS),
+     (
+         GKFX(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,'GDSTOHLOAD')
+      + (VGKN(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,'GDSTOHLOAD'))$IAGKNY(IY411,IA,IGHSTOS)
+      +  SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGHSTOS))/GDATA(IGHSTOS,'GDSTOHLOAD')
+     )*IGKRATE(IA,IGHSTOS,IS3,T)
+   )
+         =G=
+   VHSTOLOADTS(IY411,IA,IS3,T)
 ;
 
 
@@ -1627,17 +1659,46 @@ QESTOLOADTLIM(IY411,IA,IS3,T)$(SUM(IGESTO$IAGKN(IA,IGESTO),1))..
    VESTOLOADT(IY411,IA,IS3,T)
 ;
 
+* "Upper limit to electricity storage loading (MW)"
+QESTOLOADTLIMS(IY411,IA,IS3,T)$(SUM(IGESTOS$IAGKN(IA,IGESTOS),1))..
+* Existing, accumulated new previous capacity and new investment this year.
+* Complement to assigning VESTOLOADTS.UP for the case with endogenous IGESTOS investments.
+   SUM(IGESTOS$IAGKN(IA,IGESTOS),
+     (
+         GKFX(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHLOAD")
+      + (VGKN(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHLOAD"))$IAGKNY(IY411,IA,IGESTOS)
+      +  SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGESTOS))/GDATA(IGESTOS,"GDSTOHLOAD")
+     ) * IGKRATE(IA,IGESTOS,IS3,T)
+   )
+         =G=
+   VESTOLOADTS(IY411,IA,IS3,T)
+;
+
+
 
 
 QHSTOVGHTLIM(IY411,IA,IGHSTO,IS3,T)$IAGK_HASORPOT(IY411,IA,IGHSTO)..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
-     (   GKFX(IY411,IA,IGHSTO)/GDATA(IGHSTO,"GDSTOHLOAD")
-      + (VGKN(IY411,IA,IGHSTO)/GDATA(IGHSTO,"GDSTOHLOAD"))$IAGKNY(IY411,IA,IGHSTO)
-      +  SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGHSTO))/GDATA(IGHSTO,"GDSTOHLOAD")
+     (   GKFX(IY411,IA,IGHSTO)/GDATA(IGHSTO,"GDSTOHUNLD")
+      + (VGKN(IY411,IA,IGHSTO)/GDATA(IGHSTO,"GDSTOHUNLD"))$IAGKNY(IY411,IA,IGHSTO)
+      +  SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGHSTO))/GDATA(IGHSTO,"GDSTOHUNLD")
      )*IGKRATE(IA,IGHSTO,IS3,T)
 
          =G=
-   VHSTOLOADT(IY411,IA,IS3,T)
+   VGH_T(IY411,IA,IGHSTO,IS3,T)
+;
+
+
+
+QHSTOVGHTLIMS(IY411,IA,IGHSTOS,IS3,T)$IAGK_HASORPOT(IY411,IA,IGHSTOS)..
+* Existing, accumulated new previous capacity and new investment this year limit storage output
+     (   GKFX(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,"GDSTOHUNLD")
+      + (VGKN(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,"GDSTOHUNLD"))$IAGKNY(IY411,IA,IGHSTOS)
+      +  SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGHSTOS))/GDATA(IGHSTOS,"GDSTOHUNLD")
+     )*IGKRATE(IA,IGHSTOS,IS3,T)
+
+         =G=
+   VGH_T(IY411,IA,IGHSTOS,IS3,T)
 ;
 
 
@@ -1654,6 +1715,17 @@ QESTOVGETLIM(IY411,IA,IGESTO,IS3,T)$IAGK_HASORPOT(IY411,IA,IGESTO)..
    VGE_T(IY411,IA,IGESTO,IS3,T)
 ;
 
+QESTOVGETLIMS(IY411,IA,IGESTOS,IS3,T)$IAGK_HASORPOT(IY411,IA,IGESTOS)..
+* Existing, accumulated new previous capacity and new investment this year limit storage output
+
+     (   GKFX(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHUNLD")
+      + (VGKN(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHUNLD"))$IAGKNY(IY411,IA,IGESTOS)
+      +  SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGESTOS))/GDATA(IGESTOS,"GDSTOHUNLD")
+     ) * IGKRATE(IA,IGESTOS,IS3,T)
+
+         =G=
+   VGE_T(IY411,IA,IGESTOS,IS3,T)
+;
 
 
 * "Heat storage capacity limit (MWh)"
@@ -1667,6 +1739,17 @@ QHSTOVOLTLIM(IY411,IA,IS3,T)$(SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO),1))..
   VHSTOVOLT(IY411,IA,IS3,T)
 ;
 
+* "Heat storage capacity limit (MWh)"
+QHSTOVOLTLIMS(IY411,IA,IS3,T)$(SUM(IGHSTOS$IAGK_HASORPOT(IY411,IA,IGHSTOS),1))..
+* Existing, accumulated new previous capacity and new investment this year
+  SUM(IGHSTOS$IAGK_HASORPOT(IY411,IA,IGHSTOS),
+     GKFX(IY411,IA,IGHSTOS)
+   + VGKN(IY411,IA,IGHSTOS)$IAGKNY(IY411,IA,IGHSTOS)
+   + SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGHSTOS))  )
+         =G=
+  VHSTOVOLTS(IY411,IA,IS3,T)
+;
+
 
 QESTOVOLTLIM(IY411,IA,IS3,T)$(SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),1))..
 * Existing or accumulated capacity
@@ -1677,6 +1760,17 @@ QESTOVOLTLIM(IY411,IA,IS3,T)$(SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),1))..
          =G=
   VESTOVOLT(IY411,IA,IS3,T)
 ;
+
+QESTOVOLTLIMS(IY411,IA,IS3,T)$(SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),1))..
+* Existing or accumulated capacity
+  SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),
+   GKFX(IY411,IA,IGESTOS)
+   + VGKN(IY411,IA,IGESTOS)$IAGKNY(IY411,IA,IGESTOS)
+   + SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGESTOS))  )
+         =G=
+  VESTOVOLTS(IY411,IA,IS3,T)
+;
+
 
 
 
@@ -2153,6 +2247,15 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
                                 QHSTOVOLTLIM
                                 QESTOVGETLIM
                                 QHSTOVGHTLIM
+                                QHSTOLOADTS
+                                QHSTOLOADTLIMS
+                                QESTOLOADTLIMS
+                                QHSTOVOLTLIMS
+                                QESTOVOLTLIMS
+                                QHSTOVGHTLIMS
+                                QESTOVGETLIMS
+
+
 *--- Transmission capacity (listed in QXKE_UP) -----------------------------------------------------
 
 
@@ -2235,11 +2338,12 @@ $offtext
 *$ifi %BB4%==yes QGKNACCUMGROSS
 $ifi %BB4%==yes QGKNACCUMNET   !! TODO
 $ifi %BB4%==yes    $ifi %TransInvest%==yes  QXKNACCUMNET
+$ifi %BB4%==yes    $ifi %TransInvest%==yes  QXINVSYMMETRY
+
 *--- Capacity constraints on generation (MW) -----------------------------------
 $ifi %BB4%==yes    QGKE_UP
 $ifi %BB4%==yes    QGKH_UP
 $ifi %BB4%==yes    $ifi %TransInvest%==yes  QXK_UP
-$ifi %BB4%==yes    $ifi %TransInvest%==yes  QXINVSYMMETRY
 $ifi %BB4%==yes    QHYRRDISPATCH
 $ifi %BB4%==yes    QWNDDISPATCH
 $ifi %BB4%==yes    QSOLEDISPATCH
