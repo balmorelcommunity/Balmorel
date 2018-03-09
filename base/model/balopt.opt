@@ -106,11 +106,11 @@ $setglobal DFLEXQUANT
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH  yes
+$setglobal COMBTECH yes
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN
+$Setglobal HYDROGEN yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
@@ -202,7 +202,7 @@ $setglobal DHFPCALIB
 *!option yes
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest  yes
+$setglobal TransInvest yes
 *!option yes
 
 * In model Balbase4 (BB4) indicate the strategy for relative weighting of years

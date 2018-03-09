@@ -2419,7 +2419,6 @@ $ifi %X3V%==yes $INCLUDE "../../base/addons/x3v/model/x3vgdx.inc";
 
 
 DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile: <case>/logerror/logfile.out." ;
-
 *----- End of file:------------------------------------------------------------
 $label endoffile
 

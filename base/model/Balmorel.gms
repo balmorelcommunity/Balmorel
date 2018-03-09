@@ -3300,7 +3300,6 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./diffile.gdx ./"%relpathoutput%%
 
 $label endofUNIXoutput
 
-
 *----- End of file:------------------------------------------------------------
 $label endoffile
 
