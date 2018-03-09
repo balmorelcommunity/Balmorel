@@ -24,7 +24,7 @@ $ifi %HYRSBB123%==quantprice  + IHYRSBB123DELTAVOL(IA)   + SUM(IHYRSBB12DELTASET
       SUM(IGHYRS$IAGK_Y(IA,IGHYRS), SUM(T,IHOURSINST(IS3,T)*VGE_T(IA,IGHYRS,IS3,T)))
 ;
 
-$ifi %BB4%==yes $goto label_hydrobb123equations
+$goto label_hydrobb123equations
 
 $label BB4begin
 
