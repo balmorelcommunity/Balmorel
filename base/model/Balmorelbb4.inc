@@ -327,7 +327,8 @@ PARAMETER WTRRRFLH(AAA)                "Full load hours for hydro run-of-river p
 PARAMETER WNDFLH(AAA)                  "Full load hours for wind power (hours)";
 PARAMETER SOLEFLH(AAA)                 "Full load hours for solarE power (hours)";
 PARAMETER SOLHFLH(AAA)                 "Full load hours for solarH power (hours)";
-PARAMETER WAVEFLH(AAA)                 "Full load hours for wave power (hours)"
+PARAMETER WAVEFLH(AAA)                 "Full load hours for wave power (hours)";
+PARAMETER HYRSMAXVOL_G(AAA,GGG)        "Reservoir capacity (MWh storage capacity / MW installed capacity)";
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)"Data for hydro with storage ( *)";
 PARAMETER TAX_FHO(YYY,AAA,G)           "Fuel taxes on heat-only units ()"; !! () todo
 PARAMETER TAX_FHO_C(FFF,CCC)           "Fuel taxes on heat-only units ()"; !! () todo
@@ -1314,6 +1315,8 @@ $ifi %AGKNDISC%==yes  $include "../../base/addons/bb4/agkndisc/agkndiscaddqobj.i
 $ifi %BB1%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3,'IMINUS')+VQHYRSSEQ(IA,IS3,'IPLUS')))
 
 $ifi %BB2%==yes       +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3,'IMINUS')+VQHYRSSEQ(IA,IS3,'IPLUS')))
+$ifi %BB1%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSMINMAXVOL(IA,IS3,'IMINUS')+VQHYRSMINMAXVOL(IA,IS3,'IPLUS')))
+$ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSMINMAXVOL(IA,IS3,'IMINUS')+VQHYRSMINMAXVOL(IA,IS3,'IPLUS')))
 * BB4:
 
      +SUM((IA,IS3,T)$(SUM(IGHSTO$IAGK_HASORPOT(Y,IA,IGHSTO),1)), (VQHSTOVOLT(Y,IA,IS3,T,'IMINUS')+VQHSTOVOLT(Y,IA,IS3,T,'IPLUS')))
@@ -1508,23 +1511,23 @@ QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)))..
 
 * "Hydropower reservoir - minimum level (MWh)"
 QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1))..
-     VHYRS_S(IY411,IA,S)  =G=  HYRSDATA(IA,"HYRSMINVOL",S)* WTRRSFLH(IA) *
-       SUM(IGHYRS,
+     VHYRS_S(IY411,IA,S)  =G=  HYRSDATA(IA,"HYRSMINVOL",S)*
+       SUM(IGHYRS,   HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
         +(SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGHYRS))) !! OUT $IAGKNY(IY411,IA,IGHYRS)
         +VGKN(IY411,IA,IGHYRS)$IAGKNY(IY411,IA,IGHYRS)
-        )
+        ))
            -VQHYRSMINVOL(IY411,IA,S,'IPLUS')
         ;
 
 * "Hydropower reservoir - maximum level (MWh)"
 QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1))..
-       HYRSDATA(IA,"HYRSMAXVOL",S) * WTRRSFLH(IA) *
-       SUM(IGHYRS,
+       HYRSDATA(IA,"HYRSMAXVOL",S) *
+       SUM(IGHYRS,  HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
         +(SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGHYRS))) !! OUT $IAGKNY(IY411,IA,IGHYRS)
         +VGKN(IY411,IA,IGHYRS)$IAGKNY(IY411,IA,IGHYRS)
-        )
+        ))
        =G= VHYRS_S(IY411,IA,S)
            -VQHYRSMAXVOL(IY411,IA,S,'IMINUS')
 ;

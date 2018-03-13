@@ -838,6 +838,7 @@ PARAMETER WNDFLH(AAA)                  'Full load hours for wind power (hours)';
 PARAMETER SOLEFLH(AAA)                 'Full load hours for solarE power (hours)';
 PARAMETER SOLHFLH(AAA)                 'Full load hours for solarH power (hours)';
 PARAMETER WAVEFLH(AAA)                 'Full load hours for wave power'
+PARAMETER HYRSMAXVOL_G(AAA,GGG)        'Reservoir capacity (MWh storage capacity / MW installed capacity)';
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)'Data for hydro with storage';
 PARAMETER TAX_FHO(YYY,AAA,G)           'Fuel taxes on heat-only units';
 PARAMETER TAX_FHO_C(FFF,CCC)           'Fuel taxes on heat-only units';
@@ -1028,6 +1029,11 @@ $if not EXIST '../data/SOLHFLH.inc' $INCLUDE '../../base/data/SOLHFLH.inc';
 PARAMETER WAVEFLH(AAA)    'Full load hours for wave power (hours)'  %semislash%
 $if     EXIST '../data/WAVEFLH.inc' $INCLUDE         '../data/WAVEFLH.inc';
 $if not EXIST '../data/WAVEFLH.inc' $INCLUDE '../../base/data/WAVEFLH.inc';
+%semislash%;
+
+PARAMETER HYRSMAXVOL_G(AAA,GGG) 'Reservoir capacity (MWh storage capacity / MW installed capacity)'  %semislash%
+$if     EXIST '../data/HYRSMAXVOL_G.inc' $INCLUDE         '../data/HYRSMAXVOL_G.inc';
+$if not EXIST '../data/HYRSMAXVOL_G.inc' $INCLUDE '../../base/data/HYRSMAXVOL_G.inc';
 %semislash%;
 
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)    'Data for hydro with storage'  %semislash%
@@ -2164,6 +2170,8 @@ $ifi %AGKNDISC%==yes  $include '../../base/addons/agkndisc/agkndiscaddobj.inc';
    + PENALTYQ*(
 $ifi %BB1%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3,'IMINUS')+VQHYRSSEQ(IA,IS3,'IPLUS')))
 $ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3,'IMINUS')+VQHYRSSEQ(IA,IS3,'IPLUS')))
+$ifi %BB1%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSMINMAXVOL(IA,IS3,'IMINUS')+VQHYRSMINMAXVOL(IA,IS3,'IPLUS')))
+$ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSMINMAXVOL(IA,IS3,'IMINUS')+VQHYRSMINMAXVOL(IA,IS3,'IPLUS')))
                +SUM((IA,IS3,T)$SUM(IGHSTO(G),  IAGK_Y(IA,IGHSTO)  OR IAGKN(IA,IGHSTO)), (VQHSTOVOLT(IA,IS3,T,'IMINUS') +VQHSTOVOLT(IA,IS3,T,'IPLUS')))
                +SUM((IA,IS3,T)$SUM(IGESTO(G),  IAGK_Y(IA,IGESTO)  OR IAGKN(IA,IGESTO)), (VQESTOVOLT(IA,IS3,T,'IMINUS') +VQESTOVOLT(IA,IS3,T,'IPLUS')))
                +SUM((IA,IS3,T)$SUM(IGHSTOS(G), IAGK_Y(IA,IGHSTOS) OR IAGKN(IA,IGHSTOS)),(VQHSTOVOLTS(IA,IS3,T,'IMINUS')+VQHSTOVOLTS(IA,IS3,T,'IPLUS')))
@@ -2494,16 +2502,16 @@ QHYMAXG(IA,IS3,T)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS))..
 
 QHYRSMINVOL(IA,IS3)$(HYRSDATA(IA,'HYRSMINVOL',IS3) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
 
-      VHYRS_S(IA,IS3) =G= HYRSDATA(IA,'HYRSMINVOL',IS3) * WTRRSFLH(IA) *
-        (SUM(IGHYRS,(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
+      VHYRS_S(IA,IS3) =G= HYRSDATA(IA,'HYRSMINVOL',IS3)  *
+        (SUM(IGHYRS,HYRSMAXVOL_G(IA,IGHYRS)*(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
         -VQHYRSMINMAXVOL(IA,IS3,'IMINUS'));
 
 * Hydro reservoir content - maximum level
 
 QHYRSMAXVOL(IA,IS3)$(HYRSDATA(IA,'HYRSMAXVOL',IS3) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
 
-       HYRSDATA(IA,'HYRSMAXVOL',IS3) * WTRRSFLH(IA) *
-        (SUM(IGHYRS,(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
+       HYRSDATA(IA,'HYRSMAXVOL',IS3)  *
+        (SUM(IGHYRS, HYRSMAXVOL_G(IA,IGHYRS)*(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)  +VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
         -VQHYRSMINMAXVOL(IA,IS3,'IPLUS'))=G= VHYRS_S(IA,IS3);
 
 *------------ Short term heat and electricity storages:-------------------------
@@ -2942,7 +2950,7 @@ MODEL BALBASE1 'Balmorel model without endogeneous investments'
                                 QGCBGBPRBYPASS2
                                 QGNCBGBPRBYPASS1
                                 QGNCBGBPRBYPASS2
-*--- Storage restructions ------------------------------------------------------
+*--- Storage restrictions ------------------------------------------------------
                                 QHYRSSEQ
                                 QHYRSMINVOL
                                 QHYRSMAXVOL
