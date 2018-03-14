@@ -166,6 +166,10 @@ $include "..\..\base\addons\_hooks\gdataadditions.inc"
 $if not errorfree $abort "Balmorel processing aborted after inclusion of file dataincBB4.inc due to technology related data errors";
 * ------------------------------------------------------------------------------
 
+PARAMETER HYRSMAXVOL_G(AAA,GGG) 'Reservoir capacity (MWh storage capacity / MW installed capacity)'  %semislash%
+$if     EXIST '../data/HYRSMAXVOL_G.inc' $INCLUDE         '../data/HYRSMAXVOL_G.inc';
+$if not EXIST '../data/HYRSMAXVOL_G.inc' $INCLUDE '../../base/data/HYRSMAXVOL_G.inc';
+%semislash%;
 
 SET HYRSDATASET  'Characteristics of hydro reservoirs' %semislash%
 $if     EXIST '../data/HYRSDATASET.inc' $INCLUDE      '../data/HYRSDATASET.inc';
@@ -187,7 +191,7 @@ SET AGKN(AAA,GGG)   'Areas for possible location of new technologies'   %semisla
 $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
-                
+
 $offmulti
 SET Y(YYY)    'Years in the simulation'   %semislash%
 $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
