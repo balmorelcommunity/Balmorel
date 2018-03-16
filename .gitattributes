@@ -1,0 +1,5 @@
+$ cat .gitattributes
+*.inc linguist-language=GAMS
+*.INC linguist-language=GAMS
+*.mss linguist-language=GAMS
+*.opt linguist-language=GAMS
