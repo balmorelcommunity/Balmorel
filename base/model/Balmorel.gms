@@ -60,7 +60,7 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute "del *.gdx";
 $ifi %system.filesys%==UNIX
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ../output/temp/*.gdx";
 $ifi %system.filesys%==MSNT
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ..\output\temp\*.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ../output/temp/*.gdx";
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -99,12 +99,12 @@ SCALAR ISCALAR5   '(Context dependent)';
 $INCLUDE '../../base/logerror/logerinc/error1.inc';
 
 * Ensuring existence of needed output folders:
-$ifi not dexist "../../simex"            execute 'mkdir "../../simex"';
-$ifi not dexist "../logerror/logerinc"   execute 'mkdir "../logerror/logerinc"';
-$ifi not dexist "../output/economic"     execute 'mkdir "../output/economic"';
-$ifi not dexist "../output/inputout"     execute 'mkdir "../output/inputout"';
-$ifi not dexist "../output/printout"     execute 'mkdir "../output/printout"';
-$ifi not dexist "../output/temp"         execute 'mkdir "../output/temp"';
+$ifi not dexist "../../simex"            execute 'mkdir -p "../../simex"';
+$ifi not dexist "../logerror/logerinc"   execute 'mkdir -p "../logerror/logerinc"';
+$ifi not dexist "../output/economic"     execute 'mkdir -p "../output/economic"';
+$ifi not dexist "../output/inputout"     execute 'mkdir -p "../output/inputout"';
+$ifi not dexist "../output/printout"     execute 'mkdir -p "../output/printout"';
+$ifi not dexist "../output/temp"         execute 'mkdir -p "../output/temp"';
 
 
 *-------------------------------------------------------------------------------
@@ -494,7 +494,7 @@ ALIAS (T,ITALIAS);
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
 *-------------------------------------------------------------------------------
 
-$include "..\..\base\addons\_hooks\acronyms.inc"
+$include "../../base/addons/_hooks/acronyms.inc"
 $include "../../base/addons/_hooks/setdeclare.inc"
 $include "../../base/addons/_hooks/setdefine.inc"
 
@@ -576,7 +576,7 @@ $if not EXIST '../data/gdata.inc' $INCLUDE '../../base/data/GDATA.inc';
 *-------------------------------------------------------------------------------
 *------------- Any GDATA additions for addon to be placed here: ----------------
 *-------------------------------------------------------------------------------
-$include "..\..\base\addons\_hooks\gdataadditions.inc"
+$include "../../base/addons/_hooks/gdataadditions.inc"
 
 *-------------------------------------------------------------------------------
 * Definitions of internal sets relative to technologies,
@@ -2277,7 +2277,7 @@ QHEQ(IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER)))..
 
 * Adds heat transmission if selected in the gas add-on
 $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htheatbalance.inc';
-$include "..\..\base\addons\_hooks\qheq.inc"
+$include "../../base/addons/_hooks/qheq.inc"
         - VQHEQ(IA,IS3,T,'IMINUS') + VQHEQ(IA,IS3,T,'IPLUS')
 * Adds district heating if selected
 $ifi %FV%==yes $include '../../base/addons/Fjernvarme/heatbalance_fv.inc';
