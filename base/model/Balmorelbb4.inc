@@ -2268,8 +2268,8 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
 
 *--- Fuel potential restrictions ------------------------------------------------
                                 QKEFUELC     !!
-*                                QKEFUELR   TODO
-*                                QKEFUELA   TODO
+                                QKEFUELR
+                                QKEFUELA   
 
 *--- Fuel capacity restrictions per year ------------------------------------------------
                                 QKMINFC
