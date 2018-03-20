@@ -113,6 +113,10 @@ $setglobal COMBTECH yes
 $Setglobal HYDROGEN yes
 *!option yes
 
+* Set a common maximum for three fuels.
+$Setglobal MAXFOR3FUELS yes
+*!option yes
+
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
 $setglobal X3V
 *!option yes
