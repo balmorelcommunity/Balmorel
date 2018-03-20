@@ -475,7 +475,6 @@ ALIAS (AAA,IAAAE,IAAAI);
 ALIAS (IA,IAE,IAI);
 * Duplication of sets for fuel.
 ALIAS (FFF,IFFFALIAS);
-*IDA addition
 ALIAS (FFF,IFFFALIAS2);
 
 ALIAS(S,IS3LOOPSET);
@@ -825,7 +824,6 @@ PARAMETER DISCOST_H(AAA)               'Cost of heat distribution (Money/MWh)';
 PARAMETER FKPOT(CCCRRRAAA,FFF)         'Fuel potential restriction by geography (MW)';
 PARAMETER FGEMIN(CCCRRRAAA,FFF)        'Minimum electricity generation by fuel (default/0/, eps for 0) (MWh)';
 PARAMETER FGEMAX(CCCRRRAAA,FFF)        'Maximum electricity generation by fuel (default/0/, eps for 0) (MWh)';
-*PARAMETER GMAX3F(CCCRRRAAA,FFF,IFFFALIAS,IFFFALIAS2)             'Maximum fuel use per year (default/0/, eps for 0) combination of three fuels (GJ)';
 $ifi %GMINF_DOL%==CCCRRRAAA_FFF         PARAMETER GMINF(CCCRRRAAA,FFF)             'Minimum fuel use per year (default/0/, eps for 0) (GJ)';
 $ifi %GMINF_DOL%==YYY_CCCRRRAAA_FFF     PARAMETER GMINF(YYY,CCCRRRAAA,FFF)         'Minimum fuel use per year (default/0/, eps for 0) (GJ)';
 $ifi %GMAXF_DOL%==CCCRRRAAA_FFF         PARAMETER GMAXF(CCCRRRAAA,FFF)             'Maximum fuel use per year (default/0/, eps for 0) (GJ)';
@@ -971,11 +969,6 @@ PARAMETER FGEMAX(CCCRRRAAA,FFF)     'Maximum electricity generation by fuel (MWh
 $if     EXIST '../data/FGEMAX.inc' $INCLUDE         '../data/FGEMAX.inc';
 $if not EXIST '../data/FGEMAX.inc' $INCLUDE '../../base/data/FGEMAX.inc';
 %semislash%;
-
-*PARAMETER GMAX3F(CCCRRRAAA,FFF,IFFFALIAS,IFFFALIAS2)             'Maximum fuel use per year combination of three fuels (default/0/, eps for 0) (GJ)' %semislash%
-*$if     EXIST '../data/GMAX3F.inc' $INCLUDE         '../data/GMAX3F.inc';
-*$if not EXIST '../data/GMAX3F.inc' $INCLUDE '../../base/data/GMAX3F.inc';
-*%semislash%;
 
 $ifi %GMINF_DOL%==CCCRRRAAA_FFF      PARAMETER GMINF(CCCRRRAAA,FFF)             'Minimum fuel use per year (default/0/, eps for 0) (GJ)' %semislash%
 $ifi %GMINF_DOL%==YYY_CCCRRRAAA_FFF  PARAMETER GMINF(YYY,CCCRRRAAA,FFF)         'Minimum fuel use per year (default/0/, eps for 0) (GJ)' %semislash%s
@@ -1851,7 +1844,6 @@ POSITIVE VARIABLE VQHSTOVOLTS(AAA,S,T,IPLUSMINUS)  'Feasibility in inter-seasona
 POSITIVE VARIABLE VQHYRSSEQ(AAA,S,IPLUSMINUS)      'Feasibility of hydropower reservoir equation QHYRSSEQ (MWh)';
 POSITIVE VARIABLE VQHYRSMINMAXVOL(AAA,S,IPLUSMINUS)'Feasibility of hydropower reservoir minimum (IPLUSMINUS) and maximum (IPLUSMINUS) content (MWh)';
 POSITIVE VARIABLE VQGEQCF(C,FFF,IPLUSMINUS)        'Feasibility in Requered fuel usage per country constraint (MWh)'
-*POSITIVE VARIABLE VQGMAXC3F(C,FFF,IFFFALIAS,IFFFALIAS2) 'Feasibility in Maximum fuel usage per country constraint for a share of three fuels (MWh)'
 POSITIVE VARIABLE VQGMINCF(C,FFF)                  'Feasibility in Minimum fuel usage per country constraint (MWh)'
 POSITIVE VARIABLE VQGMAXCF(C,FFF)                  'Feasibility in Maximum fuel usage per country constraint (MWh)'
 POSITIVE VARIABLE VQGEQRF(RRR,FFF,IPLUSMINUS)      'Feasibility in Requered fuel usage per region constraint (MWh)'
@@ -1955,8 +1947,6 @@ EQUATIONS
    QFGEMAXR(RRR,FFF)           'Maximum electricity generation by fuel per region (MWh)'
    QFGEMINA(AAA,FFF)           'Minimum electricity generation by fuel per area (MWh)'
    QFGEMAXA(AAA,FFF)           'Maximum electricity generation by fuel per area (MWh)'
-*IDA addition
-*   QGMAXC3F(C,FFF,IFFFALIAS,IFFFALIAS2)              'Maximum fuel usage per country for a shared max for three fuels'
    QGMINCF(C,FFF)              'Minimum fuel usage per country constraint (MWh)'
    QGMAXCF(C,FFF)              'Maximum fuel usage per country constraint (MWh)'
    QGEQCF(C,FFF)               'Required fuel usage per country constraint (MWh)'
@@ -2181,8 +2171,6 @@ $ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSMINMAXVOL(
                +SUM((IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))), (VQHEQ(IA,IS3,T,'IMINUS')+VQHEQ(IA,IS3,T,'IPLUS')))
 
                +SUM((C,FFF)$IGEQF_Y(C,FFF) , VQGEQCF(C,FFF,'IPLUS')+VQGEQCF(C,FFF,'IMINUS')    )
-
-*               +SUM((C,FFF,IFFFALIAS,IFFFALIAS2)$GMAX3F(C,FFF,IFFFALIAS,IFFFALIAS2), VQGMAXC3F(C,FFF,IFFFALIAS,IFFFALIAS2)     )
 
                +SUM((C,FFF)$IGMINF_Y(C,FFF), VQGMINCF(C,FFF)      )
                +SUM((C,FFF)$IGMAXF_Y(C,FFF), VQGMAXCF(C,FFF)      )
@@ -2779,19 +2767,6 @@ QGEQRF(IR,FFF)$IGEQF_Y(IR,FFF)..
 
 * Fuel use constraints (in energy), country
 
-*QGMAXC3F(C,FFF,IFFFALIAS,IFFFALIAS2)$GMAX3F(C,FFF,IFFFALIAS,IFFFALIAS2)..
-*    GMAX3F(C,FFF,IFFFALIAS,IFFFALIAS2)
-*    + VQGMAXC3F(C,FFF,IFFFALIAS,IFFFALIAS2)
-*         =G=
-*    SUM(IA$ICA(C,IA),
-*     SUM(G$(IAGK_Y(IA,G) AND (GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'))), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IA,G,IS3,T)))
-*    +SUM(G$(IAGKN(IA,G)  AND (GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'))), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGFN_T(IA,G,IS3,T)))
-*    +SUM(G$(IAGK_Y(IA,G) AND (GDATA(G,'GDFUEL') EQ FDATA(IFFFALIAS,'FDACRONYM'))), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IA,G,IS3,T)))
-*    +SUM(G$(IAGKN(IA,G)  AND (GDATA(G,'GDFUEL') EQ FDATA(IFFFALIAS,'FDACRONYM'))), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGFN_T(IA,G,IS3,T)))
-*    +SUM(G$(IAGK_Y(IA,G) AND (GDATA(G,'GDFUEL') EQ FDATA(IFFFALIAS2,'FDACRONYM'))), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IA,G,IS3,T)))
-*    +SUM(G$(IAGKN(IA,G)  AND (GDATA(G,'GDFUEL') EQ FDATA(IFFFALIAS2,'FDACRONYM'))), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGFN_T(IA,G,IS3,T)))
-*    );
-
 QGMINCF(C,FFF)$IGMINF_Y(C,FFF)..
     SUM(IA$ICA(C,IA),
      SUM(G$(IAGK_Y(IA,G) AND (GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'))), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IA,G,IS3,T)))
@@ -2970,7 +2945,6 @@ MODEL BALBASE1 'Balmorel model without endogeneous investments'
 *--- Fuel consumption restrictions ---------------------------------------------
                                 QGMINCF
                                 QGMAXCF
-*                                QGMAXC3F
                                 QGEQCF
 *                               QGEQCF_S
                                 QGMINRF
@@ -3071,7 +3045,6 @@ MODEL BALBASE2  'Balmorel model with endogeneous investments'
 *--- Fuel consumption restrictions ---------------------------------------------
                                 QGMINCF
                                 QGMAXCF
-*                                QGMAXC3F
                                 QGEQCF
 *                               QGEQCF_S
                                 QGMINRF
