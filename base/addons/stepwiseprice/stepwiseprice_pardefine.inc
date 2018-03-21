@@ -1,4 +1,13 @@
-PARAMETER MAXFOR3FUELS_GMAX3F(Y,CCCRRRAAA,FFF,IFFFALIAS,IFFFALIAS2)             'Maximum fuel use per year combination of three fuels (default/0/, eps for 0) (GJ)' %semislash%
-$if     EXIST '../data/MAXFOR3FUELS_GMAX3F.inc' $INCLUDE         '../data/MAXFOR3FUELS_GMAX3F.inc';
-$if not EXIST '../data/MAXFOR3FUELS_GMAX3F.inc' $INCLUDE '../../base/data/MAXFOR3FUELS_GMAX3F.inc';
+PARAMETER STEPWISEPRICE_AMOUNT(YYY,CCC,STEPWISEPRICE_L,FFF)             'Amount that can be bought in each line segment'
+$if     EXIST '../data/STEPWISEPRICE_AMOUNT.inc' $INCLUDE         '../data/STEPWISEPRICE_AMOUNT.inc';
+$if not EXIST '../data/STEPWISEPRICE_AMOUNT.inc' $INCLUDE '../../base/data/STEPWISEPRICE_AMOUNT.inc';
 %semislash%;
+
+
+PARAMETER STEPWISEPRICE_FUELPRICE_STEP(YYY,CCC,STEPWISEPRICE_L,FFF) 'Fuel price in each line segment for each fuel'
+$if     EXIST '../data/STEPWISEPRICE_FUELPRICE_STEP.inc' $INCLUDE         '../data/STEPWISEPRICE_FUELPRICE_STEP.inc';
+$if not EXIST '../data/STEPWISEPRICE_FUELPRICE_STEP.inc' $INCLUDE '../../base/data/STEPWISEPRICE_FUELPRICE_STEP.inc';
+%semislash%;
+
+
+ISTEPWISEPRICE_F(Y,C,FFF) = yes$(SUM(STEPWISEPRICE_L,STEPWISEPRICE_AMOUNT(Y,C,STEPWISEPRICE_L,FFF))>0) ;

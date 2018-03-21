@@ -1,3 +1,4 @@
 PARAMETERS
-MAXFOR3FUELS_GMAX3F(Y,CCCRRRAAA,FFF,IFFFALIAS,IFFFALIAS2)             'Maximum fuel use per year (default/0/, eps for 0) combination of three fuels (GJ)';
+STEPWISEPRICE_AMOUNT(YYY,CCC,STEPWISEPRICE_L,FFF)           'Amount that can be bought in each line segment'
+STEPWISEPRICE_FUELPRICE_STEP(YYY,CCC,STEPWISEPRICE_L,FFF) 'Fuel price in each line segment for each fuel'
 ;

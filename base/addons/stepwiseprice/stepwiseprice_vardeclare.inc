@@ -1,3 +1,3 @@
 POSITIVE VARIABLES
-   VMAXFOR3FUELS_QGMAXC3F(C,FFF,IFFFALIAS,IFFFALIAS2) 'Feasibility in Maximum fuel usage per country constraint for a share of three fuels (MWh)'
+   VSTEPWISEPRICE_VGF_T_STEP(Y,C,STEPWISEPRICE_L,FFF) 'Amount of fuel used in each step'
 ;
