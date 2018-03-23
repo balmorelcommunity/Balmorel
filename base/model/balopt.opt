@@ -54,12 +54,12 @@ $setglobal CASEID BASE
 $setglobal bb1
 *!option yes      !notif %BB2%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb2: use model BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
-$setglobal bb2
+$setglobal bb2  yes
 *!option yes      !notif %BB1%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
 $setglobal bb3
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
-$setglobal bb4 yes
+$setglobal bb4
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
 
 
@@ -111,6 +111,10 @@ $setglobal COMBTECH yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
 $Setglobal HYDROGEN yes
+*!option yes
+
+* Set a common maximum for three fuels.
+$Setglobal MAXFOR3FUELS yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
