@@ -130,6 +130,7 @@ ALIAS (RRR,IRRRE,IRRRI);
 ALIAS (IR,IRE,IRI);
 * Duplication of sets for fuel.
 ALIAS (FFF,IFFFALIAS);
+ALIAS (FFF,IFFFALIAS2);
 
 * Duplication of sets for seasons and hours:
 ALIAS (Y,IYALIAS);
