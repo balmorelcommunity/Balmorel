@@ -10,6 +10,11 @@
 * Note: although not necessary, there are a number of "$ifi %BB4%==yes" conditions,
 * this is to make some of the differences relative to bb123.sim more visible.
 
+OPTION lp= cplex;
+balbase4.optfile = 1;
+
+balbase4.optfile=%USEOPTIONFILE%;
+
 *-------------------------------------------------------------------------------
 * INITIALISATIONS BEFORE LOOPING OVER $YALIAS%:
 *-------------------------------------------------------------------------------

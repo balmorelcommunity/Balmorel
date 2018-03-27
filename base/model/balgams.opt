@@ -55,7 +55,7 @@ $OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF
 
 OPTIONS LIMROW=   100, LIMCOL=   100;
 
-OPTIONS RESLIM= 50000;
+OPTIONS RESLIM= 300000;
 
 *...............................................................................
 * SYSOUT controls the printing of the solved status in the list file.
@@ -124,7 +124,7 @@ option optcr = 0.000001
 * Set USEOPTIONFILE to either 1 or 0.
 * 1 indicates to use a solver specific option file, 0 indicates no option file.
 
-$Setglobal USEOPTIONFILE 0
+$Setglobal USEOPTIONFILE 1
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
