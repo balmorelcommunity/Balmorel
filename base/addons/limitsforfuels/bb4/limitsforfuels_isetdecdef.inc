@@ -1,0 +1,10 @@
+* File combtech_isetdecdef.inc for addon combtech for the Balmorel model
+
+SET LIMITSFORFUELS_INUMCONMAXC(LIMITSFORFUELS_NUMCONMAX) 'Subset of all combination which relates to countries';
+
+
+loop((LIMITSFORFUELS_NUMCONMAX,C,FFF)$LIMITSFORFUELS_GMAXFSET(LIMITSFORFUELS_NUMCONMAX,C,FFF),
+         LIMITSFORFUELS_INUMCONMAXC(LIMITSFORFUELS_NUMCONMAX) = YES;
+);
+
+
