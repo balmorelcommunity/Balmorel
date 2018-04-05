@@ -6,6 +6,6 @@ $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_balbas
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_balbase4.inc";
 
 $ifi %MAXFOR3FUELS%==yes  $include   "../../base/addons/maxfor3fuels/bb4/maxfor3fuels_balbase4.inc";
-
+$ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_balbase4.inc";
 
 $label endoffile

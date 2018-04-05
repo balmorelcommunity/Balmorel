@@ -142,7 +142,7 @@ ALIAS (T,ITALIAS);
 *-------------------------------------------------------------------------------
 *----- End: Definitions of SETS and ALIASES that are needed for data entry:
 *-------------------------------------------------------------------------------
-
+$ontext
 *-------------------------------------------------------------------------------
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
 *-------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ ALIAS (T,ITALIAS);
 $include "..\..\base\addons\_hooks\acronyms.inc"
 $include "..\..\base\addons\_hooks\setdeclare.inc"
 $include "..\..\base\addons\_hooks\setdefine.inc"
-
+$offtext
 
 * Addon AGKNDISC: discrete size investment in technologies:
 $ifi %AGKNDISC%==yes $include  "../../base/addons/bb4/agkndisc/agkndiscdeclarations.inc";
@@ -181,13 +181,6 @@ $ifi %bb3%==yes SET TWORKDAY(TTT)   /T001*T120/;
 $ifi %bb3%==yes SET TWEEKEND(TTT)   /T121*T168/;
 *-------------------------------------------------------------------------------
 
-
-*-------------------------------------------------------------------------------
-*----- Any internal sets for addon to be placed here: --------------------------
-$include "..\..\base\addons\_hooks\setdeclare.inc"
-
-*----- End: Any internal sets for addon to be placed here: ---------------------
-*-------------------------------------------------------------------------------
 
 *------------------------------------------------------------------------------
 * End: Declaration of internal sets
@@ -2270,7 +2263,7 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
 *--- Fuel potential restrictions ------------------------------------------------
                                 QKEFUELC     !!
                                 QKEFUELR
-                                QKEFUELA   
+                                QKEFUELA
 
 *--- Fuel capacity restrictions per year ------------------------------------------------
                                 QKMINFC

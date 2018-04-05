@@ -117,6 +117,10 @@ $Setglobal HYDROGEN yes
 $Setglobal MAXFOR3FUELS
 *!option yes
 
+* Set a common maximum for three fuels.
+$Setglobal LIMITSFORFUELS yes
+*!option yes
+
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
 $setglobal X3V
 *!option yes

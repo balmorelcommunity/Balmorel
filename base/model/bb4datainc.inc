@@ -142,6 +142,15 @@ $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
 $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 %semislash%;
 $offmulti
+
+*-------------------------------------------------------------------------------
+*----- Any declarations and definitions of sets, aliases and acronyms for addon:
+*-------------------------------------------------------------------------------
+
+$include "..\..\base\addons\_hooks\acronyms.inc"
+$include "..\..\base\addons\_hooks\setdeclare.inc"
+$include "..\..\base\addons\_hooks\setdefine.inc"
+
 PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
 $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
