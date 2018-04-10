@@ -143,29 +143,6 @@ ALIAS (T,ITALIAS);
 *----- End: Definitions of SETS and ALIASES that are needed for data entry:
 *-------------------------------------------------------------------------------
 
-*-------------------------------------------------------------------------------
-*----- Any declarations and definitions of sets, aliases and acronyms for addon:
-*-------------------------------------------------------------------------------
-
-$include "..\..\base\addons\_hooks\acronyms.inc"
-$include "..\..\base\addons\_hooks\setdeclare.inc"
-$include "..\..\base\addons\_hooks\setdefine.inc"
-
-
-* Addon AGKNDISC: discrete size investment in technologies:
-$ifi %AGKNDISC%==yes $include  "../../base/addons/bb4/agkndisc/agkndiscdeclarations.inc";
-
-
-* Duplication of sets for describing possible heat exchange between areas (option HEATTRANS).
-$ifi %HEATTRANS%==yes ALIAS (AAA,IAAAE,IAAAI);
-$ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
-
-
-$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
-
-*-------------------------------------------------------------------------------
-* End: Any declarations and definitions of sets, aliases and acronyms for addon
-*-------------------------------------------------------------------------------
 
 
 
@@ -181,13 +158,6 @@ $ifi %bb3%==yes SET TWORKDAY(TTT)   /T001*T120/;
 $ifi %bb3%==yes SET TWEEKEND(TTT)   /T121*T168/;
 *-------------------------------------------------------------------------------
 
-
-*-------------------------------------------------------------------------------
-*----- Any internal sets for addon to be placed here: --------------------------
-$include "..\..\base\addons\_hooks\setdeclare.inc"
-
-*----- End: Any internal sets for addon to be placed here: ---------------------
-*-------------------------------------------------------------------------------
 
 *------------------------------------------------------------------------------
 * End: Declaration of internal sets
@@ -256,6 +226,7 @@ SET IGBYPASS(G)            "Technologies that may apply turbine bypass mode (sub
 * be using values of GDATA(G,'GDTYPE'). Check addons referenced here to maximize
 * consistency and avoid conflicts. It is encouraged to avoid using the '-' set
 * operator and instead use the '+' operator for compound assignments.
+* NOTE: isetdecdef.inc is loaded later 
 
 
 
@@ -1163,7 +1134,7 @@ EQUATIONS
    QLIMSO2(Y,C)             "Limit on annual SO2 emission by year and country ()"
    QLIMNOX(Y,C)             "Limit on annual NOx emission by year and country ()"
 
-   QLIMCO2NA(Y)             "Limit on annual CO2-emission by year (aggregated countries) ()" 
+   QLIMCO2NA(Y)             "Limit on annual CO2-emission by year (aggregated countries) ()"
 
    QHYFXRW(Y,RRR,S)         "Hydro with reservoir available for this region and season (MWh)"
    QHYFXCW(Y,C,S)           "Hydro with reservoir available for this country and season (MWh)"
