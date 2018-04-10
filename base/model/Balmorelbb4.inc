@@ -142,15 +142,6 @@ ALIAS (T,ITALIAS);
 *-------------------------------------------------------------------------------
 *----- End: Definitions of SETS and ALIASES that are needed for data entry:
 *-------------------------------------------------------------------------------
-$ontext
-*-------------------------------------------------------------------------------
-*----- Any declarations and definitions of sets, aliases and acronyms for addon:
-*-------------------------------------------------------------------------------
-
-$include "..\..\base\addons\_hooks\acronyms.inc"
-$include "..\..\base\addons\_hooks\setdeclare.inc"
-$include "..\..\base\addons\_hooks\setdefine.inc"
-$offtext
 
 * Addon AGKNDISC: discrete size investment in technologies:
 $ifi %AGKNDISC%==yes $include  "../../base/addons/bb4/agkndisc/agkndiscdeclarations.inc";
