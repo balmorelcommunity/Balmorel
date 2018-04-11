@@ -60,7 +60,7 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute "del *.gdx";
 $ifi %system.filesys%==UNIX
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ../output/temp/*.gdx";
 $ifi %system.filesys%==MSNT
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ../output/temp/*.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ..\output\temp\*.gdx";
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
