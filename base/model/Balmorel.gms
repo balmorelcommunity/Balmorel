@@ -1,6 +1,7 @@
 * File Balmorel.gms
 $TITLE Balmorel version 3.03 (June 2016; latest 20160915)
 
+SCALAR IBALVERSN 'This version of Balmorel' /303.20170419/;
 * Efforts have been made to make a good model.
 * However, most probably the model is incomplete and subject to errors.
 * It is distributed with the idea that it will be usefull anyway,
@@ -17,7 +18,6 @@ $TITLE Balmorel version 3.03 (June 2016; latest 20160915)
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 
-SCALAR IBALVERSN 'This version of Balmorel' /303.20170224/;
 
 * This is a preliminary version of Balmorel 3.03.
 * It is intended for review and commenting.
@@ -28,9 +28,13 @@ SCALAR IBALVERSN 'This version of Balmorel' /303.20170224/;
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 
+
 * GAMS options are $included from file balgams.opt.
 * In order to make them apply globally, the option $ONGLOBAL will first be set here:
 $ONGLOBAL
+
+$ifi %system.filesys%==UNIX
+execute 'chmod  -R ug+rw "../.."';
 
 * The balgams file holds control settings for GAMS.
 * Use local file if it exists, otherwise use the one in folder  ../../base/model/.
@@ -44,12 +48,19 @@ $ifi not exist 'balgams.opt'  $include  '../../base/model/balgams.opt'
 $ifi     exist 'balopt.opt'  $include                  'balopt.opt';
 $ifi not exist 'balopt.opt'  $include '../../base/model/balopt.opt';
 
+$ifi %system.filesys%==UNIX
+execute 'chmod  -R ug+rw "../.."';
 
 * If merging of savepoint files is to be performed,
 * make sure that there are no gdx files initially in applied folders:
+$ifi %system.filesys%==UNIX
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm *.gdx";
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ..\output\temp\*.gdx";
-$ifi     dexist "..\output\temp"   execute 'rm "..\output\temp\*.*"';
+$ifi %system.filesys%==MSNT
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del *.gdx";
+$ifi %system.filesys%==UNIX
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ../output/temp/*.gdx";
+$ifi %system.filesys%==MSNT
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ..\output\temp\*.gdx";
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -88,12 +99,12 @@ SCALAR ISCALAR5   '(Context dependent)';
 $INCLUDE '../../base/logerror/logerinc/error1.inc';
 
 * Ensuring existence of needed output folders:
-$ifi not dexist "..\..\simex"            execute 'md "..\..\simex"';
-$ifi not dexist "..\logerror\logerinc"   execute 'md "..\logerror\logerinc"';
-$ifi not dexist "..\output\economic"     execute 'md "..\output\economic"';
-$ifi not dexist "..\output\inputout"     execute 'md "..\output\inputout"';
-$ifi not dexist "..\output\printout"     execute 'md "..\output\printout"';
-$ifi not dexist "..\output\temp"         execute 'md "..\output\temp"';
+$ifi not dexist "../../simex"            execute 'mkdir -p "../../simex"';
+$ifi not dexist "../logerror/logerinc"   execute 'mkdir -p "../logerror/logerinc"';
+$ifi not dexist "../output/economic"     execute 'mkdir -p "../output/economic"';
+$ifi not dexist "../output/inputout"     execute 'mkdir -p "../output/inputout"';
+$ifi not dexist "../output/printout"     execute 'mkdir -p "../output/printout"';
+$ifi not dexist "../output/temp"         execute 'mkdir -p "../output/temp"';
 
 
 *-------------------------------------------------------------------------------
@@ -142,6 +153,9 @@ SET FFF               'Fuels';
 SET FDATASET          'Characteristics of fuels';
 SET HYRSDATASET       'Characteristics of hydro reservoirs';
 * Demand related:
+SET DEUSER            "Electricity demand user groups. Set must include element RESE for holding demand not included in any other user group";
+SET DHUSER            "Heat demand user groups. Set must include element RESH for holding demand not included in any other user group";
+/*  addon dflexquant
 SET DF_QP             'Quantity and price information for elastic demands';
 SET DEF               'Steps in elastic electricity demand';
 SET DEF_D1(DEF)       'Downwards steps in elastic el. demand, relative data format';
@@ -157,6 +171,7 @@ SET DHF_D2(DHF)       'Downwards steps in elastic heat demand, absolute Money an
 SET DHF_U2(DHF)       'Upwards steps in elastic heat demand, absolute Money and MW-incremental data format';
 SET DHF_D3(DHF)       'Downwards steps in elastic heat demand, absolute Money and fraction of nominal demand data format';
 SET DHF_U3(DHF)       'Upwards steps in elastic heat demand, absolute Money and fraction of nominal demand data format';
+*/
 SET MPOLSET           'Emission and other policy data';
 SET C(CCC)            'Countries in the simulation';
 SET G(GGG)            'Generation technologies in the simulation';
@@ -262,10 +277,19 @@ $if     EXIST '../data/HYRSDATASET.inc' $INCLUDE         '../data/HYRSDATASET.in
 $if not EXIST '../data/HYRSDATASET.inc' $INCLUDE '../../base/data/HYRSDATASET.inc';
 %semislash%;
 
+SET DEUSER      "Electricity demand user groups. Set must include element RESE for holding demand not included in any other user group"  %semislash%
+$if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DEUSER.inc';
+$if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DEUSER.inc';
+%semislash%;
+
+
 SET DF_QP  'Quantity and price information for elastic demands' %semislash%
 $if     EXIST '../data/DF_QP.inc' $INCLUDE         '../data/DF_QP.inc';
 $if not EXIST '../data/DF_QP.inc' $INCLUDE '../../base/data/DF_QP.inc';
 %semislash%;
+
+* ------------------------------------------------------------------------------
+$ifi not %dflexquant%==yes $goto dflexquantend1
 
 SET DEF  'Steps in elastic electricity demand'  %semislash%
 $if     EXIST '../data/DEF.inc' $INCLUDE         '../data/DEF.inc';
@@ -300,6 +324,14 @@ $if not EXIST '../data/DEF_D3.inc' $INCLUDE '../../base/data/DEF_D3.inc';
 SET DEF_U3(DEF)   'Upwards steps in elastic el. demand, absolute Money and fraction of nominal demand data format' %semislash%
 $if     EXIST '../data/DEF_U3.inc' $INCLUDE         '../data/DEF_U3.inc';
 $if not EXIST '../data/DEF_U3.inc' $INCLUDE '../../base/data/DEF_U3.inc';
+%semislash%;
+* ------------------------------------------------------------------------------
+$label dflexquantend1
+
+
+SET DHUSER "Heat demand user groups. Set must include element RESH for holding demand not included in any other user group" %semislash%
+$if     EXIST '../data/DHUSER.inc' $INCLUDE         '../data/DHUSER.inc';
+$if not EXIST '../data/DHUSER.inc' $INCLUDE '../../base/data/DHUSER.inc';
 %semislash%;
 
 SET DHF  'Steps in elastic heat demand' %semislash%
@@ -398,6 +430,7 @@ $if not EXIST '../data/X3VSTEP.inc' $INCLUDE      '../../base/data/X3VSTEP.inc';
 
 $if     EXIST '../data/X3VX.inc' $INCLUDE      '../data/X3VX.inc';
 $if not EXIST '../data/X3VX.inc' $INCLUDE      '../../base/data/X3VX.inc';
+
 *$ifi %X3V%==yes   $INCLUDE '../../base/addons/X3V/data/X3VSETS.inc';
 $label X3V_label1
 
@@ -443,6 +476,7 @@ ALIAS (AAA,IAAAE,IAAAI);
 ALIAS (IA,IAE,IAI);
 * Duplication of sets for fuel.
 ALIAS (FFF,IFFFALIAS);
+ALIAS (FFF,IFFFALIAS2);
 
 ALIAS(S,IS3LOOPSET);
 
@@ -460,9 +494,9 @@ ALIAS (T,ITALIAS);
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
 *-------------------------------------------------------------------------------
 
-
-$include "..\..\base\addons\_hooks\setdeclare.inc"
-$include "..\..\base\addons\_hooks\setdefine.inc"
+$include "../../base/addons/_hooks/acronyms.inc"
+$include "../../base/addons/_hooks/setdeclare.inc"
+$include "../../base/addons/_hooks/setdefine.inc"
 
 * Addon AGKNDISC: discrete size investment in technologies:
 $ifi not %AGKNDISC%==yes  $goto label_AGKNDISC1
@@ -490,7 +524,6 @@ $if not EXIST '../data/AGKNDISCGDATA.inc' $INCLUDE '../../base/data/AGKNDISCGDAT
 $label label_AGKNDISC1
 * End: Addon AGKNDISC: discrete size investment in technologies.
 
-$ifi not %HYRSBB123%==none   $include "..\..\base\addons\hyrsbb123\hyrsbb123internals.inc";
 
 *-------------------------------------------------------------------------------
 * End: Any declarations and definitions of sets, aliases and acronyms for addon
@@ -536,10 +569,14 @@ $ifi %FV%==yes $include '../../base/addons/Fjernvarme/sets_fv.inc';
 PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFDATALISTING%
-$if     EXIST '../data/gdata.inc' $INCLUDE         '../data/gdata.inc';
-$if not EXIST '../data/gdata.inc' $INCLUDE '../../base/data/gdata.inc';
+$if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
+$if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 %ONOFFCODELISTING%
 
+*-------------------------------------------------------------------------------
+*------------- Any GDATA additions for addon to be placed here: ----------------
+*-------------------------------------------------------------------------------
+$include "../../base/addons/_hooks/gdataadditions.inc"
 
 *-------------------------------------------------------------------------------
 * Definitions of internal sets relative to technologies,
@@ -725,7 +762,7 @@ $ifi not %bypass%==yes IGBYPASS(G) = NO;
 * operator and instead use the '+' operator for compound assignments.
 
 
-$include "..\..\base\addons\_hooks\isetdecdef.inc"
+$include "../../base/addons/_hooks/isetdecdef.inc"
 
 *---- Unit commitment --------------------------------------------------------------
 
@@ -755,8 +792,8 @@ $ifi %SYSTEMCOST%==yes  $ifi not exist ../data/'sets_syscost.inc' $INCLUDE '../.
 %ONOFFDATALISTING%
 
 PARAMETER GKFX(YYY,AAA,GGG)    'Capacity of exogenously given generation technologies (MW)' %semislash%
-$if     EXIST '../data/gkfx.inc' $INCLUDE         '../data/GKFX.inc';
-$if not EXIST '../data/gkfx.inc' $INCLUDE '../../base/data/GKFX.inc';
+$if     EXIST '../data/GKFX.inc' $INCLUDE         '../data/GKFX.inc';
+$if not EXIST '../data/GKFX.inc' $INCLUDE '../../base/data/GKFX.inc';
 %semislash%;
 
 
@@ -800,6 +837,7 @@ PARAMETER WNDFLH(AAA)                  'Full load hours for wind power (hours)';
 PARAMETER SOLEFLH(AAA)                 'Full load hours for solarE power (hours)';
 PARAMETER SOLHFLH(AAA)                 'Full load hours for solarH power (hours)';
 PARAMETER WAVEFLH(AAA)                 'Full load hours for wave power'
+PARAMETER HYRSMAXVOL_G(AAA,GGG)        'Reservoir capacity (MWh storage capacity / MW installed capacity)';
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)'Data for hydro with storage';
 PARAMETER TAX_FHO(YYY,AAA,G)           'Fuel taxes on heat-only units';
 PARAMETER TAX_FHO_C(FFF,CCC)           'Fuel taxes on heat-only units';
@@ -807,8 +845,8 @@ PARAMETER TAX_GH(YYY,AAA,G)            'Heat taxes on generation units';
 PARAMETER TAX_FCHP_C(FFF,CCC)          'Fuel taxes on CHP units';
 PARAMETER TAX_HHO_C(FFF,CCC)           'Fuel taxes on HO units';
 PARAMETER TAX_F(FFF,CCC)               'Fuel taxes for heat and electricity production (Money/GJ)';
-PARAMETER TAX_DE(CCC)                  'Consumers tax on electricity consumption (Money/MWh)';
-PARAMETER TAX_DH(CCC)                  'Consumers tax on heat consumption (Money/MWh)';
+PARAMETER TAX_DE(CCC,DEUSER)           "Consumers tax on electricity consumption (Money/MWh)";
+PARAMETER TAX_DH(CCC,DHUSER)           "Consumers tax on heat consumption (Money/MWh)";
 PARAMETER ANNUITYC(CCC)                'Transforms investment to annual payment (fraction)';
 PARAMETER GINVCOST(AAA,GGG)            'Investment cost for new technology (MMoney/MW)';
 PARAMETER GOMVCOST(AAA,GGG)            'Variable operating and maintenance costs (Money/MWh)';
@@ -816,8 +854,8 @@ PARAMETER GOMFCOST(AAA,GGG)            'Annual fixed operating costs (kMoney/MW)
 PARAMETER GEFFRATE(AAA,GGG)            "Fuel efficiency rating (strictly positive, typically close to 1; default/1/)";
 PARAMETER DEFP_BASE(RRR)               'Nominal annual average consumer electricity price (Money/MWh)';
 PARAMETER DHFP_BASE(AAA)               'Nominal annual average consumer heat price (Money/MWh)';
-PARAMETER DE(YYY,RRR)                  'Annual electricity consumption (MWh)';
-PARAMETER DH(YYY,AAA)                  'Annual heat consumption (MWh)';
+PARAMETER DE(YYY,RRR,DEUSER)           "Annual electricity consumption (MWh)";
+PARAMETER DH(YYY,AAA,DHUSER)           "Annual heat consumption (MWh)";
 
 *---- Transmission data: -------------------------------------------------------
 PARAMETER XKINI(YYY,IRRRE,IRRRI)       'Initial transmission capacity between regions (MW)';
@@ -840,22 +878,24 @@ $ifi %X3V%==yes PARAMETER X3VQEX(RRR,X3VPLACE0,X3VSTEP0,SSS,TTT)        'Limit (
 
 PARAMETER M_POL(YYY,MPOLSET,CCC)                   'Emission policy data (various units, cf. MPOLSET)';
 * Time series on (SSS,TTT):
-PARAMETER WEIGHT_S(SSS)                            'Weight (relative length) of each season';
-PARAMETER WEIGHT_T(TTT)                            'Weight (relative length) of each time period';
+PARAMETER WEIGHT_S(SSS)                            'Weight (relative length) of each season (~)';
+PARAMETER WEIGHT_T(TTT)                            'Weight (relative length) of each time period (~)';
 $ifi %GKRATE_DOL%==AAA_GGG_SSS                     PARAMETER GKRATE(AAA,GGG,SSS)         "Capacity rating (non-negative, typically close to 1; default/1/, eps for 0)";
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT                 PARAMETER GKRATE(AAA,GGG,SSS,TTT)     "Capacity rating (non-negative, typically close to 1; default/1/, eps for 0)";
-PARAMETER DE_VAR_T(RRR,SSS,TTT)                    'Variation in electricity demand';
-PARAMETER DH_VAR_T(AAA,SSS,TTT)                    'Variation in heat demand';
-PARAMETER WTRRSVAR_S(AAA,SSS)                      'Variation of the water inflow to reservoirs';
-PARAMETER WTRRRVAR_T(AAA,SSS,TTT)                  'Variation of generation of hydro run-of-river';
-PARAMETER WND_VAR_T(AAA,SSS,TTT)                   'Variation of the wind generation';
-PARAMETER SOLE_VAR_T(AAA,SSS,TTT)                  'Variation of the solar generation';
-PARAMETER WAVE_VAR_T(AAA,SSS,TTT)                  'Variation of the wave generation'
-PARAMETER X3FX_VAR_T(RRR,SSS,TTT)                  'Variation in fixed exchange with 3. region';
-PARAMETER HYPPROFILS(AAA,SSS)                      'Hydro with storage seasonal price profile';
-PARAMETER DEF_STEPS(RRR,SSS,TTT,DF_QP,DEF)         'Elastic electricity demands';
+PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)             "Variation in electricity demand ()"; !! () todo
+PARAMETER DH_VAR_T(AAA,DHUSER,SSS,TTT)             "Variation in heat demand ()"; !! () todo
+PARAMETER WTRRSVAR_S(AAA,SSS)                      'Variation of the water inflow to reservoirs (~)';
+PARAMETER WTRRRVAR_T(AAA,SSS,TTT)                  'Variation of generation of hydro run-of-river (~)';
+PARAMETER WND_VAR_T(AAA,SSS,TTT)                   'Variation of the wind electricity generation (~)';
+PARAMETER SOLE_VAR_T(AAA,SSS,TTT)                  'Variation of the solar electricity generation (~)';
+PARAMETER WAVE_VAR_T(AAA,SSS,TTT)                  'Variation of the wave electricity generation (~)'
+PARAMETER X3FX_VAR_T(RRR,SSS,TTT)                  'Variation in fixed electricity exchange with 3. region (~)';
+PARAMETER HYPPROFILS(AAA,SSS)                      'Hydro with storage exogenous seasonal electricity price profile (Money/MWh)';
+/*
+PARAMETER DEF_STEPS(RRR,SSS,TTT,DF_QP,DEF)         'Elastic electricity demands ()';
 $ifi %DEFPCALIB%==yes PARAMETER DEFP_CALIB(RRR,SSS,TTT)  'Calibrate the price side of electricity demand';
-PARAMETER DHF_STEPS(AAA,SSS,TTT,DF_QP,DHF)         'Elastic heat demands';
+PARAMETER DHF_STEPS(AAA,SSS,TTT,DF_QP,DHF)         'Elastic heat demands ()';
+*/
 $ifi %DHFPCALIB%==yes PARAMETER DHFP_CALIB(AAA,SSS,TTT)  'Calibrate the price side of heat demand';
 $ifi %YIELDREQUIREMENT%==yes  PARAMETER YIELDREQ(GGG) 'Differentiates yield requirements for different technologies';
 
@@ -985,6 +1025,11 @@ $if     EXIST '../data/WAVEFLH.inc' $INCLUDE         '../data/WAVEFLH.inc';
 $if not EXIST '../data/WAVEFLH.inc' $INCLUDE '../../base/data/WAVEFLH.inc';
 %semislash%;
 
+PARAMETER HYRSMAXVOL_G(AAA,GGG) 'Reservoir capacity (MWh storage capacity / MW installed capacity)'  %semislash%
+$if     EXIST '../data/HYRSMAXVOL_G.inc' $INCLUDE         '../data/HYRSMAXVOL_G.inc';
+$if not EXIST '../data/HYRSMAXVOL_G.inc' $INCLUDE '../../base/data/HYRSMAXVOL_G.inc';
+%semislash%;
+
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)    'Data for hydro with storage'  %semislash%
 $if     EXIST '../data/HYRSDATA.inc' $INCLUDE         '../data/HYRSDATA.inc';
 $if not EXIST '../data/HYRSDATA.inc' $INCLUDE '../../base/data/HYRSDATA.inc';
@@ -1015,12 +1060,12 @@ $if     EXIST '../data/TAX_F.inc' $INCLUDE         '../data/TAX_F.inc';
 $if not EXIST '../data/TAX_F.inc' $INCLUDE '../../base/data/TAX_F.inc';
 %semislash%;
 
-PARAMETER TAX_DE(CCC)    'Consumers tax on electricity consumption (Money/MWh)'  %semislash%
+PARAMETER TAX_DE(CCC,DEUSER) 'Consumers tax on electricity consumption (Money/MWh)'  %semislash%
 $if     EXIST '../data/TAX_DE.inc' $INCLUDE         '../data/TAX_DE.inc';
 $if not EXIST '../data/TAX_DE.inc' $INCLUDE '../../base/data/TAX_DE.inc';
 %semislash%;
 
-PARAMETER TAX_DH(CCC)    'Consumers tax on heat consumption (Money/MWh)'  %semislash%
+PARAMETER TAX_DH(CCC,DHUSER)    'Consumers tax on heat consumption (Money/MWh)'  %semislash%
 $if     EXIST '../data/TAX_DH.inc' $INCLUDE         '../data/TAX_DH.inc';
 $if not EXIST '../data/TAX_DH.inc' $INCLUDE '../../base/data/TAX_DH.inc';
 %semislash%;
@@ -1068,18 +1113,18 @@ $if not EXIST '../data/DHFP_BASE.inc' $INCLUDE '../../base/data/DHFP_BASE.inc';
 *-------------------------------------------------------------------------------
 *---- Annual electricity demand : ----------------------------------------------
 *-------------------------------------------------------------------------------
-PARAMETER DE(YYY,RRR)    'Annual electricity consumption (MWh)' %semislash%
-$if     EXIST '../data/de.inc' $INCLUDE         '../data/de.inc';
-$if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
+PARAMETER DE(YYY,RRR,DEUSER)    'Annual electricity consumption (MWh)' %semislash%
+$if     EXIST '../data/DE.inc' $INCLUDE         '../data/DE.inc';
+$if not EXIST '../data/DE.inc' $INCLUDE '../../base/data/DE.inc';
 %semislash%;
 
 
 *-------------------------------------------------------------------------------
 *---- Annual heat demand: ------------------------------------------------------
 *-------------------------------------------------------------------------------
-PARAMETER DH(YYY,AAA)    'Annual heat consumption (MWh)'  %semislash%
-$if     EXIST '../data/dh.inc' $INCLUDE         '../data/dh.inc';
-$if not EXIST '../data/dh.inc' $INCLUDE '../../base/data/dh.inc';
+PARAMETER DH(YYY,AAA,DHUSER)    'Annual heat consumption (MWh)'  %semislash%
+$if     EXIST '../data/DH.inc' $INCLUDE         '../data/DH.inc';
+$if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
 %semislash%;
 
 
@@ -1176,8 +1221,8 @@ $if not EXIST '../data/FUELPRICE.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
 *-------------------------------------------------------------------------------
 
 PARAMETER M_POL(YYY,MPOLSET,CCC)    'Emission policy data (various units, cf. MPOLSET)'   %semislash%
-$if     EXIST '../data/m_pol.inc' $INCLUDE         '../data/m_pol.inc';
-$if not EXIST '../data/m_pol.inc' $INCLUDE '../../base/data/m_pol.inc';
+$if     EXIST '../data/M_POL.inc' $INCLUDE         '../data/M_POL.inc';
+$if not EXIST '../data/M_POL.inc' $INCLUDE '../../base/data/M_POL.inc';
 %semislash%;
 
 *-------------------------------------------------------------------------------
@@ -1209,12 +1254,12 @@ $if     EXIST '../data/GKRATE.inc' $INCLUDE         '../data/GKRATE.inc';
 $if not EXIST '../data/GKRATE.inc' $INCLUDE '../../base/data/GKRATE.inc';
 %semislash%;
 
-PARAMETER DE_VAR_T(RRR,SSS,TTT)                    'Variation in electricity demand'   %semislash%
+PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)            'Variation in electricity demand'   %semislash%
 $if     EXIST '../data/DE_VAR_T.inc' $INCLUDE         '../data/DE_VAR_T.inc';
 $if not EXIST '../data/DE_VAR_T.inc' $INCLUDE '../../base/data/DE_VAR_T.inc';
 %semislash%;
 
-PARAMETER DH_VAR_T(AAA,SSS,TTT)                    'Variation in heat demand'   %semislash%
+PARAMETER DH_VAR_T(AAA,DHUSER,SSS,TTT)             'Variation in heat demand'   %semislash%
 $if     EXIST '../data/DH_VAR_T.inc' $INCLUDE         '../data/DH_VAR_T.inc';
 $if not EXIST '../data/DH_VAR_T.inc' $INCLUDE '../../base/data/DH_VAR_T.inc';
 %semislash%;
@@ -1259,7 +1304,10 @@ $if     EXIST '../data/HYPPROFILS.inc' $INCLUDE         '../data/HYPPROFILS.inc'
 $if not EXIST '../data/HYPPROFILS.inc' $INCLUDE '../../base/data/HYPPROFILS.inc';
 %semislash%;
 
-PARAMETER DEF_STEPS(RRR,SSS,TTT,DF_QP,DEF)         'Elastic electricity demands'   %semislash%
+* ------------------------------------------------------------------------------
+$ifi not %dflexquant%==yes $goto dflexquantend2
+
+PARAMETER DEF_STEPS(RRR,DEUSER,SSS,TTT,DF_QP,DEF)         'Elastic electricity demands'   %semislash%
 $if     EXIST '../data/DEF_STEPS.inc' $INCLUDE         '../data/DEF_STEPS.inc';
 $if not EXIST '../data/DEF_STEPS.inc' $INCLUDE '../../base/data/DEF_STEPS.inc';
 %semislash%;
@@ -1269,7 +1317,7 @@ $ifi %DEFPCALIB%==yes $if     EXIST '../data/DEFP_CALIB.inc' $INCLUDE         '.
 $ifi %DEFPCALIB%==yes $if not EXIST '../data/DEFP_CALIB.inc' $INCLUDE '../../base/data/DEFP_CALIB.inc';
 $ifi %DEFPCALIB%==yes %semislash%;
 
-PARAMETER DHF_STEPS(AAA,SSS,TTT,DF_QP,DHF)         'Elastic heat demands'   %semislash%
+PARAMETER DHF_STEPS(AAA,DHUSER,SSS,TTT,DF_QP,DHF)         'Elastic heat demands'   %semislash%
 $if     EXIST '../data/DHF_STEPS.inc' $INCLUDE         '../data/DHF_STEPS.inc';
 $if not EXIST '../data/DHF_STEPS.inc' $INCLUDE '../../base/data/DHF_STEPS.inc';
 %semislash%;
@@ -1278,6 +1326,9 @@ $ifi %DHFPCALIB%==yes PARAMETER DHFP_CALIB(AAA,SSS,TTT)                  'Calibr
 $ifi %DHFPCALIB%==yes $if     EXIST '../data/DHFP_CALIB.inc' $INCLUDE         '../data/DHFP_CALIB.inc';
 $ifi %DHFPCALIB%==yes $if not EXIST '../data/DHFP_CALIB.inc' $INCLUDE '../../base/data/DHFP_CALIB.inc';
 $ifi %DHFPCALIB%==yes %semislash%;
+* ------------------------------------------------------------------------------
+$label dflexquantend2
+
 
 $ifi %bb3%==yes WEIGHT_T(T)=1;
 
@@ -1324,6 +1375,9 @@ $if not EXIST '../data/OMONEY.inc' $INCLUDE '../../base/data/OMONEY.inc';
 *-------------------------------------------------------------------------------
 *----- Any parameters for addon to be placed here: -----------------------------
 *-------------------------------------------------------------------------------
+$include "../../base/addons/_hooks/pardeclare.inc"
+$include "../../base/addons/_hooks/pardefine.inc"
+
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/data/x3vdata.inc';
 $ifi %HEATTRANS%==yes $if     EXIST '../data/htrans.inc' $INCLUDE         '../data/htrans.inc';
 $ifi %HEATTRANS%==yes $if not EXIST '../data/htrans.inc' $INCLUDE '../../base/data/htrans.inc';
@@ -1363,8 +1417,8 @@ $if not EXIST '../data/PENALTYQ.inc' $INCLUDE '../../base/data/PENALTYQ.inc';
 * End: Declaration and definition of numerical data: PARAMETERS and SCALARS
 *-------------------------------------------------------------------------------
 * Reduce size of the large parameters:
-DE_VAR_T(RRR,SSS,TTT)$(not IR(RRR)) = 0;
-DH_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
+DE_VAR_T(RRR,DEUSER,SSS,TTT)$(not IR(RRR)) = 0;
+DH_VAR_T(AAA,DHUSER,SSS,TTT)$(not IA(AAA)) = 0;
 X3FX_VAR_T(RRR,SSS,TTT)$(not IR(RRR)) = 0;
 WND_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 SOLE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
@@ -1470,9 +1524,9 @@ PARAMETER IHOURSINST(SSS,T)   'Length of time segment (hours)';
 
 * Annual amounts as expressed in the units of the weights and demands used
 * in input in the file var.inc:
-PARAMETER IDE_SUMST(RRR)      'Annual amount of electricity demand (MWh)';
-PARAMETER IDH_SUMST(AAA)      'Annual amount of heat demand (MWh)';
-PARAMETER IX3FXSUMST(RRR)     'Annual amount of electricity exported to third countries (MWh)';
+PARAMETER IDE_SUMST(RRR,DEUSER) 'Annual amount of nominal electricity demand (MWh)';
+PARAMETER IDH_SUMST(AAA,DHUSER) 'Annual amount of nominal heat demand (MWh)';
+PARAMETER IX3FXSUMST(RRR)       'Annual amount of fixed electricity export to third countries relative to X3FX_VAR_T and (S,T) (MWh)';
 
 * Sums for finding the wind and solar generated electricity generation
 * as expressed in the units of the weights and demands used in input:
@@ -1491,8 +1545,8 @@ PARAMETER IWTRRRSUM(AAA)   'Annual amount of hydro-run-of-river generated electr
 $ifi %BB1%==yes    IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 $ifi %BB1%==yes    IWEIGHSUMT = SUM(T, WEIGHT_T(T));
 $ifi %BB1%==yes    IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
-$ifi %BB1%==yes    IDE_SUMST(IR) = SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,S,T));
-$ifi %BB1%==yes    IDH_SUMST(IA) = SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,S,T));
+$ifi %BB1%==yes    IDE_SUMST(IR,DEUSER) = SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,DEUSER,S,T));
+$ifi %BB1%==yes    IDH_SUMST(IA,DHUSER) = SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,DHUSER,S,T));
 $ifi %BB1%==yes    IX3FXSUMST(IR) = SUM((S,T), IHOURSINST(S,T)*X3FX_VAR_T(IR,S,T));
 $ifi %BB1%==yes    IWND_SUMST(IA)=SUM((S,T), IHOURSINST(S,T)*WND_VAR_T(IA,S,T));
 $ifi %BB1%==yes    ISOLESUMST(IA)=SUM((S,T), IHOURSINST(S,T)*SOLE_VAR_T(IA,S,T));
@@ -1504,8 +1558,8 @@ $ifi %BB1%==yes    IWTRRSSUM(IA)=SUM(S, (WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S
 $ifi %BB2%==yes    IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 $ifi %BB2%==yes    IWEIGHSUMT = SUM(T, WEIGHT_T(T));
 $ifi %BB2%==yes    IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
-$ifi %BB2%==yes    IDE_SUMST(IR) = SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,S,T));
-$ifi %BB2%==yes    IDH_SUMST(IA) = SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,S,T));
+$ifi %BB2%==yes    IDE_SUMST(IR,DEUSER) = SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,DEUSER,S,T));
+$ifi %BB2%==yes    IDH_SUMST(IA,DHUSER) = SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,DHUSER,S,T));
 $ifi %BB2%==yes    IX3FXSUMST(IR) = SUM((S,T), IHOURSINST(S,T)*X3FX_VAR_T(IR,S,T));
 $ifi %BB2%==yes    IWND_SUMST(IA)=SUM((S,T), IHOURSINST(S,T)*WND_VAR_T(IA,S,T));
 $ifi %BB2%==yes    ISOLESUMST(IA)=SUM((S,T), IHOURSINST(S,T)*SOLE_VAR_T(IA,S,T));
@@ -1517,8 +1571,8 @@ $ifi %BB2%==yes    IWTRRSSUM(IA)=SUM(S, (WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S
 $ifi %BB3%==yes    IWEIGHSUMS = SUM(SSS, WEIGHT_S(SSS));
 $ifi %BB3%==yes    IWEIGHSUMT = SUM(T, WEIGHT_T(T));
 $ifi %BB3%==yes    IHOURSINST(SSS,T)=IOF8760*(WEIGHT_S(SSS)*WEIGHT_T(T))/(IWEIGHSUMS*IWEIGHSUMT);
-$ifi %BB3%==yes    IDE_SUMST(IR) = SUM((SSS,T), IHOURSINST(SSS,T)*DE_VAR_T(IR,SSS,T));
-$ifi %BB3%==yes    IDH_SUMST(IA) = SUM((SSS,T), IHOURSINST(SSS,T)*DH_VAR_T(IA,SSS,T));
+$ifi %BB3%==yes    IDE_SUMST(IR,DEUSER) = SUM((SSS,T), IHOURSINST(SSS,T)*DE_VAR_T(IR,DEUSER,SSS,T));
+$ifi %BB3%==yes    IDH_SUMST(IA,DHUSER) = SUM((SSS,T), IHOURSINST(SSS,T)*DH_VAR_T(IA,DHUSER,SSS,T));
 $ifi %BB3%==yes    IX3FXSUMST(IR) = SUM((SSS,T), IHOURSINST(SSS,T)*X3FX_VAR_T(IR,SSS,T));
 $ifi %BB3%==yes    IWND_SUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*WND_VAR_T(IA,SSS,T));
 $ifi %BB3%==yes    ISOLESUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*SOLE_VAR_T(IA,SSS,T));
@@ -1531,6 +1585,7 @@ $ifi %BB3%==yes    IWTRRSSUM(IA)=SUM(SSS, (WEIGHT_S(SSS)/IWEIGHSUMS)*WTRRSVAR_S(
 * End of: Set the time weights depending on the model
 *-------------------------------------------------------------------------------
 
+/*
 * PARAMETER IDEFP_T holds the price levels of individual steps
 * in the electricity demand function, transformed to be comparable with
 * production costs (including fuel taxes) by subtraction of taxes
@@ -1569,6 +1624,9 @@ IDHFP_T(IA,S,T,DHF)$(DHF_D1(DHF)+DHF_U1(DHF)+DHF_D2(DHF)+DHF_U2(DHF)+DHF_D2(DHF)
    DHF_STEPS(IA,S,T,'DF_PRICE',DHF)*DHFP_BASE(IA) - SUM(C$ICA(C,IA),TAX_DH(C)) - DISCOST_H(IA)
 $ifi %DHFPCALIB%==yes  + DHFP_CALIB(IA,S,T)
 ;
+
+
+*/
 
 * Demand of electricity (MW) and heat (MW) current simulation year:
 PARAMETER IDE_T_Y(RRR,S,T)      'Nominal electricity demand (MW) time segment (S,T) current simulation year',
@@ -1638,6 +1696,8 @@ PARAMETER IGKNMAX_Y(AAA,G)       'Maximum capacity of new technologies (MW)';
 *----- Any internal sets and parameters for addon to be placed here: -----------
 *-------------------------------------------------------------------------------
 
+$INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
+
 * These internal parameters pertain to price sensitivy electricity exchange with third countries.
 $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vinternal.inc';
 * These internal parameters and sets pertain to heat transmission.
@@ -1674,14 +1734,26 @@ $ifi %inputdatatxt%== yes        $INCLUDE '../../base/output/printout/printinc/i
 $ifi %inputdatatxt%== yesnosolve $INCLUDE '../../base/output/printout/printinc/inputout.inc';
 $ifi %inputdatatxt%== yesnosolve $goto ENDOFMODEL
 * Unload input data to gdx file:
-$ifi exist '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"' rm '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"'
+$ifi %system.filesys%==UNIX
+$ifi exist '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"' rm '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
+$ifi %system.filesys%==MSNT
+$ifi exist '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"' del '"%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
 
 $ifi %INPUTDATA2GDX%==yes execute_unload '%relpathInputdata2GDX%INPUTDATAOUT.gdx';
 * Transfer inputdata a seperate Access file (only possible if %INPUTDATA2GDX%==yes):
 
 $ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
 
-$ifi %MERGEINPUTDATA%==yes execute_unload '..\output\temp\1INPUT.gdx';
+$ifi %MERGEINPUTDATA%==yes
+$ifi NOT (%BB3%==yes) execute_unload '../output/temp/1INPUT.gdx';
+
+$ifi %MERGEINPUTDATA%==yes
+$ifi %BB3%==yes $ifi not (%limitedresults%==yes) execute_unload '../output/temp/1INPUT.gdx';
+
+$ifi %MERGEINPUTDATA%==yes
+$ifi %BB3%==yes $ifi %limitedresults%==yes execute_unload '../output/temp/1INPUT.gdx'
+$ifi %MERGEINPUTDATA%==yes
+$ifi %BB3%==yes $ifi %limitedresults%==yes $INCLUDE '../../base/model/syminput.inc';
 
 *-------------------------------------------------------------------------------
 * End: Possibly write input data, prepare output file possibilities
@@ -1703,9 +1775,10 @@ $ifi %REShareEH%==yes $if not EXIST '../data/RESEHDATA.inc' $INCLUDE '../../base
 * A number of input data IDs contain more information than is actually used with the set-up of the model.
 * To reduce use of memory space and to reduce further processing and storage of unused data
 * some of the larger data IDs are here reduced by resetting unused data items to default values.
+$include "../../base/addons/_hooks/reducecard.inc"
 
-DE_VAR_T(RRR,SSS,TTT)$((NOT IR(RRR)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
-DH_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
+DE_VAR_T(RRR,DEUSER,SSS,TTT)$((NOT IR(RRR)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
+DH_VAR_T(AAA,DHUSER,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 WND_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 SOLE_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 SOLH_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
@@ -1713,10 +1786,10 @@ WTRRSVAR_S(AAA,SSS)$((NOT IA(AAA)) OR (NOT S(SSS))) = 0;
 WTRRRVAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 WAVE_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 X3FX_VAR_T(RRR,SSS,TTT)$((NOT IR(RRR)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
-DEF_STEPS(RRR,SSS,TTT,DF_QP,DEF)$((NOT IR(RRR)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
-DEF_STEPS(IR,S,T,DF_QP,DEF)$((NOT DEF_D1(DEF) AND (NOT DEF_D2(DEF)) AND (NOT DEF_D3(DEF)) AND (NOT DEF_U1(DEF)) AND (NOT DEF_U2(DEF)) AND (NOT DEF_U3(DEF)))) = 0;
-DHF_STEPS(AAA,SSS,TTT,DF_QP,DHF)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
-DHF_STEPS(IA,S,T,DF_QP,DHF)$((NOT DHF_D1(DHF) AND (NOT DHF_D2(DHF)) AND (NOT DHF_D3(DHF)) AND (NOT DHF_U1(DHF)) AND (NOT DHF_U2(DHF)) AND (NOT DHF_U3(DHF)))) = 0;
+*DEF_STEPS(RRR,SSS,TTT,DF_QP,DEF)$((NOT IR(RRR)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
+*DEF_STEPS(IR,S,T,DF_QP,DEF)$((NOT DEF_D1(DEF) AND (NOT DEF_D2(DEF)) AND (NOT DEF_D3(DEF)) AND (NOT DEF_U1(DEF)) AND (NOT DEF_U2(DEF)) AND (NOT DEF_U3(DEF)))) = 0;
+*DHF_STEPS(AAA,SSS,TTT,DF_QP,DHF)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
+*DHF_STEPS(IA,S,T,DF_QP,DHF)$((NOT DHF_D1(DHF) AND (NOT DHF_D2(DHF)) AND (NOT DHF_D3(DHF)) AND (NOT DHF_U1(DHF)) AND (NOT DHF_U2(DHF)) AND (NOT DHF_U3(DHF)))) = 0;
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT     GKRATE(AAA,GGG,SSS,TTT)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 $ifi %GKRATE_DOL%==AAA_GGG_SSS         GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS))) = 0;
 GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = 0;
@@ -1728,7 +1801,7 @@ GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = 0;
 * definitions (and no assignments) are reflected:
 
 
-$include "..\..\base\addons\_hooks\checkassumptions.inc"
+$include "../../base/addons/_hooks/checkassumptions.inc"
 
 * No need to proceed further if there are compilation errors in the data:
 $ifi not errorfree $abort "Balmorel execution aborted because of data errors (Message from Balmorel.gms)"
@@ -1751,8 +1824,8 @@ POSITIVE VARIABLE VGFN_T(AAA,G,S,T)                'Fuel consumption rate (MW), 
 POSITIVE VARIABLE VGKN(AAA,G)                      'New generation capacity (MW)';
 POSITIVE VARIABLE VXKN(IRRRE,IRRRI)                'New electricity transmission capacity (MW)';
 POSITIVE VARIABLE VDECOM(AAA,G)                    'Decommissioned capacity(MW)';
-POSITIVE VARIABLE VDEF_T(RRR,S,T,DEF)              'Flexible electricity demands (MW)';
-POSITIVE VARIABLE VDHF_T(AAA,S,T,DHF)              'Flexible heat demands (MW)';
+*POSITIVE VARIABLE VDEF_T(RRR,S,T,DEF)              'Flexible electricity demands (MW)';
+*POSITIVE VARIABLE VDHF_T(AAA,S,T,DHF)              'Flexible heat demands (MW)';
 POSITIVE VARIABLE VGHYPMS_T(AAA,S,T)               'Contents of pumped hydro storage (MWh)';
 POSITIVE VARIABLE VHYRS_S(AAA,S)                   'Hydro energy equivalent at the start of the season (MWh)';
 POSITIVE VARIABLE VESTOLOADT(AAA,S,T)              'Intra-seasonal electricity storage loading (MW)';
@@ -1786,7 +1859,7 @@ POSITIVE VARIABLE VQXK(IRRRE,IRRRI,S,T,IPLUSMINUS) 'Feasibility in Transmission 
 *-------------------------------------------------------------------------------
 *----- Any variables for addon to be placed here: ------------------------------
 *-------------------------------------------------------------------------------
-$include "..\..\base\addons\_hooks\vardeclare.inc"
+$INCLUDE '../../base/addons/_hooks/vardeclare.inc';
 
 * These variables are for addon X3V (price sensitive third countries elec exchange
 $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vvariables.inc';
@@ -1804,7 +1877,7 @@ $ifi %POLICIES%==yes $include '../../base/addons/policies/pol_var.inc';
 * These variables are for addon system costs
 $ifi %SYSTEMCOST%==yes $include '../../base/addons/SystemCost/var_syscost.inc';
 * These variables are for addon for hydro
-$ifi %HYRSBB123%==quantprice  $include "..\..\base\addons\hyrsbb123\hyrsbb123variables.inc";
+$ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/hyrsbb123variables.inc";
 
 
 *-------------------------------------------------------------------------------
@@ -1915,7 +1988,6 @@ $ifi %REShareEH%==yes QREShareEH(CCCREShareEH)     'Minimum share of electricity
 $ifi %AGKNDISC%==yes QAGKNDISC01(AAA,G)            'At most one of the specified discrete capacity size investments is chosen (Addon AGKNDISC)';
 $ifi %AGKNDISC%==yes QAGKNDISCCONT(AAA,G)          'The invested capacity must be one of the specified sizes or zero (MW) (Addon AGKNDISC)';
 
-$ifi %BB3%==yes $ifi not %HYRSBB123%==none         $include "..\..\base\addons\hyrsbb123\hyrsbb123equations.inc";
 ;
 
 *-------------------------------------------------------------------------------
@@ -2050,6 +2122,7 @@ $ifi %AGKNDISC%==yes  $include '../../base/addons/agkndisc/agkndiscaddobj.inc';
       ITAX_GH(IA,IGH)*IOF3P6*VGHN_T(IA,IGH,IS3,T)*IHOURSINST(IS3,T))
 
 
+/*
 * Changes in consumers' utility relative to electricity consumption:
 
    + SUM(IR,
@@ -2081,21 +2154,24 @@ $ifi %AGKNDISC%==yes  $include '../../base/addons/agkndisc/agkndiscaddobj.inc';
      +  SUM(DHF_U2, VDHF_T(IA,IS3,T,DHF_U2)* IDHFP_T(IA,IS3,T,DHF_U2)  )
      +  SUM(DHF_U3, VDHF_T(IA,IS3,T,DHF_U3)* IDHFP_T(IA,IS3,T,DHF_U3)  )))
      )
-
+*/
 
 * Infeasibility penalties:
    + PENALTYQ*(
 $ifi %BB1%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3,'IMINUS')+VQHYRSSEQ(IA,IS3,'IPLUS')))
 $ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3,'IMINUS')+VQHYRSSEQ(IA,IS3,'IPLUS')))
+$ifi %BB1%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSMINMAXVOL(IA,IS3,'IMINUS')+VQHYRSMINMAXVOL(IA,IS3,'IPLUS')))
+$ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSMINMAXVOL(IA,IS3,'IMINUS')+VQHYRSMINMAXVOL(IA,IS3,'IPLUS')))
                +SUM((IA,IS3,T)$SUM(IGHSTO(G),  IAGK_Y(IA,IGHSTO)  OR IAGKN(IA,IGHSTO)), (VQHSTOVOLT(IA,IS3,T,'IMINUS') +VQHSTOVOLT(IA,IS3,T,'IPLUS')))
                +SUM((IA,IS3,T)$SUM(IGESTO(G),  IAGK_Y(IA,IGESTO)  OR IAGKN(IA,IGESTO)), (VQESTOVOLT(IA,IS3,T,'IMINUS') +VQESTOVOLT(IA,IS3,T,'IPLUS')))
                +SUM((IA,IS3,T)$SUM(IGHSTOS(G), IAGK_Y(IA,IGHSTOS) OR IAGKN(IA,IGHSTOS)),(VQHSTOVOLTS(IA,IS3,T,'IMINUS')+VQHSTOVOLTS(IA,IS3,T,'IPLUS')))
                +SUM((IA,IS3,T)$SUM(IGESTOS(G), IAGK_Y(IA,IGESTOS) OR IAGKN(IA,IGESTOS)),(VQESTOVOLTS(IA,IS3,T,'IMINUS')+VQESTOVOLTS(IA,IS3,T,'IPLUS')))
 
-               +SUM((IR,IS3,T),(VQEEQ(IR,IS3,T,'IMINUS')+VQEEQ(IR,IS3,T,'IPLUS')))
-               +SUM((IA,IS3,T)$IDH_SUMST(IA),(VQHEQ(IA,IS3,T,'IMINUS')+VQHEQ(IA,IS3,T,'IPLUS')))
+               +SUM((IR,IS3,T)$(SUM(DEUSER, IDE_SUMST(IR,DEUSER))), (VQEEQ(IR,IS3,T,'IMINUS')+VQEEQ(IR,IS3,T,'IPLUS')))
+               +SUM((IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))), (VQHEQ(IA,IS3,T,'IMINUS')+VQHEQ(IA,IS3,T,'IPLUS')))
 
                +SUM((C,FFF)$IGEQF_Y(C,FFF) , VQGEQCF(C,FFF,'IPLUS')+VQGEQCF(C,FFF,'IMINUS')    )
+
                +SUM((C,FFF)$IGMINF_Y(C,FFF), VQGMINCF(C,FFF)      )
                +SUM((C,FFF)$IGMAXF_Y(C,FFF), VQGMAXCF(C,FFF)      )
 
@@ -2111,6 +2187,7 @@ $ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3
               )
 
 * Add-on objective function contributions
+$INCLUDE '../../base/addons/_hooks/qobj.inc';
 
 $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vobj.inc';
 * This file contains Heat transmission induced additions to the objective function.
@@ -2149,21 +2226,21 @@ $ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VIM_T(IR,X3VPLAC
       IX3FX_T_Y(IR,IS3,T)
     + (   (IDE_T_Y(IR,IS3,T)
 
-         + SUM(DEF_U1$IDEFP_T(IR,IS3,T,DEF_U1),VDEF_T(IR,IS3,T,DEF_U1) )
-         - SUM(DEF_D1$IDEFP_T(IR,IS3,T,DEF_D1),VDEF_T(IR,IS3,T,DEF_D1) )
-         + SUM(DEF_U2$IDEFP_T(IR,IS3,T,DEF_U2),VDEF_T(IR,IS3,T,DEF_U2) )
-         - SUM(DEF_D2$IDEFP_T(IR,IS3,T,DEF_D2),VDEF_T(IR,IS3,T,DEF_D2) )
-         + SUM(DEF_U3$IDEFP_T(IR,IS3,T,DEF_U3),VDEF_T(IR,IS3,T,DEF_U3) )
-         - SUM(DEF_D3$IDEFP_T(IR,IS3,T,DEF_D3),VDEF_T(IR,IS3,T,DEF_D3) )
+*         + SUM(DEF_U1$IDEFP_T(IR,IS3,T,DEF_U1),VDEF_T(IR,IS3,T,DEF_U1) )
+*         - SUM(DEF_D1$IDEFP_T(IR,IS3,T,DEF_D1),VDEF_T(IR,IS3,T,DEF_D1) )
+*         + SUM(DEF_U2$IDEFP_T(IR,IS3,T,DEF_U2),VDEF_T(IR,IS3,T,DEF_U2) )
+*         - SUM(DEF_D2$IDEFP_T(IR,IS3,T,DEF_D2),VDEF_T(IR,IS3,T,DEF_D2) )
+*         + SUM(DEF_U3$IDEFP_T(IR,IS3,T,DEF_U3),VDEF_T(IR,IS3,T,DEF_U3) )
+*         - SUM(DEF_D3$IDEFP_T(IR,IS3,T,DEF_D3),VDEF_T(IR,IS3,T,DEF_D3) )
      )/(1-DISLOSS_E(IR)))
       + SUM(IRI$(IXKINI_Y(IR,IRI) OR IXKN(IR,IRI) OR IXKN(IRI,IR)),VX_T(IR,IRI,IS3,T))
 $ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VEX_T(IR,X3VPLACE,X3VSTEP,IS3,T)))
-$include "..\..\base\addons\_hooks\qeeq.inc"
+$include "../../base/addons/_hooks/qeeq.inc"
       - VQEEQ(IR,IS3,T,'IMINUS') + VQEEQ(IR,IS3,T,'IPLUS')
 ;
 
 
-QHEQ(IA,IS3,T)$(IDH_SUMST(IA) NE 0) ..
+QHEQ(IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER)))..
 
      SUM(IGBPR$IAGK_Y(IA,IGBPR),VGH_T(IA,IGBPR,IS3,T))
    + SUM(IGBPR$IAGKN(IA,IGBPR),VGHN_T(IA,IGBPR,IS3,T))
@@ -2178,16 +2255,17 @@ QHEQ(IA,IS3,T)$(IDH_SUMST(IA) NE 0) ..
    - VHSTOLOADTS(IA,IS3,T)$SUM(IGHSTOS$(IAGK_Y(IA,IGHSTOS) OR IAGKN(IA,IGHSTOS)),1)
     =E=
      (IDH_T_Y(IA,IS3,T)
-        + SUM(DHF_U1$IDHFP_T(IA,IS3,T,DHF_U1),VDHF_T(IA,IS3,T,DHF_U1) )
-        - SUM(DHF_D1$IDHFP_T(IA,IS3,T,DHF_D1),VDHF_T(IA,IS3,T,DHF_D1) )
-        + SUM(DHF_U2$IDHFP_T(IA,IS3,T,DHF_U2),VDHF_T(IA,IS3,T,DHF_U2) )
-        - SUM(DHF_D2$IDHFP_T(IA,IS3,T,DHF_D2),VDHF_T(IA,IS3,T,DHF_D2) )
-        + SUM(DHF_U3$IDHFP_T(IA,IS3,T,DHF_U3),VDHF_T(IA,IS3,T,DHF_U3) )
-        - SUM(DHF_D3$IDHFP_T(IA,IS3,T,DHF_D3),VDHF_T(IA,IS3,T,DHF_D3) )
+*        + SUM(DHF_U1$IDHFP_T(IA,IS3,T,DHF_U1),VDHF_T(IA,IS3,T,DHF_U1) )
+*        - SUM(DHF_D1$IDHFP_T(IA,IS3,T,DHF_D1),VDHF_T(IA,IS3,T,DHF_D1) )
+*        + SUM(DHF_U2$IDHFP_T(IA,IS3,T,DHF_U2),VDHF_T(IA,IS3,T,DHF_U2) )
+*        - SUM(DHF_D2$IDHFP_T(IA,IS3,T,DHF_D2),VDHF_T(IA,IS3,T,DHF_D2) )
+*        + SUM(DHF_U3$IDHFP_T(IA,IS3,T,DHF_U3),VDHF_T(IA,IS3,T,DHF_U3) )
+*        - SUM(DHF_D3$IDHFP_T(IA,IS3,T,DHF_D3),VDHF_T(IA,IS3,T,DHF_D3) )
     )/(1-DISLOSS_H(IA))
 
 * Adds heat transmission if selected in the gas add-on
 $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htheatbalance.inc';
+$include "../../base/addons/_hooks/qheq.inc"
         - VQHEQ(IA,IS3,T,'IMINUS') + VQHEQ(IA,IS3,T,'IPLUS')
 * Adds district heating if selected
 $ifi %FV%==yes $include '../../base/addons/Fjernvarme/heatbalance_fv.inc';
@@ -2412,16 +2490,16 @@ QHYMAXG(IA,IS3,T)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS))..
 
 QHYRSMINVOL(IA,IS3)$(HYRSDATA(IA,'HYRSMINVOL',IS3) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
 
-      VHYRS_S(IA,IS3) =G= HYRSDATA(IA,'HYRSMINVOL',IS3) * WTRRSFLH(IA) *
-        (SUM(IGHYRS,(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
+      VHYRS_S(IA,IS3) =G= HYRSDATA(IA,'HYRSMINVOL',IS3)  *
+        (SUM(IGHYRS,HYRSMAXVOL_G(IA,IGHYRS)*(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
         -VQHYRSMINMAXVOL(IA,IS3,'IMINUS'));
 
 * Hydro reservoir content - maximum level
 
 QHYRSMAXVOL(IA,IS3)$(HYRSDATA(IA,'HYRSMAXVOL',IS3) AND SUM(IGHYRS$(IAGK_Y(IA,IGHYRS) OR IAGKN(IA,IGHYRS)),1))..
 
-       HYRSDATA(IA,'HYRSMAXVOL',IS3) * WTRRSFLH(IA) *
-        (SUM(IGHYRS,(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)+VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
+       HYRSDATA(IA,'HYRSMAXVOL',IS3)  *
+        (SUM(IGHYRS, HYRSMAXVOL_G(IA,IGHYRS)*(IGKVACCTOY(IA,IGHYRS)+IGKFX_Y(IA,IGHYRS)  +VGKN(IA,IGHYRS)$IAGKN(IA,IGHYRS)))
         -VQHYRSMINMAXVOL(IA,IS3,'IPLUS'))=G= VHYRS_S(IA,IS3);
 
 *------------ Short term heat and electricity storages:-------------------------
@@ -2795,7 +2873,7 @@ QGMAXINVEST2(C,IGKFIND)$GROWTHCAP(C,IGKFIND)..
 *----- Any equations for addon to be placed here: ------------------------------
 *-------------------------------------------------------------------------------
 
-$include "..\..\base\addons\_hooks\eqndecdef.inc"
+$include "../../base/addons/_hooks/eqndecdef.inc"
 
 * These add-on equations pertain to district heating.
 $ifi %FV%==yes $include '../../base/addons/Fjernvarme/eq_fv.inc';
@@ -2847,7 +2925,7 @@ MODEL BALBASE1 'Balmorel model without endogeneous investments'
                                 QGCBGBPRBYPASS2
                                 QGNCBGBPRBYPASS1
                                 QGNCBGBPRBYPASS2
-*--- Storage restructions ------------------------------------------------------
+*--- Storage restrictions ------------------------------------------------------
                                 QHYRSSEQ
                                 QHYRSMINVOL
                                 QHYRSMAXVOL
@@ -2886,7 +2964,7 @@ MODEL BALBASE1 'Balmorel model without endogeneous investments'
 
 *                                QSELFSUFFICIENCY
 *----- Any equations for addon to be placed here: ------------------------------
-$include "..\..\base\addons\_hooks\balbase1.inc"
+$include "../../base/addons/_hooks/balbase1.inc"
 * Eventually the following addons will be handled through the above inclusion of _hooks.inc
 $ifi %FV%==yes $include '../../base/addons/Fjernvarme/eqN_fv.inc';
 $ifi %X3VfxQ%==yes              QX3VBAL
@@ -2984,7 +3062,7 @@ MODEL BALBASE2  'Balmorel model with endogeneous investments'
 *--- Operational restrictions --------------------------------------------------
 *                               QSELFSUFFICIENCY
 *----- Any equations for addon to be placed here: ------------------------------
-$include "..\..\base\addons\_hooks\balbase2.inc"
+$include "../../base/addons/_hooks/balbase2.inc"
 * Eventually the following addons will be handled through the above inclusion of _hooks.inc
 
 *--- Capacity restrictions for decommissioning ----------------------------------
@@ -3040,12 +3118,8 @@ MODEL BALBASE3 'Balmorel model without endogeneous investments, simulating each 
 *--- Transmission capacity -----------------------------------------------------
                                 QXK
 *----- Any equations for addon to be placed here: ------------------------------
-$include "..\..\base\addons\_hooks\balbase3.inc"
+$include "../../base/addons/_hooks/balbase3.inc"
 * Eventually the following addons will be handled through the above inclusion of _hooks.inc
-
-$ifi %HYRSBB123%==quant        QHYRSG
-$ifi %HYRSBB123%==quantprice   QHYRSG
-$ifi %HYRSBB123%==quantprice   QWATERVOLINI
 
 $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htbb1.inc';
 *----- End: Any equations for addon to be placed here. -------------------------
@@ -3112,7 +3186,9 @@ $ifi %bb2%==yes execute_unload  '../../simex/HYRSG.gdx',HYRSG;
 $ifi %bb2%==yes execute_unload  '../../simex/VHYRS_SL.gdx',VHYRS_SL;
 $ifi %bb2%==yes execute_unload  '../../simex/WATERVAL.gdx',WATERVAL;
 
-$ifi  %bb3%==yes $ifi not %HYRSBB123%==none $include  "../../base\addons\hyrsbb123\hyrsbb123unload.inc";
+$ifi  %bb3%==yes $ifi not %HYRSBB123%==none $include  "../../base/addons/hyrsbb123/hyrsbb123unload.inc";
+
+$INCLUDE  '../../base/addons/_hooks/simex.inc';
 
 $ifi %MAKEINVEST%==yes execute_unload '../../base/data/GKVACC.gdx', GKVACC;
 $ifi %MAKEINVEST%==yes execute_unload '../../base/data/GKVACCDECOM.gdx', GKVACCDECOM;
@@ -3123,9 +3199,20 @@ $ifi %MAKEINVEST%==yes execute_unload '../../base/data/XKACC.gdx', XKACC;
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgdx.inc';
 *--- End: Results which can be transfered between simulations are placed here --
 
+*----- End of model:------------------------------------------------------------
+$include "../../base/addons/_hooks/endofmodel_pre.inc"
+$label ENDOFMODEL
+$include "../../base/addons/_hooks/endofmodel_post.inc"
+*----- End of model ------------------------------------------------------------
+
 
 *--- Results collection for this case ------------------------------------------
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\temp\*.gdx"';
+
+$ifi not %system.filesys%==MSNT $goto endofMSNToutput
+*The following section until $label endofMSNToutput is related to Windows output only
+*Please use only backslash \ instead of forward slash / in this section until the label
+
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%temp\*.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%.gdx"';
 
 $ifi %MERGECASE%==NONE
@@ -3141,7 +3228,7 @@ $ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutpu
 *--- Results collection and comparison for differents cases --------------------
 
 $ifi not %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%.gdx" "%relpathModel%..\..\%MERGEWITH%\output\%MERGEWITH%.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%%CASEID%.gdx" "%relpathModel%..\..\%MERGEWITH%/output\%MERGEWITH%.gdx"';
 $ifi not %MERGECASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%-resmerged.gdx"';
 
@@ -3151,21 +3238,48 @@ $ifi not %MERGECASE%==NONE
 $ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutput%%CASEID%-resmerged.gdx" -o "%relpathoutput%%CASEID%-resmerged.db"';
 
 $ifi not %DIFFCASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%DIFFWITH%\output\%DIFFWITH%-results.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff "%relpathoutput%%CASEID%-results.gdx" "%relpathModel%..\..\%DIFFWITH%/output/%DIFFWITH%-results.gdx"';
 $ifi not %DIFFCASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move diffile.gdx "%relpathoutput%%CASEID%-diff.gdx"';
 
+$label endofMSNToutput
 
-*----- End of model:------------------------------------------------------------
-$include "..\..\base\addons\_hooks\endofmodel_pre.inc"
-$label ENDOFMODEL
-$include "..\..\base\addons\_hooks\endofmodel_post.inc"
-*----- End of model ------------------------------------------------------------
+$ifi not %system.filesys%==UNIX $goto endofUNIXoutput
+*The following section until $label endofUNIXoutput is related to UNIX output only
+*Please use only forward slash / instead of backslash \ in this section until the label
+
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/temp/*.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%.gdx"';
+
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/%CASEID%.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%-results.gdx"'
+
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access ./"%relpathoutput%%CASEID%-results.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i ./"%relpathoutput%%CASEID%-results.gdx" -o ./"%relpathoutput%%CASEID%-results.db"';
+
+*--- Results collection and comparison for differents cases --------------------
+
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge ./"%relpathoutput%%CASEID%.gdx" ./"%relpathModel%../../%MERGEWITH%/output/%MERGEWITH%.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%-resmerged.gdx"';
+
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access ./"%relpathoutput%%CASEID%-resmerged.gdx"';
+$ifi not %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i ./"%relpathoutput%%CASEID%-resmerged.gdx" -o ./"%relpathoutput%%CASEID%-resmerged.db"';
+
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxdiff ./"%relpathoutput%%CASEID%-results.gdx" ./"%relpathModel%../../%DIFFWITH%/output/%DIFFWITH%-results.gdx"';
+$ifi not %DIFFCASE%==NONE
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./diffile.gdx ./"%relpathoutput%%CASEID%-diff.gdx"';
 
 
-* Sometimes convenient to have it all (most recent values) at this point.
-* However, it may be detrimental to e.g. merging of gdx files, so better move to other place.
-* execute_unload "all_endofmodel.gdx";
+$label endofUNIXoutput
 
 *----- End of file:------------------------------------------------------------
 $label endoffile

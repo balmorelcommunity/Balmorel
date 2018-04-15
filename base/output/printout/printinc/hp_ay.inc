@@ -37,6 +37,9 @@ PUT "Units: "; PUT OMONEY.ts "/MWh" //;
 
 
 PUT "Annual average heat price, simple time weighted average:"/;
+
+*Todo!!
+$ontext
 hp_ay.LJ = 1;
 PUT "YEAR        " ; LOOP(IA,  PUT IA.TL:OTLW) ; PUT/;
 hp_ay.LJ = 2;
@@ -48,7 +51,10 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IA,
         PUT OTLW.ts;
      )
 );
+$offtext
+
 PUT //;
+
 
 
 * -----------------------------------------------------------------------------
@@ -103,6 +109,9 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IA,
 
 
 PUT "Annual average heat price, weighted by consumption quantity:"/;
+*TODO!!
+
+$ontext
 hp_ay.LJ = 1;
 PUT "YEAR        " ; LOOP(IA,  PUT IA.TL:OTLW) ; PUT /;
 hp_ay.LJ = 2;
@@ -125,6 +134,9 @@ PUT Y.TL:4:0; PUT "        "; LOOP(IA,
     ELSE
       PUT " '(No dem.)'" ;
       ); );
+
+$offtext
+
   PUT //;
 
 

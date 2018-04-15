@@ -1,6 +1,6 @@
 * File ep_yc.inc.
 
-* Modified 20150422(Weiming). 20161024 (hr): Guading against division-by-zero (search NA). Todo: detect the source for division-by-0, at do something about that.
+* Modified 20150422(Weiming). 20161024 (hr): Guading against division-by-zero (search NA). Todo: detect the source for division-by-0, at do something about that. 20171213(hr) update for BB4
 
 * This file will print a table containing
 * the annual weighted average marginal electricity price by C.
@@ -57,24 +57,25 @@ LOOP(IY411,
          OSCALAR3=0;  /* To become total cost        */
          OSCALAR2=0;  /* To become total consumption */
          LOOP(IR$CCCRRR(C,IR),
+          LOOP(DEUSER,
+           LOOP(IS3,  LOOP(T,
+                 OSCALAR1 = (((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0)   !! MAYBE USE IDE_T
 
-           LOOP(S,  LOOP(T,
-                 OSCALAR1 =(IDE_T(IY411,IR,S,T)
-                            + SUM(DEF_U1,VDEF_T.L(IY411,IR,S,T,DEF_U1))
-                            - SUM(DEF_D1,VDEF_T.L(IY411,IR,S,T,DEF_D1) )
-                            + SUM(DEF_U2,VDEF_T.L(IY411,IR,S,T,DEF_U2) )
-                            - SUM(DEF_D2,VDEF_T.L(IY411,IR,S,T,DEF_D2) )
-                            + SUM(DEF_U3,VDEF_T.L(IY411,IR,S,T,DEF_U3) )
-                            - SUM(DEF_D3,VDEF_T.L(IY411,IR,S,T,DEF_D3) )
-                            );
-                 OSCALAR2 = OSCALAR2 + OSCALAR1 * IHOURSINST(S,T);
-                 OSCALAR3 = OSCALAR3 + OSCALAR1 * OEP_YRT(IY411FIRST,IY411,IR,S,T)* IHOURSINST(S,T);
+$ifi %dflexquant%==yes   + SUM(DEF_U1,VDEF_T.L(IY411,IR,DEUSER,IS3,T,DEF_U1) )
+$ifi %dflexquant%==yes   - SUM(DEF_D1,VDEF_T.L(IY411,IR,DEUSER,IS3,T,DEF_D1) )
+$ifi %dflexquant%==yes   + SUM(DEF_U2,VDEF_T.L(IY411,IR,DEUSER,IS3,T,DEF_U2) )
+$ifi %dflexquant%==yes   - SUM(DEF_D2,VDEF_T.L(IY411,IR,DEUSER,IS3,T,DEF_D2) )
+$ifi %dflexquant%==yes   + SUM(DEF_U3,VDEF_T.L(IY411,IR,DEUSER,IS3,T,DEF_U3) )
+$ifi %dflexquant%==yes   - SUM(DEF_D3,VDEF_T.L(IY411,IR,DEUSER,IS3,T,DEF_D3) )
+                            );                                                  !! TODO:  Correct not to divide by  (1-DISLOSS_E(IR))?    Cf ep_yr.inc
+                 OSCALAR2 = OSCALAR2 + OSCALAR1 * IHOURSINST(IS3,T);
+                 OSCALAR3 = OSCALAR3 + OSCALAR1 * OEP_YRT(IY411FIRST,IY411,IR,IS3,T)* IHOURSINST(IS3,T);
                  ));
 
          );
      OEP_YC(IY411FIRST,IY411,C)=OSCALAR3 / (OSCALAR2$(OSCALAR2 NE 0) + NA$(OSCALAR2 EQ 0));
      PUT OEP_YC(IY411FIRST,IY411,C):OTLWCRA:2;
-
+    );PUT /;
     );PUT /;
   );PUT /;
 );PUT /;

@@ -51,22 +51,22 @@ $setglobal CASEID BASE
 * Exactly one of the following Setgbobals must be assigned yes.
 *
 * bb1: use model BALBASE1: optimisation simultaneuosly for all (S,T) in a year, exogenous investments.
-$setglobal bb1 yes
+$setglobal bb1
 *!option yes      !notif %BB2%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb2: use model BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
 $setglobal bb2
 *!option yes      !notif %BB1%==yes  !notif %BB3%==yes  !notif %BB4%==yes
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
-$setglobal bb3 
+$setglobal bb3
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
-$setglobal bb4  
+$setglobal bb4 yes
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
 
 
 * During test period for BB4 make comparisons between BB4 and BB1, BB2, BB3.
 * The present implementation is for comparison of models (BB4 and one of BB1/BB2/BB3) with a single year (where results should be identical)
 * Not finished yet, but useful
-$setglobal testbb1234 yes
+$setglobal testbb1234
 *!option yes
 
 
@@ -81,15 +81,19 @@ $setglobal testbb1234 yes
 * Note that some of the choices are mutually dependent.
 
 * Disable investments in electricity transmission capacity
-$setglobal NOELTRANSINV yes
+$setglobal NOELTRANSINV
 *!option yes
 
 * Allow wind turbines to shut down
-$setglobal WNDSHUTDOWN 
+$setglobal WNDSHUTDOWN
 *!option yes
 
 * This variable includes addon for distric heating
 $Setglobal FV
+*!option yes
+
+* Allow demand elasticity
+$setglobal DFLEXQUANT
 *!option yes
 
 *-------------------------------------------------------------------------------
@@ -102,7 +106,15 @@ $Setglobal FV
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH
+$setglobal COMBTECH yes
+*!option yes
+
+* Set demands for hydrogen consumption and enable hydrogen technologies.
+$Setglobal HYDROGEN yes
+*!option yes
+
+* Set a common maximum for three fuels.
+$Setglobal MAXFOR3FUELS
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
@@ -147,8 +159,8 @@ $setglobal AGKNDISC
 *!onlyif %BB2%==yes
 *!onlyif %solvemip%==yes
 
-* Set demands for hydrogen consumption.
-$Setglobal H2
+* Use the flow-based capacity allocation methodology
+$Setglobal FlowBased
 *!option yes
 
 * Set short storages to be inter- or intra-seasonal
@@ -210,6 +222,18 @@ $setglobal bb4weighty shareYYY
 * No choices, they must be set as shown. Note the format.
 * They are to be used as illustrated below and elsewhere in the code.
 *
+$ifi not %system.filesys%==UNIX  $goto endofUNIXrelpaths
+$setglobal relpathModel ""
+*!fixedvalue
+$setglobal relpathoutput "../output/"
+*!fixedvalue
+$setglobal relpathInputdata2GDX "../output/inputout/"
+*!fixedvalue
+$setglobal relpathtemp "../output/temp/"
+*!fixedvalue
+$label endofUNIXrelpaths
+
+$ifi not %system.filesys%==MSNT  $goto endofMSNTrelpaths
 $setglobal relpathModel ""
 *!fixedvalue
 $setglobal relpathoutput "..\output\"
@@ -218,7 +242,7 @@ $setglobal relpathInputdata2GDX "..\output\inputout\"
 *!fixedvalue
 $setglobal relpathtemp "..\output\temp\"
 *!fixedvalue
-
+$label endofMSNTrelpaths
 
 *===============================================================================
 *===============================================================================
@@ -293,7 +317,7 @@ $setglobal INPUTDATA2GDX  yes
 *!option yes
 
 
-* Transfer the input data in gdx format to a Microsoft Access database  ..\output\inputout\inputdataout.mdb:
+* Transfer the input data in gdx format to a Microsoft Access database  ../output/inputout/inputdataout.mdb:
 $setglobal INPUTDATAGDX2MDB
 *!option yes    !onlyif  %INPUTDATA2GDX%==yes
 * Note: if you have established a link from another Access database to inputdataout.mdb
@@ -301,7 +325,7 @@ $setglobal INPUTDATAGDX2MDB
 
 * Merge input data with the output into the gdx file %CASEID%.gdx
 $setglobal MERGEINPUTDATA yes
-*!option yes 
+*!option yes
 
 
 * Transfer the input data in gdx format to Microsoft Excel format:
@@ -317,13 +341,22 @@ $setglobal INPUTDATAGDX2XLS
 * A quick way to get (some of) the relevant information is to make a gdx file with all information.
 * This option will provide unloading of all that is available at the end of Balmorel.gms.
 *
-$setglobal all_endofmodelgdx  yes
+$setglobal all_endofmodelgdx yes
 *!option yes     !Save the file all_endofmodel.gdx to the model folder
+
+* Print out welfare results
+$Setglobal welfare
+*!option yes
+
+* Allow for limited printout of inputdata and results, as defined by files syminput.inc and symoutput.inc, respectively.
+* Only in effect for BB3
+$Setglobal limitedresults
+*!option yes
 
 
 * Make some output in text format to show some results of an execution.
 * The detailed code for the writing of the files is given in /output/printout/printinc.
-* Setting "yes" for PRINTFILES will make some standard printout files to folder \output\printout\.
+* Setting "yes" for PRINTFILES will make some standard printout files to folder /output/printout/.
 $setglobal PRINTFILES  yes
 *!option yes
 
@@ -346,7 +379,7 @@ $setglobal PRINTSEPARATOR ';'
 *
 * The following closely linked controls are used:
 * SAVEPOINTVALUE, cf. above
-* MERGESAVEPOINTRESULTS
+* MERGESAVEPOINTRESULTS yes
 * MERGEDSAVEPOINTRESULTS2MDB
 * MERGEDSAVEPOINTRESULTS2SQLITE
 * MERGEDSAVEPOINTRESULTS2XLS: presently not working, we are waiting for GAMS version 22.7, which has better support for this.
@@ -368,10 +401,6 @@ $setglobal SAVEPOINTVALUE 1
 *!option 0
 *!option 1   !mustif  %MERGESAVEPOINTRESULTS%==yes  !mustif  %MERGEDSAVEPOINTRESULTS2GDX%==yes   !mustif  %MERGEDSAVEPOINTRESULTS2XLS%==yes   !mustif not %MERGECASE%==none  !mustif not %DIFFCASE%==none
 *!option 2   !text Note: nothing implemented nor tested, so do not use it.
-*
-* In order not to confuse results from different executions, delete all old gdx-files:
-$ifi %SAVEPOINTVALUE%==1  execute "del %relpathModel%%relpathoutput%temp\*.gdx";
-
 
 * Use the $setglobal MERGESAVEPOINTRESULTS to choose whether to merge annual/seasonal results or not:
 $setglobal MERGESAVEPOINTRESULTS   YES
@@ -380,20 +409,26 @@ $setglobal MERGESAVEPOINTRESULTS   YES
 * e.g. make sure that the file *.gdx is not open in another application (like GAMD IDE).
 *
 * Then prepare for the necessary details:
+$ifi %system.filesys%==MSNT
 $setglobal batfileMERGESAVEPOINTRESULTS %relpathModel%MERGESAVEPOINTRESULTS.bat
 *!option !fixedvalue
+$ifi %system.filesys%==MSNT
 file     fileMERGESAVEPOINTRESULTSbat /  %batfileMERGESAVEPOINTRESULTS%  /;
+$ifi %system.filesys%==MSNT
 putclose fileMERGESAVEPOINTRESULTSbat;
 
-
-* The following is a clean-up in relation to previous runs.
-$ifi %SAVEPOINTVALUE%==1  execute "del %relpathModel%*.gdx";
-
+$ifi %system.filesys%==UNIX
+$setglobal bashfileMERGESAVEPOINTRESULTS %relpathModel%MERGESAVEPOINTRESULTS.sh
+*!option !fixedvalue
+$ifi %system.filesys%==UNIX
+file fileMERGESAVEPOINTRESULTSbash / %bashfileMERGESAVEPOINTRESULTS% /;
+$ifi %system.filesys%==UNIX
+putclose fileMERGESAVEPOINTRESULTSbash;
 
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
-$setglobal MERGEDSAVEPOINTRESULTS2SQLITE yes
+$setglobal MERGEDSAVEPOINTRESULTS2SQLITE
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
 

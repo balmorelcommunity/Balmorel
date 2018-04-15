@@ -79,7 +79,9 @@ PUT "TOTAL                              " ; LOOP(C, PUT sum(IGHSTOALL(G), HGqCY(
 
 PUT / /  "Annual Heat production by Area and Technology ()"//;
 
+*TODO!!!
 
+$ontext
 LOOP(C, LOOP(IA$ICA(C,IA),
  PUT  C.TL:12, IA.TL:35  , " Demand:" (IOF0001*DH(y,ia)):12:0 ,  "   Production:"  (IOF0001*SUM((IS3,T), IHOURSINST(IS3,T) *(SUM(IGH$IAGK_Y(IA,IGH), VGH_T.L(IA,IGH,IS3,T)) + SUM(IGH$IAGKN(IA,IGH),  VGHN_T.L(IA,IGH,IS3,T)) -VHSTOLOADT.l(IA,IS3,T) ))):12:0  ;
  put "   Old: "; loop(IGH$IAGK_Y(IA,IGH),  put" "  igh.tl:35  (IOF0001*SUM((IS3,T), IHOURSINST(IS3,T) *  VGH_T.L(IA,IGH,IS3,T))):12:0 ;  );
@@ -88,3 +90,4 @@ LOOP(C, LOOP(IA$ICA(C,IA),
 * [Mangler New] put "   Hstoload: " (IOF0001*SUM((IS3,T), IHOURSINST(IS3,T) *VHSTOLOADT.l(IA,IS3,T)));
  put /;
 ));
+$offtext  

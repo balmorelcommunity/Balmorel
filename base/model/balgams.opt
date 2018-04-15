@@ -55,7 +55,7 @@ $OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF
 
 OPTIONS LIMROW=   100, LIMCOL=   100;
 
-OPTIONS RESLIM= 50000;
+OPTIONS RESLIM= 300000;
 
 *...............................................................................
 * SYSOUT controls the printing of the solved status in the list file.
@@ -68,6 +68,15 @@ OPTIONS SYSOUT=Off;
 * Useful for inspection of details.
 * OPTIONS SOLPRINT=OFF or OPTIONS SOLPRINT=ON (default):
 OPTIONS SOLPRINT=Off;
+
+*...............................................................................
+* DECIMALS controls the the number of decimals in the list file.
+* Default is 3, maximum is 8.
+OPTION DECIMALS = 3;
+
+* DISPWIDTH  Set the label length in columns for the display statement.
+* Default is 10, maximum is 31.
+OPTION  DISPWIDTH =  18;
 
 *...............................................................................
 * $ondollar/$offdollar controls the echoing of dollar control option lines in the listing file:
@@ -103,36 +112,20 @@ $ONEMPTY
 * Useful for inspection of details.
 option optcr = 0.000001
 
+
+
 *-------------------------------------------------------------------------------
-* set Cplex solver. Illustration only. Consult GAMS manuals.
+* Solvers may be controlled by solver specific options in a solver ooption file.
+* Possibilities and details vary between solvers, consult GAMS manuals.
+* For illustration the Cplex solver is used here.
+* With USEOPTIONFILE set to 1 the Cplex solver will expect to find file cplex.opt
+* in the model folder, this file holds statements for details of the Cplex solver.
 
-* Set USEOPTIONFILE to either 1 or 0. 1 indicates to use the cplex.opt file
-* defined below. 0 indicates no option file.
+* Set USEOPTIONFILE to either 1 or 0.
+* 1 indicates to use a solver specific option file, 0 indicates no option file.
 
-$Setglobal USEOPTIONFILE 0
+$Setglobal USEOPTIONFILE 1
 
-*file cp /cplex.opt/;
-*put cp;
-*put "lpmethod 4" /;
-*put "epint 1e-004" /;
-*put "subalg 1" /;
-*put "mipstart 1" /;
-*put "mipordind 1" /;
-*put "heurfreq -1" /;
-*put "brdir 1" /;
-*put "mipinterval 10" /;
-*put "mipdisplay 1" /;
-*put "barcrossalg -1" /;
-*put "barepcomp 1.0e-4" /;
-*put "baritlim 10000" /;
-*put "barmaxcor 3"
-*put "ppriind 4"
-*put "cuts no"/;
-*put "predual 1"/;
-*put "interactive yes"/;
-*put "mipemphasis 2"/;
-*put "probe 3"/;
-
-*putclose cp;
-*...............................................................................
 *-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+
