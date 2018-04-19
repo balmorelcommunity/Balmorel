@@ -408,13 +408,14 @@ $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vannual.inc';
 * solution basis, which is used for generating results database.
 OPTION Savepoint=1;
 
-BALBASE4.optfile = %USEOPTIONFILE%;
+BALBASE4.optfile = %USEOPTIONFILE%;$ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
 
 
 
 $ifi not %SOLVEMIP%==yes SOLVE BALBASE4 USING LP  MINIMIZING VOBJ;  !! =====================
 $ifi     %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;  !! =====================
 
+$include "..\..\base\addons\_hooks\solveend.inc"
 *-------------------------------------------------------------------------------
 * End: SOLVE
 *-------------------------------------------------------------------------------

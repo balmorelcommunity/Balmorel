@@ -17,7 +17,10 @@ $label  beginbb4
 
 $ifi not %bb4%==yes $goto endoffile
 
-$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_vardeclare.inc";
-$ifi %MAXFOR3FUELS%==yes  $include   "../../base/addons/maxfor3fuels/bb4/maxfor3fuels_vardeclare.inc"; 
+$ifi %HYDROGEN%==yes      $include   "../../base/addons/hydrogen/bb4/hydrogen_vardeclare.inc";
+$ifi %MAXFOR3FUELS%==yes  $include   "../../base/addons/maxfor3fuels/bb4/maxfor3fuels_vardeclare.inc";
+
+$ifi %vqdebug%==yes       $include   "../../base/addons/vqdebug/bb4/vqdebug_declare.inc";
+
 
 $label endoffile

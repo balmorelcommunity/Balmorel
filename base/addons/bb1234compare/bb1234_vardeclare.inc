@@ -1,4 +1,7 @@
 * File  for addon testbb1234 for the Balmorel model
+* Last revised 20180418 (hr)
+
+$ifi not declared  IPLUSMINUS  SET IPLUSMINUS "Violation of equation"  /IPLUS "Violation of equation upwards", IMINUS  "Violation of equation downwards"/;
 
 FREE     VARIABLE IBB1234_VOBJ                               "Objective function value (MMoney)";
 POSITIVE VARIABLE IBB1234_VGE_T(Y,AAA,G,S,T)                 "Electricity generation (MW)";
