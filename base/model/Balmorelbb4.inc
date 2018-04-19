@@ -143,29 +143,6 @@ ALIAS (T,ITALIAS);
 *----- End: Definitions of SETS and ALIASES that are needed for data entry:
 *-------------------------------------------------------------------------------
 
-*-------------------------------------------------------------------------------
-*----- Any declarations and definitions of sets, aliases and acronyms for addon:
-*-------------------------------------------------------------------------------
-
-$include "..\..\base\addons\_hooks\acronyms.inc"
-$include "..\..\base\addons\_hooks\setdeclare.inc"
-$include "..\..\base\addons\_hooks\setdefine.inc"
-
-
-* Addon AGKNDISC: discrete size investment in technologies:
-$ifi %AGKNDISC%==yes $include  "../../base/addons/bb4/agkndisc/agkndiscdeclarations.inc";
-
-
-* Duplication of sets for describing possible heat exchange between areas (option HEATTRANS).
-$ifi %HEATTRANS%==yes ALIAS (AAA,IAAAE,IAAAI);
-$ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
-
-
-$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
-
-*-------------------------------------------------------------------------------
-* End: Any declarations and definitions of sets, aliases and acronyms for addon
-*-------------------------------------------------------------------------------
 
 
 
@@ -181,13 +158,6 @@ $ifi %bb3%==yes SET TWORKDAY(TTT)   /T001*T120/;
 $ifi %bb3%==yes SET TWEEKEND(TTT)   /T121*T168/;
 *-------------------------------------------------------------------------------
 
-
-*-------------------------------------------------------------------------------
-*----- Any internal sets for addon to be placed here: --------------------------
-$include "..\..\base\addons\_hooks\setdeclare.inc"
-
-*----- End: Any internal sets for addon to be placed here: ---------------------
-*-------------------------------------------------------------------------------
 
 *------------------------------------------------------------------------------
 * End: Declaration of internal sets
@@ -256,6 +226,7 @@ SET IGBYPASS(G)            "Technologies that may apply turbine bypass mode (sub
 * be using values of GDATA(G,'GDTYPE'). Check addons referenced here to maximize
 * consistency and avoid conflicts. It is encouraged to avoid using the '-' set
 * operator and instead use the '+' operator for compound assignments.
+* NOTE: isetdecdef.inc is loaded later 
 
 
 
@@ -1137,15 +1108,15 @@ EQUATIONS
    QGMINFUELA(Y,AAA,FFF)    "Minimum electricity generation by year, area and fuel ()"  !!  () todo
    QGMAXFUELA(Y,AAA,FFF)    "Maximum electricity generation by year, area and fuel ()"  !!  () todo
 
-   QGMINCF(Y,C,FFF)         "Minimum fuel use by year, country and fuel ()"  !!  () todo
-   QGMAXCF(Y,C,FFF)         "Maximum fuel use by year, country and fuel ()"  !!  () todo
-   QGEQCF(Y,C,FFF)          "Exact fuel use by year, country and fuel ()"  !!  () todo
-   QGMINRF(Y,RRR,FFF)       "Minimum fuel use by year, region and fuel  ()"  !!  () todo
-   QGMAXRF(Y,RRR,FFF)       "Maximum fuel use by year, region and fuel constraint ()"  !!  () todo
-   QGEQRF(Y,RRR,FFF)        "Exact fuel use by year, region and fuel ()"  !!  () todo
-   QGMINAF(Y,AAA,FFF)       "Minimum fuel use by year, area and fuel ()"  !!  () todo
-   QGMAXAF(Y,AAA,FFF)       "Maximum fuel use by year, area and fuel ()"  !!  () todo
-   QGEQAF(Y,AAA,FFF)        "Exact fuel use by year, area and fuel ()"  !!  () todo
+   QGMINCF(Y,C,FFF)         "Minimum fuel use by year, country and fuel ()"
+   QGMAXCF(Y,C,FFF)         "Maximum fuel use by year, country and fuel ()"
+   QGEQCF(Y,C,FFF)          "Exact fuel use by year, country and fuel ()"
+   QGMINRF(Y,RRR,FFF)       "Minimum fuel use by year, region and fuel  ()"
+   QGMAXRF(Y,RRR,FFF)       "Maximum fuel use by year, region and fuel constraint ()"
+   QGEQRF(Y,RRR,FFF)        "Exact fuel use by year, region and fuel ()"
+   QGMINAF(Y,AAA,FFF)       "Minimum fuel use by year, area and fuel ()"
+   QGMAXAF(Y,AAA,FFF)       "Maximum fuel use by year, area and fuel ()"
+   QGEQAF(Y,AAA,FFF)        "Exact fuel use by year, area and fuel ()"
    QKMINFC(Y,C,FFF)         "Minimum capacity by year, country and fuel ()"  !!  () todo !! renamed from QKMAXFC(Y,C,FFF), similar with others below  Hans
    QKMAXFC(Y,C,FFF)         "Maximum capacityby year, country and fuel ()"  !!  () todo
    QKEQFC(Y,C,FFF)          "Exact capacity by year, country and fuel ()"  !!  () todo
@@ -1159,11 +1130,11 @@ EQUATIONS
    QKMAXFNA(Y,FFF)          "Maximum capacity by year and fuel constraint (aggregated countries) ()"  !!  () todo
    QKEQFNA(Y,FFF)           "Exact capacity by year and fuel constraint (aggregated countries) ()"  !!  () todo
 
-   QLIMCO2(Y,C)             "Limit on annual CO2-emission by year and country ()"  !!  () todo
-   QLIMSO2(Y,C)             "Limit on annual SO2 emission by year and country ()"  !!  () todo
-   QLIMNOX(Y,C)             "Limit on annual NOx emission by year and country ()"  !!  () todo
+   QLIMCO2(Y,C)             "Limit on annual CO2-emission by year and country ()"
+   QLIMSO2(Y,C)             "Limit on annual SO2 emission by year and country ()"
+   QLIMNOX(Y,C)             "Limit on annual NOx emission by year and country ()"
 
-   QLIMCO2NA(Y)             "Limit on annual CO2-emission by year (aggregated countries) ()"  !!  () todo
+   QLIMCO2NA(Y)             "Limit on annual CO2-emission by year (aggregated countries) ()"
 
    QHYFXRW(Y,RRR,S)         "Hydro with reservoir available for this region and season (MWh)"
    QHYFXCW(Y,C,S)           "Hydro with reservoir available for this country and season (MWh)"
@@ -1221,14 +1192,9 @@ $ifi %BB4%==yes  SUM(Y$IY411(Y),
 IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 * Cost of fuel consumption during the year:
+     SUM((IAGK_HASORPOT(Y,IA,G),FFF)$(IGF(G,FFF)),
+                 FUELPRICE(Y,IA,FFF) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(Y,IA,G,IS3,T)))
 
-     SUM((IAGK_HASORPOT(Y,IA,IGE),FFF)$IGF(IGE,FFF),
-                 FUELPRICE(Y,IA,FFF) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) *
-                 VGE_T(Y,IA,IGE,IS3,T)/(GDATA(IGE,"GDFE")*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE)))))
-
-    +SUM((IAGK_HASORPOT(Y,IA,IGH),FFF)$IGF(IGH,FFF),
-                 FUELPRICE(Y,IA,FFF) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) *
-                 GDATA(IGH,'GDCV')*VGH_T(Y,IA,IGH,IS3,T)/(GDATA(IGH,"GDFE")*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH)))))
 
 * Operation and maintainance cost:
 
@@ -1269,35 +1235,21 @@ $ifi %AGKNDISC%==yes  $include "../../base/addons/bb4/agkndisc/agkndiscaddqobj.i
 * TODO: sammenlign med SONYstick:
     + SUM((IRE,IRI)$IXKN(Y,IRI,IRE), VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
       (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C)))))
+
 * Emission taxes
 
-    + SUM(C, SUM((IA,IGE)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,IGE)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(IGE)*IOF0001) *
-      IOF3P6 *VGE_T(Y,IA,IGE,IS3,T) /(GDATA(IGE,'GDFE') * (1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE)))) * M_POL(Y,"TAX_CO2",C)))
+    + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G)*IOF0001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_CO2",C)))
 
-    + SUM(C, SUM((IA,IGH)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,IGH)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(IGH)*IOF0001) *
-      IOF3P6 *GDATA(IGH,'GDCV')* VGH_T(Y,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))*M_POL(Y,"TAX_CO2",C)))
+    + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_SO2(G)*IOF0001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_SO2",C)))
 
-    + SUM(C, SUM((IA,IGE)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,IGE)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_SO2(IGE)*IOF0001) *
-      IOF3P6 *VGE_T(Y,IA,IGE,IS3,T)/(GDATA(IGE,'GDFE') * (1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))* M_POL(Y,"TAX_SO2",C)))
+    + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (GDATA(G,'GDNOX')*IOF0000001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_NOX",C)))
 
-    + SUM(C, SUM((IA,IGH)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,IGH)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_SO2(IGH)*IOF0001) *
-      IOF3P6 *GDATA(IGH,'GDCV')* VGH_T(Y,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))*M_POL(Y,"TAX_SO2",C)))
-
-    + SUM(C, SUM((IA,IGE)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,IGE)), SUM((IS3,T), IHOURSINST(IS3,T)*(GDATA(IGE,"GDNOX")*IOF0000001)*
-      IOF3P6 * VGE_T(Y,IA,IGE,IS3,T)/(GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))* M_POL(Y,"TAX_NOX",C)))
-
-    + SUM(C, SUM((IA,IGH)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,IGH)), SUM((IS3,T), IHOURSINST(IS3,T)*(GDATA(IGH,"GDNOX")*IOF0000001)*
-      IOF3P6 *GDATA(IGH,'GDCV')* VGH_T(Y,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))) )* M_POL(Y,"TAX_NOX",C)))
 
 * Fuel taxes
 
-    + SUM((C,FFF,IS3,T), SUM((IA,IGE)$(IGF(IGE,FFF) AND ICA(C,IA) AND IAGK_HASORPOT(Y,IA,IGE)),
-      IHOURSINST(IS3,T) * TAX_F(FFF,C) * IOF3P6 *
-      (VGE_T(Y,IA,IGE,IS3,T) / (GDATA(IGE,'GDFE') * (1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))))
+    + SUM((C,FFF,IS3,T), SUM((IA,G)$(IGF(G,FFF) AND ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)),
+         IHOURSINST(IS3,T) * TAX_F(FFF,C) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)))
 
-   + SUM((C,FFF,IS3,T), SUM((IA,IGH)$(IGF(IGH,FFF) AND ICA(C,IA) AND IAGK_HASORPOT(Y,IA,IGH)),
-      IHOURSINST(IS3,T) * TAX_F(FFF,C) * IOF3P6 *
-      GDATA(IGH,'GDCV')* VGH_T(Y,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE') * (1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH)))))
 
 * More fuel taxes on technology types.   TODO
 /*  Not completely implemented yet - kept as appetizer.
@@ -1832,63 +1784,39 @@ QGMAXFUELA(IY411,IA,FFF)$FGEMAX(IA,FFF)..
 
 
 QGMINCF(IY411,C,FFF)$IGMINF(IY411,C,FFF)..
-    SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND ICA(C,IA)),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)/GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-         +SUM(IAGK_HASORPOT(IY411,IA,IGH)$(IGF(IGH,FFF) AND ICA(C,IA)),SUM((IS3,T),
-               IHOURSINST(IS3,T)*GDATA(IGH,'GDCV')*VGH_T(IY411,IA,IGH,IS3,T)/GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
-                =G= IGMINF(IY411,C,FFF);
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
+    =G= IGMINF(IY411,C,FFF);
 
 QGMAXCF(IY411,C,FFF)$IGMAXF(IY411,C,FFF)..
-    SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND ICA(C,IA)),SUM((IS3,T),
-                IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)/GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-                +SUM(IAGK_HASORPOT(IY411,IA,IGH)$(IGF(IGH,FFF) AND ICA(C,IA)),SUM((IS3,T),
-                            IHOURSINST(IS3,T)*GDATA(IGH,'GDCV')*VGH_T(IY411,IA,IGH,IS3,T)/GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
-                =L= IGMAXF(IY411,C,FFF);
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
+    =L= IGMAXF(IY411,C,FFF);
 
 QGEQCF(IY411,C,FFF)$IGEQF(IY411,C,FFF)..
-    SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND ICA(C,IA)),SUM((IS3,T),
-                IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)/GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-                +SUM(IAGK_HASORPOT(IY411,IA,IGH)$(IGF(IGH,FFF) AND ICA(C,IA)),SUM((IS3,T),
-                            IHOURSINST(IS3,T)*GDATA(IGH,'GDCV')*VGH_T(IY411,IA,IGH,IS3,T)/GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
-                =E= IGEQF(IY411,C,FFF);
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
+    =E= IGEQF(IY411,C,FFF);
 
 QGMINRF(IY411,IR,FFF)$IGMINF(IY411,IR,FFF)..
-    SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND RRRAAA(IR,IA)),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)/GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-         +SUM(IAGK_HASORPOT(IY411,IA,IGH)$(IGF(IGH,FFF) AND RRRAAA(IR,IA)),SUM((IS3,T),
-               IHOURSINST(IS3,T)*GDATA(IGH,'GDCV')*VGH_T(IY411,IA,IGH,IS3,T)/GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
-                =G= IGMINF(IY411,IR,FFF);
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
+    =G= IGMINF(IY411,IR,FFF);
 
 QGMAXRF(IY411,IR,FFF)$IGMAXF(IY411,IR,FFF)..
-    SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND RRRAAA(IR,IA)),SUM((IS3,T),
-                IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)/GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-                +SUM(IAGK_HASORPOT(IY411,IA,IGH)$(IGF(IGH,FFF) AND RRRAAA(IR,IA)),SUM((IS3,T),
-                            IHOURSINST(IS3,T)*GDATA(IGH,'GDCV')*VGH_T(IY411,IA,IGH,IS3,T)/GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
-                =L= IGMAXF(IY411,IR,FFF);
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
+    =L= IGMAXF(IY411,IR,FFF);
 
 QGEQRF(IY411,IR,FFF)$IGEQF(IY411,IR,FFF)..
-    SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND RRRAAA(IR,IA)),SUM((IS3,T),
-                IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)/GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-                +SUM(IAGK_HASORPOT(IY411,IA,IGH)$(IGF(IGH,FFF) AND RRRAAA(IR,IA)),SUM((IS3,T),
-                            IHOURSINST(IS3,T)*GDATA(IGH,'GDCV')*VGH_T(IY411,IA,IGH,IS3,T)/GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
-                =E= IGEQF(IY411,IR,FFF);
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
+    =E= IGEQF(IY411,IR,FFF);
 
 QGMINAF(IY411,IA,FFF)$IGMINF(IY411,IA,FFF)..
-    SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF)),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)/GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-         +SUM(IAGK_HASORPOT(IY411,IA,IGH)$(IGF(IGH,FFF)),SUM((IS3,T),
-               IHOURSINST(IS3,T)*GDATA(IGH,'GDCV')*VGH_T(IY411,IA,IGH,IS3,T)/GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
-                =G= IGMINF(IY411,IA,FFF);
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
+    =G= IGMINF(IY411,IA,FFF);
 
 QGMAXAF(IY411,IA,FFF)$IGMAXF(IY411,IA,FFF)..
-    SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF)),SUM((IS3,T),
-        IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)/GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-        +SUM(IAGK_HASORPOT(IY411,IA,IGH)$(IGF(IGH,FFF)),SUM((IS3,T),
-             IHOURSINST(IS3,T)*GDATA(IGH,'GDCV')*VGH_T(IY411,IA,IGH,IS3,T)/GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =L= IGMAXF(IY411,IA,FFF);
 
 QGEQAF(IY411,IA,FFF)$IGEQF(IY411,IA,FFF)..
-    SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF)),SUM((IS3,T),
-        IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)/GDATA(IGE,'GDFE')*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-        +SUM(IAGK_HASORPOT(IY411,IA,IGH)$(IGF(IGH,FFF)),SUM((IS3,T),
-             IHOURSINST(IS3,T)*GDATA(IGH,'GDCV')*VGH_T(IY411,IA,IGH,IS3,T)/GDATA(IGH,'GDFE')*(1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH))))
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =E= IGEQF(IY411,IA,FFF);
 
 
@@ -1993,32 +1921,20 @@ QXINVSYMMETRY(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
 *------------ Emissions: ------------------------------------------------------
 
 QLIMCO2(IY411,C)$(M_POL(IY411,'LIM_CO2',C) AND (M_POL(IY411,'LIM_CO2',C) LT INF))..
-      SUM((IA,IGE)$(IAGK_HASORPOT(IY411,IA,IGE) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(IGE) * IOF0001) *
-      IOF3P6 * VGE_T(IY411,IA,IGE,IS3,T)/(GDATA(IGE,'GDFE')* (1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE)))))
-    + SUM((IA,IGH)$(IAGK_HASORPOT(IY411,IA,IGH) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(IGH) * IOF0001) *
-      IOF3P6 * GDATA(IGH,'GDCV')*VGH_T(IY411,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE') * (1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH)))))
+      SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
       =L= M_POL(IY411,'LIM_CO2',C);
 
-QLIMSO2(IY411,C)$(M_POL(IY411,"LIM_SO2",C) AND (M_POL(IY411,"LIM_SO2",C) LT INF))..
-      SUM((IA,IGE)$(IAGK_HASORPOT(IY411,IA,IGE) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_SO2(IGE) * IOF0001) *
-      IOF3P6 * VGE_T(IY411,IA,IGE,IS3,T)/(GDATA(IGE,'GDFE') * (1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE)))))
-    + SUM((IA,IGH)$(IAGK_HASORPOT(IY411,IA,IGH) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_SO2(IGH) * IOF0001) *
-      IOF3P6 * GDATA(IGH,'GDCV') * VGH_T(IY411,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE') * (1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH)))))
-       =L= M_POL(IY411,"LIM_SO2",C);
+QLIMSO2(IY411,C)$(M_POL(IY411,'LIM_SO2',C) AND (M_POL(IY411,'LIM_SO2',C) LT INF))..
+      SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_SO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
+       =L= M_POL(IY411,'LIM_SO2',C);
 
 QLIMNOX(IY411,C)$(M_POL(IY411,'LIM_NOX',C) AND (M_POL(IY411,'LIM_NOX',C) LT INF))..
-     SUM((IA,IGE)$(IAGK_HASORPOT(IY411,IA,IGE) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (GDATA(IGE,"GDNOX") * IOF0000001) *
-     IOF3P6 * VGE_T(IY411,IA,IGE,IS3,T)/(GDATA(IGE,'GDFE') * (1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE)))))
-   + SUM((IA,IGH)$(IAGK_HASORPOT(IY411,IA,IGH) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (GDATA(IGH,"GDNOX") * IOF0000001) *
-     IOF3P6 * GDATA(IGH,'GDCV') * VGH_T(IY411,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE') * (1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH)))))
+     SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (GDATA(G,'GDNOX') * IOF0000001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
       =L= M_POL(IY411,'LIM_NOX',C);
 
 QLIMCO2NA(IY411)$(M_POLNA(IY411,'LIM_CO2') AND (M_POLNA(IY411,'LIM_CO2') LT INF))..
       SUM(C,
-         SUM((IA,IGE)$(IAGK_HASORPOT(IY411,IA,IGE) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(IGE) * IOF0001) *
-         IOF3P6 * VGE_T(IY411,IA,IGE,IS3,T)/(GDATA(IGE,'GDFE')* (1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE)))))
-         + SUM((IA,IGH)$(IAGK_HASORPOT(IY411,IA,IGH) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(IGH) * IOF0001) *
-         IOF3P6 * GDATA(IGH,'GDCV')*VGH_T(IY411,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE') * (1$(NOT GEFFRATE(IA,IGH))+GEFFRATE(IA,IGH)))))
+         SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
          )
       =L= M_POLNA(IY411,'LIM_CO2');
 

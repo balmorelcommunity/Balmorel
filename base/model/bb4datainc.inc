@@ -107,19 +107,16 @@ $if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DHUSER.inc';
 $if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DHUSER.inc';
 %semislash%;
 
-$onmulti
 SET FFF                'Fuels'  %semislash%
 $if     EXIST '../data/FFF.inc' $INCLUDE      '../data/FFF.inc';
 $if not EXIST '../data/FFF.inc' $INCLUDE '../../base/data/FFF.inc';
 %semislash%;
-$offmulti
 
 SET FDATASET           'Characteristics of fuels ' %semislash%
 $if     EXIST '../data/FDATASET.inc' $INCLUDE      '../data/FDATASET.inc';
 $if not EXIST '../data/FDATASET.inc' $INCLUDE '../../base/data/FDATASET.inc';
 %semislash%;
 
-$onmulti
 PARAMETER FDATA(FFF,FDATASET)    'Fuel specific values'  %semislash%
 $if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
 $if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
@@ -129,19 +126,42 @@ SET GGG                'All generation technologies'   %semislash%
 $if     EXIST '../data/GGG.inc' $INCLUDE      '../data/GGG.inc';
 $if not EXIST '../data/GGG.inc' $INCLUDE '../../base/data/GGG.inc';
 %semislash%;
-$offmulti
 
 SET GDATASET           'Generation technology data' %semislash%
 $if     EXIST '../data/GDATASET.inc' $INCLUDE      '../data/GDATASET.inc';
 $if not EXIST '../data/GDATASET.inc' $INCLUDE '../../base/data/GDATASET.inc';
 %semislash%;
 
-$onmulti
 SET G(GGG)    'Generation technologies in the simulation'  %semislash%
 $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
 $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 %semislash%;
-$offmulti
+
+
+*-------------------------------------------------------------------------------
+*----- Any declarations and definitions of sets, aliases and acronyms for addon:
+*-------------------------------------------------------------------------------
+
+$include "..\..\base\addons\_hooks\acronyms.inc"
+$include "..\..\base\addons\_hooks\setdeclare.inc"
+$include "..\..\base\addons\_hooks\setdefine.inc"
+
+
+* Addon AGKNDISC: discrete size investment in technologies:
+$ifi %AGKNDISC%==yes $include  "../../base/addons/bb4/agkndisc/agkndiscdeclarations.inc";
+
+
+* Duplication of sets for describing possible heat exchange between areas (option HEATTRANS).
+$ifi %HEATTRANS%==yes ALIAS (AAA,IAAAE,IAAAI);
+$ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
+
+
+$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
+
+*-------------------------------------------------------------------------------
+* End: Any declarations and definitions of sets, aliases and acronyms for addon
+*-------------------------------------------------------------------------------
+
 PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
 $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
