@@ -114,7 +114,7 @@ $Setglobal HYDROGEN yes
 *!option yes
 
 * Set a common maximum for three fuels.
-$Setglobal MAXFOR3FUELS yes
+$Setglobal MAXFOR3FUELS
 *!option yes
 
 * Use stepwise linear fuel prices
@@ -345,7 +345,7 @@ $setglobal INPUTDATAGDX2XLS
 * A quick way to get (some of) the relevant information is to make a gdx file with all information.
 * This option will provide unloading of all that is available at the end of Balmorel.gms.
 *
-$setglobal all_endofmodelgdx
+$setglobal all_endofmodelgdx yes
 *!option yes     !Save the file all_endofmodel.gdx to the model folder
 
 * Print out welfare results
