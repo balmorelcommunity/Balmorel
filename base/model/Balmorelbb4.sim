@@ -39,6 +39,8 @@ $ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$(ORD(Y) EQ 1) = 1$(CARD(Y) EQ 1) + 
 $ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) GT 1) AND (ORD(Y) LT CARD(Y))) = (YVALUE(Y) - YVALUE(Y-1) -1)/2  + (YVALUE(Y+1) - YVALUE(Y) -1)/2    +1;
 $ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) EQ CARD(Y)) AND (CARD(Y) GT 1)) = ((YVALUE(Y)-YVALUE(Y-1)-1)+1);
 
+* Unload IWEIGHTY for the output tool
+execute_unload '%relpathModel%../output/temp/IWEIGHTY.gdx' IWEIGHTY;
 
 *IFIRSTYEARNEXTBB4 = SUM(Y$(ORD(Y) EQ 1), YVALUE(Y)); !! todo not in use
 IY411PREVY(Y,Y-1)= YES;
