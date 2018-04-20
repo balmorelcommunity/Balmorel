@@ -1,5 +1,5 @@
 * File BalmorelBB4.inc for handling the Balbase4 model in Balmorel.
-* First version 2009(hr) based on DTU Master project by Jesper Felstedt & Morten Middelboe Pedersen under supervision by Hans Ravn.
+* First version 2009(hr) based on DTU Master project by Jesper Felstedt &QHYDROGEN_ Morten Middelboe Pedersen under supervision by Hans Ravn.
 * Present version 20150428(hr), 20150430(Weiming), 20151217(hr), 20160810(hr), 20170419 (Juan and hr).
 * Thanks to Weiming Xiong, Andreas von Recklinghausen and others for good contributions.
 * The model is still under development.
@@ -1028,34 +1028,6 @@ POSITIVE VARIABLE VESTOVOLT(Y,AAA,S,T)             "Electricity storage contents
 POSITIVE VARIABLE VESTOVOLTS(Y,AAA,S,T)            "Electricity storage contents at beginning of time segment (MWh)";
 POSITIVE VARIABLE VHSTOVOLT(Y,AAA,S,T)             "Heat storage contents at beginning of time segment (MWh)";
 POSITIVE VARIABLE VHSTOVOLTS(Y,AAA,S,T)            "Heat storage contents at beginning of time segment (MWh)";
-POSITIVE VARIABLE VQEEQ(Y,RRR,S,T,IPLUSMINUS)      "Feasibility in electricity balance QEEQ (IMINUS is short of el, IPLUS is surplus el) (MW)";
-POSITIVE VARIABLE VQHEQ(Y,AAA,S,T,IPLUSMINUS)      "Feasibility in heat balance QHEQ (IMINUS is short of heat, IPLUS is surplus heat) (MW)";
-POSITIVE VARIABLE VQESTOVOLT(Y,AAA,S,T,IPLUSMINUS)           "Feasibility in intra-seasonal electricity storage equation QESTOVOLT (MWh)";
-POSITIVE VARIABLE VQESTOVOLTS(Y,AAA,S,T,IPLUSMINUS)          "Feasibility in inter-seasonal electricity storage equation QESTOVOLTS (MWh)";
-POSITIVE VARIABLE VQHSTOVOLT(Y,AAA,S,T,IPLUSMINUS)           "Feasibility in intra-seasonal heat storage equation VQHSTOVOLT (MWh)";
-POSITIVE VARIABLE VQHSTOVOLTS(Y,AAA,S,T,IPLUSMINUS)          "Feasibility in inter-seasonal heat storage equation VQHSTOVOLTS (MWh)";
-POSITIVE VARIABLE VQHYRSSEQ(Y,AAA,S,IPLUSMINUS)    "Feasibility of QHYRSSEQ (MWh)";
-POSITIVE VARIABLE VQHYMAXG(Y,AAA,S,T,IPLUSMINUS)   "Feasibility of QHYMAXG (MW)";
-*POSITIVE VARIABLE VGE2LEVEL(Y,AAA,G,S,DAYTYPE)    "Average load of slowly regulating production (MW)";
-* Exclusively for Balbase4:
-POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)         "Accumulated new investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
-POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)       "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
-POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)   "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
-*$ifi %BB4%==yes   POSITIVE VARIABLE VXKACCUMGROSS(Y,IRRRE,IRRRI) "RELEVANT? Accumulated new transmission investments this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
-
-POSITIVE VARIABLE VQGKNACCUMNET(Y,AAA,G,IPLUSMINUS)          "Feasibility in electricity generation capacity accumulation (MW)";
-POSITIVE VARIABLE VQGKNACCUMGROSS(Y,AAA,G,IPLUSMINUS)        "Feasibility in electricity generation capacity accumulation (MW)";
-POSITIVE VARIABLE VQXKNACCUMNET(Y,IRRRE,IRRRI,IPLUSMINUS)    "Feasibility in electricity transmission capacity accumulation (MW)";
-POSITIVE VARIABLE VQXKNACCUMGROSS(Y,IRRRE,IRRRI,IPLUSMINUS)  "Feasibility in electricity transmission capacity accumulation (MW)";
-
-POSITIVE VARIABLE VQHYRSMINVOL(Y,AAA,S,IPLUSMINUS)           "Feasibility of QHYRSMINVOL (MWh)";
-POSITIVE VARIABLE VQHYRSMAXVOL(Y,AAA,S,IPLUSMINUS)           "Feasibility of QHYRSMAXVOL (MWh)";
-
-POSITIVE VARIABLE VQGKE_UP(Y,AAA,G,S,T,IPLUSMINUS)            "Feasibility in electricity generation limited by capacity (MW)";
-POSITIVE VARIABLE VQGKH_UP(Y,AAA,G,S,T,IPLUSMINUS)            "Feasibility in heat generation limited by capacity (MW)";
-POSITIVE VARIABLE VQXK_UP(Y,IRRRE,IRRRI,S,T,IPLUSMINUS)      "Feasibility in electricity transmission limited by capacity (MW)";
-
-POSITIVE VARIABLE VQKFUEL(Y,CCCRRRAAA,FFF)  "Feasibility in maximum installlable capacity (country, region and area)"
 
 
 
@@ -1311,44 +1283,6 @@ $ifi %AGKNDISC%==yes  $include "../../base/addons/bb4/agkndisc/agkndiscaddqobj.i
 */
 
 
-$ontext
-
-* Infeasibility penalties:
-   + PENALTYQ*(
-$ifi %BB1%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3,'IMINUS')+VQHYRSSEQ(IA,IS3,'IPLUS')))
-
-$ifi %BB2%==yes       +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSSEQ(IA,IS3,'IMINUS')+VQHYRSSEQ(IA,IS3,'IPLUS')))
-$ifi %BB1%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSMINMAXVOL(IA,IS3,'IMINUS')+VQHYRSMINMAXVOL(IA,IS3,'IPLUS')))
-$ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSMINMAXVOL(IA,IS3,'IMINUS')+VQHYRSMINMAXVOL(IA,IS3,'IPLUS')))
-* BB4:
-
-     +SUM((IA,IS3,T)$(SUM(IGHSTO$IAGK_HASORPOT(Y,IA,IGHSTO),1)), (VQHSTOVOLT(Y,IA,IS3,T,'IMINUS')+VQHSTOVOLT(Y,IA,IS3,T,'IPLUS')))
-     +SUM((IA,IS3,T)$(SUM(IGESTO$IAGK_HASORPOT(Y,IA,IGESTO),1)), (VQESTOVOLT(Y,IA,IS3,T,'IMINUS')+VQESTOVOLT(Y,IA,IS3,T,'IPLUS')))
-     +SUM((IA,IS3,T)$(SUM(IGHSTOS$IAGK_HASORPOT(Y,IA,IGHSTOS),1)), (VQHSTOVOLTS(Y,IA,IS3,T,'IMINUS')+VQHSTOVOLTS(Y,IA,IS3,T,'IPLUS')))
-     +SUM((IA,IS3,T)$(SUM(IGESTOS$IAGK_HASORPOT(Y,IA,IGESTOS),1)), (VQESTOVOLTS(Y,IA,IS3,T,'IMINUS')+VQESTOVOLTS(Y,IA,IS3,T,'IPLUS')))
-     +SUM((IR,IS3,T), (VQEEQ(Y,IR,IS3,T,'IMINUS')+VQEEQ(Y,IR,IS3,T,'IPLUS')))
-     +SUM((IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))), (VQHEQ(Y,IA,IS3,T,'IMINUS')+VQHEQ(Y,IA,IS3,T,'IPLUS')))
-
-     +SUM((IA,IS3)$(SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS))),(VQHYRSSEQ(Y,IA,IS3,'IMINUS')+VQHYRSSEQ(Y,IA,IS3,'IPLUS')))
-     +SUM((IA,IS3)$(HYRSDATA(IA,"HYRSMINVOL",IS3) AND SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),1)),(VQHYRSMINVOL(Y,IA,IS3,'IPLUS')))
-     +SUM((IA,IS3)$(HYRSDATA(IA,"HYRSMAXVOL",IS3) AND SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),1)),(VQHYRSMAXVOL(Y,IA,IS3,'IMINUS')))
-     +SUM((IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)), VQHYMAXG(Y,IA,IS3,T,'IMINUS'))
-* TODO: sammenlign med SONYstick:
-     +SUM((IA,IGKFIND)$IAGKN(IA,IGKFIND), (VQGKNACCUMNET(Y,IA,IGKFIND,"IPLUS")+VQGKNACCUMNET(Y,IA,IGKFIND,"IMINUS"))) !!TO DO VGKNACCUMNET IS NOT FINISHED
-*     +SUM((IA,IGKFIND)$IAGKN(IA,IGKFIND), (VQGKNACCUMGROSS(Y,IA,IGKFIND,"IPLUS")+VQGKNACCUMGROSS(Y,IA,IGKFIND,"IMINUS")))
-     +SUM((IRE,IRI)$IXKN(Y,IRE,IRI), VQXKNACCUMNET(Y,IRE,IRI,"IPLUS")+VQXKNACCUMNET(Y,IRE,IRI,"IMINUS"))  !!TO DO VXKNACCUMNET IS NOT FINISHED
-*    +SUM((IRE,IRI)$IXKN(Y,IRE,IRI), VQXKNACCUMGROSS(Y,IRE,IRI,"IPLUS")+VQXKNACCUMGROSS(Y,IRE,IRI,"IMINUS")) !!EQUATION NOT DEFINED
-
-     +SUM((IA,IGDISPATCH(IGKENOSTO),IS3,T)$IAGKN(IA,IGKENOSTO), (VQGKE_UP(Y,IA,IGKENOSTO,IS3,T,'IMINUS')+VQGKE_UP(Y,IA,IGKENOSTO,IS3,T,'IPLUS')))
-     +SUM((IA,IGDISPATCH(IGKHNOSTO),IS3,T)$IAGKN(IA,IGKHNOSTO), (VQGKH_UP(Y,IA,IGKHNOSTO,IS3,T,'IMINUS')+VQGKH_UP(Y,IA,IGKHNOSTO,IS3,T,'IPLUS')))
-     +SUM((IRE,IRI,IS3,T)$IXK_HASORPOT(Y,IRE,IRI), (VQXK_UP(Y,IRE,IRI,IS3,T,'IMINUS')+VQXK_UP(Y,IRE,IRI,IS3,T,'IPLUS')))
-
-     +SUM((C,FFF)$FKPOT(C,FFF),   VQKFUEL(Y,C,FFF))
-     +SUM((IR,FFF)$FKPOT(IR,FFF), VQKFUEL(Y,IR,FFF))
-     +SUM((IA,FFF)$FKPOT(IA,FFF), VQKFUEL(Y,IA,FFF))
-
-           )
-$offtext
 
 * Add-on objective function contributions
 
@@ -1393,21 +1327,12 @@ $ifi %TSP%==yes $include "../../base/addons/Transport/TSPQEEQ.inc"
     =E=
       IX3FX_T(IY411,IR,IS3,T)
     + (   (SUM(DEUSER, ((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0))
-
-*         + SUM(DEF_U1,VDEF_T(IY411,IR,IS3,T,DEF_U1) )     replaced by addon code - still testing
-*         - SUM(DEF_D1,VDEF_T(IY411,IR,IS3,T,DEF_D1) )
-*         + SUM(DEF_U2,VDEF_T(IY411,IR,IS3,T,DEF_U2) )
-*         - SUM(DEF_D2,VDEF_T(IY411,IR,IS3,T,DEF_D2) )
-*         + SUM(DEF_U3,VDEF_T(IY411,IR,IS3,T,DEF_U3) )
-*         - SUM(DEF_D3,VDEF_T(IY411,IR,IS3,T,DEF_D3) )
-          )/(1-DISLOSS_E(IR)))
+      )/(1-DISLOSS_E(IR)))
       + SUM(IRI$IXK_HASORPOT(IY411,IR,IRI),VX_T(IY411,IR,IRI,IS3,T))
 $ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VEX_T(IR,X3VPLACE,X3VSTEP,IS3,T)))
 
 $include "..\..\base\addons\_hooks\qeeq.inc"
-
-*Prelim      - VQEEQ(IY411,IR,IS3,T,'IMINUS') + VQEEQ(IY411,IR,IS3,T,'IPLUS')
- ;
+;
 
 
 * "Heat generation equals demand (MW)"
@@ -1425,9 +1350,8 @@ QHEQ(IY411,IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))) ..
 $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htheatbalance.inc";
 
 $include "..\..\base\addons\_hooks\qheq.inc"
-
-*Prelim        - VQHEQ(IY411,IA,IS3,T,'IMINUS') + VQHEQ(IY411,IA,IS3,T,'IPLUS')
 ;
+
 
 
 * Fuel consumption rate.
@@ -1507,10 +1431,12 @@ QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)))..
 *        -SUM(IGHYRS,SUM(T,IHOURSINST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))       Hans 20170421: wrong, replaced by next
         -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHOURSINST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))
 
-*Prelim      - VQHYRSSEQ(IY411,IA,S,'IMINUS') + VQHYRSSEQ(IY411,IA,S,'IPLUS')
+
 
       =G=  VHYRS_S(IY411,IA,S++1);
 
+$include "../../base/addons/_hooks/qhyrsseq.inc" 
+;
 
 * "Hydropower reservoir - minimum level (MWh)"
 QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1))..
@@ -1520,8 +1446,8 @@ QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPO
         +(SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGHYRS))) !! OUT $IAGKNY(IY411,IA,IGHYRS)
         +VGKN(IY411,IA,IGHYRS)$IAGKNY(IY411,IA,IGHYRS)
         ))
-*Prelim           -VQHYRSMINVOL(IY411,IA,S,'IPLUS')
-        ;
+$include "../../base/addons/_hooks/qhyrsminvol.inc"
+;
 
 * "Hydropower reservoir - maximum level (MWh)"
 QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1))..
@@ -1532,7 +1458,7 @@ QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPO
         +VGKN(IY411,IA,IGHYRS)$IAGKNY(IY411,IA,IGHYRS)
         ))
        =G= VHYRS_S(IY411,IA,S)
-*Prelim           -VQHYRSMAXVOL(IY411,IA,S,'IMINUS')
+$include "../../base/addons/_hooks/qhyrsmaxvol.inc"
 ;
 
 
@@ -1547,7 +1473,7 @@ QHYMAXG(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS))..
          +VGKN(IY411,IA,IGHYRS)$IAGKNY(IY411,IA,IGHYRS)
          )*IGKRATE(IA,IGHYRS,IS3,T)
        )
-*Prelim   + VQHYMAXG(IY411,IA,IS3,T,'IMINUS') !! NB: using VQHYMaxGY in QHYMinG
+$include "../../base/addons/_hooks/qhymaxg.inc"
 ;
 
 *------------ Short term heat and electricity storages:-------------------------
@@ -1558,7 +1484,7 @@ QESTOVOLT(IY411,IA,IS3,T)$(SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),1))..
   + (CARD(S)/CARD(SSS))*IHOURSINST(IS3,T)*CYCLESINS(IS3)*
     (VESTOLOADT(IY411,IA,IS3,T)*SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),GDATA(IGESTO,'GDFE'))
   - SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO), VGE_T(IY411,IA,IGESTO,IS3,T)) )
-*Prelim  - VQESTOVOLT(IY411,IA,IS3,T,'IPLUS') + VQESTOVOLT(IY411,IA,IS3,T,'IMINUS')
+$include "../../base/addons/_hooks/qestovolt.inc"
 ;
 
 QESTOVOLTS(IY411,IA,S,T)$(SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),1))..
@@ -1570,7 +1496,7 @@ QESTOVOLTS(IY411,IA,S,T)$(SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),1))..
     =E=
 VESTOVOLTS(IY411,IA,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
 *VESTOVOLTS(IY411,IA,IS3,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1), SUM(ISALIAS$IS33(IS3,ISALIAS), VESTOVOLTS(IY411,IA,ISALIAS,ITALIAS))$(ORD(T) EQ CARD(T)))
-*Prelim   - VQESTOVOLTS(IY411,IA,S,T,'IPLUS') + VQESTOVOLTS(IY411,IA,S,T,'IMINUS')
+$include "../../base/addons/_hooks/qestovolts.inc"
 ;
 
 * "Heat storage dynamic equation (MWh)"
@@ -1580,7 +1506,7 @@ QHSTOVOLT(IY411,IA,IS3,T)$(SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO),1))..
   (VHSTOLOADT(IY411,IA,IS3,T)
   - SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO), VGH_T(IY411,IA,IGHSTO,IS3,T)/GDATA(IGHSTO,'GDFE')) )
     =E= VHSTOVOLT(IY411,IA,IS3,T++1)
-*Prelim  - VQHSTOVOLT(IY411,IA,IS3,T,'IPLUS') + VQHSTOVOLT(IY411,IA,IS3,T,'IMINUS')
+$include "../../base/addons/_hooks/qhstovolt.inc"
 ;
 
 
@@ -1593,7 +1519,7 @@ QHSTOVOLTS(IY411,IA,S,T)$(SUM(IGHSTOS$IAGK_HASORPOT(IY411,IA,IGHSTOS),1))..
     =E=
 VHSTOVOLTS(IY411,IA,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
 
-*Prelim   - VQHSTOVOLTS(IY411,IA,S,T,'IPLUS') + VQHSTOVOLTS(IY411,IA,S,T,'IMINUS')
+$include "../../base/addons/_hooks/qhstovolts.inc"
 ;
 
 
@@ -1789,7 +1715,8 @@ QKEFUELC(IY411,C,FFF)$FKPOT(C,FFF).. !! EPS convention on FKPOT: 0 implies no re
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), VGKN(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
       =L=  FKPOT(C,FFF)
-*Prelim  +VQKFUEL(IY411,C,FFF);
+$include "../../base/addons/_hooks/qkefuelc.inc"
+;
 
 
 QKEFUELR(IY411,IR,FFF)$FKPOT(IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
@@ -1797,13 +1724,15 @@ QKEFUELR(IY411,IR,FFF)$FKPOT(IR,FFF).. !! EPS convention on FKPOT: 0 implies no 
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), VGKN(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
       =L=  FKPOT(IR,FFF)
-*Prelim +VQKFUEL(IY411,IR,FFF);
+$include "../../base/addons/_hooks/qkefuelr.inc"
+;
 
 QKEFUELA(IY411,IA,FFF)$FKPOT(IA,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM(G$(IAGKFX(IY411,IA,G) AND IGF(G,FFF)), GKFX(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$IGF(G,FFF), VGKN(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$IGF(G,FFF), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
-*Prelim      =L=  FKPOT(IA,FFF)+VQKFUEL(IY411,IA,FFF);
+$include "../../base/addons/_hooks/qkefuela.inc"
+;
 
 *---------- Fuel restrictions - end --------------------------------------------
 *--- Electricity generation restrictions by fuel -------------------------------
@@ -1973,7 +1902,7 @@ QXK_UP(IY411,IRE,IRI,IS3,T)$IXK_HASORPOT(IY411,IRE,IRI)..
       + SUM(IY402$IY411PREVY(IY411,IY402),VXKNACCUMNET(IY402,IRE,IRI)) + VXKN(IY411,IRE,IRI)
     )
      =G=  VX_T(IY411,IRE,IRI,IS3,T)
-*Prelim     + VQXK_UP(IY411,IRE,IRI,IS3,T,'IMINUS')- VQXK_UP(IY411,IRE,IRI,IS3,T,'IPLUS')
+$include "../../base/addons/_hooks/qxk_up.inc"
 ;
 
 * Accumulated endogenous transmission investments during present BB4 model -----
@@ -1984,7 +1913,7 @@ QXKNACCUMNET(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
   VXKNACCUMNET(IY411,IRE,IRI)  !! End of this year's VXKNACCUMNET (available at beginning of next year)'
      =E=
   SUM(IY402$IY411PREVY(IY411,IY402), VXKNACCUMNET(IY402,IRE,IRI)) + VXKN(IY411,IRE,IRI)  !! VXKNVACCUMNET available at end of previous(i.e., start of this) year PLUS investment during this year
-*Prelim  + VQXKNACCUMNET(IY411,IRE,IRI,'IPLUS') - VQXKNACCUMNET(IY411,IRE,IRI,'IMINUS')
+$include "../../base/addons/_hooks/qxknaccumnet.inc"
 ;
 
 QXINVSYMMETRY(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
@@ -2058,7 +1987,7 @@ QGKNACCUMGROSS(IY411,IA,IGKFIND)$IAGKN(IA,IGKFIND)..
 * VGKVACCGROSS available at start of this year PLUS investment during this year:
    SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMGROSS(IY402,IA,IGKFIND))$(NOT IYFIRST(IY411))
  + VGKN(IY411,IA,IGKFIND)$IAGKNY(IY411,IA,IGKFIND)
-*Prelim + VQGKNACCUMGROSS(IY411,IA,IGKFIND,'IPLUS') - VQGKNACCUMGROSS(IY411,IA,IGKFIND,'IMINUS')
+$include "../../base/addons/_hooks/qgknaccumgross.inc"
 ;
 
 *-------------------------------------------------------------------------------
@@ -2073,7 +2002,7 @@ QGKNACCUMNET(IY411,IA,IGKFIND)$IAGKN(IA,IGKFIND)..
 * VGKVACCUMNET available at end of previous (i.e., start of this) year PLUS investment during this year (missing: MINUS decommissioning due to lifetime expirence):
    SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGKFIND))$(NOT IYFIRST(IY411))
  + VGKN(IY411,IA,IGKFIND)$IAGKNY(IY411,IA,IGKFIND)
-*Prelim + VQGKNACCUMNET(IY411,IA,IGKFIND,'IPLUS') - VQGKNACCUMNET(IY411,IA,IGKFIND,'IMINUS')
+$include "../../base/addons/_hooks/qgknaccumnet.inc"
 ;
 
 *-------------------------------------------------------------------------------
@@ -2099,7 +2028,7 @@ QGKE_UP(IY411,IA,IGDISPATCH(IGKENOSTO),IS3,T)$IAGKN(IA,IGKENOSTO)..
         GKFX(IY411,IA,IGKENOSTO)*IGKRATE(IA,IGKENOSTO,IS3,T)
        +(SUM(IY402$IY411PREVY(IY411,IY402),VGKNACCUMNET(IY402,IA,IGKENOSTO))*IGKRATE(IA,IGKENOSTO,IS3,T))
        +(VGKN(IY411,IA,IGKENOSTO)*IGKRATE(IA,IGKENOSTO,IS3,T))$IAGKNY(IY411,IA,IGKENOSTO)
-*Prelim       + VQGKE_UP(IY411,IA,IGKENOSTO,IS3,T,'IMINUS')- VQGKE_UP(IY411,IA,IGKENOSTO,IS3,T,'IPLUS')
+$include "../../base/addons/_hooks/qgke_up.inc"
 ;
 
 * For (IA,IGKH) with IGKH in IGDISPATCH(IGKH) and not in IAGKN assignment of VGH_T.UP is done in BB4.sim.
@@ -2109,7 +2038,7 @@ QGKH_UP(IY411,IA,IGDISPATCH(IGKHNOSTO),IS3,T)$IAGKN(IA,IGKHNOSTO)..
         GKFX(IY411,IA,IGKHNOSTO)*IGKRATE(IA,IGKHNOSTO,IS3,T)
        +(SUM(IY402$IY411PREVY(IY411,IY402),VGKNACCUMNET(IY402,IA,IGKHNOSTO))*IGKRATE(IA,IGKHNOSTO,IS3,T))
        +(VGKN(IY411,IA,IGKHNOSTO)*IGKRATE(IA,IGKHNOSTO,IS3,T))$IAGKNY(IY411,IA,IGKHNOSTO)
-*Prelim       + VQGKH_UP(IY411,IA,IGKHNOSTO,IS3,T,'IMINUS')- VQGKH_UP(IY411,IA,IGKHNOSTO,IS3,T,'IPLUS')
+$include "../../base/addons/_hooks/qgkh_up.inc"
 ;
 
 
