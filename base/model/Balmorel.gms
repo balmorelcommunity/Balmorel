@@ -60,7 +60,7 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute "del *.gdx";
 $ifi %system.filesys%==UNIX
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ../output/temp/*.gdx";
 $ifi %system.filesys%==MSNT
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ../output/temp/*.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ..\output\temp\*.gdx";
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -430,6 +430,7 @@ $if not EXIST '../data/X3VSTEP.inc' $INCLUDE      '../../base/data/X3VSTEP.inc';
 
 $if     EXIST '../data/X3VX.inc' $INCLUDE      '../data/X3VX.inc';
 $if not EXIST '../data/X3VX.inc' $INCLUDE      '../../base/data/X3VX.inc';
+
 *$ifi %X3V%==yes   $INCLUDE '../../base/addons/X3V/data/X3VSETS.inc';
 $label X3V_label1
 
@@ -568,8 +569,8 @@ $ifi %FV%==yes $include '../../base/addons/Fjernvarme/sets_fv.inc';
 PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFDATALISTING%
-$if     EXIST '../data/gdata.inc' $INCLUDE         '../data/GDATA.inc';
-$if not EXIST '../data/gdata.inc' $INCLUDE '../../base/data/GDATA.inc';
+$if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
+$if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 %ONOFFCODELISTING%
 
 *-------------------------------------------------------------------------------
@@ -791,8 +792,8 @@ $ifi %SYSTEMCOST%==yes  $ifi not exist ../data/'sets_syscost.inc' $INCLUDE '../.
 %ONOFFDATALISTING%
 
 PARAMETER GKFX(YYY,AAA,GGG)    'Capacity of exogenously given generation technologies (MW)' %semislash%
-$if     EXIST '../data/gkfx.inc' $INCLUDE         '../data/GKFX.inc';
-$if not EXIST '../data/gkfx.inc' $INCLUDE '../../base/data/GKFX.inc';
+$if     EXIST '../data/GKFX.inc' $INCLUDE         '../data/GKFX.inc';
+$if not EXIST '../data/GKFX.inc' $INCLUDE '../../base/data/GKFX.inc';
 %semislash%;
 
 
@@ -1220,8 +1221,8 @@ $if not EXIST '../data/FUELPRICE.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
 *-------------------------------------------------------------------------------
 
 PARAMETER M_POL(YYY,MPOLSET,CCC)    'Emission policy data (various units, cf. MPOLSET)'   %semislash%
-$if     EXIST '../data/m_pol.inc' $INCLUDE         '../data/M_POL.inc';
-$if not EXIST '../data/m_pol.inc' $INCLUDE '../../base/data/M_POL.inc';
+$if     EXIST '../data/M_POL.inc' $INCLUDE         '../data/M_POL.inc';
+$if not EXIST '../data/M_POL.inc' $INCLUDE '../../base/data/M_POL.inc';
 %semislash%;
 
 *-------------------------------------------------------------------------------
@@ -1858,9 +1859,8 @@ POSITIVE VARIABLE VQXK(IRRRE,IRRRI,S,T,IPLUSMINUS) 'Feasibility in Transmission 
 *-------------------------------------------------------------------------------
 *----- Any variables for addon to be placed here: ------------------------------
 *-------------------------------------------------------------------------------
-$include "../../base/addons/_hooks/vardeclare.inc"
-
 $INCLUDE '../../base/addons/_hooks/vardeclare.inc';
+
 * These variables are for addon X3V (price sensitive third countries elec exchange
 $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vvariables.inc';
 * These variables are for addon heat transmission
