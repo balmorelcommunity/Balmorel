@@ -113,11 +113,7 @@ $setglobal COMBTECH yes
 $Setglobal HYDROGEN yes
 *!option yes
 
-* Set a common maximum for three fuels.
-$Setglobal MAXFOR3FUELS
-*!option yes
-
-* Set a common maximum for three fuels.
+* Set a common maximum for fuels.
 $Setglobal LIMITSFORFUELS yes
 *!option yes
 
