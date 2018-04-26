@@ -1,4 +1,4 @@
-PARAMETER STEPWISEPRICE_GMIDF(YYY,CCC,STEPWISEPRICE_FFF)   'Amount for which the current set fuel price holds'
+PARAMETER STEPWISEPRICE_GMIDF(YYY,CCC,STEPWISEPRICE_FFF)   'Amount of fuel for which the fuel price from FUELPRICE.INC holds (GJ) (only used for setting amounts)'
 $if     EXIST '../data/STEPWISEPRICE_GMIDF.inc' $INCLUDE         '../data/STEPWISEPRICE_GMIDF.inc';
 $if not EXIST '../data/STEPWISEPRICE_GMIDF.inc' $INCLUDE '../../base/data/STEPWISEPRICE_GMIDF.inc';
 
