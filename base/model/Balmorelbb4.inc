@@ -133,6 +133,7 @@ ALIAS (FFF,IFFFALIAS);
 ALIAS (FFF,IFFFALIAS2);
 
 * Duplication of sets for seasons and hours:
+ALIAS (YYY,IYYYALIAS);
 ALIAS (Y,IYALIAS);
 ALIAS (S,ISALIAS,IS3LOOPSET);
 ALIAS (T,ITALIAS);
@@ -598,7 +599,7 @@ DH_VAR_T(AAA,DHUSER,SSS,TTT)$(not IA(AAA)) = 0;
 X3FX_VAR_T(RRR,SSS,TTT)$(not IR(RRR)) = 0;
 WND_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 SOLE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
-SOLE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
+SOLH_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 WAVE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 WTRRRVAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 
@@ -1903,10 +1904,10 @@ QXK_UP(IY411,IRE,IRI,IS3,T)$IXK_HASORPOT(IY411,IRE,IRI)..
 * Note that it is assumed that there are no endogenous decommissioning
 * of previous endogenous investment (cf. QGKACCUMNET).
 
-QXKNACCUMNET(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
+QXKNACCUMNET(IY411,IRE,IRI)$SUM(Y,IXKN(Y,IRE,IRI))..
   VXKNACCUMNET(IY411,IRE,IRI)  !! End of this year's VXKNACCUMNET (available at beginning of next year)'
      =E=
-  SUM(IY402$IY411PREVY(IY411,IY402), VXKNACCUMNET(IY402,IRE,IRI)) + VXKN(IY411,IRE,IRI)  !! VXKNVACCUMNET available at end of previous(i.e., start of this) year PLUS investment during this year
+  SUM(IY402$IY411PREVY(IY411,IY402), VXKNACCUMNET(IY402,IRE,IRI)) + VXKN(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)  !! VXKNVACCUMNET available at end of previous(i.e., start of this) year PLUS investment during this year
   + VQXKNACCUMNET(IY411,IRE,IRI,'IPLUS') - VQXKNACCUMNET(IY411,IRE,IRI,'IMINUS')
 ;
 
@@ -1984,6 +1985,10 @@ QGKNACCUMNET(IY411,IA,IGKFIND)$IAGKN(IA,IGKFIND)..
 * VGKVACCUMNET available at end of previous (i.e., start of this) year PLUS investment during this year (missing: MINUS decommissioning due to lifetime expirence):
    SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGKFIND))$(NOT IYFIRST(IY411))
  + VGKN(IY411,IA,IGKFIND)$IAGKNY(IY411,IA,IGKFIND)
+
+*Decomissioning of endogenous capacities
+-SUM(Y$(YVALUE(Y)< YVALUE(IY411)),VGKN(Y,IA,IGKFIND)*DECOM_G(Y,IY411,IA,IGKFIND))
+
  + VQGKNACCUMNET(IY411,IA,IGKFIND,'IPLUS') - VQGKNACCUMNET(IY411,IA,IGKFIND,'IMINUS')
 ;
 
