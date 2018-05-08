@@ -115,6 +115,8 @@ $Setglobal HYDROGEN yes
 
 * Use stepwise linear fuel prices
 $Setglobal STEPWISEPRICE yes
+* Set a common maximum for fuels.
+$Setglobal LIMITSFORFUELS yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
@@ -428,7 +430,7 @@ putclose fileMERGESAVEPOINTRESULTSbash;
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
-$setglobal MERGEDSAVEPOINTRESULTS2SQLITE yes
+$setglobal MERGEDSAVEPOINTRESULTS2SQLITE
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
 

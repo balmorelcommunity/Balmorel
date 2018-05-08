@@ -226,7 +226,7 @@ SET IGBYPASS(G)            "Technologies that may apply turbine bypass mode (sub
 * be using values of GDATA(G,'GDTYPE'). Check addons referenced here to maximize
 * consistency and avoid conflicts. It is encouraged to avoid using the '-' set
 * operator and instead use the '+' operator for compound assignments.
-* NOTE: isetdecdef.inc is loaded later 
+* NOTE: isetdecdef.inc is loaded later
 
 
 
@@ -529,7 +529,7 @@ $ifi not %bypass%==yes IGBYPASS(G) = NO;
 * consistency and avoid conflicts. It is encouraged to avoid using the '-' set
 * operator and instead use the '+' operator for compound assignments.
 
-$include "..\..\base\addons\_hooks\isetdecdef.inc"
+$include "../../base/addons/_hooks/isetdecdef.inc"
 
 
 *-------------------------------------------------------------------------------
@@ -840,7 +840,7 @@ PARAMETER IGROWTHCAPCG(C,G)  'Limit on growth of technology dependent on years b
 *----- Any internal sets and parameters for addon to be placed here: -----------
 *-------------------------------------------------------------------------------
 
-$include "..\..\base\addons\_hooks\pardefine.inc"
+$include "../../base/addons/_hooks/pardefine.inc"
 $INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
 
 * These internal parameters pertain to price sensitivy electricity exchange with
@@ -909,7 +909,7 @@ $ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDA
 * To reduce use of memory space and to reduce further processing and storage of unused data
 * some of the larger data IDs are here reduced by resetting unused data items to default values.
 
-$include "..\..\base\addons\_hooks\reducecard.inc"
+$include "../../base/addons/_hooks/reducecard.inc"
 
 DE_VAR_T(RRR,DEUSER,SSS,TTT)$((NOT IR(RRR)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 DH_VAR_T(AAA,DHUSER,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
@@ -1302,7 +1302,7 @@ $ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSMINMAXVOL(
 
 * Add-on objective function contributions
 
-$include "..\..\base\addons\_hooks\qobj.inc";
+$include "../../base/addons/_hooks/qobj.inc";
 
 * This file containts the gas induced additions to the objective function.
 $ifi %GAS%==yes $include "../../base/addons/gas/gascosts.inc"
@@ -1353,7 +1353,7 @@ $ifi %TSP%==yes $include "../../base/addons/Transport/TSPQEEQ.inc"
       + SUM(IRI$IXK_HASORPOT(IY411,IR,IRI),VX_T(IY411,IR,IRI,IS3,T))
 $ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VEX_T(IR,X3VPLACE,X3VSTEP,IS3,T)))
 
-$include "..\..\base\addons\_hooks\qeeq.inc"
+$include "../../base/addons/_hooks/qeeq.inc"
 
       - VQEEQ(IY411,IR,IS3,T,'IMINUS') + VQEEQ(IY411,IR,IS3,T,'IPLUS')
  ;
@@ -1373,7 +1373,7 @@ QHEQ(IY411,IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))) ..
 * Adds heat transmission if selected in the gas add-on
 $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htheatbalance.inc";
 
-$include "..\..\base\addons\_hooks\qheq.inc"
+$include "../../base/addons/_hooks/qheq.inc"
 
         - VQHEQ(IY411,IA,IS3,T,'IMINUS') + VQHEQ(IY411,IA,IS3,T,'IPLUS')
 ;
@@ -1785,7 +1785,7 @@ QGMAXFUELA(IY411,IA,FFF)$FGEMAX(IA,FFF)..
 
 QGMINCF(IY411,C,FFF)$IGMINF(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =G= IGMINF(IY411,C,FFF);
+                =G= IGMINF(IY411,C,FFF);
 
 QGMAXCF(IY411,C,FFF)$IGMAXF(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
@@ -1793,23 +1793,23 @@ QGMAXCF(IY411,C,FFF)$IGMAXF(IY411,C,FFF)..
 
 QGEQCF(IY411,C,FFF)$IGEQF(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =E= IGEQF(IY411,C,FFF);
+                =E= IGEQF(IY411,C,FFF);
 
 QGMINRF(IY411,IR,FFF)$IGMINF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =G= IGMINF(IY411,IR,FFF);
+                =G= IGMINF(IY411,IR,FFF);
 
 QGMAXRF(IY411,IR,FFF)$IGMAXF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =L= IGMAXF(IY411,IR,FFF);
+                =L= IGMAXF(IY411,IR,FFF);
 
 QGEQRF(IY411,IR,FFF)$IGEQF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =E= IGEQF(IY411,IR,FFF);
+                =E= IGEQF(IY411,IR,FFF);
 
 QGMINAF(IY411,IA,FFF)$IGMINF(IY411,IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =G= IGMINF(IY411,IA,FFF);
+                =G= IGMINF(IY411,IA,FFF);
 
 QGMAXAF(IY411,IA,FFF)$IGMAXF(IY411,IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
@@ -2090,7 +2090,7 @@ QWAVEDISPATCH(IY411,IA,IGWAVE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWAVE) AND IWAVESU
 *----- Any equations for addon to be placed here: ------------------------------
 *-------------------------------------------------------------------------------
 
-$include "..\..\base\addons\_hooks\eqndecdef.inc"
+$include "../../base/addons/_hooks/eqndecdef.inc"
 
 * These add-on equations pertain to combination technologies.
 *$ifi %COMBTECH%==yes $include "../../base/addons/combtech/combEQ.inc";
@@ -2235,7 +2235,7 @@ $offtext
 
 *----- Any equations for addon to be placed here: ------------------------------
 
-$include "..\..\base\addons\_hooks\balbase4.inc"
+$include "../../base/addons/_hooks/balbase4.inc"
 
 $ontext
 *--- Investment restricitions --------------------------------------------------

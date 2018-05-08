@@ -23,4 +23,6 @@ $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_setdef
 
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_setdefine.inc";
 
+$ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_setdefine.inc";
+
 $label endoffile

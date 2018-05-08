@@ -19,4 +19,6 @@ $ifi not %bb4%==yes $goto endoffile
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_vardeclare.inc";
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_vardeclare.inc";
 
+$ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_vardeclare.inc";
+
 $label endoffile

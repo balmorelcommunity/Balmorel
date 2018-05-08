@@ -20,4 +20,6 @@ $ifi %dflexquant%==yes       $include "../../base/addons/demandflexquant/dflexqu
 
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_setdeclare.inc";
 
+$ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_setdeclare.inc";
+
 $label endoffile
