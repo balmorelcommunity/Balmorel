@@ -226,7 +226,7 @@ SET IGBYPASS(G)            "Technologies that may apply turbine bypass mode (sub
 * be using values of GDATA(G,'GDTYPE'). Check addons referenced here to maximize
 * consistency and avoid conflicts. It is encouraged to avoid using the '-' set
 * operator and instead use the '+' operator for compound assignments.
-* NOTE: isetdecdef.inc is loaded later 
+* NOTE: isetdecdef.inc is loaded later
 
 
 
@@ -1385,9 +1385,9 @@ QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)))..
 
 
 
-      =G=  VHYRS_S(IY411,IA,S++1);
+      =G=  VHYRS_S(IY411,IA,S++1)
 
-$include "../../base/addons/_hooks/qhyrsseq.inc" 
+$include "../../base/addons/_hooks/qhyrsseq.inc"
 ;
 
 * "Hydropower reservoir - minimum level (MWh)"
@@ -1447,7 +1447,7 @@ QESTOVOLTS(IY411,IA,S,T)$(SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),1))..
   )
     =E=
 VESTOVOLTS(IY411,IA,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
-*VESTOVOLTS(IY411,IA,IS3,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1), SUM(ISALIAS$IS33(IS3,ISALIAS), VESTOVOLTS(IY411,IA,ISALIAS,ITALIAS))$(ORD(T) EQ CARD(T)))
+*VESTOVOLTS(IY411,IA,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1), SUM(ISALIAS$IS33(S,ISALIAS), VESTOVOLTS(IY411,IA,ISALIAS,ITALIAS))$(ORD(T) EQ CARD(T)))
 $include "../../base/addons/_hooks/qestovolts.inc"
 ;
 
@@ -1683,6 +1683,7 @@ QKEFUELA(IY411,IA,FFF)$FKPOT(IA,FFF).. !! EPS convention on FKPOT: 0 implies no 
     SUM(G$(IAGKFX(IY411,IA,G) AND IGF(G,FFF)), GKFX(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$IGF(G,FFF), VGKN(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$IGF(G,FFF), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+      =L=  FKPOT(IA,FFF)
 $include "../../base/addons/_hooks/qkefuela.inc"
 ;
 
