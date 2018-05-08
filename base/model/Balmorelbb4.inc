@@ -529,7 +529,7 @@ $ifi not %bypass%==yes IGBYPASS(G) = NO;
 * consistency and avoid conflicts. It is encouraged to avoid using the '-' set
 * operator and instead use the '+' operator for compound assignments.
 
-$include "..\..\base\addons\_hooks\isetdecdef.inc"
+$include "../../base/addons/_hooks/isetdecdef.inc"
 
 
 *-------------------------------------------------------------------------------
@@ -840,7 +840,7 @@ PARAMETER IGROWTHCAPCG(C,G)  'Limit on growth of technology dependent on years b
 *----- Any internal sets and parameters for addon to be placed here: -----------
 *-------------------------------------------------------------------------------
 
-$include "..\..\base\addons\_hooks\pardefine.inc"
+$include "../../base/addons/_hooks/pardefine.inc"
 $INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
 
 * These internal parameters pertain to price sensitivy electricity exchange with
@@ -909,7 +909,7 @@ $ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDA
 * To reduce use of memory space and to reduce further processing and storage of unused data
 * some of the larger data IDs are here reduced by resetting unused data items to default values.
 
-$include "..\..\base\addons\_hooks\reducecard.inc"
+$include "../../base/addons/_hooks/reducecard.inc"
 
 DE_VAR_T(RRR,DEUSER,SSS,TTT)$((NOT IR(RRR)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 DH_VAR_T(AAA,DHUSER,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
@@ -1238,7 +1238,7 @@ $ifi %AGKNDISC%==yes  $include "../../base/addons/bb4/agkndisc/agkndiscaddqobj.i
 
 * Add-on objective function contributions
 
-$include "..\..\base\addons\_hooks\qobj.inc";
+$include "../../base/addons/_hooks/qobj.inc";
 
 * This file containts the gas induced additions to the objective function.
 $ifi %GAS%==yes $include "../../base/addons/gas/gascosts.inc"
@@ -1283,7 +1283,7 @@ $ifi %TSP%==yes $include "../../base/addons/Transport/TSPQEEQ.inc"
       + SUM(IRI$IXK_HASORPOT(IY411,IR,IRI),VX_T(IY411,IR,IRI,IS3,T))
 $ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VEX_T(IR,X3VPLACE,X3VSTEP,IS3,T)))
 
-$include "..\..\base\addons\_hooks\qeeq.inc"
+$include "../../base/addons/_hooks/qeeq.inc"
 ;
 
 
@@ -1301,7 +1301,7 @@ QHEQ(IY411,IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))) ..
 * Adds heat transmission if selected in the gas add-on
 $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htheatbalance.inc";
 
-$include "..\..\base\addons\_hooks\qheq.inc"
+$include "../../base/addons/_hooks/qheq.inc"
 ;
 
 
@@ -2025,7 +2025,7 @@ QWAVEDISPATCH(IY411,IA,IGWAVE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWAVE) AND IWAVESU
 *----- Any equations for addon to be placed here: ------------------------------
 *-------------------------------------------------------------------------------
 
-$include "..\..\base\addons\_hooks\eqndecdef.inc"
+$include "../../base/addons/_hooks/eqndecdef.inc"
 
 * These add-on equations pertain to combination technologies.
 *$ifi %COMBTECH%==yes $include "../../base/addons/combtech/combEQ.inc";
@@ -2170,7 +2170,7 @@ $offtext
 
 *----- Any equations for addon to be placed here: ------------------------------
 
-$include "..\..\base\addons\_hooks\balbase4.inc"
+$include "../../base/addons/_hooks/balbase4.inc"
 
 $ontext
 *--- Investment restricitions --------------------------------------------------
