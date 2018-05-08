@@ -106,17 +106,18 @@ $setglobal DFLEXQUANT
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH yes
+$setglobal COMBTECH
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN yes
+$Setglobal HYDROGEN
 *!option yes
 
 * Use stepwise linear fuel prices
-$Setglobal STEPWISEPRICE yes
+$Setglobal STEPWISEPRICE
+
 * Set a common maximum for fuels.
-$Setglobal LIMITSFORFUELS yes
+$Setglobal LIMITSFORFUELS
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
