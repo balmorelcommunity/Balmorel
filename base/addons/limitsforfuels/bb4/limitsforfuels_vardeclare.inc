@@ -1,0 +1,3 @@
+POSITIVE VARIABLES
+   VLIMITSFORFUELS_QGMAXCF(Y,C,FFF,LIMITSFORFUELS_NUMCONMAX,IPLUSMINUS) 'Feasibility in Maximum fuel usage per country constraint (GJ)'
+;

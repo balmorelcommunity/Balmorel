@@ -6,9 +6,6 @@ $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/combtech_balbase1.i
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_balbase1.inc";
 
 $ifi %FLOWBASED%==yes  $include   "../../base/addons/flowbased/flowbased_balbase1.inc";
-$ifi %MAXFOR3FUELS%==yes  $include   "../../base/addons/maxfor3fuels/maxfor3fuels_balbase1.inc";
-
-
 
 $label endoffile
 

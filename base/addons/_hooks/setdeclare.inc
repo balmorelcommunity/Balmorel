@@ -17,4 +17,6 @@ $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_setdec
 
 $ifi %dflexquant%==yes       $include "../../base/addons/demandflexquant/dflexquant_set.inc";
 
+$ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_setdeclare.inc";
+
 $label endoffile
