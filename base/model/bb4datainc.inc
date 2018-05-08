@@ -142,9 +142,9 @@ $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
 *-------------------------------------------------------------------------------
 
-$include "..\..\base\addons\_hooks\acronyms.inc"
-$include "..\..\base\addons\_hooks\setdeclare.inc"
-$include "..\..\base\addons\_hooks\setdefine.inc"
+$include "../../base/addons/_hooks/acronyms.inc"
+$include "../../base/addons/_hooks/setdeclare.inc"
+$include "../../base/addons/_hooks/setdefine.inc"
 
 
 * Addon AGKNDISC: discrete size investment in technologies:
@@ -171,7 +171,7 @@ $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 *-------------------------------------------------------------------------------
 *------------- Any GDATA additions for addon to be placed here: ----------------
 *-------------------------------------------------------------------------------
-$include "..\..\base\addons\_hooks\gdataadditions.inc"
+$include "../../base/addons/_hooks/gdataadditions.inc"
 
 
 * ------------------------------------------------------------------------------
@@ -658,8 +658,8 @@ $if not EXIST '../data/DHFP_BASE.inc' $INCLUDE '../../base/data/DHFP_BASE.inc';
 *---- Annual electricity demand : ---------------------------------------------
 *-------------------------------------------------------------------------------
 PARAMETER DE(YYY,RRR,DEUSER)    'Annual electricity consumption (MWh)' %semislash%
-$if     EXIST '../data/de.inc' $INCLUDE         '../data/de.inc';
-$if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
+$if     EXIST '../data/DE.inc' $INCLUDE         '../data/DE.inc';
+$if not EXIST '../data/DE.inc' $INCLUDE '../../base/data/DE.inc';
 %semislash%;
 
 
@@ -667,8 +667,8 @@ $if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
 *---- Annual heat demand: -----------------------------------------------------
 *-------------------------------------------------------------------------------
 PARAMETER DH(YYY,AAA,DHUSER)    'Annual heat consumption (MWh)'  %semislash%
-$if     EXIST '../data/dh.inc' $INCLUDE         '../data/dh.inc';
-$if not EXIST '../data/dh.inc' $INCLUDE '../../base/data/dh.inc';
+$if     EXIST '../data/DH.inc' $INCLUDE         '../data/DH.inc';
+$if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
 %semislash%;
 
 
