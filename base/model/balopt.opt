@@ -113,10 +113,6 @@ $setglobal COMBTECH yes
 $Setglobal HYDROGEN yes
 *!option yes
 
-* Set a common maximum for three fuels.
-$Setglobal MAXFOR3FUELS
-*!option yes
-
 * Use stepwise linear fuel prices
 $Setglobal STEPWISEPRICE yes
 *!option yes
