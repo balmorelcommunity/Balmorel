@@ -10,11 +10,6 @@
 * Note: although not necessary, there are a number of "$ifi %BB4%==yes" conditions,
 * this is to make some of the differences relative to bb123.sim more visible.
 
-OPTION lp= cplex;
-balbase4.optfile = 1;
-
-balbase4.optfile=%USEOPTIONFILE%;
-
 *-------------------------------------------------------------------------------
 * INITIALISATIONS BEFORE LOOPING OVER $YALIAS%:
 *-------------------------------------------------------------------------------
@@ -401,17 +396,18 @@ $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vannual.inc';
 * SOLVE
 *-------------------------------------------------------------------------------
 
-* This option must be active especially for BB1 and BB2 since this outputs the     REVISE
+* The Savepoint option must be active especially for BB1 and BB2 since this outputs the     REVISE
 * solution basis, which is used for generating results database.
 OPTION Savepoint=1;
 
-BALBASE4.optfile = %USEOPTIONFILE%;
+$ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
 
 
 
 $ifi not %SOLVEMIP%==yes SOLVE BALBASE4 USING LP  MINIMIZING VOBJ;  !! =====================
 $ifi     %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;  !! =====================
 
+$include "..\..\base\addons\_hooks\solveend.inc"
 *-------------------------------------------------------------------------------
 * End: SOLVE
 *-------------------------------------------------------------------------------

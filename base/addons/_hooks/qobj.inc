@@ -19,4 +19,8 @@ $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_qobj.
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_qobj.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_qobj.inc";
 
+$ifi %vqdebug%==yes   $setglobal equation qobj
+$ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
+
+
 $label endoffile

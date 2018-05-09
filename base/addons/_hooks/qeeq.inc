@@ -15,4 +15,9 @@ $ifi %dflexquant%==yes   $include "../../base/addons/demandflexquant/dflexquant_
 
 $ifi %dflextime%==yes    $include "../../base/addons/demandflextime/dflextime_qeeq.inc";
 
+
+$ifi %vqdebug%==yes   $setglobal equation qeeq
+$ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
+
+
 $label endoffile

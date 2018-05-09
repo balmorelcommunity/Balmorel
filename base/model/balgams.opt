@@ -53,9 +53,7 @@ $OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF
 * Defaults are LIMROW=3, LIMCOL=3;
 * The statement "LIMROW=0" turns the listing off:
 
-OPTIONS LIMROW=   100, LIMCOL=   100;
-
-OPTIONS RESLIM= 300000;
+OPTIONS LIMROW=   5, LIMCOL=   6;
 
 *...............................................................................
 * SYSOUT controls the printing of the solved status in the list file.
@@ -107,24 +105,51 @@ $ONEMPTY
 * Solver related options:
 *-------------------------------------------------------------------------------
 
-* OPTCR controls the precision of the solution. If optcr is greater than o,
-* a good not necessarily optimal solution will be accepted
-* Useful for inspection of details.
-option optcr = 0.000001
+*-------------------------------------------------------------------------------
+* Specify the Solver to use for relevant model types (LP, MIP etc.).
+* E.g., for using CBC for LP problems specify option   LP=CBC
+* E.g., for using IPOPT for LP problems specify option LP=IPOPT
 
-
+option LP = CPLEX
+option MIP= CPLEX
 
 *-------------------------------------------------------------------------------
-* Solvers may be controlled by solver specific options in a solver ooption file.
-* Possibilities and details vary between solvers, consult GAMS manuals.
-* For illustration the Cplex solver is used here.
-* With USEOPTIONFILE set to 1 the Cplex solver will expect to find file cplex.opt
-* in the model folder, this file holds statements for details of the Cplex solver.
+* From GAMS many basic solver options may be specified, applicable for some or all solvers,
+* they may be specified here.
 
-* Set USEOPTIONFILE to either 1 or 0.
-* 1 indicates to use a solver specific option file, 0 indicates no option file.
+* ITERLIM specifies the maximum number of iteration by the solver
+* Default value is 2e9.
+OPTIONS ITERLIM=2000000;
 
-$Setglobal USEOPTIONFILE 1
+* OPTCR controls the precision of the solution. If optcr is greater than 0,
+* a good, not necessarily optimal solution will be accepted.
+* Default value is 0.10.
+option optcr = 0.000001
+
+* RESLIM specifies the maximum time (seconds) that the computer can run during execution of a solver.
+* Default value is 1000.
+option RESLIM = 100000
+
+*-------------------------------------------------------------------------------
+* Solvers may be controlled by solver specific options in a solver option file,
+* in addition to the general options above.
+* Possibilities and details vary between solvers, consult GAMS Solver manuals.
+* Set USEOPTIONFILE to either 0 or a positive integer. A 0 indicates that no option file is to be used.
+* Option files are solver specific. In the following assume that a solver with name SolverName is used.
+* Any solver option file is expected to be found in model folder.
+* If a 1 is used then the solver will search for option file SolverName.opt
+* If another positive integer less than 10 is used, e.g. 4, then the solver will search for an option file SolverName.op4
+* The below option USEOPTIONFILE is used in the .sim file.
+* Be aware that if you change solver (cf. above) then you may also have to change the value for USEOPTIONFILE
+*
+* In the following a few option file possibilities are mentioned for use with Cplex,
+* their use assumes that appropriate files exist in the model folder.
+
+$Setglobal USEOPTIONFILE 6
+*!option 0   No option file is used. Note that not setting anything will generate an error.
+*!option 1   Use option file SolverName.opt.
+*!option 6   Predefined, don't change. Used with CPLEX it opens cplex.op6 and sets 'LPmethod 6' to run multiple methods in parallel.
+
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------

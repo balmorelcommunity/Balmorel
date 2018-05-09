@@ -12,6 +12,16 @@
 * instead the file Balopt.bui will be $included. See the description elsewhere.
 
 
+* Debugging hints are available if you include feasiblity-ensuring variables.
+* However, adding more variables will increase calculation time.
+* Hence, if calculation time is an issue, it is recommended as default to not use them,
+* and then, if the solver declares the problem infeasible, use them and resolve.
+* Information of ... in the .log file?
+$setglobal VQdebug yes
+*!option yes
+
+
+
 *===============================================================================
 *===============================================================================
 * Project and Case ID:
