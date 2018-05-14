@@ -17,7 +17,7 @@
 * All GAMS code of the Balmorel model is distributed under ICS license,
 * see the license file in the base/model folder.
 
-
+    
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 * Declarations and inclusion of data files:
