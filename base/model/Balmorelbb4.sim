@@ -408,7 +408,7 @@ $ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
 $ifi not %SOLVEMIP%==yes SOLVE BALBASE4 USING LP  MINIMIZING VOBJ;  !! =====================
 $ifi     %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;  !! =====================
 
-$include "..\..\base\addons\_hooks\solveend.inc"
+$include "../../base/addons/_hooks/solveend.inc"
 *-------------------------------------------------------------------------------
 * End: SOLVE
 *-------------------------------------------------------------------------------
