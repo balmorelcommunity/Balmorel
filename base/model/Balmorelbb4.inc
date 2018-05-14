@@ -1000,7 +1000,9 @@ POSITIVE VARIABLE VESTOVOLT(Y,AAA,S,T)             "Electricity storage contents
 POSITIVE VARIABLE VESTOVOLTS(Y,AAA,S,T)            "Electricity storage contents at beginning of time segment (MWh)";
 POSITIVE VARIABLE VHSTOVOLT(Y,AAA,S,T)             "Heat storage contents at beginning of time segment (MWh)";
 POSITIVE VARIABLE VHSTOVOLTS(Y,AAA,S,T)            "Heat storage contents at beginning of time segment (MWh)";
-
+POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)                      "Accumulated new investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
+POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)                    "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
+POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)                "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
 
 
 *-------------------------------------------------------------------------------
