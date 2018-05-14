@@ -174,19 +174,20 @@ LOOP((FFF,G)$IGF(G,FFF),
 IAGKNY(Y,IA,G) = IAGKN(IA,G); !!1st definition for correct assignment of IAGK_HASORPOT
 IAGKNY(Y,IA,G)$(YVALUE(Y) LT GDATA(G,'GDFROMYEAR'))=NO; !!1st definition for correct assignment of IAGK_HASORPOT
 IAGK_HASORPOT(Y,IA,G) = NO;
-IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);       display "first assign ",IAGK_HASORPOT  ;
+IAGK_HASORPOT(Y,IA,G) = YES$GKFX(Y,IA,G);       display "first assign ",IAGK_HASORPOT  ;
 IAGK_HASORPOT(Y,IA,G)$IAGKNY(Y,IA,G) = YES;     display "last assign ",IAGK_HASORPOT  ;
 
 * In contrast to IAGKN, IAGKNY depends on the year (viz., according to GDFROMYEAR).
 * No new capacity if capacity is not yet available this year (IAGKNY only):
 IAGKNY(Y,IA,G) = NO; !!reset of set
-IAGKNY(IY411,IA,G) = IAGKN(IA,G);
-IAGKNY(IY411,IA,G)$((YVALUE(IY411) LT GDATA(G,'GDFROMYEAR')) OR (YVALUE(IY411) GT GDATA(G,'GDLASTYEAR')))=NO;  !! Hans
+IAGKNY(Y,IA,G) = IAGKN(IA,G);
+IAGKNY(Y,IA,G)$((YVALUE(Y) LT GDATA(G,'GDFROMYEAR')) OR (YVALUE(Y) GT GDATA(G,'GDLASTYEAR')))=NO;  !! Hans
 
 * TODO: consider if necessary and/or expedient to set .FX=0 for tech in IAGKN but not in IAGKNY (such tech presently appear in QOBJ, QHEQ and QEEQ)
 
 *----COMBTECH----
-$ifi %COMBTECH%==yes IAGK_HASORPOT(IY411,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(IY411,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
+$ifi %COMBTECH%==yes IAGK_HASORPOT(Y,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(Y,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
+
 *---ENDOF COMBTECH
 *  QHYRSSEQ(IA,S)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS) or IAGKN(IA,IGHYRS))..
 *P_QHYRSSEQ(iA,S)=0;
@@ -317,7 +318,7 @@ VGKNACCUMGROSS.FX(IY411,IA,G)$(NOT IAGKN(IA,G))=0;
 * Update IXKE_HASORPOT based on exogenously given or potential investment
 
 IXK_HASORPOT(Y,IRE,IRI) = NO;
-IXK_HASORPOT(IY411,IRE,IRI) = YES$XKFX(IY411,IRE,IRI);
+IXK_HASORPOT(Y,IRE,IRI) = YES$XKFX(Y,IRE,IRI);
 IXKN(Y,IRE,IRI) = NO;
 $ifi %TransInvest%==yes IXKN(Y,IRE,IRI) = YES$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF));
 $ifi %TransInvest%==yes IXK_HASORPOT(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI) = YES;
@@ -346,7 +347,7 @@ LOOP(Y$(ORD(Y) GT 1),
 * if the value is EPS then transmission investment is possible but with no associated investment cost.
 * If a real non-zero value is fiven then investment is possible with that cost.
 $ifi %TransInvest%==yes IXKN(Y,IRE,IRI)=NO; !!Reset of set
-$ifi %TransInvest%==yes IXKN(IY411,IRE,IRI) = YES$(XINVCOST(IY411,IRE,IRI) AND (XINVCOST(IY411,IRE,IRI) LT INF));
+$ifi %TransInvest%==yes IXKN(Y,IRE,IRI) = YES$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF));
 
 
 
@@ -354,7 +355,7 @@ $ifi %TransInvest%==yes IXKN(IY411,IRE,IRI) = YES$(XINVCOST(IY411,IRE,IRI) AND (
 * Complement to equation QXK_UP for the case with no endogenous transmission investments.
 $ifi not %TransInvest%==yes VX_T.UP(IY411,IRE,IRI,S,T)$IXK_HASORPOT(IY411,IRE,IRI) = XKFX(IY411,IRE,IRI)*IXKRATE(IRE,IRI,S,T);
 
-VXKNACCUMNET.FX(IY411,IRE,IRI)$(NOT IXKN(IY411,IRE,IRI)) = 0;
+VXKNACCUMNET.FX(IY411,IRE,IRI)$(NOT SUM(Y,IXKN(Y,IRE,IRI))) = 0;
 VXKN.FX(IY411,IRE,IRI)$(NOT IXKN(IY411,IRE,IRI))=0;
 
 
@@ -407,7 +408,7 @@ $ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
 $ifi not %SOLVEMIP%==yes SOLVE BALBASE4 USING LP  MINIMIZING VOBJ;  !! =====================
 $ifi     %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;  !! =====================
 
-$include "..\..\base\addons\_hooks\solveend.inc"
+$include "../../base/addons/_hooks/solveend.inc"
 *-------------------------------------------------------------------------------
 * End: SOLVE
 *-------------------------------------------------------------------------------
