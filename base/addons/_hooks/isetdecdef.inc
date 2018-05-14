@@ -12,6 +12,7 @@ $label  beginbb4
 
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_isetdecdef.inc";
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_isetdecdef.inc";
-
+$ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_isetdecdef.inc";
+$ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_isetdecdef.inc";
 
 $label endoffile
