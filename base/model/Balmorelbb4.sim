@@ -25,6 +25,15 @@ VGKN.L(Y,IA,G)        = 0;
 VXKN.l(Y,IR,IRI)      = 0;
 VDECOM.l(Y,IA,G)      = 0;
 
+$IF((%investmentfromyear%== yes),
+
+         VGKN.UP(Y,IA,G)$( YVALUE(Y) le (GINVESTSTART-1) )=EPS;
+         VXKN.UP(Y,IR,IRI)$( YVALUE(Y) le (XINVESTSTART-1) )=EPS;
+         VDECOM.UP(Y,IA,G)$( YVALUE(Y) le (GINVESTSTART-1) )=EPS;
+ ;
+
+
+
 * Set the relative weight of the individual years in Y.
 * Two ideas implemented here. Used according to option bb4weighty.
 * Simple idea is to give equal weights:

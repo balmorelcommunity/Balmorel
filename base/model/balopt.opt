@@ -172,6 +172,14 @@ $setglobal AGKNDISC
 *!onlyif %BB2%==yes
 *!onlyif %solvemip%==yes
 
+$setglobal investmentfromyear yes
+SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
+GINVESTSTART= 2020;
+SCALAR XINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
+XINVESTSTART= 2030;
+*Option to activate the limitation of allowing investments from a certain year in the future (%investmestfromyear%== yes)
+*Different investment starting years can be set for generatoris and transmission
+
 * Use the flow-based capacity allocation methodology
 $Setglobal FlowBased
 *!option yes
