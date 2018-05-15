@@ -647,7 +647,10 @@ $if     EXIST '../data/DHFP_BASE.inc' $INCLUDE         '../data/DHFP_BASE.inc';
 $if not EXIST '../data/DHFP_BASE.inc' $INCLUDE '../../base/data/DHFP_BASE.inc';
 %semislash%;
 
-
+PARAMETER GKF_LO(FFF)    'Minimum capacity usage on new capacity for fuel (%)'  %semislash%
+$if     EXIST '../data/GKF_LO.inc' $INCLUDE         '../data/GKF_LO.inc';
+$if not EXIST '../data/GKF_LO.inc' $INCLUDE '../../base/data/GKF_LO.inc';
+%semislash%;
 
 *-------------------------------------------------------------------------------
 *---- End: Geographically specific values --------------------------------------
