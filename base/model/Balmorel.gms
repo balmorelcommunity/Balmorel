@@ -833,8 +833,10 @@ $ifi %GEQF_DOL%== CCCRRRAAA_FFF         PARAMETER GEQF(CCCRRRAAA,FFF)           
 $ifi %GEQF_DOL%== YYY_CCCRRRAAA_FFF     PARAMETER GEQF(YYY,CCCRRRAAA,FFF)          'Required fuel use per year (default/0/, eps for 0) (GJ)';
 PARAMETER WTRRSFLH(AAA)                'Full load hours for hydro reservoir plants (hours)';
 PARAMETER WTRRRFLH(AAA)                'Full load hours for hydro run-of-river plants (hours)';
-PARAMETER WNDFLH(AAA)                  'Full load hours for wind power (hours)';
-PARAMETER SOLEFLH(AAA)                 'Full load hours for solarE power (hours)';
+$ifi %WNDFLH_DOL%==AAA_GGG              PARAMETER WNDFLH(AAA,GGG)                  "Full load hours for wind power (hours)";
+$ifi %WNDFLH_DOL%==AAA                  PARAMETER WNDFLH(AAA)                      "Full load hours for wind power (hours)";
+$ifi %SOLEFLH_DOL%==AAA                 PARAMETER SOLEFLH(AAA)                     "Full load hours for solarE power (hours)";
+$ifi %SOLEFLH_DOL%==AAA_GGG             PARAMETER SOLEFLH(AAA,GGG)                 "Full load hours for solarE power (hours)";
 PARAMETER SOLHFLH(AAA)                 'Full load hours for solarH power (hours)';
 PARAMETER WAVEFLH(AAA)                 'Full load hours for wave power'
 PARAMETER HYRSMAXVOL_G(AAA,GGG)        'Reservoir capacity (MWh storage capacity / MW installed capacity)';
@@ -1005,12 +1007,14 @@ $if     EXIST '../data/WTRRRFLH.inc' $INCLUDE         '../data/WTRRRFLH.inc';
 $if not EXIST '../data/WTRRRFLH.inc' $INCLUDE '../../base/data/WTRRRFLH.inc';
 %semislash%;
 
-PARAMETER WNDFLH(AAA)    'Full load hours for wind power (hours)'  %semislash%
+$ifi %WNDFLH_DOL%==AAA               PARAMETER WNDFLH(AAA)         'Full load hours for wind power (hours)'  %semislash%
+$ifi %WNDFLH_DOL%==AAA_GGG           PARAMETER WNDFLH(AAA,GGG)     'Full load hours for wind power (hours)'  %semislash%
 $if     EXIST '../data/WNDFLH.inc' $INCLUDE         '../data/WNDFLH.inc';
 $if not EXIST '../data/WNDFLH.inc' $INCLUDE '../../base/data/WNDFLH.inc';
 %semislash%;
 
-PARAMETER SOLEFLH(AAA)    'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLEFLH_DOL%==AAA              PARAMETER SOLEFLH(AAA)        'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLEFLH_DOL%==AAA_GGG          PARAMETER SOLEFLH(AAA,GGG)    'Full load hours for solar power (hours)'  %semislash%
 $if     EXIST '../data/SOLEFLH.inc' $INCLUDE         '../data/SOLEFLH.inc';
 $if not EXIST '../data/SOLEFLH.inc' $INCLUDE '../../base/data/SOLEFLH.inc';
 %semislash%;
@@ -2414,20 +2418,24 @@ $ifi %PLANTCLOSURES%==yes  VGE_T(IA,IGHYRR,IS3,T)
 
 
 QGKNWND(IAGKN(IA,IGWND),IS3,T)$IWND_SUMST(IA)..
- WNDFLH(IA) * VGKN(IA,IGWND) * WND_VAR_T(IA,IS3,T) / IWND_SUMST(IA)
+$ifi %WNDFLH_DOL%==AAA        WNDFLH(IA)       * VGKN(IA,IGWND) * WND_VAR_T(IA,IS3,T) / IWND_SUMST(IA)
+$ifi %WNDFLH_DOL%==AAA_GGG    WNDFLH(IA,IGWND) * VGKN(IA,IGWND) * WND_VAR_T(IA,IS3,T) / IWND_SUMST(IA)
 $ifi     %WNDSHUTDOWN%==yes =G=
 $ifi not %WNDSHUTDOWN%==yes =E=
   VGEN_T(IA,IGWND,IS3,T);
 
-$ifi %PLANTCLOSURES%==yes QGKOWND(IAGK_Y(IA,IGWND),IS3,T)$IWND_SUMST(IA)..
-$ifi %PLANTCLOSURES%==yes  WNDFLH(IA) * (IGKFX_Y(IA,IGWND) + IGKVACCTOY(IA,IGWND)-VDECOM(IA,IGWND)) * WND_VAR_T(IA,IS3,T) / IWND_SUMST(IA)
+$ifi %PLANTCLOSURES%==yes  QGKOWND(IAGK_Y(IA,IGWND),IS3,T)$IWND_SUMST(IA)..
+$ifi %PLANTCLOSURES%==yes  $ifi %WNDFLH_DOL%==AAA WNDFLH(IA)
+$ifi %PLANTCLOSURES%==yes  $ifi %WNDFLH_DOL%==AAA_GGG WNDFLH(IA,IGWND)
+$ifi %PLANTCLOSURES%==yes  * (IGKFX_Y(IA,IGWND) + IGKVACCTOY(IA,IGWND)-VDECOM(IA,IGWND)) * WND_VAR_T(IA,IS3,T) / IWND_SUMST(IA)
 $ifi %PLANTCLOSURES%==yes    =G=
 $ifi %PLANTCLOSURES%==yes   VGE_T(IA,IGWND,IS3,T);
 
 
 *-------------- New solar power and heat: cannot be dispatched: ----------------
 QGKNSOLE(IAGKN(IA,IGSOLE),IS3,T)$ISOLESUMST(IA)..
-SOLEFLH(IA) * VGKN(IA,IGSOLE) * SOLE_VAR_T(IA,IS3,T) / ISOLESUMST(IA)
+$ifi %SOLEFLH_DOL%==AAA                SOLEFLH(IA)        * VGKN(IA,IGSOLE) * SOLE_VAR_T(IA,IS3,T) / ISOLESUMST(IA)
+$ifi %SOLEFLH_DOL%==AAA_GGG            SOLEFLH(IA,IGSOLE) * VGKN(IA,IGSOLE) * SOLE_VAR_T(IA,IS3,T) / ISOLESUMST(IA)
  =E=
 VGEN_T(IA,IGSOLE,IS3,T);
 
@@ -2439,7 +2447,9 @@ VGHN_T(IA,IGSOLH,IS3,T);
 
 
 $ifi %PLANTCLOSURES%==yes QGKOSOLE(IAGK_Y(IA,IGSOLE),IS3,T)..
-$ifi %PLANTCLOSURES%==yes SOLEFLH(IA) * (IGKFX_Y(IA,IGSOLE) + IGKVACCTOY(IA,IGSOLE)-VDECOM(IA,IGSOLE)) * SOLE_VAR_T(IA,IS3,T) / ISOLESUMST(IA)
+$ifi %PLANTCLOSURES%==yes $ifi %SOLEFLH_DOL%==AAA SOLEFLH(IA)
+$ifi %PLANTCLOSURES%==yes $ifi %SOLEFLH_DOL%==AAA SOLEFLH(IA,IGSOLE)
+$ifi %PLANTCLOSURES%==yes * (IGKFX_Y(IA,IGSOLE) + IGKVACCTOY(IA,IGSOLE)-VDECOM(IA,IGSOLE)) * SOLE_VAR_T(IA,IS3,T) / ISOLESUMST(IA)
 $ifi %PLANTCLOSURES%==yes  =E=
 $ifi %PLANTCLOSURES%==yes VGE_T(IA,IGSOLE,IS3,T);
 

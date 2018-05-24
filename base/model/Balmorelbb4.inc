@@ -17,7 +17,7 @@
 * All GAMS code of the Balmorel model is distributed under ICS license,
 * see the license file in the base/model folder.
 
-    
+
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 * Declarations and inclusion of data files:
@@ -297,8 +297,10 @@ $ifi %GEQF_DOL%==CCCRRRAAA_FFF          PARAMETER GEQF(CCCRRRAAA,FFF)           
 $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF      PARAMETER GEQF(YYY,CCCRRRAAA,FFF)          "Exact annual fuel use by year, geography and fuel and (GJ)";
 PARAMETER WTRRSFLH(AAA)                "Full load hours for hydro reservoir plants (hours)";
 PARAMETER WTRRRFLH(AAA)                "Full load hours for hydro run-of-river plants (hours)";
-PARAMETER WNDFLH(AAA)                  "Full load hours for wind power (hours)";
-PARAMETER SOLEFLH(AAA)                 "Full load hours for solarE power (hours)";
+$ifi %WNDFLH_DOL%==AAA                  PARAMETER WNDFLH(AAA)                      "Full load hours for wind power (hours)";
+$ifi %WNDFLH_DOL%==AAA_GGG              PARAMETER WNDFLH(AAA,GGG)                  "Full load hours for wind power (hours)";
+$ifi %SOLEFLH_DOL%==AAA                 PARAMETER SOLEFLH(AAA)                     "Full load hours for solarE power (hours)";
+$ifi %SOLEFLH_DOL%==AAA_GGG             PARAMETER SOLEFLH(AAA,GGG)                 "Full load hours for solarE power (hours)";
 PARAMETER SOLHFLH(AAA)                 "Full load hours for solarH power (hours)";
 PARAMETER WAVEFLH(AAA)                 "Full load hours for wave power (hours)";
 PARAMETER HYRSMAXVOL_G(AAA,GGG)        "Reservoir capacity (MWh storage capacity / MW installed capacity)";
@@ -1987,7 +1989,8 @@ QHYRRDISPATCH(IY411,IA,IGHYRR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHYRR) AND IWTRRRS
 
 QWNDDISPATCH(IY411,IA,IGWND,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWND) AND IWND_SUMST(IA))..
          VGE_T(IY411,IA,IGWND,IS3,T) =L=     !! Using =L= to have possibility for shoutdown (too much wind, technically or in relation to consumption)
-         (WNDFLH(IA) * (
+$ifi %WNDFLH_DOL%==AAA         (WNDFLH(IA) * (
+$ifi %WNDFLH_DOL%==AAA_GGG     (WNDFLH(IA,IGWND) * (
             GKFX(IY411,IA,IGWND)
          + VGKN(IY411,IA,IGWND)$IAGKNY(IY411,IA,IGWND)
          + SUM(IY402$IY411PREVY(IY411,IY402),VGKNACCUMNET(IY402,IA,IGWND))
@@ -2001,7 +2004,8 @@ QSOLEDISPATCH(IY411,IA,IGSOLE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLE) AND ISOLESU
 
        VGE_T(IY411,IA,IGSOLE,IS3,T)
        =L=
-       (SOLEFLH(IA) * (
+$ifi %SOLEFLH_DOL%==AAA       (SOLEFLH(IA) * (
+$ifi %SOLEFLH_DOL%==AAA_GGG   (SOLEFLH(IA,IGSOLE) * (
             GKFX(IY411,IA,IGSOLE)
          + VGKN(IY411,IA,IGSOLE)$IAGKNY(IY411,IA,IGSOLE)
          + SUM(IY402$IY411PREVY(IY411,IY402),VGKNACCUMNET(IY402,IA,IGSOLE))

@@ -544,12 +544,14 @@ $if     EXIST '../data/WTRRRFLH.inc' $INCLUDE      '../data/WTRRRFLH.inc';
 $if not EXIST '../data/WTRRRFLH.inc' $INCLUDE '../../base/data/WTRRRFLH.inc';
 %semislash%;
 
-PARAMETER WNDFLH(AAA)    'Full load hours for wind power (hours)'  %semislash%
+$ifi %WNDFLH_DOL%==AAA               PARAMETER WNDFLH(AAA)         'Full load hours for wind power (hours)'  %semislash%
+$ifi %WNDFLH_DOL%==AAA_GGG           PARAMETER WNDFLH(AAA,GGG)     'Full load hours for wind power (hours)'  %semislash%
 $if     EXIST '../data/WNDFLH.inc' $INCLUDE      '../data/WNDFLH.inc';
 $if not EXIST '../data/WNDFLH.inc' $INCLUDE '../../base/data/WNDFLH.inc';
 %semislash%;
 
-PARAMETER SOLEFLH(AAA)    'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLEFLH_DOL%==AAA              PARAMETER SOLEFLH(AAA)        'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLEFLH_DOL%==AAA_GGG          PARAMETER SOLEFLH(AAA,GGG)    'Full load hours for solar power (hours)'  %semislash%
 $if     EXIST '../data/SOLEFLH.inc' $INCLUDE      '../data/SOLEFLH.inc';
 $if not EXIST '../data/SOLEFLH.inc' $INCLUDE '../../base/data/SOLEFLH.inc';
 %semislash%;

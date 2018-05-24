@@ -359,6 +359,7 @@ IF((ISCALAR1 LT ERRCOUNT2),
 );
 
 * WNDFLH:
+$ifi %WNDFLH_DOL%==AAA_GGG $goto LABEL_WNDFLH_ERROR
 ISCALAR1=ERRCOUNT2;
 **LOOP(IA, LOOP(IGWND$(SMAX(Y,GKFX(Y,IA,IGWND))  TODO TODO: possibly frevise, then use sag idea elsewhere (WTRRRVAR_T etc.) to avoid writing an AAA several times
 LOOP(IA$(SUM((Y,IGWND), GKFX(Y,IA,IGWND))
@@ -386,8 +387,10 @@ IF((ISCALAR1 LT ERRCOUNT2),
   PUT "   CARD(S)*CARD(T) is " (CARD(S)*CARD(T)):4:0 ", if this number is much smaller than " (CARD(SSS)*CARD(TTT)):4:0 " this may be the explanation, e.g. if the S and T selected do not contain VAR_T values that are representative for the whole year."/;
   PUT "#"/;
 );
+$LABEL LABEL_WNDFLH_ERROR
 
 * SOLEFLH:
+$ifi %SOLEFLH_DOL%==AAA_GGG $goto LABEL_SOLEFLH_ERROR
 ISCALAR1=ERRCOUNT2;
 LOOP(IA, LOOP(IGSOLE$(SMAX(Y,GKFX(Y,IA,IGSOLE))
 $ifi %BB2%==yes OR GDATA(IGSOLE,'GDKVARIABL')
@@ -417,6 +420,7 @@ IF((ISCALAR1 LT ERRCOUNT2),
   PUT "   CARD(S)*CARD(T) is " (CARD(S)*CARD(T)):4:0 ", if this number is much smaller than " (CARD(SSS)*CARD(TTT)):4:0 " this may be the explanation, e.g. if the S and T selected do not contain VAR_T values that are representative for the whole year."/;
   PUT "#"/;
 );
+$LABEL LABEL_SOLEFLH_ERROR 
 
 * SOLHFLH:
 ISCALAR1=ERRCOUNT2;
