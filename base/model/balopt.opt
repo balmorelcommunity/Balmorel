@@ -549,11 +549,11 @@ $setglobal GKRATE_DOL AAA_GGG_SSS
 *!option  AAA_GGG_SSS
 *!option  AAA_GGG_SSS_TTT
 
-$setglobal WNDFLH_DOL AAA_GGG
+$setglobal WNDFLH_DOL AAA
 *!option  AAA_GGG
 *!option  AAA
 
-$setglobal SOLEFLH_DOL AAA_GGG
+$setglobal SOLEFLH_DOL AAA
 *!option  AAA_GGG
 *!option  AAA
 
