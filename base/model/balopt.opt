@@ -69,7 +69,7 @@ $setglobal bb2
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
 $setglobal bb3
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
-$setglobal bb4  yes
+$setglobal bb4      yes
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
 
 
@@ -94,8 +94,12 @@ $setglobal testbb1234
 $setglobal NOELTRANSINV
 *!option yes
 
-* Allow wind turbines to shut down
+* Allow wind turbines to shut down  (BB1,BB2,BB3)
 $setglobal WNDSHUTDOWN
+*!option yes
+
+* Allow curtailment of variable renewable energy generators  (BB4)
+$setglobal VRESHUTDOWN   yes
 *!option yes
 
 * This variable includes addon for distric heating
@@ -378,7 +382,10 @@ $Setglobal limitedresults
 * Make some output in text format to show some results of an execution.
 * The detailed code for the writing of the files is given in /output/printout/printinc.
 * Setting "yes" for PRINTFILES will make some standard printout files to folder /output/printout/.
-$setglobal PRINTFILES  yes
+$setglobal PRINTFILES
+*!option yes
+
+$setglobal OUTPUT_SUMMARY
 *!option yes
 
 * PRINTSEPARATOR is a single character used for separating columns in printfiles,
