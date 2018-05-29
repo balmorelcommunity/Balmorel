@@ -420,9 +420,10 @@ IF((ISCALAR1 LT ERRCOUNT2),
   PUT "   CARD(S)*CARD(T) is " (CARD(S)*CARD(T)):4:0 ", if this number is much smaller than " (CARD(SSS)*CARD(TTT)):4:0 " this may be the explanation, e.g. if the S and T selected do not contain VAR_T values that are representative for the whole year."/;
   PUT "#"/;
 );
-$LABEL LABEL_SOLEFLH_ERROR 
+$LABEL LABEL_SOLEFLH_ERROR
 
 * SOLHFLH:
+$ifi %SOLHFLH_DOL%==AAA_GGG $goto LABEL_SOLHFLH_ERROR
 ISCALAR1=ERRCOUNT2;
 LOOP(IA, LOOP(IGSOLH$(SMAX(Y,GKFX(Y,IA,IGSOLH))
 $ifi %BB2%==yes OR GDATA(IGSOLH,'GDKVARIABL')
@@ -452,8 +453,11 @@ IF((ISCALAR1 LT ERRCOUNT2),
   PUT "   CARD(S)*CARD(T) is " (CARD(S)*CARD(T)):4:0 ", if this number is much smaller than " (CARD(SSS)*CARD(TTT)):4:0 " this may be the explanation, e.g. if the S and T selected do not contain VAR_T values that are representative for the whole year."/;
   PUT "#"/;
 );
+$LABEL LABEL_SOLHFLH_ERROR
 
 * WAVEFLH:
+$ifi %GWAVE_DOL%==AAA_GGG $goto LABEL_GWAVE_ERROR
+
 ISCALAR1=ERRCOUNT2;
 LOOP(IA, LOOP(IGWAVE$(SMAX(Y,GKFX(Y,IA,IGWAVE))
 $ifi %BB2%==yes OR GDATA(IGWAVE,'GDKVARIABL')
@@ -483,6 +487,7 @@ IF((ISCALAR1 LT ERRCOUNT2),
   PUT "   CARD(S)*CARD(T) is " (CARD(S)*CARD(T)):4:0 ", if this number is much smaller than " (CARD(SSS)*CARD(TTT)):4:0 " this may be the explanation, e.g. if the S and T selected do not contain VAR_T values that are representative for the whole year."/;
   PUT "#"/;
 );
+$LABEL LABEL_GWAVE_ERROR
 
 $ontext
 

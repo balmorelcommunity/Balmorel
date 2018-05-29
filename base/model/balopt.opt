@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug yes
+$setglobal vqdebug
 *!option yes
 
 
@@ -90,8 +90,8 @@ $setglobal testbb1234
 * The following global variables concern the choice of details in some of the models.
 * Note that some of the choices are mutually dependent.
 
-* Disable investments in electricity transmission capacity
-$setglobal NOELTRANSINV
+* Permit investments in transmission capacity:
+$setglobal TransInvest yes
 *!option yes
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
@@ -120,18 +120,18 @@ $setglobal DFLEXQUANT
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH
+$setglobal COMBTECH yes
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN
+$Setglobal HYDROGEN    yes
 *!option yes
 
 * Use stepwise linear fuel prices
-$Setglobal STEPWISEPRICE
+$Setglobal STEPWISEPRICE  yes
 
 * Set a common maximum for fuels.
-$Setglobal LIMITSFORFUELS
+$Setglobal LIMITSFORFUELS    yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
@@ -170,7 +170,7 @@ $setglobal REShareEH
 *!notif %REShareE%==yes
 
 
-* Make investments in technologies only at specified capcities.
+* Make investments in technologies only at specified capacities.
 $setglobal AGKNDISC
 *!option yes
 *!onlyif %BB2%==yes
@@ -230,9 +230,6 @@ $setglobal DEFPCALIB
 $setglobal DHFPCALIB
 *!option yes
 
-* Permit investments in transmission capacity:
-$setglobal TransInvest yes
-*!option yes
 
 * In model Balbase4 (BB4) indicate the strategy for relative weighting of years
 $setglobal bb4weighty shareYYY
@@ -456,7 +453,7 @@ putclose fileMERGESAVEPOINTRESULTSbash;
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
-$setglobal MERGEDSAVEPOINTRESULTS2SQLITE
+$setglobal MERGEDSAVEPOINTRESULTS2SQLITE yes
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
 
@@ -561,6 +558,14 @@ $setglobal WNDFLH_DOL AAA
 *!option  AAA
 
 $setglobal SOLEFLH_DOL AAA
+*!option  AAA_GGG
+*!option  AAA
+
+$setglobal SOLHFLH_DOL AAA
+*!option  AAA_GGG
+*!option  AAA
+
+$setglobal GWAVE_DOL AAA
 *!option  AAA_GGG
 *!option  AAA
 

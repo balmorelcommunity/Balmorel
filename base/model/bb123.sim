@@ -516,7 +516,7 @@ $ifi %bb3%==yes * unless you need the associated marginal values:
 *-------------------------------------------------------------------------------
 
 * Disable investments in electricity transmission capacity
-$ifi %NOELTRANSINV%==yes IXKN(IRI,IRE)=NO;
+$ifi not %TransInvest%==yes IXKN(IRI,IRE)=NO;
 
 * Hydro storage:
 $ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/HYRSBB123sim2.inc";

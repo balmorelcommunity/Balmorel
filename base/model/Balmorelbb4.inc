@@ -301,8 +301,10 @@ $ifi %WNDFLH_DOL%==AAA                  PARAMETER WNDFLH(AAA)                   
 $ifi %WNDFLH_DOL%==AAA_GGG              PARAMETER WNDFLH(AAA,GGG)                  "Full load hours for wind power (hours)";
 $ifi %SOLEFLH_DOL%==AAA                 PARAMETER SOLEFLH(AAA)                     "Full load hours for solarE power (hours)";
 $ifi %SOLEFLH_DOL%==AAA_GGG             PARAMETER SOLEFLH(AAA,GGG)                 "Full load hours for solarE power (hours)";
-PARAMETER SOLHFLH(AAA)                 "Full load hours for solarH power (hours)";
-PARAMETER WAVEFLH(AAA)                 "Full load hours for wave power (hours)";
+$ifi %SOLHFLH_DOL%==AAA                 PARAMETER SOLHFLH(AAA)                     "Full load hours for solarH power (hours)";
+$ifi %SOLHFLH_DOL%==AAA_GGG             PARAMETER SOLHFLH(AAA,GGG)                 "Full load hours for solarH power (hours)";
+$ifi %GWAVE_DOL%==AAA                   PARAMETER WAVEFLH(AAA)                     "Full load hours for wave power";
+$ifi %GWAVE_DOL%==AAA_GGG               PARAMETER WAVEFLH(AAA,GGG)                 "Full load hours for wave power";
 PARAMETER HYRSMAXVOL_G(AAA,GGG)        "Reservoir capacity (MWh storage capacity / MW installed capacity)";
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)"Data for hydro with storage ( *)";
 PARAMETER TAX_FHO(YYY,AAA,G)           "Fuel taxes on heat-only units ()"; !! () todo
@@ -678,10 +680,12 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 * Internal parameters and settings:
 *------------------------------------------------------------------------------
 
-* Set GDCV value to one for IGBPR and IGHOB units so that their fuel consumption
+* Set GDCV value to one for IGBPR, IGHOB and IGSOLH units so that their fuel consumption
 * can be found using the same formula as for IGCND and IGEXT:
 GDATA(IGBPR,'GDCV') = 1;
 GDATA(IGHOB,'GDCV') = 1;
+GDATA(IGSOLH,'GDCV') = 1;
+
 
 
 * Specifying the relation between technology type and fuel type in IGF:
@@ -1975,7 +1979,10 @@ $include "../../base/addons/_hooks/qgkh_up.inc"
 
 QHYRRDISPATCH(IY411,IA,IGHYRR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHYRR) AND IWTRRRSUM(IA))..
 
-          VGE_T(IY411,IA,IGHYRR,IS3,T) =L=    !!?? Using =L= to have possibility for shoutdown (too much wind, technically or in relation to consumption)??
+          VGE_T(IY411,IA,IGHYRR,IS3,T)
+
+$ifi     %VRESHUTDOWN%==yes  =L=
+$ifi not %VRESHUTDOWN%==yes  =E=
          (WTRRRFLH(IA) * (
            GKFX(IY411,IA,IGHYRR)
         +  VGKN(IY411,IA,IGHYRR)$IAGKNY(IY411,IA,IGHYRR)
@@ -1988,7 +1995,11 @@ QHYRRDISPATCH(IY411,IA,IGHYRR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHYRR) AND IWTRRRS
 *---- Generation on windpower technologies -------------------------------------
 
 QWNDDISPATCH(IY411,IA,IGWND,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWND) AND IWND_SUMST(IA))..
-         VGE_T(IY411,IA,IGWND,IS3,T) =L=     !! Using =L= to have possibility for shoutdown (too much wind, technically or in relation to consumption)
+         VGE_T(IY411,IA,IGWND,IS3,T)
+
+$ifi     %VRESHUTDOWN%==yes  =L=
+$ifi not %VRESHUTDOWN%==yes  =E=
+
 $ifi %WNDFLH_DOL%==AAA         (WNDFLH(IA) * (
 $ifi %WNDFLH_DOL%==AAA_GGG     (WNDFLH(IA,IGWND) * (
             GKFX(IY411,IA,IGWND)
@@ -2003,7 +2014,10 @@ $ifi %WNDFLH_DOL%==AAA_GGG     (WNDFLH(IA,IGWND) * (
 QSOLEDISPATCH(IY411,IA,IGSOLE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLE) AND ISOLESUMST(IA))..
 
        VGE_T(IY411,IA,IGSOLE,IS3,T)
-       =L=
+
+$ifi     %VRESHUTDOWN%==yes  =L=
+$ifi not %VRESHUTDOWN%==yes  =E=
+
 $ifi %SOLEFLH_DOL%==AAA       (SOLEFLH(IA) * (
 $ifi %SOLEFLH_DOL%==AAA_GGG   (SOLEFLH(IA,IGSOLE) * (
             GKFX(IY411,IA,IGSOLE)
@@ -2013,8 +2027,14 @@ $ifi %SOLEFLH_DOL%==AAA_GGG   (SOLEFLH(IA,IGSOLE) * (
 ;
 
 QSOLHDISPATCH(IY411,IA,IGSOLH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLH) AND ISOLHSUMST(IA))..
-         VGH_T(IY411,IA,IGSOLH,IS3,T) =L=
-         (SOLHFLH(IA) *  (
+         VGH_T(IY411,IA,IGSOLH,IS3,T)
+
+$ifi     %VRESHUTDOWN%==yes  =L=
+$ifi not %VRESHUTDOWN%==yes  =E=
+
+$ifi %SOLHFLH_DOL%==AAA       (SOLHFLH(IA) * (
+$ifi %SOLHFLH_DOL%==AAA_GGG   (SOLHFLH(IA,IGSOLH) * (
+
           GKFX(IY411,IA,IGSOLH)
      + VGKN(IY411,IA,IGSOLH)$IAGKNY(IY411,IA,IGSOLH)
      + SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGSOLH))
@@ -2023,8 +2043,14 @@ QSOLHDISPATCH(IY411,IA,IGSOLH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLH) AND ISOLHSU
 
 * Wave technology
 QWAVEDISPATCH(IY411,IA,IGWAVE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWAVE) AND IWAVESUMST(IA))..
-         VGE_T(IY411,IA,IGWAVE,IS3,T) =L=
-         (WAVEFLH(IA) *  (
+         VGE_T(IY411,IA,IGWAVE,IS3,T)
+
+$ifi     %VRESHUTDOWN%==yes  =L=
+$ifi not %VRESHUTDOWN%==yes  =E=
+
+$ifi %GWAVE_DOL%==AAA       (WAVEFLH(IA) * (
+$ifi %GWAVE_DOL%==AAA_GGG   (WAVEFLH(IA,IGWAVE) * (
+
          GKFX(IY411,IA,IGWAVE)
      + VGKN(IY411,IA,IGWAVE)$IAGKNY(IY411,IA,IGWAVE)
      + SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGWAVE))
