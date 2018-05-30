@@ -18,6 +18,7 @@ $if not EXIST '../data/HYDROGEN_H2TOF.inc' $INCLUDE '../../base/data/HYDROGEN_H2
 %semislash%
 
 $onmulti
+*AGKN only defined because it needs the GDATA additions to be include beforehand
 $if     EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE         '../data/HYDROGEN_AGKN.inc';
 $if not EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE '../../base/data/HYDROGEN_AGKN.inc';
 
