@@ -231,18 +231,21 @@ VGE_T.FX(IA,IGHYRR,S,T)$IAGK_Y(IA,IGHYRR)=
            * WTRRRVAR_T(IA,S,T)) / IWTRRRSUM(IA))$IWTRRRSUM(IA);
 VGE_T.FX(IA,IGHYRR,S,T)$(NOT IWTRRRSUM(IA)) = 0;
 
-$ifi not %WNDSHUTDOWN%==yes VGE_T.FX(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA) * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
-$ifi     %WNDSHUTDOWN%==yes VGE_T.up(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA) * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi not %WNDSHUTDOWN%==yes $ifi %WNDFLH_DOL%==AAA     VGE_T.FX(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA)       * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi not %WNDSHUTDOWN%==yes $ifi %WNDFLH_DOL%==AAA_GGG VGE_T.FX(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA,IGWND) * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi     %WNDSHUTDOWN%==yes $ifi %WNDFLH_DOL%==AAA     VGE_T.up(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA)       * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi     %WNDSHUTDOWN%==yes $ifi %WNDFLH_DOL%==AAA_GGG VGE_T.up(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA,IGWND) * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
 VGE_T.FX(IA,IGWND,S,T)$(NOT IWND_SUMST(IA)) = 0;
 
 VGE_T.FX(IA,IGSOLE,S,T)$IAGK_Y(IA,IGSOLE) =
-    ((SOLEFLH(IA) * (IGKVACCTOY(IA,IGSOLE) + IGKFX_Y(IA,IGSOLE))
+$ifi %SOLEFLH_DOL%==AAA        ((SOLEFLH(IA)        * (IGKVACCTOY(IA,IGSOLE) + IGKFX_Y(IA,IGSOLE))
+$ifi %SOLEFLH_DOL%==AAA_GGG    ((SOLEFLH(IA,IGSOLE) * (IGKVACCTOY(IA,IGSOLE) + IGKFX_Y(IA,IGSOLE))
            * SOLE_VAR_T(IA,S,T)) / ISOLESUMST(IA))$ISOLESUMST(IA);
 VGE_T.FX(IA,IGSOLE,S,T)$(NOT ISOLESUMST(IA)) = 0;
 
 VGH_T.FX(IA,IGSOLH,S,T)$IAGK_Y(IA,IGSOLH) =
-    ((SOLHFLH(IA) * (IGKVACCTOY(IA,IGSOLH) + IGKFX_Y(IA,IGSOLH))
-           * SOLH_VAR_T(IA,S,T)) / ISOLHSUMST(IA))$ISOLHSUMST(IA);
+$ifi %SOLHFLH_DOL%==AAA        ((SOLHFLH(IA) * (IGKVACCTOY(IA,IGSOLH) + IGKFX_Y(IA,IGSOLH))* SOLH_VAR_T(IA,S,T)) / ISOLHSUMST(IA))$ISOLHSUMST(IA);
+$ifi %SOLHFLH_DOL%==AAA_GGG    ((SOLHFLH(IA,IGSOLH) * (IGKVACCTOY(IA,IGSOLH) + IGKFX_Y(IA,IGSOLH))* SOLH_VAR_T(IA,S,T)) / ISOLHSUMST(IA))$ISOLHSUMST(IA);
 VGH_T.FX(IA,IGSOLH,S,T)$(NOT ISOLHSUMST(IA)) = 0;
 
 * New hydro-run-of-river, wind power, solar power and heat can not generate if the production variation profile is not defined,
@@ -513,7 +516,7 @@ $ifi %bb3%==yes * unless you need the associated marginal values:
 *-------------------------------------------------------------------------------
 
 * Disable investments in electricity transmission capacity
-$ifi %NOELTRANSINV%==yes IXKN(IRI,IRE)=NO;
+$ifi not %TransInvest%==yes IXKN(IRI,IRE)=NO;
 
 * Hydro storage:
 $ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/HYRSBB123sim2.inc";
