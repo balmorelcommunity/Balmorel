@@ -15,9 +15,7 @@ POSITIVE VARIABLE VQHSTOVOLTS(Y,AAA,S,T,IPLUSMINUS)          "Feasibility in int
 POSITIVE VARIABLE VQHYRSSEQ(Y,AAA,S,IPLUSMINUS)              "Feasibility of QHYRSSEQ (MWh)";
 POSITIVE VARIABLE VQHYMAXG(Y,AAA,S,T,IPLUSMINUS)             "Feasibility of QHYMAXG (MW)";
 *POSITIVE VARIABLE VGE2LEVEL(Y,AAA,G,S,DAYTYPE)              "Average load of slowly regulating production (MW)";
-POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)                      "Accumulated new investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
-POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)                    "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
-POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)                "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
+
 *$ifi %BB4%==yes   POSITIVE VARIABLE VXKACCUMGROSS(Y,IRRRE,IRRRI) "RELEVANT? Accumulated new transmission investments this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
 
 POSITIVE VARIABLE VQGKNACCUMNET(Y,AAA,G,IPLUSMINUS)          "Feasibility in electricity generation capacity accumulation (MW)";

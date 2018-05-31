@@ -133,6 +133,7 @@ ALIAS (FFF,IFFFALIAS);
 ALIAS (FFF,IFFFALIAS2);
 
 * Duplication of sets for seasons and hours:
+ALIAS (YYY,IYYYALIAS);
 ALIAS (Y,IYALIAS);
 ALIAS (S,ISALIAS,IS3LOOPSET);
 ALIAS (T,ITALIAS);
@@ -296,10 +297,14 @@ $ifi %GEQF_DOL%==CCCRRRAAA_FFF          PARAMETER GEQF(CCCRRRAAA,FFF)           
 $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF      PARAMETER GEQF(YYY,CCCRRRAAA,FFF)          "Exact annual fuel use by year, geography and fuel and (GJ)";
 PARAMETER WTRRSFLH(AAA)                "Full load hours for hydro reservoir plants (hours)";
 PARAMETER WTRRRFLH(AAA)                "Full load hours for hydro run-of-river plants (hours)";
-PARAMETER WNDFLH(AAA)                  "Full load hours for wind power (hours)";
-PARAMETER SOLEFLH(AAA)                 "Full load hours for solarE power (hours)";
-PARAMETER SOLHFLH(AAA)                 "Full load hours for solarH power (hours)";
-PARAMETER WAVEFLH(AAA)                 "Full load hours for wave power (hours)";
+$ifi %WNDFLH_DOL%==AAA                  PARAMETER WNDFLH(AAA)                      "Full load hours for wind power (hours)";
+$ifi %WNDFLH_DOL%==AAA_GGG              PARAMETER WNDFLH(AAA,GGG)                  "Full load hours for wind power (hours)";
+$ifi %SOLEFLH_DOL%==AAA                 PARAMETER SOLEFLH(AAA)                     "Full load hours for solarE power (hours)";
+$ifi %SOLEFLH_DOL%==AAA_GGG             PARAMETER SOLEFLH(AAA,GGG)                 "Full load hours for solarE power (hours)";
+$ifi %SOLHFLH_DOL%==AAA                 PARAMETER SOLHFLH(AAA)                     "Full load hours for solarH power (hours)";
+$ifi %SOLHFLH_DOL%==AAA_GGG             PARAMETER SOLHFLH(AAA,GGG)                 "Full load hours for solarH power (hours)";
+$ifi %GWAVE_DOL%==AAA                   PARAMETER WAVEFLH(AAA)                     "Full load hours for wave power";
+$ifi %GWAVE_DOL%==AAA_GGG               PARAMETER WAVEFLH(AAA,GGG)                 "Full load hours for wave power";
 PARAMETER HYRSMAXVOL_G(AAA,GGG)        "Reservoir capacity (MWh storage capacity / MW installed capacity)";
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)"Data for hydro with storage ( *)";
 PARAMETER TAX_FHO(YYY,AAA,G)           "Fuel taxes on heat-only units ()"; !! () todo
@@ -598,7 +603,7 @@ DH_VAR_T(AAA,DHUSER,SSS,TTT)$(not IA(AAA)) = 0;
 X3FX_VAR_T(RRR,SSS,TTT)$(not IR(RRR)) = 0;
 WND_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 SOLE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
-SOLE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
+SOLH_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 WAVE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 WTRRRVAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 
@@ -675,10 +680,12 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 * Internal parameters and settings:
 *------------------------------------------------------------------------------
 
-* Set GDCV value to one for IGBPR and IGHOB units so that their fuel consumption
+* Set GDCV value to one for IGBPR, IGHOB and IGSOLH units so that their fuel consumption
 * can be found using the same formula as for IGCND and IGEXT:
 GDATA(IGBPR,'GDCV') = 1;
 GDATA(IGHOB,'GDCV') = 1;
+GDATA(IGSOLH,'GDCV') = 1;
+
 
 
 * Specifying the relation between technology type and fuel type in IGF:
@@ -997,7 +1004,9 @@ POSITIVE VARIABLE VESTOVOLT(Y,AAA,S,T)             "Electricity storage contents
 POSITIVE VARIABLE VESTOVOLTS(Y,AAA,S,T)            "Electricity storage contents at beginning of time segment (MWh)";
 POSITIVE VARIABLE VHSTOVOLT(Y,AAA,S,T)             "Heat storage contents at beginning of time segment (MWh)";
 POSITIVE VARIABLE VHSTOVOLTS(Y,AAA,S,T)            "Heat storage contents at beginning of time segment (MWh)";
-
+POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)                      "Accumulated new investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
+POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)                    "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
+POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)                "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
 
 
 *-------------------------------------------------------------------------------
@@ -1170,11 +1179,11 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 * Operation and maintainance cost:
 
-   + SUM(IAGK_HASORPOT(Y,IA,IGE), GOMVCOST(IA,IGE) * SUM((IS3,T), IHOURSINST(IS3,T)*
-     VGE_T(Y,IA,IGE,IS3,T)))
+   + SUM(IAGK_HASORPOT(Y,IA,IGKE), GOMVCOST(IA,IGKE) * SUM((IS3,T), IHOURSINST(IS3,T)*
+     VGE_T(Y,IA,IGKE,IS3,T)))
 
-   + SUM(IAGK_HASORPOT(Y,IA,IGNOTETOH(IGH)), GOMVCOST(IA,IGNOTETOH) * SUM((IS3,T), IHOURSINST(IS3,T)*
-     GDATA(IGNOTETOH,'GDCV')*(VGH_T(Y,IA,IGNOTETOH,IS3,T))))
+   + SUM(IAGK_HASORPOT(Y,IA,IGKH), GOMVCOST(IA,IGKH) * SUM((IS3,T), IHOURSINST(IS3,T)*
+     GDATA(IGKH,'GDCV')*(VGH_T(Y,IA,IGKH,IS3,T))))
 
     + IOF1000*(SUM((IA,G)$IAGK_HASORPOT(Y,IA,G),(VGKNACCUMNET(Y,IA,G) + GKFX(Y,IA,G))*GOMFCOST(IA,G)))
 
@@ -1665,7 +1674,7 @@ QESTOVOLTLIMS(IY411,IA,S,T)$(SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),1))..
 QKEFUELC(IY411,C,FFF)$FKPOT(C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), VGKN(IY411,IA,G))
-      +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
       =L=  FKPOT(C,FFF)
 $include "../../base/addons/_hooks/qkefuelc.inc"
 ;
@@ -1674,7 +1683,7 @@ $include "../../base/addons/_hooks/qkefuelc.inc"
 QKEFUELR(IY411,IR,FFF)$FKPOT(IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), VGKN(IY411,IA,G))
-      +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
       =L=  FKPOT(IR,FFF)
 $include "../../base/addons/_hooks/qkefuelr.inc"
 ;
@@ -1682,7 +1691,7 @@ $include "../../base/addons/_hooks/qkefuelr.inc"
 QKEFUELA(IY411,IA,FFF)$FKPOT(IA,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM(G$(IAGKFX(IY411,IA,G) AND IGF(G,FFF)), GKFX(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$IGF(G,FFF), VGKN(IY411,IA,G))
-      +SUM(IAGKNY(IY411,IA,G)$IGF(G,FFF), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
       =L=  FKPOT(IA,FFF)
 $include "../../base/addons/_hooks/qkefuela.inc"
 ;
@@ -1760,44 +1769,44 @@ QGEQAF(IY411,IA,FFF)$IGEQF(IY411,IA,FFF)..
 QKMINFC(IY411,C,FFF)$FKMIN(IY411,C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), VGKN(IY411,IA,G))
-      +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
       =G=  FKMIN(IY411,C,FFF);
 
 QKMAXFC(IY411,C,FFF)$FKMAX(IY411,C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), VGKN(IY411,IA,G))
-      +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
       =L=  FKMAX(IY411,C,FFF);
 
 QKEQFC(IY411,C,FFF)$FKEQ(IY411,C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), VGKN(IY411,IA,G))
-      +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
       =E=  FKEQ(IY411,C,FFF);
 
 QKMINFR(IY411,IR,FFF)$FKMIN(IY411,IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), VGKN(IY411,IA,G))
-      +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
       =G=  FKMIN(IY411,IR,FFF);
 
 QKMAXFR(IY411,IR,FFF)$FKMAX(IY411,IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), VGKN(IY411,IA,G))
-      +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
       =L=  FKMAX(IY411,IR,FFF);
 
 QKEQFR(IY411,IR,FFF)$FKEQ(IY411,IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
       +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), VGKN(IY411,IA,G))
-      +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
       =E=  FKEQ(IY411,IR,FFF);
 
 QKMINFNA(IY411,FFF)$FKMINNA(IY411,FFF).. !! 0 implies no restriction, "EPS" implies zero MW.
      SUM(C,
           SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
            +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), VGKN(IY411,IA,G))
-           +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+           +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
          )
       =G=  FKMINNA(IY411,FFF);
 
@@ -1806,7 +1815,7 @@ QKMAXFNA(IY411,FFF)$FKMAXNA(IY411,FFF).. !! 0 implies no restriction, "EPS" impl
      SUM(C,
          (  SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
             +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), VGKN(IY411,IA,G))
-            +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+            +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
          ))
       =L=  FKMAXNA(IY411,FFF);
 
@@ -1814,7 +1823,7 @@ QKEQFNA(IY411,FFF)$FKEQNA(IY411,FFF).. !! 0 implies no restriction, "EPS" implie
      SUM(C,
          (  SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
             +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), VGKN(IY411,IA,G))
-            +SUM(IAGKNY(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
+            +SUM(IAGK_HASORPOT(IY411,IA,G)$(IAGKN(IA,G) AND IGF(G,FFF) AND ICA(C,IA)), SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,G)))
          ))
       =E=  FKEQNA(IY411,FFF);
 
@@ -1838,10 +1847,10 @@ $include "../../base/addons/_hooks/qxk_up.inc"
 * Note that it is assumed that there are no endogenous decommissioning
 * of previous endogenous investment (cf. QGKACCUMNET).
 
-QXKNACCUMNET(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
+QXKNACCUMNET(IY411,IRE,IRI)$SUM(Y,IXKN(Y,IRE,IRI))..
   VXKNACCUMNET(IY411,IRE,IRI)  !! End of this year's VXKNACCUMNET (available at beginning of next year)'
      =E=
-  SUM(IY402$IY411PREVY(IY411,IY402), VXKNACCUMNET(IY402,IRE,IRI)) + VXKN(IY411,IRE,IRI)  !! VXKNVACCUMNET available at end of previous(i.e., start of this) year PLUS investment during this year
+  SUM(IY402$IY411PREVY(IY411,IY402), VXKNACCUMNET(IY402,IRE,IRI)) + VXKN(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)  !! VXKNVACCUMNET available at end of previous(i.e., start of this) year PLUS investment during this year
 $include "../../base/addons/_hooks/qxknaccumnet.inc"
 ;
 
@@ -1919,8 +1928,11 @@ QGKNACCUMNET(IY411,IA,IGKFIND)$IAGKN(IA,IGKFIND)..
 * VGKVACCUMNET available at end of previous (i.e., start of this) year PLUS investment during this year (missing: MINUS decommissioning due to lifetime expirence):
    SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGKFIND))$(NOT IYFIRST(IY411))
  + VGKN(IY411,IA,IGKFIND)$IAGKNY(IY411,IA,IGKFIND)
-$include "../../base/addons/_hooks/qgknaccumnet.inc"
-;
+
+*Decomissioning of endogenous capacities
+-SUM(Y$(YVALUE(Y)< YVALUE(IY411)),VGKN(Y,IA,IGKFIND)*DECOM_G(Y,IY411,IA,IGKFIND))
+
+$include "../../base/addons/_hooks/qgknaccumnet.inc";
 
 *-------------------------------------------------------------------------------
 *---------- Capacity constraint on technologies wiht endogenous investment -----
@@ -1985,7 +1997,10 @@ QGKH_LO(IY411,IA,IGDISPATCH(IGKHNOSTO),FFF,IS3,T)$(IAGKN(IA,IGKHNOSTO) and IGF(I
 
 QHYRRDISPATCH(IY411,IA,IGHYRR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHYRR) AND IWTRRRSUM(IA))..
 
-          VGE_T(IY411,IA,IGHYRR,IS3,T) =L=    !!?? Using =L= to have possibility for shoutdown (too much wind, technically or in relation to consumption)??
+          VGE_T(IY411,IA,IGHYRR,IS3,T)
+
+$ifi     %VRESHUTDOWN%==yes  =L=
+$ifi not %VRESHUTDOWN%==yes  =E=
          (WTRRRFLH(IA) * (
            GKFX(IY411,IA,IGHYRR)
         +  VGKN(IY411,IA,IGHYRR)$IAGKNY(IY411,IA,IGHYRR)
@@ -1998,8 +2013,13 @@ QHYRRDISPATCH(IY411,IA,IGHYRR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHYRR) AND IWTRRRS
 *---- Generation on windpower technologies -------------------------------------
 
 QWNDDISPATCH(IY411,IA,IGWND,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWND) AND IWND_SUMST(IA))..
-         VGE_T(IY411,IA,IGWND,IS3,T) =L=     !! Using =L= to have possibility for shoutdown (too much wind, technically or in relation to consumption)
-         (WNDFLH(IA) * (
+         VGE_T(IY411,IA,IGWND,IS3,T)
+
+$ifi     %VRESHUTDOWN%==yes  =L=
+$ifi not %VRESHUTDOWN%==yes  =E=
+
+$ifi %WNDFLH_DOL%==AAA         (WNDFLH(IA) * (
+$ifi %WNDFLH_DOL%==AAA_GGG     (WNDFLH(IA,IGWND) * (
             GKFX(IY411,IA,IGWND)
          + VGKN(IY411,IA,IGWND)$IAGKNY(IY411,IA,IGWND)
          + SUM(IY402$IY411PREVY(IY411,IY402),VGKNACCUMNET(IY402,IA,IGWND))
@@ -2012,8 +2032,12 @@ QWNDDISPATCH(IY411,IA,IGWND,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWND) AND IWND_SUMST
 QSOLEDISPATCH(IY411,IA,IGSOLE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLE) AND ISOLESUMST(IA))..
 
        VGE_T(IY411,IA,IGSOLE,IS3,T)
-       =L=
-       (SOLEFLH(IA) * (
+
+$ifi     %VRESHUTDOWN%==yes  =L=
+$ifi not %VRESHUTDOWN%==yes  =E=
+
+$ifi %SOLEFLH_DOL%==AAA       (SOLEFLH(IA) * (
+$ifi %SOLEFLH_DOL%==AAA_GGG   (SOLEFLH(IA,IGSOLE) * (
             GKFX(IY411,IA,IGSOLE)
          + VGKN(IY411,IA,IGSOLE)$IAGKNY(IY411,IA,IGSOLE)
          + SUM(IY402$IY411PREVY(IY411,IY402),VGKNACCUMNET(IY402,IA,IGSOLE))
@@ -2021,8 +2045,14 @@ QSOLEDISPATCH(IY411,IA,IGSOLE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLE) AND ISOLESU
 ;
 
 QSOLHDISPATCH(IY411,IA,IGSOLH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLH) AND ISOLHSUMST(IA))..
-         VGH_T(IY411,IA,IGSOLH,IS3,T) =L=
-         (SOLHFLH(IA) *  (
+         VGH_T(IY411,IA,IGSOLH,IS3,T)
+
+$ifi     %VRESHUTDOWN%==yes  =L=
+$ifi not %VRESHUTDOWN%==yes  =E=
+
+$ifi %SOLHFLH_DOL%==AAA       (SOLHFLH(IA) * (
+$ifi %SOLHFLH_DOL%==AAA_GGG   (SOLHFLH(IA,IGSOLH) * (
+
           GKFX(IY411,IA,IGSOLH)
      + VGKN(IY411,IA,IGSOLH)$IAGKNY(IY411,IA,IGSOLH)
      + SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGSOLH))
@@ -2031,8 +2061,14 @@ QSOLHDISPATCH(IY411,IA,IGSOLH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLH) AND ISOLHSU
 
 * Wave technology
 QWAVEDISPATCH(IY411,IA,IGWAVE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWAVE) AND IWAVESUMST(IA))..
-         VGE_T(IY411,IA,IGWAVE,IS3,T) =L=
-         (WAVEFLH(IA) *  (
+         VGE_T(IY411,IA,IGWAVE,IS3,T)
+
+$ifi     %VRESHUTDOWN%==yes  =L=
+$ifi not %VRESHUTDOWN%==yes  =E=
+
+$ifi %GWAVE_DOL%==AAA       (WAVEFLH(IA) * (
+$ifi %GWAVE_DOL%==AAA_GGG   (WAVEFLH(IA,IGWAVE) * (
+
          GKFX(IY411,IA,IGWAVE)
      + VGKN(IY411,IA,IGWAVE)$IAGKNY(IY411,IA,IGWAVE)
      + SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGWAVE))

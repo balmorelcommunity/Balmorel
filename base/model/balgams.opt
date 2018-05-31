@@ -119,7 +119,7 @@ option MIP= CPLEX
 
 * ITERLIM specifies the maximum number of iteration by the solver
 * Default value is 2e9.
-OPTIONS ITERLIM=2000000;
+OPTIONS ITERLIM=2000000000;
 
 * OPTCR controls the precision of the solution. If optcr is greater than 0,
 * a good, not necessarily optimal solution will be accepted.
@@ -128,7 +128,7 @@ option optcr = 0.000001
 
 * RESLIM specifies the maximum time (seconds) that the computer can run during execution of a solver.
 * Default value is 1000.
-option RESLIM = 100000
+option RESLIM = 1209600
 
 *-------------------------------------------------------------------------------
 * Solvers may be controlled by solver specific options in a solver option file,

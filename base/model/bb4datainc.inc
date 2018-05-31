@@ -417,6 +417,11 @@ $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
 $if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
 %semislash%;
 
+PARAMETER DECOM_G(YYY,YYY,AAA,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERATION INVESTMENTS' %semislash%
+$if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
+$if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
+%semislash%;
+
 PARAMETER FMAXINVEST(CCC,FFF)   'Maximum investment (MW) by fuel type for each year simulated'    %semislash%
 $if     EXIST '../data/FMAXINVEST.inc' $INCLUDE      '../data/FMAXINVEST.inc';
 $if not EXIST '../data/FMAXINVEST.inc' $INCLUDE '../../base/data/FMAXINVEST.inc';
@@ -539,23 +544,27 @@ $if     EXIST '../data/WTRRRFLH.inc' $INCLUDE      '../data/WTRRRFLH.inc';
 $if not EXIST '../data/WTRRRFLH.inc' $INCLUDE '../../base/data/WTRRRFLH.inc';
 %semislash%;
 
-PARAMETER WNDFLH(AAA)    'Full load hours for wind power (hours)'  %semislash%
+$ifi %WNDFLH_DOL%==AAA               PARAMETER WNDFLH(AAA)         'Full load hours for wind power (hours)'  %semislash%
+$ifi %WNDFLH_DOL%==AAA_GGG           PARAMETER WNDFLH(AAA,GGG)     'Full load hours for wind power (hours)'  %semislash%
 $if     EXIST '../data/WNDFLH.inc' $INCLUDE      '../data/WNDFLH.inc';
 $if not EXIST '../data/WNDFLH.inc' $INCLUDE '../../base/data/WNDFLH.inc';
 %semislash%;
 
-PARAMETER SOLEFLH(AAA)    'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLEFLH_DOL%==AAA              PARAMETER SOLEFLH(AAA)        'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLEFLH_DOL%==AAA_GGG          PARAMETER SOLEFLH(AAA,GGG)    'Full load hours for solar power (hours)'  %semislash%
 $if     EXIST '../data/SOLEFLH.inc' $INCLUDE      '../data/SOLEFLH.inc';
 $if not EXIST '../data/SOLEFLH.inc' $INCLUDE '../../base/data/SOLEFLH.inc';
 %semislash%;
 
 
-PARAMETER SOLHFLH(AAA)    'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLHFLH_DOL%==AAA       PARAMETER SOLHFLH(AAA)        'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLHFLH_DOL%==AAA_GGG   PARAMETER SOLHFLH(AAA,GGG)    'Full load hours for solar power (hours)'  %semislash%
 $if     EXIST '../data/SOLHFLH.inc' $INCLUDE      '../data/SOLHFLH.inc';
 $if not EXIST '../data/SOLHFLH.inc' $INCLUDE '../../base/data/SOLHFLH.inc';
 %semislash%;
 
-PARAMETER WAVEFLH(AAA)    'Full load hours for wave power (hours)'  %semislash%
+$ifi %GWAVE_DOL%==AAA          PARAMETER WAVEFLH(AAA)        'Full load hours for wave power (hours)'  %semislash%
+$ifi %GWAVE_DOL%==AAA_GGG      PARAMETER WAVEFLH(AAA,GGG)    'Full load hours for wave power (hours)'  %semislash%
 $if     EXIST '../data/WAVEFLH.inc' $INCLUDE      '../data/WAVEFLH.inc';
 $if not EXIST '../data/WAVEFLH.inc' $INCLUDE '../../base/data/WAVEFLH.inc';
 %semislash%;
@@ -600,6 +609,11 @@ $if     EXIST '../data/TAX_DH.inc' $INCLUDE      '../data/TAX_DH.inc';
 $if not EXIST '../data/TAX_DH.inc' $INCLUDE '../../base/data/TAX_DH.inc';
 %semislash%;
 
+SCALAR DISCOUNTRATE 'Discount rate by country (fraction)' !! Hans "by Country"?
+$if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.inc';
+$if not EXIST '../data/DISCOUNTRATE.inc' $INCLUDE '../../base/data/DISCOUNTRATE.inc';
+%semislash%;
+
 PARAMETER ANNUITYCG(CCC,GGG)   'Transforms investment in transmission lines into annual payment (fraction)'  %semislash%
 $if     EXIST '../data/ANNUITYCG.inc' $INCLUDE         '../data/ANNUITYCG.inc';
 $if not EXIST '../data/ANNUITYCG.inc' $INCLUDE '../../base/data/ANNUITYCG.inc';
@@ -610,10 +624,6 @@ $if     EXIST '../data/ANNUITYCX.inc' $INCLUDE         '../data/ANNUITYCX.inc';
 $if not EXIST '../data/ANNUITYCX.inc' $INCLUDE '../../base/data/ANNUITYCX.inc';
 %semislash%;
 
-SCALAR DISCOUNTRATE 'Discount rate by country (fraction)' !! Hans "by Country"?
-$if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.inc';
-$if not EXIST '../data/DISCOUNTRATE.inc' $INCLUDE '../../base/data/DISCOUNTRATE.inc';
-%semislash%;
 
 PARAMETER GINVCOST(AAA,GGG)    'Investment cost for new technology (MMoney/MW)'  %semislash%
 $if     EXIST '../data/GINVCOST.inc' $INCLUDE         '../data/GINVCOST.inc';

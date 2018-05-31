@@ -25,6 +25,15 @@ VGKN.L(Y,IA,G)        = 0;
 VXKN.l(Y,IR,IRI)      = 0;
 VDECOM.l(Y,IA,G)      = 0;
 
+$IF((%investmentfromyear%== yes),
+
+         VGKN.UP(Y,IA,G)$( YVALUE(Y) le (GINVESTSTART-1) )=EPS;
+         VXKN.UP(Y,IR,IRI)$( YVALUE(Y) le (XINVESTSTART-1) )=EPS;
+         VDECOM.UP(Y,IA,G)$( YVALUE(Y) le (GINVESTSTART-1) )=EPS;
+ ;
+
+
+
 * Set the relative weight of the individual years in Y.
 * Two ideas implemented here. Used according to option bb4weighty.
 * Simple idea is to give equal weights:
@@ -174,19 +183,18 @@ LOOP((FFF,G)$IGF(G,FFF),
 IAGKNY(Y,IA,G) = IAGKN(IA,G); !!1st definition for correct assignment of IAGK_HASORPOT
 IAGKNY(Y,IA,G)$(YVALUE(Y) LT GDATA(G,'GDFROMYEAR'))=NO; !!1st definition for correct assignment of IAGK_HASORPOT
 IAGK_HASORPOT(Y,IA,G) = NO;
-IAGK_HASORPOT(IY411,IA,G) = YES$GKFX(IY411,IA,G);       display "first assign ",IAGK_HASORPOT  ;
+IAGK_HASORPOT(Y,IA,G) = YES$GKFX(Y,IA,G);       display "first assign ",IAGK_HASORPOT  ;
 IAGK_HASORPOT(Y,IA,G)$IAGKNY(Y,IA,G) = YES;     display "last assign ",IAGK_HASORPOT  ;
 
-* In contrast to IAGKN, IAGKNY depends on the year (viz., according to GDFROMYEAR).
-* No new capacity if capacity is not yet available this year (IAGKNY only):
-IAGKNY(Y,IA,G) = NO; !!reset of set
-IAGKNY(IY411,IA,G) = IAGKN(IA,G);
-IAGKNY(IY411,IA,G)$((YVALUE(IY411) LT GDATA(G,'GDFROMYEAR')) OR (YVALUE(IY411) GT GDATA(G,'GDLASTYEAR')))=NO;  !! Hans
+* In contrast to IAGKN, IAGKNY depends on the year (viz., according to GDFROMYEAR and until GDLASTYEAR)
+* Correction of IAGKNY depending on GDLASTYEAR
+IAGKNY(Y,IA,G)$((YVALUE(Y) GT GDATA(G,'GDLASTYEAR')) AND (GDATA(G,'GDLASTYEAR') GT 0))=NO;  !! Hans
 
 * TODO: consider if necessary and/or expedient to set .FX=0 for tech in IAGKN but not in IAGKNY (such tech presently appear in QOBJ, QHEQ and QEEQ)
 
 *----COMBTECH----
-$ifi %COMBTECH%==yes IAGK_HASORPOT(IY411,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(IY411,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
+$ifi %COMBTECH%==yes IAGK_HASORPOT(Y,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(Y,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
+
 *---ENDOF COMBTECH
 *  QHYRSSEQ(IA,S)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS) or IAGKN(IA,IGHYRS))..
 *P_QHYRSSEQ(iA,S)=0;
@@ -274,20 +282,29 @@ $ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_3.gdx" IBB1234_VG
 
 * Existing windpower, hydro-run-of-river, solarpower, solarheat and wavepower can not be dispatched.
 * Complement to equation QWNDDISPATCH for the case with no endogenous IGWND investments.
-VGE_T.FX(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT IAGKN(IA,IGWND))) =
-   ((WNDFLH(IA) * GKFX(IY411,IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT IAGKN(IA,IGWND))) =
+$ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT IAGKN(IA,IGWND))) =
+$ifi %WNDFLH_DOL%==AAA        ((WNDFLH(IA)       * GKFX(IY411,IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi %WNDFLH_DOL%==AAA_GGG    ((WNDFLH(IA,IGWND) * GKFX(IY411,IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
 * Complement to equation QHYRRDISPATCH for the case with no endogenous IGHYRR investments.
-VGE_T.FX(IY411,IA,IGHYRR,S,T)$(GKFX(IY411,IA,IGHYRR) AND (NOT IAGKN(IA,IGHYRR))) =
+$ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGHYRR,S,T)$(GKFX(IY411,IA,IGHYRR) AND (NOT IAGKN(IA,IGHYRR))) =
+$ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGHYRR,S,T)$(GKFX(IY411,IA,IGHYRR) AND (NOT IAGKN(IA,IGHYRR))) =
    ((WTRRRFLH(IA)* GKFX(IY411,IA,IGHYRR) * IGKRATE(IA,IGHYRR,S,T) * WTRRRVAR_T(IA,S,T)) / IWTRRRSUM(IA))$IWTRRRSUM(IA);
 * Complement to equation QSOLEDISPATCH for the case with no endogenous IGSOLE investments.
-VGE_T.FX(IY411,IA,IGSOLE,S,T)$(GKFX(IY411,IA,IGSOLE) AND (NOT IAGKN(IA,IGSOLE))) =
-   ((SOLEFLH(IA) * GKFX(IY411,IA,IGSOLE) * IGKRATE(IA,IGSOLE,S,T) * SOLE_VAR_T(IA,S,T)) / ISOLESUMST(IA))$ISOLESUMST(IA);
+$ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGSOLE,S,T)$(GKFX(IY411,IA,IGSOLE) AND (NOT IAGKN(IA,IGSOLE))) =
+$ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGSOLE,S,T)$(GKFX(IY411,IA,IGSOLE) AND (NOT IAGKN(IA,IGSOLE))) =
+$ifi %SOLEFLH_DOL%==AAA       ((SOLEFLH(IA)        * GKFX(IY411,IA,IGSOLE) * IGKRATE(IA,IGSOLE,S,T) * SOLE_VAR_T(IA,S,T)) / ISOLESUMST(IA))$ISOLESUMST(IA);
+$ifi %SOLEFLH_DOL%==AAA_GGG   ((SOLEFLH(IA,IGSOLE) * GKFX(IY411,IA,IGSOLE) * IGKRATE(IA,IGSOLE,S,T) * SOLE_VAR_T(IA,S,T)) / ISOLESUMST(IA))$ISOLESUMST(IA);
 * Complement to equation QSOLHDISPATCH for the case with no endogenous IGSOLH investments.
-VGH_T.FX(IY411,IA,IGSOLH,S,T)$(GKFX(IY411,IA,IGSOLH) AND (NOT IAGKN(IA,IGSOLH))) =
-   ((SOLHFLH(IA) * GKFX(IY411,IA,IGSOLH) * IGKRATE(IA,IGSOLH,S,T) * SOLH_VAR_T(IA,S,T)) / ISOLHSUMST(IA))$ISOLHSUMST(IA);
+$ifi not %VRESHUTDOWN%==yes VGH_T.FX(IY411,IA,IGSOLH,S,T)$(GKFX(IY411,IA,IGSOLH) AND (NOT IAGKN(IA,IGSOLH))) =
+$ifi %VRESHUTDOWN%==yes     VGH_T.UP(IY411,IA,IGSOLH,S,T)$(GKFX(IY411,IA,IGSOLH) AND (NOT IAGKN(IA,IGSOLH))) =
+$ifi %SOLHFLH_DOL%==AAA   ((SOLHFLH(IA) * GKFX(IY411,IA,IGSOLH) * IGKRATE(IA,IGSOLH,S,T) * SOLH_VAR_T(IA,S,T)) / ISOLHSUMST(IA))$ISOLHSUMST(IA);
+$ifi %SOLHFLH_DOL%==AAA_GGG   ((SOLHFLH(IA,IGSOLH) * GKFX(IY411,IA,IGSOLH) * IGKRATE(IA,IGSOLH,S,T) * SOLH_VAR_T(IA,S,T)) / ISOLHSUMST(IA))$ISOLHSUMST(IA);
 * Complement to equation QWAVEDISPATCH for the case with no endogenous IGWAVE investments.
-VGE_T.FX(IY411,IA,IGWAVE,S,T)$(GKFX(IY411,IA,IGWAVE) AND (NOT IAGKN(IA,IGWAVE))) =
-   ((WAVEFLH(IA) * GKFX(IY411,IA,IGWAVE) * IGKRATE(IA,IGWAVE,S,T) * WAVE_VAR_T(IA,S,T)) / IWAVESUMST(IA))$IWAVESUMST(IA);
+$ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGWAVE,S,T)$(GKFX(IY411,IA,IGWAVE) AND (NOT IAGKN(IA,IGWAVE))) =
+$ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGWAVE,S,T)$(GKFX(IY411,IA,IGWAVE) AND (NOT IAGKN(IA,IGWAVE))) =
+$ifi %GWAVE_DOL%==AAA   ((WAVEFLH(IA) * GKFX(IY411,IA,IGWAVE) * IGKRATE(IA,IGWAVE,S,T) * WAVE_VAR_T(IA,S,T)) / IWAVESUMST(IA))$IWAVESUMST(IA);
+$ifi %GWAVE_DOL%==AAA_GGG   ((WAVEFLH(IA,IGWAVE) * GKFX(IY411,IA,IGWAVE) * IGKRATE(IA,IGWAVE,S,T) * WAVE_VAR_T(IA,S,T)) / IWAVESUMST(IA))$IWAVESUMST(IA);
 
 $ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
 $ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
@@ -317,7 +334,7 @@ VGKNACCUMGROSS.FX(IY411,IA,G)$(NOT IAGKN(IA,G))=0;
 * Update IXKE_HASORPOT based on exogenously given or potential investment
 
 IXK_HASORPOT(Y,IRE,IRI) = NO;
-IXK_HASORPOT(IY411,IRE,IRI) = YES$XKFX(IY411,IRE,IRI);
+IXK_HASORPOT(Y,IRE,IRI) = YES$XKFX(Y,IRE,IRI);
 IXKN(Y,IRE,IRI) = NO;
 $ifi %TransInvest%==yes IXKN(Y,IRE,IRI) = YES$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF));
 $ifi %TransInvest%==yes IXK_HASORPOT(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI) = YES;
@@ -346,7 +363,7 @@ LOOP(Y$(ORD(Y) GT 1),
 * if the value is EPS then transmission investment is possible but with no associated investment cost.
 * If a real non-zero value is fiven then investment is possible with that cost.
 $ifi %TransInvest%==yes IXKN(Y,IRE,IRI)=NO; !!Reset of set
-$ifi %TransInvest%==yes IXKN(IY411,IRE,IRI) = YES$(XINVCOST(IY411,IRE,IRI) AND (XINVCOST(IY411,IRE,IRI) LT INF));
+$ifi %TransInvest%==yes IXKN(Y,IRE,IRI) = YES$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF));
 
 
 
@@ -354,7 +371,7 @@ $ifi %TransInvest%==yes IXKN(IY411,IRE,IRI) = YES$(XINVCOST(IY411,IRE,IRI) AND (
 * Complement to equation QXK_UP for the case with no endogenous transmission investments.
 $ifi not %TransInvest%==yes VX_T.UP(IY411,IRE,IRI,S,T)$IXK_HASORPOT(IY411,IRE,IRI) = XKFX(IY411,IRE,IRI)*IXKRATE(IRE,IRI,S,T);
 
-VXKNACCUMNET.FX(IY411,IRE,IRI)$(NOT IXKN(IY411,IRE,IRI)) = 0;
+VXKNACCUMNET.FX(IY411,IRE,IRI)$(NOT SUM(Y,IXKN(Y,IRE,IRI))) = 0;
 VXKN.FX(IY411,IRE,IRI)$(NOT IXKN(IY411,IRE,IRI))=0;
 
 
@@ -403,11 +420,10 @@ OPTION Savepoint=1;
 $ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
 
 
-
 $ifi not %SOLVEMIP%==yes SOLVE BALBASE4 USING LP  MINIMIZING VOBJ;  !! =====================
 $ifi     %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;  !! =====================
 
-$include "..\..\base\addons\_hooks\solveend.inc"
+$include "../../base/addons/_hooks/solveend.inc"
 *-------------------------------------------------------------------------------
 * End: SOLVE
 *-------------------------------------------------------------------------------
