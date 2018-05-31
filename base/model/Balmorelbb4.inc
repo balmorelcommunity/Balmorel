@@ -694,12 +694,11 @@ IGF(G,FFF)=YES$(GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'));
 
 PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 * Transfer data from data file and insert default 1 as needed (Eps1-convention):
-
 * Note that the default value is 1, this is assigned here if nothing or 0 is entered in data file.
 $ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
-$ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T)$((NOT GKRATE(IA,G,S))   AND (SUM(Y,GKFX(Y,IA,G))) OR  AGKN(IA,G)) = 1;   !! Insert default values.
+$ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T)$((NOT GKRATE(IA,G,S)) AND ((SUM(Y,GKFX(Y,IA,G))) OR  AGKN(IA,G))) = 1;   !! Insert default values.
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T) = GKRATE(IA,G,S,T);
-$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T)$((NOT GKRATE(IA,G,S,T)) AND (SUM(Y,GKFX(Y,IA,G))) OR  AGKN(IA,G)) = 1; !! Insert default values.
+$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T)$((NOT GKRATE(IA,G,S,T)) AND ((SUM(Y,GKFX(Y,IA,G))) OR  AGKN(IA,G))) = 1; !! Insert default values.
 
 * The following parameters contain information about CO2 and SO2 emission
 * from technology G based on the fuel used and its emission data:
@@ -844,10 +843,9 @@ PARAMETER IGROWTHCAPCG(C,G)  'Limit on growth of technology dependent on years b
 *PARAMETER IGKNMAX(Y,AAA,G)   'Maximum capacity at new technologies (MW)'; !!TODO. Relevant?   Presently not implemented.
 
 *-------------------------------------------------------------------------------
-*----- Any internal sets and parameters for addon to be placed here: -----------
+*----- Any internal parameters for addon to be placed here: --------------------
 *-------------------------------------------------------------------------------
 
-$include "../../base/addons/_hooks/pardefine.inc"
 $INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
 
 * These internal parameters pertain to price sensitivy electricity exchange with
@@ -1134,6 +1132,8 @@ QGKNACCUMNET(Y,AAA,G)             "NOT FINISHED Accumulated new investments minu
 QGKNACCUMGROSS(Y,AAA,G)           "Accumulated new investments available at beginning of next year (MW)"
 QGKE_UP(Y,AAA,G,S,T)              "Capacity constraint on electricity generation (MW)"
 QGKH_UP(Y,AAA,G,S,T)              "Capacity constraint on heat generation (MW)"
+QGKE_LO(Y,AAA,G,FFF,S,T)          "Minimum capacity usage constraint on electricity generation capacity (MW)"
+QGKH_LO(Y,AAA,G,FFF,S,T)          "Minimum capacity usage constraint on heat generation capacity (MW)"
 QEGKCOMB1UP(Y,AAA,G,S,T)          "capacity constraint on electricity - combination (MW)"
 QEGKCOMB2UP(Y,AAA,G,S,T)          "capacity constraint on electricity - combination (MW)"
 QHGKCOMB1UP(Y,AAA,G,S,T)          "capacity constraint on heat - combination (MW)"
@@ -1965,9 +1965,27 @@ QGKH_UP(IY411,IA,IGDISPATCH(IGKHNOSTO),IS3,T)$IAGKN(IA,IGKHNOSTO)..
 * Complement to assigning VGH_T.UP for the case with endogenous IGKHNOSTO investments.
         VGH_T(IY411,IA,IGKHNOSTO,IS3,T) =L=
         GKFX(IY411,IA,IGKHNOSTO)*IGKRATE(IA,IGKHNOSTO,IS3,T)
-       +(SUM(IY402$IY411PREVY(IY411,IY402),VGKNACCUMNET(IY402,IA,IGKHNOSTO))*IGKRATE(IA,IGKHNOSTO,IS3,T))
+       +( SUM(IY402$IY411PREVY(IY411,IY402),VGKNACCUMNET(IY402,IA,IGKHNOSTO))*IGKRATE(IA,IGKHNOSTO,IS3,T))
        +(VGKN(IY411,IA,IGKHNOSTO)*IGKRATE(IA,IGKHNOSTO,IS3,T))$IAGKNY(IY411,IA,IGKHNOSTO)
 $include "../../base/addons/_hooks/qgkh_up.inc"
+;
+
+* Minimum capacity usage constraint on electricity generation capacity (MW) (not including exogeneous capacity)
+QGKE_LO(IY411,IA,IGDISPATCH(IGKENOSTO),FFF,IS3,T)$(IAGKN(IA,IGKENOSTO) and IGF(IGKENOSTO,FFF) and GKF_LO(FFF)>0)..
+        VGE_T(IY411,IA,IGKENOSTO,IS3,T) + (VGH_T(IY411,IA,IGKENOSTO,IS3,T) * GDATA(IGKENOSTO,'GDCV'))$(IGEXT(IGKENOSTO))=G=
+        GKF_LO(FFF)*(
+       +( SUM(IY402$IY411PREVY(IY411,IY402),VGKNACCUMNET(IY402,IA,IGKENOSTO))*IGKRATE(IA,IGKENOSTO,IS3,T))
+       +(VGKN(IY411,IA,IGKENOSTO)*IGKRATE(IA,IGKENOSTO,IS3,T) )$IAGKNY(IY411,IA,IGKENOSTO)
+         )
+;
+
+* Minimum capacity usage constraint on heat generation capacity (MW) (not including exogeneous capacity)
+QGKH_LO(IY411,IA,IGDISPATCH(IGKHNOSTO),FFF,IS3,T)$(IAGKN(IA,IGKHNOSTO) and IGF(IGKHNOSTO,FFF) and GKF_LO(FFF)>0)..
+        VGH_T(IY411,IA,IGKHNOSTO,IS3,T) =G=
+        GKF_LO(FFF)*(
+       +( SUM(IY402$IY411PREVY(IY411,IY402),VGKNACCUMNET(IY402,IA,IGKHNOSTO))*IGKRATE(IA,IGKHNOSTO,IS3,T))
+       +(VGKN(IY411,IA,IGKHNOSTO)*IGKRATE(IA,IGKHNOSTO,IS3,T))$IAGKNY(IY411,IA,IGKHNOSTO)
+         )
 ;
 
 
@@ -2235,6 +2253,8 @@ $ifi %BB4%==yes    $ifi %TransInvest%==yes  QXINVSYMMETRY
 *--- Capacity constraints on generation (MW) -----------------------------------
 $ifi %BB4%==yes    QGKE_UP
 $ifi %BB4%==yes    QGKH_UP
+$ifi %BB4%==yes    QGKE_LO
+$ifi %BB4%==yes    QGKH_LO
 $ifi %BB4%==yes    $ifi %TransInvest%==yes  QXK_UP
 $ifi %BB4%==yes    QHYRRDISPATCH
 $ifi %BB4%==yes    QWNDDISPATCH

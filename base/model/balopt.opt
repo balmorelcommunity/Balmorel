@@ -69,7 +69,7 @@ $setglobal bb2
 * bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
 $setglobal bb3
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
-$setglobal bb4      yes
+$setglobal bb4 yes
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
 
 

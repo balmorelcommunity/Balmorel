@@ -211,8 +211,8 @@ SET AGKN(AAA,GGG)   'Areas for possible location of new technologies'   %semisla
 $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
-
 $offmulti
+
 SET Y(YYY)    'Years in the simulation'   %semislash%
 $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
 $if not EXIST '../data/Y.inc' $INCLUDE '../../base/data/Y.inc';
@@ -657,7 +657,10 @@ $if     EXIST '../data/DHFP_BASE.inc' $INCLUDE         '../data/DHFP_BASE.inc';
 $if not EXIST '../data/DHFP_BASE.inc' $INCLUDE '../../base/data/DHFP_BASE.inc';
 %semislash%;
 
-
+PARAMETER GKF_LO(FFF)    'Minimum capacity usage on new capacity for fuel (%)'  %semislash%
+$if     EXIST '../data/GKF_LO.inc' $INCLUDE         '../data/GKF_LO.inc';
+$if not EXIST '../data/GKF_LO.inc' $INCLUDE '../../base/data/GKF_LO.inc';
+%semislash%;
 
 *-------------------------------------------------------------------------------
 *---- End: Geographically specific values --------------------------------------
@@ -829,7 +832,6 @@ $if not EXIST '../data/GKRATE.inc' $INCLUDE '../../base/data/GKRATE.inc';
 * Default value inserted:
 GKRATE(IA,G,S)$(NOT GKRATE(IA,G,S)) = 1;
 
-
 PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)                    'Variation in electricity demand'   %semislash%
 $if     EXIST '../data/DE_VAR_T.inc' $INCLUDE      '../data/DE_VAR_T.inc';
 $if not EXIST '../data/DE_VAR_T.inc' $INCLUDE '../../base/data/DE_VAR_T.inc';
@@ -918,3 +920,9 @@ SCALAR PENALTYQ  'Penalty on violation of equation'  %semislash%
 $if     EXIST '../data/PENALTYQ.inc' $INCLUDE         '../data/PENALTYQ.inc';
 $if not EXIST '../data/PENALTYQ.inc' $INCLUDE '../../base/data/PENALTYQ.inc';
 %semislash%;
+
+*-------------------------------------------------------------------------------
+*----- Any declarations and definitions of parameters:
+*-------------------------------------------------------------------------------
+$include "../../base/addons/_hooks/pardeclare.inc"
+$include "../../base/addons/_hooks/pardefine.inc"
