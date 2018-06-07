@@ -7,5 +7,6 @@ $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_balbas
 
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_balbase4.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_balbase4.inc";
+$ifi %ramping_stepwise%==yes  $include "../../base/addons/ramping_stepwise/bb4/ramping_stepwise_balbase4.inc";   
 
 $label endoffile

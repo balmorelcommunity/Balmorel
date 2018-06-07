@@ -134,6 +134,10 @@ $Setglobal STEPWISEPRICE  yes
 $Setglobal LIMITSFORFUELS    yes
 *!option yes
 
+* Add stepwise ramping costs and restrictions to the Power plants
+$setglobal ramping_stepwise yes
+*!option yes
+
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
 $setglobal X3V
 *!option yes
