@@ -685,12 +685,14 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 * Internal parameters and settings:
 *------------------------------------------------------------------------------
 
-* Set GDCV value to one for IGBPR, IGHOB and IGSOLH units so that their fuel consumption
+* Set GDCV value to one for those technologies with capacity defined on HEAT and that are not IGEXT so that their fuel consumption and O&M costs
 * can be found using the same formula as for IGCND and IGEXT:
 GDATA(IGBPR,'GDCV') = 1;
 GDATA(IGHOB,'GDCV') = 1;
+GDATA(IGETOH,'GDCV') = 1;
+GDATA(IGHSTO,'GDCV') = 1;
+GDATA(IGHSTOS,'GDCV') = 1;
 GDATA(IGSOLH,'GDCV') = 1;
-
 
 
 * Specifying the relation between technology type and fuel type in IGF:
