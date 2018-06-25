@@ -1,21 +1,21 @@
 
 PARAMETER X3VPIM(YYY,RRR,X3VPLACE0,X3VSTEP0,SSS,TTT)   "Price (Money/MWh) of price dependent imported electricity"  %semislash%
-$if     EXIST '../data/X3VPIM.inc' $INCLUDE      '../data/x3vpim.inc';
-$if not EXIST '../data/X3VPIM.inc' $INCLUDE '../../base/addons/x3v/demodata/x3vpim.inc';
+$if     EXIST '../data/X3V_PIM.inc' $INCLUDE      '../data/X3V_PIM.inc';
+$if not EXIST '../data/X3V_PIM.inc' $INCLUDE '../../base/data/X3V_PIM.inc';
 
 PARAMETER X3VPEX(YYY,RRR,X3VPLACE0,X3VSTEP0,SSS,TTT)   "Price (Money/MWh) of price dependent exported electricity"  %semislash%
-$if     EXIST '../data/X3VPEX.inc' $INCLUDE      '../data/X3VPEX.inc';
-$if not EXIST '../data/X3VPEX.inc' $INCLUDE '../../base/addons/x3v/demodata/x3vpex.inc';
+$if     EXIST '../data/X3V_PEX.inc' $INCLUDE      '../data/X3V_PEX.inc';
+$if not EXIST '../data/X3V_PEX.inc' $INCLUDE '../../base/data/X3V_PEX.inc';
 %semislash%;
 
 PARAMETER X3VQIM(YYY,RRR,X3VPLACE0,X3VSTEP0,SSS,TTT)   "Limit (MW) on price dependent electricity import"  %semislash%
-$if     EXIST '../data/X3VQIM.inc' $INCLUDE      '../data/X3VQIM.inc';
-$if not EXIST '../data/X3VQIM.inc' $INCLUDE '../../base/addons/x3v/demodata/x3vqim.inc';
+$if     EXIST '../data/X3V_QIM.inc' $INCLUDE      '../data/X3V_QIM.inc';
+$if not EXIST '../data/X3V_QIM.inc' $INCLUDE '../../base/data/X3V_QIM.inc';
 %semislash%;
 
 PARAMETER X3VQEX(YYY,RRR,X3VPLACE0,X3VSTEP0,SSS,TTT)   "Limit (MW) on price dependent electricity export"  %semislash%
-$if     EXIST '../data/X3VQEX.inc' $INCLUDE      '../data/X3VQEX.inc';
-$if not EXIST '../data/X3VQEX.inc' $INCLUDE '../../base/addons/x3v/demodata/x3vqex.inc';
+$if     EXIST '../data/X3V_QEX.inc' $INCLUDE      '../data/X3V_QEX.inc';
+$if not EXIST '../data/X3V_QEX.inc' $INCLUDE '../../base/data/X3V_QEX.inc';
 %semislash%;
 
 * Net exports assumed to be zero based on the assumption that competetative investments ensure

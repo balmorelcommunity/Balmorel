@@ -16,6 +16,10 @@ $label  beginbb4
 
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_setdeclare.inc";
 
+$ifi %AGKNDISC%==yes  $include   "../../base/addons/agkndisc/bb4/agkndisc_setdeclare.inc";
+
+$ifi %X3V%==yes  $include   "../../base/addons/x3v/bb4/x3v_setdeclare.inc";
+
 $ifi %dflexquant%==yes       $include "../../base/addons/demandflexquant/dflexquant_set.inc";
 
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_setdeclare.inc";

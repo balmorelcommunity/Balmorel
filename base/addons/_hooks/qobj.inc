@@ -16,6 +16,9 @@ $label  beginbb4
 $ifi not %bb4%==yes $goto endoffile
 
 $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_qobj.inc";
+$ifi %UnitComm%==yes   $include   "../../base/addons/unitcommitment/bb4/uc_qobj.inc";
+$ifi %X3V%==yes $include "../../base/addons/x3v/bb4/x3v_qobj.inc";
+$ifi %AGKNDISC%==yes $include "../../base/addons/agkndisc/bb4/agkndisc_qobj.inc";
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_qobj.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_qobj.inc";
 

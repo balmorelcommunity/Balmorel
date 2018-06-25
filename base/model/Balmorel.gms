@@ -1,7 +1,7 @@
 * File Balmorel.gms
-$TITLE Balmorel version 3.03 (June 2016; latest 20160915)
+$TITLE Balmorel version 3.03 (June 2018; latest 20180614)
 
-SCALAR IBALVERSN 'This version of Balmorel' /303.20170419/;
+SCALAR IBALVERSN 'This version of Balmorel' /303.20180614/;
 * Efforts have been made to make a good model.
 * However, most probably the model is incomplete and subject to errors.
 * It is distributed with the idea that it will be usefull anyway,
@@ -39,7 +39,7 @@ execute 'chmod  -R ug+rw "../.."';
 * The balgams file holds control settings for GAMS.
 * Use local file if it exists, otherwise use the one in folder  ../../base/model/.
 $ifi     exist 'balgams.opt'  $include  'balgams.opt';
-$ifi not exist 'balgams.opt'  $include  '../../base/model/balgams.opt'
+$ifi not exist 'balgams.opt'  $include  '../../base/model/balgams.opt';
 
 * The balopt file holds option (control) settings for the Balmorel model.
 * Use local file if it exists, otherwise use the one in folder  ../../base/model/.
@@ -547,7 +547,7 @@ $ifi %bb3%==yes SET TWEEKEND(TTT)   /T121*T168/;
 *----- Any internal sets for addon to be placed here: --------------------------
 
 
-$ifi %FV%==yes $include '../../base/addons/Fjernvarme/sets_fv.inc';
+$ifi %FV%==yes $include '../../base/addons/fjernvarme/sets_fv.inc';
 
 
 *----- End: Any internal sets for addon to be placed here: ---------------------
@@ -1248,9 +1248,9 @@ $if     EXIST '../data/WEIGHT_T.inc' $INCLUDE         '../data/WEIGHT_T.inc';
 $if not EXIST '../data/WEIGHT_T.inc' $INCLUDE '../../base/data/WEIGHT_T.inc';
 %semislash%;
 
-PARAMETER CYCLESINS(S) 'Number of short term storage load cycles per season ((0;inf))'  %semislash%
-$if     EXIST '../data/CYCLESINS.inc' $INCLUDE         '../data/CYCLESINS.inc';
-$if not EXIST '../data/CYCLESINS.inc' $INCLUDE '../../base/data/CYCLESINS.inc';
+PARAMETER CHRONOHOUR(SSS,TTT) 'Number of short term storage load cycles per season ((0;inf))'  %semislash%
+$if     EXIST '../data/CHRONOHOUR.inc' $INCLUDE         '../data/CHRONOHOUR.inc';
+$if not EXIST '../data/CHRONOHOUR.inc' $INCLUDE '../../base/data/CHRONOHOUR.inc';
 %semislash%;
 
 * GKDERATE substituted by GKRATE
@@ -1374,6 +1374,7 @@ $ifi %ADDINVEST%==yes execute_load '../../base/data/XKACC.gdx', XKACC;
 * Since the text string holding the output currency is part of the declaration,
 * the declaration is not given here in Balmorel.gms but in the included file.
 * (For this reason you can not here apply the 'Semislash-idea'.)
+* It is advised to add a comment in the data file stating what the input currency is and to which year it refers.
 
 $if     EXIST '../data/OMONEY.inc' $INCLUDE         '../data/OMONEY.inc';
 $if not EXIST '../data/OMONEY.inc' $INCLUDE '../../base/data/OMONEY.inc';
@@ -1547,7 +1548,10 @@ PARAMETER IWTRRRSUM(AAA)   'Annual amount of hydro-run-of-river generated electr
 *-------------------------------------------------------------------------------
 * Set the time weights depending on the model:
 *-------------------------------------------------------------------------------
-* To guard against division-by-zero and other errors make sure that the following sums do not have inappropriate values:
+* The following code ensures that with time aggregation the energy content (MWh) in time series is conserved, but it does no ensure that the power (MW) is conserved.
+* To get an aggregation that preserves both energy,  power and possibly more, use an addon or auxil.
+
+
 $ifi %BB1%==yes    IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 $ifi %BB1%==yes    IWEIGHSUMT = SUM(T, WEIGHT_T(T));
 $ifi %BB1%==yes    IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
@@ -1709,7 +1713,7 @@ $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vinternal.inc';
 * These internal parameters and sets pertain to heat transmission.
 $if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.inc';
 * Aggregated heat demand profile used in data_fv.inv, therefore placed here.
-$ifi %FV%==yes $INCLUDE '../../base/addons/Fjernvarme/data_fv.inc';
+$ifi %FV%==yes $INCLUDE '../../base/addons/fjernvarme/data_fv.inc';
 * Unit commitment addon
 $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_intern.inc';
 * Discrete size investments addon
@@ -1827,7 +1831,7 @@ POSITIVE VARIABLE VGF_T(AAA,G,S,T)                 'Fuel consumption rate (MW), 
 POSITIVE VARIABLE VX_T(IRRRE,IRRRI,S,T)            'Electricity export from region IRRRE to IRRRI (MW)';
 POSITIVE VARIABLE VGHN_T(AAA,G,S,T)                'Heat generation (MW), new units';
 POSITIVE VARIABLE VGFN_T(AAA,G,S,T)                'Fuel consumption rate (MW), new units'
-POSITIVE VARIABLE VGKN(AAA,G)                      'New generation capacity (MW)';
+POSITIVE VARIABLE VGKN(AAA,G)                      'New generation capacity (MW);  for storages (MWh) ';
 POSITIVE VARIABLE VXKN(IRRRE,IRRRI)                'New electricity transmission capacity (MW)';
 POSITIVE VARIABLE VDECOM(AAA,G)                    'Decommissioned capacity(MW)';
 *POSITIVE VARIABLE VDEF_T(RRR,S,T,DEF)              'Flexible electricity demands (MW)';
@@ -1872,7 +1876,7 @@ $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vvariables.inc';
 * These variables are for addon heat transmission
 $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htvariables.inc';
 * These  variables are for addon district heating
-$ifi %FV%==yes $include '../../base/addons/Fjernvarme/var_fv.inc';
+$ifi %FV%==yes $include '../../base/addons/fjernvarme/var_fv.inc';
 * These variables are for addon unit commitment
 $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_vars.inc';
 $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_eqns.inc';
@@ -2199,7 +2203,7 @@ $ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vobj.inc';
 * This file contains Heat transmission induced additions to the objective function.
 $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htcosts.inc';
 * This file contains district heating induced additions to the objective function.
-$ifi %FV%==yes $include '../../base/addons/Fjernvarme/cost_fv.inc';
+$ifi %FV%==yes $include '../../base/addons/fjernvarme/cost_fv.inc';
 * Unit commitmen add-on
 $ifi %UnitComm%==yes    $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
 
@@ -2274,7 +2278,7 @@ $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htheatbalance.
 $include "../../base/addons/_hooks/qheq.inc"
         - VQHEQ(IA,IS3,T,'IMINUS') + VQHEQ(IA,IS3,T,'IPLUS')
 * Adds district heating if selected
-$ifi %FV%==yes $include '../../base/addons/Fjernvarme/heatbalance_fv.inc';
+$ifi %FV%==yes $include '../../base/addons/fjernvarme/heatbalance_fv.inc';
 ;
 
 * Fuel consumption rate.
@@ -2522,7 +2526,7 @@ QHYRSMAXVOL(IA,IS3)$(HYRSDATA(IA,'HYRSMAXVOL',IS3) AND SUM(IGHYRS$(IAGK_Y(IA,IGH
 
 QESTOVOLT(IA,IS3,T)$SUM(IGESTO, IAGK_Y(IA,IGESTO)+IAGKN(IA,IGESTO))..
     VESTOVOLT(IA,IS3,T++1) =E= VESTOVOLT(IA,IS3,T)
-  + (IHOURSINST(IS3,T)*(CARD(S)/CARD(SSS))/CYCLESINS(IS3))*
+  + CHRONOHOUR(IS3,T)*
   ( VESTOLOADT(IA,IS3,T)
   - SUM(IGESTO$IAGK_Y(IA,IGESTO), VGE_T(IA,IGESTO,IS3,T)/GDATA(IGESTO,'GDFE'))
   - SUM(IGESTO$IAGKN(IA,IGESTO),VGEN_T(IA,IGESTO,IS3,T)/GDATA(IGESTO,'GDFE'))
@@ -2532,7 +2536,7 @@ QESTOVOLT(IA,IS3,T)$SUM(IGESTO, IAGK_Y(IA,IGESTO)+IAGKN(IA,IGESTO))..
 
 QESTOVOLTS(IA,S,T)$(SUM(IGESTOS, IAGK_Y(IA,IGESTOS)+IAGKN(IA,IGESTOS)))..
     VESTOVOLTS(IA,S,T)
-  + (IHOURSINST(S,T)*(CARD(S)/CARD(SSS))/CYCLESINS(S))*
+  + CHRONOHOUR(S,T)*
   (VESTOLOADTS(IA,S,T)
   - SUM(IGESTOS$IAGK_Y(IA,IGESTOS), VGE_T(IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
   - SUM(IGESTOS$IAGKN(IA,IGESTOS), VGEN_T(IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
@@ -2543,7 +2547,7 @@ QESTOVOLTS(IA,S,T)$(SUM(IGESTOS, IAGK_Y(IA,IGESTOS)+IAGKN(IA,IGESTOS)))..
 
 QHSTOVOLT(IA,IS3,T)$(SUM(IGHSTO, IAGK_Y(IA,IGHSTO)+IAGKN(IA,IGHSTO)))..
     VHSTOVOLT(IA,IS3,T)
-  + (IHOURSINST(IS3,T)*(CARD(S)/CARD(SSS))/CYCLESINS(IS3))*
+  + CHRONOHOUR(IS3,T)*
   (VHSTOLOADT(IA,IS3,T)
   - SUM(IGHSTO$IAGK_Y(IA,IGHSTO), VGH_T(IA,IGHSTO,IS3,T)/GDATA(IGHSTO,'GDFE'))
   - SUM(IGHSTO$IAGKN(IA,IGHSTO), VGHN_T(IA,IGHSTO,IS3,T)/GDATA(IGHSTO,'GDFE'))
@@ -2555,7 +2559,7 @@ QHSTOVOLT(IA,IS3,T)$(SUM(IGHSTO, IAGK_Y(IA,IGHSTO)+IAGKN(IA,IGHSTO)))..
 
 QHSTOVOLTS(IA,S,T)$(SUM(IGHSTOS, IAGK_Y(IA,IGHSTOS)+IAGKN(IA,IGHSTOS)))..
     VHSTOVOLTS(IA,S,T)
-  + (IHOURSINST(S,T)*(CARD(S)/CARD(SSS))/CYCLESINS(S))*
+  + CHRONOHOUR(S,T)*
   (VHSTOLOADTS(IA,S,T)
   - SUM(IGHSTOS$IAGK_Y(IA,IGHSTOS), VGH_T(IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE'))
   - SUM(IGHSTOS$IAGKN(IA,IGHSTOS), VGHN_T(IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE'))
@@ -2892,7 +2896,7 @@ QGMAXINVEST2(C,IGKFIND)$GROWTHCAP(C,IGKFIND)..
 $include "../../base/addons/_hooks/eqndecdef.inc"
 
 * These add-on equations pertain to district heating.
-$ifi %FV%==yes $include '../../base/addons/Fjernvarme/eq_fv.inc';
+$ifi %FV%==yes $include '../../base/addons/fjernvarme/eq_fv.inc';
 
 
 * These add-on equations pertain to price sensitive electricity exchange with
@@ -2982,7 +2986,7 @@ MODEL BALBASE1 'Balmorel model without endogeneous investments'
 *----- Any equations for addon to be placed here: ------------------------------
 $include "../../base/addons/_hooks/balbase1.inc"
 * Eventually the following addons will be handled through the above inclusion of _hooks.inc
-$ifi %FV%==yes $include '../../base/addons/Fjernvarme/eqN_fv.inc';
+$ifi %FV%==yes $include '../../base/addons/fjernvarme/eqN_fv.inc';
 $ifi %X3VfxQ%==yes              QX3VBAL
 $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htbb1.inc';
 $ifi %UnitComm%==yes      $include '../../base/addons/unitcommitment/uc_modeladd.inc';
