@@ -193,7 +193,7 @@ IAGKNY(Y,IA,G)$((YVALUE(Y) GT GDATA(G,'GDLASTYEAR')) AND (GDATA(G,'GDLASTYEAR') 
 * TODO: consider if necessary and/or expedient to set .FX=0 for tech in IAGKN but not in IAGKNY (such tech presently appear in QOBJ, QHEQ and QEEQ)
 
 *----COMBTECH----
-$ifi %COMBTECH%==yes IAGK_HASORPOT(Y,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(Y,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
+*$ifi %COMBTECH%==yes IAGK_HASORPOT(Y,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(Y,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
 
 *---ENDOF COMBTECH
 *  QHYRSSEQ(IA,S)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS) or IAGKN(IA,IGHYRS))..
@@ -210,12 +210,6 @@ $ifi %COMBTECH%==yes IAGK_HASORPOT(Y,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(Y,IA
 *-------------------------------------------------------------------------------
 * Addons:
 
-
-
-* Discrete technology investmenst:
-$ifi %AGKNDISC%==yes IAGKNDISC_YAG(IY411,IA,G) = AGKNDISC_AG(IA,G);  !! Input data, independent of Year
-$ifi %AGKNDISC%==yes IAGKNDISC_YAG(IY411,IA,IGKKNOWN) = NO;          !! No new capacity if notIGKFIND (but should not be allowed in input data)
-$ifi %AGKNDISC%==yes IAGKNDISC_YAG(IY411,IA,G)$(YVALUE(IY411) LT GDATA(G,'GDFROMYEAR')) = NO; !! Add year dependency
 *-------------------------------------------------------------------------------
 
 *-------------------------------------------------------------------------------
@@ -380,8 +374,6 @@ VXKN.FX(IY411,IRE,IRI)$(NOT IXKN(IY411,IRE,IRI))=0;
 
 IX3FX_T(IY411,IR,S,T) = ((X3FX(IY411,IR) * X3FX_VAR_T(IR,S,T)) / IX3FXSUMST(IR))$(IX3FXSUMST(IR) NE 0);
 
-* Annual updates wrt electricity exchange with 3. countries.
-$ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vannual.inc';
 
 *---- End Bounds on transmission -----------------------------------------------
 
@@ -457,7 +449,6 @@ $ifi %bb4%==yes  execute  "./%bashfileMERGESAVEPOINTRESULTS%";
 $label endofUNIXmove
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
-$ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgeninput.inc';
 
 * Certain checks may be made on the output:
 *$INCLUDE '../../base/logerror/logerinc/error4-BB4.inc';

@@ -1,13 +1,16 @@
 
-SET AGKNDISC(AAA,G) 'Areas for possible location of new technologies taking discrete capacity size investments';
+SET IAGKNDISC(AAA,G) 'Areas for possible location of new technologies taking discrete capacity size investments';
 
-*AGKNDISC(AAA,'backstop') = yes;
-AGKNDISC('DK_W_1','backstop') = yes;
-AGKNDISC('FI_R_Rural','backstop') = yes;
-AGKNDISC('DK_E_1','backstop') = yes;
+* Based on 'GDTYPE'
+IAGKNDISC(AAA,G)   = YES$(GDATA(G,'GDTYPE') EQ GETOH);
 
-AGKNDISC(aaa,'backstop')$RRRAAA('dk_e',aaa)=yes;
-AGKNDISC(aaa,'backstop')$RRRAAA('dk_w',aaa)=yes;
+*AGKNDISC(AAA,GDATA('GDCOMB')) = yes;
+*AGKNDISC('DK1_Large',GDATA(G,'GDCOMB')) = yes;
+*AGKNDISC('FI_large',GDATA(G,'GDCOMB')) = yes;
+*AGKNDISC('DK2_Large',GDATA(G,'GDCOMB')) = yes;
+
+*AGKNDISC(AAA,GDATA('GDCOMB'))$RRRAAA('dk1',AAA)=yes;
+*AGKNDISC(AAA,GDATA('GDCOMB'))$RRRAAA('dk2',AAA)=yes;
 
 
 
