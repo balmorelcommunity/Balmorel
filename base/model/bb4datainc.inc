@@ -815,9 +815,9 @@ $if     EXIST '../data/WEIGHT_T.inc' $INCLUDE         '../data/WEIGHT_T.inc';
 $if not EXIST '../data/WEIGHT_T.inc' $INCLUDE '../../base/data/WEIGHT_T.inc';
 %semislash%;
 
-PARAMETER CYCLESINS(S) 'Number of short term storage load cycles per season (use inf with duration curve approach) ((0;inf])'  %semislash%
-$if     EXIST '../data/CYCLESINS.inc' $INCLUDE         '../data/CYCLESINS.inc';
-$if not EXIST '../data/CYCLESINS.inc' $INCLUDE '../../base/data/CYCLESINS.inc';
+PARAMETER CHRONOHOUR(S,T) 'Meaning/size of each time step in each season (1 means 1 hour)'  %semislash%
+$if     EXIST '../data/CHRONOHOUR.inc' $INCLUDE         '../data/CHRONOHOUR.inc';
+$if not EXIST '../data/CHRONOHOUR.inc' $INCLUDE '../../base/data/CHRONOHOUR.inc';
 %semislash%;
 
 PARAMETER GKRATE(AAA,GGG,SSS)                       "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)" %semislash%

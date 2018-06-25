@@ -358,7 +358,7 @@ PARAMETER M_POLNA(YYY,MPOLSET)                     "Emission policy data; defaul
 * Time series on (SSS,TTT):
 PARAMETER WEIGHT_S(SSS)                            "Weight (relative length) of each season";
 PARAMETER WEIGHT_T(TTT)                            "Weight (relative length) of each time period";
-PARAMETER CYCLESINS(S)                             "Number of short term storage load cycles per season (use inf with duration curve approach) ((0;inf])";
+PARAMETER CHRONOHOUR(S,T)                          "Meaning/size of each time step in each season (1 means 1 hour)";
 
 $ifi %GKRATE_DOL%==AAA_GGG_SSS     PARAMETER GKRATE(AAA,GGG,SSS)      "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT PARAMETER GKRATE(AAA,GGG,SSS,TTT)  "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
@@ -1441,7 +1441,7 @@ $include "../../base/addons/_hooks/qhymaxg.inc"
 * "Electricty storage dynamic equation (MWh)"
 QESTOVOLT(IY411,IA,IS3,T)$(SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),1))..
     VESTOVOLT(IY411,IA,IS3,T++1) =E= VESTOVOLT(IY411,IA,IS3,T)
-  + (CARD(S)/CARD(SSS))*IHOURSINST(IS3,T)*CYCLESINS(IS3)*
+  + (CARD(S)/CARD(SSS))*IHOURSINST(IS3,T)*CHRONOHOUR(IS3,T)*
     (VESTOLOADT(IY411,IA,IS3,T)*SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),GDATA(IGESTO,'GDFE'))
   - SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO), VGE_T(IY411,IA,IGESTO,IS3,T)) )
 $include "../../base/addons/_hooks/qestovolt.inc"
@@ -1449,7 +1449,7 @@ $include "../../base/addons/_hooks/qestovolt.inc"
 
 QESTOVOLTS(IY411,IA,S,T)$(SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),1))..
     VESTOVOLTS(IY411,IA,S,T)
-  + IHOURSINST(S,T)*(CARD(S)/CARD(SSS))*CYCLESINS(S)*
+  + IHOURSINST(S,T)*(CARD(S)/CARD(SSS))*CHRONOHOUR(S,T)*
   (VESTOLOADTS(IY411,IA,S,T)
   - SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS), VGE_T(IY411,IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
   )
@@ -1462,7 +1462,7 @@ $include "../../base/addons/_hooks/qestovolts.inc"
 * "Heat storage dynamic equation (MWh)"
 QHSTOVOLT(IY411,IA,IS3,T)$(SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO),1))..
     VHSTOVOLT(IY411,IA,IS3,T)
-  + (CARD(S)/CARD(SSS))*IHOURSINST(IS3,T)*CYCLESINS(IS3)*
+  + (CARD(S)/CARD(SSS))*IHOURSINST(IS3,T)*CHRONOHOUR(IS3,T)*
   (VHSTOLOADT(IY411,IA,IS3,T)
   - SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO), VGH_T(IY411,IA,IGHSTO,IS3,T)/GDATA(IGHSTO,'GDFE')) )
     =E= VHSTOVOLT(IY411,IA,IS3,T++1)
@@ -1472,7 +1472,7 @@ $include "../../base/addons/_hooks/qhstovolt.inc"
 
 QHSTOVOLTS(IY411,IA,S,T)$(SUM(IGHSTOS$IAGK_HASORPOT(IY411,IA,IGHSTOS),1))..
     VHSTOVOLTS(IY411,IA,S,T)
-  + IHOURSINST(S,T)*(CARD(S)/CARD(SSS))*CYCLESINS(S)*
+  + IHOURSINST(S,T)*(CARD(S)/CARD(SSS))*CHRONOHOUR(S,T)*
   (VHSTOLOADTS(IY411,IA,S,T)
   - SUM(IGHSTOS$IAGK_HASORPOT(IY411,IA,IGHSTOS), VGH_T(IY411,IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE'))
   )
