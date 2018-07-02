@@ -449,6 +449,10 @@ $ifi not %system.filesys%==UNIX $goto endofUNIXmove
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''BALBASE4_p.gdx" "%relpathModel%%relpathoutput%temp/'IYALIAS.tl:0:0 '.gdx"';
+
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb4%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';
+
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes  execute  "./%bashfileMERGESAVEPOINTRESULTS%";
 
