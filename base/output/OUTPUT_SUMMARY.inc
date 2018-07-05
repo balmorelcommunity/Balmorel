@@ -33,8 +33,8 @@ PARAMETER PRO_YCRAGF(Y,C,RRR,AAA,G,FFF,COMMODITY,TECH_TYPE,UNITS) "Annual Energy
 PARAMETER F_CONS_YCRAST(Y,C,RRR,AAA,G,FFF,SSS,TTT,TECH_TYPE,UNITS) "Fuel consumption for each year, country, region, area, technology, fuel, season, hour and technology type (MWh)";
 PARAMETER F_CONS_YCRA(Y,C,RRR,AAA,G,FFF,TECH_TYPE,UNITS) "Fuel consumption for each year, country, region, area, technology, fuel and technology type (TWh)";
 PARAMETER X_CAP_YCR(Y,C,IRRRE,IRRRI,VARIABLE_CATEGORY,UNITS) "Transmission capacity for each year, country, from region to region (GW)";
-PARAMETER X_FLOW_YCRST(Y,C,IRRRE,IRRRI,SSS,TTT,UNITS) "Transmission capacity for each year, country, from region to region, for each season and hour (MWh)";
-PARAMETER X_FLOW_YCR(Y,C,IRRRE,IRRRI,UNITS) "Transmission capacity for each year, country, from region to region (TWh)";
+PARAMETER X_FLOW_YCRST(Y,C,IRRRE,IRRRI,SSS,TTT,UNITS) "Transmission flow for each year, country, from region to region, for each season and hour (MWh)";
+PARAMETER X_FLOW_YCR(Y,C,IRRRE,IRRRI,UNITS) "Transmission flow for each year, country, from region to region (TWh)";
 PARAMETER ECO_G_YCRAG(Y,C,RRR,AAA,G,CATEGORY,SUBCATEGORY,UNITS) "Generation Economic Output for each year, country, region, area and technology (Mmoney)";
 PARAMETER ECO_X_OUTPUT_YCR(Y,C,RRR,CATEGORY,SUBCATEGORY,UNITS) "Transmission Economic Output for each year, country and region (Mmoney)";
 PARAMETER OBJ_YCR(Y,C,RRR,SUBCATEGORY,UNITS) "Objective function (Mmoney)";
@@ -228,11 +228,11 @@ ECO_G_YCRAG(Y,C,IR,IA,G,'COSTS','GENERATION_OPERATIONAL_COSTS','Mmoney')$(CCCRRR
    OMONEY/IOF1000000*
      ((GOMVCOST(IA,G)*
       (
-   +   SUM((S,T), IHOURSINST(S,T) * VGE_T.L(Y,IA,G,S,T))$IAGK_HASORPOT(Y,IA,G)))$IGE(G)
+   +   SUM((S,T), IHOURSINST(S,T) * VGE_T.L(Y,IA,G,S,T))$IAGK_HASORPOT(Y,IA,G)))$IGKE(G)
 
    +  (GOMVCOST(IA,G) * GDATA(G,'GDCV') *
       (
-   +   SUM((S,T), IHOURSINST(S,T) * VGH_T.L(Y,IA,G,S,T))$IAGK_HASORPOT(Y,IA,G)))$(IGNOTETOH(G) and IGH(G))) ;
+   +   SUM((S,T), IHOURSINST(S,T) * VGH_T.L(Y,IA,G,S,T))$IAGK_HASORPOT(Y,IA,G)))$IGKH(G)) ;
 
 ** GENERATION FUEL COSTS
 
@@ -264,7 +264,9 @@ ECO_G_YCRAG(Y,C,IR,IA,G,'COSTS','GENERATION_CO2_COSTS','Mmoney')$(CCCRRR(C,IR) a
 
 ** TRANSMISSION INVESTMENTS
 ECO_X_OUTPUT_YCR(Y,C,IR,'COSTS','TRANSMISSION_CAPITAL_COSTS','Mmoney')$CCCRRR(C,IR)=
-          OMONEY*IOF0000001*ANNUITYCX(C)*SUM(IRI, VXKN.L(Y,IR,IRI)*XINVCOST(Y,IR,IRI)*IOF05);
+          OMONEY*IOF0000001*SUM(IRI,
+                                    (IOF05*VXKN.L(Y,IR,IRI))*XINVCOST(Y,IR,IRI)*(IOF05*ANNUITYCX(C))
+                                );
 
 ** TRANSMISSION FLOW
 

@@ -1,0 +1,6 @@
+*Ramping costs
+
++SUM((G,RAMPING_RATE,IA,IS3,T)$(IRAMPING_G_RATE(G,RAMPING_RATE) AND IAGK_HASORPOT(Y,IA,G)),IHOURSINST(IS3,T)*(
+                                 V_RAMPING_DOWN(Y,IA,G,RAMPING_RATE,IS3,T)*IRAMPING_G_COSTS_DOWN(G,RAMPING_RATE)
+                                 +V_RAMPING_UP(Y,IA,G,RAMPING_RATE,IS3,T)*IRAMPING_G_COSTS_UP(G,RAMPING_RATE)
+                                 ))
