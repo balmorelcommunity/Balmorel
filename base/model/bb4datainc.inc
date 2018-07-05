@@ -365,11 +365,6 @@ $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
 $if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
 %semislash%;
 
-PARAMETER DECOM_G(YYY,YYY,AAA,GGG)    "DECOMMISIONING YEAR OF ENDOGENOUS GENERATION INVESTMENTS" %semislash%
-$if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
-$if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
-%semislash%;
-
 PARAMETER FMAXINVEST(CCC,FFF)   "Maximum investment (MW) by fuel type for each year simulated"    %semislash%
 $if     EXIST '../data/FMAXINVEST.inc' $INCLUDE      '../data/FMAXINVEST.inc';
 $if not EXIST '../data/FMAXINVEST.inc' $INCLUDE '../../base/data/FMAXINVEST.inc';
@@ -722,7 +717,7 @@ $if     EXIST '../data/WEIGHT_T.inc' $INCLUDE         '../data/WEIGHT_T.inc';
 $if not EXIST '../data/WEIGHT_T.inc' $INCLUDE '../../base/data/WEIGHT_T.inc';
 %semislash%;
 
-PARAMETER CHRONOHOUR(SSS,TTT) "Number of short term storage load cycles per season (use inf with duration curve approach) ((0;inf])"  %semislash%
+PARAMETER CHRONOHOUR(S,T) 'Meaning/size of each time step in each season (1 means 1 hour)'  %semislash%
 $if     EXIST '../data/CHRONOHOUR.inc' $INCLUDE         '../data/CHRONOHOUR.inc';
 $if not EXIST '../data/CHRONOHOUR.inc' $INCLUDE '../../base/data/CHRONOHOUR.inc';
 %semislash%;
@@ -834,3 +829,10 @@ $if not EXIST '../data/PENALTYQ.inc' $INCLUDE '../../base/data/PENALTYQ.inc';
 *-------------------------------------------------------------------------------
 *$include "../../base/addons/_hooks/pardeclare.inc"
 $include "../../base/addons/_hooks/pardefine.inc"
+
+
+*Decommissioning definition has to be included after all AGKN parameters have been defined
+PARAMETER DECOM_G(YYY,YYY,AAA,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERATION INVESTMENTS' %semislash%
+$if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
+$if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
+%semislash%;
