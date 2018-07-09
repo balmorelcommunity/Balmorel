@@ -990,8 +990,7 @@ PARAMETER IORD_IY(YMODEL)    "The ord of the years Y over which the present Balb
 FREE     VARIABLE VOBJ                             "Objective function value (MMoney)"; !! Unit seems to be Money
 POSITIVE VARIABLE VGE_T(Y,AAA,G,S,T)               "Electricity generation (MW)";
 POSITIVE VARIABLE VGH_T(Y,AAA,G,S,T)               "Heat generation (MW)";
-POSITIVE VARIABLE VGF_T(Y,AAA,G,S,T)               "Fuel consumption rate (MW), existing units"
-POSITIVE VARIABLE VGFN_T(Y,AAA,G,S,T)               "Fuel consumption rate (), new units"
+POSITIVE VARIABLE VGF_T(Y,AAA,G,S,T)               "Fuel consumption rate (MW), existing units";
 POSITIVE VARIABLE VX_T(Y,IRRRE,IRRRI,S,T)          "Electricity export from region IRRRE to IRRRI (MW)";
 POSITIVE VARIABLE VGKN(Y,AAA,G)                    "New generation capacity (MW);  for storages (MWh) ";
 POSITIVE VARIABLE VXKN(Y,IRRRE,IRRRI)              "New electricity transmission capacity (MW)";
