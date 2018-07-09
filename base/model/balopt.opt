@@ -138,8 +138,8 @@ $Setglobal LIMITSFORFUELS    yes
 $setglobal ramping_stepwise yes
 *!option yes
 
-* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
-$setglobal X3V yes
+* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT) 
+$setglobal X3V 
 *!option yes
 
 *
@@ -174,7 +174,7 @@ $setglobal REShareEH
 *!notif %REShareE%==yes
 
 
-* Make investments in technologies only at specified capacities.
+* Make investments in technologies only at specified capacities. (TO-DO, TEST IT) 
 $setglobal AGKNDISC
 *!option yes
 *!onlyif %BB2%==yes
