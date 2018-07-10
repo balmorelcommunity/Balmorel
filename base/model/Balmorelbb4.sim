@@ -222,12 +222,6 @@ $ifi %COMBTECH%==yes IAGK_HASORPOT(Y,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(Y,IA
 *-------------------------------------------------------------------------------
 * Addons:
 
-
-
-* Discrete technology investmenst:
-$ifi %AGKNDISC%==yes IAGKNDISC_YAG(IY411,IA,G) = AGKNDISC_AG(IA,G);  !! Input data, independent of Year
-$ifi %AGKNDISC%==yes IAGKNDISC_YAG(IY411,IA,IGKKNOWN) = NO;          !! No new capacity if notIGKFIND (but should not be allowed in input data)
-$ifi %AGKNDISC%==yes IAGKNDISC_YAG(IY411,IA,G)$(YVALUE(IY411) LT GDATA(G,'GDFROMYEAR')) = NO; !! Add year dependency
 *-------------------------------------------------------------------------------
 
 *-------------------------------------------------------------------------------
@@ -378,8 +372,6 @@ VX_T.UP(IY411,IRE,IRI,S,T)$(IXK_HASORPOT(IY411,IRE,IRI) AND (NOT SUM(Y$(YVALUE(Y
 
 IX3FX_T(IY411,IR,S,T) = ((X3FX(IY411,IR) * X3FX_VAR_T(IR,S,T)) / IX3FXSUMST(IR))$(IX3FXSUMST(IR) NE 0);
 
-* Annual updates wrt electricity exchange with 3. countries.
-$ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vannual.inc';
 
 *---- End Bounds on transmission -----------------------------------------------
 
@@ -459,7 +451,6 @@ $ifi %bb4%==yes  execute  "./%bashfileMERGESAVEPOINTRESULTS%";
 $label endofUNIXmove
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
-$ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgeninput.inc';
 
 * Certain checks may be made on the output:
 *$INCLUDE '../../base/logerror/logerinc/error4-BB4.inc';

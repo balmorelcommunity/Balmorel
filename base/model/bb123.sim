@@ -432,7 +432,7 @@ $ifi %bb3%==yes  $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsb
 
 $ifi %GAS%==yes $INCLUDE '../../base/addons/gas/annualupdate.inc';
 $ifi %HEATTRANS%==yes $INCLUDE '../../base/addons/heattrans/model/htannualupdate.inc'
-$ifi %FV%==yes $INCLUDE '../../base/addons/Fjernvarme/yearupdate_fv.inc';
+$ifi %FV%==yes $INCLUDE '../../base/addons/fjernvarme/yearupdate_fv.inc';
 $ifi %POLICIES%==yes $include '../../base/addons/policies/pol_yearupdate.inc';
 
 * Always MAKEWATER p.t.
@@ -655,7 +655,7 @@ $if errorfree $ifi %PRINTFILES%==yes $ifi %bb1%==yes   $INCLUDE '../../base/outp
 
 $if errorfree $ifi %PRINTFILES%==yes $ifi %bb2%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb2.inc';
 
-$if errorfree $ifi %PRINTFILES%==yes $ifi %bb3%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb1.inc';
+$if errorfree $ifi %PRINTFILES%==yes $ifi %bb3%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb2.inc';
 
 
 

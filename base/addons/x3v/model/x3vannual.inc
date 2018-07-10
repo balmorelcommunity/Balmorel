@@ -16,7 +16,7 @@ $ifi %X3V%==yes     VX3VEX_T.UP(IR,X3VPLACE,X3VSTEP,S,T)=X3VQEX(IR,X3VPLACE,X3VS
 * Price dependent exchange with places outside the simulated countries:
 * Set of relevant price dependent electricity exhanges this year:
 * Update price dependent exchange prices to current simulation year:
-$ifi %X3V%==yes  IX3VPIM_Y(IR,X3VPLACE,X3VSTEP,S,T)=X3VPIM(Y,IR,X3VPLACE,X3VSTEP,S,T)$
+$ifi %X3V%==yes  IX3VPIM_Y(Y,IR,X3VPLACE,X3VSTEP,S,T)=X3VPIM(Y,IR,X3VPLACE,X3VSTEP,S,T)$
 $ifi %X3V%==yes     (X3VQIM(IR,X3VPLACE,X3VSTEP,S,T) OR X3VQEX(IR,X3VPLACE,X3VSTEP,S,T));
-$ifi %X3V%==yes  IX3VPEX_Y(IR,X3VPLACE,X3VSTEP,S,T)=X3VPEX(Y,IR,X3VPLACE,X3VSTEP,S,T)$
+$ifi %X3V%==yes  IX3VPEX_Y(Y,IR,X3VPLACE,X3VSTEP,S,T)=X3VPEX(Y,IR,X3VPLACE,X3VSTEP,S,T)$
 $ifi %X3V%==yes     (X3VQIM(IR,X3VPLACE,X3VSTEP,S,T) OR X3VQEX(IR,X3VPLACE,X3VSTEP,S,T));

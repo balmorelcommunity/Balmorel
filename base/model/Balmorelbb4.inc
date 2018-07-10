@@ -2,6 +2,7 @@
 * First version 2009(hr) based on DTU Master project by Jesper Felstedt &QHYDROGEN_ Morten Middelboe Pedersen under supervision by Hans Ravn.
 * Present version 20150428(hr), 20150430(Weiming), 20151217(hr), 20160810(hr), 20170419 (Juan and hr).
 * Thanks to Weiming Xiong, Andreas von Recklinghausen and others for good contributions.
+
 * The model is still under development.
 * It will be available from www.balmorel.com under open source conditions.
 
@@ -33,56 +34,56 @@
 
 * SETS:
 * Geography related:
-SET CCCRRRAAA         'All geographical entities (CCC + RRR + AAA)';
-SET CCC(CCCRRRAAA)    'All Countries';
-SET C(CCC)            'Countries in the simulation';
-SET RRR(CCCRRRAAA)    'All regions';
-SET AAA(CCCRRRAAA)    'All areas';
-SET CCCRRR(CCC,RRR)   'Regions in countries';
-SET RRRAAA(RRR,AAA)   'Areas in regions';
+SET CCCRRRAAA         All geographical entities (CCC + RRR + AAA)';
+SET CCC(CCCRRRAAA)    "All Countries";
+SET C(CCC)            "Countries in the simulation";
+SET RRR(CCCRRRAAA)    "All regions";
+SET AAA(CCCRRRAAA)    "All areas";
+SET CCCRRR(CCC,RRR)   "Regions in countries";
+SET RRRAAA(RRR,AAA)   "Areas in regions";
 * The following three internal geography related sets are assigned in bb4datainc.inc:
-SET IR(RRR)           'Regions in the simulation';
-SET IA(AAA)           'Areas in the simulation';
-SET ICA(CCC,AAA)      'Assignment of areas to countries in the simulation';
+SET IR(RRR)           "Regions in the simulation";
+SET IA(AAA)           "Areas in the simulation";
+SET ICA(CCC,AAA)      "Assignment of areas to countries in the simulation";
 * Time related:
-SET YYY               'All years';
-SET SSS               'All seasons';
-SET TTT               'All time periods';
-SET Y(YYY)            'Years in the simulation';
-SET S(SSS)            'Seasons in the simulation';
-SET T(TTT)            'Time periods within the season in the simulation';
-SET TWORKDAY(TTT)     'Time segments, T, in workdays';
-SET TWEEKEND(TTT)     'Time segments, T, in weekends';
+SET YYY               "All years";
+SET SSS               "All seasons";
+SET TTT               "All time periods";
+SET Y(YYY)            "Years in the simulation";
+SET S(SSS)            "Seasons in the simulation";
+SET T(TTT)            "Time periods within the season in the simulation";
+SET TWORKDAY(TTT)     "Time segments, T, in workdays";
+SET TWEEKEND(TTT)     "Time segments, T, in weekends";
 * Technology and fuel related:
-SET GGG               'All generation technologies';
-SET GDATASET          'Generation technology data';
-SET FFF               'Fuels';
-SET FDATASET          'Characteristics of fuels';
-SET HYRSDATASET       'Characteristics of hydro reservoirs';
-SET G(GGG)            'Generation technologies in the simulation';
-SET AGKN(AAA,GGG)     'Areas for possible location of new technologies';
+SET GGG               "All generation technologies";
+SET GDATASET          "Generation technology data";
+SET FFF               "Fuels";
+SET FDATASET          "Characteristics of fuels";
+SET HYRSDATASET       "Characteristics of hydro reservoirs";
+SET G(GGG)            "Generation technologies in the simulation";
+SET AGKN(AAA,GGG)     "Areas for possible location of new technologies";
 * Demand related:
 SET DEUSER            "Electricity demand user groups. Set must include element RESE for holding demand not included in any other user group";
 SET DHUSER            "Heat demand user groups. Set must include element RESH for holding demand not included in any other user group";
-SET DF_QP             'Quantity and price information for elastic demands';
-SET DEF               'Steps in elastic electricity demand';
-SET DEF_D1(DEF)       'Downwards steps in elastic el. demand, relative data format';
-SET DEF_U1(DEF)       'Upwards steps in elastic el. demand, relative data format';
-SET DEF_D2(DEF)       'Downwards steps in elastic el. demand, absolute Money and MW-incremental data format';
-SET DEF_U2(DEF)       'Upwards steps in elastic el. demand, absolute Money and MW-incremental data format';
-SET DEF_D3(DEF)       'Downwards steps in elastic el. demand, absolute Money and fraction of nominal demand data format';
-SET DEF_U3(DEF)       'Upwards steps in elastic el. demand, absolute Money and fraction of nominal demand data format';
-SET DHF               'Steps in elastic heat demand';
-SET DHF_D1(DHF)       'Downwards steps in elastic heat demand, relative data format';
-SET DHF_U1(DHF)       'Upwards steps in elastic heat demand, relative data format';
-SET DHF_D2(DHF)       'Downwards steps in elastic heat demand, absolute Money and MW-incremental data format';
-SET DHF_U2(DHF)       'Upwards steps in elastic heat demand, absolute Money and MW-incremental data format';
-SET DHF_D3(DHF)       'Downwards steps in elastic heat demand, absolute Money and fraction of nominal demand data format';
-SET DHF_U3(DHF)       'Upwards steps in elastic heat demand, absolute Money and fraction of nominal demand data format';
+SET DF_QP             "Quantity and price information for elastic demands";
+SET DEF               "Steps in elastic electricity demand";
+SET DEF_D1(DEF)       "Downwards steps in elastic el. demand, relative data format";
+SET DEF_U1(DEF)       "Upwards steps in elastic el. demand, relative data format";
+SET DEF_D2(DEF)       "Downwards steps in elastic el. demand, absolute Money and MW-incremental data format";
+SET DEF_U2(DEF)       "Upwards steps in elastic el. demand, absolute Money and MW-incremental data format";
+SET DEF_D3(DEF)       "Downwards steps in elastic el. demand, absolute Money and fraction of nominal demand data format";
+SET DEF_U3(DEF)       "Upwards steps in elastic el. demand, absolute Money and fraction of nominal demand data format";
+SET DHF               "Steps in elastic heat demand";
+SET DHF_D1(DHF)       "Downwards steps in elastic heat demand, relative data format";
+SET DHF_U1(DHF)       "Upwards steps in elastic heat demand, relative data format";
+SET DHF_D2(DHF)       "Downwards steps in elastic heat demand, absolute Money and MW-incremental data format";
+SET DHF_U2(DHF)       "Upwards steps in elastic heat demand, absolute Money and MW-incremental data format";
+SET DHF_D3(DHF)       "Downwards steps in elastic heat demand, absolute Money and fraction of nominal demand data format";
+SET DHF_U3(DHF)       "Upwards steps in elastic heat demand, absolute Money and fraction of nominal demand data format";
 
-SET MPOLSET           'Emission and other policy data';
-SET ECONSET           'Set for econ'  !! todo
-SET ECONSETCATEGORY   'Set for econ'  !! todo
+SET MPOLSET           "Emission and other policy data";
+SET ECONSET           "Set for econ"  !! todo
+SET ECONSETCATEGORY   "Set for econ"  !! todo
 
 * Internal set IGGGALIAS may be used in the $included data files:
 ALIAS(GGG,IGGGALIAS);
@@ -238,7 +239,7 @@ SET IGBYPASS(G)            "Technologies that may apply turbine bypass mode (sub
 
 *---- Unit commitment --------------------------------------------------------------
 
-$ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/datadecl.inc';
+$ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/bb4/uc_datadecl.inc';
 
 *-------------------------------------------------------------------------------
 *----- End: Any internal sets assignments for addon to be placed here ----------
@@ -255,7 +256,7 @@ $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/datadecl.inc';
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFDATALISTING%
 
-PARAMETER GKFX(YYY,AAA,GGG)    'Capacity of exogenously given generation technologies (MW)';
+PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of exogenously given generation technologies (MW)";
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFCODELISTING%
 
@@ -263,8 +264,7 @@ PARAMETER GKFX(YYY,AAA,GGG)    'Capacity of exogenously given generation technol
 *---- End: Annually specified generation capacities ----------------------------
 *-------------------------------------------------------------------------------
 
-SET IAGK_HASORPOT(Y,AAA,G) 'Technologies with existing or potentially invested capacity current year';
-*$ifi %COMBTECH%==yes IAGK_HASORPOT(IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
+SET IAGK_HASORPOT(Y,AAA,G) "Technologies with existing or potentially invested capacity current year";
 
 *-------------------------------------------------------------------------------
 *---- Geographically specific values: -----------------------------------------
@@ -312,11 +312,11 @@ $ifi %GWAVE_DOL%==AAA                   PARAMETER WAVEFLH(AAA)                  
 $ifi %GWAVE_DOL%==AAA_GGG               PARAMETER WAVEFLH(AAA,GGG)                 "Full load hours for wave power";
 PARAMETER HYRSMAXVOL_G(AAA,GGG)        "Reservoir capacity (MWh storage capacity / MW installed capacity)";
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)"Data for hydro with storage ( *)";
-PARAMETER TAX_FHO(YYY,AAA,G)           "Fuel taxes on heat-only units ()"; !! () todo
-PARAMETER TAX_FHO_C(FFF,CCC)           "Fuel taxes on heat-only units ()"; !! () todo
-PARAMETER TAX_GH(YYY,AAA,G)            "Heat taxes on generation units ()"; !! () todo
-PARAMETER TAX_FCHP_C(FFF,CCC)          "Fuel taxes on CHP units ()"; !! () todo
-PARAMETER TAX_HHO_C(FFF,CCC)           "Fuel taxes on HO units ()"; !! () todo
+PARAMETER TAX_FHO(YYY,AAA,G)           "Fuel taxes on heat-only units (Money/GJ)";
+PARAMETER TAX_FHO_C(FFF,CCC)           "Fuel taxes on heat-only units (Money/GJ)";
+PARAMETER TAX_GH(YYY,AAA,G)            "Heat taxes on generation units (Money/GJ)";
+PARAMETER TAX_FCHP_C(FFF,CCC)          "Fuel taxes on CHP units (Money/GJ)";
+PARAMETER TAX_HHO_C(FFF,CCC)           "Fuel taxes on HO units (Money/GJ)";
 PARAMETER TAX_F(FFF,CCC)               "Fuel taxes for heat and electricity production (Money/GJ)";
 PARAMETER TAX_DE(CCC,DEUSER)           "Consumers tax on electricity consumption (Money/MWh)";
 PARAMETER TAX_DH(CCC,DHUSER)           "Consumers tax on heat consumption (Money/MWh)";
@@ -343,12 +343,6 @@ PARAMETER XLOSS(IRRRE,IRRRI)           "Transmission loss between regions (fract
 $ifi %XKRATE_DOL%==IRRRE_IRRRI          PARAMETER XKRATE(IRRRE,IRRRI)         "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS      PARAMETER XKRATE(IRRRE,IRRRI,SSS)     "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT  PARAMETER XKRATE(IRRRE,IRRRI,SSS,TTT) "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
-*---- Third regions:
-PARAMETER X3FX(YYY,RRR)                "Annual net electricity export to third regions (MWh)";
-$ifi %X3V%==yes PARAMETER X3VPIM(YYY,RRR,X3VPLACE0,X3VSTEP0,SSS,TTT)    "Price (Money/MWh) of price dependent imported electricity";
-$ifi %X3V%==yes PARAMETER X3VPEX(YYY,RRR,X3VPLACE0,X3VSTEP0,SSS,TTT)    "Price (Money/MWh) of price dependent exported electricity";
-$ifi %X3V%==yes PARAMETER X3VQIM(RRR,X3VPLACE0,X3VSTEP0,SSS,TTT)        "Limit (MW) on price dependent electricity import";
-$ifi %X3V%==yes PARAMETER X3VQEX(RRR,X3VPLACE0,X3VSTEP0,SSS,TTT)        "Limit (MW) on price dependent electricity export";
 
 * Fuel prices: -----------------------------------------------------------------
 
@@ -363,15 +357,15 @@ PARAMETER CHRONOHOUR(S,T)                          "Meaning/size of each time st
 $ifi %GKRATE_DOL%==AAA_GGG_SSS     PARAMETER GKRATE(AAA,GGG,SSS)      "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT PARAMETER GKRATE(AAA,GGG,SSS,TTT)  "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 
-PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)             "Variation in electricity demand ()"; !! () todo
-PARAMETER DH_VAR_T(AAA,DHUSER,SSS,TTT)             "Variation in heat demand ()"; !! () todo
-PARAMETER WTRRSVAR_S(AAA,SSS)                      "Variation of the water inflow to reservoirs ()"; !! () todo
-PARAMETER WTRRRVAR_T(AAA,SSS,TTT)                  "Variation of generation of hydro run-of-river ()"; !! () todo
-PARAMETER WND_VAR_T(AAA,SSS,TTT)                   "Variation of the wind generation ()"; !! () todo
-PARAMETER SOLE_VAR_T(AAA,SSS,TTT)                  "Variation of the solar generation ()"; !! () todo
-PARAMETER WAVE_VAR_T(AAA,SSS,TTT)                  "Variation of the wave generation ()"; !! () todo
-PARAMETER X3FX_VAR_T(RRR,SSS,TTT)                  "Variation in fixed exchange with 3. region ()"; !! () todo
-PARAMETER HYPPROFILS(AAA,SSS)                      "Hydro with storage seasonal price profile ()"; !! () todo
+PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)             "Variation in electricity demand (none~MW)";
+PARAMETER DH_VAR_T(AAA,DHUSER,SSS,TTT)             "Variation in heat demand (none~MW)";
+PARAMETER WTRRSVAR_S(AAA,SSS)                      "Variation of the water inflow to reservoirs (none~MW)";
+PARAMETER WTRRRVAR_T(AAA,SSS,TTT)                  "Variation of generation of hydro run-of-river (none~MW)";
+PARAMETER WND_VAR_T(AAA,SSS,TTT)                   "Variation of the wind generation (none~MW)"; !!
+PARAMETER SOLE_VAR_T(AAA,SSS,TTT)                  "Variation of the solar generation (none~MW)"; !!
+PARAMETER WAVE_VAR_T(AAA,SSS,TTT)                  "Variation of the wave generation (none~MW)"; !!
+PARAMETER X3FX_VAR_T(RRR,SSS,TTT)                  "Variation in fixed exchange with 3. region (none~MW)";
+PARAMETER HYPPROFILS(AAA,SSS)                      "Hydro with storage seasonal price profile (Money/MWh)";
 
 $ifi %YIELDREQUIREMENT%==yes  PARAMETER YIELDREQ(GGG) "Differentiates yield requirements for different technologies ()"; !! () todo
 
@@ -555,15 +549,18 @@ $include "../../base/addons/_hooks/isetdecdef.inc"
 *-------------------------------------------------------------------------------
 
 * SCALAR OMONEY specifies output currency name and its exchange rate to input currency.
-* Example of declaration:  'SCALAR OMONEY "EUR07" / 1 /;'.
+* Example of declaration:  "SCALAR OMONEY "EUR07" / 1 /;".
 * Since the text string holding the output currency is part of the declaration,
 * the declaration is not given here in Balmorel.gms but in the included file.
-* (For this reason you can not here apply the 'Semislash-idea'.)
+* (For this reason you can not here apply the "Semislash-idea".)
+* It is advised to add a comment in the data file stating what the input currency is and to which year it refers.
 
 *-------------------------------------------------------------------------------
 *----- Any parameters for addon to be placed here: -----------------------------
 *-------------------------------------------------------------------------------
-$ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/data/x3vdata.inc';
+
+$include "../../base/addons/_hooks/pardeclare.inc"
+
 $ifi %HEATTRANS%==yes $if     EXIST '../data/htrans.inc' $INCLUDE         '../data/htrans.inc';
 $ifi %HEATTRANS%==yes $if not EXIST '../data/htrans.inc' $INCLUDE '../../base/data/htrans.inc';
 
@@ -574,18 +571,18 @@ $ifi %SYSTEMCOST%==yes   $if exist 'BASELOADSERVICE.inc' $INCLUDE 'BASELOADSERVI
 $ifi %SYSTEMCOST%==yes   $if not exist 'BASELOADSERVICE.inc' $INCLUDE '../../base/addons/systemcost/data/BASELOADSERVICE.inc';
 
 * This file (if exists) contains:
-* PARAMETER XHKINI(IAAAE,IAAAI)    'Initial heat transmission capacity between regions'
-* PARAMETER XHINVCOST(IAAAE,IAAAI) 'Investment cost in new heat transmission cap'
-* PARAMETER XHCOST(IAAAE,IAAAI)    'Heat transmission cost between countries'
-* PARAMETER XHLOSS(IAAAE,IAAAI)    'Heat transmission loss between regions'
+* PARAMETER XHKFX(IAAAE,IAAAI)    "Initial heat transmission capacity between regions"
+* PARAMETER XHINVCOST(IAAAE,IAAAI) "Investment cost in new heat transmission cap"
+* PARAMETER XHCOST(IAAAE,IAAAI)    "Heat transmission cost between countries"
+* PARAMETER XHLOSS(IAAAE,IAAAI)    "Heat transmission loss between regions"
 
-* Data for handling of annual hydro constraints in BB3:
-$ifi %bb3%==yes $include '../../base/addons/hyrsbb123/hyrsbb123includebb12data.inc';
+
+
 
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFDATALISTING%
 
-SCALAR PENALTYQ  'Penalty on violation of equation (non-negative)';
+SCALAR PENALTYQ  "Penalty on violation of equation (non-negative)";
 
 SET YMODEL "YMODEL is a set used to derive the years from Y in each Balbase4 model";
 ALIAS(YMODEL, IYMODEL4)
@@ -622,11 +619,11 @@ ALIAS (Y,IYALIAS2);
 
 ALIAS (S,ISALIAS);
 ALIAS (T,ITALIAS);
-ALIAS (Y,IYALIAS44);        !! TODO name
-ALIAS (Y,IY402);            !! IY402  TODO  name
-SET IY411(Y)                'IY411 The years in current Balbase4 model';
-SET IY410(Y)                'IY410 The years in the current Balbase4 model except the last year' ;
-SET IY401(Y)                'IY401 The years in the current Balbase4 model except the first year' ;
+ALIAS (Y,IYALIAS44);
+ALIAS (Y,IY402);
+SET IY411(Y)                "IY411 The years in current Balbase4 model";
+SET IY410(Y)                "IY410 The years in the current Balbase4 model except the last year" ;
+SET IY401(Y)                "IY401 The years in the current Balbase4 model except the first year" ;
 SET IY411FIRST(Y)           "The first year in the current Balbase4 model";
 SET IY411PREVY(Y,Y)         "For any given element in IY411 (index 1): the previous element in Y (index 2)";
 SET IYFIRST(Y)              "The first year in Y";
@@ -646,11 +643,11 @@ GINVCOST(IA,G)$((NOT GINVCOST(IA,G)) AND (SUM(Y,GKFX(Y,IA,G)) OR AGKN(IA,G))) = 
 *-------------------------------------------------------------------------------
 
 * Time aggregation:
-$ifi %timeaggr%==yes  $include '../../base/addons/TimeAggregation/timeaggr.inc';
+$ifi %timeaggr%==yes  $include '../../base/addons/timeaggregation/timeaggr.inc';
 
 
 * The following relates technology and fuel:
-SET IGF(GGG,FFF)   'Relation between technology type and fuel type';
+SET IGF(GGG,FFF)   "Relation between technology type and fuel type";
 
 * Internal scalars:
 
@@ -660,14 +657,14 @@ SCALAR IFIRSTYEARNEXTBB4 "First year in the next Balbase4 model";
 * Internal sets:
 
 
-SET IAGKFX(Y,AAA,G)    'Area, technology with positive endogenous capacity current simulation year';
-SET IXKN(Y,IRRRE,IRRRI)  'Pair of regions that may get new transmission capacity, yearly dependent';
+SET IAGKFX(Y,AAA,G)    "Area, technology with positive endogenous capacity current simulation year";
+SET IXKN(Y,IRRRE,IRRRI)  "Pair of regions that may get new transmission capacity, yearly dependent";
 
 
 * Specification of where new endogenous generation capacity may be located:
 
-SET IAGKN(AAA,G) 'Area, technology where technology may be invested based on AGKN and implicit year independent constraints from FKPOT';
-SET IAGKNY(Y,AAA,G) 'Area, technology where technology may be invested based on IAGKN and implicit constraint from first investment year';
+SET IAGKN(AAA,G) "Area, technology where technology may be invested based on AGKN and implicit year independent constraints from FKPOT";
+SET IAGKNY(Y,AAA,G) "Area, technology where technology may be invested based on IAGKN and implicit constraint from first investment year";
 
 
 * No investment in secondary combination technologies:
@@ -709,10 +706,10 @@ $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T)$((NOT GKRATE(IA,G,S,T)) AN
 
 * The following parameters contain information about CO2 and SO2 emission
 * from technology G based on the fuel used and its emission data:
-PARAMETER   IM_CO2(G)   'CO2 emission coefficient for fuel, fossil and renewable (kg/GJ)';
-PARAMETER   IM_CO2RE(G) 'CO2 emission coefficient for fuel, renewable part (kg/GJ)'; !! Hans
-PARAMETER   IM_SO2(G)   'SO2 emission coefficient for fuel (kg/GJ)';
-PARAMETER   IM_N2O(G)   'NO2 emission coefficient for fuel (kg/GJ)';
+PARAMETER   IM_CO2(G)   "CO2 emission coefficient for fuel, fossil and renewable (kg/GJ)";
+PARAMETER   IM_CO2RE(G) "CO2 emission coefficient for fuel, renewable part (kg/GJ)"; !! Hans
+PARAMETER   IM_SO2(G)   "SO2 emission coefficient for fuel (kg/GJ)";
+PARAMETER   IM_N2O(G)   "NO2 emission coefficient for fuel (kg/GJ)";
 
 LOOP(FFF, !! TODO: Check forbedringen af kode som givet p\E5 SONYstick
   IM_CO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDCO2');
@@ -730,33 +727,35 @@ LOOP(FFF, !! TODO: Check forbedringen af kode som givet p\E5 SONYstick
 * To be used in calculations below.
 
 
-PARAMETER IWEIGHSUMS          'Weight of the time of each season in S';
-PARAMETER IWEIGHSUMT          'Weight of the time of each time period in T ';
+PARAMETER IWEIGHSUMS          "Weight of the time of each season in S";
+PARAMETER IWEIGHSUMT          "Weight of the time of each time period in T";
 
 * The (arbitrary) units used in the input are converted to days and hours.
-PARAMETER IHOURSINST(SSS,T)   'Length of time segment (hours)';
+PARAMETER IHOURSINST(SSS,T)   "Length of time segment (hours)";
 
 * Annual amounts as expressed in the units of the weights and demands used
 * in input in the file var.inc:
 
-PARAMETER IDE_SUMST(RRR,DEUSER) 'Annual amount of nominal electricity demand (MWh)';
-PARAMETER IDH_SUMST(AAA,DHUSER) 'Annual amount of nominal heat demand (MWh)';
-PARAMETER IX3FXSUMST(RRR)     'Annual amount of fixed electricity export to third countries relative to X3FX_VAR_T and (S,T) (MWh)';
+PARAMETER IDE_SUMST(RRR,DEUSER) "Annual amount of nominal electricity demand (MWh)";
+PARAMETER IDH_SUMST(AAA,DHUSER) "Annual amount of nominal heat demand (MWh)";
+PARAMETER IX3FXSUMST(RRR)     "Annual amount of fixed electricity export to third countries relative to X3FX_VAR_T and (S,T) (MWh)";
 
 * Sums for finding the wind and solar generated electricity generation
 * as expressed in the units of the weights and demands used in input:
-PARAMETER IWND_SUMST(AAA)  'Annual amount of wind generated electricity relative to WND_VAR_T and (S,T) (MWh)';
-PARAMETER ISOLESUMST(AAA)  'Annual amount of solar generated electricity relative to ISOLESUMST and (S,T) (MWh)';
-PARAMETER ISOLHSUMST(AAA)  'Annual amount of solar generated heat relative to ISOLHSUMST and (S,T) (MWh)';
-PARAMETER IWAVESUMST(AAA)  'Annual amount of wave generated electricity relative to WND_VAR_T and (S,T) (MWh)';
-PARAMETER IWTRRSSUM(AAA)   'Annual amount of hydro from reservoirs generated electricity relative to IWTRRSSUM and (S,T) (MWh)';
-PARAMETER IWTRRRSUM(AAA)   'Annual amount of hydro-run-of-river generated electricity relative to IWTRRRSUM and (S,T) (MWh)';
+PARAMETER IWND_SUMST(AAA)  "Annual amount of wind generated electricity relative to WND_VAR_T and (S,T) (MWh)";
+PARAMETER ISOLESUMST(AAA)  "Annual amount of solar generated electricity relative to ISOLESUMST and (S,T) (MWh)";
+PARAMETER ISOLHSUMST(AAA)  "Annual amount of solar generated heat relative to ISOLHSUMST and (S,T) (MWh)";
+PARAMETER IWAVESUMST(AAA)  "Annual amount of wave generated electricity relative to WND_VAR_T and (S,T) (MWh)";
+PARAMETER IWTRRSSUM(AAA)   "Annual amount of hydro from reservoirs generated electricity relative to IWTRRSSUM and (S,T) (MWh)";
+PARAMETER IWTRRRSUM(AAA)   "Annual amount of hydro-run-of-river generated electricity relative to IWTRRRSUM and (S,T) (MWh)";
 
 *-------------------------------------------------------------------------------
 * Set the time weights depending on the model:
 *-------------------------------------------------------------------------------
-* To guard against division-by-zero and other errors make sure that the following sums do not have inappropriate values:
-* TODO: skelne mellem BB4(1:annual,noinvest),  BB4(2:annual,invest), BB4(3:Seasonal,noinvest)
+* The following code ensures that with time aggregation the energy content (MWh) in time series is conserved, but it does no ensure that the power (MW) is conserved.
+* To get an aggregation that preserves both energy,  power and possibly more, use an addon or auxil.
+
+
 IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 IWEIGHSUMT = SUM(T, WEIGHT_T(T));
 IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
@@ -783,7 +782,7 @@ $ontext                                                                         
 * and distribution costs.
 
 * Unit: Money/MWh.
-PARAMETER IDEFP_T(RRR,SSS,TTT,DEF)    'Prices on elastic electricity demand steps (Money/MWh)';
+PARAMETER IDEFP_T(RRR,SSS,TTT,DEF)    "Prices on elastic electricity demand steps (Money/MWh)";
 
 IDEFP_T(IR,S,T,DEF_D1) = DEF_STEPS(IR,S,T,'DF_PRICE',DEF_D1)*DEFP_BASE(IR)
 - SUM(C$CCCRRR(C,IR),TAX_DE(C)) - DISCOST_E(IR)
@@ -807,7 +806,7 @@ IDEFP_T(IR,S,T,DEF_U3) = DEF_STEPS(IR,S,T,'DF_PRICE',DEF_U3);
 
 * Unit: Money/MWh.
 
-PARAMETER IDHFP_T(AAA,SSS,TTT,DHF)   'Prices on elastic heat demand steps (Money/MWh)';
+PARAMETER IDHFP_T(AAA,SSS,TTT,DHF)   "Prices on elastic heat demand steps (Money/MWh)";
 
 IDHFP_T(IA,S,T,DHF)$(DHF_D1(DHF)+DHF_U1(DHF)+DHF_D2(DHF)+DHF_U2(DHF)+DHF_D2(DHF)+DHF_U2(DHF))=
    DHF_STEPS(IA,S,T,'DF_PRICE',DHF)*DHFP_BASE(IA) - SUM(C$ICA(C,IA),TAX_DH(C)) - DISCOST_H(IA)
@@ -821,33 +820,33 @@ $offtext
 * specified by GKFX and by accumulated endogeneous investments, respectively:
 
 * Taxes differentiated by G
-PARAMETER  ITAX_GF(AAA,G)   'Fuel taxes on heat-only units ()',  !! See Balmorel.gms
-           ITAX_GH(AAA,G)   'Heat taxes on generation units ()', !! See Balmorel.gms
-           ITAX_GE(AAA,G)   'Electricity taxes on generation units and subsidies(-) (Money/MWh)',    !! See Balmorel.gms
-           ITAX_KN(AAA,G)   'Tax (neg. subsidy) for investment in electricity generation (Money/MW)'; !! See Balmorel.gms
+PARAMETER  ITAX_GF(AAA,G)   "Fuel taxes on heat-only units ()",  !! See Balmorel.gms
+           ITAX_GH(AAA,G)   "Heat taxes on generation units ()", !! See Balmorel.gms
+           ITAX_GE(AAA,G)   "Electricity taxes on generation units and subsidies(-) (Money/MWh)",    !! See Balmorel.gms
+           ITAX_KN(AAA,G)   "Tax (neg. subsidy) for investment in electricity generation (Money/MW)"; !! See Balmorel.gms
 *          ITAX_IE(AAA,G)
 
 * Fuel use differentiated by fuel
-PARAMETER  IGMAXF_Y(CCCRRRAAA,FFF) 'Maximum fuel use per year (GJ)',  !! See Balmorel.gms
-           IGMINF_Y(CCCRRRAAA,FFF) 'Minimum fuel use per year (GJ)',  !! See Balmorel.gms
-           IGEQF_Y(CCCRRRAAA,FFF)  'Exact fuel use per year (GJ)';    !! See Balmorel.gms
+PARAMETER  IGMAXF_Y(CCCRRRAAA,FFF) "Maximum fuel use per year (GJ)",  !! See Balmorel.gms
+           IGMINF_Y(CCCRRRAAA,FFF) "Minimum fuel use per year (GJ)",  !! See Balmorel.gms
+           IGEQF_Y(CCCRRRAAA,FFF)  "Exact fuel use per year (GJ)";    !! See Balmorel.gms
 
 
 SET IXK_HASORPOT(Y,IRRRE,IRRRI) "Transmission lines with existing or potentially invested capacity current year";
 
 * Fixed exchange with third countries (MW) current simulation year:
-PARAMETER IX3FX_T(Y,RRR,S,T) 'Fixed export to third countries for each time segment (MW)';
+PARAMETER IX3FX_T(Y,RRR,S,T) "Fixed export to third countries for each time segment (MW)";
 
 * Inflow in areas each season:
 * The following is used in balbase1.sim and balbase2.sim
-PARAMETER IHYINF_S(AAA,SSS)  'Water inflow to hydro reservoirs in areas in each season (MWh/MW)';
+PARAMETER IHYINF_S(AAA,SSS)  "Water inflow to hydro reservoirs in areas in each season (MWh/MW)";
 
 * Inflow in areas each season:
 * The following is used in balbase1.sim and balbase2.sim
-PARAMETER IHYINF_S(AAA,SSS)  'Water inflow to hydro reservoirs in areas in each season (MWh/MW)';
+PARAMETER IHYINF_S(AAA,SSS)  "Water inflow to hydro reservoirs in areas in each season (MWh/MW)";
 
-PARAMETER IGROWTHCAPCG(C,G)  'Limit on growth of technology dependent on years between optimisation (MW) TODO';
-*PARAMETER IGKNMAX(Y,AAA,G)   'Maximum capacity at new technologies (MW)'; !!TODO. Relevant?   Presently not implemented.
+PARAMETER IGROWTHCAPCG(C,G)  "Limit on growth of technology dependent on years between optimisation (MW) TODO";
+*PARAMETER IGKNMAX(Y,AAA,G)   "Maximum capacity at new technologies (MW)"; !!TODO. Relevant?   Presently not implemented.
 
 *-------------------------------------------------------------------------------
 *----- Any internal parameters for addon to be placed here: --------------------
@@ -855,13 +854,8 @@ PARAMETER IGROWTHCAPCG(C,G)  'Limit on growth of technology dependent on years b
 
 $INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
 
-* These internal parameters pertain to price sensitivy electricity exchange with
-* third countries.
-$ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vinternal.inc';
 * These internal parameters and sets pertain to heat transmission.
 $if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.inc';
-
-$ifi %AGKNDISC%==yes   $include '../../base/addons/bb4/agkndisc/agkndiscinternals.inc';
 
 *-------------------------------------------------------------------------------
 *----- End: Any internal sets and parameters for addon to be placed here -------
@@ -957,13 +951,13 @@ $ifi %XKRATE_DOL%==IRRRE_IRRRI         IXKRATE(IRE,IRI,S,T) = XKRATE(IRE,IRI)$XK
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS     IXKRATE(IRE,IRI,S,T) = XKRATE(IRE,IRI,S)$XKRATE(IRE,IRI,S) + 1$(NOT XKRATE(IRE,IRI,S));
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT IXKRATE(IRE,IRI,S,T) = XKRATE(IRE,IRI,S,T)$XKRATE(IRE,IRI,S,T) + 1$(NOT XKRATE(IRE,IRI,S,T));
 
-PARAMETER IGMINF(YYY,CCCRRRAAA,FFF)         'Minimum annual fuel use by year, geography and fuel and (GJ)';
+PARAMETER IGMINF(YYY,CCCRRRAAA,FFF)         "Minimum annual fuel use by year, geography and fuel and (GJ)";
 $ifi %GMINF_DOL%==CCCRRRAAA_FFF             IGMINF(Y,CCCRRRAAA,FFF) = GMINF(CCCRRRAAA,FFF);
 $ifi %GMINF_DOL%==YYY_CCCRRRAAA_FFF         IGMINF(Y,CCCRRRAAA,FFF) = GMINF(Y,CCCRRRAAA,FFF);
-PARAMETER IGMAXF(YYY,CCCRRRAAA,FFF)         'Minimum annual fuel use by year, geography and fuel and (GJ)';
+PARAMETER IGMAXF(YYY,CCCRRRAAA,FFF)         "Minimum annual fuel use by year, geography and fuel and (GJ)";
 $ifi %GMAXF_DOL%==CCCRRRAAA_FFF             IGMAXF(Y,CCCRRRAAA,FFF) = GMAXF(CCCRRRAAA,FFF);
 $ifi %GMAXF_DOL%==YYY_CCCRRRAAA_FFF         IGMAXF(Y,CCCRRRAAA,FFF) = GMAXF(Y,CCCRRRAAA,FFF);
-PARAMETER IGEQF(YYY,CCCRRRAAA,FFF)          'Exact annual (any year) fuel use by geography and fuel (GJ)';
+PARAMETER IGEQF(YYY,CCCRRRAAA,FFF)          "Exact annual (any year) fuel use by geography and fuel (GJ)";
 $ifi %GEQF_DOL%==CCCRRRAAA_FFF              IGEQF(Y,CCCRRRAAA,FFF) = GEQF(CCCRRRAAA,FFF);
 $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF          IGEQF(Y,CCCRRRAAA,FFF) = GEQF(Y,CCCRRRAAA,FFF);
 
@@ -996,9 +990,9 @@ PARAMETER IORD_IY(YMODEL)    "The ord of the years Y over which the present Balb
 FREE     VARIABLE VOBJ                             "Objective function value (MMoney)"; !! Unit seems to be Money
 POSITIVE VARIABLE VGE_T(Y,AAA,G,S,T)               "Electricity generation (MW)";
 POSITIVE VARIABLE VGH_T(Y,AAA,G,S,T)               "Heat generation (MW)";
-POSITIVE VARIABLE VGF_T(Y,AAA,G,S,T)               "Fuel consumption rate (), existing units"
+POSITIVE VARIABLE VGF_T(Y,AAA,G,S,T)               "Fuel consumption rate (MW), existing units";
 POSITIVE VARIABLE VX_T(Y,IRRRE,IRRRI,S,T)          "Electricity export from region IRRRE to IRRRI (MW)";
-POSITIVE VARIABLE VGKN(Y,AAA,G)                    "New generation capacity (MW)";  !! se kommentarer til YYY  i bb4.sim Hans TODO
+POSITIVE VARIABLE VGKN(Y,AAA,G)                    "New generation capacity (MW);  for storages (MWh) ";
 POSITIVE VARIABLE VXKN(Y,IRRRE,IRRRI)              "New electricity transmission capacity (MW)";
 POSITIVE VARIABLE VDECOM(YYY,AAA,G)                "Decommissioned capacity(MW). NOT IN USE PRESENTLY";
 POSITIVE VARIABLE VGHYPMS_T(Y,AAA,S,T)             "Contents of pumped hydro storage (MWh)";
@@ -1020,11 +1014,6 @@ POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)                "Accumulated new tr
 *----- Any variables, and possibly equations, for addon to be placed here: -----
 
 $include "../../base/addons/_hooks/vardeclare.inc"
-
-*-------------------------------------------------------------------------------
-
-* Discrete size investments: (both variables and equations are in this file)
-$ifi %AGKNDISC%==yes $include "../../base/addons/bb4/agkndisc/agkndiscvarsequas.inc";
 
 *-------------------------------------------------------------------------------
 *----- End: Any variables, and possibly equations, for addon to be placed here:
@@ -1083,44 +1072,44 @@ EQUATIONS
    QESTOVGETLIMS(Y,AAA,G,S,T)"Inter-seasonal Electricity storage output limit (MW)"
 
 
-   QKEFUELC(Y,C,FFF)        "Maximum electricty capacity by year, country and fuel ()"  !!  () todo
-   QKEFUELR(Y,RRR,FFF)      "Maximum electricty capacity by year, region and fuel ()"  !!  () todo
-   QKEFUELA(Y,AAA,FFF)      "Maximum electricty capacity by year, area and fuel ()"  !!  () todo
+   QKEFUELC(Y,C,FFF)        "Maximum electricty capacity by year, country and fuel (MW)"
+   QKEFUELR(Y,RRR,FFF)      "Maximum electricty capacity by year, region and fuel (MW)"
+   QKEFUELA(Y,AAA,FFF)      "Maximum electricty capacity by year, area and fuel (MW)"
 
-   QGMINFUELC(Y,C,FFF)      "Minimum electricity generation year, country and fuel ()"  !!  () todo
-   QGMAXFUELC(Y,C,FFF)      "Maximum electricity generation year, country and fuel ()"  !!  () todo
-   QGMINFUELR(Y,RRR,FFF)    "Minimum electricity generation by year, region and fuel ()"  !!  () todo
-   QGMAXFUELR(Y,RRR,FFF)    "Maximum electricity generation by year, region and fuel ()"  !!  () todo
-   QGMINFUELA(Y,AAA,FFF)    "Minimum electricity generation by year, area and fuel ()"  !!  () todo
-   QGMAXFUELA(Y,AAA,FFF)    "Maximum electricity generation by year, area and fuel ()"  !!  () todo
+   QGMINFUELC(Y,C,FFF)      "Minimum electricity generation year, country and fuel (MWh)"
+   QGMAXFUELC(Y,C,FFF)      "Maximum electricity generation year, country and fuel (MWh)"
+   QGMINFUELR(Y,RRR,FFF)    "Minimum electricity generation by year, region and fuel (MWh)"
+   QGMAXFUELR(Y,RRR,FFF)    "Maximum electricity generation by year, region and fuel (MWh)"
+   QGMINFUELA(Y,AAA,FFF)    "Minimum electricity generation by year, area and fuel (MWh)"
+   QGMAXFUELA(Y,AAA,FFF)    "Maximum electricity generation by year, area and fuel (MWh)"
 
-   QGMINCF(Y,C,FFF)         "Minimum fuel use by year, country and fuel ()"
-   QGMAXCF(Y,C,FFF)         "Maximum fuel use by year, country and fuel ()"
-   QGEQCF(Y,C,FFF)          "Exact fuel use by year, country and fuel ()"
-   QGMINRF(Y,RRR,FFF)       "Minimum fuel use by year, region and fuel  ()"
-   QGMAXRF(Y,RRR,FFF)       "Maximum fuel use by year, region and fuel constraint ()"
-   QGEQRF(Y,RRR,FFF)        "Exact fuel use by year, region and fuel ()"
-   QGMINAF(Y,AAA,FFF)       "Minimum fuel use by year, area and fuel ()"
-   QGMAXAF(Y,AAA,FFF)       "Maximum fuel use by year, area and fuel ()"
-   QGEQAF(Y,AAA,FFF)        "Exact fuel use by year, area and fuel ()"
-   QKMINFC(Y,C,FFF)         "Minimum capacity by year, country and fuel ()"  !!  () todo !! renamed from QKMAXFC(Y,C,FFF), similar with others below  Hans
-   QKMAXFC(Y,C,FFF)         "Maximum capacityby year, country and fuel ()"  !!  () todo
-   QKEQFC(Y,C,FFF)          "Exact capacity by year, country and fuel ()"  !!  () todo
-   QKMINFR(Y,RRR,FFF)       "Minimum capacity by year, region and fuel ()"  !!  () todo
-   QKMAXFR(Y,RRR,FFF)       "Maximum capacity by year, region and fuel ()"  !!  () todo
-   QKEQFR(Y,RRR,FFF)        "Exact capacity by year, region and fuel ()"  !!  () todo
-   QKMINFA(Y,AAA,FFF)       "Minimum capacity by year, area and fuel ()"  !!  () todo !! renamed from QKMAXFC(Y,C,FFF), similar with others below   Hans
-   QKMAXFA(Y,AAA,FFF)       "Maximum capacity by year, area and fuel ()"
-   QKEQFA(Y,AAA,FFF)        "Exact capacity by year, area and fuel ()"
-   QKMINFNA(Y,FFF)          "Minimum capacity by year and fuel constraint (aggregated countries) ()"  !!  () todo
-   QKMAXFNA(Y,FFF)          "Maximum capacity by year and fuel constraint (aggregated countries) ()"  !!  () todo
-   QKEQFNA(Y,FFF)           "Exact capacity by year and fuel constraint (aggregated countries) ()"  !!  () todo
+   QGMINCF(Y,C,FFF)         "Minimum fuel use by year, country and fuel (GJ)"
+   QGMAXCF(Y,C,FFF)         "Maximum fuel use by year, country and fuel (GJ)"
+   QGEQCF(Y,C,FFF)          "Exact fuel use by year, country and fuel (GJ)"
+   QGMINRF(Y,RRR,FFF)       "Minimum fuel use by year, region and fuel  (GJ)"
+   QGMAXRF(Y,RRR,FFF)       "Maximum fuel use by year, region and fuel constraint (GJ)"
+   QGEQRF(Y,RRR,FFF)        "Exact fuel use by year, region and fuel (GJ)"
+   QGMINAF(Y,AAA,FFF)       "Minimum fuel use by year, area and fuel (GJ)"
+   QGMAXAF(Y,AAA,FFF)       "Maximum fuel use by year, area and fuel (GJ)"
+   QGEQAF(Y,AAA,FFF)        "Exact fuel use by year, area and fuel (GJ)"
+   QKMINFC(Y,C,FFF)         "Minimum capacity by year, country and fuel (MW)" !! renamed from QKMAXFC(Y,C,FFF), similar with others below  Hans
+   QKMAXFC(Y,C,FFF)         "Maximum capacityby year, country and fuel (MW)"
+   QKEQFC(Y,C,FFF)          "Exact capacity by year, country and fuel (MW)"
+   QKMINFR(Y,RRR,FFF)       "Minimum capacity by year, region and fuel (MW)"
+   QKMAXFR(Y,RRR,FFF)       "Maximum capacity by year, region and fuel (MW)"
+   QKEQFR(Y,RRR,FFF)        "Exact capacity by year, region and fuel (MW)"
+   QKMINFA(Y,AAA,FFF)       "Minimum capacity by year, area and fuel (MW)"  !! renamed from QKMAXFC(Y,C,FFF), similar with others below   Hans
+   QKMAXFA(Y,AAA,FFF)       "Maximum capacity by year, area and fuel (MW)"
+   QKEQFA(Y,AAA,FFF)        "Exact capacity by year, area and fuel (MW)"
+   QKMINFNA(Y,FFF)          "Minimum capacity by year and fuel constraint (aggregated countries) (MW)"
+   QKMAXFNA(Y,FFF)          "Maximum capacity by year and fuel constraint (aggregated countries) (MW)"
+   QKEQFNA(Y,FFF)           "Exact capacity by year and fuel constraint (aggregated countries) (MW)"
 
-   QLIMCO2(Y,C)             "Limit on annual CO2-emission by year and country ()"
-   QLIMSO2(Y,C)             "Limit on annual SO2 emission by year and country ()"
-   QLIMNOX(Y,C)             "Limit on annual NOx emission by year and country ()"
+   QLIMCO2(Y,C)             "Limit on annual CO2-emission by year and country (kg/MW)"
+   QLIMSO2(Y,C)             "Limit on annual SO2 emission by year and country (kg/MW)"
+   QLIMNOX(Y,C)             "Limit on annual NOx emission by year and country (kg/MW)"
 
-   QLIMCO2NA(Y)             "Limit on annual CO2-emission by year (aggregated countries) ()"
+   QLIMCO2NA(Y)             "Limit on annual CO2-emission by year (aggregated countries) (kg/MW)"
 
    QHYFXRW(Y,RRR,S)         "Hydro with reservoir available for this region and season (MWh)"
    QHYFXCW(Y,C,S)           "Hydro with reservoir available for this country and season (MWh)"
@@ -1135,7 +1124,7 @@ EQUATIONS
 
 
 *Balbase4: ---------------------------------------------------------------------
-QGKNACCUMNET(Y,AAA,G)             "NOT FINISHED Accumulated new investments minus decommissioning of previous investments due to lifetime expiration available at beginning of next year (MW)"
+QGKNACCUMNET(Y,AAA,G)             "Accumulated new investments minus decommissioning of previous investments due to lifetime expiration available at beginning of next year (MW)"
 QGKNACCUMGROSS(Y,AAA,G)           "Accumulated new investments available at beginning of next year (MW)"
 QGKE_UP(Y,AAA,G,S,T)              "Capacity constraint on electricity generation (MW)"
 QGKH_UP(Y,AAA,G,S,T)              "Capacity constraint on heat generation (MW)"
@@ -1151,7 +1140,7 @@ QSOLEDISPATCH(Y,AAA,G,S,T)        "Solar electricity generation can not be dispa
 QSOLHDISPATCH(Y,AAA,G,S,T)        "Solar heat generation can not be dispatched (MW)"
 QWAVEDISPATCH(Y,AAA,G,S,T)        "Wave electricity generation can not be dispatched (MW)"
 QXKN(Y,IRRRE,IRRRI)               "New transmission investment  - NOT IMPLEMENTED PRESENTLYT (MW)"
-QXKNACCUMNET(Y,IRRRE,IRRRI)       "NOT FINISHED, TODO, Accumulated new transmission investments available at beginning of next year (MW)"
+QXKNACCUMNET(Y,IRRRE,IRRRI)       "Accumulated new transmission investments available at beginning of next year (MW)"
 QXKNACCUMGROSS(Y,IRRRE,IRRRI)     "Accumulated new transmission investments available at beginning of next year (MW)"
 QXK_UP(Y,IRRRE,IRRRI,S,T)         "Capacity constraint on electricity transmission (MW)"
 QXINVSYMMETRY(Y,IRRRE,IRRRI)      "Transmission investments are set symetric(MW)"
@@ -1176,7 +1165,7 @@ QOBJ ..
    VOBJ =E=
 
 $ifi %BB4%==yes  SUM(Y$IY411(Y),
-* Objective equation with time discounting of years and with weighting of years that are in Y but not in YYY
+* Objective equation of years and with weighting of years that are in Y but not in YYY
 IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 * Cost of fuel consumption during the year:
@@ -1216,8 +1205,6 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
    + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))))
 
 
-$ifi %AGKNDISC%==yes  $include "../../base/addons/bb4/agkndisc/agkndiscaddqobj.inc";
-
 * Investment costs, new transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):
 * TODO: sammenlign med SONYstick:
@@ -1239,7 +1226,6 @@ $ifi %AGKNDISC%==yes  $include "../../base/addons/bb4/agkndisc/agkndiscaddqobj.i
          IHOURSINST(IS3,T) * TAX_F(FFF,C) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)))
 
 
-* More fuel taxes on technology types.   TODO
 /*  Not completely implemented yet - kept as appetizer.
    + SUM((Y,IA,IGH,IS3,T)$(IAGK(Y,IA,IGH) and (IGHOB(IGH) or IGETOH(IGH))),  IAGK -> IAGKFX
       TAX_FHO(Y,IA,IGH)*IHOURSINST(IS3,T)  * IOF3P6 * GDATA(IGH,'GDCV')* VGH_T(Y,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE') * -GEFFRATE(IA,IGH)))
@@ -1256,14 +1242,6 @@ $ifi %AGKNDISC%==yes  $include "../../base/addons/bb4/agkndisc/agkndiscaddqobj.i
 
 $include "../../base/addons/_hooks/qobj.inc";
 
-* This file containts the gas induced additions to the objective function.
-$ifi %GAS%==yes $include "../../base/addons/gas/gascosts.inc"
-* Electricity transmission with variable amounts
-$ifi %X3V%==yes $include "../../base/addons/x3v/model/x3vobj.inc";
-* This file contains hydrogen induced additions to the objective function.
-$ifi %NAP%==yes $include "../../base/addons/NAP/NAPobj.inc";
-* This file contains transport induced additions to the objective function (KHED)
-$ifi %TSP%==yes $include "../../base/addons/Transport/TSPObj.inc"
 * This file contains Heat transmission induced additions to the objective function.
 $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htcosts.inc";
 
@@ -1289,15 +1267,12 @@ QEEQ(IY411,IR,IS3,T) ..
     - SUM(IA$RRRAAA(IR,IA),SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),VESTOLOADT(IY411,IA,IS3,T)))
     - SUM(IA$RRRAAA(IR,IA),SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),VESTOLOADTS(IY411,IA,IS3,T)))
 
-$ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VIM_T(IR,X3VPLACE,X3VSTEP,IS3,T)))
-* This file contains transport induced additions to the balance equation(KHED)
-$ifi %TSP%==yes $include "../../base/addons/Transport/TSPQEEQ.inc"
     =E=
       IX3FX_T(IY411,IR,IS3,T)
     + (   (SUM(DEUSER, ((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0))
       )/(1-DISLOSS_E(IR)))
       + SUM(IRI$IXK_HASORPOT(IY411,IR,IRI),VX_T(IY411,IR,IRI,IS3,T))
-$ifi %X3V%==yes + SUM(X3VPLACE$X3VX(IR,X3VPLACE),SUM(X3VSTEP,VX3VEX_T(IR,X3VPLACE,X3VSTEP,IS3,T)))
+
 
 $include "../../base/addons/_hooks/qeeq.inc"
 ;
@@ -1333,7 +1308,7 @@ QGFEQ(IY411,IA,G,IS3,T)$IAGK_HASORPOT(IY411,IA,G) ..
 +  ( ((GDATA(G,'GDCB')*((VGH_T(IY411,IA,G,IS3,T)*GDATA(G,'GDBYPASSC') + VGE_T(IY411,IA,G,IS3,T))/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G)))))
    + ((GDATA(G,'GDCV')*((VGH_T(IY411,IA,G,IS3,T)*GDATA(G,'GDBYPASSC') + VGE_T(IY411,IA,G,IS3,T))/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G)))))
    )$IGBYPASS(G)
-$ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_qgfeqadd.inc';
+$ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/bb4/uc_qgfeqadd.inc';
 ;
 
 *------ Generation technologies" electricity/heat operating area: --------------
@@ -1447,6 +1422,7 @@ QESTOVOLT(IY411,IA,IS3,T)$(SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),1))..
 $include "../../base/addons/_hooks/qestovolt.inc"
 ;
 
+* "Inter-seasonal electricty storage dynamic equation (MWh)"
 QESTOVOLTS(IY411,IA,S,T)$(SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),1))..
     VESTOVOLTS(IY411,IA,S,T)
   + CHRONOHOUR(S,T)*
@@ -1469,7 +1445,7 @@ QHSTOVOLT(IY411,IA,IS3,T)$(SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO),1))..
 $include "../../base/addons/_hooks/qhstovolt.inc"
 ;
 
-
+*  "Inter-seasonal heat storage dynamic equation (MWh)"
 QHSTOVOLTS(IY411,IA,S,T)$(SUM(IGHSTOS$IAGK_HASORPOT(IY411,IA,IGHSTOS),1))..
     VHSTOVOLTS(IY411,IA,S,T)
   + CHRONOHOUR(S,T)*
@@ -1486,7 +1462,7 @@ $include "../../base/addons/_hooks/qhstovolts.inc"
 
 
 
-
+* "Intra-seasonal Heat storage loading less than heat production (MW)"
 QHSTOLOADT(IY411,IA,IS3,T)$(SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO),1))..
 * This equation is believed to be superfluous, as storage loading is
 * restricted to be less than generation minus demand in the heat balance equation.
@@ -1496,6 +1472,7 @@ QHSTOLOADT(IY411,IA,IS3,T)$(SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO),1))..
    VHSTOLOADT(IY411,IA,IS3,T)
 ;
 
+* "Inter-seasonal Heat storage loading less than heat production (MW)"
 QHSTOLOADTS(IY411,IA,S,T)$(SUM(IGHSTOS$IAGK_HASORPOT(IY411,IA,IGHSTOS),1))..
 * This equation is believed to be superfluous, as storage loading is
 * restricted to be less than generation minus demand in the heat balance equation.
@@ -1567,7 +1544,7 @@ QESTOLOADTLIMS(IY411,IA,S,T)$(SUM(IGESTOS$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IA
 
 
 
-
+* "Intra-seasonal Heat storage output limit (MW)"
 QHSTOVGHTLIM(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTO)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
      (   GKFX(IY411,IA,IGHSTO)/GDATA(IGHSTO,"GDSTOHUNLD")
@@ -1579,7 +1556,7 @@ QHSTOVGHTLIM(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO) AND SUM(Y$(Y
 ;
 
 
-
+* "Inter-seasonal Heat storage output limit (MW)"
 QHSTOVGHTLIMS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
      (   GKFX(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,"GDSTOHUNLD")
@@ -1591,7 +1568,7 @@ QHSTOVGHTLIMS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND SUM(Y$(
 ;
 
 
-
+* "Intra-seasonal Electricity storage output limit (MW)"
 QESTOVGETLIM(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTO)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
 
@@ -1637,7 +1614,7 @@ QHSTOVOLTLIMS(IY411,IA,S,T)$(SUM(IGHSTOS$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAG
   VHSTOVOLTS(IY411,IA,S,T)
 ;
 
-
+* "Inter-seasonal Electricity storage capacity limit (MWh)"
 QESTOVOLTLIM(IY411,IA,IS3,T)$(SUM(IGESTO$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTO)) AND IAGK_HASORPOT(IY411,IA,IGESTO)),1))..
 * Existing or accumulated capacity
   SUM(IGESTO$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTO)) AND IAGK_HASORPOT(IY411,IA,IGESTO)),
@@ -1663,6 +1640,7 @@ QESTOVOLTLIMS(IY411,IA,S,T)$(SUM(IGESTOS$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAG
 
 *---------- Fuel restrictions --------------------------------------------------
 
+* "Maximum electricty capacity by year, country and fuel (MW)"
 QKEFUELC(IY411,C,FFF)$FKPOT(C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
@@ -1670,7 +1648,7 @@ QKEFUELC(IY411,C,FFF)$FKPOT(C,FFF).. !! EPS convention on FKPOT: 0 implies no re
 $include "../../base/addons/_hooks/qkefuelc.inc"
 ;
 
-
+* "Maximum electricty capacity by year, region and fuel (MW)"
 QKEFUELR(IY411,IR,FFF)$FKPOT(IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND RRRAAA(IR,IA)), VGKNACCUMNET(IY411,IA,G))
@@ -1678,6 +1656,7 @@ QKEFUELR(IY411,IR,FFF)$FKPOT(IR,FFF).. !! EPS convention on FKPOT: 0 implies no 
 $include "../../base/addons/_hooks/qkefuelr.inc"
 ;
 
+* "Maximum electricty capacity by year, area and fuel (MW)"
 QKEFUELA(IY411,IA,FFF)$FKPOT(IA,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM(G$(IAGKFX(IY411,IA,G) AND IGF(G,FFF)), GKFX(IY411,IA,G))
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF)), VGKNACCUMNET(IY411,IA,G))
@@ -1688,26 +1667,32 @@ $include "../../base/addons/_hooks/qkefuela.inc"
 *---------- Fuel restrictions - end --------------------------------------------
 *--- Electricity generation restrictions by fuel -------------------------------
 
+* "Minimum electricity generation year, country and fuel (MWh)"
 QGMINFUELC(IY411,C,FFF)$FGEMIN(C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND ICA(C,IA)),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
       =G= FGEMIN(C,FFF);
 
+* "Maximum electricity generation year, country and fuel (MWh)"
 QGMAXFUELC(IY411,C,FFF)$FGEMAX(C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND ICA(C,IA)),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
       =L= FGEMAX(C,FFF);
 
+* "Minimum electricity generation by year, region and fuel (MWh)"
 QGMINFUELR(IY411,IR,FFF)$FGEMIN(IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND RRRAAA(IR,IA)),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
       =G= FGEMIN(IR,FFF);
 
+* "Maximum electricity generation by year, region and fuel (MWh)"
 QGMAXFUELR(IY411,IR,FFF)$FGEMAX(IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND RRRAAA(IR,IA)),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
       =L= FGEMAX(IR,FFF);
 
+* "Minimum electricity generation by year, area and fuel (MWh)"
 QGMINFUELA(IY411,IA,FFF)$FGEMIN(IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,IGE)$IGF(IGE,FFF),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
                 =G= FGEMIN(IA,FFF);
 
+* "Maximum electricity generation by year, area and fuel (MWh)"
 QGMAXFUELA(IY411,IA,FFF)$FGEMAX(IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,IGE)$IGF(IGE,FFF),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
       =L= FGEMAX(IA,FFF);
@@ -1715,39 +1700,47 @@ QGMAXFUELA(IY411,IA,FFF)$FGEMAX(IA,FFF)..
 
 *--- Fuel use restrictions by fuel--------------------------------------------
 
-
+* "Minimum fuel use by year, country and fuel (GJ)"
 QGMINCF(IY411,C,FFF)$IGMINF(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =G= IGMINF(IY411,C,FFF);
 
+* "Maximum fuel use by year, country and fuel (GJ)"
 QGMAXCF(IY411,C,FFF)$IGMAXF(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =L= IGMAXF(IY411,C,FFF);
 
+* "Exact fuel use by year, country and fuel (GJ)"
 QGEQCF(IY411,C,FFF)$IGEQF(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =E= IGEQF(IY411,C,FFF);
 
+* "Minimum fuel use by year, region and fuel  (GJ)"
 QGMINRF(IY411,IR,FFF)$IGMINF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =G= IGMINF(IY411,IR,FFF);
 
+* "Maximum fuel use by year, region and fuel constraint (GJ)"
 QGMAXRF(IY411,IR,FFF)$IGMAXF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =L= IGMAXF(IY411,IR,FFF);
 
+* "Exact fuel use by year, region and fuel (GJ)"
 QGEQRF(IY411,IR,FFF)$IGEQF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =E= IGEQF(IY411,IR,FFF);
 
+* "Minimum fuel use by year, area and fuel (GJ)"
 QGMINAF(IY411,IA,FFF)$IGMINF(IY411,IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =G= IGMINF(IY411,IA,FFF);
 
+* "Maximum fuel use by year, area and fuel (GJ)"
 QGMAXAF(IY411,IA,FFF)$IGMAXF(IY411,IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =L= IGMAXF(IY411,IA,FFF);
 
+* "Exact fuel use by year, area and fuel (GJ)"
 QGEQAF(IY411,IA,FFF)$IGEQF(IY411,IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =E= IGEQF(IY411,IA,FFF);
@@ -1755,36 +1748,43 @@ QGEQAF(IY411,IA,FFF)$IGEQF(IY411,IA,FFF)..
 
 *--- Capacity restrictions by fuel--------------------------------------------
 
+* "Minimum capacity by year, country and fuel (MW)" !! renamed from QKMAXFC(Y,C,FFF), similar with others below  Hans
 QKMINFC(IY411,C,FFF)$FKMIN(IY411,C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
       =G=  FKMIN(IY411,C,FFF);
 
+* "Maximum capacityby year, country and fuel (MW)"
 QKMAXFC(IY411,C,FFF)$FKMAX(IY411,C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
       =L=  FKMAX(IY411,C,FFF);
 
+* "Exact capacity by year, country and fuel (MW)"
 QKEQFC(IY411,C,FFF)$FKEQ(IY411,C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
       =E=  FKEQ(IY411,C,FFF);
 
+* "Minimum capacity by year, region and fuel (MW)"
 QKMINFR(IY411,IR,FFF)$FKMIN(IY411,IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND RRRAAA(IR,IA)), VGKNACCUMNET(IY411,IA,G))
       =G=  FKMIN(IY411,IR,FFF);
 
+* "Maximum capacity by year, region and fuel (MW)"
 QKMAXFR(IY411,IR,FFF)$FKMAX(IY411,IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND RRRAAA(IR,IA)), VGKNACCUMNET(IY411,IA,G))
       =L=  FKMAX(IY411,IR,FFF);
 
+* "Exact capacity by year, region and fuel (MW)"
 QKEQFR(IY411,IR,FFF)$FKEQ(IY411,IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND RRRAAA(IR,IA)), VGKNACCUMNET(IY411,IA,G))
       =E=  FKEQ(IY411,IR,FFF);
 
+* "Minimum capacity by year, area and fuel (MW)"  !! renamed from QKMAXFC(Y,C,FFF), similar with others below   Hans
 QKMINFNA(IY411,FFF)$FKMINNA(IY411,FFF).. !! 0 implies no restriction, "EPS" implies zero MW.
      SUM(C,
           SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
@@ -1793,6 +1793,7 @@ QKMINFNA(IY411,FFF)$FKMINNA(IY411,FFF).. !! 0 implies no restriction, "EPS" impl
       =G=  FKMINNA(IY411,FFF);
 
 
+* "Maximum capacity by year, area and fuel (MW)"
 QKMAXFNA(IY411,FFF)$FKMAXNA(IY411,FFF).. !! 0 implies no restriction, "EPS" implies zero MW.
      SUM(C,
          (  SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
@@ -1800,6 +1801,7 @@ QKMAXFNA(IY411,FFF)$FKMAXNA(IY411,FFF).. !! 0 implies no restriction, "EPS" impl
          ))
       =L=  FKMAXNA(IY411,FFF);
 
+*  "Exact capacity by year, area and fuel (MW)"
 QKEQFNA(IY411,FFF)$FKEQNA(IY411,FFF).. !! 0 implies no restriction, "EPS" implies zero MW.
      SUM(C,
          (  SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
@@ -1834,6 +1836,7 @@ QXKNACCUMNET(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXKN(Y,IRE,IRI)).
 $include "../../base/addons/_hooks/qxknaccumnet.inc"
 ;
 
+* "Transmission investments are set symetric(MW)"
 QXINVSYMMETRY(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
    VXKN(IY411,IRI,IRE)
          =E=
@@ -1844,32 +1847,36 @@ QXINVSYMMETRY(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
 
 *------------ Emissions: ------------------------------------------------------
 
+* "Limit on annual CO2-emission by year and country (kg/MW)"
 QLIMCO2(IY411,C)$(M_POL(IY411,'LIM_CO2',C) AND (M_POL(IY411,'LIM_CO2',C) LT INF))..
       SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
       =L= M_POL(IY411,'LIM_CO2',C);
 
+* "Limit on annual SO2 emission by year and country (kg/MW)"
 QLIMSO2(IY411,C)$(M_POL(IY411,'LIM_SO2',C) AND (M_POL(IY411,'LIM_SO2',C) LT INF))..
       SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_SO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
        =L= M_POL(IY411,'LIM_SO2',C);
 
+* "Limit on annual NOx emission by year and country (kg/MW)"
 QLIMNOX(IY411,C)$(M_POL(IY411,'LIM_NOX',C) AND (M_POL(IY411,'LIM_NOX',C) LT INF))..
      SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (GDATA(G,'GDNOX') * IOF0000001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
       =L= M_POL(IY411,'LIM_NOX',C);
 
+* "Limit on annual CO2-emission by year (aggregated countries) (kg/MW)"
 QLIMCO2NA(IY411)$(M_POLNA(IY411,'LIM_CO2') AND (M_POLNA(IY411,'LIM_CO2') LT INF))..
       SUM(C,
          SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
          )
       =L= M_POLNA(IY411,'LIM_CO2');
 
-
+* "Maximal investment by country and fuel during one simulated year (MW)"
 QMAXINVESTCF(IY411,C,FFF)$(FMAXINVEST(C,FFF) AND (FMAXINVEST(C,FFF) LT INF)) ..
          FMAXINVEST(C,FFF)
  =G=
          SUM((IAGKNY(IY411,IA,G))$(ICA(C,IA) and IGF(G,FFF)), VGKN(IY411,IA,G))
 ;
 
-
+* "Maximal investment by aggerated countries and fuel during one simulated year (MW)"
 QMAXINVESTNAF(IY411,FFF)$(FMAXINVESTNA(IY411,FFF) AND (FMAXINVESTNA(IY411,FFF) LT INF)) ..
          FMAXINVESTNA(IY411,FFF)
  =G=
@@ -1886,6 +1893,7 @@ QMAXINVESTNAF(IY411,FFF)$(FMAXINVESTNA(IY411,FFF) AND (FMAXINVESTNA(IY411,FFF) L
 * Accumulated endogenous transmission investments during present BB4 model -----
 * TODO: The "NET" version is not correct, it is presently identical to "GROSS"
 
+* "Accumulated new investments available at beginning of next year (MW)"
 QGKNACCUMGROSS(IY411,IA,IGKFIND)$IAGKN(IA,IGKFIND)..
 * VGKNACCUMGROSS at end of this year (available at beginning of next year):
    VGKNACCUMGROSS(IY411,IA,IGKFIND)
@@ -1900,7 +1908,7 @@ $include "../../base/addons/_hooks/qgknaccumgross.inc"
 * Accumulated new endogenous net generation capacity investments during present BB4 model
 *-------------------------------------------------------------------------------
 
-* Not finished, TODO: does not take into account that some previously endogenously invested technologies are decommissioned.
+
 QGKNACCUMNET(IY411,IA,IGKFIND)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKFIND)) OR SUM(Y$(YVALUE(Y)< YVALUE(IY411)),DECOM_G(Y,IY411,IA,IGKFIND)))..
 * VGKNACCUMNET at end of this year (available at beginning of next year):
    VGKNACCUMNET(IY411,IA,IGKFIND)
@@ -2053,37 +2061,13 @@ $ifi %GWAVE_DOL%==AAA_GGG   (WAVEFLH(IA,IGWAVE) * (
 
 $include "../../base/addons/_hooks/eqndecdef.inc"
 
-* These add-on equations pertain to combination technologies.
-*$ifi %COMBTECH%==yes $include "../../base/addons/combtech/combEQ.inc";
-
-* These add-on equations pertain to price sensitive electricity exchange with
-* third countries.
-$ifi %X3V%==yes $include "../../base/addons/x3v/model/x3veq.inc";
-
-* These add-on equations pertain to transport(KHED)
-$ifi %TSP%==yes $INCLUDE "../../base/addons/Transport/TSPEquations.inc";
-
 * These add-on equations pertain to targets for wind power.
 $ifi not %WINDTARGET%==yes $goto end_windtarget_eq
 $ifi EXIST "wndtargetdata.inc" $include "wndtargetdata.inc";
-$ifi not EXIST "wndtargetdata.inc"$INCLUDE "../../base/addons/windtarget/wndtargetdata.inc";
-$INCLUDE "../../base/addons/windtarget/windequations.inc";
 $label end_windtarget_eq
 
 * These add-on equations pertain to heat transmission.
 $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htequations.inc";
-
-* These add-on equations pertain to targets for renewables.
-$ifi %RENEWTARGET%==yes $INCLUDE "../../base/addons/renewtarget/renewdata.inc";
-$ifi %RENEWTARGET%==yes $INCLUDE "../../base/addons/renewtarget/reneweqn.inc";
-
-* These add-on equations pertain to capping fossil fuel consumption.
-$ifi %FOSSILTARGET%==yes $INCLUDE "../../base/addons/fossiltarget/fossildata.inc";
-$ifi %FOSSILTARGET%==yes $INCLUDE "../../base/addons/fossiltarget/fossileqn.inc";
-
-$ifi %REShareE%==yes $include  "../../base/addons/REShareE/RESEeqns.inc";
-$ifi %REShareEH%==yes $include "../../base/addons/REShareEH/RESEHeqns.inc";
-
 
 *-------------------------------------------------------------------------------
 *----- End: Any equations for addon to be placed here. -------------------------
@@ -2202,17 +2186,10 @@ $ontext
 *--- Investment restricitions --------------------------------------------------
                                 QMAXINVESTCF
 *                               QMAXINVESTGROWTHCG
-$ifi %X3VfxQ%==yes              QX3VBAL
-$ifi %WINDTARGET%==yes $include "../../base/addons/windtarget/wndtargetbb12.inc";
-$ifi %COMBTECH%==yes $include "../../base/addons/combtech/combbb2.inc";
-$ifi %GAS%==yes $INCLUDE "../../base/addons/gas/gasbb2.inc";
-$ifi %CAES%==yes $INCLUDE "../../base/addons/CAES/CAESbb2.inc";
 
 $ifi %FOSSILTARGET%==yes QFOSSILTARGET
 $ifi %RENEWTARGET%==yes QRENEW
 $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htbb1.inc";
-$ifi %REShareE%==yes QREShareE
-$ifi %REShareEH%==yes QREShareEH
 
 $offtext
 
@@ -2235,7 +2212,6 @@ $ifi %BB4%==yes    QSOLHDISPATCH
 $ifi %BB4%==yes    QWAVEDISPATCH
 *$ifi %BB4%==yes    QXKN  not implemented presently, TODO
 
-$ifi %AGKNDISC%==yes  QAGKNDISCEQUALCONT
 /;
 
 * Scale the model: only equation QOBJ is really badly scaled:
@@ -2254,7 +2230,7 @@ QOBJ.SCALE=IOF1000000;
 *----- End of definition of models ---------------------------------------------
 *-------------------------------------------------------------------------------
 
-$ifi %COMBTECH%==yes  $INCLUDE  "../../base/addons/combtech/combtech_error2.inc";
+$include "../../base/addons/_hooks/error2.inc"
 $ifi %BB4%==yes       $INCLUDE  "../../base/addons/BB4/errorBB4.inc";
 
 * The following file contains definitions of a number of temporary parameters
@@ -2272,7 +2248,8 @@ $ifi not %displaylistformat% == yes $goto label_Notdisplaylistformat
 OPTION QOBJ:8:0:1;
 OPTION QEEQ:8:0:1;
 OPTION QHEQ:8:0:1;
-OPTION  vgen_t:3:0:1 ; !! ,   VGKVACCGROSS:3:0:1 ;
+OPTION  vgen_t
+:3:0:1 ; !! ,   VGKVACCGROSS:3:0:1 ;
 $label label_Notdisplaylistformat
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -2296,9 +2273,7 @@ $ifi %MAKEINVEST%==yes execute_unload "../../base/data/GKVACCDECOM.gdx", GKVACCD
 $ifi %MAKEINVEST%==yes execute_unload "../../base/data/GVKGN.gdx", GVKGN;
 $ifi %MAKEINVEST%==yes execute_unload "../../base/data/XKACC.gdx", XKACC;
 
-
-$ifi %GAS%==yes $INCLUDE "../../base/addons/gas/gasgdx.inc";
-$ifi %X3V%==yes $INCLUDE "../../base/addons/x3v/model/x3vgdx.inc";
+*$ifi %X3V%==yes $INCLUDE "../../base/addons/x3v/bb4/x3vgdx.inc";
 *--- End: Results which can be transfered between simulations are placed here --
 
 

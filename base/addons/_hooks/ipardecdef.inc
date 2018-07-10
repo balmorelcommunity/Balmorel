@@ -9,6 +9,7 @@ $label  beginbb4
 
 $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_ipardecdef.inc";
 $ifi %ramping_stepwise%==yes  $include "../../base/addons/ramping_stepwise/bb4/ramping_stepwise_ipardecdef.inc"; 
+$ifi %X3V%==yes $include '../../base/addons/x3v/bb4/x3v_ipardecdef.inc';
 
 $label endoffile
 

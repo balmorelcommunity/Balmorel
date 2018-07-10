@@ -1,8 +1,8 @@
-All GAMS code of the Balmorel model is distributed under ICS license. 
+All GAMS code of the Balmorel model is distributed under ICS license.
 
 ISC License
 
-Copyright (c) 2001-2017 Hans Ravn and all other contributors.
+Copyright (c) 2001-2018 Hans Ravn and all other contributors.
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
