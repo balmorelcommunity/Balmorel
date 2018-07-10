@@ -19,7 +19,7 @@ $label  beginbb4
 
 $ifi %X3V%==yes  $include   "../../base/addons/x3v/bb4/x3v_pardefine.inc";
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_pardefine.inc";
-$ifi %AGKNDISC%==yes  $include   "../../base/addons/agkndisc/bb4/agkndisc_pardefine.inc";
+$ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_pardefine.inc";
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_pardefine.inc";
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_pardefine.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_pardefine.inc";

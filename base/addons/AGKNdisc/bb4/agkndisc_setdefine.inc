@@ -1,10 +1,10 @@
 
-$if     EXIST '../data/agkndisc_agkndisc.inc' $INCLUDE      '../data/agkndisc_agkndisc.inc';
-$if not EXIST '../data/agkndisc_agkndisc.inc' $INCLUDE '../../base/addons/x3v/demodata/agkndisc_agkndisc.inc';
+$if     EXIST '../data/AGKNDISC_AGKNDISC.inc' $INCLUDE      '../data/AGKNDISC_AGKNDISC.inc';
+$if not EXIST '../data/AGKNDISC_AGKNDISC.inc' $INCLUDE '../../base/addons/AGKNdisc/bb4/AGKNDISC_AGKNDISC.inc';
 
-$if     EXIST '../data/agkndisc_agkndiscsizeset.inc' $INCLUDE      '../data/agkndisc_agkndiscsizeset.inc';
-$if not EXIST '../data/agkndisc_agkndiscsizeset.inc' $INCLUDE '../../base/addons/x3v/demodata/agkndisc_agkndiscsizeset.inc';
+$if     EXIST '../data/AGKNDISC_AGKNDISCSIZESET.inc' $INCLUDE      '../data/AGKNDISC_AGKNDISCSIZESET.inc';
+$if not EXIST '../data/AGKNDISC_AGKNDISCSIZESET.inc' $INCLUDE '../../base/addons/AGKNdisc/bb4/AGKNDISC_AGKNDISCSIZESET.inc';
 
-$if     EXIST '../data/agkndisc_agkndiscdataset.inc' $INCLUDE      '../data/agkndisc_agkndiscdataset.inc';
-$if not EXIST '../data/agkndisc_agkndiscdataset.inc' $INCLUDE '../../base/addons/agnkdisc/agkndisc_agkndiscdataset.inc';
+$if     EXIST '../data/AGKNDISC_AGKNDISCDATASET.inc' $INCLUDE      '../data/AGKNDISC_AGKNDISCDATASET.inc';
+$if not EXIST '../data/AGKNDISC_AGKNDISCDATASET.inc' $INCLUDE '../../base/addons/AGKNdisc/bb4/AGKNDISC_AGKNDISCDATASET.inc';
 
