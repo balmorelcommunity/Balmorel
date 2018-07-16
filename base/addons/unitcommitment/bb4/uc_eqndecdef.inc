@@ -1,0 +1,163 @@
+* UC Translated to BB4 by Juan Gea Bermúdez 2018.
+
+EQUATION  QUCVUCON(Y,AAA,G,S,T)    'Unit commitment: Number of endogenous units on limited by unit size and capacity)';
+EQUATION  QUCVUCU(Y,AAA,G,S,T)     'Unit commitment: Number of start up endogenous units on limited by unit size and capacity)';
+EQUATION  QUCVUCD(Y,AAA,G,S,T)     'Unit commitment: Number of shut down endogenous units on limited by unit size and capacity)';
+EQUATION  QUCSTARTQ(Y,AAA,G,S,T)   'Unit commitment: on-off logic';
+EQUATION  QUCMAXVGF(Y,AAA,G,S,T)   'Unit commitment: Fuel consumption below maximum (of units online)';
+
+QUCVUCON(IY411,IA,IGUC,S,T)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC))..  !! 'Unit commitment: Number of endogenous units on limited by unit size and capacity)'
+VUCON(IY411,IA,IGUC,S,T)
+=L=
+GKFX(IY411,IA,IGUC)+VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC))/GDATA(IGUC,'GDUCUNITSIZE')
+;
+
+QUCVUCU(IY411,IA,IGUC,S,T)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC))..  !! 'Unit commitment: Number of start up endogenous units on limited by unit size and capacity)'
+VUCU(IY411,IA,IGUC,S,T)
+=L=
+GKFX(IY411,IA,IGUC)+VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC))/GDATA(IGUC,'GDUCUNITSIZE')
+;
+
+QUCVUCD(IY411,IA,IGUC,S,T)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC))..  !! 'Unit commitment: Number of shut down endogenous units on limited by unit size and capacity)'
+VUCD(IY411,IA,IGUC,S,T)
+=L=
+GKFX(IY411,IA,IGUC)+VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC))/GDATA(IGUC,'GDUCUNITSIZE')
+;
+
+QUCSTARTQ(IY411,IA,IGUC,IS3,T)$IAGK_HASORPOT(IY411,IA,IGUC)..   !! 'Unit commitment: on-off logic'
+   VUCU(IY411,IA,IGUC,IS3,T) - VUCD(IY411,IA,IGUC,IS3,T)
+    =E=
+   VUCON(IY411,IA,IGUC,IS3,T) - VUCON(IY411,IA,IGUC,IS3,T--1)
+;
+
+QUCMAXVGF(IY411,IA,IGUC,IS3,T)$IAGK_HASORPOT(IY411,IA,IGUC)..    !! 'Unit commitment: Fuel consumption below maximum (of units online)'
+   VUCON(IY411,IA,IGUC,IS3,T)*GDATA(IGUC,'GDUCUNITSIZE') *(1+(1/GDATA(IGUC,'GDCB'))$IGBPR(IGUC))/(1$((NOT IGESTO(IGUC)) AND (NOT IGESTOS(IGUC)) AND (NOT IGHSTO(IGUC)) AND (NOT IGHSTOS(IGUC))) + GDATA(IGUC,'GDSTOHUNLD')$(IGESTO(IGUC) OR IGESTOS(IGUC) OR IGHSTO(IGUC) OR IGHSTOS(IGUC)))
+         /(GDATA(IGUC,'GDFE')*GEFFRATE(IA,IGUC))
+    =G=
+   VGF_T(IY411,IA,IGUC,IS3,T)
+$ifi %COMBTECH%==yes + sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,IS3,T))$IGCOMB1(IGUC)
+;
+
+
+$ifi not %MINFUELCONS%==yes $goto MINFUELCONS_END
+
+EQUATION  QUCMINVGF(Y,AAA,G,S,T)   'Unit commitment: Fuel consumption above minimum (of units online)';
+
+QUCMINVGF(IY411,IA,IGUC,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGUC) AND GDATA(IGUC,'GDUCGMIN'))..  !! 'Unit commitment: Fuel consumption above minimum (of units online)'
+   VGF_T(IY411,IA,IGUC,IS3,T)
+$ifi %COMBTECH%==yes + sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,IS3,T))$IGCOMB1(IGUC)
+    =G=
+* Fuel consumption at minimum load is defined by Fmin = [ Emin (1-F0) +Emax*F0 ]/FE
+  (
+* Emin
+   VUCON(IY411,IA,IGUC,IS3,T)*GDATA(IGUC,'GDUCGMIN')*GDATA(IGUC,'GDUCUNITSIZE')*(1-GDATA(IGUC,'GDUCF0'))
+* Emax
+   +VUCON(IY411,IA,IGUC,IS3,T)*GDATA(IGUC,'GDUCUNITSIZE')*GDATA(IGUC,'GDUCF0')
+* FE
+   )*(1+(1/GDATA(IGUC,'GDCB'))$IGBPR(IGUC))/(1$((NOT IGESTO(IGUC)) AND (NOT IGESTOS(IGUC)) AND (NOT IGHSTO(IGUC)) AND (NOT IGHSTOS(IGUC))) + GDATA(IGUC,'GDSTOHUNLD')$(IGESTO(IGUC) OR IGESTOS(IGUC) OR IGHSTO(IGUC) OR IGHSTOS(IGUC)))
+       /(GDATA(IGUC,'GDFE')*GEFFRATE(IA,IGUC))
+;
+
+$label  MINFUELCONS_END
+
+$ifi not %MINSTARTUPTIME%==yes $goto MINSTARTUPTIME_END
+
+EQUATION  QUCUT(Y,AAA,G,S,T)      'Unit commitment: Number of unit startups respecting minimum off time and plant capacity.';
+
+QUCUT(IAGK_HASORPOT(IY411,IA,IGUC),IS3,T)$(GDATA(IGUC,'GDUCUTMIN') GT 1)..
+* units start up at t
+         SUM(IUCT$(ORD(IUCT) LE GDATA(IGUC,'GDUCUTMIN')), VUCU(IY411,IA,IGUC,IS3,T--(ORD(IUCT)-1)))
+         =L=
+         VUCON(IY411,IA,IGUC,IS3,T)
+;
+
+$label  MINSTARTUPTIME_END
+
+$ifi not %MINSHUTDOWNTIME%==yes $goto MINSHUTDOWNTIME_END
+
+EQUATION  QUCDT(Y,AAA,G,S,T)  'Unit commitment: Number of unit shutdowns respecting minimum on time and number of units on.';
+
+QUCDT(IAGK_HASORPOT(IY411,IA,IGUC),IS3,T)$(GDATA(IGUC,'GDUCDTMIN') GT 1) ..
+* units shut down at t
+         SUM(IUCT$(ORD(IUCT) LE GDATA(IGUC,'GDUCDTMIN')), VUCD(IY411,IA,IGUC,IS3,T--(ORD(IUCT)-1)))
+         =L=
+         (GKFX(IY411,IA,IGUC)$IAGKFX(IY411,IA,IGUC)+VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC))) / GDATA(IGUC,'GDUCUNITSIZE')
+         -VUCON(IY411,IA,IGUC,IS3,T)
+;
+
+$label  MINSHUTDOWNTIME_END
+
+$ifi not %STEPWISERAMPING%==yes $goto STEPWISERAMPING_END
+
+EQUATION  QUCRAMPU(Y,AAA,G,S,T)   'Unit commitment: Unit up-ramping below unit up-gradient for unit on and below minimum fuel consumption during unit startup.';
+EQUATION  QUCRAMPING_UP_BALANCE (Y,AAA,G,S,T)       'Equation that balances the total ramping up for each timestep';
+EQUATION  QUCRAMPING_UP_RATE_CAPABILITY(Y,AAA,G,RAMPING_RATE,S,T)   'Equation that limits the ramping up of each generation technologys ramping rate for each timestep';
+EQUATION  QUCRAMPD(Y,AAA,G,S,T)   'Unit commitment: Unit down-ramping below unit down-gradient for unit on and below minimum fuel consumption during unit shutdown.';
+EQUATION  QUCRAMPING_DOWN_BALANCE (Y,AAA,G,S,T)   'Equation that balances the total ramping down for each timestep';
+EQUATION  QUCRAMPING_DOWN_RATE_CAPABILITY(Y,AAA,G,RAMPING_RATE,S,T) 'Equation that limits the ramping down of each generation technologys ramping rate for each timestep';
+
+QUCRAMPU(IAGK_HASORPOT(IY411,IA,IGUC),IS3,T)$(GDATA(IGUC,'GDUCRAMPU') LT 1)..
+* up gradient at t
+      VGF_T(IY411,IA,IGUC,IS3,T) - VGF_T(IY411,IA,IGUC,IS3,T--1)
+         =L=
+     (
+* units under start up have an expanded gradient
+         GDATA(IGUC,'GDUCGMIN')*VUCU(IY411,IA,IGUC,IS3,T)
+* up gradient of units on at t excluding units under start up
+        + GDATA(IGUC,'GDUCRAMPU')*(VUCON(IY411,IA,IGUC,IS3,T) - VUCU(IY411,IA,IGUC,IS3,T))
+* scale unit input capacity
+     )*(GDATA(IGUC,'GDUCUNITSIZE')*(1+(1/GDATA(IGUC,'GDCB'))$IGBPR(IGUC))/(1$((NOT IGESTO(IGUC)) AND (NOT IGESTOS(IGUC)) AND (NOT IGHSTO(IGUC)) AND (NOT IGHSTOS(IGUC))) + GDATA(IGUC,'GDSTOHUNLD')$(IGESTO(IGUC) OR IGESTOS(IGUC) OR IGHSTO(IGUC) OR IGHSTOS(IGUC)))
+       /(GDATA(IGUC,'GDFE')*GEFFRATE(IA,IGUC)))
+
+;
+
+QUCRAMPING_UP_BALANCE(IY411,IA,IGUC,IS3,T)$((NOT (ORD(T) EQ CARD(T))) AND IAGK_HASORPOT(IY411,IA,IGUC))..
+SUM(RAMPING_RATE,V_RAMPING_UP(IY411,IA,IGUC,RAMPING_RATE,IS3,T))
+=G=
+VGF_T(IY411,IA,IGUC,IS3,T+1) - VGF_T(IY411,IA,IGUC,IS3,T)
+;
+
+QUCRAMPING_UP_RATE_CAPABILITY (IY411,IA,IGUC,RAMPING_RATE,IS3,T)$((NOT (ORD(T) EQ CARD(T))) AND IAGK_HASORPOT(IY411,IA,IGUC) AND IRAMPING_G_CAPABILITY_UP(IGUC,RAMPING_RATE))..
+V_RAMPING_UP(IY411,IA,IGUC,RAMPING_RATE,IS3,T)
+=L=
+VUCON(IY411,IA,IGUC,IS3,T)*IRAMPING_G_CAPABILITY_UP(IGUC,RAMPING_RATE)*(GDATA(IGUC,'GDUCUNITSIZE')*(1+(1/GDATA(IGUC,'GDCB'))$IGBPR(IGUC))/(1$((NOT IGESTO(IGUC)) AND (NOT IGESTOS(IGUC)) AND (NOT IGHSTO(IGUC)) AND (NOT IGHSTOS(IGUC))) + GDATA(IGUC,'GDSTOHUNLD')$(IGESTO(IGUC) OR IGESTOS(IGUC) OR IGHSTO(IGUC) OR IGHSTOS(IGUC)))
+/(GDATA(IGUC,'GDFE')*GEFFRATE(IA,IGUC)))
+
+;
+
+
+QUCRAMPD(IAGK_HASORPOT(IY411,IA,IGUC),IS3,T)$(GDATA(IGUC,'GDUCRAMPD') LT 1)..
+* down gradient at t
+       VGF_T(IY411,IA,IGUC,IS3,T--1) - VGF_T(IY411,IA,IGUC,IS3,T)
+         =L=
+     (
+* units under shut down have an expanded gradient
+         GDATA(IGUC,'GDUCGMIN')*VUCD(IY411,IA,IGUC,IS3,T)
+* up gradient of units on at t excluding units under shutdown
+        + GDATA(IGUC,'GDUCRAMPD')*VUCON(IY411,IA,IGUC,IS3,T)
+* scale unit input capacity
+     )*(GDATA(IGUC,'GDUCUNITSIZE')*(1+(1/GDATA(IGUC,'GDCB'))$IGBPR(IGUC))/(1$((NOT IGESTO(IGUC)) AND (NOT IGESTOS(IGUC)) AND (NOT IGHSTO(IGUC)) AND (NOT IGHSTOS(IGUC))) + GDATA(IGUC,'GDSTOHUNLD')$(IGESTO(IGUC) OR IGESTOS(IGUC) OR IGHSTO(IGUC) OR IGHSTOS(IGUC)))
+       /(GDATA(IGUC,'GDFE')*GEFFRATE(IA,IGUC)))
+;
+
+QUCRAMPING_DOWN_BALANCE (IY411,IA,IGUC,IS3,T)$((NOT (ORD(T) EQ CARD(T))) AND IAGK_HASORPOT(IY411,IA,IGUC))..
+SUM(RAMPING_RATE,V_RAMPING_DOWN(IY411,IA,IGUC,RAMPING_RATE,IS3,T))
+=G=
+VGF_T(IY411,IA,IGUC,IS3,T) - VGF_T(IY411,IA,IGUC,IS3,T+1)
+;
+
+QUCRAMPING_DOWN_RATE_CAPABILITY (IY411,IA,IGUC,RAMPING_RATE,IS3,T)$((NOT (ORD(T) EQ CARD(T))) AND IAGK_HASORPOT(IY411,IA,IGUC) AND IRAMPING_G_CAPABILITY_DOWN(IGUC,RAMPING_RATE))..
+V_RAMPING_DOWN(IY411,IA,IGUC,RAMPING_RATE,IS3,T)
+=L=
+VUCON(IY411,IA,IGUC,IS3,T)*IRAMPING_G_CAPABILITY_DOWN(IGUC,RAMPING_RATE)*(GDATA(IGUC,'GDUCUNITSIZE')*(1+(1/GDATA(IGUC,'GDCB'))$IGBPR(IGUC))/(1$((NOT IGESTO(IGUC)) AND (NOT IGESTOS(IGUC)) AND (NOT IGHSTO(IGUC)) AND (NOT IGHSTOS(IGUC))) + GDATA(IGUC,'GDSTOHUNLD')$(IGESTO(IGUC) OR IGESTOS(IGUC) OR IGHSTO(IGUC) OR IGHSTOS(IGUC)))
+/(GDATA(IGUC,'GDFE')*GEFFRATE(IA,IGUC)))
+;
+
+$label  STEPWISERAMPING_END
+
+
+
+
+
+
+

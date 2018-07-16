@@ -101,8 +101,8 @@ ALIAS(CCCRRRAAA,CCCRRRAAAALIAS);
 ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GHYRR, GWND, GSOLE, GSOLH, GWAVE;
 
 *ACRONYMS for tech groups
-ACRONYMS STEAM_TURBINE_SUBCRITICAL,GAS_TURBINE,COMBINED_CYCLE,ENGINE,ELECTRICITY_STORAGE,WATER_TURBINE,BOILER,
-WIND_TURBINE_ONSHORE,WIND_TURBINE_OFFSHORE_NEARSHORE,WIND_TURBINE_OFFSHORE_FAR,SOLAR_HEATING,SOLAR_PV,HEAT_STORAGE,HEAT_PUMP,GEOTHERMAL,EXCESS_HEAT;
+ACRONYMS STEAMTURBINE_SUBCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILER, COMBINEDCYCLE, EXCESS_HEAT, ELECTRICITY_BATTERY, GEOTHERMAL,
+GASTURBINE, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING, WINDTURBINE_OFFSHORE_FAR, WINDTURBINE_OFFSHORE_NEARSHORE, WINDTURBINE_ONSHORE;
 
 
 * ACRONYMS for user defined fuels will be given as part of file FFF.inc
@@ -235,11 +235,6 @@ SET IGBYPASS(G)            "Technologies that may apply turbine bypass mode (sub
 * operator and instead use the '+' operator for compound assignments.
 * NOTE: isetdecdef.inc is loaded later
 
-
-
-*---- Unit commitment --------------------------------------------------------------
-
-$ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/bb4/uc_datadecl.inc';
 
 *-------------------------------------------------------------------------------
 *----- End: Any internal sets assignments for addon to be placed here ----------
@@ -1308,7 +1303,7 @@ QGFEQ(IY411,IA,G,IS3,T)$IAGK_HASORPOT(IY411,IA,G) ..
 +  ( ((GDATA(G,'GDCB')*((VGH_T(IY411,IA,G,IS3,T)*GDATA(G,'GDBYPASSC') + VGE_T(IY411,IA,G,IS3,T))/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G)))))
    + ((GDATA(G,'GDCV')*((VGH_T(IY411,IA,G,IS3,T)*GDATA(G,'GDBYPASSC') + VGE_T(IY411,IA,G,IS3,T))/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G)))))
    )$IGBYPASS(G)
-$ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/bb4/uc_qgfeqadd.inc';
+$include "../../base/addons/_hooks/qgfeq.inc"
 ;
 
 *------ Generation technologies" electricity/heat operating area: --------------

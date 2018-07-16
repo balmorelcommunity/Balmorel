@@ -29,6 +29,6 @@ $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwisep
 
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_setdefine.inc";
 
-$ifi %ramping_stepwise%==yes  $include "../../base/addons/ramping_stepwise/bb4/ramping_stepwise_setdefine.inc"; 
+$ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_setdefine.inc"; 
 
 $label endoffile
