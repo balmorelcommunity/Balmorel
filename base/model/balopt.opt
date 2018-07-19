@@ -204,20 +204,20 @@ $setglobal bypass
 * Unit Commitment:
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
-$setglobal UnitComm 
+$setglobal UnitComm
 *!option yes
 
 * Adds minimal production-when-on:
-$setglobal MINFUELCONS 
+$setglobal MINFUELCONS
 *!option yes
 * Adds respecting minimum off time of the capacities:
-$setglobal MINSTARTUPTIME  
+$setglobal MINSTARTUPTIME
 *!option yes
 * Adds respecting minimum on time of the capacities:
-$setglobal MINSHUTDOWNTIME 
+$setglobal MINSHUTDOWNTIME
 *!option yes
 * Adds ramping technical limitations and stepwise costs to the Power plants when-on:
-$setglobal STEPWISERAMPING  
+$setglobal STEPWISERAMPING
 *!option yes
 * The production interval is segmented into a number of disjunct pieces, each with its own costs: NOT IMPLEMENTED
 $setglobal UnitCseg
@@ -384,7 +384,7 @@ $Setglobal limitedresults
 $setglobal PRINTFILES
 *!option yes
 
-$setglobal OUTPUT_SUMMARY
+$setglobal OUTPUT_SUMMARY yes
 *!option yes
 
 * PRINTSEPARATOR is a single character used for separating columns in printfiles,
