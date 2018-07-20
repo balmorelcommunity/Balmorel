@@ -225,8 +225,9 @@ SET IGBYPASS(G)            "Technologies that may apply turbine bypass mode (sub
 SET IWATERTANK(G)          "Water tank intra-seasonal LARGE heat storage technology"; !! Corresponding to acronym WATERTANK
 SET IPIT(G)                "Pit inter-seasonal heat storage technology";        !! Corresponding to acronym PIT
 SET IHEATPUMP(G)           "Heatpump technology";                               !! Corresponding to acronym HEATPUMP
-SET IGHNOWT(G)             "Technologies that do not load the water tanks";
-SET ILINKSTO(G,G)             "Link between heat storage technologies";
+
+SET IGHNOWT(G)             "Technologies that do are not allowed to load water tanks";
+SET ILINKSTO(G,G)          "1st set: Heat storage, 2nd set: technologies allowed to load the storage";
 
 
 
@@ -464,7 +465,7 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
    IGHHNOSTO(G) = NO;   IGHHNOSTO(IGHOB)   = YES;  IGHHNOSTO(IGSOLH)= YES;
 
 *----------------
-*Water tanks can not be load with solar heating and heatpumps.
+*Water tanks loading is restricted with the set IGHNOWT
    IGHNOWT(G) =          IGSOLH(G)
                          +IHEATPUMP(G);
 *----------------------------------------
@@ -522,35 +523,12 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
    IGH(G)=IGHH(G)+IGEH(G);
 
 
-$ONTEXT
-*-----------------
-*All storage technologies can be loaded by technologies generating heat
-ILINKSTO(IGHSTOALL,IGH)=YES;
-display ILINKSTO;
-*Water tank heat storage can not be loaded by intra-seasonal heat storages
-  ILINKSTO(IWATERTANK,IGHSTO)=NO;
-display ILINKSTO;
-*Pit storage can not be loaded by intra-seasonal heat storages
-  ILINKSTO(IPIT,IGHSTO)=NO;
-display ILINKSTO;
-*Pit storage can not be loaded by inter-seasonal heat storages
-  ILINKSTO(IPIT,IGHSTOS)=NO;
-display ILINKSTO;
-*Water tanks can not be loaded by pits, heat pumps and solar heating
-  ILINKSTO(IWATERTANK,IGHNOWT)=NO;
-display ILINKSTO;
-
-*  ILINKSTO(IWATERTANKL,IWATERTANKS)=NO;
-*  ILINKSTO(IWATERTANKL,IWATERTANKE)=NO;
-$OFFTEXT
-
-*Storage can not be loaded with other storage and water tanks can not be loaded with heatpumps and solar heating
+*Definition of ILINKSTO 
 LOOP(IGHSTOALL,
-         LOOP(IGH$((NOT IGHSTOALL(IGH))),
-                 IF ((IWATERTANK(IGHSTOALL) AND IGHNOWT(IGH)),
+         LOOP(IGH$((NOT IGHSTOALL(IGH))),    !! Heat storages are not allowed to load other heat storages
+                 IF ((IWATERTANK(IGHSTOALL) AND IGHNOWT(IGH)),  !! Water tank loading technology restriction
                  ELSE
                  ILINKSTO(IGHSTOALL,IGH)=YES;
-
                  );
          );
 
