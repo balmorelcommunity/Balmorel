@@ -90,9 +90,33 @@ $setglobal testbb1234
 * The following global variables concern the choice of details in some of the models.
 * Note that some of the choices are mutually dependent.
 
+*-----------------------
+*---- Investments ------
+
+*---- Generation investments options----
+
+* Permit investments in generation capacity:
+$setglobal GenInvest  yes
+*!option yes
+
+SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
+GINVESTSTART= 2020;
+
+*---- End: Generation investments options----
+
+*---- Transmission investments options----
+
 * Permit investments in transmission capacity:
 $setglobal TransInvest yes
 *!option yes
+
+SCALAR XINVESTSTART 'Year from which engoenous decisions in transmission capacities are allowed' ;
+XINVESTSTART= 2030;
+
+*---- End: Transmission investments options----
+
+*----END: Investments
+*-----------------------
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
 $setglobal WNDSHUTDOWN
@@ -102,13 +126,21 @@ $setglobal WNDSHUTDOWN
 $setglobal VRESHUTDOWN   yes
 *!option yes
 
-* This variable includes addon for distric heating
-$Setglobal FV
+*-----------------------
+*---- Timeseries scaling ------
+* Only one option should be activated!!!!
+
+*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries
+$setglobal usedtimesteps_timseries_scaling  yes
 *!option yes
 
-* Allow demand elasticity
-$setglobal DFLEXQUANT
+*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries
+$setglobal full_timeseries_scaling
 *!option yes
+
+*----END: Timeseries scaling
+*-----------------------
+
 
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of add-on modules to include.
@@ -120,7 +152,7 @@ $setglobal DFLEXQUANT
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH yes
+$setglobal COMBTECH
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
@@ -131,11 +163,19 @@ $Setglobal HYDROGEN
 $Setglobal STEPWISEPRICE  yes
 
 * Set a common maximum for fuels.
-$Setglobal LIMITSFORFUELS    yes
+$Setglobal LIMITSFORFUELS  yes
+*!option yes
+
+* Allow demand elasticity
+$setglobal DFLEXQUANT
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
 $setglobal X3V
+*!option yes
+
+* This variable includes addon for distric heating
+$Setglobal FV
 *!option yes
 
 *
@@ -176,13 +216,6 @@ $setglobal AGKNDISC
 *!onlyif %BB2%==yes
 *!onlyif %solvemip%==yes
 
-$setglobal investmentfromyear yes
-SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
-GINVESTSTART= 2020;
-SCALAR XINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
-XINVESTSTART= 2030;
-*Option to activate the limitation of allowing investments from a certain year in the future (%investmestfromyear%== yes)
-*Different investment starting years can be set for generatoris and transmission
 
 * Use the flow-based capacity allocation methodology
 $Setglobal FlowBased
@@ -384,7 +417,7 @@ $Setglobal limitedresults
 $setglobal PRINTFILES
 *!option yes
 
-$setglobal OUTPUT_SUMMARY yes
+$setglobal OUTPUT_SUMMARY
 *!option yes
 
 * PRINTSEPARATOR is a single character used for separating columns in printfiles,

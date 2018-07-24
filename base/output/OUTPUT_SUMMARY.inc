@@ -178,10 +178,12 @@ IOF0001*XKINI(Y,IR,IRI)
 
 
 ** ENDOGENOUS ELECTRIC CAPACITY
+
+$ifi not %TransInvest%==yes $goto Transmission_investments_end
 X_CAP_YCR(Y,C,IR,IRI,'ENDOGENOUS','GW')$CCCRRR(C,IR)=
 IOF0001*VXKNACCUMNET.L(Y,IR,IRI)
 ;
-
+$label  Transmission_investments_end
 
 
 * -------------------- END OF TRANSMISSION CAPACITY -----------------------
