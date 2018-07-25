@@ -161,6 +161,7 @@ IAGKN(IA,G) = AGKN(IA,G);
 * Note: by definition, there should be no GGG in AGKN(aaa,GGG) with GDATA(GGG,'GDKVARIABL')=1.
 * This is to be checket in error2.inc: TODO. For now, overwrite to make sure:  No new capacity if capacity is not specified to be found endogeneously:
 IAGKN(IA,IGKKNOWN) = NO;
+
 * Fuel limitations: No new capacity nor new generation if zero fuel potential.
 
 LOOP((FFF,G)$IGF(G,FFF),

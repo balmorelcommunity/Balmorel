@@ -134,12 +134,8 @@ $Setglobal STEPWISEPRICE  yes
 $Setglobal LIMITSFORFUELS    yes
 *!option yes
 
-* Add stepwise ramping costs and restrictions to the Power plants
-$setglobal ramping_stepwise yes
-*!option yes
-
-* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT) 
-$setglobal X3V 
+* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
+$setglobal X3V
 *!option yes
 
 *
@@ -174,7 +170,7 @@ $setglobal REShareEH
 *!notif %REShareE%==yes
 
 
-* Make investments in technologies only at specified capacities. (TO-DO, TEST IT) 
+* Make investments in technologies only at specified capacities. (TO-DO, TEST IT)
 $setglobal AGKNDISC
 *!option yes
 *!onlyif %BB2%==yes
@@ -207,24 +203,26 @@ $setglobal bypass
 *-------------------------------------------------------------------------------
 * Unit Commitment:
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
-$setglobal UnitComm
+
+$setglobal UnitComm 
 *!option yes
-* The simplest possible: ...
-$setglobal UnitC0
+
+* Adds minimal production-when-on:
+$setglobal MINFUELCONS 
 *!option yes
-* Basic version; mindowntime, minuptime, startcost, shutdcost, minimal production-when-on:
-$setglobal UnitCmin
+* Adds respecting minimum off time of the capacities:
+$setglobal MINSTARTUPTIME  
 *!option yes
-* Adds ramping, including during startup and shutdown; requires '$setglobal UnitCmin yes':
-$setglobal UnitCramp
+* Adds respecting minimum on time of the capacities:
+$setglobal MINSHUTDOWNTIME 
 *!option yes
-* Adds a start cost curve that depends on the number of hours the unit has been off; requires '$setglobal UnitCmin yes':
-$setglobal UnitCscc
+* Adds ramping technical limitations and stepwise costs to the Power plants when-on:
+$setglobal STEPWISERAMPING  
 *!option yes
 * The production interval is segmented into a number of disjunct pieces, each with its own costs: NOT IMPLEMENTED
 $setglobal UnitCseg
 *!option yes
-
+*-------------------------------------------------------------------------------
 
 * Calibrate the price side of electricity demand
 $setglobal DEFPCALIB
