@@ -31,5 +31,6 @@ POSITIVE VARIABLE VQGKH_UP(Y,AAA,G,S,T,IPLUSMINUS)           "Feasibility in hea
 POSITIVE VARIABLE VQXK_UP(Y,IRRRE,IRRRI,S,T,IPLUSMINUS)      "Feasibility in electricity transmission limited by capacity (MW)";
 
 POSITIVE VARIABLE VQKFUEL(Y,CCCRRRAAA,FFF)                   "Feasibility in maximum installlable capacity (country, region and area)"
+POSITIVE VARIABLE VQKTECHGROUP(Y,CCCRRRAAA,TECH_GROUP)       "Feasibility in maximum installlable capacity per technology group (country, region and area)"
 
 

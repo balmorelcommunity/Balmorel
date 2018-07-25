@@ -122,14 +122,24 @@ $if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
 $if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
 %semislash%;
 
-SET GGG               "All generation technologies"   %semislash%
+SET GGG          "All generation technologies"   %semislash%
 $if     EXIST '../data/GGG.inc' $INCLUDE      '../data/GGG.inc';
 $if not EXIST '../data/GGG.inc' $INCLUDE '../../base/data/GGG.inc';
 %semislash%;
 
-SET GDATASET           "Generation technology data" %semislash%
+SET GDATASET     "Generation technology data" %semislash%
 $if     EXIST '../data/GDATASET.inc' $INCLUDE      '../data/GDATASET.inc';
 $if not EXIST '../data/GDATASET.inc' $INCLUDE '../../base/data/GDATASET.inc';
+%semislash%;
+
+SET TECH_GROUP     "Technology Groups" %semislash%
+$if     EXIST '../data/TECH_GROUP.inc' $INCLUDE      '../data/TECH_GROUP.inc';
+$if not EXIST '../data/TECH_GROUP.inc' $INCLUDE '../../base/data/TECH_GROUP.inc';
+%semislash%;
+
+PARAMETER TECH_GROUP_VALUE(TECH_GROUP)         "Technology Groups value" %semislash%
+$if     EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE      '../data/TECH_GROUP_VALUE.inc';
+$if not EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/TECH_GROUP_VALUE.inc';
 %semislash%;
 
 SET G(GGG)    "Generation technologies in the simulation"  %semislash%
@@ -365,6 +375,9 @@ $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
 $if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
 %semislash%;
 
+
+
+
 PARAMETER FMAXINVEST(CCC,FFF)   "Maximum investment (MW) by fuel type for each year simulated"    %semislash%
 $if     EXIST '../data/FMAXINVEST.inc' $INCLUDE      '../data/FMAXINVEST.inc';
 $if not EXIST '../data/FMAXINVEST.inc' $INCLUDE '../../base/data/FMAXINVEST.inc';
@@ -405,6 +418,11 @@ $if not EXIST '../data/DISCOST_H.inc' $INCLUDE '../../base/data/DISCOST_H.inc';
 PARAMETER FKPOT(CCCRRRAAA,FFF)    "Fuel potential restricted by geography (MW)"   %semislash%
 $if     EXIST '../data/FKPOT.inc' $INCLUDE      '../data/FKPOT.inc';
 $if not EXIST '../data/FKPOT.inc' $INCLUDE '../../base/data/FKPOT.inc';
+%semislash%;
+
+PARAMETER TECHGROUPKPOT(CCCRRRAAA,TECH_GROUP)    "Technology group capacity restriction by geography (MW)"   %semislash%
+$if     EXIST '../data/TECHGROUPKPOT.inc' $INCLUDE      '../data/TECHGROUPKPOT.inc';
+$if not EXIST '../data/TECHGROUPKPOT.inc' $INCLUDE '../../base/data/TECHGROUPKPOT.inc';
 %semislash%;
 
 /* Todo
