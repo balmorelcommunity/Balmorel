@@ -145,7 +145,7 @@ $offtext
 * Addons:
 * Print files for addons may be included here, or in bb123.sim (matter of style ...).
 
-$include "..\..\base\addons\_hooks\output.inc"
+$include "../../base/addons/_hooks/output.inc"
 
 * Skipped to here if the model did not solve properly:
 $ifi %BB4%==yes  );

@@ -107,19 +107,16 @@ $if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DHUSER.inc';
 $if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DHUSER.inc';
 %semislash%;
 
-$onmulti
 SET FFF                'Fuels'  %semislash%
 $if     EXIST '../data/FFF.inc' $INCLUDE      '../data/FFF.inc';
 $if not EXIST '../data/FFF.inc' $INCLUDE '../../base/data/FFF.inc';
 %semislash%;
-$offmulti
 
 SET FDATASET           'Characteristics of fuels ' %semislash%
 $if     EXIST '../data/FDATASET.inc' $INCLUDE      '../data/FDATASET.inc';
 $if not EXIST '../data/FDATASET.inc' $INCLUDE '../../base/data/FDATASET.inc';
 %semislash%;
 
-$onmulti
 PARAMETER FDATA(FFF,FDATASET)    'Fuel specific values'  %semislash%
 $if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
 $if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
@@ -129,19 +126,42 @@ SET GGG                'All generation technologies'   %semislash%
 $if     EXIST '../data/GGG.inc' $INCLUDE      '../data/GGG.inc';
 $if not EXIST '../data/GGG.inc' $INCLUDE '../../base/data/GGG.inc';
 %semislash%;
-$offmulti
 
 SET GDATASET           'Generation technology data' %semislash%
 $if     EXIST '../data/GDATASET.inc' $INCLUDE      '../data/GDATASET.inc';
 $if not EXIST '../data/GDATASET.inc' $INCLUDE '../../base/data/GDATASET.inc';
 %semislash%;
 
-$onmulti
 SET G(GGG)    'Generation technologies in the simulation'  %semislash%
 $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
 $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 %semislash%;
-$offmulti
+
+
+*-------------------------------------------------------------------------------
+*----- Any declarations and definitions of sets, aliases and acronyms for addon:
+*-------------------------------------------------------------------------------
+
+$include "../../base/addons/_hooks/acronyms.inc"
+$include "../../base/addons/_hooks/setdeclare.inc"
+$include "../../base/addons/_hooks/setdefine.inc"
+
+
+* Addon AGKNDISC: discrete size investment in technologies:
+$ifi %AGKNDISC%==yes $include  "../../base/addons/bb4/agkndisc/agkndiscdeclarations.inc";
+
+
+* Duplication of sets for describing possible heat exchange between areas (option HEATTRANS).
+$ifi %HEATTRANS%==yes ALIAS (AAA,IAAAE,IAAAI);
+$ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
+
+
+$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
+
+*-------------------------------------------------------------------------------
+* End: Any declarations and definitions of sets, aliases and acronyms for addon
+*-------------------------------------------------------------------------------
+
 PARAMETER GDATA(GGG,GDATASET)    'Technologies characteristics' %semislash%
 $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
@@ -151,7 +171,7 @@ $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 *-------------------------------------------------------------------------------
 *------------- Any GDATA additions for addon to be placed here: ----------------
 *-------------------------------------------------------------------------------
-$include "..\..\base\addons\_hooks\gdataadditions.inc"
+$include "../../base/addons/_hooks/gdataadditions.inc"
 
 
 * ------------------------------------------------------------------------------
@@ -191,8 +211,8 @@ SET AGKN(AAA,GGG)   'Areas for possible location of new technologies'   %semisla
 $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
-
 $offmulti
+
 SET Y(YYY)    'Years in the simulation'   %semislash%
 $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
 $if not EXIST '../data/Y.inc' $INCLUDE '../../base/data/Y.inc';
@@ -397,6 +417,11 @@ $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
 $if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
 %semislash%;
 
+PARAMETER DECOM_G(YYY,YYY,AAA,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERATION INVESTMENTS' %semislash%
+$if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
+$if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
+%semislash%;
+
 PARAMETER FMAXINVEST(CCC,FFF)   'Maximum investment (MW) by fuel type for each year simulated'    %semislash%
 $if     EXIST '../data/FMAXINVEST.inc' $INCLUDE      '../data/FMAXINVEST.inc';
 $if not EXIST '../data/FMAXINVEST.inc' $INCLUDE '../../base/data/FMAXINVEST.inc';
@@ -519,23 +544,27 @@ $if     EXIST '../data/WTRRRFLH.inc' $INCLUDE      '../data/WTRRRFLH.inc';
 $if not EXIST '../data/WTRRRFLH.inc' $INCLUDE '../../base/data/WTRRRFLH.inc';
 %semislash%;
 
-PARAMETER WNDFLH(AAA)    'Full load hours for wind power (hours)'  %semislash%
+$ifi %WNDFLH_DOL%==AAA               PARAMETER WNDFLH(AAA)         'Full load hours for wind power (hours)'  %semislash%
+$ifi %WNDFLH_DOL%==AAA_GGG           PARAMETER WNDFLH(AAA,GGG)     'Full load hours for wind power (hours)'  %semislash%
 $if     EXIST '../data/WNDFLH.inc' $INCLUDE      '../data/WNDFLH.inc';
 $if not EXIST '../data/WNDFLH.inc' $INCLUDE '../../base/data/WNDFLH.inc';
 %semislash%;
 
-PARAMETER SOLEFLH(AAA)    'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLEFLH_DOL%==AAA              PARAMETER SOLEFLH(AAA)        'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLEFLH_DOL%==AAA_GGG          PARAMETER SOLEFLH(AAA,GGG)    'Full load hours for solar power (hours)'  %semislash%
 $if     EXIST '../data/SOLEFLH.inc' $INCLUDE      '../data/SOLEFLH.inc';
 $if not EXIST '../data/SOLEFLH.inc' $INCLUDE '../../base/data/SOLEFLH.inc';
 %semislash%;
 
 
-PARAMETER SOLHFLH(AAA)    'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLHFLH_DOL%==AAA       PARAMETER SOLHFLH(AAA)        'Full load hours for solar power (hours)'  %semislash%
+$ifi %SOLHFLH_DOL%==AAA_GGG   PARAMETER SOLHFLH(AAA,GGG)    'Full load hours for solar power (hours)'  %semislash%
 $if     EXIST '../data/SOLHFLH.inc' $INCLUDE      '../data/SOLHFLH.inc';
 $if not EXIST '../data/SOLHFLH.inc' $INCLUDE '../../base/data/SOLHFLH.inc';
 %semislash%;
 
-PARAMETER WAVEFLH(AAA)    'Full load hours for wave power (hours)'  %semislash%
+$ifi %GWAVE_DOL%==AAA          PARAMETER WAVEFLH(AAA)        'Full load hours for wave power (hours)'  %semislash%
+$ifi %GWAVE_DOL%==AAA_GGG      PARAMETER WAVEFLH(AAA,GGG)    'Full load hours for wave power (hours)'  %semislash%
 $if     EXIST '../data/WAVEFLH.inc' $INCLUDE      '../data/WAVEFLH.inc';
 $if not EXIST '../data/WAVEFLH.inc' $INCLUDE '../../base/data/WAVEFLH.inc';
 %semislash%;
@@ -580,6 +609,11 @@ $if     EXIST '../data/TAX_DH.inc' $INCLUDE      '../data/TAX_DH.inc';
 $if not EXIST '../data/TAX_DH.inc' $INCLUDE '../../base/data/TAX_DH.inc';
 %semislash%;
 
+SCALAR DISCOUNTRATE 'Discount rate by country (fraction)' !! Hans "by Country"?
+$if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.inc';
+$if not EXIST '../data/DISCOUNTRATE.inc' $INCLUDE '../../base/data/DISCOUNTRATE.inc';
+%semislash%;
+
 PARAMETER ANNUITYCG(CCC,GGG)   'Transforms investment in transmission lines into annual payment (fraction)'  %semislash%
 $if     EXIST '../data/ANNUITYCG.inc' $INCLUDE         '../data/ANNUITYCG.inc';
 $if not EXIST '../data/ANNUITYCG.inc' $INCLUDE '../../base/data/ANNUITYCG.inc';
@@ -590,10 +624,6 @@ $if     EXIST '../data/ANNUITYCX.inc' $INCLUDE         '../data/ANNUITYCX.inc';
 $if not EXIST '../data/ANNUITYCX.inc' $INCLUDE '../../base/data/ANNUITYCX.inc';
 %semislash%;
 
-SCALAR DISCOUNTRATE 'Discount rate by country (fraction)' !! Hans "by Country"?
-$if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.inc';
-$if not EXIST '../data/DISCOUNTRATE.inc' $INCLUDE '../../base/data/DISCOUNTRATE.inc';
-%semislash%;
 
 PARAMETER GINVCOST(AAA,GGG)    'Investment cost for new technology (MMoney/MW)'  %semislash%
 $if     EXIST '../data/GINVCOST.inc' $INCLUDE         '../data/GINVCOST.inc';
@@ -627,7 +657,10 @@ $if     EXIST '../data/DHFP_BASE.inc' $INCLUDE         '../data/DHFP_BASE.inc';
 $if not EXIST '../data/DHFP_BASE.inc' $INCLUDE '../../base/data/DHFP_BASE.inc';
 %semislash%;
 
-
+PARAMETER GKF_LO(FFF)    'Minimum capacity usage on new capacity for fuel (%)'  %semislash%
+$if     EXIST '../data/GKF_LO.inc' $INCLUDE         '../data/GKF_LO.inc';
+$if not EXIST '../data/GKF_LO.inc' $INCLUDE '../../base/data/GKF_LO.inc';
+%semislash%;
 
 *-------------------------------------------------------------------------------
 *---- End: Geographically specific values --------------------------------------
@@ -638,8 +671,8 @@ $if not EXIST '../data/DHFP_BASE.inc' $INCLUDE '../../base/data/DHFP_BASE.inc';
 *---- Annual electricity demand : ---------------------------------------------
 *-------------------------------------------------------------------------------
 PARAMETER DE(YYY,RRR,DEUSER)    'Annual electricity consumption (MWh)' %semislash%
-$if     EXIST '../data/de.inc' $INCLUDE         '../data/de.inc';
-$if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
+$if     EXIST '../data/DE.inc' $INCLUDE         '../data/DE.inc';
+$if not EXIST '../data/DE.inc' $INCLUDE '../../base/data/DE.inc';
 %semislash%;
 
 
@@ -647,8 +680,8 @@ $if not EXIST '../data/de.inc' $INCLUDE '../../base/data/de.inc';
 *---- Annual heat demand: -----------------------------------------------------
 *-------------------------------------------------------------------------------
 PARAMETER DH(YYY,AAA,DHUSER)    'Annual heat consumption (MWh)'  %semislash%
-$if     EXIST '../data/dh.inc' $INCLUDE         '../data/dh.inc';
-$if not EXIST '../data/dh.inc' $INCLUDE '../../base/data/dh.inc';
+$if     EXIST '../data/DH.inc' $INCLUDE         '../data/DH.inc';
+$if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
 %semislash%;
 
 
@@ -799,7 +832,6 @@ $if not EXIST '../data/GKRATE.inc' $INCLUDE '../../base/data/GKRATE.inc';
 * Default value inserted:
 GKRATE(IA,G,S)$(NOT GKRATE(IA,G,S)) = 1;
 
-
 PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)                    'Variation in electricity demand'   %semislash%
 $if     EXIST '../data/DE_VAR_T.inc' $INCLUDE      '../data/DE_VAR_T.inc';
 $if not EXIST '../data/DE_VAR_T.inc' $INCLUDE '../../base/data/DE_VAR_T.inc';
@@ -888,3 +920,9 @@ SCALAR PENALTYQ  'Penalty on violation of equation'  %semislash%
 $if     EXIST '../data/PENALTYQ.inc' $INCLUDE         '../data/PENALTYQ.inc';
 $if not EXIST '../data/PENALTYQ.inc' $INCLUDE '../../base/data/PENALTYQ.inc';
 %semislash%;
+
+*-------------------------------------------------------------------------------
+*----- Any declarations and definitions of parameters:
+*-------------------------------------------------------------------------------
+$include "../../base/addons/_hooks/pardeclare.inc"
+$include "../../base/addons/_hooks/pardefine.inc"

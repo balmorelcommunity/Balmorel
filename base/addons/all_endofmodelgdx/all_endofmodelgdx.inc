@@ -31,6 +31,8 @@ VQXK.M(IRE,IRI,S,T,IPLUSMINUS)          = 0;
 $ifi not %bb4%==yes $goto bb4end
 
 $label bb4begin
+
+$ifi not %vqdebug%==yes $goto bb4end
 * BB4 --------------------------------------------------------------------------
 VQEEQ.M(Y,IR,S,T,IPLUSMINUS)            = 0;
 VQHEQ.M(Y,IA,S,T,IPLUSMINUS)            = 0;

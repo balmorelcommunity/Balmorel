@@ -17,7 +17,7 @@ Equations
 ;
 
 
-* Electrolysis plants, existing:
+* Electrolysis plants:
 
 QHYDROGEN_GGETOH2(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GETOH2),IS3,T) ..
 
