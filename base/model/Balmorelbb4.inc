@@ -228,6 +228,9 @@ SET IGBYPASS(G)            "Technologies that may apply turbine bypass mode (sub
 SET IWATERTANK(G)          "Water tank intra-seasonal LARGE heat storage technology"; !! Corresponding to acronym WATERTANK
 SET IPIT(G)                "Pit inter-seasonal heat storage technology";        !! Corresponding to acronym PIT
 SET IHEATPUMP(G)           "Heatpump technology";                               !! Corresponding to acronym HEATPUMP
+SET IHEATPUMPAIR(G)        "Air source heat pump technolgy";         !! Corresponding to acronym HEATPUMP_AIR
+SET IHEATPUMPEXCESSHEAT(G) "Excess heat source heat pump technolgy"; !! Corresponding to acronym HEATPUMP_EXCESSHEAT
+SET IHEATPUMPGROUND(G)     "Ground source heat pump technolgy";      !! Corresponding to acronym HEATPUMP_GROUND
 
 SET IGHNOWT(G)             "Technologies that do are not allowed to load water tanks";
 SET ILINKSTO(G,G)          "1st set: Heat storage, 2nd set: technologies allowed to load the storage";
@@ -463,6 +466,9 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
    IWATERTANK(G)= YES$(GDATA(G,'GDTECHGROUP') EQ WATERTANK);
    IPIT(G)      = YES$(GDATA(G,'GDTECHGROUP') EQ PIT);
    IHEATPUMP(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP);
+   IHEATPUMPAIR(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP_AIR);
+   IHEATPUMPEXCESSHEAT(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP_EXCESSHEAT);
+   IHEATPUMPGROUND(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP_GROUND);
 
 *-------------------------
 
@@ -470,8 +476,8 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
 
 *----------------
 *Water tanks loading is restricted with the set IGHNOWT
-   IGHNOWT(G) =          IGSOLH(G)
-                         +IHEATPUMP(G);
+   IGHNOWT(G) =          IGSOLH(G);
+
 *----------------------------------------
    IGHSTOALL(G) =       IGHSTO(G)
                          +IGHSTOS(G);
