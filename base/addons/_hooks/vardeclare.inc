@@ -9,7 +9,6 @@ $ifi %dflexquant%==yes            $include "../../base/addons/demandflexquant/df
 $ifi %BB4%==yes $goto beginbb4
 
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_vardeclare.inc";
-$ifi %MAXFOR3FUELS%==yes  $include   "../../base/addons/maxfor3fuels/maxfor3fuels_vardeclare.inc";
 
 $ifi not %BB4%==yes $goto endoffile
 
@@ -17,7 +16,15 @@ $label  beginbb4
 
 $ifi not %bb4%==yes $goto endoffile
 
-$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_vardeclare.inc";
-$ifi %MAXFOR3FUELS%==yes  $include   "../../base/addons/maxfor3fuels/bb4/maxfor3fuels_vardeclare.inc"; 
+$ifi %HYDROGEN%==yes      $include   "../../base/addons/hydrogen/bb4/hydrogen_vardeclare.inc";
+$ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_vardeclare.inc";
+$ifi %AGKNDISC%==yes      $include   "../../base/addons/AGKNdisc/bb4/agkndisc_vardeclare.inc";
+$ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_vardeclare.inc";
+$ifi %X3V%==yes  $include   "../../base/addons/x3v/bb4/x3v_vardeclare.inc";
+$ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_vardeclare.inc";
+
+
+$ifi %vqdebug%==yes       $include   "../../base/addons/vqdebug/bb4/vqdebug_declare.inc";
+
 
 $label endoffile

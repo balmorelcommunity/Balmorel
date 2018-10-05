@@ -12,6 +12,16 @@
 * instead the file Balopt.bui will be $included. See the description elsewhere.
 
 
+* Debugging hints are available if you include feasiblity-ensuring variables.
+* However, adding more variables will increase calculation time.
+* Hence, if calculation time is an issue, it is recommended as default to not use them,
+* and then, if the solver declares the problem infeasible, use them and resolve.
+* Information of ... in the .log file?
+$setglobal vqdebug
+*!option yes
+
+
+
 *===============================================================================
 *===============================================================================
 * Project and Case ID:
@@ -80,21 +90,57 @@ $setglobal testbb1234
 * The following global variables concern the choice of details in some of the models.
 * Note that some of the choices are mutually dependent.
 
-* Disable investments in electricity transmission capacity
-$setglobal NOELTRANSINV
+*-----------------------
+*---- Investments ------
+
+*---- Generation investments options----
+
+* Permit investments in generation capacity:
+$setglobal GenInvest  yes
 *!option yes
 
-* Allow wind turbines to shut down
+SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
+GINVESTSTART= 2020;
+
+*---- End: Generation investments options----
+
+*---- Transmission investments options----
+
+* Permit investments in transmission capacity:
+$setglobal TransInvest yes
+*!option yes
+
+SCALAR XINVESTSTART 'Year from which engoenous decisions in transmission capacities are allowed' ;
+XINVESTSTART= 2030;
+
+*---- End: Transmission investments options----
+
+*----END: Investments
+*-----------------------
+
+* Allow wind turbines to shut down  (BB1,BB2,BB3)
 $setglobal WNDSHUTDOWN
 *!option yes
 
-* This variable includes addon for distric heating
-$Setglobal FV
+* Allow curtailment of variable renewable energy generators  (BB4)
+$setglobal VRESHUTDOWN   yes
 *!option yes
 
-* Allow demand elasticity
-$setglobal DFLEXQUANT
+*-----------------------
+*---- Timeseries scaling ------
+* Only one option should be activated!!!!
+
+*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries
+$setglobal usedtimesteps_timseries_scaling  yes
 *!option yes
+
+*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries
+$setglobal full_timeseries_scaling
+*!option yes
+
+*----END: Timeseries scaling
+*-----------------------
+
 
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of add-on modules to include.
@@ -106,19 +152,30 @@ $setglobal DFLEXQUANT
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH yes
+$setglobal COMBTECH
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN yes
+$Setglobal HYDROGEN
 *!option yes
 
-* Set a common maximum for three fuels.
-$Setglobal MAXFOR3FUELS
+* Use stepwise linear fuel prices
+$Setglobal STEPWISEPRICE  yes
+
+* Set a common maximum for fuels.
+$Setglobal LIMITSFORFUELS  yes
 *!option yes
 
-* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
+* Allow demand elasticity
+$setglobal DFLEXQUANT
+*!option yes
+
+* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
 $setglobal X3V
+*!option yes
+
+* This variable includes addon for distric heating
+$Setglobal FV
 *!option yes
 
 *
@@ -153,11 +210,12 @@ $setglobal REShareEH
 *!notif %REShareE%==yes
 
 
-* Make investments in technologies only at specified capcities.
+* Make investments in technologies only at specified capacities. (TO-DO, TEST IT)
 $setglobal AGKNDISC
 *!option yes
 *!onlyif %BB2%==yes
 *!onlyif %solvemip%==yes
+
 
 * Use the flow-based capacity allocation methodology
 $Setglobal FlowBased
@@ -178,24 +236,26 @@ $setglobal bypass
 *-------------------------------------------------------------------------------
 * Unit Commitment:
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
+
 $setglobal UnitComm
 *!option yes
-* The simplest possible: ...
-$setglobal UnitC0
+
+* Adds minimal production-when-on:
+$setglobal MINFUELCONS
 *!option yes
-* Basic version; mindowntime, minuptime, startcost, shutdcost, minimal production-when-on:
-$setglobal UnitCmin
+* Adds respecting minimum off time of the capacities:
+$setglobal MINSTARTUPTIME
 *!option yes
-* Adds ramping, including during startup and shutdown; requires '$setglobal UnitCmin yes':
-$setglobal UnitCramp
+* Adds respecting minimum on time of the capacities:
+$setglobal MINSHUTDOWNTIME
 *!option yes
-* Adds a start cost curve that depends on the number of hours the unit has been off; requires '$setglobal UnitCmin yes':
-$setglobal UnitCscc
+* Adds ramping technical limitations and stepwise costs to the Power plants when-on:
+$setglobal STEPWISERAMPING
 *!option yes
 * The production interval is segmented into a number of disjunct pieces, each with its own costs: NOT IMPLEMENTED
 $setglobal UnitCseg
 *!option yes
-
+*-------------------------------------------------------------------------------
 
 * Calibrate the price side of electricity demand
 $setglobal DEFPCALIB
@@ -205,9 +265,6 @@ $setglobal DEFPCALIB
 $setglobal DHFPCALIB
 *!option yes
 
-* Permit investments in transmission capacity:
-$setglobal TransInvest yes
-*!option yes
 
 * In model Balbase4 (BB4) indicate the strategy for relative weighting of years
 $setglobal bb4weighty shareYYY
@@ -357,7 +414,10 @@ $Setglobal limitedresults
 * Make some output in text format to show some results of an execution.
 * The detailed code for the writing of the files is given in /output/printout/printinc.
 * Setting "yes" for PRINTFILES will make some standard printout files to folder /output/printout/.
-$setglobal PRINTFILES  yes
+$setglobal PRINTFILES
+*!option yes
+
+$setglobal OUTPUT_SUMMARY
 *!option yes
 
 * PRINTSEPARATOR is a single character used for separating columns in printfiles,
@@ -527,6 +587,23 @@ $setglobal XKRATE_DOL IRRRE_IRRRI_SSS_TTT
 $setglobal GKRATE_DOL AAA_GGG_SSS
 *!option  AAA_GGG_SSS
 *!option  AAA_GGG_SSS_TTT
+
+$setglobal WNDFLH_DOL AAA
+*!option  AAA_GGG
+*!option  AAA
+
+$setglobal SOLEFLH_DOL AAA
+*!option  AAA_GGG
+*!option  AAA
+
+$setglobal SOLHFLH_DOL AAA
+*!option  AAA_GGG
+*!option  AAA
+
+$setglobal GWAVE_DOL AAA
+*!option  AAA_GGG
+*!option  AAA
+
 
 
 *-------------------------------------------------------------------------------
