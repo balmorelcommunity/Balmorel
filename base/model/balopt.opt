@@ -597,7 +597,7 @@ $setglobal semislash ";"
 
 
 * Domain overloading: The options specify the domain (indexes) that the identifiyer is declared on.
-$setglobal GMINF_DOL CCCRRRAAA_FFF
+$setglobal GMINF_DOL YYY_CCCRRRAAA_FFF
 *!option  CCCRRRAAA_FFF
 *!option  YYY_CCCRRRAAA_FFF
 *
@@ -609,7 +609,7 @@ $setglobal GEQF_DOL YYY_CCCRRRAAA_FFF
 *!option  CCCRRRAAA_FFF
 *!option  YYY_CCCRRRAAA_FFF
 *
-$setglobal XKRATE_DOL IRRRE_IRRRI_SSS_TTT
+$setglobal XKRATE_DOL IRRRE_IRRRI_SSS
 *!option  IRRRE_IRRRI
 *!option  IRRRE_IRRRI_SSS
 *!option  IRRRE_IRRRI_SSS_TTT
