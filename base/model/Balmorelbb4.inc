@@ -315,6 +315,7 @@ $ifi %GWAVE_DOL%==AAA                   PARAMETER WAVEFLH(AAA)                  
 $ifi %GWAVE_DOL%==AAA_GGG               PARAMETER WAVEFLH(AAA,GGG)                 "Full load hours for wave power";
 PARAMETER HYRSMAXVOL_G(AAA,GGG)        "Reservoir capacity (MWh storage capacity / MW installed capacity)";
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)"Data for hydro with storage ( *)";
+$ontext
 PARAMETER TAX_FHO(YYY,AAA,G)           "Fuel taxes on heat-only units (Money/GJ)";
 PARAMETER TAX_FHO_C(FFF,CCC)           "Fuel taxes on heat-only units (Money/GJ)";
 PARAMETER TAX_GH(YYY,AAA,G)            "Heat taxes on generation units (Money/GJ)";
@@ -323,6 +324,7 @@ PARAMETER TAX_HHO_C(FFF,CCC)           "Fuel taxes on HO units (Money/GJ)";
 PARAMETER TAX_F(FFF,CCC)               "Fuel taxes for heat and electricity production (Money/GJ)";
 PARAMETER TAX_DE(CCC,DEUSER)           "Consumers tax on electricity consumption (Money/MWh)";
 PARAMETER TAX_DH(CCC,DHUSER)           "Consumers tax on heat consumption (Money/MWh)";
+$offtext
 PARAMETER ANNUITYCG(CCC,GGG)           "Transforms investment in technologies into annual payment (fraction). Possibly different meaning in BB4";       !! text: todo
 PARAMETER ANNUITYCX(CCC)               "Transforms investment in transmission lines into annual payment (fraction). Possibly different meaning in BB4"; !! text: todo
 SCALAR    DISCOUNTRATE                 "Discount rate (applied to all terms in the objective function) (fraction)";
@@ -1248,9 +1250,23 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 
 * Fuel taxes
+$ontext
+* Tax on fuel use for electricity generation
+    + SUM((C,FFF,IS3,T), SUM((IA,IGEENOSTO)$(IGF(IGEENOSTO,FFF) AND ICA(C,IA) AND IAGK_HASORPOT(Y,IA,IGEENOSTO)),
+         IHOURSINST(IS3,T) * TAX_F_EL(Y,C,G) * VGF_T(Y,IA,IGEENOSTO,IS3,T)))
 
-    + SUM((C,FFF,IS3,T), SUM((IA,G)$(IGF(G,FFF) AND ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)),
-         IHOURSINST(IS3,T) * TAX_F(FFF,C) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)))
+* Tax on fuel use for heat generation in plants except storage and CHP
+    + SUM((C,FFF,IS3,T), SUM((IA,G)$(IGF(G,FFF) AND ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G) AND (IGHHNOSTO(G) or IGETOH(G))),
+         IHOURSINST(IS3,T) * TAX_F_HEAT(Y,C,G) * VGF_T(Y,IA,G,IS3,T)))
+
+* Tax on fuel use for electricity generation in CHP plants
+    + SUM((C,FFF,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(IGF(G,FFF) AND ICA(C,IA) AND IGEH(G) AND NOT IGETOH(G)),
+         IHOURSINST(IS3,T) * TAX_F_CHPE(Y,C,FFF)  * VGE_T(Y,IA,G,IS3,T)/ (GDATA(G,'GDFE') * GEFFRATE(IA,G))))
+
+* Tax on fuel use for heat generation in CHP plants
+    + SUM((C,FFF,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(IGF(G,FFF) AND ICA(C,IA) AND IGEH(G) AND NOT IGETOH(G)),
+         IHOURSINST(IS3,T) * TAX_F_CHPH(Y,C,FFF) * GDATA(G,'GDCV') * VGH_T(Y,IA,G,IS3,T)/ (GDATA(G,'GDFE') * GEFFRATE(IA,G))))
+$offtext
 
 
 /*  Not completely implemented yet - kept as appetizer.

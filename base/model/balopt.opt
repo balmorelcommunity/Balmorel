@@ -126,6 +126,10 @@ $setglobal WNDSHUTDOWN
 $setglobal VRESHUTDOWN   yes
 *!option yes
 
+* Relax seasonal limits for hydropower storages when running the model with less than 26 seasons (in HYRSDATA.inc)
+$setglobal RELAX_HYDROSTORAGE yes
+*!option yes
+
 *-----------------------
 *---- Timeseries scaling ------
 * Only one option should be activated!!!!
@@ -180,6 +184,14 @@ $Setglobal FV
 
 *
 $setglobal POLICIES
+*!option yes
+
+* Grid tariffs on electricity use
+$setglobal GRIDTARIFFS
+*!option yes
+
+* Taxes addon
+$setglobal TAXES
 *!option yes
 
 *
