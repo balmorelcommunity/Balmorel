@@ -232,7 +232,7 @@ SET IHEATPUMPAIR(G)        "Air source heat pump technolgy";         !! Correspo
 SET IHEATPUMPEXCESSHEAT(G) "Excess heat source heat pump technolgy"; !! Corresponding to acronym HEATPUMP_EXCESSHEAT
 SET IHEATPUMPGROUND(G)     "Ground source heat pump technolgy";      !! Corresponding to acronym HEATPUMP_GROUND
 
-SET IGHNOWT(G)             "Technologies that do are not allowed to load water tanks";
+SET IGHNOWT(G)             "Technologies that are not allowed to load specifically water tanks";
 SET ILINKSTO(G,G)          "1st set: Heat storage, 2nd set: technologies allowed to load the storage";
 
 
@@ -474,11 +474,6 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
 
    IGHHNOSTO(G) = NO;   IGHHNOSTO(IGHOB)   = YES;  IGHHNOSTO(IGSOLH)= YES;
 
-*----------------
-*Water tanks loading is restricted with the set IGHNOWT
-   IGHNOWT(G) =          IGSOLH(G);
-
-*----------------------------------------
    IGHSTOALL(G) =       IGHSTO(G)
                          +IGHSTOS(G);
 
@@ -532,17 +527,33 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
    IGE(G)=IGEE(G)+IGEH(G);
    IGH(G)=IGHH(G)+IGEH(G);
 
-$ifi not %heatsto2heasto_lim%==yes $goto heat_storage_loading_lim
+$ifi not %heatsto_loading_rest%==yes $goto heat_storage_loading_lim
 *Definition of ILINKSTO
+ILINKSTO(IGHSTOALL,IGH)=YES;
+
+$ifi not %heatsto2heasto_rest%==yes $goto heat_storage_to_heat_storage
+*Storage are forbidden to load other storages
 LOOP(IGHSTOALL,
-         LOOP(IGH$((NOT IGHSTOALL(IGH))),    !! Heat storages are not allowed to load other heat storages
-                 IF ((IWATERTANK(IGHSTOALL) AND IGHNOWT(IGH)),  !! Water tank loading technology restriction
-                 ELSE
-                 ILINKSTO(IGHSTOALL,IGH)=YES;
-                 );
+         LOOP(IGH$(IGHSTOALL(IGH)),
+                 ILINKSTO(IGHSTOALL,IGH)=NO;
          );
 
 );
+$label  heat_storage_to_heat_storage
+
+$ifi not %watertank_loading_rest%==yes $goto watertank_loading_lim
+*Water tank loading technology restriction
+
+IGHNOWT(G) =  IGSOLH(G);
+
+LOOP(IWATERTANK,
+         LOOP(IGHNOWT,
+                     ILINKSTO(IWATERTANK,IGHNOWT)=NO;
+         );
+
+);
+$label  watertank_loading_lim
+
 $label  heat_storage_loading_lim
 
 *-----------------------
@@ -2143,8 +2154,8 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
                                 QHSTOVOLT
                                 QHSTOVOLTS
 
-$ifi %heatsto2heasto_lim%==yes  QHSTOLOADT
-$ifi %heatsto2heasto_lim%==yes  QHSTOLOADTS
+$ifi %heatsto_loading_rest%==yes QHSTOLOADT
+$ifi %heatsto_loading_rest%==yes QHSTOLOADTS
 
 $ifi %GenInvest%==yes           QESTOLOADTLIM
 $ifi %GenInvest%==yes           QESTOLOADTLIMS
