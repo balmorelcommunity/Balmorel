@@ -87,7 +87,7 @@ IAGKNY(Y,IA,G)$(YVALUE(Y) LT GDATA(G,'GDFROMYEAR') OR (YVALUE(Y) GT GDATA(G,'GDL
 
 IAGK_HASORPOT(Y,IA,G)$IAGKNY(Y,IA,G) = YES;
 
-***This loop makes sure that if you invest in a technology in the year Y, you can use it until it is decommissioned, even if you do not allow for investments on this line in the future
+***This loop makes sure that if you invest in a technology in the year Y, you can use it until it is decommissioned, even if you do not allow for investments on this technology in the future
 LOOP(Y$(ORD(Y) NE CARD(Y)),
                    LOOP(IA,
                                LOOP(G$IAGKNY(Y,IA,G),
