@@ -532,7 +532,7 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
    IGE(G)=IGEE(G)+IGEH(G);
    IGH(G)=IGHH(G)+IGEH(G);
 
-
+$ifi not %heatsto2heasto_lim%==yes $goto heat_storage_loading_lim
 *Definition of ILINKSTO
 LOOP(IGHSTOALL,
          LOOP(IGH$((NOT IGHSTOALL(IGH))),    !! Heat storages are not allowed to load other heat storages
@@ -543,7 +543,7 @@ LOOP(IGHSTOALL,
          );
 
 );
-
+$label  heat_storage_loading_lim
 
 *-----------------------
 
@@ -2143,8 +2143,8 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
                                 QHSTOVOLT
                                 QHSTOVOLTS
 
-                                QHSTOLOADT
-                                QHSTOLOADTS
+$ifi %heatsto2heasto_lim%==yes  QHSTOLOADT
+$ifi %heatsto2heasto_lim%==yes  QHSTOLOADTS
 
 $ifi %GenInvest%==yes           QESTOLOADTLIM
 $ifi %GenInvest%==yes           QESTOLOADTLIMS

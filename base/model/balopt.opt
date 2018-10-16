@@ -141,6 +141,10 @@ $setglobal full_timeseries_scaling
 *----END: Timeseries scaling
 *-----------------------
 
+*Heat storages are forbidden to load other heat storages (if "yes", heat storages will not be allowed to load other heat storages)
+$setglobal heatsto2heasto_lim  yes
+*!option yes
+
 
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of add-on modules to include.
