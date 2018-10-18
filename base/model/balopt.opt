@@ -182,7 +182,7 @@ $Setglobal HYDROGEN
 *!option yes
 
 * Use stepwise linear fuel prices
-$Setglobal STEPWISEPRICE  yes
+$Setglobal STEPWISEPRICE
 
 * Set a common maximum for fuels.
 $Setglobal LIMITSFORFUELS  yes
