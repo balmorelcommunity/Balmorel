@@ -1266,38 +1266,6 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
     + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (GDATA(G,'GDNOX')*IOF0000001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_NOX",C)))
 
 
-* Fuel taxes
-$ontext
-* Tax on fuel use for electricity generation
-    + SUM((C,FFF,IS3,T), SUM((IA,IGEENOSTO)$(IGF(IGEENOSTO,FFF) AND ICA(C,IA) AND IAGK_HASORPOT(Y,IA,IGEENOSTO)),
-         IHOURSINST(IS3,T) * TAX_F_EL(Y,C,G) * VGF_T(Y,IA,IGEENOSTO,IS3,T)))
-
-* Tax on fuel use for heat generation in plants except storage and CHP
-    + SUM((C,FFF,IS3,T), SUM((IA,G)$(IGF(G,FFF) AND ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G) AND (IGHHNOSTO(G) or IGETOH(G))),
-         IHOURSINST(IS3,T) * TAX_F_HEAT(Y,C,G) * VGF_T(Y,IA,G,IS3,T)))
-
-* Tax on fuel use for electricity generation in CHP plants
-    + SUM((C,FFF,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(IGF(G,FFF) AND ICA(C,IA) AND IGEH(G) AND NOT IGETOH(G)),
-         IHOURSINST(IS3,T) * TAX_F_CHPE(Y,C,FFF)  * VGE_T(Y,IA,G,IS3,T)/ (GDATA(G,'GDFE') * GEFFRATE(IA,G))))
-
-* Tax on fuel use for heat generation in CHP plants
-    + SUM((C,FFF,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(IGF(G,FFF) AND ICA(C,IA) AND IGEH(G) AND NOT IGETOH(G)),
-         IHOURSINST(IS3,T) * TAX_F_CHPH(Y,C,FFF) * GDATA(G,'GDCV') * VGH_T(Y,IA,G,IS3,T)/ (GDATA(G,'GDFE') * GEFFRATE(IA,G))))
-$offtext
-
-
-/*  Not completely implemented yet - kept as appetizer.
-   + SUM((Y,IA,IGH,IS3,T)$(IAGK(Y,IA,IGH) and (IGHOB(IGH) or IGETOH(IGH))),  IAGK -> IAGKFX
-      TAX_FHO(Y,IA,IGH)*IHOURSINST(IS3,T)  * IOF3P6 * GDATA(IGH,'GDCV')* VGH_T(Y,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE') * -GEFFRATE(IA,IGH)))
-*   + SUM((Y,IA,IGH,IS3,T)$(IAGKNY(Y,IA,IGH) and (IGHOB(IGH) or IGETOH(IGH))),    TAX_FHO(Y,IA,IGH)*IHOURSINST(IS3,T)  * IOF3P6 *  VGHN_T(Y,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE') * GEFFRATE(IA,IGH)))
-* Heat generation taxes.
-   + SUM((Y,IA,IGH,IS3,T)$(IAGK(Y,IA,IGH) and TAX_GH(Y,IA,IGH)),                IAGK -> IAGKFX
-      TAX_GH(Y,IA,IGH)*IOF3P6*VGH_T(Y,IA,IGH,IS3,T)*IHOURSINST(IS3,T))
-*   + SUM((Y,IA,IGH,IS3,T)$(IAGKNY(Y,IA,IGH) and TAX_GH(Y,IA,IGH)), TAX_GH(Y,IA,IGH)*IOF3P6*VGHN_T(Y,IA,IGH,IS3,T)*IHOURSINST(IS3,T))
-*/
-
-
-
 * Add-on objective function contributions
 
 $include "../../base/addons/_hooks/qobj.inc";

@@ -15,7 +15,7 @@ $ifi %X3V%==yes      $include "../../base/addons/x3v/bb4/x3v_qeeq.inc";
 $ifi %dflexquant%==yes   $include "../../base/addons/demandflexquant/dflexquant_qeeq.inc";
 
 $ifi %dflextime%==yes    $include "../../base/addons/demandflextime/dflextime_qeeq.inc";
-
+$ifi %DEMANDRESPONSE%==yes 	$include 	"../../base/addons/demandresponse/bb4/dr_qeeq.inc";
 
 $ifi %vqdebug%==yes   $setglobal equation qeeq
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";

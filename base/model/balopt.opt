@@ -192,6 +192,10 @@ $Setglobal LIMITSFORFUELS  yes
 $setglobal DFLEXQUANT
 *!option yes
 
+* Allow demand response
+$setglobal DEMANDRESPONSE
+*!option yes
+
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
 $setglobal X3V
 *!option yes

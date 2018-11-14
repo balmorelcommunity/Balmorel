@@ -24,6 +24,7 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 $ifi %ramping_stepwise%==yes  $include "../../base/addons/ramping_stepwise/bb4/ramping_stepwise_qobj.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_qobj.inc";
 $ifi %TAXES%==yes  $include   "../../base/addons/taxes/tax_qobj.inc";
+$ifi %DEMANDRESPONSE%==yes 	$include 	"../../base/addons/demandresponse/bb4/dr_qobj.inc";
 
 $ifi %vqdebug%==yes   $setglobal equation qobj
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
