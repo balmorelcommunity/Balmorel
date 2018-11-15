@@ -710,7 +710,7 @@ $if     EXIST '../data/GKRATE.inc' $INCLUDE         '../data/GKRATE.inc';
 $if not EXIST '../data/GKRATE.inc' $INCLUDE '../../base/data/GKRATE.inc';
 %semislash%;
 * Default value inserted:
-GKRATE(IA,G,S)$(NOT GKRATE(IA,G,S)) = 1;
+GKRATE(IA,G,S)$(NOT GKRATE(IA,G,S) AND (SUM(Y, GKFX(Y,IA,G)) OR AGKN(IA,G))) = 1;
 
 PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)                    "Variation in electricity demand"   %semislash%
 $if     EXIST '../data/DE_VAR_T.inc' $INCLUDE      '../data/DE_VAR_T.inc';
