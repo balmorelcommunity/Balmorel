@@ -1,0 +1,49 @@
+* Decommissioning introduced by Juan Gea Bermúdez 2018.
+
+$ifi not %LIFETIME_DECOM_ENDO_G%==yes $ifi not %ECONOMIC_DECOM_ENDO_G%==yes  $goto DECOMMISSIONING_ENDOGENOUS_GENERATION
+
+EQUATION  QDECOM_ENDO_LIM(Y,AAA,G)       'Equation limiting the yearly decommission of endogenous technologies based on the endogenous accumulated capacity of the previous year';
+EQUATION  QDECOM_ENDO_ACCUM(Y,AAA,G)     'Equation that calculates the accumulated endogenous decommissioning of endogenous technologies';
+
+QDECOM_ENDO_LIM(IY411,IA,IGKFIND)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKFIND))..
+        VDECOM_ENDO(IY411,IA,IGKFIND)
+=L=
+        SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGKFIND)$SUM(Y$(YVALUE(Y) LT YVALUE(IY411)),IAGKNY(Y,IA,IGKFIND)))$(NOT IYFIRST(IY411))
+;
+
+QDECOM_ENDO_ACCUM(IY411,IA,IGKFIND)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKFIND))..
+        VDECOM_ENDO_ACCUM(IY411,IA,IGKFIND)
+=E=
+        VDECOM_ENDO(IY411,IA,IGKFIND)+
+        SUM(IY402$IY411PREVY(IY411,IY402), VDECOM_ENDO_ACCUM(IY402,IA,IGKFIND)$SUM(Y$(YVALUE(Y) LT YVALUE(IY411)),IAGKNY(Y,IA,IGKFIND)))$(NOT IYFIRST(IY411))
+;
+
+
+$ifi not %LIFETIME_DECOM_ENDO_G%==yes $goto LIFETIME_DECOMMISSIONING_ENDOGENOUS_GENERATION
+EQUATION  QDECOM_ENDO_ACCUM_REST(Y,AAA,G)   'Equation establishing the minimum decommissionining of endogenous technologies';
+
+QDECOM_ENDO_ACCUM_REST(IY411,IA,IGKFIND)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKFIND))..
+$ifi not %ECONOMIC_DECOM_ENDO_G%==yes       VDECOM_ENDO(IY411,IA,IGKFIND)
+$ifi     %ECONOMIC_DECOM_ENDO_G%==yes       VDECOM_ENDO_ACCUM(IY411,IA,IGKFIND)
+$ifi not %ECONOMIC_DECOM_ENDO_G%==yes       =E=
+$ifi     %ECONOMIC_DECOM_ENDO_G%==yes       =G=
+$ifi not %ECONOMIC_DECOM_ENDO_G%==yes       SUM(Y$(YVALUE(Y)< YVALUE(IY411)),VGKN(Y,IA,IGKFIND)*DECOM_G(Y,IY411,IA,IGKFIND))
+$ifi     %ECONOMIC_DECOM_ENDO_G%==yes       SUM(Y$(YVALUE(Y)< YVALUE(IY411)),SUM(IY402$(YVALUE(IY402)LE YVALUE(IY411)),VGKN(Y,IA,IGKFIND)*DECOM_G(Y,IY402,IA,IGKFIND)))
+;
+
+$label  LIFETIME_DECOMMISSIONING_ENDOGENOUS_GENERATION
+
+
+
+$label  DECOMMISSIONING_ENDOGENOUS_GENERATION
+
+
+
+$ontext
+
+
+EQUATION  QDECOM_EXO_LIM(Y,AAA,G)        'Equation limiting the yearly decommission of exogenous technologies based on the exogenous capacity';
+$label  ECONOMIC_DECOMMISSIONING
+
+$offtext
+

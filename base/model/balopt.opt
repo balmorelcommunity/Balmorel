@@ -267,6 +267,30 @@ $setglobal stointers
 $setglobal bypass
 *!option yes
 
+
+*-------------------------------------------------------------------------------
+* Technology decommissioning:
+* overall control variable DECOM must be 'yes' if any of the other decommissioning controls are:
+
+$setglobal DECOM yes
+*!option yes
+
+* Adds Endogenous capacities will maximum stay in the system as much as their lifetimes:
+$setglobal LIFETIME_DECOM_ENDO_G yes
+*!option yes
+
+* Adds Endogenous capacities can be decommissioned based on their profitability:
+$setglobal ECONOMIC_DECOM_ENDO_G
+*!option yes
+
+* Adds Exogenous capacities can be decommissioned based on their profitability (if this is not activated the parameter will provide the exogenous decommissioning):
+$setglobal ECONOMIC_DECOM_EXO_G
+*!option yes
+
+
+*-------------------------------------------------------------------------------
+
+
 *-------------------------------------------------------------------------------
 * Unit Commitment:
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:

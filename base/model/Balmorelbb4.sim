@@ -23,7 +23,7 @@ IS3(S)   = YES;
 
 VGKN.L(Y,IA,G)        = 0;
 VXKN.l(Y,IR,IRI)      = 0;
-VDECOM.l(Y,IA,G)      = 0;
+*VDECOM.l(Y,IA,G)     = 0;
 
 
 
@@ -89,14 +89,17 @@ IAGK_HASORPOT(Y,IA,G)$IAGKNY(Y,IA,G) = YES;
 
 ***This loop makes sure that if you invest in a technology in the year Y, you can use it until it is decommissioned, even if you do not allow for investments on this technology in the future
 LOOP(Y$(ORD(Y) NE CARD(Y)),
-                   LOOP(IA,
-                               LOOP(G$IAGKNY(Y,IA,G),
-                                        LOOP(IYALIAS2$((ORD(IYALIAS2) GT ORD(Y)) AND ((YVALUE(Y)+GDATA(G,'GDLIFETIME')) GT (YVALUE(IYALIAS2)))),
-                                                                    IAGK_HASORPOT(Y++1,IA,G)= IAGK_HASORPOT(Y++1,IA,G)+IAGKNY(Y,IA,G);
-                                        );
-                               );
-                    );
+         LOOP(IA,
+                 LOOP(G$IAGKNY(Y,IA,G),
+$ifi %DECOM%==yes $ifi     %LIFETIME_DECOM_ENDO_G%==yes        LOOP(IYALIAS2$((ORD(IYALIAS2) GT ORD(Y)) AND ((YVALUE(Y)+GDATA(G,'GDLIFETIME')) GT (YVALUE(IYALIAS2)))),
+$ifi %DECOM%==yes $ifi not %LIFETIME_DECOM_ENDO_G%==yes        LOOP(IYALIAS2$(ORD(IYALIAS2) GT ORD(Y)),
+$ifi not %DECOM%==yes                                          LOOP(IYALIAS2$(ORD(IYALIAS2) GT ORD(Y)),
+                                 IAGK_HASORPOT(IYALIAS2,IA,G)= IAGK_HASORPOT(IYALIAS2,IA,G)+IAGKNY(Y,IA,G);
+                         );
+                 );
+         );
 );
+
 
 $label  Generation_investments_end
 

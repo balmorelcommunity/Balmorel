@@ -813,9 +813,3 @@ $if not EXIST '../data/PENALTYQ.inc' $INCLUDE '../../base/data/PENALTYQ.inc';
 *$include "../../base/addons/_hooks/pardeclare.inc"
 $include "../../base/addons/_hooks/pardefine.inc"
 
-
-*Decommissioning definition has to be included after all AGKN parameters have been defined
-PARAMETER DECOM_G(YYY,YYY,AAA,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERATION INVESTMENTS' %semislash%
-$if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
-$if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
-%semislash%;

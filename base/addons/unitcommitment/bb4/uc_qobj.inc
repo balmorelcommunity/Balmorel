@@ -1,7 +1,7 @@
 * UC Translated to BB4 by Juan Gea Bermúdez 2018.
 
 * The following expressions are added to the objective function,
-* (inside the multiplication by IOF0000001):
+* after IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * ( 
 
 
 + SUM((IA,IGUC,IS3,T)$IAGK_HASORPOT(Y,IA,IGUC), IHOURSINST(IS3,T)*(
