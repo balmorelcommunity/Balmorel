@@ -267,6 +267,7 @@ $setglobal stointers
 $setglobal bypass
 *!option yes
 
+
 *-------------------------------------------------------------------------------
 * Unit Commitment:
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
@@ -284,12 +285,30 @@ $setglobal MINSTARTUPTIME
 $setglobal MINSHUTDOWNTIME
 *!option yes
 * Adds ramping technical limitations and stepwise costs to the Power plants when-on:
-$setglobal STEPWISERAMPING
+$setglobal STEPWISE_RAMPING_UC
 *!option yes
 * The production interval is segmented into a number of disjunct pieces, each with its own costs: NOT IMPLEMENTED
 $setglobal UnitCseg
 *!option yes
 *-------------------------------------------------------------------------------
+
+*-------------------------------------------------------------------------------
+* Stepwise_ramping (linear version):
+* overall control variable Stepwise_ramping must be 'yes' if any of the other stepwise ramping controls are:
+* This add-on is an alternative to Unit Commitment to model ramping constraints without using MIP. This add-on uses currently the relevant data and sets from the Unit Commitment add-on
+* This add-on is not compatible with the Unit Commitment stepwiseramping option
+* The use of this add-on togeter with the rest of options of Unit Commitment add-on has not been tested, so, unless tested, this add-on should not be activated if UnitComm is on.
+
+$setglobal STEPWISE_RAMPING
+*!option yes
+
+* SEASONAL ramping link is on. This means that the fuel consumption of the last element ot the set T of the set S will be linked to the first element of the set T of the set S+1.
+* This option increases computanional time but assures continuity in the fuel consumption profile.
+$setglobal SEASONALLINKRAMPING  
+*!option yes
+
+*-------------------------------------------------------------------------------
+
 
 * Calibrate the price side of electricity demand
 $setglobal DEFPCALIB
