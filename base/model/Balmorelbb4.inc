@@ -228,8 +228,11 @@ SET IGBYPASS(G)            "Technologies that may apply turbine bypass mode (sub
 SET IWATERTANK(G)          "Water tank intra-seasonal LARGE heat storage technology"; !! Corresponding to acronym WATERTANK
 SET IPIT(G)                "Pit inter-seasonal heat storage technology";        !! Corresponding to acronym PIT
 SET IHEATPUMP(G)           "Heatpump technology";                               !! Corresponding to acronym HEATPUMP
+SET IHEATPUMPAIR(G)        "Air source heat pump technolgy";         !! Corresponding to acronym HEATPUMP_AIR
+SET IHEATPUMPEXCESSHEAT(G) "Excess heat source heat pump technolgy"; !! Corresponding to acronym HEATPUMP_EXCESSHEAT
+SET IHEATPUMPGROUND(G)     "Ground source heat pump technolgy";      !! Corresponding to acronym HEATPUMP_GROUND
 
-SET IGHNOWT(G)             "Technologies that do are not allowed to load water tanks";
+SET IGHNOWT(G)             "Technologies that are not allowed to load specifically water tanks";
 SET ILINKSTO(G,G)          "1st set: Heat storage, 2nd set: technologies allowed to load the storage";
 
 
@@ -315,6 +318,7 @@ $ifi %GWAVE_DOL%==AAA                   PARAMETER WAVEFLH(AAA)                  
 $ifi %GWAVE_DOL%==AAA_GGG               PARAMETER WAVEFLH(AAA,GGG)                 "Full load hours for wave power";
 PARAMETER HYRSMAXVOL_G(AAA,GGG)        "Reservoir capacity (MWh storage capacity / MW installed capacity)";
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)"Data for hydro with storage ( *)";
+$ontext
 PARAMETER TAX_FHO(YYY,AAA,G)           "Fuel taxes on heat-only units (Money/GJ)";
 PARAMETER TAX_FHO_C(FFF,CCC)           "Fuel taxes on heat-only units (Money/GJ)";
 PARAMETER TAX_GH(YYY,AAA,G)            "Heat taxes on generation units (Money/GJ)";
@@ -323,6 +327,7 @@ PARAMETER TAX_HHO_C(FFF,CCC)           "Fuel taxes on HO units (Money/GJ)";
 PARAMETER TAX_F(FFF,CCC)               "Fuel taxes for heat and electricity production (Money/GJ)";
 PARAMETER TAX_DE(CCC,DEUSER)           "Consumers tax on electricity consumption (Money/MWh)";
 PARAMETER TAX_DH(CCC,DHUSER)           "Consumers tax on heat consumption (Money/MWh)";
+$offtext
 PARAMETER ANNUITYCG(CCC,GGG)           "Transforms investment in technologies into annual payment (fraction). Possibly different meaning in BB4";       !! text: todo
 PARAMETER ANNUITYCX(CCC)               "Transforms investment in transmission lines into annual payment (fraction). Possibly different meaning in BB4"; !! text: todo
 SCALAR    DISCOUNTRATE                 "Discount rate (applied to all terms in the objective function) (fraction)";
@@ -463,16 +468,14 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
    IWATERTANK(G)= YES$(GDATA(G,'GDTECHGROUP') EQ WATERTANK);
    IPIT(G)      = YES$(GDATA(G,'GDTECHGROUP') EQ PIT);
    IHEATPUMP(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP);
+   IHEATPUMPAIR(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP_AIR);
+   IHEATPUMPEXCESSHEAT(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP_EXCESSHEAT);
+   IHEATPUMPGROUND(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP_GROUND);
 
 *-------------------------
 
    IGHHNOSTO(G) = NO;   IGHHNOSTO(IGHOB)   = YES;  IGHHNOSTO(IGSOLH)= YES;
 
-*----------------
-*Water tanks loading is restricted with the set IGHNOWT
-   IGHNOWT(G) =          IGSOLH(G)
-                         +IHEATPUMP(G);
-*----------------------------------------
    IGHSTOALL(G) =       IGHSTO(G)
                          +IGHSTOS(G);
 
@@ -526,18 +529,34 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
    IGE(G)=IGEE(G)+IGEH(G);
    IGH(G)=IGHH(G)+IGEH(G);
 
-
+$ifi not %heatsto_loading_rest%==yes $goto heat_storage_loading_lim
 *Definition of ILINKSTO
+ILINKSTO(IGHSTOALL,IGH)=YES;
+
+$ifi not %heatsto2heasto_rest%==yes $goto heat_storage_to_heat_storage
+*Storage are forbidden to load other storages
 LOOP(IGHSTOALL,
-         LOOP(IGH$((NOT IGHSTOALL(IGH))),    !! Heat storages are not allowed to load other heat storages
-                 IF ((IWATERTANK(IGHSTOALL) AND IGHNOWT(IGH)),  !! Water tank loading technology restriction
-                 ELSE
-                 ILINKSTO(IGHSTOALL,IGH)=YES;
-                 );
+         LOOP(IGH$(IGHSTOALL(IGH)),
+                 ILINKSTO(IGHSTOALL,IGH)=NO;
          );
 
 );
+$label  heat_storage_to_heat_storage
 
+$ifi not %watertank_loading_rest%==yes $goto watertank_loading_lim
+*Water tank loading technology restriction
+
+IGHNOWT(G) =  IGSOLH(G);
+
+LOOP(IWATERTANK,
+         LOOP(IGHNOWT,
+                     ILINKSTO(IWATERTANK,IGHNOWT)=NO;
+         );
+
+);
+$label  watertank_loading_lim
+
+$label  heat_storage_loading_lim
 
 *-----------------------
 
@@ -721,12 +740,12 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 
 * Set GDCV value to one for those technologies with capacity defined on HEAT and that are not IGEXT so that their fuel consumption and O&M costs
 * can be found using the same formula as for IGCND and IGEXT:
-GDATA(IGBPR,'GDCV')   = 1;
-GDATA(IGHOB,'GDCV')   = 1;
+GDATA(IGBPR,'GDCV') = 1;
+GDATA(IGHOB,'GDCV') = 1;
 GDATA(IGETOH,'GDCV')  = 1;
 GDATA(IGHSTO,'GDCV')  = 1;
 GDATA(IGHSTOS,'GDCV') = 1;
-GDATA(IGSOLH,'GDCV')  = 1;
+GDATA(IGSOLH,'GDCV') = 1;
 
 
 * Specifying the relation between technology type and fuel type in IGF:
@@ -800,7 +819,7 @@ IWEIGHSUMT = SUM(T, WEIGHT_T(T));
 IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
 IDE_SUMST(IR,DEUSER) = SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,DEUSER,S,T));
 IDH_SUMST(IA,DHUSER) = SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,DHUSER,S,T));
-IX3FXSUMST(IR)$(SUM(Y,X3FX(Y,IR))) = SUM((S,T), IHOURSINST(S,T)*X3FX_VAR_T(IR,S,T));
+IX3FXSUMST(IR)$(SUM(Y,X3FX(Y,IR)))                  = SUM((S,T), IHOURSINST(S,T)*X3FX_VAR_T(IR,S,T));
 IWND_SUMST(IA)  = SUM((S,T), IHOURSINST(S,T)*WND_VAR_T(IA,S,T));
 ISOLESUMST(IA) = SUM((S,T), IHOURSINST(S,T)*SOLE_VAR_T(IA,S,T));
 ISOLHSUMST(IA) = SUM((S,T), IHOURSINST(S,T)*SOLH_VAR_T(IA,S,T));
@@ -1029,10 +1048,9 @@ POSITIVE VARIABLE VESTOVOLT(Y,AAA,G,S,T)           "Electricity storage contents
 POSITIVE VARIABLE VESTOVOLTS(Y,AAA,G,S,T)          "Electricity storage contents at beginning of time segment (MWh)";
 POSITIVE VARIABLE VHSTOVOLT(Y,AAA,G,S,T)           "Heat storage contents at beginning of time segment (MWh)";
 POSITIVE VARIABLE VHSTOVOLTS(Y,AAA,G,S,T)          "Heat storage contents at beginning of time segment (MWh)";
-POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)            "Accumulated new investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
-POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)          "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
-POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)      "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
-
+POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)                      "Accumulated new investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
+POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)                    "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
+POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)                "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
 
 *-------------------------------------------------------------------------------
 *----- Any variables, and possibly equations, for addon to be placed here: -----
@@ -1246,24 +1264,6 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
     + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_SO2(G)*IOF0001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_SO2",C)))
 
     + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (GDATA(G,'GDNOX')*IOF0000001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_NOX",C)))
-
-
-* Fuel taxes
-
-    + SUM((C,FFF,IS3,T), SUM((IA,G)$(IGF(G,FFF) AND ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)),
-         IHOURSINST(IS3,T) * TAX_F(FFF,C) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)))
-
-
-/*  Not completely implemented yet - kept as appetizer.
-   + SUM((Y,IA,IGH,IS3,T)$(IAGK(Y,IA,IGH) and (IGHOB(IGH) or IGETOH(IGH))),  IAGK -> IAGKFX
-      TAX_FHO(Y,IA,IGH)*IHOURSINST(IS3,T)  * IOF3P6 * GDATA(IGH,'GDCV')* VGH_T(Y,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE') * -GEFFRATE(IA,IGH)))
-*   + SUM((Y,IA,IGH,IS3,T)$(IAGKNY(Y,IA,IGH) and (IGHOB(IGH) or IGETOH(IGH))),    TAX_FHO(Y,IA,IGH)*IHOURSINST(IS3,T)  * IOF3P6 *  VGHN_T(Y,IA,IGH,IS3,T)/(GDATA(IGH,'GDFE') * GEFFRATE(IA,IGH)))
-* Heat generation taxes.
-   + SUM((Y,IA,IGH,IS3,T)$(IAGK(Y,IA,IGH) and TAX_GH(Y,IA,IGH)),                IAGK -> IAGKFX
-      TAX_GH(Y,IA,IGH)*IOF3P6*VGH_T(Y,IA,IGH,IS3,T)*IHOURSINST(IS3,T))
-*   + SUM((Y,IA,IGH,IS3,T)$(IAGKNY(Y,IA,IGH) and TAX_GH(Y,IA,IGH)), TAX_GH(Y,IA,IGH)*IOF3P6*VGHN_T(Y,IA,IGH,IS3,T)*IHOURSINST(IS3,T))
-*/
-
 
 
 * Add-on objective function contributions
@@ -1536,7 +1536,7 @@ QESTOLOADTLIM(IY411,IA,IGESTO,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(
 * Complement to assigning VESTOLOADT.UP for the case with endogenous IGESTO investments.
      (GKFX(IY411,IA,IGESTO)/GDATA(IGESTO,"GDSTOHLOAD")
       + VGKNACCUMNET(IY411,IA,IGESTO)/GDATA(IGESTO,"GDSTOHLOAD")
-     )* IGKRATE(IA,IGESTO,IS3,T)
+     ) * IGKRATE(IA,IGESTO,IS3,T)
 
          =G=
    VESTOLOADT(IY411,IA,IGESTO,IS3,T)
@@ -1548,7 +1548,7 @@ QESTOLOADTLIMS(IY411,IA,IGESTOS,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(
 * Complement to assigning VESTOLOADTS.UP for the case with endogenous IGESTOS investments.
      (GKFX(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHLOAD")
       + VGKNACCUMNET(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHLOAD")
-     )* IGKRATE(IA,IGESTOS,S,T)
+     ) * IGKRATE(IA,IGESTOS,S,T)
 
          =G=
    VESTOLOADTS(IY411,IA,IGESTOS,S,T)
@@ -1559,7 +1559,7 @@ QESTOLOADTLIMS(IY411,IA,IGESTOS,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(
 * "Intra-seasonal Heat storage output limit (MW)"
 QHSTOVGHTLIM(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTO)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
-     (GKFX(IY411,IA,IGHSTO)/GDATA(IGHSTO,"GDSTOHUNLD")
+     (   GKFX(IY411,IA,IGHSTO)/GDATA(IGHSTO,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGHSTO)/GDATA(IGHSTO,"GDSTOHUNLD")
      )*IGKRATE(IA,IGHSTO,IS3,T)
          =G=
@@ -1570,7 +1570,7 @@ QHSTOVGHTLIM(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO) AND SUM(Y$(Y
 * "Inter-seasonal Heat storage output limit (MW)"
 QHSTOVGHTLIMS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
-     (GKFX(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,"GDSTOHUNLD")
+     (   GKFX(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,"GDSTOHUNLD")
      )*IGKRATE(IA,IGHSTOS,S,T)
          =G=
@@ -1581,7 +1581,7 @@ QHSTOVGHTLIMS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND SUM(Y$(
 * "Intra-seasonal Electricity storage output limit (MW)"
 QESTOVGETLIM(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTO)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
-    (GKFX(IY411,IA,IGESTO)/GDATA(IGESTO,"GDSTOHUNLD")
+     (   GKFX(IY411,IA,IGESTO)/GDATA(IGESTO,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGESTO)/GDATA(IGESTO,"GDSTOHUNLD")
      ) * IGKRATE(IA,IGESTO,IS3,T)
          =G=
@@ -1590,7 +1590,7 @@ QESTOVGETLIM(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO) AND SUM(Y$(Y
 
 QESTOVGETLIMS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
-     (GKFX(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHUNLD")
+     (   GKFX(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHUNLD")
      ) * IGKRATE(IA,IGESTOS,S,T)
          =G=
@@ -2137,8 +2137,8 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
                                 QHSTOVOLT
                                 QHSTOVOLTS
 
-                                QHSTOLOADT
-                                QHSTOLOADTS
+$ifi %heatsto_loading_rest%==yes QHSTOLOADT
+$ifi %heatsto_loading_rest%==yes QHSTOLOADTS
 
 $ifi %GenInvest%==yes           QESTOLOADTLIM
 $ifi %GenInvest%==yes           QESTOLOADTLIMS

@@ -535,41 +535,6 @@ $if     EXIST '../data/HYRSDATA.inc' $INCLUDE         '../data/HYRSDATA.inc';
 $if not EXIST '../data/HYRSDATA.inc' $INCLUDE '../../base/data/HYRSDATA.inc';
 %semislash%;
 
-PARAMETER TAX_GF(YYY,AAA,G)    "Fuel taxes on heat-only units"  %semislash%
-$if     EXIST '../data/TAX_GF.inc' $INCLUDE      '../data/TAX_GF.inc';
-$if not EXIST '../data/TAX_GF.inc' $INCLUDE '../../base/data/TAX_GF.inc';
-%semislash%;
-
-PARAMETER TAX_GE(YYY,AAA,G)    "Electricity taxes on generation units and subsidies(-) (RMB/MWh)"  %semislash%
-$if     EXIST '../data/TAX_GE.inc' $INCLUDE      '../data/TAX_GE.inc';
-$if not EXIST '../data/TAX_GE.inc' $INCLUDE '../../base/data/TAX_GE.inc';
-%semislash%;
-
-PARAMETER TAX_GH(YYY,AAA,G)    "Heat taxes on generation units"   %semislash%
-$if     EXIST '../data/TAX_GH.inc' $INCLUDE      '../data/TAX_GH.inc';
-$if not EXIST '../data/TAX_GH.inc' $INCLUDE '../../base/data/TAX_GH.inc';
-%semislash%;
-
-PARAMETER TAX_KN(YYY,AAA,G)    "Tax (neg. subsidy) for investment in electricity generation (mRMB/MW)"  %semislash%
-$if     EXIST '../data/TAX_KN.inc' $INCLUDE      '../data/TAX_KN.inc';
-$if not EXIST '../data/TAX_KN.inc' $INCLUDE '../../base/data/TAX_KN.inc';
-%semislash%;
-
-PARAMETER TAX_F(FFF,CCC)  "Fuel taxes for heat and electricity production (Money/GJ)"  %semislash%
-$if     EXIST '../data/TAX_F.inc' $INCLUDE      '../data/TAX_F.inc';
-$if not EXIST '../data/TAX_F.inc' $INCLUDE '../../base/data/TAX_F.inc';
-%semislash%;
-
-PARAMETER TAX_DE(CCC,DEUSER)    "Consumers tax on electricity consumption (Money/MWh)"  %semislash%
-$if     EXIST '../data/TAX_DE.inc' $INCLUDE      '../data/TAX_DE.inc';
-$if not EXIST '../data/TAX_DE.inc' $INCLUDE '../../base/data/TAX_DE.inc';
-%semislash%;
-
-PARAMETER TAX_DH(CCC,DHUSER)    "Consumers tax on heat consumption (Money/MWh)"  %semislash%
-$if     EXIST '../data/TAX_DH.inc' $INCLUDE      '../data/TAX_DH.inc';
-$if not EXIST '../data/TAX_DH.inc' $INCLUDE '../../base/data/TAX_DH.inc';
-%semislash%;
-
 SCALAR DISCOUNTRATE "Discount rate by country (fraction)" !! Hans "by Country"?
 $if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.inc';
 $if not EXIST '../data/DISCOUNTRATE.inc' $INCLUDE '../../base/data/DISCOUNTRATE.inc';
