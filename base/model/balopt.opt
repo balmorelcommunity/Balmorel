@@ -100,7 +100,7 @@ $setglobal GenInvest  yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
-GINVESTSTART= 2020;
+GINVESTSTART= 2025;
 
 *---- End: Generation investments options----
 
