@@ -173,6 +173,10 @@ $setglobal watertank_loading_rest yes
 * they may or may not be working (at least with an appropriate data set),
 * however, it has not been checked. Please take contact if problems.
 
+* Add a fixed demand in each time period:
+$setglobal FIXEDDEMAND yes
+*!option yes
+
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
 $setglobal COMBTECH
 *!option yes
