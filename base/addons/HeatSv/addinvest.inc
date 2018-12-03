@@ -1,0 +1,1 @@
+$ifi %ADDINVEST%==yes execute_load '../../base/data/HeatSv_SAR.gdx', HeatSv_SAR;

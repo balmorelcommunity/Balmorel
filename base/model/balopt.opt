@@ -196,7 +196,10 @@ $setglobal DFLEXQUANT
 $setglobal DEMANDRESPONSE
 *!option yes
 
-* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
+* Allow heat savings
+$Setglobal HeatSv
+
+* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX)
 $setglobal X3V
 *!option yes
 

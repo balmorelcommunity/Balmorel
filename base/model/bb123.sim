@@ -69,6 +69,7 @@ IGKFXYMAX(IA,G)=SMAX(Y,GKFX(Y,IA,G));
 
 $ifi %GAS%==yes $INCLUDE '../../base/addons/gas/gasinit.inc';
 $ifi %HEATTRANS%==yes $INCLUDE '../../base/addons/heattrans/model/htinit.inc';
+$ifi %HeatSv%==yes $INCLUDE '../../base/addons/heatsv/bb123init.inc';
 
 *----- End of initialisation for the addons  ---------------------------------
 *----- End of initialisation for annual updating part -------------------------
@@ -434,6 +435,7 @@ $ifi %GAS%==yes $INCLUDE '../../base/addons/gas/annualupdate.inc';
 $ifi %HEATTRANS%==yes $INCLUDE '../../base/addons/heattrans/model/htannualupdate.inc'
 $ifi %FV%==yes $INCLUDE '../../base/addons/fjernvarme/yearupdate_fv.inc';
 $ifi %POLICIES%==yes $include '../../base/addons/policies/pol_yearupdate.inc';
+$ifi %HeatSv%==yes $INCLUDE '../../base/addons/HeatSv/annualupdate.inc';
 
 * Always MAKEWATER p.t.
 
@@ -707,6 +709,7 @@ vxkn.l(IRE,IRI)=0;
 
 $ifi %REShareE%==yes  $include  '../../base/addons/REShareE/printinc/RESEPrt4.inc';
 $ifi %REShareEH%==yes $include  '../../base/addons/REShareEH/printinc/RESEHPrt4.inc';
+$ifi %HeatSv%==yes $include      '../../base/addons/heatsv/bb123geninput.inc';
 
 *------------------------------------------------------------------------------
 *                    END OF SIMULATION FOR CURRENT YEAR

@@ -125,6 +125,49 @@ $ifi %BB4%==yes $goto ENDOFMODEL
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
+*---- Some generally applicable stuff: -----------------------------------------
+*-------------------------------------------------------------------------------
+
+
+* The following may be used in display, put or execute_unload statements (the text, not the value, holds relevant information)
+SCALAR SystemDate     "%system.date%"                 /NA/;
+SCALAR SystemTime     "%system.time%"                 /NA/;
+SCALAR SystemDateTime "%system.date%,  %system.time%" /NA/;
+
+* Displaying only a text string will not be accessible through the 'table of content' on the .lst file, therefore this
+SCALAR INFODISPLAY  "See information next:" /NA/;
+DISPLAY INFODISPLAY, "Balmorel run stared at", SystemDateTime;
+
+* Convenient Factors, typically relating Output and Input:
+SCALAR IOF1000    'Multiplier 1000'       /1000/;
+SCALAR IOF1000000 'Multiplier 1000000'    /1000000/;
+SCALAR IOF0001    'Multiplier 0.001'      /0.001/;
+SCALAR IOF0000001 'Multiplier 0.000001'   /0.000001/;
+SCALAR IOF3P6     'Multiplier 3.6'        /3.6/;
+SCALAR IOF24      'Multiplier 24'         /24/;
+SCALAR IOF8760    'Multiplier 8760'       /8760/;
+SCALAR IOF8784    'Multiplier 8784'       /8784/;
+SCALAR IOF365     'Multiplier 365'        /365/;
+SCALAR IOF05      'Multiplier 0.5'        /0.5/;
+SCALAR IOF1_      'Multiplier 1 (used with QOBJ and derivation of marginal values)'   /1/;!! special, possibly to disappear in future versions
+* Scalars for occational use, their meaning will be context dependent:
+SCALAR ISCALAR1   '(Context dependent)';
+SCALAR ISCALAR2   '(Context dependent)';
+SCALAR ISCALAR3   '(Context dependent)';
+SCALAR ISCALAR4   '(Context dependent)';
+SCALAR ISCALAR5   '(Context dependent)';
+
+* This file contains initialisations of printing of log and error messages:
+$INCLUDE '../../base/logerror/logerinc/error1.inc';
+
+
+*-------------------------------------------------------------------------------
+*---- End: Some generally applicable stuff -------------------------------------
+*-------------------------------------------------------------------------------
+
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
 *---- Declarations and inclusion of data files: --------------------------------
 *-------------------------------------------------------------------------------
 
@@ -524,6 +567,9 @@ $if not EXIST '../data/AGKNDISCGDATA.inc' $INCLUDE '../../base/data/AGKNDISCGDAT
 $label label_AGKNDISC1
 * End: Addon AGKNDISC: discrete size investment in technologies.
 
+
+* Add-on HeatSv: investment in heat savings
+$ifi %HeatSv%==yes  $include '../../base/addons/HeatSv/sets.inc'
 
 *-------------------------------------------------------------------------------
 * End: Any declarations and definitions of sets, aliases and acronyms for addon
@@ -1365,6 +1411,8 @@ $ifi %ADDINVEST%==yes execute_load '../../base/data/GKVACC.gdx', GKVACC;
 $ifi %ADDINVEST%==yes execute_load '../../base/data/GVKGN.gdx', GVKGN;
 $ifi %ADDINVEST%==yes execute_load '../../base/data/XKACC.gdx', XKACC;
 
+$ifi %HeatSv%==yes $INCLUDE '../../base/addons/heatsv/addinvest.inc';
+
 *-------------------------------------------------------------------------------
 *---- Miscellaneous ------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -1639,7 +1687,7 @@ $ifi %DHFPCALIB%==yes  + DHFP_CALIB(IA,S,T)
 */
 
 * Demand of electricity (MW) and heat (MW) current simulation year:
-PARAMETER IDE_T_Y(RRR,S,T)      'Nominal electricity demand (MW) time segment (S,T) current simulation year',
+PARAMETER IDE_T_Y(RRR,S,T)      'Nominal electricity demand (MW) time segment (S,T)   current simulation year',
           IDH_T_Y(AAA,S,T)      'Nominal heat demand (MW) time segment (S,T) current simulation year';
 * Generation capacity (MW) at the beginning of current simulation year,
 * specified by GKFX and by accumulated endogeneous investments, respectively:
@@ -1719,7 +1767,7 @@ $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_intern.inc';
 * Discrete size investments addon
 $ifi %AGKNDISC%==yes   $include '../../base/addons/agkndisc/agkndiscinternal.inc';
 
-
+$ifi %HeatSv%==yes $include '../../base/addons/HeatSv/internal.inc';
 *-------------------------------------------------------------------------------
 *----- End: Any internal sets and parameters for addon to be placed here -------
 *-------------------------------------------------------------------------------
@@ -1882,6 +1930,8 @@ $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_vars.inc';
 $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_eqns.inc';
 * These variables are for addon discrete size investments
 $ifi %AGKNDISC%==yes  $include '../../base/addons/agkndisc/agkndiscvariables.inc';
+* These add-on variables pertain to Heat Savings.
+$ifi %HeatSv%==yes $include '../../base/addons/HeatSv/variables.inc'
 * These variables are for addon policies
 $ifi %POLICIES%==yes $include '../../base/addons/policies/pol_var.inc';
 * These variables are for addon system costs
@@ -1999,6 +2049,9 @@ $ifi %AGKNDISC%==yes QAGKNDISC01(AAA,G)            'At most one of the specified
 $ifi %AGKNDISC%==yes QAGKNDISCCONT(AAA,G)          'The invested capacity must be one of the specified sizes or zero (MW) (Addon AGKNDISC)';
 
 ;
+
+* These add-on equations pertain to Heat Savings.
+$ifi %HeatSv%==yes $include '../../base/addons/HeatSv/equations.inc'
 
 *-------------------------------------------------------------------------------
 *----- End: Any equations declarations for addon to be placed here -------------
@@ -2205,14 +2258,16 @@ $ifi %HEATTRANS%==yes $include '../../base/addons/heattrans/model/htcosts.inc';
 * This file contains district heating induced additions to the objective function.
 $ifi %FV%==yes $include '../../base/addons/fjernvarme/cost_fv.inc';
 * Unit commitmen add-on
-$ifi %UnitComm%==yes    $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
+$ifi %UnitComm%==yes      $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
 
-$ifi %POLICIES%==yes    $include '../../base/addons/policies/pol_cost.inc';
-$ifi %SYSTEMCOST%==yes  $include '../../base/addons/SystemCost/cost_syscost.inc';
-$ifi %UnitComm%==yes    $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
+$ifi %POLICIES%==yes   $include '../../base/addons/policies/pol_cost.inc';
+$ifi %SYSTEMCOST%==yes   $include '../../base/addons/SystemCost/cost_syscost.inc';
+$ifi %UnitComm%==yes      $include '../../base/addons/unitcommitment/uc_qobjadd.inc';
 $ifi %BB3%==yes  $ifi %HYRSBB123%==price      $include  '../../base/addons/hyrsbb123/hyrsbb123addobj.inc'
 $ifi %BB3%==yes  $ifi %HYRSBB123%==quantprice $include  '../../base/addons/hyrsbb123/hyrsbb123addobj.inc'
 
+* This file contains Heat Savings induced additions to the objective function.
+$ifi %HeatSv%==yes $include '../../base/addons/HeatSv/obj.inc'
 )
 ;
 *----- End: The objective function QOBJ ----------------------------------------
@@ -2271,6 +2326,8 @@ QHEQ(IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER)))..
 *        - SUM(DHF_D2$IDHFP_T(IA,IS3,T,DHF_D2),VDHF_T(IA,IS3,T,DHF_D2) )
 *        + SUM(DHF_U3$IDHFP_T(IA,IS3,T,DHF_U3),VDHF_T(IA,IS3,T,DHF_U3) )
 *        - SUM(DHF_D3$IDHFP_T(IA,IS3,T,DHF_D3),VDHF_T(IA,IS3,T,DHF_D3) )
+* Adds effect of heat savings if Heat Savings add-on is active
+$ifi %HeatSv%==yes $include '../../base/addons/HeatSv/qheq.inc'
     )/(1-DISLOSS_H(IA))
 
 * Adds heat transmission if selected in the gas add-on
@@ -2283,7 +2340,7 @@ $ifi %FV%==yes $include '../../base/addons/fjernvarme/heatbalance_fv.inc';
 
 * Fuel consumption rate.
 QGFEQ(IA,G,IS3,T)$IAGK_Y(IA,G) ..
-    VGF_T(IA,G,IS3,T)
+     VGF_T(IA,G,IS3,T)
   =E=
    ( (VGE_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGNOTETOH(G) AND IGE(G))
     +(GDATA(G,'GDCV')*VGH_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGH(G)
@@ -2297,7 +2354,7 @@ $ifi %UnitComm%==yes $include '../../base/addons/unitcommitment/uc_qgfeqadd.inc'
 
 * Fuel consumption rate calculated on new units.
 QGFNEQ(IA,G,IS3,T)$IAGKN(IA,G) ..
-    VGFN_T(IA,G,IS3,T)
+      VGFN_T(IA,G,IS3,T)
   =E=
    ( (VGEN_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGNOTETOH(G) AND IGE(G))
     +(GDATA(G,'GDCV')*VGHN_T(IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGH(G)
@@ -2673,7 +2730,7 @@ QKFUELR(IR,FFF)$FKPOT(IR,FFF)..
 
 QKFUELA(IA,FFF)$FKPOT(IA,FFF) ..
         SUM(IAGK_Y(IA,G)$IGF(G,FFF),  IGKVACCTOY(IA,G))
-      + SUM(IAGK_Y(IA,G)$IGF(G,FFF),  IGKFXYMAX(IA,G))
+      + SUM(IAGK_Y(IA,G)$IGF(G,FFF), IGKFXYMAX(IA,G))
       + SUM(IAGKN(IA,G)$IGF(G,FFF),   VGKN(IA,G))
         =L=  FKPOT(IA,FFF);
 
@@ -2912,6 +2969,8 @@ $ifi %REShareEH%==yes $include '../../base/addons/REShareEH/RESEHeqns.inc';
 $ifi %AGKNDISC%==yes  $include  '../../base/addons/AGKNDISC/AGKNDISCequations.inc';
 $ifi %POLICIES%==yes  $include '../../base/addons/policies/pol_eq.inc';
 $ifi %SYSTEMCOST%==yes  $include '../../base/addons/SystemCost/eq_syscost.inc';
+* These add-on equations pertain to Heat Savings.
+$ifi %HeatSv%==yes $include '../../base/addons/HeatSv/constraints.inc'
 *-------------------------------------------------------------------------------
 *----- End: Any equations for addon to be placed here. -------------------------
 *-------------------------------------------------------------------------------
@@ -2993,7 +3052,8 @@ $ifi %UnitComm%==yes      $include '../../base/addons/unitcommitment/uc_modeladd
 $ifi %POLICIES%==yes $include '../../base/addons/policies/pol_eqn.inc';
 $ifi %REShareE%==yes QRESHAREE
 $ifi %SYSTEMCOST%==yes $include '../../base/addons/SystemCost/eqn_syscost.inc';
-
+*--- Heat saving equations -----------------------------------------------------
+$ifi %HeatSv%==yes $include '../../base/addons/HeatSv/eqsbb1.inc'
 *----- End: Any equations for addon to be placed here. -------------------------
 
 /;
@@ -3092,6 +3152,8 @@ $ifi %PLANTCLOSURES%==yes           QGKOHYRR
 $ifi %PLANTCLOSURES%==yes           QGKOWND
 $ifi %PLANTCLOSURES%==yes           QGKOSOLE
 $ifi %PLANTCLOSURES%==yes           QGKOWAVE
+*--- Heat saving equations -----------------------------------------------------
+$ifi %HeatSv%==yes $include '../../base/addons/HeatSv/eqsbb2.inc'
 *--- Investment restricitions --------------------------------------------------
                                 QXMAXINV
 
@@ -3217,6 +3279,7 @@ $ifi %MAKEINVEST%==yes execute_unload '../../base/data/XKACC.gdx', XKACC;
 
 
 $ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgdx.inc';
+$ifi %HeatSv%==yes $INCLUDE   '../../base/addons/heatsv/makeinvest.inc';
 *--- End: Results which can be transfered between simulations are placed here --
 
 *----- End of model:------------------------------------------------------------
