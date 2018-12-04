@@ -684,6 +684,7 @@ SET IY411FIRST(Y)           "The first year in the current Balbase4 model";
 SET IY411PREVY(Y,Y)         "For any given element in IY411 (index 1): the previous element in Y (index 2)";
 SET IYFIRST(Y)              "The first year in Y";
 IYFIRST(Y)$(ORD(Y) EQ 1) = YES;
+Alias (IY411, IY411ALIAS);
 
 *-------------------------------------------------------------------------------
 * Application of default data:

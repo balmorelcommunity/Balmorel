@@ -83,8 +83,6 @@ LOOP((FFF,G)$IGF(G,FFF),
 IAGKNY(Y,IA,G) = IAGKN(IA,G);
 IAGKNY(Y,IA,G)$(YVALUE(Y) LT GDATA(G,'GDFROMYEAR') OR (YVALUE(Y) GT GDATA(G,'GDLASTYEAR')) AND (GDATA(G,'GDLASTYEAR') GT 0) OR (YVALUE(Y) LT GINVESTSTART))=NO;
 
-$ifi %VARIABLE_TRIMMING%==yes           $include       "../../base/addons/variable_trimming/bb4/vt_agknytrim.inc";
-
 *Update of IAGK_HASORPOT based on potential production
 
 IAGK_HASORPOT(Y,IA,G)$IAGKNY(Y,IA,G) = YES;
