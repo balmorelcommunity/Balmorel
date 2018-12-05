@@ -750,10 +750,7 @@ PARAMETER ANNUITYCG(C,G)            "Transforms investment in technologies into 
 PARAMETER ANNUITYCX(C)              "Transforms investment in transmission lines into annual payment (fraction)";
 PARAMETER IINVCOSTG_ANNUITY(C,Y,G)  "Total investment cost to be paid for a generation investment decision of 1 MW made in Y in C for  (Mmoney)";
 PARAMETER IINVCOSTX_ANNUITY(C,Y)    "Total investment cost to be paid for a transmission line investment decision of 1 MW made in Y in C (Mmoney)";
-PARAMETER IINVCOSTG_LEFT(C,Y,Y,G)   "Remaining part of the loan to be paid of a G investment made in Y at the beggining of Y (Mmoney)";
-PARAMETER IINVCOSTX_LEFT(C,Y,Y)     "Remaining part of the loan to be paid of a transmission line investment made in Y at the beggining of Y (Mmoney)";
 PARAMETER IINVYEARG_LEFT(C,Y,Y,G)   "Remaining years of the loan to be paid of a G investment made in Y at the beggining of Y (years)";
-PARAMETER ILIFEG_LEFT(C,Y,G)        "Remaining years of lifetime of a G investment made in Y at the beggining of Y (years)";
 PARAMETER IN_INV(C,Y,G)             "Number of investments made within Y";
 
 ANNUITYCG(C,IGKFIND)= 1/ ((1-(1+INTEREST_RATE_G(IGKFIND))**(-PAYBACK_TIME_G(IGKFIND)))/INTEREST_RATE_G(IGKFIND));
@@ -1272,8 +1269,10 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 *   discounted back to the first year in the present BB4 model, this latter is represented by factor IY4GINVCOSTWEIGHT below.
 *   Discounting further back from first year in the present BB4 model to the first year in Y is handled by the factor IDISCOUNTFACTOR(Y) above.
 *   The relative weight of the years is represented by   TODO: sammenlign med SONYstick:
-   + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))))
+   + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYWEIGHT_ANNUITYCG(Y,IYALIAS2,G))))
 
+* Investment costs, generation and storage capacity invested in previous years
+   + IOF1000000*(SUM((IYALIAS2,IA,G)$(IAGKNY(IYALIAS2,IA,G) AND (ORD(IYALIAS2) LT ORD(Y))), VGKN(IYALIAS2,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*IYWEIGHT_ANNUITYCG(IYALIAS2,Y,G)))
 
 * Investment costs, new transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):

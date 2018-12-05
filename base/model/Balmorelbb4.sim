@@ -50,18 +50,14 @@ execute_unload '%relpathModel%../output/temp/IWEIGHTY.gdx' IWEIGHTY;
 IY411PREVY(Y,Y-1)= YES;
 
 
-* Calculation of correction factor for the annuities
-*PAYBACK_TIME_G(IGKFIND)
-*PAYBACK_TIME_X
-*IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)
-*IYWEIGHT_ANNUITYCX(IYALIAS,Y)
-*GDATA(IGKFIND,'GDLIFETIME')
+*------------ Calculation of correction factor for the annuities---------------------
+
+**GENERATION
 
 LOOP(C,
          LOOP(IGKFIND,
                  LOOP(IYALIAS,
                          LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
-                                 IINVCOSTG_LEFT(C,IYALIAS,Y,IGKFIND)=IINVCOSTG_ANNUITY(C,Y,IGKFIND);
                                  IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)=PAYBACK_TIME_G(IGKFIND);
                          );
                  );
@@ -77,13 +73,7 @@ LOOP(IGKFIND,
                               IN_INV(C,IYALIAS,IGKFIND)=TRUNC(IN_INV(C,IYALIAS,IGKFIND))+1;
                          );
 
-*                 ILIFEG_LEFT(C,IYALIAS,IGKFIND)=IWEIGHTY(IYALIAS)-IN_INV(C,IYALIAS,IGKFIND)*GDATA(IGKFIND,'GDLIFETIME');
-
-
                   LOOP(Y$(ORD(Y) GE ORD(IYALIAS)),
-*                         IF ((IINVCOSTG_LEFT(C,IYALIAS,Y,IGKFIND) EQ 0),
-*                                 BREAK;
-*                         );
 *Technology pays the remaining debt in this Y
 
 **Less or equal to 1 investment made in Y
@@ -119,31 +109,31 @@ LOOP(IGKFIND,
                                  IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)/IWEIGHTY(Y);
                                  BREAK;
                          );
-**More than 1 investment made
-                         IF ( (IN_INV(C,IYALIAS,IGKFIND) GT 1) AND ((IWEIGHTY(Y)-(IN_INV(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')) LT PAYBACK_TIME_G(IGKFIND)),
-                             IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=(IN_INV(C,IYALIAS,IGKFIND)-1)*PAYBACK_TIME_G(IGKFIND)/IWEIGHTY(Y) +
-                                                                   (PAYBACK_TIME_G(IGKFIND)-(IWEIGHTY(Y)-(IN_INV(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')))/PAYBACK_TIME_G(IGKFIND);
-                             IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(Y))=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
-*                             IF(,
-*                                break;
-*                             );
+**More than 1 investment made in Y
+*** Year of investment
+                         IF ( (ORD(Y) EQ ORD(IYALIAS)) AND (IN_INV(C,IYALIAS,IGKFIND) GT 1) AND ((IWEIGHTY(Y)-(IN_INV(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')) LT PAYBACK_TIME_G(IGKFIND)),
+                             IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=(IN_INV(C,IYALIAS,IGKFIND)-1)*PAYBACK_TIME_G(IGKFIND)/IWEIGHTY(Y)
+                             +((IWEIGHTY(Y)-(IN_INV(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')))/IWEIGHTY(Y)
+;
+                             IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(Y))=PAYBACK_TIME_G(IGKFIND)-(IWEIGHTY(Y)-(IN_INV(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME'));
                          );
-
-
-
-$ONTEXT
-                 IF (   ,
-                     ;
-                 );
-$OFFTEXT
+*** Years next to investment
+                         IF ( (ORD(Y) GT ORD(IYALIAS)) AND (IN_INV(C,IYALIAS,IGKFIND) GT 1) AND ((IWEIGHTY(Y)-(IN_INV(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')) LT PAYBACK_TIME_G(IGKFIND)),
+                             IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)/IWEIGHTY(Y);
+                             IF(IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LT IWEIGHTY(Y),
+                                 BREAK;
+                            );
+                             IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(Y))=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
+                          );
                  );
          );
 );
 );
 
+**Transmission
+*TBD
 
-
-
+*------------ END of Calculation of correction factor for the annuities---------------------
 
 * ----------------- Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT ----------------------------------
 
