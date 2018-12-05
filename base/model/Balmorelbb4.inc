@@ -328,8 +328,10 @@ PARAMETER TAX_F(FFF,CCC)               "Fuel taxes for heat and electricity prod
 PARAMETER TAX_DE(CCC,DEUSER)           "Consumers tax on electricity consumption (Money/MWh)";
 PARAMETER TAX_DH(CCC,DHUSER)           "Consumers tax on heat consumption (Money/MWh)";
 $offtext
-PARAMETER ANNUITYCG(CCC,GGG)           "Transforms investment in technologies into annual payment (fraction). Possibly different meaning in BB4";       !! text: todo
-PARAMETER ANNUITYCX(CCC)               "Transforms investment in transmission lines into annual payment (fraction). Possibly different meaning in BB4"; !! text: todo
+PARAMETER INTEREST_RATE_G(G)         "Interest rate applied to the loan of each generation technology (fraction)";
+SCALAR    INTEREST_RATE_X              "Interest rate applied to the loan of transmission lines (fraction)";
+PARAMETER PAYBACK_TIME_G(G)          "Payback time of the loan for generation technologies (years)";
+SCALAR    PAYBACK_TIME_X               "Payback time of the loan for transmission lines (years)";
 SCALAR    DISCOUNTRATE                 "Discount rate (applied to all terms in the objective function) (fraction)";
 PARAMETER GINVCOST(AAA,GGG)            "Investment cost for new technology (overwriting default value GDATA(G,'GDINVCOST0') if non-zero or EPS in data file) (MMoney/MW)";
 PARAMETER GOMVCOST(AAA,GGG)            "Variable operating and maintenance costs (overwriting default value GDATA(G,'GDOMVCOST0') if non-zero or EPS in data file) (Money/MWh)";
@@ -737,6 +739,28 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 *------------------------------------------------------------------------------
 * Internal parameters and settings:
 *------------------------------------------------------------------------------
+
+
+
+*Annuity related parameters
+
+PARAMETER IYWEIGHT_ANNUITYCG(Y,Y,G) "Correction factor to put weight on the annuity paid for G for an investment made in y in the time period y " ;
+PARAMETER IYWEIGHT_ANNUITYCX(Y,Y)   "Correction factor to put weight on the annuity paid for an investment made in y for transmission lines" ;
+PARAMETER ANNUITYCG(C,G)            "Transforms investment in technologies into annual payment (fraction)";
+PARAMETER ANNUITYCX(C)              "Transforms investment in transmission lines into annual payment (fraction)";
+PARAMETER IINVCOSTG_ANNUITY(C,Y,G)  "Total investment cost to be paid for a generation investment decision of 1 MW made in Y in C for  (Mmoney)";
+PARAMETER IINVCOSTX_ANNUITY(C,Y)    "Total investment cost to be paid for a transmission line investment decision of 1 MW made in Y in C (Mmoney)";
+PARAMETER IINVCOSTG_LEFT(C,Y,Y,G)   "Remaining part of the loan to be paid of a G investment made in Y at the beggining of Y (Mmoney)";
+PARAMETER IINVCOSTX_LEFT(C,Y,Y)     "Remaining part of the loan to be paid of a transmission line investment made in Y at the beggining of Y (Mmoney)";
+PARAMETER IINVYEARG_LEFT(C,Y,Y,G)   "Remaining years of the loan to be paid of a G investment made in Y at the beggining of Y (years)";
+PARAMETER ILIFEG_LEFT(C,Y,G)        "Remaining years of lifetime of a G investment made in Y at the beggining of Y (years)";
+PARAMETER IN_INV(C,Y,G)             "Number of investments made within Y";
+
+ANNUITYCG(C,IGKFIND)= 1/ ((1-(1+INTEREST_RATE_G(IGKFIND))**(-PAYBACK_TIME_G(IGKFIND)))/INTEREST_RATE_G(IGKFIND));
+ANNUITYCX(C)=1/((1-(1+INTEREST_RATE_X)**(-PAYBACK_TIME_X))/INTEREST_RATE_X);
+IINVCOSTG_ANNUITY(C,Y,IGKFIND)=ANNUITYCG(C,IGKFIND)*PAYBACK_TIME_G(IGKFIND);
+IINVCOSTX_ANNUITY(C,Y)=ANNUITYCX(C)*PAYBACK_TIME_X;
+
 
 * Set GDCV value to one for those technologies with capacity defined on HEAT and that are not IGEXT so that their fuel consumption and O&M costs
 * can be found using the same formula as for IGCND and IGEXT:

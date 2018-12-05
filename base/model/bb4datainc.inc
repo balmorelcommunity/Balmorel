@@ -540,16 +540,25 @@ $if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.
 $if not EXIST '../data/DISCOUNTRATE.inc' $INCLUDE '../../base/data/DISCOUNTRATE.inc';
 %semislash%;
 
-PARAMETER ANNUITYCG(CCC,GGG)   "Transforms investment in transmission lines into annual payment (fraction)"  %semislash%
-$if     EXIST '../data/ANNUITYCG.inc' $INCLUDE         '../data/ANNUITYCG.inc';
-$if not EXIST '../data/ANNUITYCG.inc' $INCLUDE '../../base/data/ANNUITYCG.inc';
+PARAMETER INTEREST_RATE_G(G)         "Interest rate applied to the loan of each generation technology (fraction)";     %semislash%
+$if     EXIST '../data/INTEREST_RATE_G.inc' $INCLUDE         '../data/INTEREST_RATE_G.inc';
+$if not EXIST '../data/INTEREST_RATE_G.inc' $INCLUDE '../../base/data/INTEREST_RATE_G.inc';
 %semislash%;
 
-PARAMETER ANNUITYCX(CCC)   "Transforms investment to annual payment (fraction) for transmission"  %semislash%
-$if     EXIST '../data/ANNUITYCX.inc' $INCLUDE         '../data/ANNUITYCX.inc';
-$if not EXIST '../data/ANNUITYCX.inc' $INCLUDE '../../base/data/ANNUITYCX.inc';
+SCALAR    INTEREST_RATE_X              "Interest rate applied to the loan of transmission lines (fraction)";      %semislash%
+$if     EXIST '../data/INTEREST_RATE_X.inc' $INCLUDE         '../data/INTEREST_RATE_X.inc';
+$if not EXIST '../data/INTEREST_RATE_X.inc' $INCLUDE '../../base/data/INTEREST_RATE_X.inc';
 %semislash%;
 
+PARAMETER PAYBACK_TIME_G(G)          "Payback time of the loan for generation technologies (years)";  %semislash%
+$if     EXIST '../data/PAYBACK_TIME_G.inc' $INCLUDE         '../data/PAYBACK_TIME_G.inc';
+$if not EXIST '../data/PAYBACK_TIME_G.inc' $INCLUDE '../../base/data/PAYBACK_TIME_G.inc';
+%semislash%;
+
+SCALAR    PAYBACK_TIME_X               "Payback time of the loan for transmission lines (years)";  %semislash%
+$if     EXIST '../data/PAYBACK_TIME_X.inc' $INCLUDE         '../data/PAYBACK_TIME_X.inc';
+$if not EXIST '../data/PAYBACK_TIME_X.inc' $INCLUDE '../../base/data/PAYBACK_TIME_X.inc';
+%semislash%;
 
 PARAMETER GINVCOST(AAA,GGG)    "Investment cost for new technology (MMoney/MW)"  %semislash%
 $if     EXIST '../data/GINVCOST.inc' $INCLUDE         '../data/GINVCOST.inc';

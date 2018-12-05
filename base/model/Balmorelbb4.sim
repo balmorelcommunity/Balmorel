@@ -50,6 +50,100 @@ execute_unload '%relpathModel%../output/temp/IWEIGHTY.gdx' IWEIGHTY;
 IY411PREVY(Y,Y-1)= YES;
 
 
+* Calculation of correction factor for the annuities
+*PAYBACK_TIME_G(IGKFIND)
+*PAYBACK_TIME_X
+*IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)
+*IYWEIGHT_ANNUITYCX(IYALIAS,Y)
+*GDATA(IGKFIND,'GDLIFETIME')
+
+LOOP(C,
+         LOOP(IGKFIND,
+                 LOOP(IYALIAS,
+                         LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
+                                 IINVCOSTG_LEFT(C,IYALIAS,Y,IGKFIND)=IINVCOSTG_ANNUITY(C,Y,IGKFIND);
+                                 IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)=PAYBACK_TIME_G(IGKFIND);
+                         );
+                 );
+         );
+);
+
+LOOP(C,
+LOOP(IGKFIND,
+         LOOP(IYALIAS,
+                  IN_INV(C,IYALIAS,IGKFIND)=IWEIGHTY(IYALIAS)/GDATA(IGKFIND,'GDLIFETIME');
+*Correction of inv
+                  IF ( TRUNC(IN_INV(C,IYALIAS,IGKFIND)) NE IN_INV(C,IYALIAS,IGKFIND),
+                              IN_INV(C,IYALIAS,IGKFIND)=TRUNC(IN_INV(C,IYALIAS,IGKFIND))+1;
+                         );
+
+*                 ILIFEG_LEFT(C,IYALIAS,IGKFIND)=IWEIGHTY(IYALIAS)-IN_INV(C,IYALIAS,IGKFIND)*GDATA(IGKFIND,'GDLIFETIME');
+
+
+                  LOOP(Y$(ORD(Y) GE ORD(IYALIAS)),
+*                         IF ((IINVCOSTG_LEFT(C,IYALIAS,Y,IGKFIND) EQ 0),
+*                                 BREAK;
+*                         );
+*Technology pays the remaining debt in this Y
+
+**Less or equal to 1 investment made in Y
+                         IF ( (PAYBACK_TIME_G(IGKFIND) LE IWEIGHTY(Y)) AND (IN_INV(C,IYALIAS,IGKFIND) LE 1),
+                              IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)= PAYBACK_TIME_G(IGKFIND)/GDATA(IGKFIND,'GDLIFETIME');
+                              BREAK;
+                         );
+
+**More than 1 investment made in Y finishing within Y
+
+                         IF ( (IN_INV(C,IYALIAS,IGKFIND)*GDATA(IGKFIND,'GDLIFETIME')  EQ IWEIGHTY(Y)) AND (IN_INV(C,IYALIAS,IGKFIND) GT 1 ),
+                              IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=IN_INV(C,IYALIAS,IGKFIND)*PAYBACK_TIME_G(IGKFIND)/GDATA(IGKFIND,'GDLIFETIME');
+                              BREAK;
+                         );
+
+                         IF ( (IN_INV(C,IYALIAS,IGKFIND) GT 1) AND ((IWEIGHTY(Y)-(IN_INV(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')) GT PAYBACK_TIME_G(IGKFIND)),
+                             IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=IN_INV(C,IYALIAS,IGKFIND)*PAYBACK_TIME_G(IGKFIND)/IWEIGHTY(Y); ;
+                              BREAK;
+                         );
+
+*Technology does not fully pay the remaining debt in the first Y
+
+**Less than 1 investment made in Y
+
+***not finishing in Y
+                         IF (   (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GT IWEIGHTY(Y))  AND (IN_INV(C,IYALIAS,IGKFIND) LE 1) ,
+                                 IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=1;
+                                 IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(Y))=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
+
+                         );
+*** finishing in Y
+                         IF (   (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y))  AND (IN_INV(C,IYALIAS,IGKFIND) LE 1) ,
+                                 IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)/IWEIGHTY(Y);
+                                 BREAK;
+                         );
+**More than 1 investment made
+                         IF ( (IN_INV(C,IYALIAS,IGKFIND) GT 1) AND ((IWEIGHTY(Y)-(IN_INV(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')) LT PAYBACK_TIME_G(IGKFIND)),
+                             IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=(IN_INV(C,IYALIAS,IGKFIND)-1)*PAYBACK_TIME_G(IGKFIND)/IWEIGHTY(Y) +
+                                                                   (PAYBACK_TIME_G(IGKFIND)-(IWEIGHTY(Y)-(IN_INV(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')))/PAYBACK_TIME_G(IGKFIND);
+                             IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(Y))=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
+*                             IF(,
+*                                break;
+*                             );
+                         );
+
+
+
+$ONTEXT
+                 IF (   ,
+                     ;
+                 );
+$OFFTEXT
+                 );
+         );
+);
+);
+
+
+
+
 
 * ----------------- Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT ----------------------------------
 
