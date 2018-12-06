@@ -540,6 +540,11 @@ $if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.
 $if not EXIST '../data/DISCOUNTRATE.inc' $INCLUDE '../../base/data/DISCOUNTRATE.inc';
 %semislash%;
 
+SCALAR    LIFETIME_X               "Lifetime of transmission lines (years)";   %semislash%
+$if     EXIST '../data/LIFETIME_X.inc' $INCLUDE         '../data/LIFETIME_X.inc';
+$if not EXIST '../data/LIFETIME_X.inc' $INCLUDE '../../base/data/LIFETIME_X.inc';
+%semislash%;
+
 PARAMETER INTEREST_RATE_G(G)         "Interest rate applied to the loan of each generation technology (fraction)";     %semislash%
 $if     EXIST '../data/INTEREST_RATE_G.inc' $INCLUDE         '../data/INTEREST_RATE_G.inc';
 $if not EXIST '../data/INTEREST_RATE_G.inc' $INCLUDE '../../base/data/INTEREST_RATE_G.inc';

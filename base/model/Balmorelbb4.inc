@@ -328,10 +328,11 @@ PARAMETER TAX_F(FFF,CCC)               "Fuel taxes for heat and electricity prod
 PARAMETER TAX_DE(CCC,DEUSER)           "Consumers tax on electricity consumption (Money/MWh)";
 PARAMETER TAX_DH(CCC,DHUSER)           "Consumers tax on heat consumption (Money/MWh)";
 $offtext
-PARAMETER INTEREST_RATE_G(G)         "Interest rate applied to the loan of each generation technology (fraction)";
+PARAMETER INTEREST_RATE_G(G)           "Interest rate applied to the loan of each generation technology (fraction)";
 SCALAR    INTEREST_RATE_X              "Interest rate applied to the loan of transmission lines (fraction)";
-PARAMETER PAYBACK_TIME_G(G)          "Payback time of the loan for generation technologies (years)";
+PARAMETER PAYBACK_TIME_G(G)            "Payback time of the loan for generation technologies (years)";
 SCALAR    PAYBACK_TIME_X               "Payback time of the loan for transmission lines (years)";
+SCALAR    LIFETIME_X                   "Lifetime of transmission lines (years)";
 SCALAR    DISCOUNTRATE                 "Discount rate (applied to all terms in the objective function) (fraction)";
 PARAMETER GINVCOST(AAA,GGG)            "Investment cost for new technology (overwriting default value GDATA(G,'GDINVCOST0') if non-zero or EPS in data file) (MMoney/MW)";
 PARAMETER GOMVCOST(AAA,GGG)            "Variable operating and maintenance costs (overwriting default value GDATA(G,'GDOMVCOST0') if non-zero or EPS in data file) (Money/MWh)";
@@ -748,15 +749,15 @@ PARAMETER IYWEIGHT_ANNUITYCG(Y,Y,G) "Correction factor to put weight on the annu
 PARAMETER IYWEIGHT_ANNUITYCX(Y,Y)   "Correction factor to put weight on the annuity paid for an investment made in y for transmission lines" ;
 PARAMETER ANNUITYCG(C,G)            "Transforms investment in technologies into annual payment (fraction)";
 PARAMETER ANNUITYCX(C)              "Transforms investment in transmission lines into annual payment (fraction)";
-PARAMETER IINVCOSTG_ANNUITY(C,Y,G)  "Total investment cost to be paid for a generation investment decision of 1 MW made in Y in C for  (Mmoney)";
-PARAMETER IINVCOSTX_ANNUITY(C,Y)    "Total investment cost to be paid for a transmission line investment decision of 1 MW made in Y in C (Mmoney)";
 PARAMETER IINVYEARG_LEFT(C,Y,Y,G)   "Remaining years of the loan to be paid of a G investment made in Y at the beggining of Y (years)";
-PARAMETER IN_INV(C,Y,G)             "Number of investments made within Y";
+PARAMETER IINVYEARX_LEFT(C,Y,Y)     "Remaining years of the loan to be paid of a transmission line investment made in Y at the beggining of Y (years)";
+PARAMETER IN_INV_G(C,Y,G)           "Number of investments made OF G within Y (fraction)";
+PARAMETER IN_INV_X(C,Y)             "Number of investments made OF a transmission line within Y (fraction)";
+
+
 
 ANNUITYCG(C,IGKFIND)= 1/ ((1-(1+INTEREST_RATE_G(IGKFIND))**(-PAYBACK_TIME_G(IGKFIND)))/INTEREST_RATE_G(IGKFIND));
 ANNUITYCX(C)=1/((1-(1+INTEREST_RATE_X)**(-PAYBACK_TIME_X))/INTEREST_RATE_X);
-IINVCOSTG_ANNUITY(C,Y,IGKFIND)=ANNUITYCG(C,IGKFIND)*PAYBACK_TIME_G(IGKFIND);
-IINVCOSTX_ANNUITY(C,Y)=ANNUITYCX(C)*PAYBACK_TIME_X;
 
 
 * Set GDCV value to one for those technologies with capacity defined on HEAT and that are not IGEXT so that their fuel consumption and O&M costs
@@ -1278,7 +1279,13 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 * (the average of the annuities for the two countries in question is used for international transmission):
 * TODO: sammenlign med SONYstick:
     + SUM((IRE,IRI)$IXKN(Y,IRI,IRE),IOF05*VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
-      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C)))))
+      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYWEIGHT_ANNUITYCX(IYALIAS2,Y)))
+
+*Investment costs, transmission capacity invested in previous years
+    + SUM((IYALIAS2,IRE,IRI)$IXKN(IYALIAS2,IRI,IRE),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*
+      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*IYWEIGHT_ANNUITYCX(IYALIAS2,Y))
+
+
 
 * Emission taxes
 
