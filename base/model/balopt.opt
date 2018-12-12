@@ -316,7 +316,7 @@ $setglobal DEGCYCLE yes
 * Adds calendar degradation charging:
 $setglobal DEGCAL yes
 *!option
-
+*-------------------------------------------------------------------------------
 
 * Calibrate the price side of electricity demand
 $setglobal DEFPCALIB
@@ -549,7 +549,7 @@ putclose fileMERGESAVEPOINTRESULTSbash;
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
-$setglobal MERGEDSAVEPOINTRESULTS2SQLITE yes
+$setglobal MERGEDSAVEPOINTRESULTS2SQLITE
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
 
