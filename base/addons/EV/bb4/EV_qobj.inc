@@ -53,8 +53,8 @@ $ifi not %DEGCAL%==yes $goto V2GDEGCAL_END
 
 
 $label  V2GDEGCAL_END
-+ SUM((IR),EV_CHARGERCOST(Y) * EV_BEV_Avail(Y,'S01','T001',IR))
-+ SUM((IR),EV_CHARGERCOST(Y) * EV_PHEV_Avail(Y,'S01','T001',IR))
+*+ SUM((IR),EV_CHARGERCOST(Y) * EV_BEV_Avail(Y,'S01','T001',IR))
+*+ SUM((IR),EV_CHARGERCOST(Y) * EV_PHEV_Avail(Y,'S01','T001',IR))
 
 $label  V2G_END
 
