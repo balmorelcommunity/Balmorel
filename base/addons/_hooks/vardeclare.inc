@@ -23,10 +23,10 @@ $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwisep
 $ifi %X3V%==yes  $include   "../../base/addons/x3v/bb4/x3v_vardeclare.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_vardeclare.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_vardeclare.inc";
-$ifi %DEMANDRESPONSE%==yes 	$include 	"../../base/addons/demandresponse/bb4/dr_vardeclare.inc";
+$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_vardeclare.inc";
 
 
 $ifi %vqdebug%==yes       $include   "../../base/addons/vqdebug/bb4/vqdebug_declare.inc";
-
+$ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_vardeclare.inc";
 
 $label endoffile

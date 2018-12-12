@@ -305,6 +305,13 @@ $setglobal bb4weighty shareYYY
 *!option same       !Text "Use same weights for all Y"
 *!option shareYYY   !Text "Years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)"
 
+
+*-------------------------------------------------------------------------------
+* Including the power flow constraints for the European, Scandinavian and Baltic AC-Subnetworks
+$setglobal FBEU 
+*!option
+
+
 *===============================================================================
 *===============================================================================
 * Relative paths
