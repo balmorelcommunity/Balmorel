@@ -1,0 +1,23 @@
+
+EQUATIONS
+ QFBNEX(ACENETWORKS,Y,R,S,T)                            'Find net exchange for each hub in FB simulation'
+ QFBLIM(ACENETWORKS,Y,LINES,S,T)                     'PTDF Constraints for each Line'
+
+;
+
+
+QFBNEX(ACENETWORKS,IY411,IR,IS3,T)$AC2RRR(ACNETWORKS,IR)..
+
+        VFBNEX(IY411,IR,IS3,T)
+
+        =E=
+          + SUM(IRI$IXK_HASORPOT(IY411,IRI,IR), VX_T(IY411,IRI,IR,IS3,T)*(1-XLOSS(IRE,IR)))
+          -SUM(IRE$IXK_HASORPOT(IY411,IR,IRE),VX_T(IY411,IR,IRE,IS3,T))
+           ;
+
+QFBLIM(ACENETWORKS,IY411,LINES,IS3,T)$AC2LINES(ACNETWORKS,LINES) ..
+
+        SUM(IR$AC2RRR(ACNETWORKS,IR),FB_ACPTDF(ACNETWORKS,LINES,IR)*VFBNEX(IY411,IR,IS3,T))
+        =L=
+        FB_ACRAM(ACNETWORKS,LINES)
+                ;
