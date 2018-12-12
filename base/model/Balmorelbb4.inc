@@ -143,6 +143,7 @@ ALIAS (FFF,IFFFALIAS2);
 
 * Duplication of sets for seasons and hours:
 ALIAS (YYY,IYYYALIAS);
+ALIAS (YYY,IYYYALIAS2);
 ALIAS (Y,IYALIAS);
 ALIAS (S,ISALIAS,IS3LOOPSET);
 ALIAS (T,ITALIAS);
@@ -277,6 +278,7 @@ SET IAGK_HASORPOT(Y,AAA,G) "Technologies with existing or potentially invested c
 *-------------------------------------------------------------------------------
 
 PARAMETER YVALUE(YYY)                  "Numerical value of the years labels";
+PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y";
 PARAMETER FDATA(FFF,FDATASET)          "Fuel specific values";
 
 PARAMETER FMAXINVEST(CCC,FFF)          "Maximum investment by country and fuel type for each year simulated (MW)";
@@ -328,10 +330,15 @@ PARAMETER TAX_F(FFF,CCC)               "Fuel taxes for heat and electricity prod
 PARAMETER TAX_DE(CCC,DEUSER)           "Consumers tax on electricity consumption (Money/MWh)";
 PARAMETER TAX_DH(CCC,DHUSER)           "Consumers tax on heat consumption (Money/MWh)";
 $offtext
-PARAMETER INTEREST_RATE_G(G)           "Interest rate applied to the loan of each generation technology (fraction)";
-SCALAR    INTEREST_RATE_X              "Interest rate applied to the loan of transmission lines (fraction)";
-PARAMETER PAYBACK_TIME_G(G)            "Payback time of the loan for generation technologies (years)";
-SCALAR    PAYBACK_TIME_X               "Payback time of the loan for transmission lines (years)";
+
+PARAMETER ANNUITYCG(C,G)               "Transforms investment in technologies into annual payment (fraction)";
+PARAMETER ANNUITYCX(C)                 "Transforms investment in transmission lines into annual payment (fraction)";
+PARAMETER IYWEIGHT_ANNUITYCG(Y,Y,G)    "Binary parameter to establish whether the annuity of an investment of a technology made in y should be paid in the time period y (0,1)" ;
+PARAMETER IYWEIGHT_ANNUITYCX(Y,Y)      "Binary parameter to establish whether the annuity of an investment of a transmission line made in y should be paid in the time period y (0,1)";
+PARAMETER IINVYEARG_LEFT(C,Y,Y,G)      "Remaining years of the lifetime of G of an investment made in Y at the beggining of Y (years)";
+PARAMETER IINVYEARX_LEFT(C,Y,Y)        "Remaining years of the lifetime of a transmission line investment made in Y at the beggining of Y (years)";
+PARAMETER IN_INV_G(C,Y,G)              "Number of investments made OF G within Y (fraction)";
+PARAMETER IN_INV_X(C,Y)                "Number of investments made OF a transmission line within Y (fraction)";
 SCALAR    LIFETIME_X                   "Lifetime of transmission lines (years)";
 SCALAR    DISCOUNTRATE                 "Discount rate (applied to all terms in the objective function) (fraction)";
 PARAMETER GINVCOST(AAA,GGG)            "Investment cost for new technology (overwriting default value GDATA(G,'GDINVCOST0') if non-zero or EPS in data file) (MMoney/MW)";
@@ -379,6 +386,7 @@ PARAMETER X3FX_VAR_T(RRR,SSS,TTT)                  "Variation in fixed exchange 
 PARAMETER HYPPROFILS(AAA,SSS)                      "Hydro with storage seasonal price profile (Money/MWh)";
 
 $ifi %YIELDREQUIREMENT%==yes  PARAMETER YIELDREQ(GGG) "Differentiates yield requirements for different technologies ()"; !! () todo
+
 
 * Data for handling of annual hydro constraints in BB3, to be saved by BB1/BB2 and used by BB3:
 PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the seasons to be transferred to model Balbase3 (MWh)";
@@ -673,8 +681,6 @@ WTRRRVAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 *-------------------------------------------------------------------------------
 
 * Aliases relative to time:
-ALIAS (Y,IYALIAS);
-ALIAS (Y,IYALIAS2);
 
 ALIAS (S,ISALIAS);
 ALIAS (T,ITALIAS);
@@ -743,21 +749,7 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 
 
 
-*Annuity related parameters
 
-PARAMETER IYWEIGHT_ANNUITYCG(Y,Y,G) "Correction factor to put weight on the annuity paid for G for an investment made in y in the time period y " ;
-PARAMETER IYWEIGHT_ANNUITYCX(Y,Y)   "Correction factor to put weight on the annuity paid for an investment made in y for transmission lines" ;
-PARAMETER ANNUITYCG(C,G)            "Transforms investment in technologies into annual payment (fraction)";
-PARAMETER ANNUITYCX(C)              "Transforms investment in transmission lines into annual payment (fraction)";
-PARAMETER IINVYEARG_LEFT(C,Y,Y,G)   "Remaining years of the loan to be paid of a G investment made in Y at the beggining of Y (years)";
-PARAMETER IINVYEARX_LEFT(C,Y,Y)     "Remaining years of the loan to be paid of a transmission line investment made in Y at the beggining of Y (years)";
-PARAMETER IN_INV_G(C,Y,G)           "Number of investments made OF G within Y (fraction)";
-PARAMETER IN_INV_X(C,Y)             "Number of investments made OF a transmission line within Y (fraction)";
-
-
-
-ANNUITYCG(C,IGKFIND)= 1/ ((1-(1+INTEREST_RATE_G(IGKFIND))**(-PAYBACK_TIME_G(IGKFIND)))/INTEREST_RATE_G(IGKFIND));
-ANNUITYCX(C)=1/((1-(1+INTEREST_RATE_X)**(-PAYBACK_TIME_X))/INTEREST_RATE_X);
 
 
 * Set GDCV value to one for those technologies with capacity defined on HEAT and that are not IGEXT so that their fuel consumption and O&M costs
@@ -942,7 +934,7 @@ $if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.in
 $INCLUDE '../../base/output/printout/printinc/print1.inc';
 
 
-PARAMETER IWEIGHTY(Y) "Relative weight of the individual years in Y";
+
 
 
 * The input data are subject to a certain control for "reasonable" values.

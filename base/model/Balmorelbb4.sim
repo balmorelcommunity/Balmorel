@@ -34,15 +34,6 @@ VDECOM.l(Y,IA,G)      = 0;
 
 
 
-* Set the relative weight of the individual years in Y.
-* Two ideas implemented here. Used according to option bb4weighty.
-* Simple idea is to give equal weights:
-$ifi "%bb4weighty%"=="same"      IWEIGHTY(Y) = 1;
-* More complex weighting of the individual years (years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)):
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$(ORD(Y) EQ 1) = 1$(CARD(Y) EQ 1) + ((YVALUE(Y+1)-YVALUE(Y)-1)+1)$(CARD(Y) GT 1);
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) GT 1) AND (ORD(Y) LT CARD(Y))) = (YVALUE(Y) - YVALUE(Y-1) -1)/2  + (YVALUE(Y+1) - YVALUE(Y) -1)/2    +1;
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) EQ CARD(Y)) AND (CARD(Y) GT 1)) = ((YVALUE(Y)-YVALUE(Y-1)-1)+1);
-
 * Unload IWEIGHTY for the output tool
 execute_unload '%relpathModel%../output/temp/IWEIGHTY.gdx' IWEIGHTY;
 
@@ -50,7 +41,7 @@ execute_unload '%relpathModel%../output/temp/IWEIGHTY.gdx' IWEIGHTY;
 IY411PREVY(Y,Y-1)= YES;
 
 
-*------------ Calculation of correction factor for the annuities---------------------  FOR THIS CODE TO WORK, THE PAYBACK TIME MUST BE LOWER OR EQUAL THAN THE LIFETIME OF THE TECHNOLOGY
+*------------ Calculation of IYWEIGHT_ANNUITYCG and IYWEIGHT_ANNUITYCX to include/exclude the payment of the annuities---------------------
 
 **GENERATION
 
@@ -58,7 +49,7 @@ LOOP(C,
          LOOP(IGKFIND,
                  LOOP(IYALIAS,
                          LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
-                                 IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)=PAYBACK_TIME_G(IGKFIND);
+                                 IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)=GDATA(IGKFIND,'GDLIFETIME');
                          );
                  );
          );
@@ -67,64 +58,35 @@ LOOP(C,
 LOOP(C,
 LOOP(IGKFIND,
          LOOP(IYALIAS,
-                  IN_INV_G(C,IYALIAS,IGKFIND)=IWEIGHTY(IYALIAS)/GDATA(IGKFIND,'GDLIFETIME');
-*Correction of inv
-                  IF ( TRUNC(IN_INV_G(C,IYALIAS,IGKFIND)) NE IN_INV_G(C,IYALIAS,IGKFIND),
-                              IN_INV_G(C,IYALIAS,IGKFIND)=TRUNC(IN_INV_G(C,IYALIAS,IGKFIND))+1;
-                         );
-
+                  IN_INV_G(C,IYALIAS,IGKFIND)=ROUND(IWEIGHTY(IYALIAS)/GDATA(IGKFIND,'GDLIFETIME'));
+*Correction of IN_INV_G
+                  IF ( IN_INV_G(C,IYALIAS,IGKFIND) EQ 0,
+                              IN_INV_G(C,IYALIAS,IGKFIND)=1;
+                  );
                   LOOP(Y$(ORD(Y) GE ORD(IYALIAS)),
-*Technology pays the remaining debt in this Y
-
-**Less or equal to 1 investment made in Y
-                         IF ( (PAYBACK_TIME_G(IGKFIND) LE IWEIGHTY(Y)) AND (IN_INV_G(C,IYALIAS,IGKFIND) LE 1),
-                              IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)= PAYBACK_TIME_G(IGKFIND)/GDATA(IGKFIND,'GDLIFETIME');
-                              BREAK;
-                         );
-
-**More than 1 investment made in Y finishing within Y
-
-                         IF ( (IN_INV_G(C,IYALIAS,IGKFIND)*GDATA(IGKFIND,'GDLIFETIME')  EQ IWEIGHTY(Y)) AND (IN_INV_G(C,IYALIAS,IGKFIND) GT 1 ),
-                              IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=IN_INV_G(C,IYALIAS,IGKFIND)*PAYBACK_TIME_G(IGKFIND)/GDATA(IGKFIND,'GDLIFETIME');
-                              BREAK;
-                         );
-
-                         IF ( (IN_INV_G(C,IYALIAS,IGKFIND) GT 1) AND ((IWEIGHTY(Y)-(IN_INV_G(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')) GT PAYBACK_TIME_G(IGKFIND)),
-                             IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=IN_INV_G(C,IYALIAS,IGKFIND)*PAYBACK_TIME_G(IGKFIND)/IWEIGHTY(Y); ;
-                              BREAK;
-                         );
-
-*Technology does not fully pay the remaining debt in the first Y
-
-**Less than 1 investment made in Y
-
-***not finishing in Y
-                         IF (   (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GT IWEIGHTY(Y))  AND (IN_INV_G(C,IYALIAS,IGKFIND) LE 1) ,
-                                 IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=1;
-                                 IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(Y))=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
-
-                         );
-*** finishing in Y
-                         IF (   (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y))  AND (IN_INV_G(C,IYALIAS,IGKFIND) LE 1) ,
-                                 IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)/IWEIGHTY(Y);
+*First year's annuity
+                        IF ( ORD(Y) EQ ORD(IYALIAS),
+                              IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)= 1;
+                              IF(IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)*IN_INV_G(C,IYALIAS,IGKFIND) LE IWEIGHTY(Y),
                                  BREAK;
+                              );
+                              IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(IYALIAS2))=GDATA(IGKFIND,'GDLIFETIME')*IN_INV_G(C,IYALIAS,IGKFIND)-IWEIGHTY(Y);
                          );
-**More than 1 investment made in Y
-*** Year of investment
-                         IF ( (ORD(Y) EQ ORD(IYALIAS)) AND (IN_INV_G(C,IYALIAS,IGKFIND) GT 1) AND ((IWEIGHTY(Y)-(IN_INV_G(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')) LT PAYBACK_TIME_G(IGKFIND)),
-                             IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=(IN_INV_G(C,IYALIAS,IGKFIND)-1)*PAYBACK_TIME_G(IGKFIND)/IWEIGHTY(Y)
-                             +((IWEIGHTY(Y)-(IN_INV_G(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')))/IWEIGHTY(Y)
-;
-                             IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(Y))=PAYBACK_TIME_G(IGKFIND)-(IWEIGHTY(Y)-(IN_INV_G(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME'));
-                         );
-*** Years next to investment
-                         IF ( (ORD(Y) GT ORD(IYALIAS)) AND (IN_INV_G(C,IYALIAS,IGKFIND) GT 1) AND ((IWEIGHTY(Y)-(IN_INV_G(C,IYALIAS,IGKFIND)-1)*GDATA(IGKFIND,'GDLIFETIME')) LT PAYBACK_TIME_G(IGKFIND)),
-                             IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)/IWEIGHTY(Y);
-                             IF(IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LT IWEIGHTY(Y),
-                                 BREAK;
-                            );
-                             IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(Y))=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
-                          );
+*Remaining year's annuity
+                        IF ( ORD(Y) GT ORD(IYALIAS),
+                              IF ( IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GT IWEIGHTY(Y) ,
+                                   IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)= 1;
+                                   IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
+                              );
+                             IF ( (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GE IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) ,  !!Assumption: if the reamining years are more ore equal than half of IWEIGHTY, then the technology is in in this snapshot
+                                   IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)= 1;
+                                   BREAK;
+                              );
+                              IF ( (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LT IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) , !!Assumption: if the reamining years are less than half of IWEIGHTY, then the technology is out in this snapshot
+                                   IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)= 0;
+                                   BREAK;
+                              );
+                        );
                  );
          );
 );
@@ -135,7 +97,7 @@ LOOP(IGKFIND,
 LOOP(C,
          LOOP(IYALIAS,
                  LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
-                         IINVYEARX_LEFT(C,IYALIAS,Y)=PAYBACK_TIME_X;
+                         IINVYEARX_LEFT(C,IYALIAS,Y)=LIFETIME_X;
                  );
          );
 );
@@ -143,72 +105,42 @@ LOOP(C,
 
 LOOP(C,
           LOOP(IYALIAS,
-                  IN_INV_X(C,IYALIAS)=IWEIGHTY(IYALIAS)/LIFETIME_X;
+                  IN_INV_X(C,IYALIAS)=ROUND(IWEIGHTY(IYALIAS)/LIFETIME_X);
 *Correction of inv
-                  IF ( TRUNC(IN_INV_X(C,IYALIAS)) NE IN_INV_X(C,IYALIAS),
-                              IN_INV_X(C,IYALIAS)=TRUNC(IN_INV_X(C,IYALIAS))+1;
+                  IF ( IN_INV_X(C,IYALIAS) EQ 0,
+                              IN_INV_X(C,IYALIAS)=1;
                   );
-
                   LOOP(Y$(ORD(Y) GE ORD(IYALIAS)),
 
-
-*Technology pays the remaining debt in this Y
-
-**Less or equal to 1 investment made in Y
-                         IF ( (PAYBACK_TIME_X LE IWEIGHTY(Y)) AND (IN_INV_X(C,IYALIAS) LE 1),
-                              IYWEIGHT_ANNUITYCX(IYALIAS,Y)= PAYBACK_TIME_X/LIFETIME_X;
-                              BREAK;
-                         );
-
-**More than 1 investment made in Y finishing within Y
-
-                         IF ( (IN_INV_X(C,IYALIAS)*LIFETIME_X  EQ IWEIGHTY(Y)) AND (IN_INV_X(C,IYALIAS) GT 1 ),
-                              IYWEIGHT_ANNUITYCX(IYALIAS,Y)=IN_INV_X(C,IYALIAS)*PAYBACK_TIME_X/LIFETIME_X;
-                              BREAK;
-                         );
-
-                         IF ( (IN_INV_X(C,IYALIAS) GT 1) AND ((IWEIGHTY(Y)-(IN_INV_X(C,IYALIAS)-1)*LIFETIME_X) GT PAYBACK_TIME_X),
-                             IYWEIGHT_ANNUITYCX(IYALIAS,Y)=IN_INV_X(C,IYALIAS)*PAYBACK_TIME_X/IWEIGHTY(Y); ;
-                              BREAK;
-                         );
-
-*Technology does not fully pay the remaining debt in the first Y
-
-**Less than 1 investment made in Y
-
-***not finishing in Y
-                         IF (   (IINVYEARX_LEFT(C,IYALIAS,Y) GT IWEIGHTY(Y))  AND (IN_INV_X(C,IYALIAS) LE 1) ,
-                                 IYWEIGHT_ANNUITYCX(IYALIAS,Y)=1;
-                                 IINVYEARX_LEFT(C,IYALIAS,Y+1)$(ORD(Y) NE CARD(Y))=IINVYEARX_LEFT(C,IYALIAS,Y)-IWEIGHTY(Y);
-
-                         );
-*** finishing in Y
-                         IF (   (IINVYEARX_LEFT(C,IYALIAS,Y) LE IWEIGHTY(Y))  AND (IN_INV_X(C,IYALIAS) LE 1) ,
-                                 IYWEIGHT_ANNUITYCX(IYALIAS,Y)=IINVYEARX_LEFT(C,IYALIAS,Y)/IWEIGHTY(Y);
+*First year's annuity
+                        IF ( ORD(Y) EQ ORD(IYALIAS),
+                              IYWEIGHT_ANNUITYCX(IYALIAS,Y)= 1;
+                              IF(IINVYEARX_LEFT(C,IYALIAS,Y)*IN_INV_X(C,IYALIAS) LE IWEIGHTY(Y),
                                  BREAK;
+                              );
+                              IINVYEARX_LEFT(C,IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=LIFETIME_X*IN_INV_X(C,IYALIAS)-IWEIGHTY(Y);
                          );
-**More than 1 investment made in Y
-*** Year of investment
-                         IF ( (ORD(Y) EQ ORD(IYALIAS)) AND (IN_INV_X(C,IYALIAS) GT 1) AND ((IWEIGHTY(Y)-(IN_INV_X(C,IYALIAS)-1)*LIFETIME_X) LT PAYBACK_TIME_X),
-                             IYWEIGHT_ANNUITYCX(IYALIAS,Y)=(IN_INV_X(C,IYALIAS)-1)*PAYBACK_TIME_X/IWEIGHTY(Y)
-                             +((IWEIGHTY(Y)-(IN_INV_X(C,IYALIAS)-1)*LIFETIME_X))/IWEIGHTY(Y)
-;
-                             IINVYEARX_LEFT(C,IYALIAS,Y+1)$(ORD(Y) NE CARD(Y))=PAYBACK_TIME_X-(IWEIGHTY(Y)-(IN_INV_X(C,IYALIAS)-1)*LIFETIME_X);
-                         );
-*** Years next to investment
-                         IF ( (ORD(Y) GT ORD(IYALIAS)) AND (IN_INV_X(C,IYALIAS) GT 1) AND ((IWEIGHTY(Y)-(IN_INV_X(C,IYALIAS)-1)*LIFETIME_X) LT PAYBACK_TIME_X),
-                             IYWEIGHT_ANNUITYCX(IYALIAS,Y)=IINVYEARX_LEFT(C,IYALIAS,Y)/IWEIGHTY(Y);
-                             IF(IINVYEARX_LEFT(C,IYALIAS,Y) LT IWEIGHTY(Y),
-                                 BREAK;
-                            );
-                             IINVYEARX_LEFT(C,IYALIAS,Y+1)$(ORD(Y) NE CARD(Y))=IINVYEARX_LEFT(C,IYALIAS,Y)-IWEIGHTY(Y);
-                          );
+*Remaining year's annuity
+                        IF ( ORD(Y) GT ORD(IYALIAS),
+                              IF ( IINVYEARX_LEFT(C,IYALIAS,Y) GT IWEIGHTY(Y) ,
+                                   IYWEIGHT_ANNUITYCX(IYALIAS,Y)= 1;
+                                   IINVYEARX_LEFT(C,IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARX_LEFT(C,IYALIAS,Y)-IWEIGHTY(Y);
+                              );
+                             IF ( (IINVYEARX_LEFT(C,IYALIAS,Y) GE IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(C,IYALIAS,Y) LE IWEIGHTY(Y)) ,
+                                   IYWEIGHT_ANNUITYCX(IYALIAS,Y)= 1;
+                                   BREAK;
+                              );
+                              IF ( (IINVYEARX_LEFT(C,IYALIAS,Y) LT IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(C,IYALIAS,Y) LE IWEIGHTY(Y)) ,
+                                   IYWEIGHT_ANNUITYCX(IYALIAS,Y)= 0;
+                                   BREAK;
+                              );
+                        );
                   );
           );
 );
 
 
-*------------ END of Calculation of correction factor for the annuities---------------------
+*------------ END of Calculation of the correction factor for the annuities---------------------
 
 * ----------------- Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT ----------------------------------
 
