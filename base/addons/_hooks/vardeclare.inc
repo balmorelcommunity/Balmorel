@@ -30,6 +30,6 @@ $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_vardeclare.inc"
 
 
 $ifi %vqdebug%==yes       $include   "../../base/addons/vqdebug/bb4/vqdebug_declare.inc";
-
+$ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_vardeclare.inc";
 
 $label endoffile
