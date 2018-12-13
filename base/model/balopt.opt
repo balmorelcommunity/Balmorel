@@ -291,6 +291,33 @@ $setglobal UnitCseg
 *!option yes
 *-------------------------------------------------------------------------------
 
+* EV addon:
+* overall control variable EV must be 'yes' if any of the other EV controls are:
+
+$setglobal EV yes
+*!option
+
+* Adds DUMB charging:
+$setglobal DUMB
+*!option
+
+* Adds smart charging. Only smart charging, without V2G!:
+$setglobal SMART yes
+*!option
+
+* Adds V2G charging:
+$setglobal V2G
+*!option
+
+* Adds cycle degradation charging:
+$setglobal DEGCYCLE yes
+*!option
+
+* Adds calendar degradation charging:
+$setglobal DEGCAL yes
+*!option
+*-------------------------------------------------------------------------------
+
 * Calibrate the price side of electricity demand
 $setglobal DEFPCALIB
 *!option yes

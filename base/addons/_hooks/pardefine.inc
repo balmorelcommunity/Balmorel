@@ -24,8 +24,11 @@ $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_pardef
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_pardefine.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_pardefine.inc";
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_pardefine.inc";
+
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_pardefine.inc";
-$ifi %DEMANDRESPONSE%==yes 	$include 	"../../base/addons/demandresponse/bb4/dr_pardefine.inc";
+
+$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_pardefine.inc";
+$ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_pardefine.inc";
 
 $label endoffile
 
