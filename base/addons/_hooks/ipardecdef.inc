@@ -12,7 +12,7 @@ $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_iparde
 $ifi %X3V%==yes $include '../../base/addons/x3v/bb4/x3v_ipardecdef.inc';
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_ipardecdef.inc";
 $ifi %TAXES%==yes  $include   "../../base/addons/taxes/tax_ipardecdef.inc";
-$ifi %DEMANDRESPONSE%==yes 	$include 	"../../base/addons/demandresponse/bb4/dr_ipardecdef.inc";
+$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_ipardecdef.inc";
 
 $label endoffile
 
