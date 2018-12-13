@@ -1,17 +1,80 @@
-Equations
-QDR_SHED_MAXVOL(Y,AAA,DR_TECH,S)
-QDR_STORE_SHIFT(Y,AAA,DR_TECH,S,T)
+EQUATIONS
+QDR_SHED_MAXVOL1(Y,AAA,DR_TECH,S) 'Limit to maximum shedding per week for DR without investment or fixed cost'
+QDR_SHED_MAXVOL2(Y,AAA,DR_TECH,S) 'Limit to maximum shedding per week for DR with investment or fixed cost'
+
+QDR_STORE_SHIFT(Y,AAA,DR_TECH,S,T) '"storage" balance'
+
+QDR_LIM_UP(Y,AAA,DR_TECH,S,T)    'Limit to upshifts for DR with inv or fixed cost'
+QDR_LIM_DOWN1(Y,AAA,DR_TECH,S,T) 'Limit to downshifts for DR with inv or fixed cost'
+QDR_LIM_DOWN2(Y,AAA,DR_TECH,S,T) 'Limit to downshifts for DR with addional exogenous limit and inv or fixed cost'
+
+QDR_STORE_UP1(Y,AAA,DR_TECH,S,T)   'Limit to upward storage for DR with  DRSTORMAX limit'
+QDR_STORE_DOWN1(Y,AAA,DR_TECH,S,T) 'Limit to downward storage for DR with  DRSTORMIN limit'
+QDR_STORE_UP2(Y,AAA,DR_TECH,S,T)   'Limit to upward storage for DR with  shift before limit'
+QDR_STORE_DOWN2(Y,AAA,DR_TECH,S,T) 'Limit to downward storage for DR with  shift after limit'
+
+QDRKN_ACCUMNET(Y,AAA,DR_TECH) 'Investments into DR'
 ;
 
-* Counting the amount of shedded energy per week
-QDR_SHED_MAXVOL(IY411,IA,DR_TECH_SHED,IS3)$IADR(IY411,IA,DR_TECH_SHED)..
-                         VDR_SHED_MAXVOL(IY411,IA,DR_TECH_SHED,IS3) =E= SUM(T, IHOURSINST(IS3,T) * VDR_DOWN(IY411,IA,DR_TECH_SHED,IS3,T));
 
-
-
-QDR_Store_SHIFT(IY411,IA,DR_TECH_SHIFT,IS3,T)$IADR(IY411,IA,DR_TECH_SHIFT)..
-                         VDR_Store_pos(IY411,IA,DR_TECH_SHIFT,IS3,T++1) - VDR_Store_neg(IY411,IA,DR_TECH_SHIFT,IS3,T++1) =E=
-                         (VDR_Store_pos(IY411,IA,DR_TECH_SHIFT,IS3,T) - VDR_Store_neg(IY411,IA,DR_TECH_SHIFT,IS3,T)) * (1- DR_DATA(DR_TECH_SHIFT,'DRLOSS'))
+** Balance in "storage"
+QDR_STORE_SHIFT(IY411,IA,DR_TECH_SHIFT,IS3,T)$IADR(IY411,IA,DR_TECH_SHIFT)..
+                         VDR_STORE_POS(IY411,IA,DR_TECH_SHIFT,IS3,T++1) - VDR_STORE_NEG(IY411,IA,DR_TECH_SHIFT,IS3,T++1) =E=
+                         VDR_STORE_POS(IY411,IA,DR_TECH_SHIFT,IS3,T)* (1- DR_DATA(DR_TECH_SHIFT,'DRLOSS'))
+                         - VDR_STORE_NEG(IY411,IA,DR_TECH_SHIFT,IS3,T)
                          - VDR_DOWN(IY411,IA,DR_TECH_SHIFT,IS3,T) + VDR_UP(IY411,IA,DR_TECH_SHIFT,IS3,T);
+
+
+* Counting the amount of shedded energy per week
+QDR_SHED_MAXVOL1(IY411,IA,DR_TECH_SHED,IS3)$(IADR(IY411,IA,DR_TECH_SHED) AND NOT DR_DATA(DR_TECH_SHED,'DRINVCOST'))  ..
+                         SUM(T, IHOURSINST(IS3,T) * VDR_DOWN(IY411,IA,DR_TECH_SHED,IS3,T))
+                         =L= IDR_FX(IY411,IA,DR_TECH_SHED)* DR_DATA(DR_TECH_SHED,'DRTOI') * DR_DATA(DR_TECH_SHED,'DRWEEKLYCYCL'); ;
+
+QDR_SHED_MAXVOL2(IY411,IA,DR_TECH_SHED,IS3)$(IADR(IY411,IA,DR_TECH_SHED) AND DR_DATA(DR_TECH_SHED,'DRINVCOST'))  ..
+                         SUM(T, IHOURSINST(IS3,T) * VDR_DOWN(IY411,IA,DR_TECH_SHED,IS3,T))
+                         =L= VDRKN_ACCUMNET(IY411,IA,DR_TECH_SHED)* DR_DATA(DR_TECH_SHED,'DRTOI') * DR_DATA(DR_TECH_SHED,'DRWEEKLYCYCL'); ;
+
+
+
+
+
+QDR_LIM_UP(IY411,IA,DR_TECH_SHIFT,IS3,T)$(IADR(IY411,IA,DR_TECH_SHIFT) AND DR_DATA(DR_TECH_SHIFT,'DRINVCOST'))..
+                         VDR_UP(IY411,IA,DR_TECH_SHIFT,IS3,T)
+                         =L=  VDRKN_ACCUMNET(IY411,IA,DR_TECH_SHIFT)* (1 - IDR_RATE(IA,DR_TECH_SHIFT,IS3,T)) ;
+
+QDR_LIM_DOWN1(IY411,IA,DR_TECH,IS3,T)$(IADR(IY411,IA,DR_TECH) AND DR_DATA(DR_TECH,'DRINVCOST'))..
+                         VDR_DOWN(IY411,IA,DR_TECH,IS3,T)
+                         =L=  VDRKN_ACCUMNET(IY411,IA,DR_TECH) * (IDR_RATE(IA,DR_TECH,IS3,T) - DR_DATA(DR_TECH,'DRMINLOAD')) ;
+
+QDR_LIM_DOWN2(IY411,IA,DR_TECH,IS3,T)$(IADR(IY411,IA,DR_TECH) AND DR_DATA(DR_TECH,'DRINVCOST') AND DR_DATA(DR_TECH,'DRREGLIM'))..
+                         VDR_DOWN(IY411,IA,DR_TECH,IS3,T)
+                         =L=  VDRKN_ACCUMNET(IY411,IA,DR_TECH) *  (DR_DATA(DR_TECH,'DRREGLIM')  - DR_DATA(DR_TECH,'DRMINLOAD'))   ;
+
+** Limits to total stored energy is given by the input parameters DRSTORMIN and DRSTORMAX
+QDR_STORE_UP1(IY411,IA,DR_TECH_SHIFT,IS3,T)$(IADR(IY411,IA,DR_TECH_SHIFT) AND DR_DATA(DR_TECH_SHIFT,'DRSTORMAX') AND DR_DATA(DR_TECH_SHIFT,'DRINVCOST'))..
+                         VDR_STORE_POS(IY411,IA,DR_TECH_SHIFT,IS3,T)
+                         =L=  VDRKN_ACCUMNET(IY411,IA,DR_TECH_SHIFT) * DR_DATA(DR_TECH_SHIFT,'DRSTORMAX');
+
+
+QDR_STORE_DOWN1(IY411,IA,DR_TECH_SHIFT,IS3,T)$(IADR(IY411,IA,DR_TECH_SHIFT) AND DR_DATA(DR_TECH_SHIFT,'DRSTORMIN') AND DR_DATA(DR_TECH_SHIFT,'DRINVCOST'))..
+                         VDR_STORE_NEG(IY411,IA,DR_TECH_SHIFT,IS3,T)
+                         =L=  VDRKN_ACCUMNET(IY411,IA,DR_TECH_SHIFT) * DR_DATA(DR_TECH_SHIFT,'DRSTORMIN');
+
+
+** if not storage size of shift technology is entered, shifting time data are used to calculate "storage size"
+QDR_STORE_UP2(IY411,IA,DR_TECH_SHIFT,IS3,T)$(IADR(IY411,IA,DR_TECH_SHIFT) AND DR_DATA(DR_TECH_SHIFT,'DRINVCOST') AND NOT DR_DATA(DR_TECH_SHIFT,'DRSTORMIN') )..
+                         VDR_STORE_POS(IY411,IA,DR_TECH_SHIFT,IS3,T)
+                         =L= SUM(T_ALIAS$DR_HHH2(DR_TECH_SHIFT,T_alias,T), VDRKN_ACCUMNET(IY411,IA,DR_TECH_SHIFT) * IDR_RATE(IA,DR_TECH_SHIFT,IS3,T_Alias));
+
+
+QDR_STORE_DOWN2(IY411,IA,DR_TECH_SHIFT,IS3,T)$(IADR(IY411,IA,DR_TECH_SHIFT) AND DR_DATA(DR_TECH_SHIFT,'DRINVCOST') AND NOT DR_DATA(DR_TECH_SHIFT,'DRSTORMIN') )..
+                         VDR_STORE_NEG(IY411,IA,DR_TECH_SHIFT,IS3,T)
+                         =L= SUM(T_ALIAS$DR_HHH1(DR_TECH_SHIFT,T_alias,T), VDRKN_ACCUMNET(IY411,IA,DR_TECH_SHIFT) * IDR_RATE(IA,DR_TECH_SHIFT,IS3,T_Alias));
+
+
+QDRKN_ACCUMNET(IY411,IA,DR_TECH)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IADR(IY411,IA,DR_TECH)) AND DR_DATA(DR_TECH,'DRINVCOST'))..
+  VDRKN_ACCUMNET(IY411,IA,DR_TECH)  !! End of this year's VXKNACCUMNET (available at beginning of next year)'
+     =E=
+  SUM(IY402$IY411PREVY(IY411,IY402), VDRKN_ACCUMNET(IY402,IA,DR_TECH)$SUM(Y$(YVALUE(Y) LT YVALUE(IY411)),IADR(Y,IA,DR_TECH))) + VDRKN(IY411,IA,DR_TECH)$IADR(IY411,IA,DR_TECH)  !! VDRKN_VACCUMNET available at end of previous(i.e., start of this) year PLUS investment during this year
 
 

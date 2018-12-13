@@ -2,6 +2,7 @@ SETS
 ISSSTTTMMM(SSS,TTT,MMM) 'relationship between season&hour and month'
 IGR_TIME(GRDATASET,RRR,SSS,TTT)
 
+IRESE(DEUSER) 'residential electricity consumption'
 ;
 
 
@@ -14,3 +15,4 @@ IGR_TIME('GRDTOU2',IR,S,T)$(NOT SUM(C$CCCRRR(C,IR), GRTIME_T(C,'GRDTOU2',T))) = 
 IGR_TIME('GRDTOU3',IR,S,T)$(NOT SUM(C$CCCRRR(C,IR), GRTIME_T(C,'GRDTOU3',T))) = NO;
 IGR_TIME('GRDDCTOU',IR,S,T)$(NOT SUM(C$CCCRRR(C,IR), GRTIME_T(C,'GRDDCTOU',T))) = NO;
 
+IRESE('RESE') = YES;

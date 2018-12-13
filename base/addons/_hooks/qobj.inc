@@ -22,7 +22,7 @@ $ifi %AGKNDISC%==yes $include "../../base/addons/AGKNdisc/bb4/agkndisc_qobj.inc"
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_qobj.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_qobj.inc";
 $ifi %ramping_stepwise%==yes  $include "../../base/addons/ramping_stepwise/bb4/ramping_stepwise_qobj.inc";
-$ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_qobj.inc";
+$ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_qobj.inc";
 $ifi %TAXES%==yes  $include   "../../base/addons/taxes/tax_qobj.inc";
 $ifi %DEMANDRESPONSE%==yes 	$include 	"../../base/addons/demandresponse/bb4/dr_qobj.inc";
 
