@@ -308,7 +308,7 @@ $setglobal bb4weighty shareYYY
 
 *-------------------------------------------------------------------------------
 * Including the power flow constraints for the European, Scandinavian and Baltic AC-Subnetworks
-$setglobal FBEU 
+$setglobal FBEU yes
 *!option
 
 
@@ -529,7 +529,7 @@ putclose fileMERGESAVEPOINTRESULTSbash;
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
-$setglobal MERGEDSAVEPOINTRESULTS2SQLITE
+$setglobal MERGEDSAVEPOINTRESULTS2SQLITE yes
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
 
