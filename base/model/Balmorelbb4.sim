@@ -394,8 +394,26 @@ $include "../../base/addons/_hooks/varloupfx.inc"
 * solution basis, which is used for generating results database.
 OPTION Savepoint=1;
 
-$ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
+*BALBASE4.optfile = %USEOPTIONFILE%;
 
+
+*** ANNOTATION, GAMS CHECK and SPEEDUP
+$ifi %ANNOTATION%==yes   $include "../../base/AnnotationPlotting/Annotating_Time_BB4.gms";
+
+$ifi %ANNOTATION%==yes   option lp = convertd;
+$ifi %ANNOTATION%==yes   balbase4.optfile = 3;
+
+$ifi %DICTMAP%==yes   option lp = convertd;
+$ifi %DICTMAP%==yes   balbase4.optfile = 5;
+
+*** Making GAMS CHECK
+* For doing the Equation - Variables Overview (Primarily to the annotation
+* For knowing which equations and variables need to be assigned to stages
+$ifi %GMSCHK%==yes     OPTION LP= GAMSCHK;
+
+*** For speedup parameter tuning
+$ifi %SPEEDUP%==yes       OPTION lp = cplex;
+$ifi %SPEEDUP%==yes       balbase4.optfile = 2;
 
 $ifi not %SOLVEMIP%==yes SOLVE BALBASE4 USING LP  MINIMIZING VOBJ;  !! =====================
 $ifi  %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;  !! =====================

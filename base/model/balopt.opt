@@ -87,6 +87,60 @@ $setglobal testbb1234
 *===============================================================================
 
 *-------------------------------------------------------------------------------
+*** Chose only one
+* Speed up parameter tuning suggested by GAMS
+$setglobal SPEEDUP
+
+
+
+* For making the Block Picture providing equations and variables in the specified model
+$setglobal GMSCHK
+
+
+* For making the Block Picture providing equations and variables in the specified model
+$setglobal DICTMAP
+
+
+* For producing the Jacobian and the Plotted annotation
+$setglobal ANNOTATION   yes
+
+$ifi %ANNOTATION%==yes     $setglobal ANNO_TIME     yes
+$ifi %ANNOTATION%==yes     $setglobal ANNO_DAY
+$ifi %ANNOTATION%==yes     $setglobal ANNO_AREA
+$ifi %ANNOTATION%==yes     $setglobal ANNO_REG
+
+
+* For producing the jacobian only
+$setglobal PLOT  yes
+
+
+
+* Option file for speedup
+$ifi %SPEEDUP%==yes       file cp /cplex.op2/;
+$ifi %SPEEDUP%==yes       put cp;
+$ifi %SPEEDUP%==yes       put "lpmethod 4" /;
+$ifi %SPEEDUP%==yes       put "solutiontype 2" /;
+$ifi %SPEEDUP%==yes       put "predual -1" /;
+$ifi %SPEEDUP%==yes       put "barmaxcor 10" /;
+$ifi %SPEEDUP%==yes       put "threads 32" /;
+$ifi %SPEEDUP%==yes       putclose cp;
+
+* Option file for Jacobian, here the name can be specified if one wants
+$ifi %ANNOTATION%==yes   file cp /convertd.op3/;
+$ifi %ANNOTATION%==yes   put cp;
+$ifi %ANNOTATION%==yes   put "jacobian jac_time.gdx" /;
+$ifi %ANNOTATION%==yes   putclose cp;
+
+* Option file for the dictmap for checking number of variables in model
+$ifi %DICTMAP%==yes                    file cp /convertd.op5/;
+$ifi %DICTMAP%==yes                    put cp;
+$ifi %DICTMAP%==yes  $ifi %BB1%==yes   put "dictmap BB1_DictMap.gdx" /;
+$ifi %DICTMAP%==yes  $ifi %BB2%==yes   put "dictmap BB2_DictMap.gdx" /;
+$ifi %DICTMAP%==yes  $ifi %BB4%==yes   put "dictmap BB4_DictMap.gdx" /;
+$ifi %DICTMAP%==yes                    putclose cp;
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
 * The following global variables concern the choice of details in some of the models.
 * Note that some of the choices are mutually dependent.
 
@@ -185,7 +239,7 @@ $Setglobal HYDROGEN
 $Setglobal STEPWISEPRICE
 
 * Set a common maximum for fuels.
-$Setglobal LIMITSFORFUELS  yes
+$Setglobal LIMITSFORFUELS
 *!option yes
 
 * Allow demand elasticity
@@ -257,7 +311,7 @@ $Setglobal FlowBased
 
 * Set short storages to be inter- or intra-seasonal
 * according to GDSTOINTERS in GDATA (default) or all or none
-$setglobal stointers
+$setglobal stointers  all
 *! option  default    Use as specified by GDSTOINTERS in GDATA
 *! option  all        Let all storage technologies be inter-seasonal
 *! option  none       Let no storage technologies be inter-seasonal (i.e., let all be intra-seasonal)

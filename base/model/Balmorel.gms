@@ -3,6 +3,7 @@ $TITLE Balmorel version 3.03 (June 2018; latest 20180614)
 
 SCALAR IBALVERSN 'This version of Balmorel' /303.20180614/;
 * Efforts have been made to make a good model.
+
 * However, most probably the model is incomplete and subject to errors.
 * It is distributed with the idea that it will be usefull anyway,
 * and with the purpose of getting the essential feedback,
@@ -3186,6 +3187,15 @@ BALBASE1.optfile = %USEOPTIONFILE%;
 BALBASE2.optfile = %USEOPTIONFILE%;
 BALBASE3.optfile = %USEOPTIONFILE%;
 
+*************************  INCLUDING OPTIONS   ********************************
+
+* For Producing the Jacobian Matrix
+$ifi %ANNOTATION%==yes   $ifi %ANNO_TIME%==yes   $include "../../base/AnnotationPlotting/Annotating_Time_Declaration.gms";
+$ifi %ANNOTATION%==yes   $ifi %ANNO_DAY%==yes    $include "../../base/AnnotationPlotting/Annotating_Day_Declaration.gms";
+$ifi %ANNOTATION%==yes   $ifi %ANNO_AREA%==yes   $include "../../base/AnnotationPlotting/Annotating_Area_Declaration.gms";
+$ifi %ANNOTATION%==yes   $ifi %ANNO_REG%==yes    $include "../../base/AnnotationPlotting/Annotating_Region_Declaration.gms";
+*******************************************************************************
+
 $ifi %bb1%==yes $if EXIST 'bb123.sim' $INCLUDE 'bb123.sim';
 $ifi %bb1%==yes $if not EXIST 'bb123.sim' $INCLUDE '../../base/model/bb123.sim';
 
@@ -3305,8 +3315,13 @@ $label endofUNIXoutput
 $ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY.inc';
 *--- End of Main results calculation ---------------------------------------
 
+$ifi %PLOT%==yes 'C:/Users/stebu/AppData/Local/Continuum/Anaconda3/envs/beamme-env34/python.exe "../../base/AnnotationPlotting/runPlotting.py"'
 
 *----- End of file:------------------------------------------------------------
 $label endoffile
 
+*dumpopt=21 ACTION=C
+*workDir = "/zhome/6c/f/64396/flex4res_balmodel/flex4res_data/model/"
+* pySetup  = 0    put in command line for the plotting tool to work (STEFANIE)
+* profile = 3, PFILE = Profile_BB2 Profiling, put in command line for getting a file called 'Profile_BB2' printed
 
