@@ -56,7 +56,7 @@ SCALAR OTLWCRA  "                                " /32/; !! Specific for SET CCC
 SCALAR OTLWY    "    " /4/;                              !! Specific for SET YYY and Y. It is assumed that any element in YYY is represented by four characters (e.g. 2050).
 SCALAR OTLWS    "    " /3/;                              !! Specific for SET SSS and S. It is assumed that any element in SSS is represented by four characters (e.g. S52).
 SCALAR OTLWT    "    " /4/;                              !! Specific for SET TTT and T. It is assumed that any element in TTT is represented by four characters (e.g. T168).
-SCALAR OTLWG    "                                                                " /64/; !! Specific for SET GGG and G. The value is checked below.
+SCALAR OTLWG    "                                " /32/; !! Specific for SET GGG and G. The value is checked below.
 * Check consistency between the required width and the length of the (all ' ') text string:
 ISCALAR1 = SMAX(GGG, CARD(GGG.TL));                      !! Find the required width.
 IF((ISCALAR1 GT OTLWG),   DISPLAY INFODISPLAY, "The length of an element in GGG is larger than assumed by OTLWG, this will prevent nice printfile output. Please ensure consistency in file base\printout\printinc\print1.inc"; );

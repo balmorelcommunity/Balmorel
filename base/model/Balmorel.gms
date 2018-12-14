@@ -94,6 +94,7 @@ SCALAR ISCALAR2   '(Context dependent)';
 SCALAR ISCALAR3   '(Context dependent)';
 SCALAR ISCALAR4   '(Context dependent)';
 SCALAR ISCALAR5   '(Context dependent)';
+SCALAR ISCALAR6   '(Context dependent)';
 
 * Initialisations of printing of log and error files and messages:
 $INCLUDE '../../base/logerror/logerinc/error1.inc';

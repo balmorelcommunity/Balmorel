@@ -2,7 +2,7 @@
 
 $ifi %BB4%==yes $goto beginbb4
 
-$ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/combtech_setdeclare.inc";
+$ifi %COMBTECH%==yes         $include   "../../base/addons/combtech/combtech_setdeclare.inc";
 
 $ifi not %HYRSBB123%==none   $include   "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
 
@@ -14,7 +14,7 @@ $ifi not %BB4%==yes $goto endoffile
 
 $label  beginbb4
 
-$ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_setdeclare.inc";
+$ifi %COMBTECH%==yes         $include   "../../base/addons/combtech/bb4/combtech_setdeclare.inc";
 
 $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_setdeclare.inc";
 
@@ -30,4 +30,8 @@ $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_setdec
 
 $ifi %DEMANDRESPONSE%==yes 	$include 	"../../base/addons/demandresponse/bb4/dr_setdeclare.inc";
 
+$ifi %heattrans%==yes  $include   "../../base/addons/heattrans/bb4/heattrans_setdeclare.inc";
+
 $label endoffile
+
+$LOG "#####  In %system.incname%  ";

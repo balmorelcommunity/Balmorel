@@ -1,10 +1,13 @@
 * Addon all_endofmodelgdx for the Balmorel model.
 
 * This will addon provide the file all_endofmodel.gdx to the model folder.
-* Sometimes it is convenient to have all available infomation (with most recent values) at this point.
+* Sometimes it is convenient to have all available information (with most recent values) at this point.
 * (If the interest is not on the most recent values, you need not find it in that file.)
 
 * First some slight preprocessing to not get irrelevant information for the VQ variables
+* Hans: I get execution error, I do not know what, (it has been working), therefore the $goto endoffile
+
+$goto endoffile
 
 $ifi %bb4%==yes $goto bb4begin
 
@@ -56,4 +59,6 @@ VQKFUEL.M(Y,CCCRRRAAA,FFF)              = 0;
 $label bb4end
 
 execute_unload "all_endofmodel.gdx";
+
+$label endoffile
 

@@ -365,6 +365,7 @@ IX3FX_T(IY411,IR,S,T) = ((X3FX(IY411,IR) * X3FX_VAR_T(IR,S,T)) / IX3FXSUMST(IR))
 * by the following statement:
 * LOOP(C, VX_T.FX(IY411,IRE,IRI,S,T)$(NOT(CCCRRR(C,IRE) AND CCCRRR(C,IRI)))=0);
 
+$include "../../base/addons/_hooks/simau.inc"
 
 *---- End Bounds on transmission -----------------------------------------------
 

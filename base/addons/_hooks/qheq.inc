@@ -19,4 +19,10 @@ $ifi %vqdebug%==yes   $setglobal equation qheq
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
 
 
+$ifi %heattrans%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_qheq.inc";
+
+$ifi %vqdebug%==yes   $setglobal equation qheq
+$ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
+
+
 $label endoffile

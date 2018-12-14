@@ -9,7 +9,7 @@
 
 * Exogenous capacity:
 
-
+                       
 VUCON.up(IA,IGUC,S,T)=INF;
 VUCU.up(IA,IGUC,S,T) =INF;
 VUCD.up(IA,IGUC,S,T) =INF;

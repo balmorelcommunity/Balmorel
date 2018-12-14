@@ -29,5 +29,8 @@ $ifi %DEMANDRESPONSE%==yes 	$include 	"../../base/addons/demandresponse/bb4/dr_q
 $ifi %vqdebug%==yes   $setglobal equation qobj
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
 
+$ifi %heattrans%==yes   $include   "../../base/addons/heattrans/bb4/heattrans_qobj.inc";
+
+
 
 $label endoffile

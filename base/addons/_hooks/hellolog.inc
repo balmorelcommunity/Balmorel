@@ -85,7 +85,10 @@ $ifi %dflexquant%==yes            ISCALAR1 = 1;
 $ifi %forcedoutage%==singlehour       $include "../../base/addons/forcedoutage/forcedoutage_hellolog.inc";
 $ifi %forcedoutage%==singlehour       ISCALAR1 = 1;
 
+$ifi %heattrans%==yes  $include   "../../base/addons/heattrans/bb4/heattrans_hellolog.inc";
+$ifi %heattrans%==yes                 ISCALAR1 = 1;
 
+                                                
 
 
 

@@ -156,6 +156,13 @@ ALIAS (T,ITALIAS);
 
 
 
+* Addon AGKNDISC: discrete size investment in technologies:
+$ifi %AGKNDISC%==yes $include  "../../base/addons/bb4/agkndisc/agkndiscdeclarations.inc";
+
+
+
+$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
+
 *-------------------------------------------------------------------------------
 * The choice of model made in the balopt.opt fil is checked here,
 * and basic sets concerning time within the year are reconstructed accordingly if needed:
@@ -382,10 +389,17 @@ PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the se
 PARAMETER VHYRS_SL(Y,AAA,SSS)       "To be saved for comparison with BB1/BB2 solution value for VHYRS_S.L (initial letter is V although declared as a parameter) (MWh)"
 PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transferred to model Balbase3 (input-Money/MWh)";
 
+
+*$include "../../base/addons/_hooks/pardeclare.inc"
+
 * ------------------------------------------------------------------------------
 * All remaining (cf. ... .inc above) data files af included from the following file
 $ifi     exist "bb4datainc.inc" $include                   "bb4datainc.inc";
 $ifi not exist "bb4datainc.inc" $include  "../../base/model/bb4datainc.inc";
+
+$include "../../base/addons/_hooks/datainc.inc"
+$include "../../base/addons/_hooks/pardeclare.inc"
+
 
 * UPS! Forgot DOL! TODO
 GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS))) = 0;
@@ -617,8 +631,7 @@ $include "../../base/addons/_hooks/isetdecdef.inc"
 
 $include "../../base/addons/_hooks/pardeclare.inc"
 
-$ifi %HEATTRANS%==yes $if     EXIST '../data/htrans.inc' $INCLUDE         '../data/htrans.inc';
-$ifi %HEATTRANS%==yes $if not EXIST '../data/htrans.inc' $INCLUDE '../../base/data/htrans.inc';
+
 
 $ifi %POLICIES%==yes   $if exist 'POLREQ.inc' $INCLUDE 'POLREQ.inc';
 $ifi %POLICIES%==yes   $if not exist 'POLREQ.inc' $INCLUDE '../../base/addons/policies/data/POLREQ.inc';
@@ -655,7 +668,6 @@ PARAMETER YMODELDELTA(YMODEL) "Number of years between a year and the preceding 
 *-------------------------------------------------------------------------------
 
 * Omit non-relevant information wrt. geography for present models. Non-exhaustive list.
-DE_VAR_T(RRR,DEUSER,SSS,TTT)$(not IR(RRR)) = 0;
 DE_VAR_T(RRR,DEUSER,SSS,TTT)$(not IR(RRR)) = 0;
 DH_VAR_T(AAA,DHUSER,SSS,TTT)$(not IA(AAA)) = 0;
 X3FX_VAR_T(RRR,SSS,TTT)$(not IR(RRR)) = 0;
@@ -894,11 +906,9 @@ PARAMETER IGROWTHCAPCG(C,G)  "Limit on growth of technology dependent on years b
 *-------------------------------------------------------------------------------
 *----- Any internal parameters for addon to be placed here: --------------------
 *-------------------------------------------------------------------------------
-
+* NB; I introduced also in _hooks the4 datainc.inc file, to replace/compelment this one:
 $INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
 
-* These internal parameters and sets pertain to heat transmission.
-$if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.inc';
 
 *-------------------------------------------------------------------------------
 *----- End: Any internal sets and parameters for addon to be placed here -------
@@ -1196,6 +1206,8 @@ QXINVSYMMETRY(Y,IRRRE,IRRRI)      "Transmission investments are set symetric(MW)
 *----- Any equations declarations for addon to be placed here: -----------------
 *-------------------------------------------------------------------------------
 
+$include "..\..\base\addons\_hooks\qdecdef.inc"
+
 
 *-------------------------------------------------------------------------------
 *----- End: Any equations declarations for addon to be placed here -------------
@@ -1270,12 +1282,10 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 $include "../../base/addons/_hooks/qobj.inc";
 
-* This file contains Heat transmission induced additions to the objective function.
-$ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htcosts.inc";
 
 
 )
-$ifi %BB4%==yes  )
+$ifi %BB4%==yes )
 
 ;
 
@@ -1298,12 +1308,12 @@ QEEQ(IY411,IR,IS3,T) ..
     =E=
       IX3FX_T(IY411,IR,IS3,T)
     + (   (SUM(DEUSER, ((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0))
-      )/(1-DISLOSS_E(IR)))
+          )/(1-DISLOSS_E(IR)))
       + SUM(IRI$IXK_HASORPOT(IY411,IR,IRI),VX_T(IY411,IR,IRI,IS3,T))
 
 
 $include "../../base/addons/_hooks/qeeq.inc"
-;
+ ;
 
 
 * "Heat generation equals demand (MW)"
@@ -1317,8 +1327,6 @@ QHEQ(IY411,IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))) ..
     =E=
      (SUM(DHUSER, ((DH(IY411,IA,DHUSER) * DH_VAR_T(IA,DHUSER,IS3,T)) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0))
          )/(1-DISLOSS_H(IA))
-* Adds heat transmission if selected in the gas add-on
-$ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htheatbalance.inc";
 
 $include "../../base/addons/_hooks/qheq.inc"
 ;
@@ -1412,7 +1420,7 @@ QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPO
         +VGKNACCUMNET(IY411,IA,IGHYRS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRS))
         ))
 $include "../../base/addons/_hooks/qhyrsminvol.inc"
-;
+        ;
 
 * "Hydropower reservoir - maximum level (MWh)"
 QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1))..
@@ -1701,37 +1709,37 @@ QGMAXFUELA(IY411,IA,FFF)$FGEMAX(IA,FFF)..
 * "Minimum fuel use by year, country and fuel (GJ)"
 QGMINCF(IY411,C,FFF)$IGMINF(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =G= IGMINF(IY411,C,FFF);
+                =G= IGMINF(IY411,C,FFF);
 
 * "Maximum fuel use by year, country and fuel (GJ)"
 QGMAXCF(IY411,C,FFF)$IGMAXF(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =L= IGMAXF(IY411,C,FFF);
+                =L= IGMAXF(IY411,C,FFF);
 
 * "Exact fuel use by year, country and fuel (GJ)"
 QGEQCF(IY411,C,FFF)$IGEQF(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =E= IGEQF(IY411,C,FFF);
+                =E= IGEQF(IY411,C,FFF);
 
 * "Minimum fuel use by year, region and fuel  (GJ)"
 QGMINRF(IY411,IR,FFF)$IGMINF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =G= IGMINF(IY411,IR,FFF);
+                =G= IGMINF(IY411,IR,FFF);
 
 * "Maximum fuel use by year, region and fuel constraint (GJ)"
 QGMAXRF(IY411,IR,FFF)$IGMAXF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =L= IGMAXF(IY411,IR,FFF);
+                =L= IGMAXF(IY411,IR,FFF);
 
 * "Exact fuel use by year, region and fuel (GJ)"
 QGEQRF(IY411,IR,FFF)$IGEQF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =E= IGEQF(IY411,IR,FFF);
+                =E= IGEQF(IY411,IR,FFF);
 
 * "Minimum fuel use by year, area and fuel (GJ)"
 QGMINAF(IY411,IA,FFF)$IGMINF(IY411,IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =G= IGMINF(IY411,IA,FFF);
+                =G= IGMINF(IY411,IA,FFF);
 
 * "Maximum fuel use by year, area and fuel (GJ)"
 QGMAXAF(IY411,IA,FFF)$IGMAXF(IY411,IA,FFF)..
@@ -2095,8 +2103,6 @@ $ifi not %WINDTARGET%==yes $goto end_windtarget_eq
 $ifi EXIST "wndtargetdata.inc" $include "wndtargetdata.inc";
 $label end_windtarget_eq
 
-* These add-on equations pertain to heat transmission.
-$ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htequations.inc";
 
 *-------------------------------------------------------------------------------
 *----- End: Any equations for addon to be placed here. -------------------------
@@ -2218,7 +2224,7 @@ $ifi %TransInvest%==yes         QXK_UP
                                 QGMINRF
                                 QGMAXRF
                                 QGEQRF
-*                                QGMINAF TODO
+*                                QGMINAF
 *                                QGMAXAF TODO
 *                                QGEQAF  TODO
 
@@ -2232,7 +2238,6 @@ $ifi %TransInvest%==yes         QXK_UP
 
 *----- Any equations for addon to be placed here: ------------------------------
 
-$include "../../base/addons/_hooks/balbase4.inc"
 
 
 $ontext
@@ -2246,9 +2251,10 @@ $ontext
 
 $ifi %FOSSILTARGET%==yes QFOSSILTARGET
 $ifi %RENEWTARGET%==yes QRENEW
-$ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htbb1.inc";
 
 $offtext
+
+$include "../../base/addons/_hooks/balbase4.inc"
 
 /;
 

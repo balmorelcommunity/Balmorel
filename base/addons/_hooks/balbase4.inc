@@ -1,4 +1,4 @@
-* File balbase4.inc for handling additions of equations an addon in the definition of Balmorel model balbase4
+* File balbase4.inc for handling additions of equations and addons in the definition of Balmorel model balbase4
 
 $ifi not %bb4%==yes $goto endoffile
 
@@ -12,5 +12,8 @@ $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwisep
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_balbase4.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_balbase4.inc";
 $ifi %DEMANDRESPONSE%==yes 	$include 	"../../base/addons/demandresponse/bb4/dr_balbase4.inc";
+
+$ifi %heattrans%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_balbase4.inc";
+
 
 $label endoffile

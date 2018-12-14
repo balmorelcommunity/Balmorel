@@ -526,29 +526,19 @@ $ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb
 * solution basis, which is used for generating results database.
 OPTION Savepoint=%SAVEPOINTVALUE%;
 
-$ifi NOT %UnitComm%==yes $goto notunit
-$ifi not %UnitRMIP%==yes
-$ifi %bb1%==yes  SOLVE BALBASE1 USING MIP MINIMIZING VOBJ;
-$ifi not %UnitRMIP%==yes
-$ifi %bb2%==yes  SOLVE BALBASE2 USING MIP MINIMIZING VOBJ;
-$ifi not %UnitRMIP%==yes
-$ifi %bb3%==yes  SOLVE BALBASE3 USING MIP MINIMIZING VOBJ;
-$ifi %UnitRMIP%==yes
-$ifi %bb1%==yes  SOLVE BALBASE1 USING RMIP MINIMIZING VOBJ;
-$ifi %UnitRMIP%==yes
-$ifi %bb2%==yes  SOLVE BALBASE2 USING RMIP MINIMIZING VOBJ;
-$ifi %UnitRMIP%==yes
-$ifi %bb3%==yes  SOLVE BALBASE3 USING RMIP MINIMIZING VOBJ;
-$goto YESunit
-$label notunit
+$ifi NOT %UnitComm%==yes $goto endunitcomm
+$ifi not %UnitRMIP%==yes $ifi %bb1%==yes  SOLVE BALBASE1 USING MIP MINIMIZING VOBJ;
+$ifi not %UnitRMIP%==yes $ifi %bb2%==yes  SOLVE BALBASE2 USING MIP MINIMIZING VOBJ;
+$ifi not %UnitRMIP%==yes $ifi %bb3%==yes  SOLVE BALBASE3 USING MIP MINIMIZING VOBJ;
+$ifi %UnitRMIP%==yes     $ifi %bb1%==yes  SOLVE BALBASE1 USING RMIP MINIMIZING VOBJ;
+$ifi %UnitRMIP%==yes     $ifi %bb2%==yes  SOLVE BALBASE2 USING RMIP MINIMIZING VOBJ;
+$ifi %UnitRMIP%==yes     $ifi %bb3%==yes  SOLVE BALBASE3 USING RMIP MINIMIZING VOBJ;
+$goto endlp
+$label endunitcomm
 $ifi %bb1%==yes SOLVE BALBASE1 USING LP MINIMIZING VOBJ;
-
-$ifi not %bb2%==yes $goto not_bb2;
-$ifi %SOLVEMIP%==yes SOLVE BALBASE2 USING MIP MINIMIZING VOBJ;
-$ifi not %SOLVEMIP%==yes SOLVE BALBASE2 USING LP MINIMIZING VOBJ;
-$label not_bb2;
-
-$ifi %bb3%==yes  SOLVE BALBASE3 USING LP MINIMIZING VOBJ;
+$ifi %bb2%==yes SOLVE BALBASE2 USING LP MINIMIZING VOBJ;
+$ifi %bb3%==yes SOLVE BALBASE3 USING LP MINIMIZING VOBJ;
+$label endlp
 
 
 
