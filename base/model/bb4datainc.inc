@@ -223,6 +223,10 @@ $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
 $if not EXIST '../data/Y.inc' $INCLUDE '../../base/data/Y.inc';
 %semislash%;
 
+* Aliases relative to Y moved here for strong convenience:
+ALIAS (Y,IYALIAS);
+ALIAS (Y,IYALIAS2);
+
 SET S(SSS)    "Seasons in the simulation"   %semislash%
 $if     EXIST '../data/S.inc' $INCLUDE      '../data/S.inc';
 $if not EXIST '../data/S.inc' $INCLUDE '../../base/data/S.inc';
@@ -231,6 +235,16 @@ $if not EXIST '../data/S.inc' $INCLUDE '../../base/data/S.inc';
 SET T(TTT)    "Time periods within the season in the simulation"  %semislash%
 $if     EXIST '../data/T.inc' $INCLUDE         '../data/T.inc';
 $if not EXIST '../data/T.inc' $INCLUDE '../../base/data/T.inc';
+%semislash%;
+
+PARAMETER YVALUE(YYY)   "Numerical value of the years labels"  %semislash%
+$if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
+$if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
+%semislash%;
+
+PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y"; %semislash%
+$if     EXIST '../data/IWEIGHTY.inc' $INCLUDE         '../data/IWEIGHTY.inc';
+$if not EXIST '../data/IWEIGHTY.inc' $INCLUDE '../../base/data/IWEIGHTY.inc';
 %semislash%;
 
 *SET DAYTYPE       "Types of days within the week, typically workdays/weekend" %semislash%
@@ -369,13 +383,6 @@ PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of existing generation technologies (MW
 $if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
 $if not EXIST '../data/GKFX.inc' $INCLUDE '../../base/data/GKFX.inc';
 %semislash%;
-
-PARAMETER YVALUE(YYY)   "Numerical value of the years labels"  %semislash%
-$if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
-$if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
-%semislash%;
-
-
 
 
 PARAMETER FMAXINVEST(CCC,FFF)   "Maximum investment (MW) by fuel type for each year simulated"    %semislash%
@@ -540,16 +547,20 @@ $if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.
 $if not EXIST '../data/DISCOUNTRATE.inc' $INCLUDE '../../base/data/DISCOUNTRATE.inc';
 %semislash%;
 
-PARAMETER ANNUITYCG(CCC,GGG)   "Transforms investment in transmission lines into annual payment (fraction)"  %semislash%
+SCALAR    LIFETIME_X               "Lifetime of transmission lines (years)";   %semislash%
+$if     EXIST '../data/LIFETIME_X.inc' $INCLUDE         '../data/LIFETIME_X.inc';
+$if not EXIST '../data/LIFETIME_X.inc' $INCLUDE '../../base/data/LIFETIME_X.inc';
+%semislash%;
+
+PARAMETER ANNUITYCG(C,G)               "Transforms investment in technologies into annual payment (fraction)";      %semislash%
 $if     EXIST '../data/ANNUITYCG.inc' $INCLUDE         '../data/ANNUITYCG.inc';
 $if not EXIST '../data/ANNUITYCG.inc' $INCLUDE '../../base/data/ANNUITYCG.inc';
 %semislash%;
 
-PARAMETER ANNUITYCX(CCC)   "Transforms investment to annual payment (fraction) for transmission"  %semislash%
+PARAMETER ANNUITYCX(C)                 "Transforms investment in transmission lines into annual payment (fraction)";       %semislash%
 $if     EXIST '../data/ANNUITYCX.inc' $INCLUDE         '../data/ANNUITYCX.inc';
 $if not EXIST '../data/ANNUITYCX.inc' $INCLUDE '../../base/data/ANNUITYCX.inc';
 %semislash%;
-
 
 PARAMETER GINVCOST(AAA,GGG)    "Investment cost for new technology (MMoney/MW)"  %semislash%
 $if     EXIST '../data/GINVCOST.inc' $INCLUDE         '../data/GINVCOST.inc';
