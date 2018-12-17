@@ -193,7 +193,7 @@ $setglobal DFLEXQUANT
 *!option yes
 
 * Allow demand response
-$setglobal DEMANDRESPONSE
+$setglobal DEMANDRESPONSE yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
@@ -209,11 +209,11 @@ $setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use
-$setglobal GRIDTARIFFS
+$setglobal GRIDTARIFFS yes
 *!option yes
 
 * Taxes addon
-$setglobal TAXES
+$setglobal TAXES yes
 *!option yes
 
 *
@@ -295,7 +295,7 @@ $setglobal UnitCseg
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV
+$setglobal EV yes
 *!option
 
 * Adds DUMB charging:
@@ -320,11 +320,11 @@ $setglobal DEGCAL yes
 *-------------------------------------------------------------------------------
 
 * Algorithm to improve calculation time. Reduces the set IAGKNY by identifying technologies that are not attractive given assumed costs, fuel prices and taxes.
-$setglobal VARIABLE_TRIMMING
+$setglobal VARIABLE_TRIMMING yes
 *!option yes
 
 * Tool that aggregates areas in preprocessing
-$setglobal AREA_AGGREGATION
+$setglobal AREA_AGGREGATION yes
 *!option yes
 
 

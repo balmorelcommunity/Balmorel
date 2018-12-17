@@ -22,6 +22,7 @@ $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_pardec
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_pardeclare.inc";
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_pardeclare.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_pardeclare.inc";
-ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_pardeclare.inc";$ifi %VARIABLE_TRIMMING%==yes      $include        "../../base/addons/variable_trimming/bb4/vt_pardeclare.inc";
+$ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_pardeclare.inc";
+$ifi %VARIABLE_TRIMMING%==yes      $include        "../../base/addons/variable_trimming/bb4/vt_pardeclare.inc";
 
 $label endoffile
