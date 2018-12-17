@@ -143,6 +143,7 @@ ALIAS (FFF,IFFFALIAS2);
 
 * Duplication of sets for seasons and hours:
 ALIAS (YYY,IYYYALIAS);
+ALIAS (YYY,IYYYALIAS2);
 ALIAS (Y,IYALIAS);
 ALIAS (S,ISALIAS,IS3LOOPSET);
 ALIAS (T,ITALIAS);
@@ -277,6 +278,7 @@ SET IAGK_HASORPOT(Y,AAA,G) "Technologies with existing or potentially invested c
 *-------------------------------------------------------------------------------
 
 PARAMETER YVALUE(YYY)                  "Numerical value of the years labels";
+PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y";
 PARAMETER FDATA(FFF,FDATASET)          "Fuel specific values";
 
 PARAMETER FMAXINVEST(CCC,FFF)          "Maximum investment by country and fuel type for each year simulated (MW)";
@@ -328,8 +330,16 @@ PARAMETER TAX_F(FFF,CCC)               "Fuel taxes for heat and electricity prod
 PARAMETER TAX_DE(CCC,DEUSER)           "Consumers tax on electricity consumption (Money/MWh)";
 PARAMETER TAX_DH(CCC,DHUSER)           "Consumers tax on heat consumption (Money/MWh)";
 $offtext
-PARAMETER ANNUITYCG(CCC,GGG)           "Transforms investment in technologies into annual payment (fraction). Possibly different meaning in BB4";       !! text: todo
-PARAMETER ANNUITYCX(CCC)               "Transforms investment in transmission lines into annual payment (fraction). Possibly different meaning in BB4"; !! text: todo
+
+PARAMETER ANNUITYCG(C,G)               "Transforms investment in technologies into annual payment (fraction)";
+PARAMETER ANNUITYCX(C)                 "Transforms investment in transmission lines into annual payment (fraction)";
+PARAMETER IYWEIGHT_ANNUITYCG(Y,Y,G)    "Binary parameter to establish whether the annuity of an investment of a technology made in y should be paid in the time period y (0,1)" ;
+PARAMETER IYWEIGHT_ANNUITYCX(Y,Y)      "Binary parameter to establish whether the annuity of an investment of a transmission line made in y should be paid in the time period y (0,1)";
+PARAMETER IINVYEARG_LEFT(C,Y,Y,G)      "Remaining years of the lifetime of G of an investment made in Y at the beggining of Y (years)";
+PARAMETER IINVYEARX_LEFT(C,Y,Y)        "Remaining years of the lifetime of a transmission line investment made in Y at the beggining of Y (years)";
+PARAMETER IN_INV_G(C,Y,G)              "Number of investments made OF G within Y (fraction)";
+PARAMETER IN_INV_X(C,Y)                "Number of investments made OF a transmission line within Y (fraction)";
+SCALAR    LIFETIME_X                   "Lifetime of transmission lines (years)";
 SCALAR    DISCOUNTRATE                 "Discount rate (applied to all terms in the objective function) (fraction)";
 PARAMETER GINVCOST(AAA,GGG)            "Investment cost for new technology (overwriting default value GDATA(G,'GDINVCOST0') if non-zero or EPS in data file) (MMoney/MW)";
 PARAMETER GOMVCOST(AAA,GGG)            "Variable operating and maintenance costs (overwriting default value GDATA(G,'GDOMVCOST0') if non-zero or EPS in data file) (Money/MWh)";
@@ -376,6 +386,7 @@ PARAMETER X3FX_VAR_T(RRR,SSS,TTT)                  "Variation in fixed exchange 
 PARAMETER HYPPROFILS(AAA,SSS)                      "Hydro with storage seasonal price profile (Money/MWh)";
 
 $ifi %YIELDREQUIREMENT%==yes  PARAMETER YIELDREQ(GGG) "Differentiates yield requirements for different technologies ()"; !! () todo
+
 
 * Data for handling of annual hydro constraints in BB3, to be saved by BB1/BB2 and used by BB3:
 PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the seasons to be transferred to model Balbase3 (MWh)";
@@ -670,8 +681,6 @@ WTRRRVAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 *-------------------------------------------------------------------------------
 
 * Aliases relative to time:
-ALIAS (Y,IYALIAS);
-ALIAS (Y,IYALIAS2);
 
 ALIAS (S,ISALIAS);
 ALIAS (T,ITALIAS);
@@ -737,6 +746,11 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 *------------------------------------------------------------------------------
 * Internal parameters and settings:
 *------------------------------------------------------------------------------
+
+
+
+
+
 
 * Set GDCV value to one for those technologies with capacity defined on HEAT and that are not IGEXT so that their fuel consumption and O&M costs
 * can be found using the same formula as for IGCND and IGEXT:
@@ -920,7 +934,7 @@ $if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.in
 $INCLUDE '../../base/output/printout/printinc/print1.inc';
 
 
-PARAMETER IWEIGHTY(Y) "Relative weight of the individual years in Y";
+
 
 
 * The input data are subject to a certain control for "reasonable" values.
@@ -1248,14 +1262,22 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 *   discounted back to the first year in the present BB4 model, this latter is represented by factor IY4GINVCOSTWEIGHT below.
 *   Discounting further back from first year in the present BB4 model to the first year in Y is handled by the factor IDISCOUNTFACTOR(Y) above.
 *   The relative weight of the years is represented by   TODO: sammenlign med SONYstick:
-   + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))))
+   + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYWEIGHT_ANNUITYCG(Y,IYALIAS2,G))))
 
+* Investment costs, generation and storage capacity invested in previous years
+   + IOF1000000*(SUM((IYALIAS2,IA,G)$(IAGKNY(IYALIAS2,IA,G) AND (ORD(IYALIAS2) LT ORD(Y))), VGKN(IYALIAS2,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*IYWEIGHT_ANNUITYCG(IYALIAS2,Y,G)))
 
 * Investment costs, new transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):
 * TODO: sammenlign med SONYstick:
     + SUM((IRE,IRI)$IXKN(Y,IRI,IRE),IOF05*VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
-      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C)))))
+      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYWEIGHT_ANNUITYCX(IYALIAS2,Y)))
+
+*Investment costs, transmission capacity invested in previous years
+    + SUM((IYALIAS2,IRE,IRI)$(IXKN(IYALIAS2,IRI,IRE) AND (ORD(IYALIAS2) LT ORD(Y))),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*
+      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*IYWEIGHT_ANNUITYCX(IYALIAS2,Y))
+
+
 
 * Emission taxes
 
