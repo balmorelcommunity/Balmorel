@@ -17,6 +17,7 @@ $ifi %dflexquant%==yes   $include "../../base/addons/demandflexquant/dflexquant_
 $ifi %dflextime%==yes    $include "../../base/addons/demandflextime/dflextime_qeeq.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_qeeq.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_qeeq.inc";
+$ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_qeeq.inc";
 
 
 $ifi %vqdebug%==yes   $setglobal equation qeeq
