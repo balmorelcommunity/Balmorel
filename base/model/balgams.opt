@@ -53,7 +53,7 @@ $OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF
 * Defaults are LIMROW=3, LIMCOL=3;
 * The statement "LIMROW=0" turns the listing off:
 
-OPTIONS LIMROW=   5, LIMCOL=   6;
+OPTIONS LIMROW=   3, LIMCOL=   3;
 
 *...............................................................................
 * SYSOUT controls the printing of the solved status in the list file.

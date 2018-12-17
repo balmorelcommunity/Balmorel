@@ -1,6 +1,6 @@
 SET MMM 'Month' %semislash%
-$if     EXIST '../data/MMM.inc' $INCLUDE         '../data/MMM.inc';
-$if not EXIST '../data/MMM.inc' $INCLUDE '../../base/data/MMM.inc';
+$if     EXIST '../data/MMM.INC' $INCLUDE         '../data/MMM.INC';
+$if not EXIST '../data/MMM.INC' $INCLUDE '../../base/data/MMM.INC';
 
 SET GRDATASET            'Grid rent data'   %semislash%
 $if     EXIST '../data/GRDATASET.inc' $INCLUDE         '../data/GRDATASET.inc';

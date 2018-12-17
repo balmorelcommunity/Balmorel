@@ -291,6 +291,7 @@ $setglobal UnitCseg
 *!option yes
 *-------------------------------------------------------------------------------
 
+
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
@@ -317,6 +318,15 @@ $setglobal DEGCYCLE yes
 $setglobal DEGCAL yes
 *!option
 *-------------------------------------------------------------------------------
+
+* Algorithm to improve calculation time. Reduces the set IAGKNY by identifying technologies that are not attractive given assumed costs, fuel prices and taxes.
+$setglobal VARIABLE_TRIMMING
+*!option yes
+
+* Tool that aggregates areas in preprocessing
+$setglobal AREA_AGGREGATION
+*!option yes
+
 
 * Calibrate the price side of electricity demand
 $setglobal DEFPCALIB
