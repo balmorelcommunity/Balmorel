@@ -387,11 +387,13 @@ PARAMETER HYPPROFILS(AAA,SSS)                      "Hydro with storage seasonal 
 
 $ifi %YIELDREQUIREMENT%==yes  PARAMETER YIELDREQ(GGG) "Differentiates yield requirements for different technologies ()"; !! () todo
 
-
-* Data for handling of annual hydro constraints in BB3, to be saved by BB1/BB2 and used by BB3:
-PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the seasons to be transferred to model Balbase3 (MWh)";
+** Export data
+* Data for handling of annual hydro constraints in future runs:
+PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the seasons to be transferred to future runs (MWh)";
 PARAMETER VHYRS_SL(Y,AAA,SSS)       "To be saved for comparison with BB1/BB2 solution value for VHYRS_S.L (initial letter is V although declared as a parameter) (MWh)"
-PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transferred to model Balbase3 (input-Money/MWh)";
+PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transferred to future runs (input-Money/MWh)";
+
+** End: Export data
 
 * ------------------------------------------------------------------------------
 * All remaining (cf. ... .inc above) data files af included from the following file
@@ -1241,7 +1243,7 @@ QOBJ ..
 
    VOBJ =E=
 
-$ifi %BB4%==yes  SUM(Y$IY411(Y),
+SUM(Y$IY411(Y),
 * Objective equation of years and with weighting of years that are in Y but not in YYY
 IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
@@ -1314,7 +1316,7 @@ $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htcosts.inc";
 
 
 )
-$ifi %BB4%==yes  )
+)
 
 ;
 
@@ -1426,7 +1428,7 @@ QGGETOH(IAGK_HASORPOT(IY411,IA,IGETOH),IS3,T) ..
 * Hydro reservoir content - dynamic seasonal equation
 
 * TODO eventually: linking between years in BB4
-* "Hydropower with reservoir seasonal energy constraint (MW)"
+* "Hydropower with reservoir seasonal energy constraint (MWh)"
 QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)))..
       VHYRS_S(IY411,IA,S)
        +  IHYINF_S(IA,S) * (
@@ -2308,7 +2310,7 @@ QOBJ.SCALE=IOF1000000;
 *-------------------------------------------------------------------------------
 
 $include "../../base/addons/_hooks/error2.inc"
-$ifi %BB4%==yes       $INCLUDE  "../../base/addons/BB4/errorBB4.inc";
+$INCLUDE  "../../base/addons/BB4/errorBB4.inc";
 
 * The following file contains definitions of a number of temporary parameters
 * and sets that may be used for printout of simulation results.
@@ -2335,7 +2337,7 @@ $ifi %CREATETIME%==yes $goto ENDOFMODEL
 * Here the model to be solved/simulated is included:
 
 
-$ifi %bb4%==yes $INCLUDE "../../base/addons/BB4/BB4overview.inc";
+$INCLUDE "../../base/addons/BB4/BB4overview.inc";
 
 *-------------------------------------------------------------------------------
 
@@ -2345,9 +2347,9 @@ $ifi not exist 'Balmorelbb4.sim'  $include '../../base/model/Balmorelbb4.sim';
 
 *-------------------------------------------------------------------------------
 
-$ifi %bb4%==yes execute_unload  "../../simex/HYRSG.gdx", HYRSG;
-$ifi %bb4%==yes execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
-$ifi %bb4%==yes execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
+$ifi %export_results%==yes execute_unload  "../../simex/HYRSG.gdx", HYRSG;
+$ifi %export_results%==yes execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
+$ifi %export_results%==yes execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
 
 $ifi %MAKEINVEST%==yes execute_unload "../../base/data/GKVACC.gdx", GKVACC;
 $ifi %MAKEINVEST%==yes execute_unload "../../base/data/GKVACCDECOM.gdx", GKVACCDECOM;

@@ -304,7 +304,7 @@ $setglobal STEPWISE_RAMPING
 
 * SEASONAL ramping link is on. This means that the fuel consumption of the last element ot the set T of the set S will be linked to the first element of the set T of the set S+1.
 * This option increases computanional time but assures continuity in the fuel consumption profile.
-$setglobal SEASONALLINKRAMPING  
+$setglobal SEASONALLINKRAMPING
 *!option yes
 
 *-------------------------------------------------------------------------------
@@ -359,33 +359,42 @@ $label endofMSNTrelpaths
 * Some interaction between models:
 *===============================================================================
 *===============================================================================
+
 * The following options are related to interplay between models,
 * e.g. one model output serving as input to another model.
-*
-* ------------------------------------------------------------------------------
+
+
+* Overall control to export results so they can be used in future runs :
+
+$Setglobal export_results  yes
+*!option yes
+
+*--------------------------------------------
+*--------------IMPORT OF RESULTS----------------
+*--------------------------------------------
+
+* Overall control to export results so they can be used in future runs :
+
+$Setglobal import_results
+*!option yes
+
+*------------ IMPORT OPTIONS ----------------
+
+* ------------------HYDRO---------------------------------
 * For model BB3 it is possible to use values found from BB1 or BB2 solutions to specify use of hydro power
 * that corresponds (possibly approximately) to that found in a BB1 or BB2 solution.
 $setglobal HYRSBB123 quant
 *!option quant         !Text "Use seasonal quantities of hydro generation (from HYRSG.gdx??) in BB3 ('primal decomposition')"
-*!mayif %BB3%==yes
 *!option price         !Text "Use seasonal prices for hydro generation (from WATERVAL.gdx) in BB3 ('dual decomposition')"
-*!mayif %BB3%==yes
 *!option quantprice    !Text "Use seasonal quantities and prices for hydro generation (from HYRSG.gdx?? and WATERVAL.gdx) in BB3"
-*!mayif %BB3%==yes
 *!option none          !Text "Do not not use this hydro addon"
-*!mustif not %BB3%==yes
-$ifi not %BB3%==yes   $setglobal HYRSBB123 none
+
+
+* ------------------ END OF HYDRO---------------------------------
 
 
 
-*-------------------------------------------------------------------------------
-* Options timeaggr control automatic aggregation of time segments.
-*
-$setglobal timeaggr
-*!option yes
-
-
-*-------------------------------------------------------------------------------
+*--------------------INVESTMENTS-----------------------------------------------------------
 * Make investments
 * Used in a BB2 model to generate additional capacity for other models
 $setglobal MAKEINVEST
@@ -398,6 +407,20 @@ $setglobal ADDINVEST
 $ifi     %bb2%==yes $Setglobal ADDINVEST no
 $ifi not %bb2%==yes $Setglobal MAKEINVEST no
 
+*--------------------END OF INVESTMENTS-----------------------------------------------------------
+
+
+
+*-------------------------------------------------------------------------------
+* Options timeaggr control automatic aggregation of time segments (to be tested!!).
+*
+$setglobal timeaggr
+*!option yes
+
+*------------- END OF IMPORT OPTIONS ----------------
+*--------------------------------------------
+*--------------END OF IMPORT OF RESULTS----------------
+*--------------------------------------------
 
 *===============================================================================
 *===============================================================================

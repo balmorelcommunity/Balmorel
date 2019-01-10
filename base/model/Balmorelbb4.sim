@@ -576,14 +576,20 @@ $include "../../base/addons/_hooks/varassign.inc"
 
 
 *------------------------------------------------------------------------------
-*                GENERATE INPUT FILES FOR BB3 FROM RESULTS OF BB4
+*                GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
 *------------------------------------------------------------------------------
 
-* For hydro with reservoir save the following, to be used in model BalBase3 by addon hyrsbb123:
-* Preliminary code.
-$ifi %bb4%==yes  HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHOURSINST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
-$ifi %bb4%==yes  VHYRS_SL(Y,IA,S)  = VHYRS_S.l(Y,IA,S);
-$ifi %bb4%==yes  WATERVAL(Y,IA,S)  = QHYRSSEQ.m(Y,IA,S);
+* For hydro with reservoir save the following, to be used in future runs by addon "import_results":
+
+$ifi %export_results%==yes  HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHOURSINST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
+$ifi %export_results%==yes  VHYRS_SL(Y,IA,S)  = VHYRS_S.l(Y,IA,S);
+$ifi %export_results%==yes  WATERVAL(Y,IA,S)  = QHYRSSEQ.m(Y,IA,S);
+
+* For runs with investments save the following, to be used in future runs by addon "import_results" (TBD):
+
+*------------------------------------------------------------------------------
+*                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
+*------------------------------------------------------------------------------
 
 
 *-------------------------------------------------------------------------------
