@@ -95,8 +95,8 @@ $setglobal testbb1234
 
 *---- Generation investments options----
 
-* Permit investments in generation capacity:
-$setglobal GenInvest  yes
+* Permit investments in generation and storage capacity:
+$setglobal TechInvest  yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
