@@ -242,10 +242,15 @@ $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
 $if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
 %semislash%;
 
-PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y"; %semislash%
-$if     EXIST '../data/IWEIGHTY.inc' $INCLUDE         '../data/IWEIGHTY.inc';
-$if not EXIST '../data/IWEIGHTY.inc' $INCLUDE '../../base/data/IWEIGHTY.inc';
-%semislash%;
+PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y";
+* Set the relative weight of the individual years in Y.
+* Two ideas implemented here. Used according to option bb4weighty.
+* Simple idea is to give equal weights:
+$ifi "%bb4weighty%"=="same"      IWEIGHTY(Y) = 1;
+* More complex weighting of the individual years (years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)):
+$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$(ORD(Y) EQ 1) = 1$(CARD(Y) EQ 1) + ((YVALUE(Y+1)-YVALUE(Y)-1)+1)$(CARD(Y) GT 1);
+$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) GT 1) AND (ORD(Y) LT CARD(Y))) = (YVALUE(Y) - YVALUE(Y-1) -1)/2  + (YVALUE(Y+1) - YVALUE(Y) -1)/2    +1;
+$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) EQ CARD(Y)) AND (CARD(Y) GT 1)) = ((YVALUE(Y)-YVALUE(Y-1)-1)+1);
 
 *SET DAYTYPE       "Types of days within the week, typically workdays/weekend" %semislash%
 *$if     EXIST '../data/DAYTYPE.inc' $INCLUDE         '../data/DAYTYPE.inc';
@@ -552,12 +557,12 @@ $if     EXIST '../data/LIFETIME_X.inc' $INCLUDE         '../data/LIFETIME_X.inc'
 $if not EXIST '../data/LIFETIME_X.inc' $INCLUDE '../../base/data/LIFETIME_X.inc';
 %semislash%;
 
-PARAMETER ANNUITYCG(C,G)               "Transforms investment in technologies into annual payment (fraction)";      %semislash%
+PARAMETER ANNUITYCG(CCC,GGG)       "Transforms investment in technologies into annual payment (fraction)";      %semislash%
 $if     EXIST '../data/ANNUITYCG.inc' $INCLUDE         '../data/ANNUITYCG.inc';
 $if not EXIST '../data/ANNUITYCG.inc' $INCLUDE '../../base/data/ANNUITYCG.inc';
 %semislash%;
 
-PARAMETER ANNUITYCX(C)                 "Transforms investment in transmission lines into annual payment (fraction)";       %semislash%
+PARAMETER ANNUITYCX(CCC)                 "Transforms investment in transmission lines into annual payment (fraction)";       %semislash%
 $if     EXIST '../data/ANNUITYCX.inc' $INCLUDE         '../data/ANNUITYCX.inc';
 $if not EXIST '../data/ANNUITYCX.inc' $INCLUDE '../../base/data/ANNUITYCX.inc';
 %semislash%;
@@ -826,7 +831,7 @@ $include "../../base/addons/_hooks/pardefine.inc"
 
 
 *Decommissioning definition has to be included after all AGKN parameters have been defined
-PARAMETER DECOM_G(YYY,YYY,AAA,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERATION INVESTMENTS' %semislash%
+PARAMETER DECOM_G(YYY,YYY,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERATION INVESTMENTS' %semislash%
 $if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
 $if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
 %semislash%;
