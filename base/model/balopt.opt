@@ -299,11 +299,11 @@ $setglobal EV yes
 *!option
 
 * Adds DUMB charging:
-$setglobal DUMB
+$setglobal DUMB yes
 *!option
 
 * Adds smart charging. Only smart charging, without V2G!:
-$setglobal SMART yes
+$setglobal SMART
 *!option
 
 * Adds V2G charging:
