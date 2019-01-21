@@ -2,9 +2,15 @@
 
 * Additional equations in model definition:
 
-$ifi %GenInvest%==yes  QUCVUCON
-$ifi %GenInvest%==yes  QUCVUCU
-$ifi %GenInvest%==yes  QUCVUCD
+
+$ifi not %DECOM%==yes $ifi not %TechInvest%==yes  $goto NO_INV_NO_DECOMMISSIONING
+
+QUCVUCON
+QUCVUCU
+QUCVUCD
+
+$label  NO_INV_NO_DECOMMISSIONING
+
 QUCSTARTQ
 QUCMAXVGF
 
