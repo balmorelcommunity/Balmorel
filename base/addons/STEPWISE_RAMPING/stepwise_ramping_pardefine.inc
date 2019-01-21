@@ -1,4 +1,4 @@
-* UC Translated to BB4 by Juan Gea Bermúdez 2018.
+* Stepwise ramping Juan Gea Bermúdez 2018.
 
 PARAMETER UC_TECH_TYPE_VALUE(UC_TECH_TYPE) 'UC technology types'   %semislash%
 $if     EXIST '../data/UC_TECH_TYPE_VALUE.inc' $INCLUDE         '../data/UC_TECH_TYPE_VALUE.inc';
@@ -14,8 +14,6 @@ PARAMETER UC_FUELS_VALUE(UC_FUELS) 'Ramping fuels'   %semislash%
 $if     EXIST '../data/UC_FUELS_VALUE.inc' $INCLUDE         '../data/UC_FUELS_VALUE.inc';
 $if not EXIST '../data/UC_FUELS_VALUE.inc' $INCLUDE '../../base/data/UC_FUELS_VALUE.inc';
 %semislash%;
-
-$ifi not %STEPWISE_RAMPING_UC%==yes $goto STEPWISERAMPING_END
 
 PARAMETER RAMPING_COSTS_UP(UC_TECH_TYPE,UC_TECH_GROUP,UC_FUELS,RAMPING_RATE) 'Ramping up costs for each technology group, tech gype, fuel and ramping rate (Money/MWh)'   %semislash%
 $if     EXIST '../data/RAMPING_COSTS_UP.inc' $INCLUDE         '../data/RAMPING_COSTS_UP.inc';
@@ -37,4 +35,4 @@ $if     EXIST '../data/RAMPING_CAPABILITY_DOWN.inc' $INCLUDE         '../data/RA
 $if not EXIST '../data/RAMPING_CAPABILITY_DOWN.inc' $INCLUDE '../../base/data/RAMPING_CAPABILITY_DOWN.inc';
 %semislash%;
 
-$label  STEPWISERAMPING_END
+

@@ -819,56 +819,6 @@ PARAMETER IWAVESUMST(AAA)  "Annual amount of wave generated electricity relative
 PARAMETER IWTRRSSUM(AAA)   "Annual amount of hydro from reservoirs generated electricity relative to IWTRRSSUM and (S,T) (MWh)";
 PARAMETER IWTRRRSUM(AAA)   "Annual amount of hydro-run-of-river generated electricity relative to IWTRRRSUM and (S,T) (MWh)";
 
-*-------------------------------------------------------------------------------
-* Set the time weights depending on the model:
-*-------------------------------------------------------------------------------
-* The following code ensures that with time aggregation the energy content (MWh) in time series is conserved, but it does no ensure that the power (MW) is conserved.
-* To get an aggregation that preserves both energy,  power and possibly more, use an addon or auxil.
-
-$ifi not %usedtimesteps_timseries_scaling%==yes $goto usedtimesteps_timseries_scaling_end
-
-*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries
-IWEIGHSUMS = SUM(S, WEIGHT_S(S));
-IWEIGHSUMT = SUM(T, WEIGHT_T(T));
-IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
-IDE_SUMST(IR,DEUSER) = SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,DEUSER,S,T));
-IDH_SUMST(IA,DHUSER) = SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,DHUSER,S,T));
-IX3FXSUMST(IR)$(SUM(Y,X3FX(Y,IR)))                  = SUM((S,T), IHOURSINST(S,T)*X3FX_VAR_T(IR,S,T));
-IWND_SUMST(IA)  = SUM((S,T), IHOURSINST(S,T)*WND_VAR_T(IA,S,T));
-ISOLESUMST(IA) = SUM((S,T), IHOURSINST(S,T)*SOLE_VAR_T(IA,S,T));
-ISOLHSUMST(IA) = SUM((S,T), IHOURSINST(S,T)*SOLH_VAR_T(IA,S,T));
-IWAVESUMST(IA) = SUM((S,T), IHOURSINST(S,T)*WAVE_VAR_T(IA,S,T));
-IWTRRRSUM(IA)  = SUM((S,T), IHOURSINST(S,T)*WTRRRVAR_T(IA,S,T));
-IWTRRSSUM(IA) = SUM(S, (WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
-
-$label  usedtimesteps_timseries_scaling_end
-
-$ifi not %full_timeseries_scaling%==yes $goto full_timeseries_scaling_end
-
-*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries
-IWEIGHSUMS = SUM(SSS, WEIGHT_S(SSS));
-IWEIGHSUMT = SUM(T, WEIGHT_T(T));
-IHOURSINST(SSS,T)=IOF8760*(WEIGHT_S(SSS)*WEIGHT_T(T))/(IWEIGHSUMS*IWEIGHSUMT);
-IDE_SUMST(IR,DEUSER) = SUM((SSS,T), IHOURSINST(SSS,T)*DE_VAR_T(IR,DEUSER,SSS,T));
-IDH_SUMST(IA,DHUSER) = SUM((SSS,T), IHOURSINST(SSS,T)*DH_VAR_T(IA,DHUSER,SSS,T));
-IX3FXSUMST(IR) = SUM((SSS,T), IHOURSINST(SSS,T)*X3FX_VAR_T(IR,SSS,T));
-IWND_SUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*WND_VAR_T(IA,SSS,T));
-ISOLESUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*SOLE_VAR_T(IA,SSS,T));
-ISOLHSUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*SOLH_VAR_T(IA,SSS,T));
-IWAVESUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*WAVE_VAR_T(IA,SSS,T));
-IWTRRRSUM(IA)=SUM((SSS,T),  IHOURSINST(SSS,T)*WTRRRVAR_T(IA,SSS,T));
-IWTRRSSUM(IA)=SUM(SSS, (WEIGHT_S(SSS)/IWEIGHSUMS)*WTRRSVAR_S(IA,SSS));
-
-$label  full_timeseries_scaling_end
-
-
-*Timeseries values are not scaled and match exactly the timeseries (it requires changin quite some code) !!TO DO
-
-
-
-*-------------------------------------------------------------------------------
-* End of: Set the time weights depending on the model
-*-------------------------------------------------------------------------------
 
 
 * Demand of electricity (MW) and heat (MW) current simulation year:
@@ -904,6 +854,73 @@ PARAMETER IHYINF_S(AAA,SSS)  "Water inflow to hydro reservoirs in areas in each 
 
 PARAMETER IGROWTHCAPCG(C,G)  "Limit on growth of technology dependent on years between optimisation (MW) TODO";
 *PARAMETER IGKNMAX(Y,AAA,G)   "Maximum capacity at new technologies (MW)"; !!TODO. Relevant?   Presently not implemented.
+
+
+*-------------------------------------------------------------------------------
+* Set the time weights depending on the model:
+*-------------------------------------------------------------------------------
+* The following code ensures that with time aggregation the energy content (MWh) in time series is conserved, but it does no ensure that the power (MW) is conserved.
+* To get an aggregation that preserves both energy,  power and possibly more, use an addon or auxil.
+
+$ifi not %usedtimesteps_timseries_scaling%==yes $goto usedtimesteps_timseries_scaling_end
+
+*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries
+IWEIGHSUMS = SUM(S, WEIGHT_S(S));
+IWEIGHSUMT = SUM(T, WEIGHT_T(T));
+IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
+IDE_SUMST(IR,DEUSER) = SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,DEUSER,S,T));
+IDH_SUMST(IA,DHUSER) = SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,DHUSER,S,T));
+IX3FXSUMST(IR)$(SUM(Y,X3FX(Y,IR)))                  = SUM((S,T), IHOURSINST(S,T)*X3FX_VAR_T(IR,S,T));
+IWND_SUMST(IA)  = SUM((S,T), IHOURSINST(S,T)*WND_VAR_T(IA,S,T));
+ISOLESUMST(IA) = SUM((S,T), IHOURSINST(S,T)*SOLE_VAR_T(IA,S,T));
+ISOLHSUMST(IA) = SUM((S,T), IHOURSINST(S,T)*SOLH_VAR_T(IA,S,T));
+IWAVESUMST(IA) = SUM((S,T), IHOURSINST(S,T)*WAVE_VAR_T(IA,S,T));
+IWTRRRSUM(IA)  = SUM((S,T), IHOURSINST(S,T)*WTRRRVAR_T(IA,S,T));
+IWTRRSSUM(IA) = SUM(S, (WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
+
+* Calculate hydro inflow to reservoirs in MWh/MW installed capacity (new and old):
+
+IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
+
+$label  usedtimesteps_timseries_scaling_end
+
+$ifi not %full_timeseries_scaling%==yes $goto full_timeseries_scaling_end
+
+*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries
+IWEIGHSUMS = SUM(SSS, WEIGHT_S(SSS));
+IWEIGHSUMT = SUM(T, WEIGHT_T(T));
+IHOURSINST(SSS,T)=IOF8760*(WEIGHT_S(SSS)*WEIGHT_T(T))/(IWEIGHSUMS*IWEIGHSUMT);
+IDE_SUMST(IR,DEUSER) = SUM((SSS,T), IHOURSINST(SSS,T)*DE_VAR_T(IR,DEUSER,SSS,T));
+IDH_SUMST(IA,DHUSER) = SUM((SSS,T), IHOURSINST(SSS,T)*DH_VAR_T(IA,DHUSER,SSS,T));
+IX3FXSUMST(IR) = SUM((SSS,T), IHOURSINST(SSS,T)*X3FX_VAR_T(IR,SSS,T));
+IWND_SUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*WND_VAR_T(IA,SSS,T));
+ISOLESUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*SOLE_VAR_T(IA,SSS,T));
+ISOLHSUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*SOLH_VAR_T(IA,SSS,T));
+IWAVESUMST(IA)=SUM((SSS,T), IHOURSINST(SSS,T)*WAVE_VAR_T(IA,SSS,T));
+IWTRRRSUM(IA)=SUM((SSS,T),  IHOURSINST(SSS,T)*WTRRRVAR_T(IA,SSS,T));
+IWTRRSSUM(IA)=SUM(SSS, (WEIGHT_S(SSS)/IWEIGHSUMS)*WTRRSVAR_S(IA,SSS));
+
+* Calculate hydro inflow to reservoirs in MWh/MW installed capacity (new and old):
+
+IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
+
+*Redefinition of time parameters so annual constraints are respected (to do in the future: allow for exogenous constraints instead)
+IWEIGHSUMS = SUM(S, WEIGHT_S(S));
+IWEIGHSUMT = SUM(T, WEIGHT_T(T));
+IHOURSINST(SSS,T)=0;
+IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
+
+$label  full_timeseries_scaling_end
+
+
+*Timeseries values are not scaled and match exactly the timeseries (it requires changin quite some code) !!TO DO
+
+
+
+*-------------------------------------------------------------------------------
+* End of: Set the time weights depending on the model
+*-------------------------------------------------------------------------------
+
 
 SCALAR ILOOPBREAK     "Scalar used as binary number to break any loop function";
 
@@ -2398,7 +2415,11 @@ $ifi %CREATETIME%==yes $goto ENDOFMODEL
 $ifi %bb4%==yes $INCLUDE "../../base/addons/BB4/BB4overview.inc";
 
 *-------------------------------------------------------------------------------
-$ifi %bb4%==yes $INCLUDE "../../base/model/Balmorelbb4.sim";
+
+$ifi     exist 'Balmorelbb4.sim'  $include                  'Balmorelbb4.sim';
+$ifi not exist 'Balmorelbb4.sim'  $include '../../base/model/Balmorelbb4.sim';
+
+
 *-------------------------------------------------------------------------------
 
 $ifi %bb4%==yes execute_unload  "../../simex/HYRSG.gdx", HYRSG;

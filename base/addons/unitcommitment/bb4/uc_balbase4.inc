@@ -2,9 +2,9 @@
 
 * Additional equations in model definition:
 
-QUCVUCON
-QUCVUCU
-QUCVUCD
+$ifi %GenInvest%==yes  QUCVUCON
+$ifi %GenInvest%==yes  QUCVUCU
+$ifi %GenInvest%==yes  QUCVUCD
 QUCSTARTQ
 QUCMAXVGF
 
@@ -15,7 +15,7 @@ $ifi %MINSTARTUPTIME%==yes    QUCUT
 
 $ifi %MINSHUTDOWNTIME%==yes    QUCDT
 
-$ifi not %STEPWISERAMPING%==yes $goto STEPWISERAMPING_END
+$ifi not %STEPWISE_RAMPING_UC%==yes $goto STEPWISERAMPING_END
 QUCRAMPU
 QUCRAMPING_UP_BALANCE
 QUCRAMPING_UP_RATE_CAPABILITY

@@ -1,13 +1,14 @@
-* UC Translated to BB4 by Juan Gea Bermúdez 2018.
+* Stepwise ramping Juan Gea Bermúdez 2018.
 
-
-$ifi not %STEPWISE_RAMPING_UC%==yes $goto STEPWISERAMPING_END
 
 ** RAMPING CHARACTERISTICS OF THE TECHNOLOGIES TO BE USED
 PARAMETER IRAMPING_G_COSTS_UP(G,RAMPING_RATE) 'Ramping up costs for each technology (money/MWh)';
 PARAMETER IRAMPING_G_COSTS_DOWN(G,RAMPING_RATE) 'Ramping down costs for each technology (money/MWh)';
 PARAMETER IRAMPING_G_CAPABILITY_UP(G,RAMPING_RATE) 'Ramping up capability for each technology for each ramping rate mode (% Capacity)';
 PARAMETER IRAMPING_G_CAPABILITY_DOWN(G,RAMPING_RATE) 'Ramping down capability for each technology for each ramping rate mode (% Capacity)';
+
+
+*This loops automatically calculates the ramping capabitilities and costs of the set G, depending on the input files. This avoids manually changing all the input parameters.
 
 LOOP (UC_TECH_TYPE,
          LOOP (UC_TECH_GROUP,
@@ -23,4 +24,4 @@ LOOP (UC_TECH_TYPE,
                  );
          );
 );
-$label  STEPWISERAMPING_END
+
