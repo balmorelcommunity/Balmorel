@@ -465,6 +465,12 @@ IX3FX_T(IY411,IR,S,T) = ((X3FX(IY411,IR) * X3FX_VAR_T(IR,S,T)) / IX3FXSUMST(IR))
 *-------------------------------------------------------------------------------
 
 $include "../../base/addons/_hooks/sim.inc"
+$ifi not %SCENARIO3OR4%==yes $goto SCENARIO3OR4_END
+$include "../../base/addons/_hooks/sim_MANIPULATION.inc"
+$label  SCENARIO3OR4_END
+$ifi not %SCENARIO4%==yes $goto SCENARIO4_END
+$include "../../base/addons/_hooks/sim_MANIPULATION.inc"
+$label  SCENARIO4_END
 $include "../../base/addons/_hooks/varloupfx.inc"
 
 

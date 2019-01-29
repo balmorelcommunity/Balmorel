@@ -3,4 +3,4 @@
 
 
 $ifi %all_endofmodelgdx%==yes  $include "../../base/addons/all_endofmodelgdx/all_endofmodelgdx.inc";
-$ifi %GRIDTARIFFS%==yes            $include "../../base/addons/GridTariffs/GridTariffs_postsolve.inc";
+

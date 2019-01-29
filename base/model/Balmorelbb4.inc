@@ -911,6 +911,12 @@ PARAMETER IGROWTHCAPCG(C,G)  "Limit on growth of technology dependent on years b
 *-------------------------------------------------------------------------------
 
 $INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
+$ifi not %SCENARIO3OR4%==yes $goto SCENARIO3OR4_END
+$INCLUDE '../../base/addons/_hooks/Ipardecdef_manipulation.inc';
+$label  SCENARIO3OR4_END
+$ifi not %SCENARIO4%==yes $goto SCENARIO4_END
+$INCLUDE '../../base/addons/_hooks/Ipardecdef_manipulation.inc';
+$label  SCENARIO4_END
 
 * These internal parameters and sets pertain to heat transmission.
 $if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.inc';

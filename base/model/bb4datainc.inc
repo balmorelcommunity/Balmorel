@@ -830,3 +830,10 @@ PARAMETER DECOM_G(YYY,YYY,AAA,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERAT
 $if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
 $if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
 %semislash%;
+
+$ifi not %SCENARIO3OR4%==yes $goto SCENARIO3OR4_END
+$include "../../base/addons/_hooks/INPUTDATA_manipulation.inc"
+$label  SCENARIO3OR4_END
+$ifi not %SCENARIO4%==yes $goto SCENARIO4_END
+$include "../../base/addons/_hooks/INPUTDATA_manipulation.inc"
+$label  SCENARIO4_END
