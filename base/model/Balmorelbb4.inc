@@ -331,8 +331,8 @@ PARAMETER TAX_DE(CCC,DEUSER)           "Consumers tax on electricity consumption
 PARAMETER TAX_DH(CCC,DHUSER)           "Consumers tax on heat consumption (Money/MWh)";
 $offtext
 
-PARAMETER ANNUITYCG(C,G)               "Transforms investment in technologies into annual payment (fraction)";
-PARAMETER ANNUITYCX(C)                 "Transforms investment in transmission lines into annual payment (fraction)";
+PARAMETER ANNUITYCG(CCC,GGG)           "Transforms investment in technologies into annual payment (fraction)";
+PARAMETER ANNUITYCX(CCC)               "Transforms investment in transmission lines into annual payment (fraction)";
 PARAMETER IYWEIGHT_ANNUITYCG(Y,Y,G)    "Binary parameter to establish whether the annuity of an investment of a technology made in y should be paid in the time period y (0,1)" ;
 PARAMETER IYWEIGHT_ANNUITYCX(Y,Y)      "Binary parameter to establish whether the annuity of an investment of a transmission line made in y should be paid in the time period y (0,1)";
 PARAMETER IINVYEARG_LEFT(C,Y,Y,G)      "Remaining years of the lifetime of G of an investment made in Y at the beggining of Y (years)";
@@ -692,7 +692,7 @@ SET IY411(Y)                "IY411 The years in current Balbase4 model";
 SET IY410(Y)                "IY410 The years in the current Balbase4 model except the last year" ;
 SET IY401(Y)                "IY401 The years in the current Balbase4 model except the first year" ;
 SET IY411FIRST(Y)           "The first year in the current Balbase4 model";
-SET IY411PREVY(Y,Y)         "For any given element in IY411 (index 1): the previous element in Y (index 2)";
+SET IY411PREVY(Y,Y)         "For any given element in IY411 (index Y 1): the previous element in Y (index Y 2)";
 SET IYFIRST(Y)              "The first year in Y";
 IYFIRST(Y)$(ORD(Y) EQ 1) = YES;
 
@@ -924,6 +924,8 @@ $label  full_timeseries_scaling_end
 *-------------------------------------------------------------------------------
 
 
+SCALAR ILOOPBREAK     "Scalar used as binary number to break any loop function";
+
 *-------------------------------------------------------------------------------
 *----- Any internal parameters for addon to be placed here: --------------------
 *-------------------------------------------------------------------------------
@@ -1070,7 +1072,6 @@ POSITIVE VARIABLE VGF_T(Y,AAA,G,S,T)               "Fuel consumption rate (MW), 
 POSITIVE VARIABLE VX_T(Y,IRRRE,IRRRI,S,T)          "Electricity export from region IRRRE to IRRRI (MW)";
 POSITIVE VARIABLE VGKN(Y,AAA,G)                    "New generation capacity (MW);  for storages (MWh) ";
 POSITIVE VARIABLE VXKN(Y,IRRRE,IRRRI)              "New electricity transmission capacity (MW)";
-POSITIVE VARIABLE VDECOM(YYY,AAA,G)                "Decommissioned capacity(MW). NOT IN USE PRESENTLY";
 POSITIVE VARIABLE VGHYPMS_T(Y,AAA,S,T)             "Contents of pumped hydro storage (MWh)";
 POSITIVE VARIABLE VHYRS_S(Y,AAA,S)                 "Hydro energy equivalent at the start of the season (MWh)";
 POSITIVE VARIABLE VESTOLOADT(Y,AAA,G,S,T)          "Intra-seasonal electricity storage loading (MW)";
@@ -1293,7 +1294,7 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
       (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYWEIGHT_ANNUITYCX(IYALIAS2,Y)))
 
 *Investment costs, transmission capacity invested in previous years
-    + SUM((IYALIAS2,IRE,IRI)$IXKN(IYALIAS2,IRI,IRE),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*
+    + SUM((IYALIAS2,IRE,IRI)$(IXKN(IYALIAS2,IRI,IRE) AND (ORD(IYALIAS2) LT ORD(Y))),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*
       (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*IYWEIGHT_ANNUITYCX(IYALIAS2,Y))
 
 
@@ -1400,6 +1401,7 @@ $ifi not %COMBTECH%==yes  1 ..
 $ifi     %COMBTECH%==yes  (NOT IGCOMB2(IGEXT)) ..
 * This will have a value if not a combination technology
      (GKFX(IY411,IA,IGEXT)$IAGKFX(IY411,IA,IGEXT)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGEXT)$IAGKFX(IY411,IA,IGEXT)
       + VGKNACCUMNET(IY411,IA,IGEXT)$(IAGK_HASORPOT(IY411,IA,IGEXT) AND IAGKN(IA,IGEXT))
      )*IGKRATE(IA,IGEXT,IS3,T)
          - VGH_T(IY411,IA,IGEXT,IS3,T) * GDATA(IGEXT,'GDCV')
@@ -1434,6 +1436,7 @@ QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)))..
        +  IHYINF_S(IA,S) * (
       SUM(IGHYRS,
         GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
        +VGKNACCUMNET(IY411,IA,IGHYRS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRS))
         )
          )
@@ -1450,6 +1453,7 @@ QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPO
      VHYRS_S(IY411,IA,S)  =G=  HYRSDATA(IA,"HYRSMINVOL",S)*
        SUM(IGHYRS,   HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
         +VGKNACCUMNET(IY411,IA,IGHYRS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRS))
         ))
 $include "../../base/addons/_hooks/qhyrsminvol.inc"
@@ -1460,6 +1464,7 @@ QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPO
        HYRSDATA(IA,"HYRSMAXVOL",S) *
        SUM(IGHYRS,  HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
         +VGKNACCUMNET(IY411,IA,IGHYRS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRS))
         ))
        =G= VHYRS_S(IY411,IA,S)
@@ -1474,6 +1479,7 @@ QHYMAXG(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS))..
       =L=
       SUM(IGHYRS,
          (GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
          +VGKNACCUMNET(IY411,IA,IGHYRS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRS))
          )*IGKRATE(IA,IGHYRS,IS3,T)
        )
@@ -1551,7 +1557,9 @@ QHSTOLOADTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS))..
 QHSTOLOADTLIM(IY411,IA,IGHSTO,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTO)) AND IAGK_HASORPOT(IY411,IA,IGHSTO))..
 * Existing, accumulated new previous capacity and new investment this year
 * Complement to assigning VHSTOLOADT.UP for the case with endogenous IGHSTO investments.
-     (GKFX(IY411,IA,IGHSTO)/GDATA(IGHSTO,'GDSTOHLOAD')
+     ((GKFX(IY411,IA,IGHSTO)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTO)
+       )/GDATA(IGHSTO,'GDSTOHLOAD')
       + VGKNACCUMNET(IY411,IA,IGHSTO)/GDATA(IGHSTO,'GDSTOHLOAD')
      )*IGKRATE(IA,IGHSTO,IS3,T)
          =G=
@@ -1563,7 +1571,9 @@ QHSTOLOADTLIM(IY411,IA,IGHSTO,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(
 QHSTOLOADTLIMS(IY411,IA,IGHSTOS,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)) AND IAGK_HASORPOT(IY411,IA,IGHSTOS))..
 * Existing, accumulated new previous capacity and new investment this year
 * Complement to assigning VHSTOLOADTS.UP for the case with endogenous IGHSTOS investments.
-     (GKFX(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,'GDSTOHLOAD')
+     ((GKFX(IY411,IA,IGHSTOS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTOS)
+)/GDATA(IGHSTOS,'GDSTOHLOAD')
       + VGKNACCUMNET(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,'GDSTOHLOAD')
      )*IGKRATE(IA,IGHSTOS,S,T)
          =G=
@@ -1575,7 +1585,9 @@ QHSTOLOADTLIMS(IY411,IA,IGHSTOS,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(
 QESTOLOADTLIM(IY411,IA,IGESTO,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTO)) AND IAGK_HASORPOT(IY411,IA,IGESTO))..
 * Existing, accumulated new previous capacity and new investment this year.
 * Complement to assigning VESTOLOADT.UP for the case with endogenous IGESTO investments.
-     (GKFX(IY411,IA,IGESTO)/GDATA(IGESTO,"GDSTOHLOAD")
+     ((GKFX(IY411,IA,IGESTO)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTO)
+)/GDATA(IGESTO,"GDSTOHLOAD")
       + VGKNACCUMNET(IY411,IA,IGESTO)/GDATA(IGESTO,"GDSTOHLOAD")
      ) * IGKRATE(IA,IGESTO,IS3,T)
 
@@ -1587,7 +1599,9 @@ QESTOLOADTLIM(IY411,IA,IGESTO,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(
 QESTOLOADTLIMS(IY411,IA,IGESTOS,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)) AND IAGK_HASORPOT(IY411,IA,IGESTOS))..
 * Existing, accumulated new previous capacity and new investment this year.
 * Complement to assigning VESTOLOADTS.UP for the case with endogenous IGESTOS investments.
-     (GKFX(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHLOAD")
+     ((GKFX(IY411,IA,IGESTOS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTOS)
+)/GDATA(IGESTOS,"GDSTOHLOAD")
       + VGKNACCUMNET(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHLOAD")
      ) * IGKRATE(IA,IGESTOS,S,T)
 
@@ -1600,7 +1614,9 @@ QESTOLOADTLIMS(IY411,IA,IGESTOS,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(
 * "Intra-seasonal Heat storage output limit (MW)"
 QHSTOVGHTLIM(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTO)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
-     (   GKFX(IY411,IA,IGHSTO)/GDATA(IGHSTO,"GDSTOHUNLD")
+     (   (GKFX(IY411,IA,IGHSTO)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTO)
+)/GDATA(IGHSTO,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGHSTO)/GDATA(IGHSTO,"GDSTOHUNLD")
      )*IGKRATE(IA,IGHSTO,IS3,T)
          =G=
@@ -1611,7 +1627,9 @@ QHSTOVGHTLIM(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO) AND SUM(Y$(Y
 * "Inter-seasonal Heat storage output limit (MW)"
 QHSTOVGHTLIMS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
-     (   GKFX(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,"GDSTOHUNLD")
+     (   (GKFX(IY411,IA,IGHSTOS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTOS)
+)/GDATA(IGHSTOS,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,"GDSTOHUNLD")
      )*IGKRATE(IA,IGHSTOS,S,T)
          =G=
@@ -1622,7 +1640,9 @@ QHSTOVGHTLIMS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND SUM(Y$(
 * "Intra-seasonal Electricity storage output limit (MW)"
 QESTOVGETLIM(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTO)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
-     (   GKFX(IY411,IA,IGESTO)/GDATA(IGESTO,"GDSTOHUNLD")
+     (   (GKFX(IY411,IA,IGESTO)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTO)
+)/GDATA(IGESTO,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGESTO)/GDATA(IGESTO,"GDSTOHUNLD")
      ) * IGKRATE(IA,IGESTO,IS3,T)
          =G=
@@ -1631,7 +1651,9 @@ QESTOVGETLIM(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO) AND SUM(Y$(Y
 
 QESTOVGETLIMS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
-     (   GKFX(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHUNLD")
+     (   (GKFX(IY411,IA,IGESTOS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTOS)
+)/GDATA(IGESTOS,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGESTOS)/GDATA(IGESTOS,"GDSTOHUNLD")
      ) * IGKRATE(IA,IGESTOS,S,T)
          =G=
@@ -1643,6 +1665,7 @@ QESTOVGETLIMS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND SUM(Y$(
 QHSTOVOLTLIM(IY411,IA,IGHSTO,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTO)) AND IAGK_HASORPOT(IY411,IA,IGHSTO))..
 * Existing, accumulated new previous capacity and new investment this year
      GKFX(IY411,IA,IGHSTO)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTO)
    + VGKNACCUMNET(IY411,IA,IGHSTO)
          =G=
   VHSTOVOLT(IY411,IA,IGHSTO,IS3,T)
@@ -1652,6 +1675,7 @@ QHSTOVOLTLIM(IY411,IA,IGHSTO,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y
 QHSTOVOLTLIMS(IY411,IA,IGHSTOS,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)) AND IAGK_HASORPOT(IY411,IA,IGHSTOS))..
 * Existing, accumulated new previous capacity and new investment this year
      GKFX(IY411,IA,IGHSTOS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTOS)
    + VGKNACCUMNET(IY411,IA,IGHSTOS)
          =G=
   VHSTOVOLTS(IY411,IA,IGHSTOS,S,T)
@@ -1661,6 +1685,7 @@ QHSTOVOLTLIMS(IY411,IA,IGHSTOS,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y
 QESTOVOLTLIM(IY411,IA,IGESTO,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTO)) AND IAGK_HASORPOT(IY411,IA,IGESTO))..
 * Existing or accumulated capacity
    GKFX(IY411,IA,IGESTO)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTO)
    + VGKNACCUMNET(IY411,IA,IGESTO)
          =G=
   VESTOVOLT(IY411,IA,IGESTO,IS3,T)
@@ -1669,6 +1694,7 @@ QESTOVOLTLIM(IY411,IA,IGESTO,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y
 QESTOVOLTLIMS(IY411,IA,IGESTOS,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)) AND IAGK_HASORPOT(IY411,IA,IGESTOS))..
 * Existing or accumulated capacity
    GKFX(IY411,IA,IGESTOS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTOS)
    + VGKNACCUMNET(IY411,IA,IGESTOS)
          =G=
   VESTOVOLTS(IY411,IA,IGESTOS,S,T)
@@ -1681,7 +1707,10 @@ QESTOVOLTLIMS(IY411,IA,IGESTOS,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y
 
 * "Maximum electricty capacity by year, country and fuel (MW)"
 QKEFUELC(IY411,C,FFF)$FKPOT(C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+    )
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
       =L=  FKPOT(C,FFF)
 $include "../../base/addons/_hooks/qkefuelc.inc"
@@ -1689,7 +1718,10 @@ $include "../../base/addons/_hooks/qkefuelc.inc"
 
 * "Maximum electricty capacity by year, region and fuel (MW)"
 QKEFUELR(IY411,IR,FFF)$FKPOT(IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+    )
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND RRRAAA(IR,IA)), VGKNACCUMNET(IY411,IA,G))
       =L=  FKPOT(IR,FFF)
 $include "../../base/addons/_hooks/qkefuelr.inc"
@@ -1697,7 +1729,10 @@ $include "../../base/addons/_hooks/qkefuelr.inc"
 
 * "Maximum electricty capacity by year, area and fuel (MW)"
 QKEFUELA(IY411,IA,FFF)$FKPOT(IA,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM(G$(IAGKFX(IY411,IA,G) AND IGF(G,FFF)), GKFX(IY411,IA,G))
+    SUM(G$(IAGKFX(IY411,IA,G) AND IGF(G,FFF)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+    )
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF)), VGKNACCUMNET(IY411,IA,G))
       =L=  FKPOT(IA,FFF)
 $include "../../base/addons/_hooks/qkefuela.inc"
@@ -1789,44 +1824,65 @@ QGEQAF(IY411,IA,FFF)$IGEQF(IY411,IA,FFF)..
 
 * "Minimum capacity by year, country and fuel (MW)" !! renamed from QKMAXFC(Y,C,FFF), similar with others below  Hans
 QKMINFC(IY411,C,FFF)$FKMIN(IY411,C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+    )
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
       =G=  FKMIN(IY411,C,FFF);
 
 * "Maximum capacityby year, country and fuel (MW)"
 QKMAXFC(IY411,C,FFF)$FKMAX(IY411,C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+    )
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
       =L=  FKMAX(IY411,C,FFF);
 
 * "Exact capacity by year, country and fuel (MW)"
 QKEQFC(IY411,C,FFF)$FKEQ(IY411,C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+    )
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
       =E=  FKEQ(IY411,C,FFF);
 
 * "Minimum capacity by year, region and fuel (MW)"
 QKMINFR(IY411,IR,FFF)$FKMIN(IY411,IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+)
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND RRRAAA(IR,IA)), VGKNACCUMNET(IY411,IA,G))
       =G=  FKMIN(IY411,IR,FFF);
 
 * "Maximum capacity by year, region and fuel (MW)"
 QKMAXFR(IY411,IR,FFF)$FKMAX(IY411,IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+    )
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND RRRAAA(IR,IA)), VGKNACCUMNET(IY411,IA,G))
       =L=  FKMAX(IY411,IR,FFF);
 
 * "Exact capacity by year, region and fuel (MW)"
 QKEQFR(IY411,IR,FFF)$FKEQ(IY411,IR,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND RRRAAA(IR,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+    )
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND RRRAAA(IR,IA)), VGKNACCUMNET(IY411,IA,G))
       =E=  FKEQ(IY411,IR,FFF);
 
 * "Minimum capacity by year, area and fuel (MW)"  !! renamed from QKMAXFC(Y,C,FFF), similar with others below   Hans
 QKMINFNA(IY411,FFF)$FKMINNA(IY411,FFF).. !! 0 implies no restriction, "EPS" implies zero MW.
      SUM(C,
-          SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
+          SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)),
+          GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+     )
            +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
          )
       =G=  FKMINNA(IY411,FFF);
@@ -1835,7 +1891,10 @@ QKMINFNA(IY411,FFF)$FKMINNA(IY411,FFF).. !! 0 implies no restriction, "EPS" impl
 * "Maximum capacity by year, area and fuel (MW)"
 QKMAXFNA(IY411,FFF)$FKMAXNA(IY411,FFF).. !! 0 implies no restriction, "EPS" implies zero MW.
      SUM(C,
-         (  SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
+         (  SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)),
+            GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+            )
             +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
          ))
       =L=  FKMAXNA(IY411,FFF);
@@ -1843,7 +1902,10 @@ QKMAXFNA(IY411,FFF)$FKMAXNA(IY411,FFF).. !! 0 implies no restriction, "EPS" impl
 *  "Exact capacity by year, area and fuel (MW)"
 QKEQFNA(IY411,FFF)$FKEQNA(IY411,FFF).. !! 0 implies no restriction, "EPS" implies zero MW.
      SUM(C,
-         (  SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)), GKFX(IY411,IA,G))
+         (  SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)),
+            GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+            )
             +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
          ))
       =E=  FKEQNA(IY411,FFF);
@@ -1854,7 +1916,10 @@ QKEQFNA(IY411,FFF)$FKEQNA(IY411,FFF).. !! 0 implies no restriction, "EPS" implie
 
 * "Maximum capacity by year, country and technology group (MW)"
 QKTECHGROUPC(IY411,C,TECH_GROUP)$TECHGROUPKPOT(C,TECH_GROUP).. !! EPS convention on TECHGROUPKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND (GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP)) AND ICA(C,IA)), GKFX(IY411,IA,G))
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND (GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP)) AND ICA(C,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+    )
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND (GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP)) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
       =L=  TECHGROUPKPOT(C,TECH_GROUP)
 $include "../../base/addons/_hooks/qktechgroupc.inc"
@@ -1862,7 +1927,10 @@ $include "../../base/addons/_hooks/qktechgroupc.inc"
 
 * "Maximum capacity by year, region and technology group (MW)"
 QKTECHGROUPR(IY411,IR,TECH_GROUP)$TECHGROUPKPOT(IR,TECH_GROUP).. !! EPS convention on TECHGROUPKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND (GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP)) AND RRRAAA(IR,IA)), GKFX(IY411,IA,G))
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND (GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP)) AND RRRAAA(IR,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+    )
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND (GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP)) AND RRRAAA(IR,IA)), VGKNACCUMNET(IY411,IA,G))
       =L=  TECHGROUPKPOT(IR,TECH_GROUP)
 $include "../../base/addons/_hooks/qktechgroupr.inc"
@@ -1870,7 +1938,10 @@ $include "../../base/addons/_hooks/qktechgroupr.inc"
 
 * "Maximum capacity by year, area and technology group (MW)"
 QKTECHGROUPA(IY411,IA,TECH_GROUP)$TECHGROUPKPOT(IA,TECH_GROUP).. !! EPS convention on TECHGROUPKPOT: 0 implies no restriction, "EPS" implies zero MW.
-    SUM(G$(IAGKFX(IY411,IA,G) AND (GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP))), GKFX(IY411,IA,G))
+    SUM(G$(IAGKFX(IY411,IA,G) AND (GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP))),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)
+    )
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND (GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP))), VGKNACCUMNET(IY411,IA,G))
       =L=  TECHGROUPKPOT(IA,TECH_GROUP)
 $include "../../base/addons/_hooks/qktechgroupa.inc"
@@ -1987,9 +2058,6 @@ QGKNACCUMNET(IY411,IA,IGKFIND)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IG
    SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET(IY402,IA,IGKFIND)$SUM(Y$(YVALUE(Y) LT YVALUE(IY411)),IAGKNY(Y,IA,IGKFIND)))$(NOT IYFIRST(IY411))
  + VGKN(IY411,IA,IGKFIND)$IAGKNY(IY411,IA,IGKFIND)
 
-*Decomissioning of endogenous capacities
--SUM(Y$(YVALUE(Y)< YVALUE(IY411)),VGKN(Y,IA,IGKFIND)*DECOM_G(Y,IY411,IA,IGKFIND))
-
 $include "../../base/addons/_hooks/qgknaccumnet.inc";
 
 *-------------------------------------------------------------------------------
@@ -2012,7 +2080,9 @@ SET help_QGKH_UP_VGH_T_UP_sum_H(y,aaa,g) "Checking only, cf BB4.sim";
 QGKE_UP(IY411,IA,IGDISPATCH(IGKENOSTO),IS3,T)$(IAGK_HASORPOT(IY411,IA,IGKENOSTO) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKENOSTO)))..
 * Complement to assigning VGE_T.UP for the case with endogenous IGKENOSTO investments.
         VGE_T(IY411,IA,IGKENOSTO,IS3,T) =L=
-        GKFX(IY411,IA,IGKENOSTO)*IGKRATE(IA,IGKENOSTO,IS3,T)
+        (GKFX(IY411,IA,IGKENOSTO)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGKENOSTO)
+         )*IGKRATE(IA,IGKENOSTO,IS3,T)
        +(VGKNACCUMNET(IY411,IA,IGKENOSTO)*IGKRATE(IA,IGKENOSTO,IS3,T))
 $include "../../base/addons/_hooks/qgke_up.inc"
 ;
@@ -2021,7 +2091,9 @@ $include "../../base/addons/_hooks/qgke_up.inc"
 QGKH_UP(IY411,IA,IGDISPATCH(IGKHNOSTO),IS3,T)$(IAGK_HASORPOT(IY411,IA,IGKHNOSTO) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKHNOSTO)))..
 * Complement to assigning VGH_T.UP for the case with endogenous IGKHNOSTO investments.
         VGH_T(IY411,IA,IGKHNOSTO,IS3,T) =L=
-        GKFX(IY411,IA,IGKHNOSTO)*IGKRATE(IA,IGKHNOSTO,IS3,T)
+        (GKFX(IY411,IA,IGKHNOSTO)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGKHNOSTO)
+        )*IGKRATE(IA,IGKHNOSTO,IS3,T)
        +VGKNACCUMNET(IY411,IA,IGKHNOSTO)*IGKRATE(IA,IGKHNOSTO,IS3,T)
 $include "../../base/addons/_hooks/qgkh_up.inc"
 ;
@@ -2058,6 +2130,7 @@ $ifi     %VRESHUTDOWN%==yes  =L=
 $ifi not %VRESHUTDOWN%==yes  =E=
          (WTRRRFLH(IA) * (
            GKFX(IY411,IA,IGHYRR)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRR)
         +  VGKNACCUMNET(IY411,IA,IGHYRR)
                           ) * WTRRRVAR_T(IA,IS3,T) * IGKRATE(IA,IGHYRR,IS3,T)) / IWTRRRSUM(IA)
 
@@ -2075,6 +2148,7 @@ $ifi not %VRESHUTDOWN%==yes  =E=
 $ifi %WNDFLH_DOL%==AAA         (WNDFLH(IA) * (
 $ifi %WNDFLH_DOL%==AAA_GGG     (WNDFLH(IA,IGWND) * (
             GKFX(IY411,IA,IGWND)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGWND)
          + VGKNACCUMNET(IY411,IA,IGWND)
                  )  * WND_VAR_T(IA,IS3,T) * IGKRATE(IA,IGWND,IS3,T)) / IWND_SUMST(IA)
 ;
@@ -2092,6 +2166,7 @@ $ifi not %VRESHUTDOWN%==yes  =E=
 $ifi %SOLEFLH_DOL%==AAA       (SOLEFLH(IA) * (
 $ifi %SOLEFLH_DOL%==AAA_GGG   (SOLEFLH(IA,IGSOLE) * (
             GKFX(IY411,IA,IGSOLE)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGSOLE)
          + VGKNACCUMNET(IY411,IA,IGSOLE)
                  )  * SOLE_VAR_T(IA,IS3,T) * IGKRATE(IA,IGSOLE,IS3,T)) / ISOLESUMST(IA)
 ;
@@ -2106,6 +2181,7 @@ $ifi %SOLHFLH_DOL%==AAA       (SOLHFLH(IA) * (
 $ifi %SOLHFLH_DOL%==AAA_GGG   (SOLHFLH(IA,IGSOLH) * (
 
           GKFX(IY411,IA,IGSOLH)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGSOLH)
      + VGKNACCUMNET(IY411,IA,IGSOLH)
                             ) * SOLH_VAR_T(IA,IS3,T) * IGKRATE(IA,IGSOLH,IS3,T))/ ISOLHSUMST(IA)
 ;
@@ -2121,6 +2197,7 @@ $ifi %GWAVE_DOL%==AAA       (WAVEFLH(IA) * (
 $ifi %GWAVE_DOL%==AAA_GGG   (WAVEFLH(IA,IGWAVE) * (
 
          GKFX(IY411,IA,IGWAVE)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGWAVE)
      + VGKNACCUMNET(IY411,IA,IGWAVE)
                           )* WAVE_VAR_T(IA,IS3,T) * IGKRATE(IA,IGWAVE,IS3,T)) / IWAVESUMST(IA)
 ;
@@ -2181,36 +2258,36 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
 $ifi %heatsto_loading_rest%==yes QHSTOLOADT
 $ifi %heatsto_loading_rest%==yes QHSTOLOADTS
 
-$ifi %GenInvest%==yes           QESTOLOADTLIM
-$ifi %GenInvest%==yes           QESTOLOADTLIMS
-$ifi %GenInvest%==yes           QHSTOLOADTLIM
-$ifi %GenInvest%==yes           QHSTOLOADTLIMS
+$ifi %TechInvest%==yes           QESTOLOADTLIM
+$ifi %TechInvest%==yes           QESTOLOADTLIMS
+$ifi %TechInvest%==yes           QHSTOLOADTLIM
+$ifi %TechInvest%==yes           QHSTOLOADTLIMS
 
-$ifi %GenInvest%==yes           QESTOVOLTLIM
-$ifi %GenInvest%==yes           QESTOVOLTLIMS
-$ifi %GenInvest%==yes           QHSTOVOLTLIM
-$ifi %GenInvest%==yes           QHSTOVOLTLIMS
+$ifi %TechInvest%==yes           QESTOVOLTLIM
+$ifi %TechInvest%==yes           QESTOVOLTLIMS
+$ifi %TechInvest%==yes           QHSTOVOLTLIM
+$ifi %TechInvest%==yes           QHSTOVOLTLIMS
 
-$ifi %GenInvest%==yes           QESTOVGETLIM
-$ifi %GenInvest%==yes           QESTOVGETLIMS
-$ifi %GenInvest%==yes           QHSTOVGHTLIM
-$ifi %GenInvest%==yes           QHSTOVGHTLIMS
+$ifi %TechInvest%==yes           QESTOVGETLIM
+$ifi %TechInvest%==yes           QESTOVGETLIMS
+$ifi %TechInvest%==yes           QHSTOVGHTLIM
+$ifi %TechInvest%==yes           QHSTOVGHTLIMS
 
 *--- Capacity constraints on generation (MW) -----------------------------------
 
-*$ifi %GenInvest%==yes          QGKNACCUMGROSS
-$ifi %GenInvest%==yes           QGKNACCUMNET
+*$ifi %TechInvest%==yes          QGKNACCUMGROSS
+$ifi %TechInvest%==yes           QGKNACCUMNET
 
-$ifi %GenInvest%==yes           QGKE_UP
-$ifi %GenInvest%==yes           QGKH_UP
-$ifi %GenInvest%==yes           QGKE_LO
-$ifi %GenInvest%==yes           QGKH_LO
+$ifi %TechInvest%==yes           QGKE_UP
+$ifi %TechInvest%==yes           QGKH_UP
+$ifi %TechInvest%==yes           QGKE_LO
+$ifi %TechInvest%==yes           QGKH_LO
 
-$ifi %GenInvest%==yes           QHYRRDISPATCH
-$ifi %GenInvest%==yes           QWNDDISPATCH
-$ifi %GenInvest%==yes           QSOLEDISPATCH
-$ifi %GenInvest%==yes           QSOLHDISPATCH
-$ifi %GenInvest%==yes           QWAVEDISPATCH
+$ifi %TechInvest%==yes           QHYRRDISPATCH
+$ifi %TechInvest%==yes           QWNDDISPATCH
+$ifi %TechInvest%==yes           QSOLEDISPATCH
+$ifi %TechInvest%==yes           QSOLHDISPATCH
+$ifi %TechInvest%==yes           QWAVEDISPATCH
 
 *--- Transmission capacity (listed in QXKE_UP) -----------------------------------------------------
 

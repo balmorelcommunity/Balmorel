@@ -95,8 +95,8 @@ $setglobal testbb1234
 
 *---- Generation investments options----
 
-* Permit investments in generation capacity:
-$setglobal GenInvest  yes
+* Permit investments in generation and storage capacity:
+$setglobal TechInvest  yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
@@ -220,7 +220,7 @@ $setglobal TAXES
 $setglobal SYSTEMCOST
 *!option yes
 
-* PLANTCLOSURES indicates that technology is decomissioned on the basis of profitability.
+* PLANTCLOSURES indicates that technology is decomissioned on the basis of profitability. (OLD CODE, USE "DECOM" ADD-ON INSTEAD)
 * When revenues can no longer cover both variable and fixed operating costs, capacity is decomissioned.
 $setglobal PLANTCLOSURES
 *!option yes
@@ -268,8 +268,46 @@ $setglobal bypass
 *!option yes
 
 
-*-------------------------------------------------------------------------------
-* Unit Commitment:
+*-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
+* overall control variable DECOM must be 'yes' if any of the other decommissioning controls are.
+$setglobal DECOM 
+*!option yes
+
+*-------ENDOGENOUS CAPACITIES----------
+* Note: If no option for endogenous capacities is activated, endogenous investments will not be decommissioned
+
+* Adds Endogenous capacities will maximum stay in the system as much as their lifetimes:
+$setglobal LIFETIME_DECOM_ENDO_G
+*!option yes
+
+* Adds Endogenous capacities can be decommissioned based on their profitability:
+$setglobal ECONOMIC_DECOM_ENDO_G
+*!option yes
+*--------END OF ENDOGENOUS CAPACITIES-----
+
+*--------EXOGENOUS CAPACITIES------------
+* Note: If no option is activated, the exogenous decommissioning assumed in GFKX will take place
+
+SCALAR GDECOMEXOSTART 'Base year from which exogenous decommissioning can be calculated' ;
+GDECOMEXOSTART= 2016;
+
+* Adds No decommissioning of exogenous capacities will take place at all. GKFX capacities development will be recalculated so capacities only increase in the system.
+* Note: This option is not compatible with the other exogenous capacities decommissioning options.
+$setglobal NO_DECOM_EXO_G
+*!option yes
+
+* Adds Exogenous capacities will maximum stay in the system as much as their lifetime, which should be represented in the yearly development of capacities of the input parameter GKFX:
+$setglobal LIFETIME_DECOM_EXO_G
+*!option yes
+
+* Adds Exogenous capacities can be decommissioned based on their profitability:
+$setglobal ECONOMIC_DECOM_EXO_G
+*!option yes
+*--------END OF ENDOGENOUS CAPACITIES-----
+*-----------------------End of TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
+
+
+*-------------------- UNIT COMMITMENT -----------------------------------------------------------
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
 $setglobal UnitComm
@@ -290,7 +328,7 @@ $setglobal STEPWISE_RAMPING_UC
 * The production interval is segmented into a number of disjunct pieces, each with its own costs: NOT IMPLEMENTED
 $setglobal UnitCseg
 *!option yes
-*-------------------------------------------------------------------------------
+*-------------------- End of UNIT COMMITMENT -----------------------------------------------------------
 
 *-------------------------------------------------------------------------------
 * Stepwise_ramping (linear version):
