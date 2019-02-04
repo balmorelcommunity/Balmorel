@@ -2,6 +2,9 @@
 * For use with addon HYRSBB123.
 * Included into bb123.sim before loop over seasons, inside the loop over years.
 
+$ifi %HYRSBB123%==none    $goto label_no_hydro_results_import
+
+
 IHYRSBB123BB3GACCUM(IY411,IA)  = 0;
 IHYRSBB123BB12GACCUM(IY411,IA) = 0;
 IHYRSBB123DELTAVOL(IY411,IA) = 0;
@@ -9,8 +12,6 @@ IHYRSBB123VOLINI(IY411,IA,S)$(ORD(S) EQ 1) = VHYRS_SL(Y,IA,S);
 
 * Todo: if S and SSS are different then a rescaling might be useful for comparison of results (HYRSG).
 * So for now: make sure that S and SSS are identical.
-
-
 
 
 * File HYRSBB123sim2.inc for the Balmorel model.
@@ -32,9 +33,6 @@ LOOP(IHYRSBB12DELTASET,
    ISCALAR2=ISCALAR2*ISCALAR1;
    IHYRSBB123EXTRAVAL(IY411,IA,IS3LOOPSET,IHYRSBB12DELTASET) = IWATERVAL_Y(IY411,IA,IS3LOOPSET)*ISCALAR3*(1+ISCALAR2);
 );
-
-
-
 
 
 * File HYRSBB123sim3.inc for the Balmorel model.
@@ -77,3 +75,4 @@ IF((ISCALAR1 < 0),
 IHYRSBB123VOLINI(IA,IS3LOOPSET+1) = MAX(0,IHYRSBB123VOLINI(IA,IS3LOOPSET+1));
 
 
+$label label_no_hydro_results_import

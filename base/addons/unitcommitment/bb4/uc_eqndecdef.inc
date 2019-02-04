@@ -6,27 +6,27 @@ EQUATION  QUCVUCD(Y,AAA,G,S,T)     'Unit commitment: Number of shut down endogen
 EQUATION  QUCSTARTQ(Y,AAA,G,S,T)   'Unit commitment: on-off logic';
 EQUATION  QUCMAXVGF(Y,AAA,G,S,T)   'Unit commitment: Fuel consumption below maximum (of units online)';
 
-QUCVUCON(IY411,IA,IGUC,S,T)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC))..  !! 'Unit commitment: Number of endogenous units on limited by unit size and capacity)'
+QUCVUCON(IY411,IA,IGUC,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC)) OR IGDECOMEXOPOT(IY411,IA,IGUC))..  !! 'Unit commitment: Number of endogenous units on limited by unit size and capacity)'
 VUCON(IY411,IA,IGUC,S,T)
 =L=
 (GKFX(IY411,IA,IGUC)
-$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC)
 +VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC)))/GDATA(IGUC,'GDUCUNITSIZE')
 ;
 
-QUCVUCU(IY411,IA,IGUC,S,T)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC))..  !! 'Unit commitment: Number of start up endogenous units on limited by unit size and capacity)'
+QUCVUCU(IY411,IA,IGUC,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC)) OR IGDECOMEXOPOT(IY411,IA,IGUC))..  !! 'Unit commitment: Number of start up endogenous units on limited by unit size and capacity)'
 VUCU(IY411,IA,IGUC,S,T)
 =L=
 (GKFX(IY411,IA,IGUC)
-$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC)
 +VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC)))/GDATA(IGUC,'GDUCUNITSIZE')
 ;
 
-QUCVUCD(IY411,IA,IGUC,S,T)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC))..  !! 'Unit commitment: Number of shut down endogenous units on limited by unit size and capacity)'
+QUCVUCD(IY411,IA,IGUC,S,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC)) OR IGDECOMEXOPOT(IY411,IA,IGUC))..  !! 'Unit commitment: Number of shut down endogenous units on limited by unit size and capacity)'
 VUCD(IY411,IA,IGUC,S,T)
 =L=
 (GKFX(IY411,IA,IGUC)
-$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC)
 +VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC)))/GDATA(IGUC,'GDUCUNITSIZE')
 ;
 
@@ -87,8 +87,8 @@ QUCDT(IAGK_HASORPOT(IY411,IA,IGUC),IS3,T)$(GDATA(IGUC,'GDUCDTMIN') GT CHRONOHOUR
 * units shut down at t
          SUM(IUCT$(ORD(IUCT) LE GDATA(IGUC,'GDUCDTMIN')/CHRONOHOUR(IS3,T)), VUCD(IY411,IA,IGUC,IS3,T--(ORD(IUCT)-1)))
          =L=
-         (GKFX(IY411,IA,IGUC)$IAGKFX(IY411,IA,IGUC)
-$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IAGKFX(IY411,IA,IGUC)
+         (GKFX(IY411,IA,IGUC)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC)
          +VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC))) / GDATA(IGUC,'GDUCUNITSIZE')
          -VUCON(IY411,IA,IGUC,IS3,T)
 ;

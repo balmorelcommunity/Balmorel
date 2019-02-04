@@ -2,6 +2,9 @@
 
 $ifi not %bb4%==yes $goto endoffile
 
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_balbase4.inc";
+
+
 $ifi %X3V%==yes    $include   "../../base/addons/x3v/bb4/x3v_balbase4.inc";
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_balbase4.inc";
 $ifi %UnitComm%==yes      $include   "../../base/addons/unitcommitment/bb4/uc_balbase4.inc";

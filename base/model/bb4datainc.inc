@@ -160,8 +160,10 @@ $include "../../base/addons/_hooks/setdefine.inc"
 $ifi %HEATTRANS%==yes ALIAS (AAA,IAAAE,IAAAI);
 $ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
 
+****PENDING: MOVE TO HOOKS!!!****
+*$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
+****END OF PENDING: MOVE TO HOOKS!!!****
 
-$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
 
 *-------------------------------------------------------------------------------
 * End: Any declarations and definitions of sets, aliases and acronyms for addon

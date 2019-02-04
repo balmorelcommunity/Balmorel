@@ -12,6 +12,9 @@ $ifi not %BB4%==yes $goto endoffile
 
 $label  beginbb4
 
+
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_eqndecdef.inc";
+
 $ifi %X3V%==yes $include "../../base/addons/x3v/bb4/x3v_eqndecdef.inc";
 $ifi %UnitComm%==yes      $include   "../../base/addons/unitcommitment/bb4/uc_eqndecdef.inc";
 $ifi %AGKNDISC%==yes $include "../../base/addons/AGKNdisc/bb4/agkndisc_eqndecdef.inc";
@@ -21,7 +24,7 @@ $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwisep
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_eqndecdef.inc";
 $ifi %STEPWISE_RAMPING%==yes  $include "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_eqndecdef.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_eqndecdef.inc";
-$ifi %DEMANDRESPONSE%==yes 	$include 	"../../base/addons/demandresponse/bb4/dr_eqndecdef.inc";
+$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_eqndecdef.inc";
 
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_eqndecdef.inc";
 $label endoffile

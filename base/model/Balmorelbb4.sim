@@ -23,15 +23,9 @@ IS3(S)   = YES;
 
 VGKN.L(Y,IA,G)        = 0;
 VXKN.l(Y,IR,IRI)      = 0;
-*VDECOM.l(Y,IA,G)     = 0;
 
-
-
-*$IF((%investmentfromyear%== yes),  TODO WHEN DECOMMISIONING IN EXISTING TECHNOLOGIES IS INTRODUCED
-*
-*         VDECOM.UP(Y,IA,G)$( YVALUE(Y) le (GINVESTSTART-1) )=EPS;
-* ;
-
+*Initializing the set IGDECOMEXOPOT if the add-on DECOM is not activated
+$ifi not %DECOM%==yes IGDECOMEXOPOT(Y,IA,G)=0;
 
 
 * Unload IWEIGHTY for the output tool
@@ -574,23 +568,6 @@ $include "../../base/addons/_hooks/varassign.inc"
 *-------------------------------------------------------------------------------
 * END: LOOP OVER ALL THE FIRSTYEARS IN ALL MODELS BALBASE4
 *-------------------------------------------------------------------------------
-
-
-*------------------------------------------------------------------------------
-*                GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
-*------------------------------------------------------------------------------
-
-* For hydro with reservoir save the following, to be used in future runs by addon "import_results":
-
-$ifi %export_results%==yes  HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHOURSINST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
-$ifi %export_results%==yes  VHYRS_SL(Y,IA,S)  = VHYRS_S.l(Y,IA,S);
-$ifi %export_results%==yes  WATERVAL(Y,IA,S)  = QHYRSSEQ.m(Y,IA,S);
-
-* For runs with investments save the following, to be used in future runs by addon "import_results" (TBD):
-
-*------------------------------------------------------------------------------
-*                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
-*------------------------------------------------------------------------------
 
 
 *-------------------------------------------------------------------------------
