@@ -32,6 +32,9 @@ LOOP(YYY$(NOT(ORD(YYY) EQ 1) AND (YYY.VAL GT GDECOMEXOPOTSTART)),
 *Modification of GKFX with exogenous decommissioning
 GKFX(Y,IA,G)=GKFX(Y,IA,G)-GVDECOM_EXO_ACCUM(Y,IA,G);
 
+*Modification of GKFX values in case they are negative (sometimes there can be issues with the decimals)
+GKFX(Y,IA,G)$(GKFX(Y,IA,G) LT 0)=0;
+
 $label  DEFAULT_DECOMMISSIONING_EXOGENOUS_GENERATION
 
 

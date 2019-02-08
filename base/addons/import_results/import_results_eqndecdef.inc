@@ -8,36 +8,12 @@ $ifi %HYRSBB123%==price    $goto label_hydrobb123equations
 
 EQUATION    QWATERVOLINI(Y,AAA,S)   'Hydro energy (volume) in storage at the beginning of each season (MWh)' ;
 
-
-* The equation QWATERINI forces start-of-season values (MWh) for VHYRS_S.L to be equal to results from a previous run.
-* Note that VHYRS_S is declared as a positive variable, therefore it is elsewhere artificially assured that IHYRSBB123VOLINI is non-negative.
-
+* The equation QWATERVOLINI forces start-of-season values (MWh) for VHYRS_S.L to be equal to results from a previous run.
 QWATERVOLINI(IY411,IA,IS3)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)))..
   VHYRS_S(IY411,IA,IS3)
   =E=
   VHYRS_SL(IY411,IA,IS3)
 ;
-
-
-$ontext
-*TODO:
-
-
-QWATERVOLINI(IY411,IA,IS3)$IHYRSBB123G_Y(IY411,IA,IS3)..
- VHYRS_S(IY411,IA,IS3)
- =E=
- IHYRSBB123VOLINI(IY411,IA,IS3);
-
-* The equation QHYRSG tries to limit the HYRS generation to same level as in BB1/BB2.
-* The equation will not be infeasible since VIHYRSBB12DELTAMHW.UP is INF for the last element wrt. IHYRSBB12DELTASET.
-QHYRSG(IY411IA,IS3)$IHYRSBB123G_Y(IY411,IA,IS3)..
-      IHYRSBB123G_Y(IY411,IA,IS3)  !! Unit: (MWh)
-$ifi %HYRSBB123%==quantprice  + IHYRSBB123DELTAVOL(IY411,IA)   + SUM(IHYRSBB12DELTASET, VIHYRSBB12DELTAMHW(IY411,IA,IHYRSBB12DELTASET))
- =G=
-      SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS), SUM(T,IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGHYRS,IS3,T)))
-;
-
-$offtext
 
 $label label_hydrobb123equations
 
