@@ -331,8 +331,8 @@ PARAMETER TAX_DE(CCC,DEUSER)           "Consumers tax on electricity consumption
 PARAMETER TAX_DH(CCC,DHUSER)           "Consumers tax on heat consumption (Money/MWh)";
 $offtext
 
-PARAMETER ANNUITYCG(C,G)               "Transforms investment in technologies into annual payment (fraction)";
-PARAMETER ANNUITYCX(C)                 "Transforms investment in transmission lines into annual payment (fraction)";
+PARAMETER ANNUITYCG(CCC,GGG)           "Transforms investment in technologies into annual payment (fraction)";
+PARAMETER ANNUITYCX(CCC)               "Transforms investment in transmission lines into annual payment (fraction)";
 PARAMETER IYWEIGHT_ANNUITYCG(Y,Y,G)    "Binary parameter to establish whether the annuity of an investment of a technology made in y should be paid in the time period y (0,1)" ;
 PARAMETER IYWEIGHT_ANNUITYCX(Y,Y)      "Binary parameter to establish whether the annuity of an investment of a transmission line made in y should be paid in the time period y (0,1)";
 PARAMETER IINVYEARG_LEFT(C,Y,Y,G)      "Remaining years of the lifetime of G of an investment made in Y at the beggining of Y (years)";
@@ -626,7 +626,7 @@ $include "../../base/addons/_hooks/isetdecdef.inc"
 *----- Any parameters for addon to be placed here: -----------------------------
 *-------------------------------------------------------------------------------
 
-$include "../../base/addons/_hooks/pardeclare.inc"
+*$include "../../base/addons/_hooks/pardeclare.inc"
 
 $ifi %HEATTRANS%==yes $if     EXIST '../data/htrans.inc' $INCLUDE         '../data/htrans.inc';
 $ifi %HEATTRANS%==yes $if not EXIST '../data/htrans.inc' $INCLUDE '../../base/data/htrans.inc';
@@ -690,7 +690,7 @@ SET IY411(Y)                "IY411 The years in current Balbase4 model";
 SET IY410(Y)                "IY410 The years in the current Balbase4 model except the last year" ;
 SET IY401(Y)                "IY401 The years in the current Balbase4 model except the first year" ;
 SET IY411FIRST(Y)           "The first year in the current Balbase4 model";
-SET IY411PREVY(Y,Y)         "For any given element in IY411 (index 1): the previous element in Y (index 2)";
+SET IY411PREVY(Y,Y)         "For any given element in IY411 (index Y 1): the previous element in Y (index Y 2)";
 SET IYFIRST(Y)              "The first year in Y";
 IYFIRST(Y)$(ORD(Y) EQ 1) = YES;
 Alias (IY411, IY411ALIAS);
@@ -906,17 +906,15 @@ PARAMETER IHYINF_S(AAA,SSS)  "Water inflow to hydro reservoirs in areas in each 
 PARAMETER IGROWTHCAPCG(C,G)  "Limit on growth of technology dependent on years between optimisation (MW) TODO";
 *PARAMETER IGKNMAX(Y,AAA,G)   "Maximum capacity at new technologies (MW)"; !!TODO. Relevant?   Presently not implemented.
 
+SCALAR ILOOPBREAK     "Scalar used as binary number to break any loop function";
+
 *-------------------------------------------------------------------------------
 *----- Any internal parameters for addon to be placed here: --------------------
 *-------------------------------------------------------------------------------
 
 $INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
-$ifi not %SCENARIO3OR4%==yes $goto SCENARIO3OR4_END
-$INCLUDE '../../base/addons/_hooks/Ipardecdef_manipulation.inc';
-$label  SCENARIO3OR4_END
-$ifi not %SCENARIO4%==yes $goto SCENARIO4_END
-$INCLUDE '../../base/addons/_hooks/Ipardecdef_manipulation.inc';
-$label  SCENARIO4_END
+
+
 
 * These internal parameters and sets pertain to heat transmission.
 $if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.inc';
@@ -1976,7 +1974,7 @@ QGKNACCUMNET(IY411,IA,IGKFIND)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IG
  + VGKN(IY411,IA,IGKFIND)$IAGKNY(IY411,IA,IGKFIND)
 
 *Decomissioning of endogenous capacities
--SUM(Y$(YVALUE(Y)< YVALUE(IY411)),VGKN(Y,IA,IGKFIND)*DECOM_G(Y,IY411,IA,IGKFIND))
+-SUM(Y$(YVALUE(Y)< YVALUE(IY411)),VGKN(Y,IA,IGKFIND)*DECOM_G(Y,IY411,IGKFIND))
 
 $include "../../base/addons/_hooks/qgknaccumnet.inc";
 
@@ -2169,36 +2167,36 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
 $ifi %heatsto_loading_rest%==yes QHSTOLOADT
 $ifi %heatsto_loading_rest%==yes QHSTOLOADTS
 
-$ifi %GenInvest%==yes           QESTOLOADTLIM
-$ifi %GenInvest%==yes           QESTOLOADTLIMS
-$ifi %GenInvest%==yes           QHSTOLOADTLIM
-$ifi %GenInvest%==yes           QHSTOLOADTLIMS
+$ifi %TechInvest%==yes           QESTOLOADTLIM
+$ifi %TechInvest%==yes           QESTOLOADTLIMS
+$ifi %TechInvest%==yes           QHSTOLOADTLIM
+$ifi %TechInvest%==yes           QHSTOLOADTLIMS
 
-$ifi %GenInvest%==yes           QESTOVOLTLIM
-$ifi %GenInvest%==yes           QESTOVOLTLIMS
-$ifi %GenInvest%==yes           QHSTOVOLTLIM
-$ifi %GenInvest%==yes           QHSTOVOLTLIMS
+$ifi %TechInvest%==yes           QESTOVOLTLIM
+$ifi %TechInvest%==yes           QESTOVOLTLIMS
+$ifi %TechInvest%==yes           QHSTOVOLTLIM
+$ifi %TechInvest%==yes           QHSTOVOLTLIMS
 
-$ifi %GenInvest%==yes           QESTOVGETLIM
-$ifi %GenInvest%==yes           QESTOVGETLIMS
-$ifi %GenInvest%==yes           QHSTOVGHTLIM
-$ifi %GenInvest%==yes           QHSTOVGHTLIMS
+$ifi %TechInvest%==yes           QESTOVGETLIM
+$ifi %TechInvest%==yes           QESTOVGETLIMS
+$ifi %TechInvest%==yes           QHSTOVGHTLIM
+$ifi %TechInvest%==yes           QHSTOVGHTLIMS
 
 *--- Capacity constraints on generation (MW) -----------------------------------
 
-*$ifi %GenInvest%==yes          QGKNACCUMGROSS
-$ifi %GenInvest%==yes           QGKNACCUMNET
+*$ifi %TechInvest%==yes          QGKNACCUMGROSS
+$ifi %TechInvest%==yes           QGKNACCUMNET
 
-$ifi %GenInvest%==yes           QGKE_UP
-$ifi %GenInvest%==yes           QGKH_UP
-$ifi %GenInvest%==yes           QGKE_LO
-$ifi %GenInvest%==yes           QGKH_LO
+$ifi %TechInvest%==yes           QGKE_UP
+$ifi %TechInvest%==yes           QGKH_UP
+$ifi %TechInvest%==yes           QGKE_LO
+$ifi %TechInvest%==yes           QGKH_LO
 
-$ifi %GenInvest%==yes           QHYRRDISPATCH
-$ifi %GenInvest%==yes           QWNDDISPATCH
-$ifi %GenInvest%==yes           QSOLEDISPATCH
-$ifi %GenInvest%==yes           QSOLHDISPATCH
-$ifi %GenInvest%==yes           QWAVEDISPATCH
+$ifi %TechInvest%==yes           QHYRRDISPATCH
+$ifi %TechInvest%==yes           QWNDDISPATCH
+$ifi %TechInvest%==yes           QSOLEDISPATCH
+$ifi %TechInvest%==yes           QSOLHDISPATCH
+$ifi %TechInvest%==yes           QWAVEDISPATCH
 
 *--- Transmission capacity (listed in QXKE_UP) -----------------------------------------------------
 

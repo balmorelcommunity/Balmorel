@@ -28,3 +28,5 @@ PARAMETER TAX_DH(CCC,DHUSER) %semislash%
 $if     EXIST '../data/TAX_DH.inc' $INCLUDE         '../data/TAX_DH.inc';
 $if not EXIST '../data/TAX_DH.inc' $INCLUDE '../../base/data/TAX_DH.inc';
 
+PARAMETER TAX_GETOH(YYY,CCC) ;
+

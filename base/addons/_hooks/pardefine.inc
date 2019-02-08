@@ -26,10 +26,11 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_pardefine.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_pardefine.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_pardefine.inc";
-$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_pardefine.inc";  
+$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_pardefine.inc";
 $ifi %AREA_AGGREGATION%==yes      $include        "../../base/addons/area_aggregation/aa_pardefine.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_pardefine.inc";
 
+$ifi %SCENARIO3OR4%==YES $include        "../../base/addons/scenario3_4/scen34_pardefine.inc";      
 $label endoffile
 
 

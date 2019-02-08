@@ -95,8 +95,8 @@ $setglobal testbb1234
 
 *---- Generation investments options----
 
-* Permit investments in generation capacity:
-$setglobal GenInvest  yes
+* Permit investments in generation and storage capacity:
+$setglobal TechInvest  yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
@@ -213,8 +213,11 @@ $setglobal GRIDTARIFFS yes
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 3 and 4 in Flex4Res
-$SETGLOBAL SCENARIO3OR4 yes
+$SETGLOBAL SCENARIO3OR4  
 *!option yes
+
+*Scalar for setting threshold for congestion based grid tariff   /0 to 1/
+SCALAR GR_SCALAR_THRESHOLD /.9/ ;
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
 $SETGLOBAL SCENARIO4
@@ -303,15 +306,15 @@ $setglobal UnitCseg
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV yes
+$setglobal EV  yes
 *!option
 
 * Adds DUMB charging:
-$setglobal DUMB yes
+$setglobal DUMB
 *!option
 
 * Adds smart charging. Only smart charging, without V2G!:
-$setglobal SMART
+$setglobal SMART  yes
 *!option
 
 * Adds V2G charging:

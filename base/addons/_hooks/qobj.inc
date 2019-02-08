@@ -26,6 +26,8 @@ $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_q
 $ifi %TAXES%==yes  $include   "../../base/addons/taxes/tax_qobj.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_qobj.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_qobj.inc";
+$ifi %SCENARIO3OR4%==YES  $include        "../../base/addons/scenario3_4/scen34_qobj.inc";
+
 
 $ifi %vqdebug%==yes   $setglobal equation qobj
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";

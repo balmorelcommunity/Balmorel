@@ -22,5 +22,6 @@ $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_sim.in
 $ifi %VARIABLE_TRIMMING%==yes           $include       "../../base/addons/variable_trimming/bb4/vt_sim_agknytrim.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_sim.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_sim.inc";
+$ifi %SCENARIO3OR4%==YES  $include        "../../base/addons/scenario3_4/scen34_sim.inc";      
 
 $label endoffile
