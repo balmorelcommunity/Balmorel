@@ -62,14 +62,14 @@ $label  DUMB_END
 
 $ifi not %SMART%==yes $goto SMART_END
 EQUATIONS
-QEV_BEV_SOCBALANCE(Y,RRR,S,T)                               *'SOC balance of the BEV fleet, all equeations excluded for <2019 since EV demand is already included in general EL demand'
-QEV_BEV_CHARGEBALANCE(Y,RRR,S,T)                            *'G2V inflexible charging and V2G charging have to be smaller than maximum charger capacity for BEV'
-QEV_PHEV_SOCBALANCE(Y,RRR,S,T)                              *'SOC balance of the PHEV fleet'
-QEV_PHEV_CHARGEBALANCE(Y,RRR,S,T)                           *'G2V inflexible charging and V2G charging have to be smaller than maximum charger capacity for PHEV'
-QEV_BEV_NETCHARGETAX(Y,RRR,S,T)                             *'Netcharging of BEV for tax and tariff calculation'
-QEV_PHEV_NETCHARGETAX(Y,RRR,S,T)                            *'Netcharging of PHEV for tax and tariff calculation'
-QEV_BEV_NETDISCHARGETAX(Y,RRR,S,T)                          *'Netcharging of BEV for tax and tariff calculation'
-QEV_PHEV_NETDISCHARGETAX(Y,RRR,S,T)                         *'Netdischarging of PHEV for tax and tariff calculation'
+QEV_BEV_SOCBALANCE(Y,RRR,S,T)                               'SOC balance of the BEV fleet, all equeations excluded for <2019 since EV demand is already included in general EL demand'
+QEV_BEV_CHARGEBALANCE(Y,RRR,S,T)                            'G2V inflexible charging and V2G charging have to be smaller than maximum charger capacity for BEV'
+QEV_PHEV_SOCBALANCE(Y,RRR,S,T)                              'SOC balance of the PHEV fleet'
+QEV_PHEV_CHARGEBALANCE(Y,RRR,S,T)                           'G2V inflexible charging and V2G charging have to be smaller than maximum charger capacity for PHEV'
+QEV_BEV_NETCHARGETAX(Y,RRR,S,T)                             'Netcharging of BEV for tax and tariff calculation'
+QEV_PHEV_NETCHARGETAX(Y,RRR,S,T)                            'Netcharging of PHEV for tax and tariff calculation'
+QEV_BEV_NETDISCHARGETAX(Y,RRR,S,T)                          'Netcharging of BEV for tax and tariff calculation'
+QEV_PHEV_NETDISCHARGETAX(Y,RRR,S,T)                         'Netdischarging of PHEV for tax and tariff calculation'
 
 
 ;
