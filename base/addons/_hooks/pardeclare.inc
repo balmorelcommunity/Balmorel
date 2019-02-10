@@ -25,5 +25,7 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_pardeclare.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_pardeclare.inc";
 $ifi %VARIABLE_TRIMMING%==yes      $include        "../../base/addons/variable_trimming/bb4/vt_pardeclare.inc";
+$ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_pardeclare.inc";
+
 
 $label endoffile

@@ -14,6 +14,8 @@ $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_i
 $ifi %TAXES%==yes  $include   "../../base/addons/taxes/tax_ipardecdef.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_ipardecdef.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_ipardecdef.inc";
+$ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_ipardecdef.inc";
+
 
 $ifi %SCENARIO3OR4%==YES  $include        "../../base/addons/scenario3_4/scen34_ipardecdef.inc";
 $label endoffile

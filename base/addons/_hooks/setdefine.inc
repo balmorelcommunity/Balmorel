@@ -35,4 +35,6 @@ $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_s
 
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_setdefine.inc";
 
+$ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_setdefine.inc";
+
 $label endoffile

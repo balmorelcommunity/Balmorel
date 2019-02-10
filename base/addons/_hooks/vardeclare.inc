@@ -28,8 +28,10 @@ $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_v
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_vardeclare.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_vardeclare.inc";
 
+$ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_vardeclare.inc";
+$ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_vardeclare.inc";
 
 $ifi %vqdebug%==yes       $include   "../../base/addons/vqdebug/bb4/vqdebug_declare.inc";
-$ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_vardeclare.inc";
+
 
 $label endoffile

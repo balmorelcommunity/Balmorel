@@ -20,7 +20,9 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_isetdecdef.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_isetdecdef.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_isetdecdef.inc";
-$ifi %VARIABLE_TRIMMING%==yes $include "../../base/addons/variable_trimming/bb4/vt_isetdecdef.inc";  
+$ifi %VARIABLE_TRIMMING%==yes $include "../../base/addons/variable_trimming/bb4/vt_isetdecdef.inc";
+$ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_isetdecdef.inc";
+
 
 
 $label endoffile

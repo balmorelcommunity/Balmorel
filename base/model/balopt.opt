@@ -184,6 +184,9 @@ $Setglobal HYDROGEN
 * Use stepwise linear fuel prices
 $Setglobal STEPWISEPRICE
 
+* Use stepwise linear potentials for installed capacity (currently for wind power)
+$Setglobal STEPWISEKPOT
+
 * Set a common maximum for fuels.
 $Setglobal LIMITSFORFUELS  yes
 *!option yes
