@@ -313,7 +313,7 @@ $setglobal EV  yes
 *!option
 
 * Adds DUMB charging:
-$setglobal DUMB yes
+$setglobal DUMB 
 *!option
 
 * Adds smart charging. Only smart charging, without V2G!:
@@ -322,6 +322,10 @@ $setglobal SMART
 
 * Adds V2G charging:
 $setglobal V2G
+*!option
+
+* Adds V2G charging:
+$setglobal STEPCHARGSCHEME yes
 *!option
 
 * Adds cycle degradation charging:
