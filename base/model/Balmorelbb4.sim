@@ -73,11 +73,13 @@ LOOP(C,
             IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)= 1;
               IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
             );
-            IF ((IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GE IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) ,  !!Assumption: if the reamining years are more ore equal than half of IWEIGHTY, then the technology is in in this snapshot
+            IF ((IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GE IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) ,
+*Assumption: if the reamining years are more ore equal than half of IWEIGHTY, then the technology is in in this snapshot
               IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)= 1;
               ILOOPBREAK=1;
             );
-            IF ((IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LT IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) , !!Assumption: if the reamining years are less than half of IWEIGHTY, then the technology is out in this snapshot
+            IF ((IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LT IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) ,
+*Assumption: if the reamining years are less than half of IWEIGHTY, then the technology is out in this snapshot
               IYWEIGHT_ANNUITYCG(IYALIAS,Y,IGKFIND)= 0;
               ILOOPBREAK=1;
             );
@@ -159,12 +161,16 @@ IAGKN(IA,IGKKNOWN) = NO;
 
 * Fuel limitations: No new capacity nor new generation if zero fuel potential.
 LOOP((FFF,G)$IGF(G,FFF),
-  LOOP(C$FKPOT(C,FFF), !! Default convention on FKPOT: 0 implies no restriction, 'EPS' implies zero MW.
-    LOOP(IA$ICA(C,IA), IF((FKPOT(C,FFF) EQ 0), IAGKN(IA,G) = NO;); )); !! Because it is EPS
+  LOOP(C$FKPOT(C,FFF),
+* Default convention on FKPOT: 0 implies no restriction, 'EPS' implies zero MW.
+    LOOP(IA$ICA(C,IA), IF((FKPOT(C,FFF) EQ 0), IAGKN(IA,G) = NO;); ));
+* Because it is EPS
   LOOP(IR$FKPOT(IR,FFF),
-    LOOP(IA$RRRAAA(IR,IA), IF((FKPOT(IR,FFF) EQ 0), IAGKN(IA,G) = NO;); )); !! Because it is EPS
+    LOOP(IA$RRRAAA(IR,IA), IF((FKPOT(IR,FFF) EQ 0), IAGKN(IA,G) = NO;); ));
+* Because it is EPS
   LOOP(IA$FKPOT(IA,FFF),
-    IF((FKPOT(IA,FFF) EQ 0), IAGKN(IA,G) = NO;); ); !! Because it is EPS
+    IF((FKPOT(IA,FFF) EQ 0), IAGKN(IA,G) = NO;); );
+*!! Because it is EPS
 );
 
 IAGKNY(Y,IA,G) = IAGKN(IA,G);
@@ -482,8 +488,10 @@ OPTION Savepoint=1;
 $ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
 
 
-$ifi not %SOLVEMIP%==yes SOLVE BALBASE4 USING LP  MINIMIZING VOBJ;  !! =====================
-$ifi  %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;  !! =====================
+$ifi not %SOLVEMIP%==yes SOLVE BALBASE4 USING LP  MINIMIZING VOBJ;
+*=====================
+$ifi  %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;
+*=====================
 
 $include "../../base/addons/_hooks/solveend.inc"
 *-------------------------------------------------------------------------------
@@ -551,6 +559,7 @@ $ifi %printfiles%==yes $if errorfree $include "../../base/output/printout/printi
 $ifi %TechInvest%==yes         LOOP(Y$(YVALUE(Y) LE YVALUE(IYALIAS)),VGKN.FX(Y,IA,G) = VGKN.L(Y,IA,G););
 $ifi %TechInvest%==yes         VGKNACCUMNET.FX(IY411FIRST,IA,G)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IAGKNY(Y,IA,G)) = VGKNACCUMNET.L(IY411FIRST,IA,G);
 *$ifi %TechInvest%==yes        VGKNACCUMGROSS.FX(IY411FIRST,IA,G)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IAGKNY(Y,IA,G)) = VGKNACCUMGROSS.L(IY411FIRST,IA,G);
+$ifi %TransInvest%==yes        VXKN.FX(IY411FIRST,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXKN(Y,IRE,IRI))= VXKN.L(IY411FIRST,IRE,IRI);
 $ifi %TransInvest%==yes        VXKNACCUMNET.FX(IY411FIRST,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXKN(Y,IRE,IRI))= VXKNACCUMNET.L(IY411FIRST,IRE,IRI);
 
 $include "../../base/addons/_hooks/varassign.inc"
@@ -563,7 +572,9 @@ $include "../../base/addons/_hooks/varassign.inc"
 *------------------------------------------------------------------------------
 *                    END OF SIMULATION FOR CURRENT BB4 MODEL
 *------------------------------------------------------------------------------
-); !! LOOP(IYALIAS,...)
+);
+*!! LOOP(IYALIAS,...)
+
 *------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 * END: LOOP OVER ALL THE FIRSTYEARS IN ALL MODELS BALBASE4
