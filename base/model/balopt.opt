@@ -24,9 +24,6 @@ $setglobal vqdebug
 * hans --------
 * some testing f anotation (general setting for annotation below)
 
-* Some special equaiotns may be omitted from model for testing
-$setglobal includeEQU
-*!option yes
 
 
 

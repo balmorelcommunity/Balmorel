@@ -1,18 +1,18 @@
 * Subset of year and Season
+$ontext
+Note: The checks of correct annotation is taken as no errors generated from running checkanno.gms
+
+Status 20190213:
+ - Only time annotation by Season is tested (files Annotating_Time_BB4_Declaration.gms and Annotating_Time_BB4.gms)
+ - Few options/addons are active, GenInvest and a few other are (vqdebug is not)
+ - Some equations are excluded in the current model, e.g. QKMINFA, check MODEL BALBASE4
+ - With this: The model as found currently in BalmorelBB4.inc is correctly annotated by Time.
+$offtext
+
+
 $oninline
 $oneolcom
 
-$ontext
-set YYY "years "/2012*2050/;
-set SSS "Seaons" /S01*S52/;
-set iy411(YYY) "assigned subet of y";
-set S(SSS) "Seaons" /S01,S02/;
-
-iy411('2035')=yes;
-iy411('2025')=yes;
-
-*$include ../../base/AnnotationPlotting/Annotating_Time_BB4_Declaration.gms
-$offtext
 $offorder
 
 *SET IYS_sub(YYY,SSS) "Mapping (IY411,SSS)";
@@ -26,7 +26,6 @@ blockAssignment(blocks,IS3,IY411)$(IYS_sub(IY411,IS3)) = yes;
 
 *blockAssignmentHelper(IS3,blocks,timeHelper,YYY)$(ord(blocks)=(ord(YYY)*ord(IS3))) = yes;  Hans replaced by next
 blockAssignmentHelper(IS3,blocks,timeHelper,Y)$(ord(blocks)=(ord(Y)*ord(IS3))) = yes;
-
 
 
 Option blockAssignmentTime < blockAssignmentHelper     ;
@@ -85,13 +84,14 @@ QGGETOH.stage(IAGK_HASORPOT(IY411,IA,IGETOH),IS3,T) =annot_blockStage(IS3,IY411)
 QHYRSSEQ.stage(IY411,IA,IS3)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS))) = annot_blockStage(IS3,IY411);
 
 *  "Hydropower reservoir - minimum level (MWh)"
-QHYRSMINVOL.stage(IY411,IA,IS3)$(HYRSDATA(IA,"HYRSMINVOL",IS3) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1)) =  annot_blockStage(IS3,IY411);
+*QHYRSMINVOL.stage(IY411,IA,IS3)$(HYRSDATA(IA,"HYRSMINVOL",IS3) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1)) = annot_blockStage(IS3,IY411); Hans replaced by next. But corect?
+QHYRSMINVOL.stage(IY411,IA,IS3)$(HYRSDATA(IA,"HYRSMINVOL",IS3) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1)) = 1;
 
 *  "Hydropower reservoir - maximum level (MWh)"
-QHYRSMAXVOL.stage(IY411,IA,IS3)$(HYRSDATA(IA,"HYRSMAXVOL",IS3) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1)) = annot_blockStage(IS3,IY411);
+QHYRSMAXVOL.stage(IY411,IA,IS3)$(HYRSDATA(IA,"HYRSMAXVOL",IS3) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1)) = 1;
 
 * "Regulated and unregulated hydropower production lower than capacity (MW)" !! NB:exclude hydro-run-of-river   Hans TODO
-QHYMAXG.stage(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS))= annot_blockStage(IS3,IY411);
+QHYMAXG.stage(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) = annot_blockStage(IS3,IY411);
 
 * Intra-seasonal electricty storage dynamic equation (MWh)
 * OBS CHANGED TO NON-LINKING COMPARED TO BB1-BB2
@@ -183,45 +183,43 @@ QGMAXCF.stage(IY411,C,FFF)$IGMAXF(IY411,C,FFF)  = annot_blockLast  ;
 *QGKNACCUMNET.stage(IY411,IA,IGKFIND)$IAGKN(IA,IGKFIND)  = card(BlockSelected) + 2;
 
 
-$ontext
+
 * OBS NO SEASON DEPENDENCE   AND NOT ANNOTATED BEFORE
-QKEFUELC.stage(IY411,C,FFF)$FKPOT(C,FFF) =  annot_blockStage(IS3,IY411);
-QKEFUELR.stage(IY411,IR,FFF)$FKPOT(IR,FFF) = annot_blockStage(IS3,IY411);
-QKEFUELA.stage(IY411,IA,FFF)$FKPOT(IA,FFF) =  annot_blockStage(IS3,IY411);
-QGMINFUELC.stage(IY411,C,FFF)$FGEMIN(C,FFF) =  annot_blockStage(IS3,IY411);
-QGMAXFUELC.stage(IY411,C,FFF)$FGEMAX(C,FFF) =  annot_blockStage(IS3,IY411);
-QGMINFUELR.stage(IY411,IR,FFF)$FGEMIN(IR,FFF) =  annot_blockStage(IS3,IY411);
-QGMAXFUELR.stage(IY411,IR,FFF)$FGEMAX(IR,FFF) =  annot_blockStage(IS3,IY411);
-QGMINFUELA.stage(IY411,IA,FFF)$FGEMIN(IA,FFF) = annot_blockStage(IS3,IY411);
-QGMAXFUELA.stage(IY411,IA,FFF)$FGEMAX(IA,FFF) =  annot_blockStage(IS3,IY411);
-QGMINCF.stage(IY411,C,FFF)$IGMINF(IY411,C,FFF) =  annot_blockStage(IS3,IY411);
-QGMAXCF.stage(IY411,C,FFF)$IGMAXF(IY411,C,FFF) =  annot_blockStage(IS3,IY411);
-QGEQCF.stage(IY411,C,FFF)$IGEQF(IY411,C,FFF) =  annot_blockStage(IS3,IY411);
-QGMINRF.stage(IY411,IR,FFF)$IGMINF(IY411,IR,FFF) =  annot_blockStage(IS3,IY411);
-QGMAXRF.stage(IY411,IR,FFF)$IGMAXF(IY411,IR,FFF) =  annot_blockStage(IS3,IY411);
-$offtext
-*QGEQRF.stage(IY411,IR,FFF)$IGEQF(IY411,IR,FFF) =  annot_blockStage(IS3,IY411);   Hans modified to next:
+* Hans: changed from previously 'annot_blockStage(IS3,IY411)' to the following
+QKEFUELC.stage(IY411,C,FFF)$FKPOT(C,FFF) =  annot_blocklast;
+QKEFUELR.stage(IY411,IR,FFF)$FKPOT(IR,FFF) = annot_blockLast;
+QKEFUELA.stage(IY411,IA,FFF)$FKPOT(IA,FFF) =  annot_blockLast;
+QGMINFUELC.stage(IY411,C,FFF)$FGEMIN(C,FFF) =  annot_blockLast;
+QGMAXFUELC.stage(IY411,C,FFF)$FGEMAX(C,FFF) =  annot_blockLast;
+QGMINFUELR.stage(IY411,IR,FFF)$FGEMIN(IR,FFF) =  annot_blockLast;
+QGMAXFUELR.stage(IY411,IR,FFF)$FGEMAX(IR,FFF) =  annot_blockLast;
+QGMINFUELA.stage(IY411,IA,FFF)$FGEMIN(IA,FFF) = annot_blockLast;
+QGMAXFUELA.stage(IY411,IA,FFF)$FGEMAX(IA,FFF) =  annot_blockLast;
+QGMINCF.stage(IY411,C,FFF)$IGMINF(IY411,C,FFF) =  annot_blockLast;
+QGMAXCF.stage(IY411,C,FFF)$IGMAXF(IY411,C,FFF) =  annot_blockLast;
+QGEQCF.stage(IY411,C,FFF)$IGEQF(IY411,C,FFF) =  annot_blockLast;
+QGMINRF.stage(IY411,IR,FFF)$IGMINF(IY411,IR,FFF) =  annot_blockLast;
+QGMAXRF.stage(IY411,IR,FFF)$IGMAXF(IY411,IR,FFF) =  annot_blockLast;
 QGEQRF.stage(IY411,IR,FFF)$IGEQF(IY411,IR,FFF) =  annot_blocklast;
-$ontext
-QGMINAF.stage(IY411,IA,FFF)$IGMINF(IY411,IA,FFF) = annot_blockStage(IS3,IY411);
-QGMAXAF.stage(IY411,IA,FFF)$IGMAXF(IY411,IA,FFF) =  annot_blockStage(IS3,IY411);
-QGEQAF.stage(IY411,IA,FFF)$IGEQF(IY411,IA,FFF) =  annot_blockStage(IS3,IY411);
-QKMINFC.stage(IY411,C,FFF)$FKMIN(IY411,C,FFF) =  annot_blockStage(IS3,IY411);
-QKMAXFC.stage(IY411,C,FFF)$FKMAX(IY411,C,FFF) =  annot_blockStage(IS3,IY411);
-QKEQFC.stage(IY411,C,FFF)$FKEQ(IY411,C,FFF) =  annot_blockStage(IS3,IY411);
-QKMINFR.stage(IY411,IR,FFF)$FKMIN(IY411,IR,FFF) =  annot_blockStage(IS3,IY411);
-QKMAXFR.stage(IY411,IR,FFF)$FKMAX(IY411,IR,FFF) =  annot_blockStage(IS3,IY411);
-QKEQFR.stage(IY411,IR,FFF)$FKEQ(IY411,IR,FFF) =  annot_blockStage(IS3,IY411);
-QKMINFNA.stage(IY411,FFF)$FKMINNA(IY411,FFF) =  annot_blockStage(IS3,IY411);
-QKMAXFNA.stage(IY411,FFF)$FKMAXNA(IY411,FFF) =  annot_blockStage(IS3,IY411);
-QKEQFNA.stage(IY411,FFF)$FKEQNA(IY411,FFF) =  annot_blockStage(IS3,IY411);
-QLIMCO2.stage(IY411,C)$(M_POL(IY411,'LIM_CO2',C) AND (M_POL(IY411,'LIM_CO2',C) LT INF)) =   annot_blockStage(IS3,IY411);
-QLIMSO2.stage(IY411,C)$(M_POL(IY411,"LIM_SO2",C) AND (M_POL(IY411,"LIM_SO2",C) LT INF)) =   annot_blockStage(IS3,IY411);
-QLIMNOX.stage(IY411,C)$(M_POL(IY411,'LIM_NOX',C) AND (M_POL(IY411,'LIM_NOX',C) LT INF)) =   annot_blockStage(IS3,IY411);
-QLIMCO2NA.stage(IY411)$(M_POLNA(IY411,'LIM_CO2') AND (M_POLNA(IY411,'LIM_CO2') LT INF))  =  annot_blockStage(IS3,IY411);
-*QMAXINVESTCF.stage(IY411,C,FFF)$(FMAXINVEST(C,FFF) AND (FMAXINVEST(C,FFF) LT INF))  =  sum(blockAssignmentTime(BlockSelected,IS3,IY411),ord(BlockSelected)) + 1;
-*QMAXINVESTNAF.stage(IY411,FFF)$(FMAXINVESTNA(IY411,FFF) AND (FMAXINVESTNA(IY411,FFF) LT INF)) =  sum(blockAssignmentTime(BlockSelected,IS3,IY411),ord(BlockSelected)) + 1;
-$offtext
+QGMINAF.stage(IY411,IA,FFF)$IGMINF(IY411,IA,FFF) = annot_blockLast;
+QGMAXAF.stage(IY411,IA,FFF)$IGMAXF(IY411,IA,FFF) =  annot_blockLast;
+QGEQAF.stage(IY411,IA,FFF)$IGEQF(IY411,IA,FFF) =  annot_blockLast;
+QKMINFC.stage(IY411,C,FFF)$FKMIN(IY411,C,FFF) =  annot_blockLast;
+QKMAXFC.stage(IY411,C,FFF)$FKMAX(IY411,C,FFF) =  annot_blockLast;
+QKEQFC.stage(IY411,C,FFF)$FKEQ(IY411,C,FFF) =  annot_blockLast;
+QKMINFR.stage(IY411,IR,FFF)$FKMIN(IY411,IR,FFF) =  annot_blockLast;
+QKMAXFR.stage(IY411,IR,FFF)$FKMAX(IY411,IR,FFF) =  annot_blockLast;
+QKEQFR.stage(IY411,IR,FFF)$FKEQ(IY411,IR,FFF) =  annot_blockLast;
+QKMINFNA.stage(IY411,FFF)$FKMINNA(IY411,FFF) =  annot_blockLast;
+QKMAXFNA.stage(IY411,FFF)$FKMAXNA(IY411,FFF) =  annot_blockLast;
+QKEQFNA.stage(IY411,FFF)$FKEQNA(IY411,FFF) =  annot_blockLast;
+QLIMCO2.stage(IY411,C)$(M_POL(IY411,'LIM_CO2',C) AND (M_POL(IY411,'LIM_CO2',C) LT INF)) =   annot_blockLast;
+QLIMSO2.stage(IY411,C)$(M_POL(IY411,"LIM_SO2",C) AND (M_POL(IY411,"LIM_SO2",C) LT INF)) =   annot_blockLast;
+QLIMNOX.stage(IY411,C)$(M_POL(IY411,'LIM_NOX',C) AND (M_POL(IY411,'LIM_NOX',C) LT INF)) =   annot_blockLast;
+QLIMCO2NA.stage(IY411)$(M_POLNA(IY411,'LIM_CO2') AND (M_POLNA(IY411,'LIM_CO2') LT INF))  =  annot_blockLast;
+QMAXINVESTCF.stage(IY411,C,FFF)$(FMAXINVEST(C,FFF) AND (FMAXINVEST(C,FFF) LT INF))  =  annot_blockLast;
+QMAXINVESTNAF.stage(IY411,FFF)$(FMAXINVESTNA(IY411,FFF) AND (FMAXINVESTNA(IY411,FFF) LT INF)) =  annot_blockLast;
+
 ****************************************************************************************************
 ****************** Variables
 ****************************************************************************************************
@@ -278,17 +276,7 @@ VESTOVOLTS.stage(IY411,IA,IGESTOS,IS3,T)$IAGK_HASORPOT(IY411,IA,IGESTOS)   =  an
 VHSTOVOLT.stage(IY411,IA,IGHSTO,IS3,T)$IAGK_HASORPOT(IY411,IA,IGHSTO)   =  annot_blockStage(IS3,IY411);
 VHSTOVOLTS.stage(IY411,IA,IGHSTOS,IS3,T)$IAGK_HASORPOT(IY411,IA,IGHSTOS)  =  annot_blockStage(IS3,IY411);
 
-*VESTOVOLT.stage(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO) and ord(T)<card(T)) =  annot_blockStage(IS3,IY411);
-*VESTOVOLTS.stage(IY411,IA,IGESTOS,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) and ord(T)<card(T)) =  annot_blockStage(IS3,IY411);
-*VESTOVOLT.stage(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO) and ord(T)=card(T)) =  annot_blockLast;
-*VESTOVOLTS.stage(IY411,IA,IGESTOS,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) and ord(T)=card(T)) =  annot_blockLast;
-
-*Intra-seasonal heat storage dynamic equation (MWh)
-*VHSTOVOLT.stage(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO)    and ord(T)<card(T)) =  annot_blockStage(IS3,IY411);
-*VHSTOVOLTS.stage(IY411,IA,IGHSTOS,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS)  and ord(T)<card(T)) =  annot_blockStage(IS3,IY411);
-*VHSTOVOLT.stage(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO)    and ord(T)=card(T)) = annot_blockLast;
-*VHSTOVOLTS.stage(IY411,IA,IGHSTOS,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS)  and ord(T)=card(T)) = annot_blockLast;
-
+*  Feasibility variables VQxxx are not handled
 *  'Feasibility in intra-seasonal electricity storage equation QESTOVOLT (MWh)';
 *VQESTOVOLT.stage(IY411,IA,IS3,T,IPLUSMINUS)  =  annot_blockStage(IS3,IY411);
 * 'Feasibility in inter-seasonal electricity storage equation QESTOVOLTS (MWh)';

@@ -2127,9 +2127,9 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
 *--- Hydro reservior restrictions ----------------------------------------------
 
                                 QHYRSSEQ
-$ifi %includeEQU%==yes                               QHYRSMINVOL
-$ifi %includeEQU%==yes                                 QHYRSMAXVOL
-$ifi %includeEQU%==yes                                 QHYMAXG
+                                QHYRSMINVOL
+                                QHYRSMAXVOL
+                                QHYMAXG
 
 *--- Storage restrictions ------------------------------------------------------
 *$ontext
@@ -2217,7 +2217,7 @@ $ifi %TransInvest%==yes         QXK_UP
 *--- Fuel consumption restrictions ---------------------------------------------
                                 QGMINCF
                                 QGMAXCF
-$ifi %includeEQU%==yes                                 QGEQCF
+                                QGEQCF
                                 QGMINRF
                                 QGMAXRF
                                        QGEQRF
