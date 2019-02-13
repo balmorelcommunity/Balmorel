@@ -19,27 +19,30 @@ $offorder
 IYS_sub(IY411,IS3) =  IYS(IY411,IS3);
 
 BlockSelected(blocks) = no;
-blockAssignment(blocks,IS3,YYY) =no;
+*blockAssignment(blocks,IS3,YYY) =no;  Hans replaced by next
+blockAssignment(blocks,IS3,Y) =no;
 blockAssignment(blocks,IS3,IY411)$(IYS_sub(IY411,IS3)) = yes;
 
-display blockAssignment;
 
-blockAssignmentHelper(IS3,blocks,timeHelper,YYY)$(ord(blocks)=(ord(YYY)*ord(IS3))) = yes;
+*blockAssignmentHelper(IS3,blocks,timeHelper,YYY)$(ord(blocks)=(ord(YYY)*ord(IS3))) = yes;  Hans replaced by next
+blockAssignmentHelper(IS3,blocks,timeHelper,Y)$(ord(blocks)=(ord(Y)*ord(IS3))) = yes;
 
-display blockAssignmentHelper;
+
 
 Option blockAssignmentTime < blockAssignmentHelper     ;
-display blockAssignmentTime;
 
-BlockSelected(blocks) = sum((IS3,YYY)$(IYS_sub(YYY,IS3)),blockAssignmentTime(blocks,IS3,YYY));
-display BlockSelected;
+
+*BlockSelected(blocks) = sum((IS3,YYY)$(IYS_sub(YYY,IS3)),blockAssignmentTime(blocks,IS3,YYY));  Hans replaced by next
+BlockSelected(blocks) = sum((IS3,Y)$(IYS_sub(Y,IS3)),blockAssignmentTime(blocks,IS3,Y));
+
 
 annot_blockLast = card(BlockSelected) + 2;
-display   annot_blockLast;
+
 
 annot_blockStage(IS3,IY411) = sum(blockAssignmentTime(BlockSelected,IS3,IY411), ord(BlockSelected)) + 1;
 
-display annot_blockStage;
+display "Writing from %system%.%name%: some basic Balmorial input: ", Y, IY411 ,S, IS3, T ;
+display "Basic from the Annotation_Time_BB4.gms file:", IYS, IYS_sub, blockAssignment, blockAssignmentHelper, blockAssignmentTime, BlockSelected, annot_blockLast, annot_blockStage;
 
 $onorder
 
@@ -196,7 +199,10 @@ QGMAXCF.stage(IY411,C,FFF)$IGMAXF(IY411,C,FFF) =  annot_blockStage(IS3,IY411);
 QGEQCF.stage(IY411,C,FFF)$IGEQF(IY411,C,FFF) =  annot_blockStage(IS3,IY411);
 QGMINRF.stage(IY411,IR,FFF)$IGMINF(IY411,IR,FFF) =  annot_blockStage(IS3,IY411);
 QGMAXRF.stage(IY411,IR,FFF)$IGMAXF(IY411,IR,FFF) =  annot_blockStage(IS3,IY411);
-QGEQRF.stage(IY411,IR,FFF)$IGEQF(IY411,IR,FFF) =  annot_blockStage(IS3,IY411);
+$offtext
+*QGEQRF.stage(IY411,IR,FFF)$IGEQF(IY411,IR,FFF) =  annot_blockStage(IS3,IY411);   Hans modified to next:
+QGEQRF.stage(IY411,IR,FFF)$IGEQF(IY411,IR,FFF) =  annot_blocklast;
+$ontext
 QGMINAF.stage(IY411,IA,FFF)$IGMINF(IY411,IA,FFF) = annot_blockStage(IS3,IY411);
 QGMAXAF.stage(IY411,IA,FFF)$IGMAXF(IY411,IA,FFF) =  annot_blockStage(IS3,IY411);
 QGEQAF.stage(IY411,IA,FFF)$IGEQF(IY411,IA,FFF) =  annot_blockStage(IS3,IY411);
