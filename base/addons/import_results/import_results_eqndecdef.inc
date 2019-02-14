@@ -9,10 +9,10 @@ $ifi %HYRSBB123%==price    $goto label_hydrobb123equations
 EQUATION    QWATERVOLINI(Y,AAA,S)   'Hydro energy (volume) in storage at the beginning of each season (MWh)' ;
 
 * The equation QWATERVOLINI forces start-of-season values (MWh) for VHYRS_S.L to be equal to results from a previous run.
-QWATERVOLINI(IY411,IA,IS3)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)))..
-  VHYRS_S(IY411,IA,IS3)
+QWATERVOLINI(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)))..
+  VHYRS_S(IY411,IA,S)
   =E=
-  VHYRS_SL(IY411,IA,IS3)
+  VHYRS_SL(IY411,IA,S)
 ;
 
 $label label_hydrobb123equations

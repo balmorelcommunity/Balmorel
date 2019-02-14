@@ -813,7 +813,8 @@ PARAMETER IWEIGHSUMS          "Weight of the time of each season in S";
 PARAMETER IWEIGHSUMT          "Weight of the time of each time period in T";
 
 * The (arbitrary) units used in the input are converted to days and hours.
-PARAMETER IHOURSINST(SSS,TTT)   "Length of time segment (hours)";
+PARAMETER IHOURSINST(SSS,TTT)   "Length of time segment to convert the timesteps used into annual values (hours)";
+PARAMETER IHYRST(SSS,TTT)       "Length of time segment to convert the timesteps used to represent correctly the change in reservoir level of equation QHYRSSEQ (hours)";
 
 * Annual amounts as expressed in the units of the weights and demands used
 * in input in the file var.inc:
@@ -874,7 +875,7 @@ PARAMETER IGROWTHCAPCG(C,G)  "Limit on growth of technology dependent on years b
 * The following code ensures that with time aggregation the energy content (MWh) in time series is conserved, but it does no ensure that the power (MW) is conserved.
 * To get an aggregation that preserves both energy,  power and possibly more, use an addon or auxil.
 
-$ifi not %usedtimesteps_timseries_scaling%==yes $goto usedtimesteps_timseries_scaling_end
+$ifi not %timeseries_scaling%==usedtimesteps_timseries_scaling $goto usedtimesteps_timseries_scaling_end
 
 *Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries
 IWEIGHSUMS = SUM(S, WEIGHT_S(S));
@@ -896,7 +897,7 @@ IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / 
 
 $label  usedtimesteps_timseries_scaling_end
 
-$ifi not %full_timeseries_scaling%==yes $goto full_timeseries_scaling_end
+$ifi not %timeseries_scaling%==full_timeseries_scaling $goto full_timeseries_scaling_end
 
 *Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries
 IWEIGHSUMS = SUM(SSS, WEIGHT_S(SSS));
@@ -927,6 +928,9 @@ $label  full_timeseries_scaling_end
 
 *Timeseries values are not scaled and match exactly the timeseries (it requires changin quite some code) !!TO DO
 
+*Calculation of IHYRST
+$ifi %HYRS_AGG%==hydro_week_agg    IHYRST(S,T)=WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS));
+$ifi %HYRS_AGG%==hydro_year_agg    IHYRST(S,T)=IHOURSINST(S,T);
 
 
 *-------------------------------------------------------------------------------
@@ -1441,7 +1445,7 @@ QGGETOH(IAGK_HASORPOT(IY411,IA,IGETOH),IS3,T) ..
 
 * TODO eventually: linking between years in BB4
 * "Hydropower with reservoir seasonal energy constraint (MWh)"
-QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)))..
+QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) AND IS3(S))..
       VHYRS_S(IY411,IA,S)
        +  IHYINF_S(IA,S) * (
       SUM(IGHYRS,
@@ -1450,8 +1454,8 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IG
        +VGKNACCUMNET(IY411,IA,IGHYRS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRS))
         )
          )
-        -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHOURSINST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))
-
+*        -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHOURSINST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))
+         -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHYRST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))
 
       =G=  VHYRS_S(IY411,IA,S++1)
 
@@ -1459,7 +1463,7 @@ $include "../../base/addons/_hooks/qhyrsseq.inc"
 ;
 
 * "Hydropower reservoir - minimum level (MWh)"
-QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1))..
+QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND IS3(S))..
      VHYRS_S(IY411,IA,S)  =G=  HYRSDATA(IA,"HYRSMINVOL",S)*
        SUM(IGHYRS,   HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
@@ -1470,7 +1474,7 @@ $include "../../base/addons/_hooks/qhyrsminvol.inc"
 ;
 
 * "Hydropower reservoir - maximum level (MWh)"
-QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1))..
+QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND IS3(S))..
        HYRSDATA(IA,"HYRSMAXVOL",S) *
        SUM(IGHYRS,  HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
@@ -1508,7 +1512,7 @@ $include "../../base/addons/_hooks/qestovolt.inc"
 ;
 
 * "Inter-seasonal electricty storage dynamic equation (MWh)"
-QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS))..
+QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
     VESTOVOLTS(IY411,IA,IGESTOS,S,T)
   + CHRONOHOUR(S,T)*
   (VESTOLOADTS(IY411,IA,IGESTOS,S,T)
@@ -1531,7 +1535,7 @@ $include "../../base/addons/_hooks/qhstovolt.inc"
 ;
 
 *  "Inter-seasonal heat storage dynamic equation (MWh)"
-QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS))..
+QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
     VHSTOVOLTS(IY411,IA,IGHSTOS,S,T)
   + CHRONOHOUR(S,T)*
   (VHSTOLOADTS(IY411,IA,IGHSTOS,S,T)
@@ -1555,7 +1559,7 @@ QHSTOLOADT(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO))..
 ;
 
 * "Inter-seasonal Heat storage loading less than heat production from allowed technologies (MW)"
-QHSTOLOADTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS))..
+QHSTOLOADTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
    SUM(IGH$(IAGK_HASORPOT(IY411,IA,IGH) AND ILINKSTO(IGHSTOS,IGH)), VGH_T(IY411,IA,IGH,S,T))
          =G=
    VHSTOLOADTS(IY411,IA,IGHSTOS,S,T)
@@ -1578,7 +1582,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTO)$IGDECOMEXOPOT(IY411,IA,IG
 
 
 * "Upper limit to heat storage loading (MW)"
-QHSTOLOADTLIMS(IY411,IA,IGHSTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)) OR IGDECOMEXOPOT(IY411,IA,IGHSTOS)) AND IAGK_HASORPOT(IY411,IA,IGHSTOS))..
+QHSTOLOADTLIMS(IY411,IA,IGHSTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)) OR IGDECOMEXOPOT(IY411,IA,IGHSTOS)) AND IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
 * Existing, accumulated new previous capacity and new investment this year
 * Complement to assigning VHSTOLOADTS.UP for the case with endogenous IGHSTOS investments.
      ((GKFX(IY411,IA,IGHSTOS)
@@ -1606,7 +1610,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTO)$IGDECOMEXOPOT(IY411,IA,IG
 ;
 
 * "Upper limit to electricity storage loading (MW)"
-QESTOLOADTLIMS(IY411,IA,IGESTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)) OR IGDECOMEXOPOT(IY411,IA,IGESTOS)) AND IAGK_HASORPOT(IY411,IA,IGESTOS))..
+QESTOLOADTLIMS(IY411,IA,IGESTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)) OR IGDECOMEXOPOT(IY411,IA,IGESTOS)) AND IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
 * Existing, accumulated new previous capacity and new investment this year.
 * Complement to assigning VESTOLOADTS.UP for the case with endogenous IGESTOS investments.
      ((GKFX(IY411,IA,IGESTOS)
@@ -1635,7 +1639,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTO)$IGDECOMEXOPOT(IY411,IA,IG
 
 
 * "Inter-seasonal Heat storage output limit (MW)"
-QHSTOVGHTLIMS(IY411,IA,IGHSTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)) OR IGDECOMEXOPOT(IY411,IA,IGHSTOS)) AND IAGK_HASORPOT(IY411,IA,IGHSTOS))..
+QHSTOVGHTLIMS(IY411,IA,IGHSTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)) OR IGDECOMEXOPOT(IY411,IA,IGHSTOS)) AND IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
      (   (GKFX(IY411,IA,IGHSTOS)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTOS)$IGDECOMEXOPOT(IY411,IA,IGHSTOS)
@@ -1659,7 +1663,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTO)$IGDECOMEXOPOT(IY411,IA,IG
    VGE_T(IY411,IA,IGESTO,IS3,T)
 ;
 
-QESTOVGETLIMS(IY411,IA,IGESTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)) OR IGDECOMEXOPOT(IY411,IA,IGESTOS)) AND IAGK_HASORPOT(IY411,IA,IGESTOS))..
+QESTOVGETLIMS(IY411,IA,IGESTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)) OR IGDECOMEXOPOT(IY411,IA,IGESTOS)) AND IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
      (   (GKFX(IY411,IA,IGESTOS)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTOS)$IGDECOMEXOPOT(IY411,IA,IGESTOS)
@@ -1682,7 +1686,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTO)$IGDECOMEXOPOT(IY411,IA,IG
 ;
 
 * "Heat storage capacity limit (MWh)"
-QHSTOVOLTLIMS(IY411,IA,IGHSTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)) OR IGDECOMEXOPOT(IY411,IA,IGHSTOS)) AND IAGK_HASORPOT(IY411,IA,IGHSTOS))..
+QHSTOVOLTLIMS(IY411,IA,IGHSTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)) OR IGDECOMEXOPOT(IY411,IA,IGHSTOS)) AND IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
 * Existing, accumulated new previous capacity and new investment this year
      GKFX(IY411,IA,IGHSTOS)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTOS)$IGDECOMEXOPOT(IY411,IA,IGHSTOS)
@@ -1701,7 +1705,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTO)$IGDECOMEXOPOT(IY411,IA,IG
   VESTOVOLT(IY411,IA,IGESTO,IS3,T)
 ;
 
-QESTOVOLTLIMS(IY411,IA,IGESTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)) OR IGDECOMEXOPOT(IY411,IA,IGESTOS)) AND IAGK_HASORPOT(IY411,IA,IGESTOS))..
+QESTOVOLTLIMS(IY411,IA,IGESTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)) OR IGDECOMEXOPOT(IY411,IA,IGESTOS)) AND IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
 * Existing or accumulated capacity
    GKFX(IY411,IA,IGESTOS)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTOS)$IGDECOMEXOPOT(IY411,IA,IGESTOS)
@@ -1797,7 +1801,9 @@ QGMAXCF(IY411,C,FFF)$IGMAXF(IY411,C,FFF)..
 * "Exact fuel use by year, country and fuel (GJ)"
 QGEQCF(IY411,C,FFF)$IGEQF(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =E= IGEQF(IY411,C,FFF);
+    =E= IGEQF(IY411,C,FFF)
+$include "../../base/addons/_hooks/qgeqcf.inc"
+;
 
 * "Minimum fuel use by year, region and fuel  (GJ)"
 QGMINRF(IY411,IR,FFF)$IGMINF(IY411,IR,FFF)..
@@ -1812,7 +1818,9 @@ QGMAXRF(IY411,IR,FFF)$IGMAXF(IY411,IR,FFF)..
 * "Exact fuel use by year, region and fuel (GJ)"
 QGEQRF(IY411,IR,FFF)$IGEQF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =E= IGEQF(IY411,IR,FFF);
+    =E= IGEQF(IY411,IR,FFF)
+$include "../../base/addons/_hooks/qgeqrf.inc"
+;
 
 * "Minimum fuel use by year, area and fuel (GJ)"
 QGMINAF(IY411,IA,FFF)$IGMINF(IY411,IA,FFF)..
@@ -1827,8 +1835,9 @@ QGMAXAF(IY411,IA,FFF)$IGMAXF(IY411,IA,FFF)..
 * "Exact fuel use by year, area and fuel (GJ)"
 QGEQAF(IY411,IA,FFF)$IGEQF(IY411,IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
-    =E= IGEQF(IY411,IA,FFF);
-
+    =E= IGEQF(IY411,IA,FFF)
+$include "../../base/addons/_hooks/qgeqaf.inc"
+;
 
 *--- Capacity restrictions by fuel--------------------------------------------
 
@@ -2451,17 +2460,17 @@ execute_unload  "../../simex/HYRSG.gdx", HYRSG;
 execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
 execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
 
-* For runs with investments save the following, to be used in future runs by addon "import_results":
+* For runs with investments save the following, to be used in future runs by addon "import_results". Capacities are substracted a very small number to avoid problems with decimasls:
 
-$ifi %TechInvest%==yes  GVGKNACCUMNET(Y,IA,G)=VGKNACCUMNET.L(Y,IA,G);
+$ifi %TechInvest%==yes  GVGKNACCUMNET(Y,IA,G)$VGKNACCUMNET.L(Y,IA,G)=VGKNACCUMNET.L(Y,IA,G)-0.000000001;
 $ifi %TransInvest%==yes XVXKNACCUMNET(Y,IRE,IRI)=VXKNACCUMNET.L(Y,IRE,IRI);
 
 $ifi %TechInvest%==yes  execute_unload  "../../simex/GVGKNACCUMNET.gdx", GVGKNACCUMNET;
 $ifi %TransInvest%==yes execute_unload  "../../simex/XVXKNACCUMNET.gdx", XVXKNACCUMNET;
 
-* For runs with decommissioning save the following, to be used in future runs by addon "import_results":
+* For runs with decommissioning save the following, to be used in future runs by addon "import_results". Capacities are added a very small number to avoid problems with decimasls: :
 
-$ifi %DECOM%==yes  GVDECOM_EXO_ACCUM(Y,IA,G)= VDECOM_EXO_ACCUM.L(Y,IA,G);
+$ifi %DECOM%==yes  GVDECOM_EXO_ACCUM(Y,IA,G)$VDECOM_EXO_ACCUM.L(Y,IA,G)= VDECOM_EXO_ACCUM.L(Y,IA,G)+0.000000001;
 $ifi %DECOM%==yes  execute_unload  "../../simex/GVDECOM_EXO_ACCUM.gdx", GVDECOM_EXO_ACCUM;
 
 
@@ -2470,6 +2479,16 @@ $ifi %DECOM%==yes  execute_unload  "../../simex/GVDECOM_EXO_ACCUM.gdx", GVDECOM_
 
 GVESTOVOLTS(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1)=VESTOVOLTS.L(Y,IA,IGESTOS,S,T);
 GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1)=VHSTOVOLTS.L(Y,IA,IGHSTOS,S,T);
+
+*Correction of seasonal values to avoid infeasibilities due to decimal errors by substracting a very small number to the storage levels
+
+GVESTOVOLTS(Y,IA,IGESTOS,S,T)$((ORD(T) EQ 1) AND GVESTOVOLTS(Y,IA,IGESTOS,S,T) AND ((VGKNACCUMNET.L(Y,IA,IGESTOS)+GKFX(Y,IA,IGESTOS)
+$ifi %DECOM%==yes -VDECOM_EXO_ACCUM.L(Y,IA,IGESTOS)
+) LE VESTOVOLTS.L(Y,IA,IGESTOS,S,T)))=GVESTOVOLTS(Y,IA,IGESTOS,S,T)-0.000000001;
+
+GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$((ORD(T) EQ 1) AND GVHSTOVOLTS(Y,IA,IGHSTOS,S,T) AND ((VGKNACCUMNET.L(Y,IA,IGHSTOS)+GKFX(Y,IA,IGHSTOS)
+$ifi %DECOM%==yes  -VDECOM_EXO_ACCUM.L(Y,IA,IGHSTOS)
+) LE VESTOVOLTS.L(Y,IA,IGHSTOS,S,T)))=GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)-0.000000001;
 
 execute_unload  "../../simex/GVESTOVOLTS.gdx", GVESTOVOLTS;
 execute_unload  "../../simex/GVHSTOVOLTS.gdx", GVHSTOVOLTS;

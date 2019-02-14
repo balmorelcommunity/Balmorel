@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug
+$setglobal vqdebug YES
 *!option yes
 
 
@@ -72,7 +72,6 @@ $setglobal bb3
 $setglobal bb4 yes
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
 
-
 * During test period for BB4 make comparisons between BB4 and BB1, BB2, BB3.
 * The present implementation is for comparison of models (BB4 and one of BB1/BB2/BB3) with a single year (where results should be identical)
 * Not finished yet, but useful
@@ -90,13 +89,24 @@ $setglobal testbb1234
 * The following global variables concern the choice of details in some of the models.
 * Note that some of the choices are mutually dependent.
 
+*-------- Seasonal rolling horizon  ---------
+* Optimize seasons with a rolling horizon approach instead of all together.
+*NOTE: This option is supposed to be combined with the option "import_results", which must contain information for all S and at least the first element in T
+$setglobal RollingSeasons yes
+*!option yes
+
+SCALAR ROLLINGSEASONSNUMBER 'Number of seasons to be optimized at a time in each rolling season optimization';
+ROLLINGSEASONSNUMBER= 1;
+
+*-------- END: Seasonal rolling horizon  ---------
+
 *-----------------------
 *---- Investments ------
 
 *---- Generation investments options----
 
 * Permit investments in generation and storage capacity:
-$setglobal TechInvest yes
+$setglobal TechInvest
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
@@ -107,7 +117,7 @@ GINVESTSTART= 2020;
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest yes
+$setglobal TransInvest
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
@@ -126,21 +136,25 @@ $setglobal WNDSHUTDOWN
 $setglobal VRESHUTDOWN   yes
 *!option yes
 
+*-----------------------------------------------------------
+*---------------HYDRO RESERVOIRS OPTIONS--------------------
+*Interpretation of the seasonal level of hydro reservoirs (QHYRSSEQ)
+$setglobal HYRS_AGG hydro_week_agg
+*!option hydro_year_agg       !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent an annual behaviour"
+*!option hydro_week_agg       !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent a  weekly behaviour"
+
 * Relax seasonal limits for hydropower storages when running the model with less than 26 seasons (in HYRSDATA.inc)
 $setglobal RELAX_HYDROSTORAGE yes
 *!option yes
+*---------------END: HYDRO RESERVOIRS OPTIONS--------------
+*----------------------------------------------------------
 
 *-------------------------------------------------
 *---- Timeseries scaling ------
-* Only one option should be activated!!!!
 
-*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries
-$setglobal usedtimesteps_timseries_scaling yes
-*!option yes
-
-*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries
-$setglobal full_timeseries_scaling
-*!option yes
+$setglobal timeseries_scaling  usedtimesteps_timseries_scaling
+*!option usedtimesteps_timseries_scaling   !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries"
+*!option full_timeseries_scaling           !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries"
 
 *----END: Timeseries scaling
 *-------------------------------------------------
@@ -340,7 +354,7 @@ $setglobal UnitCseg
 * This add-on is not compatible with the Unit Commitment stepwiseramping option
 * The use of this add-on togeter with the rest of options of Unit Commitment add-on has not been tested, so, unless tested, this add-on should not be activated if UnitComm is on.
 
-$setglobal STEPWISE_RAMPING
+$setglobal STEPWISE_RAMPING  
 *!option yes
 
 * SEASONAL ramping link is on. This means that the fuel consumption of the last element ot the set T of the set S will be linked to the first element of the set T of the set S+1.
@@ -407,7 +421,7 @@ $label endofMSNTrelpaths
 
 * Overall control to export results so they can be used in future runs :
 
-$Setglobal export_results 
+$Setglobal export_results
 *!option yes
 
 *--------------------------------------------
@@ -418,7 +432,7 @@ $Setglobal export_results
 *NOTE: In order for results to work fine, the set S used in the runs should be contained in the import results.
 *NOTE: In order for results to work fine, the first element in set T of the import results should match the one used in the current run.
 
-$Setglobal import_results
+$Setglobal import_results yes
 *!option yes
 
 *------------ IMPORT OPTIONS ----------------
@@ -437,11 +451,11 @@ $setglobal HYRSBB123 quant
 
 *--------------------INTERSEASONAL STORAGE-----------------------------------------------------------
 *Import Electricity storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
-$setglobal ADDELECSTORCONT  yes
+$setglobal ADDELECSTORCONT YES
 *!option yes
 
 *Import Heat storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
-$setglobal ADDHEATSTORCONT  yes
+$setglobal ADDHEATSTORCONT YES
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 
