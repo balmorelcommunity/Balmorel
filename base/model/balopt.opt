@@ -216,7 +216,7 @@ $setglobal GRIDTARIFFS yes
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 3 and 4 in Flex4Res
-$SETGLOBAL SCENARIO3OR4  
+$SETGLOBAL SCENARIO3OR4
 *!option yes
 
 *Scalar for setting threshold for congestion based grid tariff   /0 to 1/
@@ -313,15 +313,19 @@ $setglobal EV  yes
 *!option
 
 * Adds DUMB charging:
-$setglobal DUMB
+$setglobal DUMB 
 *!option
 
 * Adds smart charging. Only smart charging, without V2G!:
-$setglobal SMART  yes
+$setglobal SMART
 *!option
 
 * Adds V2G charging:
 $setglobal V2G
+*!option
+
+* Adds V2G charging:
+$setglobal STEPCHARGSCHEME yes
 *!option
 
 * Adds cycle degradation charging:
