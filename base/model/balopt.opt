@@ -442,7 +442,7 @@ $Setglobal export_results
 *NOTE: In order for results to work fine, the set S used in the runs should be contained in the import results.
 *NOTE: In order for results to work fine, the first element in set T of the import results should match the one used in the current run.
 
-$Setglobal import_results  
+$Setglobal import_results
 *!option yes
 
 *------------ IMPORT OPTIONS ----------------
@@ -696,7 +696,7 @@ putclose fileMERGEWITHBASEbat;
 
 * The model type has implications for the solver type.
 * Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Progtramming).
-$setglobal SOLVEMIP YES
+$setglobal SOLVEMIP 
 *!option yes
 *!mustif %AGKNDISC%==yes
 *!mustif %UnitComm%==yes
