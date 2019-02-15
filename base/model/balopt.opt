@@ -92,11 +92,11 @@ $setglobal testbb1234
 *-------- Seasonal rolling horizon  ---------
 * Optimize seasons with a rolling horizon approach instead of all together.
 *NOTE: This option is supposed to be combined with the option "import_results", which must contain information for all S and at least the first element in T
-$setglobal RollingSeasons YES
+$setglobal RollingSeasons
 *!option yes
 
 SCALAR ROLLINGSEASONSNUMBER 'Number of seasons to be optimized at a time in each rolling season optimization';
-ROLLINGSEASONSNUMBER= 2;
+ROLLINGSEASONSNUMBER= 1;
 
 *-------- END: Seasonal rolling horizon  ---------
 
@@ -106,7 +106,7 @@ ROLLINGSEASONSNUMBER= 2;
 *---- Generation investments options----
 
 * Permit investments in generation and storage capacity:
-$setglobal TechInvest
+$setglobal TechInvest yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
@@ -117,7 +117,7 @@ GINVESTSTART= 2020;
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest
+$setglobal TransInvest  yes
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
@@ -139,7 +139,7 @@ $setglobal VRESHUTDOWN   yes
 *-----------------------------------------------------------
 *---------------HYDRO RESERVOIRS OPTIONS--------------------
 *Interpretation of the seasonal level of hydro reservoirs (QHYRSSEQ)
-$setglobal HYRS_AGG hydro_season_agg
+$setglobal HYRS_AGG hydro_year_agg
 *!option hydro_year_agg       !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent an annual behaviour"
 *!option hydro_season_agg     !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent a  seasonal behaviour"
 
@@ -327,7 +327,7 @@ $setglobal ECONOMIC_DECOM_EXO_G    yes
 *-------------------- UNIT COMMITMENT -----------------------------------------------------------
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
-$setglobal UnitComm   yes
+$setglobal UnitComm
 *!option yes
 
 * Adds minimal production-when-on:
@@ -442,7 +442,7 @@ $Setglobal export_results
 *NOTE: In order for results to work fine, the set S used in the runs should be contained in the import results.
 *NOTE: In order for results to work fine, the first element in set T of the import results should match the one used in the current run.
 
-$Setglobal import_results  YES
+$Setglobal import_results  
 *!option yes
 
 *------------ IMPORT OPTIONS ----------------
