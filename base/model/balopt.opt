@@ -139,9 +139,9 @@ $setglobal VRESHUTDOWN   yes
 *-----------------------------------------------------------
 *---------------HYDRO RESERVOIRS OPTIONS--------------------
 *Interpretation of the seasonal level of hydro reservoirs (QHYRSSEQ)
-$setglobal HYRS_AGG hydro_week_agg
+$setglobal HYRS_AGG hydro_season_agg
 *!option hydro_year_agg       !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent an annual behaviour"
-*!option hydro_week_agg       !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent a  weekly behaviour"
+*!option hydro_season_agg     !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent a  seasonal behaviour"
 
 * Relax seasonal limits for hydropower storages when running the model with less than 26 seasons (in HYRSDATA.inc)
 $setglobal RELAX_HYDROSTORAGE yes

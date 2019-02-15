@@ -934,7 +934,7 @@ $label  full_timeseries_scaling_end
 *Timeseries values are not scaled and match exactly the timeseries (it requires changin quite some code) !!TO DO
 
 *Calculation of IHYRST
-$ifi %HYRS_AGG%==hydro_week_agg    IHYRST(S,T)=WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS));
+$ifi %HYRS_AGG%==hydro_season_agg  IHYRST(S,T)=WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS))*CHRONOHOUR(S,T);
 $ifi %HYRS_AGG%==hydro_year_agg    IHYRST(S,T)=IHOURSINST(S,T);
 
 
@@ -1459,7 +1459,6 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IG
        +VGKNACCUMNET(IY411,IA,IGHYRS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRS))
         )
          )
-*        -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHOURSINST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))
          -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHYRST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))
 
       =G=  VHYRS_S(IY411,IA,S++1)
