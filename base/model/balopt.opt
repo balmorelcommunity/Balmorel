@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug YES
+$setglobal vqdebug
 *!option yes
 
 
@@ -92,11 +92,11 @@ $setglobal testbb1234
 *-------- Seasonal rolling horizon  ---------
 * Optimize seasons with a rolling horizon approach instead of all together.
 *NOTE: This option is supposed to be combined with the option "import_results", which must contain information for all S and at least the first element in T
-$setglobal RollingSeasons yes
+$setglobal RollingSeasons YES
 *!option yes
 
 SCALAR ROLLINGSEASONSNUMBER 'Number of seasons to be optimized at a time in each rolling season optimization';
-ROLLINGSEASONSNUMBER= 1;
+ROLLINGSEASONSNUMBER= 2;
 
 *-------- END: Seasonal rolling horizon  ---------
 
@@ -327,24 +327,34 @@ $setglobal ECONOMIC_DECOM_EXO_G    yes
 *-------------------- UNIT COMMITMENT -----------------------------------------------------------
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
-$setglobal UnitComm
+$setglobal UnitComm   yes
 *!option yes
 
 * Adds minimal production-when-on:
-$setglobal MINFUELCONS
+$setglobal MINFUELCONS YES
 *!option yes
 * Adds respecting minimum off time of the capacities:
-$setglobal MINSTARTUPTIME
+$setglobal MINSTARTUPTIME  yes
 *!option yes
 * Adds respecting minimum on time of the capacities:
-$setglobal MINSHUTDOWNTIME
+$setglobal MINSHUTDOWNTIME  yes
 *!option yes
 * Adds ramping technical limitations and stepwise costs to the Power plants when-on:
-$setglobal STEPWISE_RAMPING_UC     YES
+$setglobal STEPWISE_RAMPING_UC  ramp_const
+*!option ramp_const_cost !Text "With ramping constraints and ramping costs"
+*!option ramp_const  !Text "With ramping constraints but without ramping costs"
+*!option no_ramping  !Text "Neither ramping constraints nor ramping costs"
+
+* Seasonal link is on for all UC options activated. This means that past seasons will influence future seasons.
+* This option increases computanional time but assures continuity in the fuel consumption profile.
+$setglobal SEASONALLINKUC yes
 *!option yes
+
 * The production interval is segmented into a number of disjunct pieces, each with its own costs: NOT IMPLEMENTED
 $setglobal UnitCseg
 *!option yes
+
+
 *-------------------- End of UNIT COMMITMENT -----------------------------------------------------------
 
 *-------------------------------------------------------------------------------
@@ -354,10 +364,10 @@ $setglobal UnitCseg
 * This add-on is not compatible with the Unit Commitment stepwiseramping option
 * The use of this add-on togeter with the rest of options of Unit Commitment add-on has not been tested, so, unless tested, this add-on should not be activated if UnitComm is on.
 
-$setglobal STEPWISE_RAMPING  
+$setglobal STEPWISE_RAMPING
 *!option yes
 
-* SEASONAL ramping link is on. This means that the fuel consumption of the last element ot the set T of the set S will be linked to the first element of the set T of the set S+1.
+* Seasonal ramping link is on. This means that the fuel consumption of the last element ot the set T of the set S will be linked to the first element of the set T of the set S+1.
 * This option increases computanional time but assures continuity in the fuel consumption profile.
 $setglobal SEASONALLINKRAMPING  YES
 *!option yes
@@ -432,7 +442,7 @@ $Setglobal export_results
 *NOTE: In order for results to work fine, the set S used in the runs should be contained in the import results.
 *NOTE: In order for results to work fine, the first element in set T of the import results should match the one used in the current run.
 
-$Setglobal import_results yes
+$Setglobal import_results  YES
 *!option yes
 
 *------------ IMPORT OPTIONS ----------------
@@ -464,11 +474,11 @@ $setglobal ADDHEATSTORCONT YES
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
 
 *Import generation and storage technology investments from previous runs, which might include decommissioning
-$setglobal ADDTECHINVEST   yes
+$setglobal ADDTECHINVEST
 *!option yes
 
 *Import transmission investments from previous runs
-$setglobal ADDTRANSINVEST   yes
+$setglobal ADDTRANSINVEST
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 
@@ -476,7 +486,7 @@ $setglobal ADDTRANSINVEST   yes
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
 
 *Import generation and storage technology decommissioning of exogenous capacities from previous runs
-$setglobal ADDTECHDECOM  yes
+$setglobal ADDTECHDECOM
 *!option yes
 
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
@@ -686,7 +696,7 @@ putclose fileMERGEWITHBASEbat;
 
 * The model type has implications for the solver type.
 * Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Progtramming).
-$setglobal SOLVEMIP
+$setglobal SOLVEMIP YES
 *!option yes
 *!mustif %AGKNDISC%==yes
 *!mustif %UnitComm%==yes

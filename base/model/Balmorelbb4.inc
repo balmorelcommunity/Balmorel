@@ -126,8 +126,12 @@ GASTURBINE, HEATPUMP, HEATPUMP_AIR, HEATPUMP_EXCESSHEAT, HEATPUMP_GROUND, PIT, W
 *--- End: Definitions of SETS and ACRONYMS that are given in the $included files
 *-------------------------------------------------------------------------------
 
-SET IS3(S)    "Balbase3: present season simulated; other models: identical to S";
-SET IS33(S,S) "Mapping of S (first index) to the following S (second index)";
+SET IS3(S)     "Balbase3: present season simulated; other models: identical to S";
+SET IS33(S,S)  "Mapping of S (first index) to the following S (second index)";
+SET SREV(S,S)  "Mapping of S (first index) to its reverse element S (second index)";
+SET SREV2(S,S) "Mapping of S (first index) to its reverse element S (second index)";;
+SET TREV(T,T)  "Mapping of T (first index) to its reverse element T (second index)";;
+SET TREV2(T,T) "Mapping of T (first index) to its reverse element T (second index)";;
 
 *-------------------------------------------------------------------------------
 *----- Definitions of SETS and ALIASES that are needed for data entry:
@@ -145,9 +149,8 @@ ALIAS (FFF,IFFFALIAS2);
 ALIAS (YYY,IYYYALIAS);
 ALIAS (YYY,IYYYALIAS2);
 ALIAS (Y,IYALIAS);
-ALIAS (S,ISALIAS,IS3LOOPSET);
-ALIAS (T,ITALIAS);
-
+ALIAS (S,ISALIAS,ISALIAS2,ISALIAS3,IS3LOOPSET);
+ALIAS (T,ITALIAS,ITALIAS2,ITALIAS3);
 
 
 *-------------------------------------------------------------------------------
@@ -705,6 +708,8 @@ SET IY411FIRST(Y)           "The first year in the current Balbase4 model";
 SET IY411PREVY(Y,Y)         "For any given element in IY411 (index Y 1): the previous element in Y (index Y 2)";
 SET IYFIRST(Y)              "The first year in Y";
 IYFIRST(Y)$(ORD(Y) EQ 1) = YES;
+
+
 
 *-------------------------------------------------------------------------------
 * Application of default data:

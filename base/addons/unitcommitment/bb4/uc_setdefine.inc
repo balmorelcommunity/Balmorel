@@ -15,7 +15,7 @@ $if     EXIST '../data/UC_FUELS.inc' $INCLUDE         '../data/UC_FUELS.inc';
 $if not EXIST '../data/UC_FUELS.inc' $INCLUDE '../../base/data/UC_FUELS.inc';
 
 
-$ifi not %STEPWISE_RAMPING_UC%==yes $goto STEPWISERAMPING_END
+$ifi not %STEPWISE_RAMPING_UC%==ramp_const_cost $goto STEPWISERAMPING_END
 $if     EXIST '../data/RAMPING_RATE.inc' $INCLUDE         '../data/RAMPING_RATE.inc';
 $if not EXIST '../data/RAMPING_RATE.inc' $INCLUDE '../../base/data/RAMPING_RATE.inc';
 $label  STEPWISERAMPING_END

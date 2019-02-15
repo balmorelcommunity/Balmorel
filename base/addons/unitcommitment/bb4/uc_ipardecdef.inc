@@ -1,7 +1,7 @@
 * UC Translated to BB4 by Juan Gea Bermúdez 2018.
 
 
-$ifi not %STEPWISE_RAMPING_UC%==yes $goto STEPWISERAMPING_END
+$ifi not %STEPWISE_RAMPING_UC%==ramp_const_cost $goto STEPWISERAMPING_END
 
 ** RAMPING CHARACTERISTICS OF THE TECHNOLOGIES TO BE USED
 PARAMETER IRAMPING_G_COSTS_UP(G,RAMPING_RATE) 'Ramping up costs for each technology (money/MWh)';
