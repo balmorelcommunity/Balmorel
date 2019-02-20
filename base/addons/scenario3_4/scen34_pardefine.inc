@@ -40,14 +40,14 @@ PARAMETER IDE_SUMSSSTTT(RRR,DEUSER);     IDE_SUMSSSTTT(IR,DEUSER)= SUM((SSS,TTT)
 * identify peak consumption (excluding P2H, DR and EV, Storage, H2)
 PARAMETER DE_VAR_T_PEAK(Y,RRR);
 DE_VAR_T_PEAK(Y,IR) = SMAX((SSS,TTT),
-$ifi %EV%==YES                        (EV_BEV_Dumb(Y,SSS,TTT,IR)+EV_PHEV_Dumb(Y,SSS,TTT,IR)*(1/EV_PEFF(Y)))
+$ifi %EV%==YES                        ((EV_BEV_Dumb(Y,SSS,TTT,IR)+EV_PHEV_Dumb(Y,SSS,TTT,IR)*(1/EV_PEFF(Y))))$(Y.val>2019)+0
                                      + SUM(DEUSER,     DE_VAR_T(IR,DEUSER,SSS,TTT) * DE(Y,IR,DEUSER) / IDE_SUMSSSTTT(IR,DEUSER))             );
 
 
 SET IGR_TIME_Y(YYY,GRDATASET,RRR,SSS,TTT) 'hours where consumption is above thershold defined in GR_SCALAR_THRSHOLD';
 ** identify hours over the 90% consumption threshold
 IGR_TIME_Y(Y,'GRDDCY',IR,SSS,TTT) = YES$(
-$ifi %EV%==YES                           (EV_BEV_Dumb(Y,SSS,TTT,IR)+EV_PHEV_Dumb(Y,SSS,TTT,IR)*(1/EV_PEFF(Y)))
+$ifi %EV%==YES                           ((EV_BEV_Dumb(Y,SSS,TTT,IR)+EV_PHEV_Dumb(Y,SSS,TTT,IR)*(1/EV_PEFF(Y))))$(Y.val>2019)+0
                                          + SUM(DEUSER, DE_VAR_T(IR,DEUSER,SSS,TTT) * DE(Y,IR,DEUSER) / IDE_SUMSSSTTT(IR,DEUSER))
                                          GE GR_SCALAR_THRESHOLD * DE_VAR_T_PEAK(Y,IR));
 
