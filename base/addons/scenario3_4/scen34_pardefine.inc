@@ -24,8 +24,8 @@ $ifi  %SCENARIO4%==YES    GR_PRICE_USER(CCC,DEUSER,GRDATASET) = 0;
 ** 2.2 Congestion pricing
 
 * Set the grid tariff according to desired level
-GR_PRICE_TECH(C,'GRDDCY') = 50;
-GR_PRICE_USER(C,'PII','GRDDCY') = 50;
+GR_PRICE_TECH(C,'GRDDCY') = 0;
+GR_PRICE_USER(C,'PII','GRDDCY') = 0;
 
 
 ** 2.3 capacity pricing (included for P2H only since its the only consumer group have endogenous investments in the model)
