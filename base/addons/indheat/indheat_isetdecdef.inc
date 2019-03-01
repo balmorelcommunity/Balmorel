@@ -1,19 +1,18 @@
-* File combtech_isetdecdef.inc for addon combtech for the Balmorel model
+SETS
+INDHEAT_IA(INDHEAT_AAA)
+INDHEAT_IGETOH(INDHEAT_G)
+INDHEAT_IGSOLH(INDHEAT_G)
+INDHEAT_IGKRATE(INDHEAT_AAA,INDHEAT_G,S,T)
+INDHEAT_IAGKFX(Y,INDHEAT_AAA,INDHEAT_G,INDHEAT_GROUP)
+INDHEAT_IAGK_HASORPOT(Y,INDHEAT_AAA,INDHEAT_G,INDHEAT_GROUP)
 
-SET IGCOMB1(G)              'Combination technologies, primary, for addon combtech';
-SET IGCOMB2(G)              'Combination technologies, secondary with primary in G, for addon combtech';
-SET GGCOMB(GGG,GGG      )   'Combination techologies in the same combination, for addon combtech';
-
-$if     EXIST '../data/COMBTECH_GGCOMB.inc' $INCLUDE         '../data/COMBTECH_GGCOMB.inc';
-$if not EXIST '../data/COMBTECH_GGCOMB.inc' $INCLUDE '../../base/data/COMBTECH_GGCOMB.inc';
-
-*This can be moved to Balmorel.gms
-Alias(G,IGALIAS);
-
-*This should remain here
-loop((G,IGALIAS)$GGCOMB(G,IGALIAS),
-IGCOMB1(G) = YES$(GDATA(G,'GDCOMB') EQ 1);
-IGCOMB2(IGALIAS) = YES$(GDATA(IGALIAS,'GDCOMB') EQ 2);
-);
+INDHEAT_IAGKN(INDHEAT_AAA,INDHEAT_G,INDHEAT_GROUP)
+INDHEAT_IAGKNY(Y,INDHEAT_AAA,INDHEAT_G,INDHEAT_GROUP)
+;
 
 
+INDHEAT_IA(INDHEAT_AAA) = YES$(SUM(C,ICA(C,INDHEAT_AAA)));
+
+INDHEAT_IGETOH(INDHEAT_G) = YES$(INDHEAT_GDATA(INDHEAT_G,'GDTYPE') EQ GETOH);
+INDHEAT_IGSOLH(INDHEAT_G) = YES$(INDHEAT_GDATA(INDHEAT_G,'GDTYPE') EQ GSOLH);
+INDHEAT_IGKRATE(INDHEAT_AAA,INDHEAT_G,S,T) = 1;

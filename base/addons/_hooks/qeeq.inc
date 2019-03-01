@@ -11,11 +11,13 @@ $label  beginbb4
 $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_qeeq.inc";
 * The following implemented only for bb4
 
-$ifi %X3V%==yes      $include "../../base/addons/x3v/bb4/x3v_qeeq.inc"; 
+$ifi %X3V%==yes      $include "../../base/addons/x3v/bb4/x3v_qeeq.inc";
 $ifi %dflexquant%==yes   $include "../../base/addons/demandflexquant/dflexquant_qeeq.inc";
 
 $ifi %dflextime%==yes    $include "../../base/addons/demandflextime/dflextime_qeeq.inc";
-$ifi %DEMANDRESPONSE%==yes 	$include 	"../../base/addons/demandresponse/bb4/dr_qeeq.inc";
+$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_qeeq.inc";
+
+$ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_qeeq.inc";
 
 $ifi %vqdebug%==yes   $setglobal equation qeeq
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";

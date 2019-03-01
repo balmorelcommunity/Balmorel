@@ -204,6 +204,10 @@ $setglobal X3V
 $Setglobal FV
 *!option yes
 
+* Includes individual heating
+$Setglobal INDHEAT yes
+*!option yes
+
 *
 $setglobal POLICIES
 *!option yes

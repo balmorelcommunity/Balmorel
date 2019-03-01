@@ -1,0 +1,5 @@
+PARAMETERS
+         INDHEAT_IDH_SUMST(INDHEAT_AAA) 'Annual amount of nominal heat demand (MWh)'
+;
+
+INDHEAT_IDH_SUMST(INDHEAT_IA) = SUM((S,T), IHOURSINST(S,T)*INDHEAT_DH_VAR_T(INDHEAT_IA,S,T));
