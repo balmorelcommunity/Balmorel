@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug  yes
+$setglobal vqdebug
 *!option yes
 
 
@@ -42,7 +42,7 @@ $setglobal PROJECTID
 * (or Access MDBs) will have the CASEID as filename with the appropriate extension.
 * Note that CASEID MUST be identical to folder name of the diretory holding the case.
 *
-$setglobal CASEID BASE
+$setglobal CASEID  BASE
 *!option !fixedvalue
 
 
@@ -185,7 +185,7 @@ $Setglobal HYDROGEN
 $Setglobal STEPWISEPRICE
 
 * Use stepwise linear potentials for installed capacity (currently for wind power)
-$Setglobal STEPWISEKPOT
+$Setglobal STEPWISEKPOT    yes
 
 * Set a common maximum for fuels.
 $Setglobal LIMITSFORFUELS  yes
@@ -196,7 +196,7 @@ $setglobal DFLEXQUANT
 *!option yes
 
 * Allow demand response
-$setglobal DEMANDRESPONSE yes
+$setglobal DEMANDRESPONSE   yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
@@ -309,11 +309,11 @@ $setglobal UnitCseg
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV  yes
+$setglobal EV yes
 *!option
 
 * Adds DUMB charging:
-$setglobal DUMB 
+$setglobal DUMB
 *!option
 
 * Adds smart charging. Only smart charging, without V2G!:
@@ -701,11 +701,11 @@ $setglobal GWAVE_DOL AAA
 *!option  AAA
 
 
-
 *-------------------------------------------------------------------------------
 * Active options will be reported to log file via file hellolog.inc
 *-------------------------------------------------------------------------------
-
+$setglobal VGF Y
+* Y or ST
 
 *-------------------------------------------------------------------------------
 * End of Balopt.opt

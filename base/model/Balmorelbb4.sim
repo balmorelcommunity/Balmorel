@@ -467,6 +467,8 @@ IX3FX_T(IY411,IR,S,T) = ((X3FX(IY411,IR) * X3FX_VAR_T(IR,S,T)) / IX3FXSUMST(IR))
 $include "../../base/addons/_hooks/sim.inc"
 $include "../../base/addons/_hooks/varloupfx.inc"
 
+IAGK_NOINVEST(IY411,IA,G)$IYFIRST(IY411) = 0;
+IAGK_HASORPOT(IY411,IA,G)$(SUM(IY402$IY411PREVY(IY411,IY402), IAGK_NOINVEST(IY402,IA,G))) = NO;
 
 *-------------------------------------------------------------------------------
 *---- End: Annual updating wrt. options and add-on parameters: -----------------
@@ -558,6 +560,7 @@ $ifi %TechInvest%==yes         LOOP(Y$(YVALUE(Y) LE YVALUE(IYALIAS)),VGKN.FX(Y,I
 $ifi %TechInvest%==yes         VGKNACCUMNET.FX(IY411FIRST,IA,G)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IAGKNY(Y,IA,G)) = VGKNACCUMNET.L(IY411FIRST,IA,G);
 *$ifi %TechInvest%==yes        VGKNACCUMGROSS.FX(IY411FIRST,IA,G)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IAGKNY(Y,IA,G)) = VGKNACCUMGROSS.L(IY411FIRST,IA,G);
 $ifi %TransInvest%==yes        VXKNACCUMNET.FX(IY411FIRST,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXKN(Y,IRE,IRI))= VXKNACCUMNET.L(IY411FIRST,IRE,IRI);
+$ifi %TechInvest%==yes         IAGK_NOINVEST(IY411FIRST,IA,G)$(IAGKN(IA,G) AND NOT SUM(Y$(Y.VAL GT IY411FIRST.VAL), IAGKNY(Y,IA,G)) AND NOT VGKNACCUMNET.L(IY411FIRST,IA,G)) = yes;
 
 
 $ifi %DemandResponse%==yes     VDRKN_ACCUMNET.FX(IY411FIRST,IA,DR_TECH)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IADR(Y,IA,DR_TECH))= VDRKN_ACCUMNET.L(IY411FIRST,IA,DR_TECH);

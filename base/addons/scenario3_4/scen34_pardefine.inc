@@ -24,8 +24,8 @@ $ifi  %SCENARIO4%==YES    GR_PRICE_USER(CCC,DEUSER,GRDATASET) = 0;
 ** 2.2 Congestion pricing
 
 * Set the grid tariff according to desired level
-GR_PRICE_TECH(C,'GRDDCY') = 50;
-GR_PRICE_USER(C,'PII','GRDDCY') = 50;
+GR_PRICE_TECH(C,'GRDDCY') = 00;
+GR_PRICE_USER(C,'PII','GRDDCY') = 00;
 
 
 ** 2.3 capacity pricing (included for P2H only since its the only consumer group have endogenous investments in the model)
@@ -52,9 +52,9 @@ $ifi %EV%==YES                           (EV_BEV_Dumb(Y,SSS,TTT,IR)+EV_PHEV_Dumb
                                          GE GR_SCALAR_THRESHOLD * DE_VAR_T_PEAK(Y,IR));
 
 **
-GR_GETOH_CAPY(Y,C) = SMAX((S,T),  GR_GETOH_VAR_T(Y,S,T)$SUM(IR$CCCRRR(C,IR), IGR_TIME_Y(Y,'GRDDCY',IR,S,T)));
-GR_PRICE_TECH(C,'GRDSUBS') = MAX( (GR_GETOH_PRICE('2020',C)/1000
-                             - GR_GETOH_CAPY('2020',C) * GR_PRICE_TECH(C,'GRDDCY') /  GR_GETOH_FX('2020')    !! it can be discussed how to reduce GRDSUBS when also having congestion pricing
+GR_GETOH_CAPY(Y,C) = SMAX((SSS,TTT),  GR_GETOH_VAR_T(Y,SSS,TTT)$SUM(IR$CCCRRR(C,IR), IGR_TIME_Y(Y,'GRDDCY',IR,SSS,TTT)));
+GR_PRICE_TECH(C,'GRDSUBS') = MAX( (GR_GETOH_PRICE('2030',C)/1000
+                             - GR_GETOH_CAPY('2030',C) * GR_PRICE_TECH(C,'GRDDCY') /  GR_GETOH_FX('2030')    !! it can be discussed how to reduce GRDSUBS when also having congestion pricing
 ),0);
 
 
