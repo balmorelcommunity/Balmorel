@@ -11,9 +11,9 @@ IAGKNY_IY411(TV_IY411,IA,G) = YES$(IAGKNY(IY411,IA,G) AND TV_G(G));
 
 
 
-**************************************
-*** Defining the costs
-**************************************
+*-------------------------------------------------
+* Defining the costs
+*-------------------------------------------------
 
 * Fixed costs including investment costs
 TV_FIXED(TV_IY411,IA,G)$(IAGKNY_IY411(TV_IY411,IA,G))= IOF1000*GOMFCOST(IA,G)  + IOF1000000*(GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G))));
@@ -49,9 +49,9 @@ $ifi %TAXES%==yes                 + SUM(C$ICA(C,IA),TAX_F(TV_IY411,C,G))  )  /(G
 ;
 
 
-*******************************************************************************
-*** idenfication of technologies with fuel or technology potential constraints
-*******************************************************************************
+*--------------------------------------------------------------------------------------------------
+* idenfication of technologies with fuel or technology potential constraints
+*--------------------------------------------------------------------------------------------------
 
 *IGMINF
 TV_REQMIN(TV_IY411,IA,G)$(SUM((FFF,C)$(IGF(G,FFF) AND ICA(C,IA)), IGMINF(TV_IY411,C,FFF)) >0) = YES$IAGKNY_IY411(TV_IY411,IA,G);
@@ -103,17 +103,28 @@ TV_REQEMAX(TV_IY411,IA,G)$(SUM((FFF,C)$(IGF(G,FFF) AND ICA(C,IA)), FGEMAX(C,FFF)
 TV_REQEMAX(TV_IY411,IA,G)$(SUM((FFF,IR)$(IGF(G,FFF) AND RRRAAA(IR,IA)), FGEMAX(IR,FFF)) >0) = YES$IAGKNY_IY411(TV_IY411,IA,G);
 TV_REQEMAX(TV_IY411,IA,G)$(SUM(FFF$IGF(G,FFF), FGEMAX(IA,FFF)) >0) = YES$IAGKNY_IY411(TV_IY411,IA,G);
 
+*M_POL limits
+TV_MPOLMAX(TV_IY411,IA,G)$(SUM(FFF$IGF(G,FFF),FDATA(FFF,'FDCO2'))  AND (SUM(C$ICA(C,IA), M_POL(TV_IY411,'LIM_CO2',C)) > 0)) = YES$IAGKNY_IY411(TV_IY411,IA,G);
+TV_MPOLMAX(TV_IY411,IA,G)$(SUM(FFF$IGF(G,FFF), FDATA(FFF,'FDSO2')) AND (SUM(C$ICA(C,IA), M_POL(TV_IY411,'LIM_SO2',C)) > 0)) = YES$IAGKNY_IY411(TV_IY411,IA,G);
+TV_MPOLMAX(TV_IY411,IA,G)$(GDATA(G,'GDNOX')                        AND (SUM(C$ICA(C,IA), M_POL(TV_IY411,'LIM_NOX',C)) > 0)) = YES$IAGKNY_IY411(TV_IY411,IA,G);
 
+* M_POL zero emission
+TV_MPOLZERO(TV_IY411,IA,G)$(SUM(FFF$IGF(G,FFF),FDATA(FFF,'FDCO2'))  AND SUM(C$ICA(C,IA), M_POL(TV_IY411,'LIM_CO2',C)) AND (SUM(C$ICA(C,IA), M_POL(TV_IY411,'LIM_CO2',C)) = EPS)) = YES$IAGKNY_IY411(TV_IY411,IA,G);
+TV_MPOLZERO(TV_IY411,IA,G)$(SUM(FFF$IGF(G,FFF), FDATA(FFF,'FDSO2')) AND SUM(C$ICA(C,IA), M_POL(TV_IY411,'LIM_SO2',C)) AND (SUM(C$ICA(C,IA), M_POL(TV_IY411,'LIM_SO2',C)) = EPS)) = YES$IAGKNY_IY411(TV_IY411,IA,G);
+TV_MPOLZERO(TV_IY411,IA,G)$(GDATA(G,'GDNOX')                        AND SUM(C$ICA(C,IA), M_POL(TV_IY411,'LIM_NOX',C)) AND (SUM(C$ICA(C,IA), M_POL(TV_IY411,'LIM_NOX',C)) = EPS)) = YES$IAGKNY_IY411(TV_IY411,IA,G);
 
-**************************************************
-*** Calculating and using the screening curves ***
-**************************************************
+*-------------------------------------------------
+* Calculating and using the screening curves
+*-------------------------------------------------
+
+** Unassign technologies affected by zero emission limits
+IAGKNY_IY411(TV_IY411,IA,G)$TV_MPOLZERO(TV_IY411,IA,G) = NO;
 
 ** Finding the cost of the cheapest investment option in condencing power plant and heat only boiler. This is used to calculate alternative value later on.
 *Cost per unit of electricity or heat generated for the cheapest plant in the screening curve without considering plants with maxium and fixed fuel requirements
-TV_CHEAPESTCND(TV_IY411,IA,TV_FLH) = SMIN(G$(IGCND(G)  AND IAGKNY_IY411(TV_IY411,IA,G) AND NOT TV_REQEMAX(TV_IY411,IA,G) AND NOT TV_REQMAX(TV_IY411,IA,G) AND NOT TV_REQFX(TV_IY411,IA,G)),
+TV_CHEAPESTCND(TV_IY411,IA,TV_FLH) = SMIN(G$(IGCND(G)  AND IAGKNY_IY411(TV_IY411,IA,G) AND NOT TV_REQEMAX(TV_IY411,IA,G) AND NOT TV_REQMAX(TV_IY411,IA,G) AND NOT TV_REQFX(TV_IY411,IA,G) AND NOT TV_MPOLMAX(TV_IY411,IA,G)),
                  TV_FIXED(TV_IY411,IA,G) + TV_VAREL(TV_IY411,IA,G) * TV_FLH.VAL);
-TV_CHEAPESTHOB(TV_IY411,IA,TV_FLH) = SMIN(G$(IGHOB(G)  AND IAGKNY_IY411(TV_IY411,IA,G) AND NOT TV_REQEMAX(TV_IY411,IA,G) AND NOT TV_REQMAX(TV_IY411,IA,G) AND NOT TV_REQFX(TV_IY411,IA,G)),
+TV_CHEAPESTHOB(TV_IY411,IA,TV_FLH) = SMIN(G$(IGHOB(G)  AND IAGKNY_IY411(TV_IY411,IA,G) AND NOT TV_REQEMAX(TV_IY411,IA,G) AND NOT TV_REQMAX(TV_IY411,IA,G) AND NOT TV_REQFX(TV_IY411,IA,G) AND NOT TV_MPOLMAX(TV_IY411,IA,G)),
                  TV_FIXED(TV_IY411,IA,G) + TV_VARHEAT(TV_IY411,IA,G) * TV_FLH.VAL);
 
 * Finding the cost of the cheapest CND option per region
@@ -153,10 +164,10 @@ TV_ANNUALCOST_E(TV_IY411,IA,G,TV_FLH,TV_FLHHEAT,TV_PR)$(TV_FLHHEAT.VAL > TV_FLH.
 ** Calulating the cost of the cheapest plants
 * when not considering plants affected by max and eq fuel restrictions
 TV_CHEAPEST_E(TV_IY411,IA,TV_FLH,TV_FLHHEAT,TV_PR) =
-                 SMIN(G$(IGE(G) AND IAGKNY_IY411(TV_IY411,IA,G) AND NOT TV_REQEMAX(TV_IY411,IA,G) AND NOT TV_REQMAX(TV_IY411,IA,G) AND NOT TV_REQFX(TV_IY411,IA,G)),
+                 SMIN(G$(IGE(G) AND IAGKNY_IY411(TV_IY411,IA,G) AND NOT TV_REQEMAX(TV_IY411,IA,G) AND NOT TV_REQMAX(TV_IY411,IA,G) AND NOT TV_REQFX(TV_IY411,IA,G) AND NOT TV_MPOLMAX(TV_IY411,IA,G)),
                          TV_ANNUALCOST_E(TV_IY411,IA,G,TV_FLH,TV_FLHHEAT,TV_PR));
 TV_CHEAPEST_H(TV_IY411,IA,TV_FLH,TV_FLHHEAT,TV_PR) =
-                 SMIN(G$(IGH(G) AND IAGKNY_IY411(TV_IY411,IA,G) AND NOT TV_REQEMAX(TV_IY411,IA,G) AND NOT TV_REQMAX(TV_IY411,IA,G) AND NOT TV_REQFX(TV_IY411,IA,G)),
+                 SMIN(G$(IGH(G) AND IAGKNY_IY411(TV_IY411,IA,G) AND NOT TV_REQEMAX(TV_IY411,IA,G) AND NOT TV_REQMAX(TV_IY411,IA,G) AND NOT TV_REQFX(TV_IY411,IA,G) AND NOT TV_MPOLMAX(TV_IY411,IA,G)),
                          TV_ANNUALCOST_H(TV_IY411,IA,G,TV_FLH,TV_FLHHEAT,TV_PR));
 
 * when considering plants affected by max and eq fuel restrictions
@@ -186,14 +197,17 @@ TV_NEVERCHEAP(IY411,IA,G)$(IAGKNY_IY411(IY411,IA,G) AND NOT SUM((TV_IY411,TV_FLH
 
 ); !! END LOOP IY411
 
-****************************************
-*** Changes to IAGKNY and IAGK_HASORPOT
-****************************************
+*-------------------------------------------------
+* Changes to IAGKNY and IAGK_HASORPOT
+*-------------------------------------------------
 
 TV_NEVERCHEAP2(IY411,IA,G) = TV_NEVERCHEAP(IY411,IA,G);
 
 * Technologies with fx or minimum fuel use requirments are NOT removed from IAGKNY:
 TV_NEVERCHEAP2(IY411,IA,G)$(TV_REQEMIN(IY411,IA,G) OR TV_REQMIN(IY411,IA,G) OR TV_REQFX(IY411,IA,G)) = NO;
+
+* Technologies with zero emission constraints are removed from IAGKNY:
+TV_NEVERCHEAP2(IY411,IA,G)$TV_MPOLZERO(IY411,IA,G) = YES;
 
 
 * Make changes to IAGKNY and IAGK_HASORPOT
@@ -201,10 +215,13 @@ TV_NEVERCHEAP2(IY411,IA,G)$(TV_REQEMIN(IY411,IA,G) OR TV_REQMIN(IY411,IA,G) OR T
 IAGKNY(IY411,IA,G)$TV_NEVERCHEAP2(IY411,IA,G) = NO;
 IAGK_HASORPOT(Y,IA,G) = YES$(GKFX(Y,IA,G) or IAGKNY(Y,IA,G));
 
-*** same loop as in balmorelbb4.sim to make sure that if you invest in a technology in the year Y, you can use it until it is decommissioned, even if you do not allow for investments on this technology in the future  :
-LOOP(Y$(ORD(Y) NE CARD(Y)),  LOOP(IA,  LOOP(G$IAGKNY(Y,IA,G),
+
+IAGK_NOINVEST(IY411,IA,G)$IYFIRST(IY411) = 0;
+
+** same loop as in balmorelbb4.sim to make sure that if you invest in a technology in the year Y, you can use it until it is decommissioned, even if you do not allow for investments on this technology in the future  :
+LOOP(Y$(ORD(Y) NE CARD(Y)),  LOOP(IA,  LOOP(G$(IAGKNY(Y,IA,G) AND NOT IAGK_NOINVEST(Y,IA,G)),
                                         LOOP(IYALIAS2$((ORD(IYALIAS2) GT ORD(Y)) AND ((YVALUE(Y)+GDATA(G,'GDLIFETIME')) GT (YVALUE(IYALIAS2)))),
-                                                                    IAGK_HASORPOT(Y++1,IA,G)= IAGK_HASORPOT(Y++1,IA,G)+IAGKNY(Y,IA,G);
+                                                                    IAGK_HASORPOT(IYALIAS2,IA,G)= IAGK_HASORPOT(IYALIAS2,IA,G)+IAGKNY(Y,IA,G);
                                         ););););
 
 
@@ -212,6 +229,6 @@ LOOP(Y$(ORD(Y) NE CARD(Y)),  LOOP(IA,  LOOP(G$IAGKNY(Y,IA,G),
 
 
 * Possibility to print some of the values for debugging
-*execute_unload "../output/temp/costs.gdx", TV_fixed, TV_varel, TV_varheat, TV_REQMIN, TV_REQEMIN, TV_REQMAX, TV_REQEMAX, TV_REQFX, TV_CHEAPESTHOB, TV_CHEAPESTCND, TV_CHEAPESTCNDR,   TV_NEVERCHEAP2,IAGKNY,
+*execute_unload "../output/temp/costs.gdx", TV_fixed, TV_varel, TV_varheat, TV_REQMIN, TV_REQEMIN, TV_REQMAX, TV_REQEMAX, TV_REQFX, TV_MPOLZERO, TV_MPOLMAX,TV_CHEAPESTHOB, TV_CHEAPESTCND, TV_CHEAPESTCNDR,   TV_NEVERCHEAP2,IAGKNY,
 * TV_NEVERCHEAP,IAGKNY_IY411, TV_CHEAPEST, IAGK_HASORPOT, TV_CHEAPEST_H, TV_CHEAPEST_E, TV_ANNUALCOST_E, TV_ANNUALCOST_H, TV_CHEAPEST_EF, TV_CHEAPEST_HF;
 
