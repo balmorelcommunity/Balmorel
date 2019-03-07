@@ -215,15 +215,23 @@ $setglobal POLICIES
 $setglobal GRIDTARIFFS yes
 *!option yes
 
+* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 1 in Flex4Res
+$SETGLOBAL SCENARIO1
+*!option yes
+
+* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 2 in Flex4Res
+$SETGLOBAL SCENARIO2
+*!option yes
+
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 3 and 4 in Flex4Res
-$SETGLOBAL SCENARIO3OR4
+$SETGLOBAL SCENARIO3OR4 yes
 *!option yes
 
 *Scalar for setting threshold for congestion based grid tariff   /0 to 1/
 SCALAR GR_SCALAR_THRESHOLD /.9/ ;
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
-$SETGLOBAL SCENARIO4
+$SETGLOBAL SCENARIO4 yes
 *!option yes
 
 * Taxes addon

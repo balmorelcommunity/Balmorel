@@ -19,11 +19,13 @@ $ifi  %SCENARIO4%==YES    TAX_DE(CCC,DEUSER)       = 0;
 *$ifi  %SCENARIO4%==YES    TAX_DH(CCC,DEUSER)       = 0;
 
 
+$ifi %SCENARIO4%==YES $goto label_SCENARIO4_GR_FC_SC4_end      !! loading the file for scenario 3
+EXECUTE_LOAD  "../../simex/GR_FC_1.gdx" TAX_GETOH ;
+$LABEL label_SCENARIO4_GR_FC_SC4_end
 
-EXECUTE_LOAD  "../../simex/GR_FC.gdx" TAX_GETOH ;
-
-
-
+$ifi not %SCENARIO4%==YES $goto label_SCENARIO4_GR_FC_SC4_end2    !! loading the file for scenario 4
+EXECUTE_LOAD  "../../simex/GR_FC_2.gdx" TAX_GETOH ;
+$LABEL label_SCENARIO4_GR_FC_SC4_end2
 
 
 
