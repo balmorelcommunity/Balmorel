@@ -12,11 +12,12 @@ TV_REQMIN(YYY,AAA,GGG) 'technologies with minimum usage requirements'
 TV_REQFX(YYY,AAA,GGG) 'technologies with fixed usage requirements'
 TV_REQMAX(YYY,AAA,GGG) 'technologies with maximum usage requirements'
 
-TV_REQEMIN(YYY,AAA,GGG) 'technologies with minimum usage requirements'
-TV_REQEMAX(YYY,AAA,GGG) 'technologies with maximum electricity constraints'
+TV_REQEMIN(YYY,AAA,GGG) 'technologies with minimum electricity usage requirements'
+TV_REQEMAX(YYY,AAA,GGG) 'technologies with maximum electricity usage constraints'
 
 TV_MPOLMAX(YYY,AAA,GGG) 'technologies with maximum emission limits'
-TV_MPOLZERO(YYY,AAA,GGG) 'technologies not allowed because of emission limits (is EPS)'
+TV_ZERO(YYY,AAA,GGG) 'technologies not allowed because of limits (is EPS)'
+TV_ZEROEL(YYY,AAA,GGG) 'electricity generating technologies not allowed because of limits (is EPS)'
 ;
 
 *Full load hours
