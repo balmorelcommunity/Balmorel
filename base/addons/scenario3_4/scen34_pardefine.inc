@@ -30,7 +30,16 @@ GR_PRICE_USER(C,'PII','GRDDCY') = 00;
 
 ** 2.3 capacity pricing (included for P2H only since its the only consumer group have endogenous investments in the model)
 
-EXECUTE_LOAD  "../../simex/GR_FC.gdx" GR_GETOH_VAR_T GR_GETOH_FX GR_GETOH_TOTAL  GR_GETOH_PRICE ;
+
+
+$ifi %SCENARIO4%==YES $goto label_SCENARIO4_GR_FC_SC4_end      !! loading the file for scenario 3
+EXECUTE_LOAD  "../../simex/GR_FC_1.gdx" GR_GETOH_VAR_T GR_GETOH_FX GR_GETOH_TOTAL  GR_GETOH_PRICE ;
+$LABEL label_SCENARIO4_GR_FC_SC4_end
+
+$ifi not %SCENARIO4%==YES $goto label_SCENARIO4_GR_FC_SC4_end2      !! loading the file for scenario 3
+EXECUTE_LOAD  "../../simex/GR_FC_2.gdx" GR_GETOH_VAR_T GR_GETOH_FX GR_GETOH_TOTAL  GR_GETOH_PRICE ;
+$LABEL label_SCENARIO4_GR_FC_SC4_end2
+
 
 
 *** Congestion pricing
