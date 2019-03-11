@@ -333,10 +333,10 @@ $offtext
 
 PARAMETER ANNUITYCG(CCC,GGG)           "Transforms investment in technologies into annual payment (fraction)";
 PARAMETER ANNUITYCX(CCC)               "Transforms investment in transmission lines into annual payment (fraction)";
-PARAMETER IYWEIGHT_ANNUITYCG(Y,Y,G)    "Binary parameter to establish whether the annuity of an investment of a technology made in y should be paid in the time period y (0,1)" ;
-PARAMETER IYWEIGHT_ANNUITYCX(Y,Y)      "Binary parameter to establish whether the annuity of an investment of a transmission line made in y should be paid in the time period y (0,1)";
-PARAMETER IINVYEARG_LEFT(C,Y,Y,G)      "Remaining years of the lifetime of G of an investment made in Y at the beggining of Y (years)";
-PARAMETER IINVYEARX_LEFT(C,Y,Y)        "Remaining years of the lifetime of a transmission line investment made in Y at the beggining of Y (years)";
+PARAMETER IYHASANNUITYG(Y,Y,G)         "Binary parameter to establish whether the annuity of an investment of a technology made in Y (first index) should be paid in the time period Y (second index) (0,1)" ;
+PARAMETER IYHASANNUITYX(Y,Y)           "Binary parameter to establish whether the annuity of an investment of a transmission line investment made in Y (first index) should be paid in the time period Y (second index) (0,1)";
+PARAMETER IINVYEARG_LEFT(C,Y,Y,G)      "Remaining years of the lifetime of G of an investment made in Y (first index) at the beggining of Y (second index) (years)";
+PARAMETER IINVYEARX_LEFT(C,Y,Y)        "Remaining years of the lifetime of a transmission line investment made in Y (first index) at the beggining of Y (second index) (years)";
 PARAMETER IN_INV_G(C,Y,G)              "Number of investments made OF G within Y (fraction)";
 PARAMETER IN_INV_X(C,Y)                "Number of investments made OF a transmission line within Y (fraction)";
 SCALAR    LIFETIME_X                   "Lifetime of transmission lines (years)";
@@ -1264,20 +1264,20 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 *   discounted back to the first year in the present BB4 model, this latter is represented by factor IY4GINVCOSTWEIGHT below.
 *   Discounting further back from first year in the present BB4 model to the first year in Y is handled by the factor IDISCOUNTFACTOR(Y) above.
 *   The relative weight of the years is represented by   TODO: sammenlign med SONYstick:
-   + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYWEIGHT_ANNUITYCG(Y,IYALIAS2,G))))
+   + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYG(Y,IYALIAS2,G))))
 
 * Investment costs, generation and storage capacity invested in previous years
-   + IOF1000000*(SUM((IYALIAS2,IA,G)$(IAGKNY(IYALIAS2,IA,G) AND (ORD(IYALIAS2) LT ORD(Y))), VGKN(IYALIAS2,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*IYWEIGHT_ANNUITYCG(IYALIAS2,Y,G)))
+   + IOF1000000*(SUM((IYALIAS2,IA,G)$(IAGKNY(IYALIAS2,IA,G) AND (ORD(IYALIAS2) LT ORD(Y))), VGKN(IYALIAS2,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*IYHASANNUITYG(IYALIAS2,Y,G)))
 
 * Investment costs, new transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):
 * TODO: sammenlign med SONYstick:
     + SUM((IRE,IRI)$IXKN(Y,IRI,IRE),IOF05*VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
-      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYWEIGHT_ANNUITYCX(IYALIAS2,Y)))
+      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYX(IYALIAS2,Y)))
 
 *Investment costs, transmission capacity invested in previous years
     + SUM((IYALIAS2,IRE,IRI)$(IXKN(IYALIAS2,IRI,IRE) AND (ORD(IYALIAS2) LT ORD(Y))),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*
-      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*IYWEIGHT_ANNUITYCX(IYALIAS2,Y))
+      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*IYHASANNUITYX(IYALIAS2,Y))
 
 
 
