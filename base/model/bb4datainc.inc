@@ -160,11 +160,6 @@ $include "../../base/addons/_hooks/setdefine.inc"
 $ifi %HEATTRANS%==yes ALIAS (AAA,IAAAE,IAAAI);
 $ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
 
-****PENDING: MOVE TO HOOKS!!!****
-*$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
-****END OF PENDING: MOVE TO HOOKS!!!****
-
-
 *-------------------------------------------------------------------------------
 * End: Any declarations and definitions of sets, aliases and acronyms for addon
 *-------------------------------------------------------------------------------
@@ -244,16 +239,6 @@ $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
 $if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
 %semislash%;
 
-PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y";
-* Set the relative weight of the individual years in Y.
-* Two ideas implemented here. Used according to option bb4weighty.
-* Simple idea is to give equal weights:
-$ifi "%bb4weighty%"=="same"      IWEIGHTY(Y) = 1;
-* More complex weighting of the individual years (years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)):
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$(ORD(Y) EQ 1) = 1$(CARD(Y) EQ 1) + ((YVALUE(Y+1)-YVALUE(Y)-1)+1)$(CARD(Y) GT 1);
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) GT 1) AND (ORD(Y) LT CARD(Y))) = (YVALUE(Y) - YVALUE(Y-1) -1)/2  + (YVALUE(Y+1) - YVALUE(Y) -1)/2    +1;
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) EQ CARD(Y)) AND (CARD(Y) GT 1)) = ((YVALUE(Y)-YVALUE(Y-1)-1)+1);
-
 *SET DAYTYPE       "Types of days within the week, typically workdays/weekend" %semislash%
 *$if     EXIST '../data/DAYTYPE.inc' $INCLUDE         '../data/DAYTYPE.inc';
 *$if not EXIST '../data/DAYTYPE.inc' $INCLUDE '../../base/data/DAYTYPE.inc';
@@ -278,8 +263,6 @@ SET ECONSETCATEGORY "Set for econ"  %semislash%
 $if     EXIST '../data/ECONSETCATEGORY.inc' $INCLUDE         '../data/ECONSETCATEGORY.inc';
 $if not EXIST '../data/ECONSETCATEGORY.inc' $INCLUDE '../../base/data/ECONSETCATEGORY.inc';
 %semislash%                            */
-
-
 
 
 *-------------------------------------------------------------------------------

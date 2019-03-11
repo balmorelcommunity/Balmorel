@@ -107,7 +107,6 @@ ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GH
 ACRONYMS STEAMTURBINE_SUBCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILER, COMBINEDCYCLE, EXCESS_HEAT, ELECTRICITY_BATTERY, GEOTHERMAL,
 GASTURBINE, HEATPUMP, HEATPUMP_AIR, HEATPUMP_EXCESSHEAT, HEATPUMP_GROUND, PIT, WATERTANK, SOLARPV, SOLARHEATING, WINDTURBINE_OFFSHORE_FAR, WINDTURBINE_OFFSHORE_NEARSHORE, WINDTURBINE_ONSHORE;
 
-
 * ACRONYMS for user defined fuels will be given as part of file FFF.inc
 
 *-------------------------------------------------------------------------------
@@ -121,7 +120,6 @@ GASTURBINE, HEATPUMP, HEATPUMP_AIR, HEATPUMP_EXCESSHEAT, HEATPUMP_GROUND, PIT, W
 * (see file balgams.opt):
 %ONOFFCODELISTING%
 
-
 *-------------------------------------------------------------------------------
 *--- End: Definitions of SETS and ACRONYMS that are given in the $included files
 *-------------------------------------------------------------------------------
@@ -132,7 +130,6 @@ SET IS33(S,S) "Mapping of S (first index) to the following S (second index)";
 *-------------------------------------------------------------------------------
 *----- Definitions of SETS and ALIASES that are needed for data entry:
 *-------------------------------------------------------------------------------
-
 
 * Duplication of sets for describing electricity exchange between regions:
 ALIAS (RRR,IRRRE,IRRRI);
@@ -153,8 +150,6 @@ ALIAS (T,ITALIAS);
 *-------------------------------------------------------------------------------
 *----- End: Definitions of SETS and ALIASES that are needed for data entry:
 *-------------------------------------------------------------------------------
-
-
 
 
 *-------------------------------------------------------------------------------
@@ -225,17 +220,14 @@ SET IGEH(G)                "Technologies generating electricity and heat";
 SET IGE(G)                 "Technologies generating electricity";
 SET IGH(G)                 "Technologies generating heat";
 SET IGBYPASS(G)            "Technologies that may apply turbine bypass mode (subject to option bypass)";
-
 SET IWATERTANK(G)          "Water tank intra-seasonal LARGE heat storage technology"; !! Corresponding to acronym WATERTANK
 SET IPIT(G)                "Pit inter-seasonal heat storage technology";        !! Corresponding to acronym PIT
 SET IHEATPUMP(G)           "Heatpump technology";                               !! Corresponding to acronym HEATPUMP
 SET IHEATPUMPAIR(G)        "Air source heat pump technolgy";         !! Corresponding to acronym HEATPUMP_AIR
 SET IHEATPUMPEXCESSHEAT(G) "Excess heat source heat pump technolgy"; !! Corresponding to acronym HEATPUMP_EXCESSHEAT
 SET IHEATPUMPGROUND(G)     "Ground source heat pump technolgy";      !! Corresponding to acronym HEATPUMP_GROUND
-
 SET IGHNOWT(G)             "Technologies that are not allowed to load specifically water tanks";
 SET ILINKSTO(G,G)          "1st set: Heat storage, 2nd set: technologies allowed to load the storage";
-
 
 
 *-------------------------------------------------------------------------------
@@ -270,9 +262,6 @@ PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of exogenously given generation technol
 *-------------------------------------------------------------------------------
 *---- End: Annually specified generation capacities ----------------------------
 *-------------------------------------------------------------------------------
-
-SET IAGK_HASORPOT(Y,AAA,G) "Technologies with existing or potentially invested capacity current year";
-SET IGDECOMEXOPOT(Y,AAA,G) "Technologies with potential capacity to be decommissioned";
 
 *-------------------------------------------------------------------------------
 *---- Geographically specific values: -----------------------------------------
@@ -334,12 +323,6 @@ $offtext
 
 PARAMETER ANNUITYCG(CCC,GGG)           "Transforms investment in technologies into annual payment (fraction)";
 PARAMETER ANNUITYCX(CCC)               "Transforms investment in transmission lines into annual payment (fraction)";
-PARAMETER IYWEIGHT_ANNUITYCG(Y,Y,G)    "Binary parameter to establish whether the annuity of an investment of a technology made in y should be paid in the time period y (0,1)" ;
-PARAMETER IYWEIGHT_ANNUITYCX(Y,Y)      "Binary parameter to establish whether the annuity of an investment of a transmission line made in y should be paid in the time period y (0,1)";
-PARAMETER IINVYEARG_LEFT(C,Y,Y,G)      "Remaining years of the lifetime of G of an investment made in Y at the beggining of Y (years)";
-PARAMETER IINVYEARX_LEFT(C,Y,Y)        "Remaining years of the lifetime of a transmission line investment made in Y at the beggining of Y (years)";
-PARAMETER IN_INV_G(C,Y,G)              "Number of investments made OF G within Y (fraction)";
-PARAMETER IN_INV_X(C,Y)                "Number of investments made OF a transmission line within Y (fraction)";
 SCALAR    LIFETIME_X                   "Lifetime of transmission lines (years)";
 SCALAR    DISCOUNTRATE                 "Discount rate (applied to all terms in the objective function) (fraction)";
 PARAMETER GINVCOST(AAA,GGG)            "Investment cost for new technology (overwriting default value GDATA(G,'GDINVCOST0') if non-zero or EPS in data file) (MMoney/MW)";
@@ -397,9 +380,6 @@ PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transfer
 PARAMETER GVGKNACCUMNET(YYY,AAA,GGG) "Accumulated new investments this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
 PARAMETER XVXKNACCUMNET(YYY,IRRRE,IRRRI) "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
 
-* Data for handling decommissioning in future runs (TBD):
-PARAMETER GVDECOM_EXO_ACCUM(YYY,AAA,GGG) "Accumulated decommissioning of generation and storage capacity to be transferred to future runs (MW) (MWh for storage)";
-
 * Data for handling interseasonal storage
 PARAMETER GVESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs";
 PARAMETER GVHSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Heat storage contents at beginning of time segment (MWh) to be transferred to future runs";
@@ -425,7 +405,6 @@ FDATA(FFF,'FDACRONYM')$(NOT FDATA(FFF,'FDACRONYM')) = FDATA(FFF,'FDNB');
 $if not errorfree $abort "Balmorel processing aborted after inclusion of file bb4datainc.inc due to data errors";
 
 * ------------------------------------------------------------------------------
-
 
 IS33(S,ISALIAS) = YES$(ORD(ISALIAS) EQ (ORD(S)+1));
 IS33(S,ISALIAS)$((ORD(S) EQ CARD(S)) AND (ORD(ISALIAS) EQ 1)) = YES; !! CIRCULAR ADDED
@@ -504,7 +483,6 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
 
    IGHH(G)      =       IGHHNOSTO(G)
                          +IGHSTOALL(G);
-
 
    IGKHNOSTO(G)     =   IGETOH(G)
                          +IGHHNOSTO(G);
@@ -655,9 +633,6 @@ $ifi %SYSTEMCOST%==yes   $if not exist 'BASELOADSERVICE.inc' $INCLUDE '../../bas
 * PARAMETER XHCOST(IAAAE,IAAAI)    "Heat transmission cost between countries"
 * PARAMETER XHLOSS(IAAAE,IAAAI)    "Heat transmission loss between regions"
 
-
-
-
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFDATALISTING%
 
@@ -722,21 +697,18 @@ GINVCOST(IA,G)$((NOT GINVCOST(IA,G)) AND (SUM(Y,GKFX(Y,IA,G)) OR AGKN(IA,G))) = 
 * Time aggregation:
 $ifi %timeaggr%==yes  $include '../../base/addons/timeaggregation/timeaggr.inc';
 
-
 * The following relates technology and fuel:
 SET IGF(GGG,FFF)   "Relation between technology type and fuel type";
 
 * Internal scalars:
-
-
+SCALAR ILOOPBREAK     "Scalar used as binary number to break any loop function";
 SCALAR IFIRSTYEARNEXTBB4 "First year in the next Balbase4 model";
+
 *------------------------------------------------------------------------------
 * Internal sets:
 
-
 SET IAGKFX(Y,AAA,G)    "Area, technology with positive endogenous capacity current simulation year";
 SET IXKN(Y,IRRRE,IRRRI)  "Pair of regions that may get new transmission capacity, yearly dependent";
-
 
 * Specification of where new endogenous generation capacity may be located:
 
@@ -744,25 +716,135 @@ SET IAGKN(AAA,G) "Area, technology where technology may be invested based on AGK
 SET IAGKNY(Y,AAA,G) "Area, technology where technology may be invested based on IAGKN and implicit constraint from first investment year";
 
 
-* No investment in secondary combination technologies:
-$ifi %COMBTECH%==yes    IAGKNY(Y,IA,IGCOMB2)=NO;
+SET IXK_HASORPOT(Y,IRRRE,IRRRI) "Transmission lines with existing or potentially invested capacity current year";
+SET IAGK_HASORPOT(Y,AAA,G) "Technologies with existing or potentially invested capacity current year";
+SET IGDECOMEXOPOT(Y,AAA,G) "Technologies with potential exogenous capacity to be decommissioned";
 
 SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IMINUS  Violation of equation downwards/;
 * Note: When placed on the left hand side of the equation
 * the sign to the IMINUS and IPLUS terms should be - and +, respectively.
 * This way the sign and the name will be intuitively consistent in equation listings.
 
-
-
-
 *------------------------------------------------------------------------------
 * Internal parameters and settings:
 *------------------------------------------------------------------------------
 
+PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y";
+* Set the relative weight of the individual years in Y.
+* Two ideas implemented here. Used according to option bb4weighty.
+* Simple idea is to give equal weights:
+$ifi "%bb4weighty%"=="same"      IWEIGHTY(Y) = 1;
+* More complex weighting of the individual years (years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)):
+$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$(ORD(Y) EQ 1) = 1$(CARD(Y) EQ 1) + ((YVALUE(Y+1)-YVALUE(Y)-1)+1)$(CARD(Y) GT 1);
+$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) GT 1) AND (ORD(Y) LT CARD(Y))) = (YVALUE(Y) - YVALUE(Y-1) -1)/2  + (YVALUE(Y+1) - YVALUE(Y) -1)/2    +1;
+$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) EQ CARD(Y)) AND (CARD(Y) GT 1)) = ((YVALUE(Y)-YVALUE(Y-1)-1)+1);
+* Unload IWEIGHTY for the output tool
+execute_unload '%relpathModel%../output/temp/IWEIGHTY.gdx' IWEIGHTY;
+
+PARAMETER IYHASANNUITYG(Y,Y,G)         "Binary parameter to establish whether the annuity of an investment of a technology made in Y (first index) should be paid in the time period Y (second index) (0,1)" ;
+PARAMETER IYHASANNUITYX(Y,Y)           "Binary parameter to establish whether the annuity of an investment of a transmission line investment made in Y (first index) should be paid in the time period Y (second index) (0,1)";
+PARAMETER IINVYEARG_LEFT(C,Y,Y,G)      "Remaining years of the lifetime of G of an investment made in Y (first index) at the beggining of Y (second index) (years)";
+PARAMETER IINVYEARX_LEFT(C,Y,Y)        "Remaining years of the lifetime of a transmission line investment made in Y (first index) at the beggining of Y (second index) (years)";
+PARAMETER IN_INV_G(C,Y,G)              "Number of investments made OF G within Y (fraction)";
+PARAMETER IN_INV_X(C,Y)                "Number of investments made OF a transmission line within Y (fraction)";
 
 
+*------------ Calculation of IYHASANNUITYG and IYHASANNUITYX to include/exclude the payment of the annuities---------------------
+**GENERATION
+LOOP(C,
+  LOOP(IGKFIND,
+    LOOP(IYALIAS,
+      LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
+        IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)=GDATA(IGKFIND,'GDLIFETIME');
+      );
+    );
+  );
+);
 
+LOOP(C,
+  LOOP(IGKFIND,
+    LOOP(IYALIAS,
+      ILOOPBREAK=0;
+      IN_INV_G(C,IYALIAS,IGKFIND)=ROUND(IWEIGHTY(IYALIAS)/GDATA(IGKFIND,'GDLIFETIME'));
+*Correction of IN_INV_G
+        IF (IN_INV_G(C,IYALIAS,IGKFIND) EQ 0,
+          IN_INV_G(C,IYALIAS,IGKFIND)=1;
+        );
+        LOOP(Y$(ORD(Y) GE ORD(IYALIAS) AND (ILOOPBREAK EQ 0)),
+*First year's annuity
+          IF (ORD(Y) EQ ORD(IYALIAS),
+            IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
+            IF(IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)*IN_INV_G(C,IYALIAS,IGKFIND) LE IWEIGHTY(Y),
+              ILOOPBREAK=1;
+            );
+            IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(IYALIAS2))=GDATA(IGKFIND,'GDLIFETIME')*IN_INV_G(C,IYALIAS,IGKFIND)-IWEIGHTY(Y);
+          );
+*Remaining year's annuity
+        IF (ORD(Y) GT ORD(IYALIAS),
+          IF ( IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GT IWEIGHTY(Y) ,
+            IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
+              IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
+            );
+            IF ((IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GE IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) ,  !!Assumption: if the reamining years are more ore equal than half of IWEIGHTY, then the technology is in in this snapshot
+              IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
+              ILOOPBREAK=1;
+            );
+            IF ((IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LT IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) , !!Assumption: if the reamining years are less than half of IWEIGHTY, then the technology is out in this snapshot
+              IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 0;
+              ILOOPBREAK=1;
+            );
+          );
+        );
+    );
+  );
+);
 
+** TRANSMISSION LINES
+LOOP(C,
+  LOOP(IYALIAS,
+    LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
+      IINVYEARX_LEFT(C,IYALIAS,Y)=LIFETIME_X;
+    );
+  );
+);
+
+LOOP(C,
+  LOOP(IYALIAS,
+    ILOOPBREAK=0;
+    IN_INV_X(C,IYALIAS)=ROUND(IWEIGHTY(IYALIAS)/LIFETIME_X);
+*Correction of inv
+    IF ( IN_INV_X(C,IYALIAS) EQ 0,
+      IN_INV_X(C,IYALIAS)=1;
+    );
+    LOOP(Y$(ORD(Y) GE ORD(IYALIAS) AND (ILOOPBREAK EQ 0)),
+
+*First year's annuity
+      IF ( ORD(Y) EQ ORD(IYALIAS),
+        IYHASANNUITYX(IYALIAS,Y)= 1;
+        IF(IINVYEARX_LEFT(C,IYALIAS,Y)*IN_INV_X(C,IYALIAS) LE IWEIGHTY(Y),
+        ILOOPBREAK=1;
+        );
+        IINVYEARX_LEFT(C,IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=LIFETIME_X*IN_INV_X(C,IYALIAS)-IWEIGHTY(Y);
+      );
+*Remaining year's annuity
+      IF ( ORD(Y) GT ORD(IYALIAS),
+        IF ( IINVYEARX_LEFT(C,IYALIAS,Y) GT IWEIGHTY(Y) ,
+          IYHASANNUITYX(IYALIAS,Y)= 1;
+          IINVYEARX_LEFT(C,IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARX_LEFT(C,IYALIAS,Y)-IWEIGHTY(Y);
+        );
+        IF ( (IINVYEARX_LEFT(C,IYALIAS,Y) GE IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(C,IYALIAS,Y) LE IWEIGHTY(Y)) ,
+          IYHASANNUITYX(IYALIAS,Y)= 1;
+          ILOOPBREAK=1;
+        );
+        IF ( (IINVYEARX_LEFT(C,IYALIAS,Y) LT IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(C,IYALIAS,Y) LE IWEIGHTY(Y)) ,
+          IYHASANNUITYX(IYALIAS,Y)= 0;
+          ILOOPBREAK=1;
+        );
+      );
+    );
+  );
+);
+*------------ END of Calculation of the correction factor for the annuities---------------------
 
 * Set GDCV value to one for those technologies with capacity defined on HEAT and that are not IGEXT so that their fuel consumption and O&M costs
 * can be found using the same formula as for IGCND and IGEXT:
@@ -772,7 +854,6 @@ GDATA(IGETOH,'GDCV')  = 1;
 GDATA(IGHSTO,'GDCV')  = 1;
 GDATA(IGHSTOS,'GDCV') = 1;
 GDATA(IGSOLH,'GDCV') = 1;
-
 
 * Specifying the relation between technology type and fuel type in IGF:
 
@@ -801,13 +882,10 @@ LOOP(FFF, !! TODO: Check forbedringen af kode som givet p\E5 SONYstick
   IM_N2O(G)$IGF(G,FFF)   = FDATA(FFF,'FDN2O');
 );
 
-
-
 * Further declarations relative to variations:
 * Parameters holding the total weight in the (arbitrary) units of the weights
 * used in input for each season and time period.
 * To be used in calculations below.
-
 
 PARAMETER IWEIGHSUMS          "Weight of the time of each season in S";
 PARAMETER IWEIGHSUMT          "Weight of the time of each time period in T";
@@ -832,7 +910,6 @@ PARAMETER IWTRRSSUM(AAA)   "Annual amount of hydro from reservoirs generated ele
 PARAMETER IWTRRRSUM(AAA)   "Annual amount of hydro-run-of-river generated electricity relative to IWTRRRSUM and (S,T) (MWh)";
 
 
-
 * Demand of electricity (MW) and heat (MW) current simulation year:
 
 * Generation capacity (MW) at the beginning of current simulation year,
@@ -849,9 +926,6 @@ PARAMETER  ITAX_GF(AAA,G)   "Fuel taxes on heat-only units ()",  !! See Balmorel
 PARAMETER  IGMAXF_Y(CCCRRRAAA,FFF) "Maximum fuel use per year (GJ)",  !! See Balmorel.gms
            IGMINF_Y(CCCRRRAAA,FFF) "Minimum fuel use per year (GJ)",  !! See Balmorel.gms
            IGEQF_Y(CCCRRRAAA,FFF)  "Exact fuel use per year (GJ)";    !! See Balmorel.gms
-
-
-SET IXK_HASORPOT(Y,IRRRE,IRRRI) "Transmission lines with existing or potentially invested capacity current year";
 
 * Fixed exchange with third countries (MW) current simulation year:
 PARAMETER IX3FX_T(Y,RRR,S,T) "Fixed export to third countries for each time segment (MW)";
@@ -928,13 +1002,10 @@ $label  full_timeseries_scaling_end
 *Timeseries values are not scaled and match exactly the timeseries (it requires changin quite some code) !!TO DO
 
 
-
 *-------------------------------------------------------------------------------
 * End of: Set the time weights depending on the model
 *-------------------------------------------------------------------------------
 
-
-SCALAR ILOOPBREAK     "Scalar used as binary number to break any loop function";
 
 *-------------------------------------------------------------------------------
 *----- Any internal parameters for addon to be placed here: --------------------
@@ -965,9 +1036,6 @@ $if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.in
 $INCLUDE '../../base/output/printout/printinc/print1.inc';
 
 
-
-
-
 * The input data are subject to a certain control for "reasonable" values.
 * The errors are checked by the code in the files ERRORx.INC
 $INCLUDE "../../base/logerror/logerinc/error2.inc";
@@ -991,8 +1059,6 @@ $ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDA
 * Note: presently not working (the relevant data is not set i file inputdatagdx2xls.txt):
 * NOTWORKING (i.e. you MUST have '$setglobal INPUTDATAGDX2XLS'): Note:  GAMS version 22.7 and later have better support for this....
 *$ifi %INPUTDATAGDX2XLS%==yes  execute  "GDXXRW.EXE Input=%relpathInputdata2GDX%INPUTDATAOUT.gdx  Output=%relpathInputdata2GDX%INPUTDATAOUT.xls  @%relpathModel%inputdatagdx2xls.txt";
-
-
 
 *-------------------------------------------------------------------------------
 * End: Possibly write input data, prepare output file possibilities
@@ -1064,8 +1130,6 @@ execute_unload '%relpathModel%../output/temp/1INPUT.gdx';
 PARAMETER ISIMWEIGHT(YMODEL) "Weighting of the individual years in a BB4 model. Presently not in use as intended (used only in BB4overview.inc).";
 PARAMETER IORD_IY(YMODEL)    "The ord of the years Y over which the present Balbase4 model is formulated (used only in BB4overview.inc).";
 ** End BB4 group
-
-
 
 *-------------------------------------------------------------------------------
 *  Declaration of internal parameters for holding values of dual variables:
@@ -1292,20 +1356,20 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 *   discounted back to the first year in the present BB4 model, this latter is represented by factor IY4GINVCOSTWEIGHT below.
 *   Discounting further back from first year in the present BB4 model to the first year in Y is handled by the factor IDISCOUNTFACTOR(Y) above.
 *   The relative weight of the years is represented by   TODO: sammenlign med SONYstick:
-   + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYWEIGHT_ANNUITYCG(Y,IYALIAS2,G))))
+   + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYG(Y,IYALIAS2,G))))
 
 * Investment costs, generation and storage capacity invested in previous years
-   + IOF1000000*(SUM((IYALIAS2,IA,G)$(IAGKNY(IYALIAS2,IA,G) AND (ORD(IYALIAS2) LT ORD(Y))), VGKN(IYALIAS2,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*IYWEIGHT_ANNUITYCG(IYALIAS2,Y,G)))
+   + IOF1000000*(SUM((IYALIAS2,IA,G)$(IAGKNY(IYALIAS2,IA,G) AND (ORD(IYALIAS2) LT ORD(Y))), VGKN(IYALIAS2,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*IYHASANNUITYG(IYALIAS2,Y,G)))
 
 * Investment costs, new transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):
 * TODO: sammenlign med SONYstick:
     + SUM((IRE,IRI)$IXKN(Y,IRI,IRE),IOF05*VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
-      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYWEIGHT_ANNUITYCX(IYALIAS2,Y)))
+      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYX(IYALIAS2,Y)))
 
 *Investment costs, transmission capacity invested in previous years
     + SUM((IYALIAS2,IRE,IRI)$(IXKN(IYALIAS2,IRI,IRE) AND (ORD(IYALIAS2) LT ORD(Y))),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*
-      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*IYWEIGHT_ANNUITYCX(IYALIAS2,Y))
+      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*IYHASANNUITYX(IYALIAS2,Y))
 
 
 
@@ -1330,8 +1394,6 @@ $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htcosts.inc";
 )
 
 ;
-
-
 
 *----- End: The objective function QOBJ ----------------------------------------
 
@@ -1374,7 +1436,6 @@ $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htheatbalance.
 
 $include "../../base/addons/_hooks/qheq.inc"
 ;
-
 
 
 * Fuel consumption rate.
@@ -1544,9 +1605,6 @@ $include "../../base/addons/_hooks/qhstovolts.inc"
 ;
 
 
-
-
-
 * "Intra-seasonal Heat storage loading less than heat production from allowed technologies (MW)"
 QHSTOLOADT(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO))..
    SUM(IGH$(IAGK_HASORPOT(IY411,IA,IGH) AND ILINKSTO(IGHSTO,IGH)), VGH_T(IY411,IA,IGH,IS3,T))
@@ -1560,7 +1618,6 @@ QHSTOLOADTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS))..
          =G=
    VHSTOLOADTS(IY411,IA,IGHSTOS,S,T)
 ;
-
 
 
 * "Upper limit to heat storage loading (MW)"
@@ -1709,8 +1766,6 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTOS)$IGDECOMEXOPOT(IY411,IA,I
          =G=
   VESTOVOLTS(IY411,IA,IGESTOS,S,T)
 ;
-
-
 
 
 *---------- Fuel restrictions --------------------------------------------------
@@ -2042,7 +2097,6 @@ QMAXINVESTNAF(IY411,FFF)$(FMAXINVESTNA(IY411,FFF) AND (FMAXINVESTNA(IY411,FFF) L
 *-------------------------------------------------------------------------------
 
 * Accumulated endogenous transmission investments during present BB4 model -----
-* TODO: The "NET" version is not correct, it is presently identical to "GROSS"
 
 * "Accumulated new investments available at beginning of next year (MW)"
 QGKNACCUMGROSS(IY411,IA,IGKFIND)$IAGKN(IA,IGKFIND)..
@@ -2434,8 +2488,6 @@ $ifi not exist 'Balmorelbb4.sim'  $include '../../base/model/Balmorelbb4.sim';
 
 *-------------------------------------------------------------------------------
 
-
-
 $ifi not %export_results%==yes $goto result_export
 *------------------------------------------------------------------------------
 *                GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
@@ -2444,25 +2496,24 @@ $ifi not %export_results%==yes $goto result_export
 * For hydro with reservoir save the following, to be used in future runs by addon "import_results":
 
 HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHOURSINST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
-VHYRS_SL(Y,IA,S)  = VHYRS_S.l(Y,IA,S);
-WATERVAL(Y,IA,S)  = QHYRSSEQ.m(Y,IA,S);
+VHYRS_SL(Y,IA,S)  = VHYRS_S.L(Y,IA,S);
+WATERVAL(Y,IA,S)  = QHYRSSEQ.M(Y,IA,S);
 
 execute_unload  "../../simex/HYRSG.gdx", HYRSG;
 execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
 execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
 
-* For runs with investments save the following, to be used in future runs by addon "import_results":
+* For runs with investments and/or decommissionning save the following, to be used in future runs by addon "import_results":
 
 $ifi %TechInvest%==yes  GVGKNACCUMNET(Y,IA,G)=VGKNACCUMNET.L(Y,IA,G);
 $ifi %TransInvest%==yes XVXKNACCUMNET(Y,IRE,IRI)=VXKNACCUMNET.L(Y,IRE,IRI);
+$ifi %DECOM%==yes  GKFX(Y,IA,G)= GKFX(Y,IA,G)-VDECOM_EXO_ACCUM.L(Y,IA,G)-0.000000001;
+*Modification of GKFX values in case they are negative (sometimes there can be issues with the decimals)
+$ifi %DECOM%==yes  GKFX(Y,IA,G)$(GKFX(Y,IA,G) LT 0)= 0;
 
 $ifi %TechInvest%==yes  execute_unload  "../../simex/GVGKNACCUMNET.gdx", GVGKNACCUMNET;
 $ifi %TransInvest%==yes execute_unload  "../../simex/XVXKNACCUMNET.gdx", XVXKNACCUMNET;
-
-* For runs with decommissioning save the following, to be used in future runs by addon "import_results":
-
-$ifi %DECOM%==yes  GVDECOM_EXO_ACCUM(Y,IA,G)= VDECOM_EXO_ACCUM.L(Y,IA,G);
-$ifi %DECOM%==yes  execute_unload  "../../simex/GVDECOM_EXO_ACCUM.gdx", GVDECOM_EXO_ACCUM;
+$ifi %DECOM%==yes  execute_unload  "../../simex/GKFX.gdx", GKFX;
 
 
 * For runs with interseasonal storages save the following, to be used in future runs by addon "import_results":

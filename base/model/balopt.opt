@@ -107,7 +107,7 @@ GINVESTSTART= 2020;
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest yes
+$setglobal TransInvest  yes
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
@@ -270,23 +270,28 @@ $setglobal bypass
 
 *-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
 * overall control variable DECOM must be 'yes' if any of the other decommissioning controls are.
-$setglobal DECOM
+$setglobal DECOM yes
 *!option yes
 
 *-------ENDOGENOUS CAPACITIES----------
 * Note: If no option for endogenous capacities is activated, endogenous investments will not be decommissioned
 
 * Adds Endogenous capacities will maximum stay in the system as much as their lifetimes:
-$setglobal LIFETIME_DECOM_ENDO_G   yes
+$setglobal LIFETIME_DECOM_ENDO_G
 *!option yes
 
 * Adds Endogenous capacities can be decommissioned based on their profitability:
 $setglobal ECONOMIC_DECOM_ENDO_G   yes
 *!option yes
+
+* Adds Endogenous decommissioned endogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
+$setglobal REVERT_DECOM_ENDO_G   yes
+*!option yes
+
 *--------END OF ENDOGENOUS CAPACITIES-----
 
 *--------EXOGENOUS CAPACITIES------------
-* Note: If no option is activated, the exogenous decommissioning assumed in GFKX will take place
+* Note: If either NO_DECOM_EXO_G, or LIFETIME_DECOM_EXO_G, or ECONOMIC_DECOM_EXO_Gor is activated, then the parameter GKFX will be recalculated so capacities only increase in the system.
 
 SCALAR GDECOMEXOSTART 'Year from which endogenous decisions in decommissioning of exogenous generation capacities are allowed';
 GDECOMEXOSTART= 2020;
@@ -294,17 +299,21 @@ GDECOMEXOSTART= 2020;
 SCALAR GDECOMEXOPOTSTART 'Starting year to calculate the yearly decommissioning capacity potential, i.e. exogenous decommissioning occuring before this year will not be considered' ;
 GDECOMEXOPOTSTART= 2016;
 
-* Adds No decommissioning of exogenous capacities will take place at all. GKFX capacities development will be recalculated so capacities only increase in the system.
+* Adds No decommissioning of exogenous capacities will take place at all. The capacities in the recalculated GKFX will take place in the optimization
 * Note: This option is not compatible with the other exogenous capacities decommissioning options.
 $setglobal NO_DECOM_EXO_G
 *!option yes
 
-* Adds Exogenous capacities will maximum stay in the system as much as their lifetime, which should be represented in the yearly development of capacities of the input parameter GKFX:
-$setglobal LIFETIME_DECOM_EXO_G   yes
+* Adds Exogenous capacities will maximum stay in the system as much as their lifetimes (or as much as political decissions suggest it, for instance), which should be represented in the yearly development of capacities of the input parameter GKFX:
+$setglobal LIFETIME_DECOM_EXO_G
 *!option yes
 
 * Adds Exogenous capacities can be decommissioned based on their profitability:
 $setglobal ECONOMIC_DECOM_EXO_G    yes
+*!option yes
+
+* Adds Endogenous decommissioned exogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
+$setglobal REVERT_DECOM_EXO_G   yes
 *!option yes
 *--------END OF ENDOGENOUS CAPACITIES-----
 *-----------------------End of TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
@@ -333,8 +342,7 @@ $setglobal UnitCseg
 *!option yes
 *-------------------- End of UNIT COMMITMENT -----------------------------------------------------------
 
-*-------------------------------------------------------------------------------
-* Stepwise_ramping (linear version):
+*--------------------STEPWISE RAMPING (LINEAR VERSION)-----------------------------------------------------------
 * overall control variable Stepwise_ramping must be 'yes' if any of the other stepwise ramping controls are:
 * This add-on is an alternative to Unit Commitment to model ramping constraints without using MIP. This add-on uses currently the relevant data and sets from the Unit Commitment add-on
 * This add-on is not compatible with the Unit Commitment stepwiseramping option
@@ -348,7 +356,7 @@ $setglobal STEPWISE_RAMPING
 $setglobal SEASONALLINKRAMPING  YES
 *!option yes
 
-*-------------------------------------------------------------------------------
+*----------------END OF STEPWISE RAMPING (LINEAR VERSION)----------------------------------------------------------
 
 
 * Calibrate the price side of electricity demand
@@ -407,7 +415,7 @@ $label endofMSNTrelpaths
 
 * Overall control to export results so they can be used in future runs :
 
-$Setglobal export_results 
+$Setglobal export_results  yes
 *!option yes
 
 *--------------------------------------------
@@ -437,7 +445,7 @@ $setglobal HYRSBB123 quant
 
 *--------------------INTERSEASONAL STORAGE-----------------------------------------------------------
 *Import Electricity storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
-$setglobal ADDELECSTORCONT  yes
+$setglobal ADDELECSTORCONT yes
 *!option yes
 
 *Import Heat storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
