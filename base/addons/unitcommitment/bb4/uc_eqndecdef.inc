@@ -1,4 +1,4 @@
-* UC Translated to BB4 by Juan Gea Bermúdez 2018.
+* UC Translated to BB4 by Juan Gea BermÃºdez 2018.
 
 EQUATION  QUCVUCON(Y,AAA,G,S,T)    'Unit commitment: Number of endogenous units on limited by unit size and capacity)';
 EQUATION  QUCVUCU(Y,AAA,G,S,T)     'Unit commitment: Number of start up endogenous units on limited by unit size and capacity)';
@@ -71,7 +71,7 @@ $label  MINFUELCONS_END
 
 $ifi not %MINSTARTUPTIME%==yes $goto MINSTARTUPTIME_END
 
-EQUATION  QUCUT(Y,AAA,G,S,T)      'Unit commitment: Number of unit startups respecting minimum off time and plant capacity.';
+EQUATION  QUCUT(Y,AAA,G,S,T)      'Unit commitment: Number of unit startups respecting minimum on time';
 
 QUCUT(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((GDATA(IGUC,'GDUCUTMIN') GT CHRONOHOUR(S,T)) AND (NOT (ORD(S) EQ 1 AND (ORD(T) EQ 1))) AND IS3(S))..
 * units start up at t
@@ -86,7 +86,7 @@ $label  MINSTARTUPTIME_END
 
 $ifi not %MINSHUTDOWNTIME%==yes $goto MINSHUTDOWNTIME_END
 
-EQUATION  QUCDT(Y,AAA,G,S,T)  'Unit commitment: Number of unit shutdowns respecting minimum on time and number of units on.';
+EQUATION  QUCDT(Y,AAA,G,S,T)  'Unit commitment: Number of unit shutdowns respecting minimum off time';
 
 QUCDT(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((GDATA(IGUC,'GDUCDTMIN') GT CHRONOHOUR(S,T)) AND (NOT (ORD(S) EQ 1 AND (ORD(T) EQ 1))) AND IS3(S)) ..
 * units shut down at t
