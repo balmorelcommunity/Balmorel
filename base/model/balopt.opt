@@ -95,8 +95,8 @@ $setglobal testbb1234
 
 *---- Generation investments options----
 
-* Permit investments in generation capacity:
-$setglobal GenInvest  yes
+* Permit investments in generation and storage capacity:
+$setglobal TechInvest  yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
@@ -149,15 +149,15 @@ $setglobal full_timeseries_scaling
 *---- Heat storage loading restrictions ------    '
 *overall control variable heatsto_loading_rest must be 'yes' if any of the other heat storage loading restriction controls are:
 
-$setglobal heatsto_loading_rest yes
+$setglobal heatsto_loading_rest  
 *!option yes
 
 *Heat storages are forbidden to load other heat storages (if option "yes", heat storages will not be allowed to load other heat storages)
-$setglobal heatsto2heasto_rest  yes
+$setglobal heatsto2heasto_rest  YES
 *!option yes
 
 *Water tanks loading is restricted with the set IGHNOWT (if option "yes", technologies included in this set will not be allowed to load water tanks)
-$setglobal watertank_loading_rest yes
+$setglobal watertank_loading_rest
 *!option yes
 
 

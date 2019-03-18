@@ -223,6 +223,10 @@ $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
 $if not EXIST '../data/Y.inc' $INCLUDE '../../base/data/Y.inc';
 %semislash%;
 
+* Aliases relative to Y moved here for strong convenience:
+ALIAS (Y,IYALIAS);
+ALIAS (Y,IYALIAS2);
+
 SET S(SSS)    "Seasons in the simulation"   %semislash%
 $if     EXIST '../data/S.inc' $INCLUDE      '../data/S.inc';
 $if not EXIST '../data/S.inc' $INCLUDE '../../base/data/S.inc';
@@ -232,6 +236,21 @@ SET T(TTT)    "Time periods within the season in the simulation"  %semislash%
 $if     EXIST '../data/T.inc' $INCLUDE         '../data/T.inc';
 $if not EXIST '../data/T.inc' $INCLUDE '../../base/data/T.inc';
 %semislash%;
+
+PARAMETER YVALUE(YYY)   "Numerical value of the years labels"  %semislash%
+$if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
+$if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
+%semislash%;
+
+PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y";
+* Set the relative weight of the individual years in Y.
+* Two ideas implemented here. Used according to option bb4weighty.
+* Simple idea is to give equal weights:
+$ifi "%bb4weighty%"=="same"      IWEIGHTY(Y) = 1;
+* More complex weighting of the individual years (years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)):
+$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$(ORD(Y) EQ 1) = 1$(CARD(Y) EQ 1) + ((YVALUE(Y+1)-YVALUE(Y)-1)+1)$(CARD(Y) GT 1);
+$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) GT 1) AND (ORD(Y) LT CARD(Y))) = (YVALUE(Y) - YVALUE(Y-1) -1)/2  + (YVALUE(Y+1) - YVALUE(Y) -1)/2    +1;
+$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) EQ CARD(Y)) AND (CARD(Y) GT 1)) = ((YVALUE(Y)-YVALUE(Y-1)-1)+1);
 
 *SET DAYTYPE       "Types of days within the week, typically workdays/weekend" %semislash%
 *$if     EXIST '../data/DAYTYPE.inc' $INCLUDE         '../data/DAYTYPE.inc';
@@ -369,13 +388,6 @@ PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of existing generation technologies (MW
 $if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
 $if not EXIST '../data/GKFX.inc' $INCLUDE '../../base/data/GKFX.inc';
 %semislash%;
-
-PARAMETER YVALUE(YYY)   "Numerical value of the years labels"  %semislash%
-$if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
-$if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
-%semislash%;
-
-
 
 
 PARAMETER FMAXINVEST(CCC,FFF)   "Maximum investment (MW) by fuel type for each year simulated"    %semislash%
@@ -540,16 +552,20 @@ $if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.
 $if not EXIST '../data/DISCOUNTRATE.inc' $INCLUDE '../../base/data/DISCOUNTRATE.inc';
 %semislash%;
 
-PARAMETER ANNUITYCG(CCC,GGG)   "Transforms investment in transmission lines into annual payment (fraction)"  %semislash%
+SCALAR    LIFETIME_X               "Lifetime of transmission lines (years)";   %semislash%
+$if     EXIST '../data/LIFETIME_X.inc' $INCLUDE         '../data/LIFETIME_X.inc';
+$if not EXIST '../data/LIFETIME_X.inc' $INCLUDE '../../base/data/LIFETIME_X.inc';
+%semislash%;
+
+PARAMETER ANNUITYCG(CCC,GGG)       "Transforms investment in technologies into annual payment (fraction)";      %semislash%
 $if     EXIST '../data/ANNUITYCG.inc' $INCLUDE         '../data/ANNUITYCG.inc';
 $if not EXIST '../data/ANNUITYCG.inc' $INCLUDE '../../base/data/ANNUITYCG.inc';
 %semislash%;
 
-PARAMETER ANNUITYCX(CCC)   "Transforms investment to annual payment (fraction) for transmission"  %semislash%
+PARAMETER ANNUITYCX(CCC)                 "Transforms investment in transmission lines into annual payment (fraction)";       %semislash%
 $if     EXIST '../data/ANNUITYCX.inc' $INCLUDE         '../data/ANNUITYCX.inc';
 $if not EXIST '../data/ANNUITYCX.inc' $INCLUDE '../../base/data/ANNUITYCX.inc';
 %semislash%;
-
 
 PARAMETER GINVCOST(AAA,GGG)    "Investment cost for new technology (MMoney/MW)"  %semislash%
 $if     EXIST '../data/GINVCOST.inc' $INCLUDE         '../data/GINVCOST.inc';
@@ -815,7 +831,7 @@ $include "../../base/addons/_hooks/pardefine.inc"
 
 
 *Decommissioning definition has to be included after all AGKN parameters have been defined
-PARAMETER DECOM_G(YYY,YYY,AAA,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERATION INVESTMENTS' %semislash%
+PARAMETER DECOM_G(YYY,YYY,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERATION INVESTMENTS' %semislash%
 $if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
 $if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
 %semislash%;
