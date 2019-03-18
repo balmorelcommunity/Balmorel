@@ -23,14 +23,8 @@ $ifi %ADDELECSTORCONT%==yes  execute_load  '../../simex/GVESTOVOLTS.gdx', GVESTO
 $ifi %ADDHEATSTORCONT%==yes  execute_load  '../../simex/GVHSTOVOLTS.gdx', GVHSTOVOLTS;
 
 *Investments with/without decommissioning of endogenous capacity
-$ifi %ADDTECHINVEST%==yes  execute_load  '../../simex/GVGKNACCUMNET.gdx', GVGKNACCUMNET;
+$ifi %ADDTECHDEV%==yes  execute_load  '../../simex/GKFXACCUMNET.gdx', GKFXACCUMNET;
 $ifi %ADDTRANSINVEST%==yes execute_load  '../../simex/XVXKNACCUMNET.gdx', XVXKNACCUMNET;
-
-*Decommissioning of exogenous capacities
-$ifi %ADDTECHDECOM%==yes  GKFX(YYY,AAA,GGG)=0;
-$ifi %ADDTECHDECOM%==yes  execute_load  '../../simex/GKFX.gdx', GKFX;
-
-
 
 
 

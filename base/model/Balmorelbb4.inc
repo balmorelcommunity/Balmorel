@@ -377,7 +377,7 @@ PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the se
 PARAMETER VHYRS_SL(YYY,AAA,SSS)       "To be saved for comparison with BB1/BB2 solution value for VHYRS_S.L (initial letter is V although declared as a parameter) (MWh)"
 PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transferred to future runs (input-Money/MWh)";
 * Data for handling investments in future runs:
-PARAMETER GVGKNACCUMNET(YYY,AAA,GGG) "Accumulated new investments this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
+PARAMETER GKFXACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
 PARAMETER XVXKNACCUMNET(YYY,IRRRE,IRRRI) "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
 
 * Data for handling interseasonal storage
@@ -2322,69 +2322,11 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
 $ifi %heatsto_loading_rest%==yes QHSTOLOADT
 $ifi %heatsto_loading_rest%==yes QHSTOLOADTS
 
-$ifi %TechInvest%==yes           QESTOLOADTLIM
-$ifi %TechInvest%==yes           QESTOLOADTLIMS
-$ifi %TechInvest%==yes           QHSTOLOADTLIM
-$ifi %TechInvest%==yes           QHSTOLOADTLIMS
-
-$ifi %TechInvest%==yes           QESTOVOLTLIM
-$ifi %TechInvest%==yes           QESTOVOLTLIMS
-$ifi %TechInvest%==yes           QHSTOVOLTLIM
-$ifi %TechInvest%==yes           QHSTOVOLTLIMS
-
-$ifi %TechInvest%==yes           QESTOVGETLIM
-$ifi %TechInvest%==yes           QESTOVGETLIMS
-$ifi %TechInvest%==yes           QHSTOVGHTLIM
-$ifi %TechInvest%==yes           QHSTOVGHTLIMS
-
-*--- Capacity constraints on generation (MW) -----------------------------------
-
-*$ifi %TechInvest%==yes          QGKNACCUMGROSS
-$ifi %TechInvest%==yes           QGKNACCUMNET
-
-$ifi %TechInvest%==yes           QGKE_UP
-$ifi %TechInvest%==yes           QGKH_UP
-$ifi %TechInvest%==yes           QGKE_LO
-$ifi %TechInvest%==yes           QGKH_LO
-
-$ifi %TechInvest%==yes           QHYRRDISPATCH
-$ifi %TechInvest%==yes           QWNDDISPATCH
-$ifi %TechInvest%==yes           QSOLEDISPATCH
-$ifi %TechInvest%==yes           QSOLHDISPATCH
-$ifi %TechInvest%==yes           QWAVEDISPATCH
-
 *--- Transmission capacity (listed in QXKE_UP) -----------------------------------------------------
 
 $ifi %TransInvest%==yes         QXKNACCUMNET
 $ifi %TransInvest%==yes         QXINVSYMMETRY
 $ifi %TransInvest%==yes         QXK_UP
-
-
-*--- Fuel potential restrictions ------------------------------------------------
-                                QKEFUELC
-                                QKEFUELR
-                                QKEFUELA
-
-*--- Potential capacity restrictions per technology group ------------------------------------------------
-
-                                QKTECHGROUPC
-                                QKTECHGROUPR
-                                QKTECHGROUPA
-
-*--- Fuel capacity restrictions per year ------------------------------------------------
-                                QKMINFC
-                                QKMAXFC
-                                QKEQFC
-                                QKMINFR
-                                QKMAXFR
-                                QKEQFR
-                                QKMINFNA
-                                QKMAXFNA
-                                QKEQFNA
-
-*                                QKMINFA  TODO
-*                                QKMAXFA  TODO
-*                                QKEQFA   TODO
 
 *--- Electricity generation restrictions by fuel -------------------------------
                                 QGMINFUELC
@@ -2409,8 +2351,70 @@ $ifi %TransInvest%==yes         QXK_UP
                                 QLIMSO2
                                 QLIMNOX
                                 QLIMCO2NA
+
+
+*---------------------------------------------------------------
+$ifi not %TechInvest%==yes $ifi not %DECOM%==yes  $goto NO_TECH_INVESTMENTS_NO_DECOMMISSIONING
+*--- Investment and decommissioning related equations ----------
+
+*--- Storage restrictions ------------------------------------------------------
+                                 QESTOLOADTLIM
+                                 QESTOLOADTLIMS
+                                 QHSTOLOADTLIM
+                                 QHSTOLOADTLIMS
+
+                                 QESTOVOLTLIM
+                                 QESTOVOLTLIMS
+                                 QHSTOVOLTLIM
+                                 QHSTOVOLTLIMS
+
+                                 QESTOVGETLIM
+                                 QESTOVGETLIMS
+                                 QHSTOVGHTLIM
+                                 QHSTOVGHTLIMS
+*--- Capacity constraints on generation (MW) -----------------------------------
+*                                QGKNACCUMGROSS   NOT RELEVANT
+                                 QGKNACCUMNET
+
+                                 QGKE_UP
+                                 QGKH_UP
+                                 QGKE_LO
+                                 QGKH_LO
+
+                                 QHYRRDISPATCH
+                                 QWNDDISPATCH
+                                 QSOLEDISPATCH
+                                 QSOLHDISPATCH
+                                 QWAVEDISPATCH
+*--- Potential capacity restrictions per technology group ------------------------------------------------
+                                 QKTECHGROUPC
+                                 QKTECHGROUPR
+                                 QKTECHGROUPA
+*--- Fuel potential restrictions ------------------------------------------------
+                                 QKEFUELC
+                                 QKEFUELR
+                                 QKEFUELA
+*--- Fuel capacity restrictions per year ------------------------------------------------
+                                 QKMINFC
+                                 QKMAXFC
+                                 QKEQFC
+                                 QKMINFR
+                                 QKMAXFR
+                                 QKEQFR
+                                 QKMINFNA
+                                 QKMAXFNA
+                                 QKEQFNA
+*                                QKMINFA  TODO
+*                                QKMAXFA  TODO
+*                                QKEQFA   TODO
 *--- Investment restrictions----------------------------------------------------
-                                QMAXINVESTNAF
+                                 QMAXINVESTNAF
+
+$label  NO_TECH_INVESTMENTS_NO_DECOMMISSIONING
+*---------------------------------------------------------------
+*--- End: Investment and decommissioning related equations ----------
+
+
 
 *----- Any equations for addon to be placed here: ------------------------------
 
@@ -2504,23 +2508,27 @@ execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
 execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
 
 * For runs with investments and/or decommissionning save the following, to be used in future runs by addon "import_results":
-
-$ifi %TechInvest%==yes  GVGKNACCUMNET(Y,IA,G)=VGKNACCUMNET.L(Y,IA,G);
 $ifi %TransInvest%==yes XVXKNACCUMNET(Y,IRE,IRI)=VXKNACCUMNET.L(Y,IRE,IRI);
-$ifi %DECOM%==yes  GKFX(Y,IA,G)= GKFX(Y,IA,G)-VDECOM_EXO_ACCUM.L(Y,IA,G)-0.000000001;
-*Modification of GKFX values in case they are negative (sometimes there can be issues with the decimals)
-$ifi %DECOM%==yes  GKFX(Y,IA,G)$(GKFX(Y,IA,G) LT 0)= 0;
+GKFXACCUMNET(Y,IA,G)= GKFX(Y,IA,G)
+$ifi %DECOM%==yes       -VDECOM_EXO_ACCUM.L(Y,IA,G)
+$ifi %TechInvest%==yes  +VGKNACCUMNET.L(Y,IA,G)
+;
+*Modification of GKFX values in case they are negative or extremely small (sometimes there can be issues with the decimals)
+GKFXACCUMNET(Y,IA,G)$((GKFXACCUMNET(Y,IA,G) LT 0) OR ((GKFXACCUMNET(Y,IA,G) LT 0.000000001)))= 0;
 
-$ifi %TechInvest%==yes  execute_unload  "../../simex/GVGKNACCUMNET.gdx", GVGKNACCUMNET;
 $ifi %TransInvest%==yes execute_unload  "../../simex/XVXKNACCUMNET.gdx", XVXKNACCUMNET;
-$ifi %DECOM%==yes  execute_unload  "../../simex/GKFX.gdx", GKFX;
-
+execute_unload  "../../simex/GKFXACCUMNET.gdx", GKFXACCUMNET;
 
 * For runs with interseasonal storages save the following, to be used in future runs by addon "import_results":
 *Initial energy storage volumen at the beginning of each week
 
 GVESTOVOLTS(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1)=VESTOVOLTS.L(Y,IA,IGESTOS,S,T);
 GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1)=VHSTOVOLTS.L(Y,IA,IGHSTOS,S,T);
+
+*Correction of seasonal values to avoid infeasibilities due to decimal errors by substracting a very small number to the storage levels
+
+GVESTOVOLTS(Y,IA,IGESTOS,S,T)$((ORD(T) EQ 1) AND GVESTOVOLTS(Y,IA,IGESTOS,S,T) AND (GKFXACCUMNET(Y,IA,IGESTOS) LE VESTOVOLTS.L(Y,IA,IGESTOS,S,T)))=GVESTOVOLTS(Y,IA,IGESTOS,S,T)-0.000000001;
+GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$((ORD(T) EQ 1) AND GVHSTOVOLTS(Y,IA,IGHSTOS,S,T) AND (GKFXACCUMNET(Y,IA,IGHSTOS) LE VESTOVOLTS.L(Y,IA,IGHSTOS,S,T)))=GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)-0.000000001;
 
 execute_unload  "../../simex/GVESTOVOLTS.gdx", GVESTOVOLTS;
 execute_unload  "../../simex/GVHSTOVOLTS.gdx", GVHSTOVOLTS;

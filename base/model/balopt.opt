@@ -96,7 +96,7 @@ $setglobal testbb1234
 *---- Generation investments options----
 
 * Permit investments in generation and storage capacity:
-$setglobal TechInvest yes
+$setglobal TechInvest  yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
@@ -277,7 +277,7 @@ $setglobal DECOM yes
 * Note: If no option for endogenous capacities is activated, endogenous investments will not be decommissioned
 
 * Adds Endogenous capacities will maximum stay in the system as much as their lifetimes:
-$setglobal LIFETIME_DECOM_ENDO_G
+$setglobal LIFETIME_DECOM_ENDO_G YES
 *!option yes
 
 * Adds Endogenous capacities can be decommissioned based on their profitability:
@@ -305,7 +305,7 @@ $setglobal NO_DECOM_EXO_G
 *!option yes
 
 * Adds Exogenous capacities will maximum stay in the system as much as their lifetimes (or as much as political decissions suggest it, for instance), which should be represented in the yearly development of capacities of the input parameter GKFX:
-$setglobal LIFETIME_DECOM_EXO_G
+$setglobal LIFETIME_DECOM_EXO_G  YES
 *!option yes
 
 * Adds Exogenous capacities can be decommissioned based on their profitability:
@@ -415,7 +415,7 @@ $label endofMSNTrelpaths
 
 * Overall control to export results so they can be used in future runs :
 
-$Setglobal export_results  yes
+$Setglobal export_results yes
 *!option yes
 
 *--------------------------------------------
@@ -454,31 +454,18 @@ $setglobal ADDHEATSTORCONT  yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 
 
-*--------------------INVESTMENTS-----------------------------------------------------------
+*--------------------INVESTMENTS AND DECOMMISSIONING-----------------------------------------------------------
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
 
-*Import generation and storage technology investments from previous runs, which might include decommissioning
-$setglobal ADDTECHINVEST   yes
+*Import generation and storage technology capacity development from previous runs
+$setglobal ADDTECHDEV   yes
 *!option yes
 
 *Import transmission investments from previous runs
 $setglobal ADDTRANSINVEST   yes
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
-
-*--------------------DECOMMISSIONING-----------------------------------------------------------
-*NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
-
-*Import generation and storage technology decommissioning of exogenous capacities from previous runs
-$setglobal ADDTECHDECOM  yes
-*!option yes
-
-*--------------------END OF INVESTMENTS-----------------------------------------------------------
-
-
-
 *-------------------------------------------------------------------------------
-
 
 *------------- END OF IMPORT OPTIONS ----------------
 *--------------------------------------------
