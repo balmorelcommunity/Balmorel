@@ -153,11 +153,11 @@ $setglobal heatsto_loading_rest
 *!option yes
 
 *Heat storages are forbidden to load other heat storages (if option "yes", heat storages will not be allowed to load other heat storages)
-$setglobal heatsto2heasto_rest  yes
+$setglobal heatsto2heasto_rest
 *!option yes
 
 *Water tanks loading is restricted with the set IGHNOWT (if option "yes", technologies included in this set will not be allowed to load water tanks)
-$setglobal watertank_loading_rest yes
+$setglobal watertank_loading_rest 
 *!option yes
 
 

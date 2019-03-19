@@ -2514,7 +2514,7 @@ $ifi %DECOM%==yes       -VDECOM_EXO_ACCUM.L(Y,IA,G)
 $ifi %TechInvest%==yes  +VGKNACCUMNET.L(Y,IA,G)
 ;
 *Modification of GKFX values in case they are negative or extremely small (sometimes there can be issues with the decimals)
-GKFXACCUMNET(Y,IA,G)$((GKFXACCUMNET(Y,IA,G) LT 0) OR ((GKFXACCUMNET(Y,IA,G) LT 0.000000001)))= 0;
+GKFXACCUMNET(Y,IA,G)$(GKFXACCUMNET(Y,IA,G) LT 0.000000001)= 0;
 
 $ifi %TransInvest%==yes execute_unload  "../../simex/XVXKNACCUMNET.gdx", XVXKNACCUMNET;
 execute_unload  "../../simex/GKFXACCUMNET.gdx", GKFXACCUMNET;
