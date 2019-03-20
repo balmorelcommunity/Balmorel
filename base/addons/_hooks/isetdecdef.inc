@@ -18,6 +18,7 @@ $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_isetde
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_isetdecdef.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_isetdecdef.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_isetdecdef.inc";
+$ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_isetdecdef.inc";
 
 
 $label endoffile

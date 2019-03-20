@@ -22,12 +22,9 @@ $label label_no_hydro_results_import
 $ifi %ADDELECSTORCONT%==yes  execute_load  '../../simex/GVESTOVOLTS.gdx', GVESTOVOLTS;
 $ifi %ADDHEATSTORCONT%==yes  execute_load  '../../simex/GVHSTOVOLTS.gdx', GVHSTOVOLTS;
 
-*Investments
-$ifi %ADDTECHINVEST%==yes  execute_load  '../../simex/GVGKNACCUMNET.gdx', GVGKNACCUMNET;
-$ifi %ADDTRANSINVEST%==yes execute_load  '../../simex/XVXKNACCUMNET.gdx', XVXKNACCUMNET;
-
-*Decommissioning
-$ifi %ADDTECHDECOM%==yes  execute_load  '../../simex/GVDECOM_EXO_ACCUM.gdx', GVDECOM_EXO_ACCUM;
+*Investments with/without decommissioning of endogenous capacity
+$ifi %ADDTECHDEV%==yes  execute_load  '../../simex/GKACCUMNET.gdx', GKACCUMNET;
+$ifi %ADDTRANSDEV%==yes execute_load  '../../simex/XKACCUMNET.gdx', XKACCUMNET;
 
 
 
