@@ -616,6 +616,11 @@ $if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
 *-------------------------------------------------------------------------------
 *---- Transmission data: ------------------------------------------------------
 *-------------------------------------------------------------------------------
+PARAMETER XINVCOST(YYY,IRRRE,IRRRI)  "Investment cost in new transmission capacity, default: INF or 0: no investment, EPS or positive: possible with stated cost (Money/MW)"    %semislash%
+$if     EXIST '../data/XINVCOST.inc' $INCLUDE         '../data/XINVCOST.inc';
+$if not EXIST '../data/XINVCOST.inc' $INCLUDE '../../base/data/XINVCOST.inc';
+%semislash%;
+
 !! Previous name XKINI; for data consistency, kept for data inclusion for this specific version, data copied to XKFX below.     todo
 PARAMETER XKINI(YYY,IRRRE,IRRRI)  "Capacity of exogenously given transmission capacity between regions (MW)"   %semislash%
 $if     EXIST '../data/XKINI.inc' $INCLUDE         '../data/XKINI.inc';
@@ -624,11 +629,6 @@ $if not EXIST '../data/XKINI.inc' $INCLUDE '../../base/data/XKINI.inc';
 
 PARAMETER XKFX(YYY,IRRRE,IRRRI)  "Capacity of exogenously given transmission capacity between regions (MW)"; !! New suggested name for XKINI. XKFX data copie3d to XKFX.
 XKFX(YYY,IRRRE,IRRRI) = XKINI(YYY,IRRRE,IRRRI);
-
-PARAMETER XINVCOST(YYY,IRRRE,IRRRI)  "Investment cost in new transmission capacity, default: INF or 0: no investment, EPS or positive: possible with stated cost (Money/MW)"    %semislash%
-$if     EXIST '../data/XINVCOST.inc' $INCLUDE         '../data/XINVCOST.inc';
-$if not EXIST '../data/XINVCOST.inc' $INCLUDE '../../base/data/XINVCOST.inc';
-%semislash%;
 
 PARAMETER XCOST(IRRRE,IRRRI)      "Transmission cost between regions (Money/MWh)"   %semislash%
 $if     EXIST '../data/XCOST.inc' $INCLUDE         '../data/XCOST.inc';
@@ -646,12 +646,6 @@ $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT  PARAMETER XKRATE(IRRRE,IRRRI,SSS,TTT) "T
 $if     EXIST '../data/XKRATE.inc' $INCLUDE         '../data/XKRATE.inc';
 $if not EXIST '../data/XKRATE.inc' $INCLUDE '../../base/data/XKRATE.inc';
 %semislash%;
-* Default value inserted:
-$ifi %XKRATE_DOL%==IRRRE_IRRRI          XKRATE(IRE,IRI)$(NOT XKRATE(IRE,IRI)) = 1;
-$ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS      XKRATE(IRE,IRI,S)$(NOT XKRATE(IRE,IRI,S)) = 1;
-$ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT  XKRATE(IRE,IRI,S,T)$(NOT XKRATE(IRE,IRI,S,T)) = 1;
-
-
 
 PARAMETER XMAXINV(IRRRE,IRRRI)   "Max investment in transmission capacity between two regions for each simulated year (each 5th year)"  %semislash%
 $if     EXIST '../data/XMAXINV.inc' $INCLUDE         '../data/XMAXINV.inc';
@@ -710,8 +704,6 @@ PARAMETER GKRATE(AAA,GGG,SSS)                       "Capacity rating (non-negati
 $if     EXIST '../data/GKRATE.inc' $INCLUDE         '../data/GKRATE.inc';
 $if not EXIST '../data/GKRATE.inc' $INCLUDE '../../base/data/GKRATE.inc';
 %semislash%;
-* Default value inserted:
-GKRATE(IA,G,S)$(NOT GKRATE(IA,G,S)) = 1;
 
 PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)                    "Variation in electricity demand"   %semislash%
 $if     EXIST '../data/DE_VAR_T.inc' $INCLUDE      '../data/DE_VAR_T.inc';

@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug
+$setglobal vqdebug YES
 *!option yes
 
 
@@ -96,7 +96,7 @@ $setglobal testbb1234
 *---- Generation investments options----
 
 * Permit investments in generation and storage capacity:
-$setglobal TechInvest  yes
+$setglobal TechInvest
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
@@ -107,7 +107,7 @@ GINVESTSTART= 2020;
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest  yes
+$setglobal TransInvest YES
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
@@ -146,7 +146,7 @@ $setglobal full_timeseries_scaling
 *-------------------------------------------------
 
 *-------------------------------------------------
-*---- Heat storage loading restrictions ------    '
+*---- Heat storage loading restrictions ------
 *overall control variable heatsto_loading_rest must be 'yes' if any of the other heat storage loading restriction controls are:
 
 $setglobal heatsto_loading_rest
@@ -157,7 +157,7 @@ $setglobal heatsto2heasto_rest
 *!option yes
 
 *Water tanks loading is restricted with the set IGHNOWT (if option "yes", technologies included in this set will not be allowed to load water tanks)
-$setglobal watertank_loading_rest 
+$setglobal watertank_loading_rest
 *!option yes
 
 
@@ -270,7 +270,7 @@ $setglobal bypass
 
 *-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
 * overall control variable DECOM must be 'yes' if any of the other decommissioning controls are.
-$setglobal DECOM yes
+$setglobal DECOM
 *!option yes
 
 *-------ENDOGENOUS CAPACITIES----------
@@ -415,7 +415,7 @@ $label endofMSNTrelpaths
 
 * Overall control to export results so they can be used in future runs :
 
-$Setglobal export_results yes
+$Setglobal export_results
 *!option yes
 
 *--------------------------------------------
@@ -426,7 +426,7 @@ $Setglobal export_results yes
 *NOTE: In order for results to work fine, the set S used in the runs should be contained in the import results.
 *NOTE: In order for results to work fine, the first element in set T of the import results should match the one used in the current run.
 
-$Setglobal import_results
+$Setglobal import_results YES
 *!option yes
 
 *------------ IMPORT OPTIONS ----------------
@@ -434,7 +434,7 @@ $Setglobal import_results
 * ------------------HYDRO---------------------------------
 * For this model run it is possible to use values found from previuos solutions to specify use of hydro power
 
-$setglobal HYRSBB123 quant
+$setglobal HYRSBB123 none
 *!option quant         !Text "Use seasonal quantities of hydro generation (from HYRSG.gdx??) in this run ('primal decomposition')"
 *!option price         !Text "Use seasonal prices for hydro generation (from WATERVAL.gdx) in this run ('dual decomposition') (TBD)"
 *!option quantprice    !Text "Use seasonal quantities and prices for hydro generation (from HYRSG.gdx?? and WATERVAL.gdx) in in this run (TBD)"
@@ -445,11 +445,11 @@ $setglobal HYRSBB123 quant
 
 *--------------------INTERSEASONAL STORAGE-----------------------------------------------------------
 *Import Electricity storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
-$setglobal ADDELECSTORCONT yes
+$setglobal ADDELECSTORCONT
 *!option yes
 
 *Import Heat storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
-$setglobal ADDHEATSTORCONT  yes
+$setglobal ADDHEATSTORCONT
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 
@@ -462,7 +462,7 @@ $setglobal ADDTECHDEV   yes
 *!option yes
 
 *Import transmission investments from previous runs
-$setglobal ADDTRANSINVEST   yes
+$setglobal ADDTRANSDEV   yes
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 *-------------------------------------------------------------------------------

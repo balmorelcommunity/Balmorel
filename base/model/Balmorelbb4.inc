@@ -377,8 +377,8 @@ PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the se
 PARAMETER VHYRS_SL(YYY,AAA,SSS)       "To be saved for comparison with BB1/BB2 solution value for VHYRS_S.L (initial letter is V although declared as a parameter) (MWh)"
 PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transferred to future runs (input-Money/MWh)";
 * Data for handling investments in future runs:
-PARAMETER GKFXACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
-PARAMETER XVXKNACCUMNET(YYY,IRRRE,IRRRI) "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
+PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
+PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
 
 * Data for handling interseasonal storage
 PARAMETER GVESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs";
@@ -728,6 +728,8 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 *------------------------------------------------------------------------------
 * Internal parameters and settings:
 *------------------------------------------------------------------------------
+*Initializing the set IGDECOMEXOPOT in case the add-on DECOM is not activated
+IGDECOMEXOPOT(Y,IA,G)=0;
 
 PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y";
 * Set the relative weight of the individual years in Y.
@@ -743,107 +745,106 @@ execute_unload '%relpathModel%../output/temp/IWEIGHTY.gdx' IWEIGHTY;
 
 PARAMETER IYHASANNUITYG(Y,Y,G)         "Binary parameter to establish whether the annuity of an investment of a technology made in Y (first index) should be paid in the time period Y (second index) (0,1)" ;
 PARAMETER IYHASANNUITYX(Y,Y)           "Binary parameter to establish whether the annuity of an investment of a transmission line investment made in Y (first index) should be paid in the time period Y (second index) (0,1)";
-PARAMETER IINVYEARG_LEFT(C,Y,Y,G)      "Remaining years of the lifetime of G of an investment made in Y (first index) at the beggining of Y (second index) (years)";
-PARAMETER IINVYEARX_LEFT(C,Y,Y)        "Remaining years of the lifetime of a transmission line investment made in Y (first index) at the beggining of Y (second index) (years)";
-PARAMETER IN_INV_G(C,Y,G)              "Number of investments made OF G within Y (fraction)";
-PARAMETER IN_INV_X(C,Y)                "Number of investments made OF a transmission line within Y (fraction)";
+PARAMETER IINVYEARG_LEFT(Y,Y,G)      "Remaining years of the lifetime of G of an investment made in Y (first index) at the beggining of Y (second index) (years)";
+PARAMETER IINVYEARX_LEFT(Y,Y)        "Remaining years of the lifetime of a transmission line investment made in Y (first index) at the beggining of Y (second index) (years)";
+PARAMETER IN_INV_G(Y,G)              "Number of investments made OF G within Y (fraction)";
+PARAMETER IN_INV_X(Y)                "Number of investments made OF a transmission line within Y (fraction)";
 
 
 *------------ Calculation of IYHASANNUITYG and IYHASANNUITYX to include/exclude the payment of the annuities---------------------
+$ifi not %TechInvest%==yes  IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 0;
+$ifi not %TransInvest%==yes IYHASANNUITYX(IYALIAS,Y)= 0;
+
+$ifi not %TechInvest%==yes $goto NO_TECH_INVESTMENTS
 **GENERATION
-LOOP(C,
-  LOOP(IGKFIND,
-    LOOP(IYALIAS,
-      LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
-        IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)=GDATA(IGKFIND,'GDLIFETIME');
-      );
-    );
-  );
-);
-
-LOOP(C,
-  LOOP(IGKFIND,
-    LOOP(IYALIAS,
-      ILOOPBREAK=0;
-      IN_INV_G(C,IYALIAS,IGKFIND)=ROUND(IWEIGHTY(IYALIAS)/GDATA(IGKFIND,'GDLIFETIME'));
-*Correction of IN_INV_G
-        IF (IN_INV_G(C,IYALIAS,IGKFIND) EQ 0,
-          IN_INV_G(C,IYALIAS,IGKFIND)=1;
-        );
-        LOOP(Y$(ORD(Y) GE ORD(IYALIAS) AND (ILOOPBREAK EQ 0)),
-*First year's annuity
-          IF (ORD(Y) EQ ORD(IYALIAS),
-            IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
-            IF(IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)*IN_INV_G(C,IYALIAS,IGKFIND) LE IWEIGHTY(Y),
-              ILOOPBREAK=1;
-            );
-            IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(IYALIAS2))=GDATA(IGKFIND,'GDLIFETIME')*IN_INV_G(C,IYALIAS,IGKFIND)-IWEIGHTY(Y);
-          );
-*Remaining year's annuity
-        IF (ORD(Y) GT ORD(IYALIAS),
-          IF ( IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GT IWEIGHTY(Y) ,
-            IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
-              IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
-            );
-            IF ((IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GE IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) ,  !!Assumption: if the reamining years are more ore equal than half of IWEIGHTY, then the technology is in in this snapshot
-              IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
-              ILOOPBREAK=1;
-            );
-            IF ((IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LT IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) , !!Assumption: if the reamining years are less than half of IWEIGHTY, then the technology is out in this snapshot
-              IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 0;
-              ILOOPBREAK=1;
-            );
-          );
-        );
-    );
-  );
-);
-
-** TRANSMISSION LINES
-LOOP(C,
+LOOP(IGKFIND,
   LOOP(IYALIAS,
     LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
-      IINVYEARX_LEFT(C,IYALIAS,Y)=LIFETIME_X;
+      IINVYEARG_LEFT(IYALIAS,Y,IGKFIND)=GDATA(IGKFIND,'GDLIFETIME');
     );
   );
 );
 
-LOOP(C,
+LOOP(IGKFIND,
   LOOP(IYALIAS,
     ILOOPBREAK=0;
-    IN_INV_X(C,IYALIAS)=ROUND(IWEIGHTY(IYALIAS)/LIFETIME_X);
+    IN_INV_G(IYALIAS,IGKFIND)=ROUND(IWEIGHTY(IYALIAS)/GDATA(IGKFIND,'GDLIFETIME'));
+*Correction of IN_INV_G
+      IF (IN_INV_G(IYALIAS,IGKFIND) EQ 0,
+        IN_INV_G(IYALIAS,IGKFIND)=1;
+      );
+      LOOP(Y$(ORD(Y) GE ORD(IYALIAS) AND (ILOOPBREAK EQ 0)),
+*First year's annuity
+        IF (ORD(Y) EQ ORD(IYALIAS),
+          IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
+          IF(IINVYEARG_LEFT(IYALIAS,Y,IGKFIND)*IN_INV_G(IYALIAS,IGKFIND) LE IWEIGHTY(Y),
+            ILOOPBREAK=1;
+          );
+          IINVYEARG_LEFT(IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(IYALIAS2))=GDATA(IGKFIND,'GDLIFETIME')*IN_INV_G(IYALIAS,IGKFIND)-IWEIGHTY(Y);
+        );
+*Remaining year's annuity
+      IF (ORD(Y) GT ORD(IYALIAS),
+        IF ( IINVYEARG_LEFT(IYALIAS,Y,IGKFIND) GT IWEIGHTY(Y) ,
+          IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
+            IINVYEARG_LEFT(IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARG_LEFT(IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
+          );
+          IF ((IINVYEARG_LEFT(IYALIAS,Y,IGKFIND) GE IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) ,  !!Assumption: if the reamining years are more ore equal than half of IWEIGHTY, then the technology is in in this snapshot
+            IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
+            ILOOPBREAK=1;
+          );
+          IF ((IINVYEARG_LEFT(IYALIAS,Y,IGKFIND) LT IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) , !!Assumption: if the reamining years are less than half of IWEIGHTY, then the technology is out in this snapshot
+            IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 0;
+            ILOOPBREAK=1;
+          );
+        );
+      );
+  );
+);
+$label NO_TECH_INVESTMENTS
+
+$ifi not %TransInvest%==yes $goto NO_TRANS_INVESTMENTS
+** TRANSMISSION LINES
+LOOP(IYALIAS,
+  LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
+    IINVYEARX_LEFT(IYALIAS,Y)=LIFETIME_X;
+  );
+);
+
+LOOP(IYALIAS,
+  ILOOPBREAK=0;
+  IN_INV_X(IYALIAS)=ROUND(IWEIGHTY(IYALIAS)/LIFETIME_X);
 *Correction of inv
-    IF ( IN_INV_X(C,IYALIAS) EQ 0,
-      IN_INV_X(C,IYALIAS)=1;
-    );
-    LOOP(Y$(ORD(Y) GE ORD(IYALIAS) AND (ILOOPBREAK EQ 0)),
+  IF ( IN_INV_X(IYALIAS) EQ 0,
+    IN_INV_X(IYALIAS)=1;
+  );
+  LOOP(Y$(ORD(Y) GE ORD(IYALIAS) AND (ILOOPBREAK EQ 0)),
 
 *First year's annuity
-      IF ( ORD(Y) EQ ORD(IYALIAS),
-        IYHASANNUITYX(IYALIAS,Y)= 1;
-        IF(IINVYEARX_LEFT(C,IYALIAS,Y)*IN_INV_X(C,IYALIAS) LE IWEIGHTY(Y),
-        ILOOPBREAK=1;
-        );
-        IINVYEARX_LEFT(C,IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=LIFETIME_X*IN_INV_X(C,IYALIAS)-IWEIGHTY(Y);
+    IF ( ORD(Y) EQ ORD(IYALIAS),
+      IYHASANNUITYX(IYALIAS,Y)= 1;
+      IF(IINVYEARX_LEFT(IYALIAS,Y)*IN_INV_X(IYALIAS) LE IWEIGHTY(Y),
+      ILOOPBREAK=1;
       );
+      IINVYEARX_LEFT(IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=LIFETIME_X*IN_INV_X(IYALIAS)-IWEIGHTY(Y);
+    );
 *Remaining year's annuity
-      IF ( ORD(Y) GT ORD(IYALIAS),
-        IF ( IINVYEARX_LEFT(C,IYALIAS,Y) GT IWEIGHTY(Y) ,
-          IYHASANNUITYX(IYALIAS,Y)= 1;
-          IINVYEARX_LEFT(C,IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARX_LEFT(C,IYALIAS,Y)-IWEIGHTY(Y);
-        );
-        IF ( (IINVYEARX_LEFT(C,IYALIAS,Y) GE IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(C,IYALIAS,Y) LE IWEIGHTY(Y)) ,
-          IYHASANNUITYX(IYALIAS,Y)= 1;
-          ILOOPBREAK=1;
-        );
-        IF ( (IINVYEARX_LEFT(C,IYALIAS,Y) LT IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(C,IYALIAS,Y) LE IWEIGHTY(Y)) ,
-          IYHASANNUITYX(IYALIAS,Y)= 0;
-          ILOOPBREAK=1;
-        );
+    IF ( ORD(Y) GT ORD(IYALIAS),
+      IF ( IINVYEARX_LEFT(IYALIAS,Y) GT IWEIGHTY(Y) ,
+        IYHASANNUITYX(IYALIAS,Y)= 1;
+        IINVYEARX_LEFT(IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARX_LEFT(IYALIAS,Y)-IWEIGHTY(Y);
+      );
+      IF ( (IINVYEARX_LEFT(IYALIAS,Y) GE IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(IYALIAS,Y) LE IWEIGHTY(Y)) ,
+        IYHASANNUITYX(IYALIAS,Y)= 1;
+        ILOOPBREAK=1;
+      );
+      IF ( (IINVYEARX_LEFT(IYALIAS,Y) LT IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(IYALIAS,Y) LE IWEIGHTY(Y)) ,
+        IYHASANNUITYX(IYALIAS,Y)= 0;
+        ILOOPBREAK=1;
       );
     );
   );
 );
+$label NO_TRANS_INVESTMENTS
 *------------ END of Calculation of the correction factor for the annuities---------------------
 
 * Set GDCV value to one for those technologies with capacity defined on HEAT and that are not IGEXT so that their fuel consumption and O&M costs
@@ -863,9 +864,7 @@ PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close
 * Transfer data from data file and insert default 1 as needed (Eps1-convention):
 * Note that the default value is 1, this is assigned here if nothing or 0 is entered in data file.
 $ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
-$ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T)$((NOT GKRATE(IA,G,S)) AND ((SUM(Y,GKFX(Y,IA,G))) OR  AGKN(IA,G))) = 1;   !! Insert default values.
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T) = GKRATE(IA,G,S,T);
-$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T)$((NOT GKRATE(IA,G,S,T)) AND ((SUM(Y,GKFX(Y,IA,G))) OR  AGKN(IA,G))) = 1; !! Insert default values.
 
 * The following parameters contain information about CO2 and SO2 emission
 * from technology G based on the fuel used and its emission data:
@@ -1020,6 +1019,104 @@ $if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.in
 *----- End: Any internal sets and parameters for addon to be placed here -------
 *-------------------------------------------------------------------------------
 
+*------------------------------------------------------------
+*--------EXCEPTIONS: Convenient internal sets and parameters
+*------------------------------------------------------------
+
+* ----------------- Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT ----------------------------------
+
+IAGKFX(Y,IA,G) = YES$GKFX(Y,IA,G);
+IAGK_HASORPOT(Y,IA,G) = YES$GKFX(Y,IA,G);
+
+IAGKN(IA,G)=NO;
+IAGKNY(Y,IA,G)=NO;
+
+$ifi not %TechInvest%==yes $goto Technology_investments_end
+
+* IAGKN and IAGKNY indicates when and where technologies may be invested, based on various combinations of input data.
+* Initially: identical to AGKN:
+IAGKN(IA,G) = AGKN(IA,G);
+
+* Note: by definition, there should be no GGG in AGKN(aaa,GGG) with GDATA(GGG,'GDKVARIABL')=1.
+* This is to be checked in error2.inc: TODO. For now, overwrite to make sure:  No new capacity if capacity is not specified to be found endogeneously:
+IAGKN(IA,IGKKNOWN) = NO;
+
+* Fuel limitations: No new capacity nor new generation if zero fuel potential.
+LOOP((FFF,G)$IGF(G,FFF),
+  LOOP(C$FKPOT(C,FFF), !! Default convention on FKPOT: 0 implies no restriction, 'EPS' implies zero MW.
+    LOOP(IA$ICA(C,IA), IF((FKPOT(C,FFF) EQ 0), IAGKN(IA,G) = NO;); )); !! Because it is EPS
+  LOOP(IR$FKPOT(IR,FFF),
+    LOOP(IA$RRRAAA(IR,IA), IF((FKPOT(IR,FFF) EQ 0), IAGKN(IA,G) = NO;); )); !! Because it is EPS
+  LOOP(IA$FKPOT(IA,FFF),
+    IF((FKPOT(IA,FFF) EQ 0), IAGKN(IA,G) = NO;); ); !! Because it is EPS
+);
+
+IAGKNY(Y,IA,G) = IAGKN(IA,G);
+IAGKNY(Y,IA,G)$(YVALUE(Y) LT GDATA(G,'GDFROMYEAR') OR (YVALUE(Y) GT GDATA(G,'GDLASTYEAR')) AND (GDATA(G,'GDLASTYEAR') GT 0) OR (YVALUE(Y) LT GINVESTSTART))=NO;
+
+* No investment in secondary combination technologies:
+$ifi %COMBTECH%==yes    IAGKNY(Y,IA,IGCOMB2)=NO;
+
+*Update of IAGK_HASORPOT based on potential production
+
+IAGK_HASORPOT(Y,IA,G)$IAGKNY(Y,IA,G) = YES;
+
+*This loop makes sure that if you invest in a technology in the year Y, you can potentially use it in the future, even if you do not allow for investments on this technology in the future
+LOOP(Y$(ORD(Y) NE CARD(Y)),
+   LOOP(IA,
+      LOOP(G$IAGKNY(Y,IA,G),
+         LOOP(IYALIAS2$(ORD(IYALIAS2) GT ORD(Y)),
+            IAGK_HASORPOT(IYALIAS2,IA,G)= IAGK_HASORPOT(IYALIAS2,IA,G)+IAGKNY(Y,IA,G);
+       );
+    );
+  );
+);
+
+*---END OF COMBTECH
+
+$ifi %COMBTECH%==yes IAGK_HASORPOT(Y,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(Y,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=YES;
+
+$label  Technology_investments_end
+
+* ----------------- End: Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT -----------------------------
+
+
+*------------------ Assign IXK_HASORPOT and IXKN based on exogenously given or potential investment  ----------------------------------
+
+* Transmision investments is subject to control by the option TransInvest,
+* therefore set a default and update if investments are intended.
+
+IXK_HASORPOT(Y,IRE,IRI) = YES$XKFX(Y,IRE,IRI);
+IXKN(Y,IRE,IRI)=NO;
+
+$ifi not %TransInvest%==yes $goto Transmission_investments_end
+
+IXKN(Y,IRE,IRI) = YES$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF) AND (XINVESTSTART LE YVALUE(Y)));
+
+*This loop makes sure that if you invest in one line in the year Y, you can use this line in the future, even if you do not allow for investments on this line in the future
+LOOP(Y$(ORD(Y) GT 1),
+  LOOP(IRE,
+    LOOP(IRI,
+      IF ((XINVCOST(Y-1,IRE,IRI) AND (XINVCOST(Y-1,IRE,IRI) LT INF) AND (XINVESTSTART LE YVALUE(Y))),
+        IXK_HASORPOT(Y,IRE,IRI)=IXKN(Y,IRE,IRI)+YES$XKFX(Y,IRE,IRI);
+      );
+      LOOP(IYALIAS2$((ORD(IYALIAS2) GE ORD(Y)) AND (ORD(IYALIAS2) NE CARD(IYALIAS2))),
+      IXK_HASORPOT(Y+1,IRE,IRI)= IXK_HASORPOT(Y+1,IRE,IRI)+IXKN(Y,IRE,IRI);
+      );
+    );
+  );
+);
+
+$label  Transmission_investments_end
+
+*------------------ End: Assign IXK_HASORPOT and IXKN based on exogenously given or potential investment  ----------------------------------
+
+*------------------------------------------------------------
+*--------END of EXCEPTIONS: Convenient internal sets and parameters
+*------------------------------------------------------------
+
+
+
 *-------------------------------------------------------------------------------
 * End: Internal parameters and settings
 *-------------------------------------------------------------------------------
@@ -1101,9 +1198,9 @@ IDISCOUNTFACTOR(Y)$Y(Y) = power((DISCOUNTRATE+1),(ISCALAR1-YVALUE(Y)));
 * Note that the default value is 1, this is assigned here if nothing or 0 is entered in data file.
 
 PARAMETER IXKRATE(IRRRE,IRRRI,S,T)     "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
-$ifi %XKRATE_DOL%==IRRRE_IRRRI         IXKRATE(IRE,IRI,S,T) = XKRATE(IRE,IRI)$XKRATE(IRE,IRI) + 1$(NOT XKRATE(IRE,IRI));
-$ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS     IXKRATE(IRE,IRI,S,T) = XKRATE(IRE,IRI,S)$XKRATE(IRE,IRI,S) + 1$(NOT XKRATE(IRE,IRI,S));
-$ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT IXKRATE(IRE,IRI,S,T) = XKRATE(IRE,IRI,S,T)$XKRATE(IRE,IRI,S,T) + 1$(NOT XKRATE(IRE,IRI,S,T));
+$ifi %XKRATE_DOL%==IRRRE_IRRRI         IXKRATE(IRE,IRI,S,T) = XKRATE(IRE,IRI)$XKRATE(IRE,IRI);
+$ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS     IXKRATE(IRE,IRI,S,T) = XKRATE(IRE,IRI,S)$XKRATE(IRE,IRI,S);
+$ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT IXKRATE(IRE,IRI,S,T) = XKRATE(IRE,IRI,S,T)$XKRATE(IRE,IRI,S,T);
 
 PARAMETER IGMINF(YYY,CCCRRRAAA,FFF)         "Minimum annual fuel use by year, geography and fuel and (GJ)";
 $ifi %GMINF_DOL%==CCCRRRAAA_FFF             IGMINF(Y,CCCRRRAAA,FFF) = GMINF(CCCRRRAAA,FFF);
@@ -1419,7 +1516,6 @@ QEEQ(IY411,IR,IS3,T) ..
 $include "../../base/addons/_hooks/qeeq.inc"
 ;
 
-
 * "Heat generation equals demand (MW)"
 QHEQ(IY411,IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))) ..
    + SUM(IGBPR$IAGK_HASORPOT(IY411,IA,IGBPR),VGH_T(IY411,IA,IGBPR,IS3,T))
@@ -1474,7 +1570,7 @@ $ifi     %COMBTECH%==yes  (NOT IGCOMB2(IGEXT)) ..
      (GKFX(IY411,IA,IGEXT)$IAGKFX(IY411,IA,IGEXT)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGEXT)$IGDECOMEXOPOT(IY411,IA,IGEXT)
       + VGKNACCUMNET(IY411,IA,IGEXT)$(IAGK_HASORPOT(IY411,IA,IGEXT) AND IAGKN(IA,IGEXT))
-     )*IGKRATE(IA,IGEXT,IS3,T)
+     )*(1$(NOT IGKRATE(IA,IGEXT,IS3,T)) + IGKRATE(IA,IGEXT,IS3,T))
          - VGH_T(IY411,IA,IGEXT,IS3,T) * GDATA(IGEXT,'GDCV')
 
 $ifi %COMBTECH%==yes  * This will have a value in case of a combination technology. !!TODO
@@ -1552,7 +1648,7 @@ QHYMAXG(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS))..
          (GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IGHYRS)
          +VGKNACCUMNET(IY411,IA,IGHYRS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRS))
-         )*IGKRATE(IA,IGHYRS,IS3,T)
+         )*(1$(NOT IGKRATE(IA,IGHYRS,IS3,T)) + IGKRATE(IA,IGHYRS,IS3,T))
        )
 $include "../../base/addons/_hooks/qhymaxg.inc"
 ;
@@ -1628,7 +1724,7 @@ QHSTOLOADTLIM(IY411,IA,IGHSTO,IS3,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTO)$IGDECOMEXOPOT(IY411,IA,IGHSTO)
        )/GDATA(IGHSTO,'GDSTOHLOAD')
       + VGKNACCUMNET(IY411,IA,IGHSTO)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTO))/GDATA(IGHSTO,'GDSTOHLOAD')
-     )*IGKRATE(IA,IGHSTO,IS3,T)
+     )*(1$(NOT IGKRATE(IA,IGHSTO,IS3,T)) + IGKRATE(IA,IGHSTO,IS3,T))
          =G=
    VHSTOLOADT(IY411,IA,IGHSTO,IS3,T)
 ;
@@ -1642,7 +1738,7 @@ QHSTOLOADTLIMS(IY411,IA,IGHSTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTOS)$IGDECOMEXOPOT(IY411,IA,IGHSTOS)
 )/GDATA(IGHSTOS,'GDSTOHLOAD')
       + VGKNACCUMNET(IY411,IA,IGHSTOS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS))/GDATA(IGHSTOS,'GDSTOHLOAD')
-     )*IGKRATE(IA,IGHSTOS,S,T)
+     )*(1$(NOT IGKRATE(IA,IGHSTOS,S,T)) + IGKRATE(IA,IGHSTOS,S,T))
          =G=
    VHSTOLOADTS(IY411,IA,IGHSTOS,S,T)
 ;
@@ -1656,7 +1752,7 @@ QESTOLOADTLIM(IY411,IA,IGESTO,IS3,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTO)$IGDECOMEXOPOT(IY411,IA,IGESTO)
 )/GDATA(IGESTO,"GDSTOHLOAD")
       + VGKNACCUMNET(IY411,IA,IGESTO)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTO))/GDATA(IGESTO,"GDSTOHLOAD")
-     ) * IGKRATE(IA,IGESTO,IS3,T)
+     ) * (1$(NOT IGKRATE(IA,IGESTO,IS3,T)) + IGKRATE(IA,IGESTO,IS3,T))
 
          =G=
    VESTOLOADT(IY411,IA,IGESTO,IS3,T)
@@ -1670,7 +1766,7 @@ QESTOLOADTLIMS(IY411,IA,IGESTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTOS)$IGDECOMEXOPOT(IY411,IA,IGESTOS)
 )/GDATA(IGESTOS,"GDSTOHLOAD")
       + VGKNACCUMNET(IY411,IA,IGESTOS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS))/GDATA(IGESTOS,"GDSTOHLOAD")
-     ) * IGKRATE(IA,IGESTOS,S,T)
+     ) * (1$(NOT IGKRATE(IA,IGESTOS,S,T)) + IGKRATE(IA,IGESTOS,S,T))
 
          =G=
    VESTOLOADTS(IY411,IA,IGESTOS,S,T)
@@ -1685,7 +1781,7 @@ QHSTOVGHTLIM(IY411,IA,IGHSTO,IS3,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTO)$IGDECOMEXOPOT(IY411,IA,IGHSTO)
 )/GDATA(IGHSTO,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGHSTO)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTO))/GDATA(IGHSTO,"GDSTOHUNLD")
-     )*IGKRATE(IA,IGHSTO,IS3,T)
+     )*(1$(NOT IGKRATE(IA,IGHSTO,IS3,T)) + IGKRATE(IA,IGHSTO,IS3,T))
          =G=
    VGH_T(IY411,IA,IGHSTO,IS3,T)
 ;
@@ -1698,7 +1794,7 @@ QHSTOVGHTLIMS(IY411,IA,IGHSTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTOS)$IGDECOMEXOPOT(IY411,IA,IGHSTOS)
 )/GDATA(IGHSTOS,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGHSTOS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS))/GDATA(IGHSTOS,"GDSTOHUNLD")
-     )*IGKRATE(IA,IGHSTOS,S,T)
+     )*(1$(NOT IGKRATE(IA,IGHSTOS,S,T)) + IGKRATE(IA,IGHSTOS,S,T))
          =G=
    VGH_T(IY411,IA,IGHSTOS,S,T)
 ;
@@ -1711,7 +1807,7 @@ QESTOVGETLIM(IY411,IA,IGESTO,IS3,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTO)$IGDECOMEXOPOT(IY411,IA,IGESTO)
 )/GDATA(IGESTO,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGESTO)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTO))/GDATA(IGESTO,"GDSTOHUNLD")
-     ) * IGKRATE(IA,IGESTO,IS3,T)
+     ) * (1$(NOT IGKRATE(IA,IGESTO,IS3,T)) + IGKRATE(IA,IGESTO,IS3,T))
          =G=
    VGE_T(IY411,IA,IGESTO,IS3,T)
 ;
@@ -1722,7 +1818,7 @@ QESTOVGETLIMS(IY411,IA,IGESTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTOS)$IGDECOMEXOPOT(IY411,IA,IGESTOS)
 )/GDATA(IGESTOS,"GDSTOHUNLD")
       + VGKNACCUMNET(IY411,IA,IGESTOS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS))/GDATA(IGESTOS,"GDSTOHUNLD")
-     ) * IGKRATE(IA,IGESTOS,S,T)
+     ) * (1$(NOT IGKRATE(IA,IGESTOS,S,T)) + IGKRATE(IA,IGESTOS,S,T))
          =G=
    VGE_T(IY411,IA,IGESTOS,S,T)
 ;
@@ -2023,7 +2119,7 @@ $include "../../base/addons/_hooks/qktechgroupa.inc"
 QXK_UP(IY411,IRE,IRI,IS3,T)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXKN(Y,IRE,IRI))..
 * Complement to assigning VX_T.UP for the case with endogenous transmission investments.
 
-    IXKRATE(IRE,IRI,IS3,T)*(
+    (1$(NOT IXKRATE(IRE,IRI,IS3,T))+IXKRATE(IRE,IRI,IS3,T))*(
         XKFX(IY411,IRE,IRI)
       + VXKNACCUMNET(IY411,IRE,IRI)
     )
@@ -2146,8 +2242,7 @@ QGKE_UP(IY411,IA,IGDISPATCH(IGKENOSTO),IS3,T)$(IAGK_HASORPOT(IY411,IA,IGKENOSTO)
         VGE_T(IY411,IA,IGKENOSTO,IS3,T) =L=
         (GKFX(IY411,IA,IGKENOSTO)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGKENOSTO)$IGDECOMEXOPOT(IY411,IA,IGKENOSTO)
-         )*IGKRATE(IA,IGKENOSTO,IS3,T)
-       +(VGKNACCUMNET(IY411,IA,IGKENOSTO)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKENOSTO))*IGKRATE(IA,IGKENOSTO,IS3,T))
+        +VGKNACCUMNET(IY411,IA,IGKENOSTO)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKENOSTO)))*(1$(NOT IGKRATE(IA,IGKENOSTO,IS3,T)) + IGKRATE(IA,IGKENOSTO,IS3,T))
 $include "../../base/addons/_hooks/qgke_up.inc"
 ;
 
@@ -2157,8 +2252,7 @@ QGKH_UP(IY411,IA,IGDISPATCH(IGKHNOSTO),IS3,T)$(IAGK_HASORPOT(IY411,IA,IGKHNOSTO)
         VGH_T(IY411,IA,IGKHNOSTO,IS3,T) =L=
         (GKFX(IY411,IA,IGKHNOSTO)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGKHNOSTO)$IGDECOMEXOPOT(IY411,IA,IGKHNOSTO)
-        )*IGKRATE(IA,IGKHNOSTO,IS3,T)
-       +VGKNACCUMNET(IY411,IA,IGKHNOSTO)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKHNOSTO))*IGKRATE(IA,IGKHNOSTO,IS3,T)
+       +VGKNACCUMNET(IY411,IA,IGKHNOSTO)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKHNOSTO)))*(1$(NOT IGKRATE(IA,IGKHNOSTO,IS3,T)) + IGKRATE(IA,IGKHNOSTO,IS3,T))
 $include "../../base/addons/_hooks/qgkh_up.inc"
 ;
 
@@ -2167,7 +2261,7 @@ $include "../../base/addons/_hooks/qgkh_up.inc"
 QGKE_LO(IY411,IA,IGDISPATCH(IGKENOSTO),FFF,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGKENOSTO) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKENOSTO)) and IGF(IGKENOSTO,FFF) and GKF_LO(FFF)>0)..
         VGE_T(IY411,IA,IGKENOSTO,IS3,T) + (VGH_T(IY411,IA,IGKENOSTO,IS3,T) * GDATA(IGKENOSTO,'GDCV'))$(IGEXT(IGKENOSTO))=G=
         GKF_LO(FFF)*(
-       +(VGKNACCUMNET(IY411,IA,IGKENOSTO)*IGKRATE(IA,IGKENOSTO,IS3,T) )
+       +(VGKNACCUMNET(IY411,IA,IGKENOSTO)*(1$(NOT IGKRATE(IA,IGKENOSTO,IS3,T)) + IGKRATE(IA,IGKENOSTO,IS3,T)) )
          )
 ;
 
@@ -2175,7 +2269,7 @@ QGKE_LO(IY411,IA,IGDISPATCH(IGKENOSTO),FFF,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGKENO
 QGKH_LO(IY411,IA,IGDISPATCH(IGKHNOSTO),FFF,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGKHNOSTO) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKHNOSTO)) and IGF(IGKHNOSTO,FFF) and GKF_LO(FFF)>0)..
         VGH_T(IY411,IA,IGKHNOSTO,IS3,T) =G=
         GKF_LO(FFF)*(
-       +(VGKNACCUMNET(IY411,IA,IGKHNOSTO)*IGKRATE(IA,IGKHNOSTO,IS3,T))
+       +(VGKNACCUMNET(IY411,IA,IGKHNOSTO)*(1$(NOT IGKRATE(IA,IGKHNOSTO,IS3,T)) + IGKRATE(IA,IGKHNOSTO,IS3,T)))
          )
 ;
 
@@ -2196,7 +2290,7 @@ $ifi not %VRESHUTDOWN%==yes  =E=
            GKFX(IY411,IA,IGHYRR)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRR)$IGDECOMEXOPOT(IY411,IA,IGHYRR)
         +  VGKNACCUMNET(IY411,IA,IGHYRR)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRR))
-                          ) * WTRRRVAR_T(IA,IS3,T) * IGKRATE(IA,IGHYRR,IS3,T)) / IWTRRRSUM(IA)
+                          ) * WTRRRVAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGHYRR,IS3,T)) + IGKRATE(IA,IGHYRR,IS3,T))) / IWTRRRSUM(IA)
 
 ;
 
@@ -2214,7 +2308,7 @@ $ifi %WNDFLH_DOL%==AAA_GGG     (WNDFLH(IA,IGWND) * (
             GKFX(IY411,IA,IGWND)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGWND)$IGDECOMEXOPOT(IY411,IA,IGWND)
          + VGKNACCUMNET(IY411,IA,IGWND)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND))
-                 )  * WND_VAR_T(IA,IS3,T) * IGKRATE(IA,IGWND,IS3,T)) / IWND_SUMST(IA)
+                 )  * WND_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGWND,IS3,T)) + IGKRATE(IA,IGWND,IS3,T))) / IWND_SUMST(IA)
 ;
 
 
@@ -2232,7 +2326,7 @@ $ifi %SOLEFLH_DOL%==AAA_GGG   (SOLEFLH(IA,IGSOLE) * (
             GKFX(IY411,IA,IGSOLE)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGSOLE)$IGDECOMEXOPOT(IY411,IA,IGSOLE)
          + VGKNACCUMNET(IY411,IA,IGSOLE)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGSOLE))
-                 )  * SOLE_VAR_T(IA,IS3,T) * IGKRATE(IA,IGSOLE,IS3,T)) / ISOLESUMST(IA)
+                 )  * SOLE_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGSOLE,IS3,T)) + IGKRATE(IA,IGSOLE,IS3,T))) / ISOLESUMST(IA)
 ;
 
 QSOLHDISPATCH(IY411,IA,IGSOLH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLH) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGSOLH)) OR IGDECOMEXOPOT(IY411,IA,IGSOLH)) AND ISOLHSUMST(IA))..
@@ -2247,7 +2341,7 @@ $ifi %SOLHFLH_DOL%==AAA_GGG   (SOLHFLH(IA,IGSOLH) * (
           GKFX(IY411,IA,IGSOLH)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGSOLH)$IGDECOMEXOPOT(IY411,IA,IGSOLH)
      + VGKNACCUMNET(IY411,IA,IGSOLH)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGSOLH))
-                            ) * SOLH_VAR_T(IA,IS3,T) * IGKRATE(IA,IGSOLH,IS3,T))/ ISOLHSUMST(IA)
+                            ) * SOLH_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGSOLH,IS3,T)) + IGKRATE(IA,IGSOLH,IS3,T)))/ ISOLHSUMST(IA)
 ;
 
 * Wave technology
@@ -2263,7 +2357,7 @@ $ifi %GWAVE_DOL%==AAA_GGG   (WAVEFLH(IA,IGWAVE) * (
          GKFX(IY411,IA,IGWAVE)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGWAVE)$IGDECOMEXOPOT(IY411,IA,IGWAVE)
      + VGKNACCUMNET(IY411,IA,IGWAVE)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWAVE))
-                          )* WAVE_VAR_T(IA,IS3,T) * IGKRATE(IA,IGWAVE,IS3,T)) / IWAVESUMST(IA)
+                          )* WAVE_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGWAVE,IS3,T)) + IGKRATE(IA,IGWAVE,IS3,T))) / IWAVESUMST(IA)
 ;
 
 *-------------------------------------------------------------------------------
@@ -2508,16 +2602,18 @@ execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
 execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
 
 * For runs with investments and/or decommissionning save the following, to be used in future runs by addon "import_results":
-$ifi %TransInvest%==yes XVXKNACCUMNET(Y,IRE,IRI)=VXKNACCUMNET.L(Y,IRE,IRI);
-GKFXACCUMNET(Y,IA,G)= GKFX(Y,IA,G)
+XKACCUMNET(Y,IRE,IRI)=XKFX(Y,IRE,IRI)
+$ifi %TransInvest%==yes +VXKNACCUMNET.L(Y,IRE,IRI)
+;
+GKACCUMNET(Y,IA,G)= GKFX(Y,IA,G)
 $ifi %DECOM%==yes       -VDECOM_EXO_ACCUM.L(Y,IA,G)
 $ifi %TechInvest%==yes  +VGKNACCUMNET.L(Y,IA,G)
 ;
 *Modification of GKFX values in case they are negative or extremely small (sometimes there can be issues with the decimals)
-GKFXACCUMNET(Y,IA,G)$(GKFXACCUMNET(Y,IA,G) LT 0.000000001)= 0;
+GKACCUMNET(Y,IA,G)$(GKACCUMNET(Y,IA,G) LT 0)= 0;
 
-$ifi %TransInvest%==yes execute_unload  "../../simex/XVXKNACCUMNET.gdx", XVXKNACCUMNET;
-execute_unload  "../../simex/GKFXACCUMNET.gdx", GKFXACCUMNET;
+execute_unload  "../../simex/XKACCUMNET.gdx", XKACCUMNET;
+execute_unload  "../../simex/GKACCUMNET.gdx", GKACCUMNET;
 
 * For runs with interseasonal storages save the following, to be used in future runs by addon "import_results":
 *Initial energy storage volumen at the beginning of each week
@@ -2527,8 +2623,8 @@ GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1)=VHSTOVOLTS.L(Y,IA,IGHSTOS,S,T);
 
 *Correction of seasonal values to avoid infeasibilities due to decimal errors by substracting a very small number to the storage levels
 
-GVESTOVOLTS(Y,IA,IGESTOS,S,T)$((ORD(T) EQ 1) AND GVESTOVOLTS(Y,IA,IGESTOS,S,T) AND (GKFXACCUMNET(Y,IA,IGESTOS) LE VESTOVOLTS.L(Y,IA,IGESTOS,S,T)))=GVESTOVOLTS(Y,IA,IGESTOS,S,T)-0.000000001;
-GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$((ORD(T) EQ 1) AND GVHSTOVOLTS(Y,IA,IGHSTOS,S,T) AND (GKFXACCUMNET(Y,IA,IGHSTOS) LE VESTOVOLTS.L(Y,IA,IGHSTOS,S,T)))=GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)-0.000000001;
+GVESTOVOLTS(Y,IA,IGESTOS,S,T)$((ORD(T) EQ 1) AND GVESTOVOLTS(Y,IA,IGESTOS,S,T) AND (GKACCUMNET(Y,IA,IGESTOS) LE VESTOVOLTS.L(Y,IA,IGESTOS,S,T)))=GVESTOVOLTS(Y,IA,IGESTOS,S,T)-0.000000001;
+GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$((ORD(T) EQ 1) AND GVHSTOVOLTS(Y,IA,IGHSTOS,S,T) AND (GKACCUMNET(Y,IA,IGHSTOS) LE VESTOVOLTS.L(Y,IA,IGHSTOS,S,T)))=GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)-0.000000001;
 
 execute_unload  "../../simex/GVESTOVOLTS.gdx", GVESTOVOLTS;
 execute_unload  "../../simex/GVHSTOVOLTS.gdx", GVHSTOVOLTS;
