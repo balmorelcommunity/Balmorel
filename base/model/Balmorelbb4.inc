@@ -578,12 +578,8 @@ $label  heat_storage_loading_lim
    IGKFIND(G)  = YES$(GDATA(G,'GDKVARIABL') EQ 1);
    IGKKNOWN(G) = NOT IGKFIND(G);
 
-   IGBYPASS(G) = NO;
-   IGBYPASS(IGBPR)$GDATA(IGBPR,'GDBYPASSC') = YES;
-
-
-* Assignments of IGBYPASS may be changed if option bypass has a non-default value.
-$ifi not %bypass%==yes IGBYPASS(G) = NO;
+$ifi not %bypass%==yes   IGBYPASS(G) = NO;
+$ifi %bypass%==yes       IGBYPASS(IGBPR)$GDATA(IGBPR,'GDBYPASSC') = YES;
 
 *-------------------------------------------------------------------------------
 *----- Any internal sets assignments for addon to be placed here: --------------
@@ -1296,10 +1292,12 @@ EQUATIONS
    QGFEQ(Y,AAA,G,S,T)       "Calculate fuel consumption, existing units (MW)"
    QGFNEQ(Y,AAA,G,S,T)      "Calculate fuel consumption, new units NOT IMPLEMENTED (MW)"
 
-   QGCBGBPR(Y,AAA,G,S,T)    "CHP generation (back pressure) limited by Cb-line (MW)"
-   QGCBGEXT(Y,AAA,G,S,T)    "CHP generation (extraction) limited by Cb-line (MW)"
-   QGCVGEXT(Y,AAA,G,S,T)    "CHP generation (extraction) limited by Cv-line (MW)"
-   QGGETOH(Y,AAA,G,S,T)     "Electric heat generation (MW)"
+   QGCBGBPR(Y,AAA,G,S,T)         "CHP generation (back pressure) limited by Cb-line (MW)"
+   QGCBGBPRBYPASS1(Y,AAA,G,S,T)  "CHP generation (back pressure) with bypass limited by Cb-line (MW)"
+   QGCBGBPRBYPASS2(Y,AAA,G,S,T)  "CHP generation (back pressure) with bypass limited by BYPC-line (MW)"
+   QGCBGEXT(Y,AAA,G,S,T)         "CHP generation (extraction) limited by Cb-line (MW)"
+   QGCVGEXT(Y,AAA,G,S,T)         "CHP generation (extraction) limited by Cv-line (MW)"
+   QGGETOH(Y,AAA,G,S,T)          "Electric heat generation (MW)"
 
    QHYRSSEQ(Y,AAA,S)        "Hydropower with reservoir seasonal energy constraint (MW)"
    QHYRSMINVOL(Y,AAA,S)     "Hydropower reservoir - minimum level (MWh)"
@@ -1561,8 +1559,19 @@ $include "../../base/addons/_hooks/qgfeq.inc"
 
 * Back pressure units:
 * "CHP generation (back pressure) limited by Cb-line (MW)"
-QGCBGBPR(IY411,IA,IGBPR,IS3,T)$IAGK_HASORPOT(IY411,IA,IGBPR) ..
+QGCBGBPR(IY411,IA,IGBPR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGBPR) AND (NOT IGBYPASS(IGBPR))) ..
       VGE_T(IY411,IA,IGBPR,IS3,T) =E= VGH_T(IY411,IA,IGBPR,IS3,T) * GDATA(IGBPR,"GDCB");
+
+QGCBGBPRBYPASS1(IY411,IA,IGBPR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGBPR) AND IGBYPASS(IGBPR)) ..
+  VGE_T(IY411,IA,IGBPR,IS3,T) =L= VGH_T(IY411,IA,IGBPR,IS3,T) * GDATA(IGBPR,'GDCB');
+
+QGCBGBPRBYPASS2(IY411,IA,IGBPR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGBPR) AND IGBYPASS(IGBPR))..
+  VGE_T(IY411,IA,IGBPR,IS3,T) =L=
+   (1+(GDATA(IGBPR,'GDBYPASSC')/GDATA(IGBPR,'GDCB')))*(
+      GKFX(IY411,IA,IGBPR)$IAGKFX(IY411,IA,IGBPR)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGBPR)$IGDECOMEXOPOT(IY411,IA,IGBPR)
+      + VGKNACCUMNET(IY411,IA,IGBPR)$(IAGK_HASORPOT(IY411,IA,IGBPR) AND IAGKN(IA,IGBPR))
+      )*(1$(NOT GEFFRATE(IA,IGBPR))+GEFFRATE(IA,IGBPR)) - VGH_T(IY411,IA,IGBPR,IS3,T) * GDATA(IGBPR,'GDBYPASSC');
 
 * Extraction units:
 
@@ -2410,6 +2419,8 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
                                 QGFEQ
 *--- Feasible generation region ------------------------------------------------
                                 QGCBGBPR
+$ifi %bypass%==yes              QGCBGBPRBYPASS1
+$ifi %bypass%==yes              QGCBGBPRBYPASS2
                                 QGCBGEXT
                                 QGCVGEXT
                                 QGGETOH
