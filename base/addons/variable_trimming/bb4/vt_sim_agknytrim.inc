@@ -143,14 +143,12 @@ TV_ZERO(TV_IY411,IA,G)$(GDATA(G,'GDNOX')                        AND SUM(C$ICA(C,
 *-------------------------------------------------
 
 ** Unassign technologies affected by zero emission limits
-*IAGKNY_IY411(TV_IY411,IA,G)$(TV_ZERO(TV_IY411,IA,G) OR TV_ZEROEL(TV_IY411,IA,G)) = NO;
-TV_VARHEAT(TV_IY411,IA,G)$TV_ZERO(TV_IY411,IA,G) = 1000000;
-TV_VAREL(TV_IY411,IA,G)$(TV_ZERO(TV_IY411,IA,G) OR TV_ZEROEL(TV_IY411,IA,G)) = 1000000;
+IAGKNY_IY411(TV_IY411,IA,G)$(TV_ZERO(TV_IY411,IA,G) OR TV_ZEROEL(TV_IY411,IA,G)) = NO;
 
 TV_HEATA(TV_IY411,IA)$SUM(DHUSER, DH(TV_IY411,IA,DHUSER)) = YES;
 TV_FILTER(TV_IY411,IA,TV_FLHHEAT,TV_PR)$(SUM(G, IAGKNY_IY411(TV_IY411,IA,G)) AND (ORD(TV_FLHHEAT) EQ 1) AND (ORD(TV_PR) EQ 1)) = YES;
 TV_FILTER(TV_IY411,IA,TV_FLHHEAT,TV_PR)$(TV_HEATA(TV_IY411,IA) AND SUM(G, IAGKNY_IY411(TV_IY411,IA,G))) = YES;
-                                                                                                       
+
 
 ** Finding the cost of the cheapest investment option in condencing power plant and heat only boiler. This is used to calculate alternative value later on.
 *Cost per unit of electricity or heat generated for the cheapest plant in the screening curve without considering plants with maxium and fixed fuel requirements
@@ -266,6 +264,6 @@ LOOP(Y$(ORD(Y) NE CARD(Y)),  LOOP(IA,  LOOP(G$(IAGKNY(Y,IA,G) AND NOT IAGK_NOINV
 
 
 * Possibility to print some of the values for debugging
-execute_unload "../output/temp/costs.gdx", TV_IY411, TV_fixed, TV_varel, TV_varheat, TV_REQMIN, TV_REQEMIN, TV_REQMAX, TV_REQEMAX, TV_REQFX, TV_ZERO, TV_MPOLMAX,TV_CHEAPESTHOB, TV_CHEAPESTCND, TV_CHEAPESTCNDR,   TV_NEVERCHEAP2,IAGKNY,
- TV_NEVERCHEAP,IAGKNY_IY411, TV_CHEAPEST, IAGK_HASORPOT, TV_CHEAPEST_H, TV_CHEAPEST_E, TV_ANNUALCOST_E, TV_ANNUALCOST_H, TV_CHEAPEST_EF, TV_CHEAPEST_HF, TV_FILTER;
+*execute_unload "../output/temp/costs.gdx", TV_IY411, TV_fixed, TV_varel, TV_varheat, TV_REQMIN, TV_REQEMIN, TV_REQMAX, TV_REQEMAX, TV_REQFX, TV_ZERO, TV_MPOLMAX,TV_CHEAPESTHOB, TV_CHEAPESTCND, TV_CHEAPESTCNDR,   TV_NEVERCHEAP2,IAGKNY,
+* TV_NEVERCHEAP,IAGKNY_IY411, TV_CHEAPEST, IAGK_HASORPOT, TV_CHEAPEST_H, TV_CHEAPEST_E, TV_ANNUALCOST_E, TV_ANNUALCOST_H, TV_CHEAPEST_EF, TV_CHEAPEST_HF, TV_FILTER;
 
