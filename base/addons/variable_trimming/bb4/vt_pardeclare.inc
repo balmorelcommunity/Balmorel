@@ -8,6 +8,7 @@ SETS
 IAGKNY_IY411(YYY,AAA,GGG) 'set of allowed investment options'
 TV_IY411(Y)    'remaining years of the balbase4 model within the IY411-loop'
 
+
 TV_REQMIN(YYY,AAA,GGG) 'technologies with minimum usage requirements'
 TV_REQFX(YYY,AAA,GGG) 'technologies with fixed usage requirements'
 TV_REQMAX(YYY,AAA,GGG) 'technologies with maximum usage requirements'
@@ -26,6 +27,11 @@ Alias(TV_FLH, TV_FLHHEAT);
 
 * intervals for alternative value
 SET TV_PR /0, 25, 50, 75, 100/;
+
+SET TV_HEATA(Y,AAA);
+SET TV_FILTER(Y,AAA,TV_FLH,TV_PR);
+
+
 
 PARAMETER TV_CHEAPESTCND(YYY,AAA,TV_FLH) ;
 PARAMETER TV_CHEAPESTHOB(YYY,AAA,TV_FLH) ;
