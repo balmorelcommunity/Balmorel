@@ -105,7 +105,8 @@ ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GH
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
 ACRONYMS STEAMTURBINE_SUBCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILER, COMBINEDCYCLE, EXCESS_HEAT, ELECTRICITY_BATTERY, GEOTHERMAL,
-GASTURBINE, HEATPUMP, HEATPUMP_AIR, HEATPUMP_EXCESSHEAT, HEATPUMP_GROUND, PIT, WATERTANK, SOLARPV, SOLARHEATING, WINDTURBINE_OFFSHORE_FAR, WINDTURBINE_OFFSHORE_NEARSHORE, WINDTURBINE_ONSHORE;
+GASTURBINE, HEATPUMP, HEATPUMP_AIR, HEATPUMP_EXCESSHEAT, HEATPUMP_GROUND, PIT, WATERTANK, SOLARPV, SOLARHEATING,
+WINDTURBINE_OFFSHORE_FAR, WINDTURBINE_OFFSHORE_NEARSHORE, WINDTURBINE_ONSHORE, WINDTURBINE_OFFSHORE_1,WINDTURBINE_OFFSHORE_2,WINDTURBINE_OFFSHORE_3;
 
 * ACRONYMS for user defined fuels will be given as part of file FFF.inc
 
@@ -1217,7 +1218,8 @@ PARAMETER IGEQF(YYY,CCCRRRAAA,FFF)          "Exact annual (any year) fuel use by
 $ifi %GEQF_DOL%==CCCRRRAAA_FFF              IGEQF(Y,CCCRRRAAA,FFF) = GEQF(CCCRRRAAA,FFF);
 $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF          IGEQF(Y,CCCRRRAAA,FFF) = GEQF(Y,CCCRRRAAA,FFF);
 
-
+PARAMETER IGMAXFS(Y,CCCRRRAAA,FFF,S)         "Minimum annual fuel use by year, season, geography and fuel and (GJ)";
+IGMAXFS(Y,CCCRRRAAA,FFF,S) = GMAXFS(Y,CCCRRRAAA,FFF,S);
 
 * Unload input data to gdx and possibly MDB files.
 * Note that this is a compile time operation, such that only the 'direct' data
@@ -1258,9 +1260,9 @@ POSITIVE VARIABLE VESTOVOLT(Y,AAA,G,S,T)           "Electricity storage contents
 POSITIVE VARIABLE VESTOVOLTS(Y,AAA,G,S,T)          "Electricity storage contents at beginning of time segment (MWh)";
 POSITIVE VARIABLE VHSTOVOLT(Y,AAA,G,S,T)           "Heat storage contents at beginning of time segment (MWh)";
 POSITIVE VARIABLE VHSTOVOLTS(Y,AAA,G,S,T)          "Heat storage contents at beginning of time segment (MWh)";
-POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)                      "Accumulated new investments this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
-POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)                    "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
-POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)                "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
+POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)            "Accumulated new investments this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
+POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)          "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
+POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)      "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
 
 *-------------------------------------------------------------------------------
 *----- Any variables, and possibly equations, for addon to be placed here: -----
@@ -1325,7 +1327,6 @@ EQUATIONS
    QHSTOVGHTLIMS(Y,AAA,G,S,T)"Inter-seasonal Heat storage output limit (MW)"
    QESTOVGETLIMS(Y,AAA,G,S,T)"Inter-seasonal Electricity storage output limit (MW)"
 
-
    QKEFUELC(Y,C,FFF)        "Maximum electricty capacity by year, country and fuel (MW)"
    QKEFUELR(Y,RRR,FFF)      "Maximum electricty capacity by year, region and fuel (MW)"
    QKEFUELA(Y,AAA,FFF)      "Maximum electricty capacity by year, area and fuel (MW)"
@@ -1345,7 +1346,7 @@ EQUATIONS
    QGMAXCF(Y,C,FFF)         "Maximum fuel use by year, country and fuel (GJ)"
    QGEQCF(Y,C,FFF)          "Exact fuel use by year, country and fuel (GJ)"
    QGMINRF(Y,RRR,FFF)       "Minimum fuel use by year, region and fuel  (GJ)"
-   QGMAXRF(Y,RRR,FFF)       "Maximum fuel use by year, region and fuel constraint (GJ)"
+   QGMAXRF(Y,RRR,FFF)       "Maximum fuel use by year, region and fuel  (GJ)"
    QGEQRF(Y,RRR,FFF)        "Exact fuel use by year, region and fuel (GJ)"
    QGMINAF(Y,AAA,FFF)       "Minimum fuel use by year, area and fuel (GJ)"
    QGMAXAF(Y,AAA,FFF)       "Maximum fuel use by year, area and fuel (GJ)"
@@ -1362,6 +1363,10 @@ EQUATIONS
    QKMINFNA(Y,FFF)          "Minimum capacity by year and fuel constraint (aggregated countries) (MW)"
    QKMAXFNA(Y,FFF)          "Maximum capacity by year and fuel constraint (aggregated countries) (MW)"
    QKEQFNA(Y,FFF)           "Exact capacity by year and fuel constraint (aggregated countries) (MW)"
+
+   QGMAXCFS(Y,C,FFF,S)      "Maximum fuel use by year, season, country and fuel (GJ)"
+   QGMAXRFS(Y,RRR,FFF,S)    "Maximum fuel use by year, season, region and fuel  (GJ)"
+   QGMAXAFS(Y,AAA,FFF,S)    "Maximum fuel use by year, season, area and fuel    (GJ)"
 
    QLIMCO2(Y,C)             "Limit on annual CO2-emission by year and country (kg/MW)"
    QLIMSO2(Y,C)             "Limit on annual SO2 emission by year and country (kg/MW)"
@@ -1560,7 +1565,7 @@ $include "../../base/addons/_hooks/qgfeq.inc"
 * Back pressure units:
 * "CHP generation (back pressure) limited by Cb-line (MW)"
 QGCBGBPR(IY411,IA,IGBPR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGBPR) AND (NOT IGBYPASS(IGBPR))) ..
-      VGE_T(IY411,IA,IGBPR,IS3,T) =E= VGH_T(IY411,IA,IGBPR,IS3,T) * GDATA(IGBPR,"GDCB");
+      VGE_T(IY411,IA,IGBPR,IS3,T) =E= VGH_T(IY411,IA,IGBPR,IS3,T) * GDATA(IGBPR,'GDCB');
 
 QGCBGBPRBYPASS1(IY411,IA,IGBPR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGBPR) AND IGBYPASS(IGBPR)) ..
   VGE_T(IY411,IA,IGBPR,IS3,T) =L= VGH_T(IY411,IA,IGBPR,IS3,T) * GDATA(IGBPR,'GDCB');
@@ -2003,6 +2008,24 @@ QGEQAF(IY411,IA,FFF)$IGEQF(IY411,IA,FFF)..
     =E= IGEQF(IY411,IA,FFF)
 $include "../../base/addons/_hooks/qgeqaf.inc"
 ;
+
+
+* "Maximum fuel use by year, season, country and fuel (GJ)"
+QGMAXCFS(IY411,C,FFF,IS3)$IGMAXFS(IY411,C,FFF,IS3)..
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM(T, WEIGHT_S(IS3)/IWEIGHSUMT * VGF_T(IY411,IA,G,IS3,T)))
+    =L= IGMAXFS(IY411,C,FFF,IS3);
+
+* "Maximum fuel use by year, season, region and fuel (GJ)"
+QGMAXRFS(IY411,IR,FFF,IS3)$IGMAXFS(IY411,IR,FFF,IS3)..
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM(T, WEIGHT_S(IS3)/IWEIGHSUMT * VGF_T(IY411,IA,G,IS3,T)))
+    =L= IGMAXFS(IY411,IR,FFF,IS3);
+
+* "Maximum fuel use by year, season, area and fuel (GJ)"
+QGMAXAFS(IY411,IA,FFF,IS3)$IGMAXFS(IY411,IA,FFF,IS3)..
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM(T, WEIGHT_S(IS3)/IWEIGHSUMT * VGF_T(IY411,IA,G,IS3,T)))
+    =L= IGMAXFS(IY411,IA,FFF,IS3);
+
+
 
 *--- Capacity restrictions by fuel--------------------------------------------
 
@@ -2461,6 +2484,11 @@ $ifi %TransInvest%==yes         QXK_UP
                                 QGMINRF
                                 QGMAXRF
                                 QGEQRF
+
+                                QGMAXCFS
+                                QGMAXRFS
+                                QGMAXAFS
+
 *                                QGMINAF TODO
 *                                QGMAXAF TODO
 *                                QGEQAF  TODO

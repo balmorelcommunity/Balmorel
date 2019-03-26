@@ -492,6 +492,11 @@ $if     EXIST '../data/GEQF.inc' $INCLUDE      '../data/GEQF.inc';
 $if not EXIST '../data/GEQF.inc' $INCLUDE '../../base/data/GEQF.inc';
 %semislash%;
 
+PARAMETER GMAXFS(YYY,CCCRRRAAA,FFF,SSS)         'Maximum fuel use (GJ) per year and season' %semislash%
+$if     EXIST '../data/GMAXFS.inc' $INCLUDE      '../data/GMAXFS.inc';
+$if not EXIST '../data/GMAXFS.inc' $INCLUDE '../../base/data/GMAXFS.inc';
+%semislash%;
+
 * Maximum capacity at new technologies. Presently not implemented.
 *PARAMETER GKNMAX(YYY,AAA,GGG)   "Maximum capacity at new technologies (MW)"  %semislash%
 *$if     EXIST '../data/GKNMAX.inc' $INCLUDE      '../data/GKNMAX.inc';
