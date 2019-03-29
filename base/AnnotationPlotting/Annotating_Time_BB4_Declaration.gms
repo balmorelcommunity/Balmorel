@@ -2,16 +2,15 @@
 $oninline
 $oneolcom
 
-SET IYS(YYY,SSS) "Mapping (YYY,SSS)"     !! Hans text revised
+$LOG "##### Entering Annotating_Time_BB4_Declaration.inc #####"
+SET IYS(YYY,SSS) "Mapping (YYY,SSS)"
+
 $include ../../base/AnnotationPlotting/YSMapping.inc
 
-
-*SET IYS_sub(YYY,SSS) "Mapping (IY411,SSS)";    Hans replaced by next
 SET IYS_sub(Y,S) "Mapping (Y,S)";
 
 * Blocks and block helper
 $SET blocksize 1
-*$eval totalBlocks ceil((card(YYY)*card(S))/%blocksize%)   Hans replaced by next
 $eval totalBlocks ceil((card(Y)*card(S))/%blocksize%)
 
 SET blocks /bl1*bl%totalBlocks%/
@@ -19,16 +18,21 @@ SET BlockSelected(blocks)
 
 SET timeHelper /tH1*tH%blocksize%/
 
+Parameter blockAssignment(Y, blocks,S);
 
-*Parameter blockAssignment(blocks,S,YYY);    Hans replaced by next
-Parameter blockAssignment(blocks,S,Y);
+SET blockAssignmentHelper(Y,S,blocks,timeHelper);
 
-*SET blockAssignmentHelper(S,blocks,timeHelper,YYY); Hans replaced by next
-SET blockAssignmentHelper(S,blocks,timeHelper,Y);
+SET blockAssignmentTime(Y,blocks,S);
 
-*SET blockAssignmentTime(blocks,S,YYY);   Hans replaced by next
-SET blockAssignmentTime(blocks,S,Y);
-
+SCALAR annot_blockFirst /1/;
 SCALAR annot_blockLast;
-*PARAMETER annot_blockStage(S,YYY);   Hans replaced by next
+
 PARAMETER annot_blockStage(S,Y);
+
+* The next are for unloading to gdx file, see Annotating_Time_BB4
+acronym SeeTheText;
+SCALAR   Annotating_Time_BB4_BASIC "Basic sets and assigments for the BB4 time annotation " /SeeTheText/;
+
+display "Basic from the Annotation_Time_BB4_Declaration.gms file, in order of Definitions:", IYS,  blocks, timeHelper;
+
+$LOG "##### Leaving Annotating_Time_BB4_Declaration.inc #####"

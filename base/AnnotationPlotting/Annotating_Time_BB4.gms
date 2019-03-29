@@ -1,6 +1,6 @@
 * Subset of year and Season
 $ontext
-Note: The checks of correct annotation is taken as no errors generated from running checkanno.gms
+Note: The checks of correct annotation is taken as "no errors generated from running checkanno.gms"
 
 Status 20190213:
  - Only time annotation by Season is tested (files Annotating_Time_BB4_Declaration.gms and Annotating_Time_BB4.gms)
@@ -9,41 +9,42 @@ Status 20190213:
  - With this: The model as found currently in BalmorelBB4.inc is correctly annotated by Time.
 $offtext
 
+$LOG "##### Entering Annotating_Time_BB4.inc #####"
+
+$setglobal useNew yes
 
 $oninline
 $oneolcom
 
 $offorder
 
-*SET IYS_sub(YYY,SSS) "Mapping (IY411,SSS)";
 IYS_sub(IY411,IS3) =  IYS(IY411,IS3);
 
 BlockSelected(blocks) = no;
-*blockAssignment(blocks,IS3,YYY) =no;  Hans replaced by next
-blockAssignment(blocks,IS3,Y) =no;
-blockAssignment(blocks,IS3,IY411)$(IYS_sub(IY411,IS3)) = yes;
+blockAssignment(Y,blocks,IS3) =no;
+blockAssignment(IY411,blocks,IS3)$(IYS_sub(IY411,IS3)) = yes;
 
+* blockAssignmentHelper(Y,IS3,blocks,timeHelper)$(ord(blocks)=(ord(Y)*ord(IS3))) = yes;     !! Hans questionable for multi-years - should yse IY411, but no ord...
+iscalar1 = 0;
+loop(y$iy411(y),
+  blockAssignmentHelper(y,IS3,blocks,timeHelper)$((ord(blocks)=(iscalar1*card(IS3) + ord(IS3)))) = yes;     !! Hans organized first by year then by Season
+  iscalar1 = iscalar1 + 1;
+);
 
-*blockAssignmentHelper(IS3,blocks,timeHelper,YYY)$(ord(blocks)=(ord(YYY)*ord(IS3))) = yes;  Hans replaced by next
-blockAssignmentHelper(IS3,blocks,timeHelper,Y)$(ord(blocks)=(ord(Y)*ord(IS3))) = yes;
+Option blockAssignmentTime < blockAssignmentHelper ;
 
+BlockSelected(blocks) = sum((IS3,Y)$(IYS_sub(Y,IS3)),blockAssignmentTime(Y,blocks,IS3));
 
-Option blockAssignmentTime < blockAssignmentHelper     ;
+annot_blockLast = card(BlockSelected) + 2;  !! Different from before (one higher)
 
+annot_blockStage(IS3,IY411) = sum(blockAssignmentTime(IY411,BlockSelected,IS3), ord(BlockSelected)) + 1;
 
-*BlockSelected(blocks) = sum((IS3,YYY)$(IYS_sub(YYY,IS3)),blockAssignmentTime(blocks,IS3,YYY));  Hans replaced by next
-BlockSelected(blocks) = sum((IS3,Y)$(IYS_sub(Y,IS3)),blockAssignmentTime(blocks,IS3,Y));
+display "Basic from the Annotation_Time_BB4.gms file, in order of assignments:",  IYS_sub, blockAssignment, blockAssignmentHelper, blockAssignmentTime, BlockSelected, annot_blockLast, annot_blockStage;
 
-
-annot_blockLast = card(BlockSelected) + 2;
-
-
-annot_blockStage(IS3,IY411) = sum(blockAssignmentTime(BlockSelected,IS3,IY411), ord(BlockSelected)) + 1;
-
-display "Writing from %system%.%name%: some basic Balmorial input: ", Y, IY411 ,S, IS3, T ;
-display "Basic from the Annotation_Time_BB4.gms file:", IYS, IYS_sub, blockAssignment, blockAssignmentHelper, blockAssignmentTime, BlockSelected, annot_blockLast, annot_blockStage;
+execute_unload "Annotating_Time_BB4_basic.gdx" Annotating_Time_BB4_BASIC, YYY, Y, YMODEL, YMODELDELTA, IY411, SSS, TTT, S, IS3, T,  C, IR, IA, IYS, IYS_sub, /*totalBlocks,*/ blocks, BlockSelected, annot_blockFirst, annot_blockLast, timeHelper, blockAssignment, blockAssignmentHelper, blockAssignmentTime,  annot_blockStage, SystemDateTime;
 
 $onorder
+
 
 ****************************************************************************************************
 ****************** Equatuions
