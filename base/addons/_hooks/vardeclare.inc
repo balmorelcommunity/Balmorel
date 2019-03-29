@@ -30,6 +30,9 @@ $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_vardeclare.inc"
 
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_vardeclare.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_vardeclare.inc";
+$ifi %VARIABLE_TRIMMING%==yes $include "../../base/addons/variable_trimming/bb4/vt_isetdecdef2.inc";
+
+
 
 $ifi %vqdebug%==yes       $include   "../../base/addons/vqdebug/bb4/vqdebug_declare.inc";
 

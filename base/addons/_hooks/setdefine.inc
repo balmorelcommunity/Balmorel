@@ -37,4 +37,6 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_setdefine.inc";
 
+$ifi %VARIABLE_TRIMMING%==yes      $include        "../../base/addons/variable_trimming/bb4/vt_setdefine.inc";
+
 $label endoffile
