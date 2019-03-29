@@ -569,9 +569,14 @@ $if     EXIST '../data/GINVCOST.inc' $INCLUDE         '../data/GINVCOST.inc';
 $if not EXIST '../data/GINVCOST.inc' $INCLUDE '../../base/data/GINVCOST.inc';
 %semislash%;
 
-PARAMETER GOMVCOST(AAA,GGG)    "Variable operating and maintenance costs (Money/MWh)"  %semislash%
-$if     EXIST '../data/GOMVCOST.inc' $INCLUDE         '../data/GOMVCOST.inc';
-$if not EXIST '../data/GOMVCOST.inc' $INCLUDE '../../base/data/GOMVCOST.inc';
+PARAMETER GOMVCOSTO(AAA,GGG)    "Variable operating and maintenance costs relative to the output(Money/MWh)"  %semislash%
+$if     EXIST '../data/GOMVCOSTO.inc' $INCLUDE         '../data/GOMVCOSTO.inc';
+$if not EXIST '../data/GOMVCOSTO.inc' $INCLUDE '../../base/data/GOMVCOSTO.inc';
+%semislash%;
+
+PARAMETER GOMVCOSTIN(AAA,GGG)    "Variable operating and maintenance costs relative to the input(Money/MWh)"  %semislash%
+$if     EXIST '../data/GOMVCOSTIN.inc' $INCLUDE         '../data/GOMVCOSTIN.inc';
+$if not EXIST '../data/GOMVCOSTIN.inc' $INCLUDE '../../base/data/GOMVCOSTIN.inc';
 %semislash%;
 
 PARAMETER GOMFCOST(AAA,GGG)    "Annual fixed operating costs (kMoney/MW)"  %semislash%
@@ -583,8 +588,6 @@ PARAMETER GEFFRATE(AAA,GGG)    "Fuel efficiency rating (strictly positive, typic
 $if     EXIST '../data/GEFFRATE.inc' $INCLUDE         '../data/GEFFRATE.inc';
 $if not EXIST '../data/GEFFRATE.inc' $INCLUDE '../../base/data/GEFFRATE.inc';
 %semislash%;
-* Default value inserted:
-GEFFRATE(IA,G)$(NOT GEFFRATE(IA,G)) = 1;
 
 PARAMETER DEFP_BASE(RRR)    "Nominal annual average consumer electricity price (Money/MWh)"  %semislash%
 $if     EXIST '../data/DEFP_BASE.inc' $INCLUDE         '../data/DEFP_BASE.inc';
@@ -633,14 +636,10 @@ $if     EXIST '../data/XINVCOST.inc' $INCLUDE         '../data/XINVCOST.inc';
 $if not EXIST '../data/XINVCOST.inc' $INCLUDE '../../base/data/XINVCOST.inc';
 %semislash%;
 
-!! Previous name XKINI; for data consistency, kept for data inclusion for this specific version, data copied to XKFX below.     todo
-PARAMETER XKINI(YYY,IRRRE,IRRRI)  "Capacity of exogenously given transmission capacity between regions (MW)"   %semislash%
-$if     EXIST '../data/XKINI.inc' $INCLUDE         '../data/XKINI.inc';
-$if not EXIST '../data/XKINI.inc' $INCLUDE '../../base/data/XKINI.inc';
+PARAMETER XKFX(YYY,IRRRE,IRRRI)  "Capacity of exogenously given transmission capacity between regions (MW)"   %semislash%
+$if     EXIST '../data/XKFX.inc' $INCLUDE         '../data/XKFX.inc';
+$if not EXIST '../data/XKFX.inc' $INCLUDE '../../base/data/XKFX.inc';
 %semislash%;
-
-PARAMETER XKFX(YYY,IRRRE,IRRRI)  "Capacity of exogenously given transmission capacity between regions (MW)"; !! New suggested name for XKINI. XKFX data copie3d to XKFX.
-XKFX(YYY,IRRRE,IRRRI) = XKINI(YYY,IRRRE,IRRRI);
 
 PARAMETER XCOST(IRRRE,IRRRI)      "Transmission cost between regions (Money/MWh)"   %semislash%
 $if     EXIST '../data/XCOST.inc' $INCLUDE         '../data/XCOST.inc';

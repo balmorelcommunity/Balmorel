@@ -330,7 +330,8 @@ PARAMETER ANNUITYCX(CCC)               "Transforms investment in transmission li
 SCALAR    LIFETIME_X                   "Lifetime of transmission lines (years)";
 SCALAR    DISCOUNTRATE                 "Discount rate (applied to all terms in the objective function) (fraction)";
 PARAMETER GINVCOST(AAA,GGG)            "Investment cost for new technology (overwriting default value GDATA(G,'GDINVCOST0') if non-zero or EPS in data file) (MMoney/MW)";
-PARAMETER GOMVCOST(AAA,GGG)            "Variable operating and maintenance costs (overwriting default value GDATA(G,'GDOMVCOST0') if non-zero or EPS in data file) (Money/MWh)";
+PARAMETER GOMVCOSTO(AAA,GGG)           "Variable operating and maintenance costs relative to the output (overwriting default value GDATA(G,'GDOMVCOST0') if non-zero or EPS in data file) (Money/MWh)";
+PARAMETER GOMVCOSTIN(AAA,GGG)          "Variable operating and maintenance costs relative to the input (overwriting default value GDATA(G,'GDOMVCOST0') if non-zero or EPS in data file) (Money/MWh)";
 PARAMETER GOMFCOST(AAA,GGG)            "Annual fixed operating costs (overwriting default value GDATA(G,'GOMFCOST0') if non-zero or EPS in data file) (kMoney/MW)";
 PARAMETER GEFFRATE(AAA,GGG)            "Fuel efficiency rating (strictly positive, typically close to 1; default/1/, use eps for 0)";
 PARAMETER DEFP_BASE(RRR)               "Nominal annual average consumer electricity price (Money/MWh)";
@@ -340,9 +341,8 @@ PARAMETER DE(YYY,RRR,DEUSER)           "Annual electricity consumption (MWh)";
 PARAMETER DH(YYY,AAA,DHUSER)           "Annual heat consumption (MWh)";
 
 *---- Transmission data: -------------------------------------------------------
-PARAMETER XKINI(YYY,IRRRE,IRRRI)       "Capacity of exogenously given transmission capacity between regions (MW)"; !! Previous name; for data consistensy, kept for data inclusion for this specific version.    todo
-PARAMETER XKFX(YYY,IRRRE,IRRRI)        "Capacity of exogenously given transmission capacity between regions (MW)"; !! New suggested name for XKINI. XKFX data copied to XKFX in bb4datainc.inc.
-PARAMETER XINVCOST(YYY,IRRRE,IRRRI)        "Investment cost in new transmission capacity, default: INF or 0: no investment, EPS or positive: possible with stated cost (Money/MW)";
+PARAMETER XKFX(YYY,IRRRE,IRRRI)        "Capacity of exogenously given transmission capacity between regions (MW)";
+PARAMETER XINVCOST(YYY,IRRRE,IRRRI)    "Investment cost in new transmission capacity, default: INF or 0: no investment, EPS or positive: possible with stated cost (Money/MW)";
 PARAMETER XCOST(IRRRE,IRRRI)           "Transmission cost between regions (Money/MWh)";
 PARAMETER XLOSS(IRRRE,IRRRI)           "Transmission loss between regions (fraction)";
 
@@ -687,8 +687,9 @@ IYFIRST(Y)$(ORD(Y) EQ 1) = YES;
 * Application of default data:
 *-------------------------------------------------------------------------------
 
-* GOMVCOST, GOMFCOST and GINVCOST are given the default values in GDATA unless non-zero values or EPS is specified in the data file:
-GOMVCOST(IA,G)$((NOT GOMVCOST(IA,G)) AND (SUM(Y,GKFX(Y,IA,G)) OR AGKN(IA,G))) = GDATA(G,'GDOMVCOST0');
+* GOMVCOSTO,GOMVCOSTIN, GOMFCOST and GINVCOST are given the default values in GDATA unless non-zero values or EPS is specified in the data file:
+GOMVCOSTO(IA,G)$((NOT GOMVCOSTO(IA,G)) AND (SUM(Y,GKFX(Y,IA,G)) OR AGKN(IA,G))) = GDATA(G,'GDOMVCOST0');
+GOMVCOSTIN(IA,G)$((NOT GOMVCOSTIN(IA,G)) AND (SUM(Y,GKFX(Y,IA,G)) OR AGKN(IA,G))) = GDATA(G,'GDOMVCOSTIN');
 GOMFCOST(IA,G)$((NOT GOMFCOST(IA,G)) AND (SUM(Y,GKFX(Y,IA,G)) OR AGKN(IA,G))) = GDATA(G,'GDOMFCOST0');
 GINVCOST(IA,G)$((NOT GINVCOST(IA,G)) AND (SUM(Y,GKFX(Y,IA,G)) OR AGKN(IA,G))) = GDATA(G,'GDINVCOST0');
 
@@ -1438,11 +1439,11 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 * Operation and maintainance cost:
 
-   + SUM(IAGK_HASORPOT(Y,IA,IGKE), GOMVCOST(IA,IGKE) * SUM((IS3,T), IHOURSINST(IS3,T)*
-     VGE_T(Y,IA,IGKE,IS3,T)))
+   + SUM(IAGK_HASORPOT(Y,IA,IGKE), GOMVCOSTO(IA,IGKE) * SUM((IS3,T), IHOURSINST(IS3,T)*VGE_T(Y,IA,IGKE,IS3,T)))
 
-   + SUM(IAGK_HASORPOT(Y,IA,IGKH), GOMVCOST(IA,IGKH) * SUM((IS3,T), IHOURSINST(IS3,T)*
-     GDATA(IGKH,'GDCV')*(VGH_T(Y,IA,IGKH,IS3,T))))
+   + SUM(IAGK_HASORPOT(Y,IA,IGKH), GOMVCOSTO(IA,IGKH) * SUM((IS3,T), IHOURSINST(IS3,T)*GDATA(IGKH,'GDCV')*(VGH_T(Y,IA,IGKH,IS3,T))))
+
+   + SUM(IAGK_HASORPOT(Y,IA,G), GOMVCOSTIN(IA,G) * SUM((IS3,T), IHOURSINST(IS3,T)*VGF_T(Y,IA,G,IS3,T)))
 
     + IOF1000*(SUM((IA,G)$IAGK_HASORPOT(Y,IA,G),(VGKNACCUMNET(Y,IA,G)$(IAGK_HASORPOT(Y,IA,G) AND IAGKN(IA,G)) + GKFX(Y,IA,G)$IAGKFX(Y,IA,G))*GOMFCOST(IA,G)))
 
