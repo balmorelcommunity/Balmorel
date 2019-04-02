@@ -18,7 +18,7 @@ GR_PRICE_TECH(CCC,GRDATASET) =0;
 
 * for power intensive industry
 GR_PRICE_USER(CCC,'PII',GRDATASET) = 0;
-$ifi  %SCENARIO4%==YES    GR_PRICE_USER(CCC,DEUSER,GRDATASET) = 0;
+GR_PRICE_USER(CCC,DEUSER,GRDATASET) = 0;   !!$ifi  %SCENARIO4%==YES
 
 
 ** 2.2 Congestion pricing

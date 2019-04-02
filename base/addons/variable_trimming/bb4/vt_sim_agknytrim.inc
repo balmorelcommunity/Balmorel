@@ -3,7 +3,7 @@
 IAGKNY(IY411,IA,G)$(ITV_G(G) AND IAGKN(IA,G) AND (IY411.VAL LE GDATA(G,'GDLASTYEAR'))$GDATA(G,'GDLASTYEAR') AND (IY411.VAL GE GDATA(G,'GDFROMYEAR')) AND (IY411.VAL GE GINVESTSTART)) = YES;
 
 * Possibility to unload variables for testing and comparison
-execute_unload "../output/temp/ITV_TEST_PRE.gdx", IAGKNY,  IAGK_HASORPOT, SYSTEMDATETIME ;
+*execute_unload "../output/temp/ITV_TEST_PRE.gdx", IAGKNY,  IAGK_HASORPOT, SYSTEMDATETIME ;
 
 *------------------------------------------------------------------------------------
 * Loop trough all the years in the balbase4 model (goes through most of the file)
@@ -47,7 +47,7 @@ ITV_ANNUALCOST_H(Y,IA,G,TV_FLH,TV_FLHHEAT,TV_PR)$(IGBPR(G) AND ITV_HEATA(Y,IA) A
 *                                                   MIN(1000000,               )
 ITV_ANNUALCOST_E(Y,IA,G,TV_FLH,TV_FLHHEAT,TV_PR)$(IGBPR(G) AND IAGKNY_IY411(Y,IA,G) AND ITV_FILTER(Y,IA,TV_FLH,TV_FLHHEAT,TV_PR))  =
          ITV_FIXED(Y,IA,G) + ITV_VAREL(Y,IA,G) * TV_FLH.VAL + ITV_VARHEAT(Y,IA,G) * TV_FLH.VAL / GDATA(G,'GDCB')
-         - TV_PR.VAL/100 * MIN(1000000, ITV_CHEAPESTHOB(Y,IA,TV_FLH)) / GDATA(G,'GDCB')  ;                                                             !! MIN(1000000 if no limitless CND or HOB option in area.
+         - TV_PR.VAL/100 * MIN(1000000, ITV_CHEAPESTHOB(Y,IA,TV_FLHHEAT)) / GDATA(G,'GDCB')  ;                                                             !! MIN(1000000 if no limitless CND or HOB option in area.
 
 
 * Bypass elecitricy plants                                                                       !! this overwrites whats calculated for back pressure plants, but only when FLHHEAT GE than FLH
@@ -141,8 +141,8 @@ LOOP(Y$(ORD(Y) NE CARD(Y)),  LOOP(IA,  LOOP(G$(IAGKNY(Y,IA,G) AND NOT IAGK_NOINV
 
 
 * Possibility to print some of the values for testing and debugging
-execute_unload "../output/temp/ITV_TEST_POST.gdx", ITV_IY411, ITV_fixed, ITV_varel, ITV_varheat, ITV_REQMIN, ITV_REQEMIN, ITV_REQMAX, ITV_REQEMAX, ITV_REQFX, ITV_ZERO, ITV_CHEAPESTHOB, ITV_CHEAPESTCND, ITV_CHEAPESTCNDR,   ITV_NEVERCHEAP2,IAGKNY,
- IY411, ITVCOMPARED, ITV_NEVERCHEAP,IAGKNY_IY411, ITV_CHEAPEST, IAGK_HASORPOT, ITV_CHEAPEST_H, ITV_CHEAPEST_E, ITV_ANNUALCOST_E, ITV_ANNUALCOST_H, ITV_CHEAPEST_EF, ITV_CHEAPEST_HF, ITV_FILTER, SYSTEMDATETIME;
+*execute_unload "../output/temp/ITV_TEST_POST.gdx", ITV_IY411, ITV_fixed, ITV_varel, ITV_varheat, ITV_REQMIN, ITV_REQEMIN, ITV_REQMAX, ITV_REQEMAX, ITV_REQFX, ITV_ZERO, ITV_CHEAPESTHOB, ITV_CHEAPESTCND, ITV_CHEAPESTCNDR,   ITV_NEVERCHEAP2,IAGKNY,
+* IY411, ITVCOMPARED, ITV_NEVERCHEAP,IAGKNY_IY411, ITV_CHEAPEST, IAGK_HASORPOT, ITV_CHEAPEST_H, ITV_CHEAPEST_E, ITV_ANNUALCOST_E, ITV_ANNUALCOST_H, ITV_CHEAPEST_EF, ITV_CHEAPEST_HF, ITV_FILTER, SYSTEMDATETIME;
 
 * Compare IAGK_HASORPOT and IAGKNY before and after
 *execute        "gdxdiff  ../output/temp/ITV_TEST_PRE.gdx  ../output/temp/ITV_TEST_POST.gdx   ../output/temp/ITV_TEST_DIFF.gdx";
