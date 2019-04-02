@@ -33,4 +33,6 @@ $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_setdef
 
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_setdefine.inc";
 
+$ifi %VARIABLE_TRIMMING%==yes $include "../../base/addons/variable_trimming/bb4/vt_setdefine.inc"; 
+
 $label endoffile

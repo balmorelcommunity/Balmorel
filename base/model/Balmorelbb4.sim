@@ -97,7 +97,7 @@ LOOP(Y$(ORD(Y) NE CARD(Y)),
                                );
                     );
 );
-
+execute_unload "../output/temp/ITV_TEST_PRE.gdx", IAGKNY,  IAGK_HASORPOT, SYSTEMDATETIME ;  
 $label  Generation_investments_end
 
 * ----------------- End: Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT -----------------------------

@@ -1,0 +1,37 @@
+Documentation of Variable trimming add-on
+
+Author: Jon Gustav Kirkerud
+Year: 2018
+Last update: April 2, 2019, Jon Gustav Kirkerud
+
+Aim: to reduce calculation time by trimming the set IAGKN_Y and IAGK_HASORPOT, which are used to filter many of the equations and variables in Balmorel. IAGKN_Y contains the 
+	technologies that can be invested in in each area. 
+
+	
+The Add-on is working for technology types GCND, GHOB, GEXT and GBPR. It could also work well for GETOH technologies. Technologies with bypass-option is included.
+The Add-on uses screening curves methodology to assess which technologies that are not in any case a cost effective investment. 
+
+
+The Add-on consist of four main procedures: 
+1.	Calculation of fixed costs, variable cost associated with heat generation and variable cost associated with electricity generation. It mirrors the objective function (QOBJ). 
+2.	Identification of technologies with either limits that restricts use, such as maximum fuel use, or technologies with limits to minimum use. 
+3.	Calculating annual costs of providing heat or electricity for each technology given what’s found in 1. and the amount of full-load-hours of electricity generation (FLHE) , 
+	full-load-hours of heat generation (FLHH) and value of byproduct (BYPR) (e.g. heat for electricity generation). A combination of these three dimensions is a segment in which 
+	each technology competes to deliver the lowest cost heat or electricity annually for each year within the optimization horizon. If a technology is identified as the cheapest 
+	heat or electricity generating technology, within a segment, in one of the years in the optimization horizon, it is selected.
+
+	The value of the byproduct is limited upwards by the cheapest possible GHOB or GCND technology in segment and lowest value is set to zero. Furthermore, if a technology with a 
+	limit that restricts use is found to be cheapest in a segment, the second best is also selected. Technologies that are related to minimum use requirements are always selected.
+4.	Technologies not selected are labelled “nevercheap” and are removed from IAGKN_Y. IAGKN_HASORPOT is reassigned. 
+
+
+What to be careful about: 
+* FLHE, FLHH and BYPR are given in discrete steps. Increasing the number of steps will increase the number of segments taken into consideration and hence reduce the likelihood of 
+	removing a relevant technology. 
+* The method does not take into consideration start-up costs and ramping capabilities. 
+* The Add-on should be adapted after model updates that alters the cost function for the technologies considered and updates to the assignment of IAGKN_HASORPOT. 
+* Currently only limits to fuel use, generation and emissions in the main model version are handled. Similar limits introduced in other add-ons are not included. 
+
+
+Interference with other Add-ons:
+Taxes: Fuel taxes are part of the calculation of variable generation costs. Vt_sim_agknytrim.sim should be called after initialization of the relevant taxes. 
