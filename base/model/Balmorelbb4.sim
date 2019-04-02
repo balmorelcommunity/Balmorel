@@ -34,15 +34,6 @@ VDECOM.l(Y,IA,G)      = 0;
 
 
 
-* Set the relative weight of the individual years in Y.
-* Two ideas implemented here. Used according to option bb4weighty.
-* Simple idea is to give equal weights:
-$ifi "%bb4weighty%"=="same"      IWEIGHTY(Y) = 1;
-* More complex weighting of the individual years (years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)):
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$(ORD(Y) EQ 1) = 1$(CARD(Y) EQ 1) + ((YVALUE(Y+1)-YVALUE(Y)-1)+1)$(CARD(Y) GT 1);
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) GT 1) AND (ORD(Y) LT CARD(Y))) = (YVALUE(Y) - YVALUE(Y-1) -1)/2  + (YVALUE(Y+1) - YVALUE(Y) -1)/2    +1;
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) EQ CARD(Y)) AND (CARD(Y) GT 1)) = ((YVALUE(Y)-YVALUE(Y-1)-1)+1);
-
 * Unload IWEIGHTY for the output tool
 execute_unload '%relpathModel%../output/temp/IWEIGHTY.gdx' IWEIGHTY;
 
@@ -50,6 +41,108 @@ execute_unload '%relpathModel%../output/temp/IWEIGHTY.gdx' IWEIGHTY;
 IY411PREVY(Y,Y-1)= YES;
 
 
+*------------ Calculation of IYHASANNUITYG and IYHASANNUITYX to include/exclude the payment of the annuities---------------------
+
+**GENERATION
+
+LOOP(C,
+  LOOP(IGKFIND,
+    LOOP(IYALIAS,
+      LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
+        IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)=GDATA(IGKFIND,'GDLIFETIME');
+      );
+    );
+  );
+);
+
+LOOP(C,
+  LOOP(IGKFIND,
+    LOOP(IYALIAS,
+      ILOOPBREAK=0;
+      IN_INV_G(C,IYALIAS,IGKFIND)=ROUND(IWEIGHTY(IYALIAS)/GDATA(IGKFIND,'GDLIFETIME'));
+*Correction of IN_INV_G
+        IF (IN_INV_G(C,IYALIAS,IGKFIND) EQ 0,
+          IN_INV_G(C,IYALIAS,IGKFIND)=1;
+        );
+        LOOP(Y$(ORD(Y) GE ORD(IYALIAS) AND (ILOOPBREAK EQ 0)),
+*First year's annuity
+          IF (ORD(Y) EQ ORD(IYALIAS),
+            IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
+            IF(IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)*IN_INV_G(C,IYALIAS,IGKFIND) LE IWEIGHTY(Y),
+              ILOOPBREAK=1;
+            );
+            IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(IYALIAS2))=GDATA(IGKFIND,'GDLIFETIME')*IN_INV_G(C,IYALIAS,IGKFIND)-IWEIGHTY(Y);
+          );
+*Remaining year's annuity
+        IF (ORD(Y) GT ORD(IYALIAS),
+          IF ( IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GT IWEIGHTY(Y) ,
+            IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
+              IINVYEARG_LEFT(C,IYALIAS,Y+1,IGKFIND)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND)-IWEIGHTY(Y);
+            );
+            IF ((IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) GE IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) ,  !!Assumption: if the reamining years are more ore equal than half of IWEIGHTY, then the technology is in in this snapshot
+              IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 1;
+              ILOOPBREAK=1;
+            );
+            IF ((IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LT IWEIGHTY(IYALIAS)/2) AND (IINVYEARG_LEFT(C,IYALIAS,Y,IGKFIND) LE IWEIGHTY(Y)) , !!Assumption: if the reamining years are less than half of IWEIGHTY, then the technology is out in this snapshot
+              IYHASANNUITYG(IYALIAS,Y,IGKFIND)= 0;
+              ILOOPBREAK=1;
+            );
+          );
+        );
+    );
+  );
+);
+
+** TRANSMISSION LINES
+
+LOOP(C,
+  LOOP(IYALIAS,
+    LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
+      IINVYEARX_LEFT(C,IYALIAS,Y)=LIFETIME_X;
+    );
+  );
+);
+
+
+LOOP(C,
+  LOOP(IYALIAS,
+    ILOOPBREAK=0;
+    IN_INV_X(C,IYALIAS)=ROUND(IWEIGHTY(IYALIAS)/LIFETIME_X);
+*Correction of inv
+    IF ( IN_INV_X(C,IYALIAS) EQ 0,
+      IN_INV_X(C,IYALIAS)=1;
+    );
+    LOOP(Y$(ORD(Y) GE ORD(IYALIAS) AND (ILOOPBREAK EQ 0)),
+
+*First year's annuity
+      IF ( ORD(Y) EQ ORD(IYALIAS),
+        IYHASANNUITYX(IYALIAS,Y)= 1;
+        IF(IINVYEARX_LEFT(C,IYALIAS,Y)*IN_INV_X(C,IYALIAS) LE IWEIGHTY(Y),
+        ILOOPBREAK=1;
+        );
+        IINVYEARX_LEFT(C,IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=LIFETIME_X*IN_INV_X(C,IYALIAS)-IWEIGHTY(Y);
+      );
+*Remaining year's annuity
+      IF ( ORD(Y) GT ORD(IYALIAS),
+        IF ( IINVYEARX_LEFT(C,IYALIAS,Y) GT IWEIGHTY(Y) ,
+          IYHASANNUITYX(IYALIAS,Y)= 1;
+          IINVYEARX_LEFT(C,IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARX_LEFT(C,IYALIAS,Y)-IWEIGHTY(Y);
+        );
+        IF ( (IINVYEARX_LEFT(C,IYALIAS,Y) GE IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(C,IYALIAS,Y) LE IWEIGHTY(Y)) ,
+          IYHASANNUITYX(IYALIAS,Y)= 1;
+          ILOOPBREAK=1;
+        );
+        IF ( (IINVYEARX_LEFT(C,IYALIAS,Y) LT IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(C,IYALIAS,Y) LE IWEIGHTY(Y)) ,
+          IYHASANNUITYX(IYALIAS,Y)= 0;
+          ILOOPBREAK=1;
+        );
+      );
+    );
+  );
+);
+
+
+*------------ END of Calculation of the correction factor for the annuities---------------------
 
 * ----------------- Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT ----------------------------------
 
@@ -60,7 +153,7 @@ IAGK_HASORPOT(Y,IA,G) = YES$GKFX(Y,IA,G);
 IAGKN(IA,G)=NO;
 IAGKNY(Y,IA,G)=NO;
 
-$ifi not %GenInvest%==yes $goto Generation_investments_end
+$ifi not %TechInvest%==yes $goto Technology_investments_end
 
 * IAGKN and IAGKNY indicates when and where technologies may be invested, based on various combinations of input data.
 * Initially: identical to AGKN:
@@ -87,18 +180,18 @@ IAGKNY(Y,IA,G)$(YVALUE(Y) LT GDATA(G,'GDFROMYEAR') OR (YVALUE(Y) GT GDATA(G,'GDL
 
 IAGK_HASORPOT(Y,IA,G)$IAGKNY(Y,IA,G) = YES;
 
-***This loop makes sure that if you invest in a technology in the year Y, you can use it until it is decommissioned, even if you do not allow for investments on this technology in the future
+*This loop makes sure that if you invest in a technology in the year Y, you can use it until it is decommissioned, even if you do not allow for investments on this technology in the future
 LOOP(Y$(ORD(Y) NE CARD(Y)),
-                   LOOP(IA,
-                               LOOP(G$IAGKNY(Y,IA,G),
-                                        LOOP(IYALIAS2$((ORD(IYALIAS2) GT ORD(Y)) AND ((YVALUE(Y)+GDATA(G,'GDLIFETIME')) GT (YVALUE(IYALIAS2)))),
-                                                                    IAGK_HASORPOT(Y++1,IA,G)= IAGK_HASORPOT(Y++1,IA,G)+IAGKNY(Y,IA,G);
-                                        );
-                               );
-                    );
+   LOOP(IA,
+      LOOP(G$IAGKNY(Y,IA,G),
+         LOOP(IYALIAS2$(ORD(IYALIAS2) GT ORD(Y)),
+            IAGK_HASORPOT(IYALIAS2,IA,G)= IAGK_HASORPOT(IYALIAS2,IA,G)+IAGKNY(Y,IA,G);
+       );
+    );
+  );
 );
 
-$label  Generation_investments_end
+$label  Technology_investments_end
 
 * ----------------- End: Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT -----------------------------
 
@@ -115,20 +208,18 @@ $ifi not %TransInvest%==yes $goto Transmission_investments_end
 
 IXKN(Y,IRE,IRI) = YES$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF) AND (XINVESTSTART LE YVALUE(Y)));
 
-***This loop makes sure that if you invest in one line in the year Y, you can use this line in the future, even if you do not allow for investments on this line in the future
+*This loop makes sure that if you invest in one line in the year Y, you can use this line in the future, even if you do not allow for investments on this line in the future
 LOOP(Y$(ORD(Y) GT 1),
-                     LOOP(IRE,
-                               LOOP(IRI,
-                                       IF ((XINVCOST(Y--1,IRE,IRI) AND (XINVCOST(Y--1,IRE,IRI) LT INF) AND (XINVESTSTART LE YVALUE(Y))),
-                                                                    IXK_HASORPOT(Y,IRE,IRI)=IXKN(Y,IRE,IRI)+YES$XKFX(Y,IRE,IRI);
-
-                                        );
-                                        LOOP(IYALIAS2$((ORD(IYALIAS2) GE ORD(Y)) AND (ORD(IYALIAS2) NE CARD(IYALIAS2))),
-                                                                    IXK_HASORPOT(Y++1,IRE,IRI)= IXK_HASORPOT(Y++1,IRE,IRI)+IXKN(Y,IRE,IRI);
-                                        );
-
-                               );
-                     );
+  LOOP(IRE,
+    LOOP(IRI,
+      IF ((XINVCOST(Y-1,IRE,IRI) AND (XINVCOST(Y-1,IRE,IRI) LT INF) AND (XINVESTSTART LE YVALUE(Y))),
+        IXK_HASORPOT(Y,IRE,IRI)=IXKN(Y,IRE,IRI)+YES$XKFX(Y,IRE,IRI);
+      );
+      LOOP(IYALIAS2$((ORD(IYALIAS2) GE ORD(Y)) AND (ORD(IYALIAS2) NE CARD(IYALIAS2))),
+      IXK_HASORPOT(Y+1,IRE,IRI)= IXK_HASORPOT(Y+1,IRE,IRI)+IXKN(Y,IRE,IRI);
+      );
+    );
+  );
 );
 
 $label  Transmission_investments_end
@@ -463,13 +554,13 @@ $ifi %printfiles%==yes $if errorfree $include "../../base/output/printout/printi
 * --- Prepare the next BB4 model -----------------------------------------------
 * ------------------------------------------------------------------------------
 
-*Fixing the VGKN investments in previous optimizations to apply correctly the decommissioning (missing: this formula is not enough if the years are analysed in a discontinuous way)
-$ifi %GenInvest%==yes         LOOP(Y$(YVALUE(Y) LE YVALUE(IYALIAS)),VGKN.FX(Y,IA,G) = VGKN.L(Y,IA,G););
-
-*Fixing the accumulated investments from previous optimization for the next optimization
-$ifi %GenInvest%==yes         VGKNACCUMNET.FX(IY411FIRST,IA,G)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IAGKNY(Y,IA,G)) = VGKNACCUMNET.L(IY411FIRST,IA,G);
-*$ifi %GenInvest%==yes        VGKNACCUMGROSS.FX(IY411FIRST,IA,G)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IAGKNY(Y,IA,G)) = VGKNACCUMGROSS.L(IY411FIRST,IA,G);
-$ifi %TransInvest%==yes       VXKNACCUMNET.FX(IY411FIRST,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXKN(Y,IRE,IRI))= VXKNACCUMNET.L(IY411FIRST,IRE,IRI);
+*Fixing the investments and accumulated investments from previous optimization for the next optimization (only the first year of IY411 is fixed)
+*(IMPORTANT!: The following code only works if the years are optimized consecutively. For example, this two-year mode optimization would not provide coherent results: [2020,2040] and [2030;2050]
+$ifi %TechInvest%==yes         LOOP(Y$(YVALUE(Y) LE YVALUE(IYALIAS)),VGKN.FX(Y,IA,G) = VGKN.L(Y,IA,G););
+$ifi %TechInvest%==yes         VGKNACCUMNET.FX(IY411FIRST,IA,G)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IAGKNY(Y,IA,G)) = VGKNACCUMNET.L(IY411FIRST,IA,G);
+*$ifi %TechInvest%==yes        VGKNACCUMGROSS.FX(IY411FIRST,IA,G)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IAGKNY(Y,IA,G)) = VGKNACCUMGROSS.L(IY411FIRST,IA,G);
+$ifi %TransInvest%==yes        VXKN.FX(IY411FIRST,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXKN(Y,IRE,IRI))= VXKN.L(IY411FIRST,IRE,IRI);
+$ifi %TransInvest%==yes        VXKNACCUMNET.FX(IY411FIRST,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXKN(Y,IRE,IRI))= VXKNACCUMNET.L(IY411FIRST,IRE,IRI);
 
 $include "../../base/addons/_hooks/varassign.inc"
 
