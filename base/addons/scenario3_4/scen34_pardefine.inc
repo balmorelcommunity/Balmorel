@@ -36,7 +36,7 @@ $ifi %SCENARIO4%==YES $goto label_SCENARIO4_GR_FC_SC4_end      !! loading the fi
 EXECUTE_LOAD  "../../simex/GR_FC_1.gdx" GR_GETOH_VAR_T GR_GETOH_FX GR_GETOH_TOTAL  GR_GETOH_PRICE ;
 $LABEL label_SCENARIO4_GR_FC_SC4_end
 
-$ifi not %SCENARIO4%==YES $goto label_SCENARIO4_GR_FC_SC4_end2      !! loading the file for scenario 3
+$ifi not %SCENARIO4%==YES $goto label_SCENARIO4_GR_FC_SC4_end2      !! loading the file for scenario 4
 EXECUTE_LOAD  "../../simex/GR_FC_2.gdx" GR_GETOH_VAR_T GR_GETOH_FX GR_GETOH_TOTAL  GR_GETOH_PRICE ;
 $LABEL label_SCENARIO4_GR_FC_SC4_end2
 
@@ -69,7 +69,7 @@ GR_PRICE_TECH(C,'GRDSUBS') = MAX( (GR_GETOH_PRICE('2030',C)/1000
 
 EXECUTE_UNLOAD '../output/scen34.gdx'  IGR_TIME_Y, DE_VAR_T_PEAK, GR_PRICE_TECH, GR_GETOH_CAPY;
 
-$ifi  %SCENARIO4%==YES    GR_PRICE_USER(C,DEUSER,'GRDDCY') = 50;
+*$ifi  %SCENARIO4%==YES    GR_PRICE_USER(C,DEUSER,'GRDDCY') = 50;
 
 $LABEL label_scenario3OR4_DATAMANIPULATION_END
 
