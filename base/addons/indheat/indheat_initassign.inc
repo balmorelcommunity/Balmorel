@@ -7,7 +7,7 @@ INDHEAT_IAGK_HASORPOT(Y,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP) = YES$INDHEAT_GKFX(Y
 INDHEAT_IAGKN(INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP)=NO;
 INDHEAT_IAGKNY(Y,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP)=NO;
 
-$ifi not %GenInvest%==yes $goto Generation_investments_end
+$ifi not %TechInvest%==yes $goto Generation_investments_end
 
 * IAGKN and IAGKNY indicates when and where technologies may be invested, based on various combinations of input data.
 * Initially: identical to AGKN:

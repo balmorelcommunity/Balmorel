@@ -149,7 +149,7 @@ $setglobal full_timeseries_scaling
 *---- Heat storage loading restrictions ------    '
 *overall control variable heatsto_loading_rest must be 'yes' if any of the other heat storage loading restriction controls are:
 
-$setglobal heatsto_loading_rest  
+$setglobal heatsto_loading_rest
 *!option yes
 
 *Heat storages are forbidden to load other heat storages (if option "yes", heat storages will not be allowed to load other heat storages)
