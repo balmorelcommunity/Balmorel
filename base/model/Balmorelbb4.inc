@@ -105,8 +105,13 @@ ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GH
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
 ACRONYMS STEAMTURBINE_SUBCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILER, COMBINEDCYCLE, EXCESS_HEAT, ELECTRICITY_BATTERY, GEOTHERMAL,
-GASTURBINE, HEATPUMP, HEATPUMP_AIR, HEATPUMP_EXCESSHEAT, HEATPUMP_GROUND, PIT, WATERTANK, SOLARPV, SOLARHEATING,
-WINDTURBINE_OFFSHORE_FAR, WINDTURBINE_OFFSHORE_NEARSHORE, WINDTURBINE_ONSHORE, WINDTURBINE_OFFSHORE_1,WINDTURBINE_OFFSHORE_2,WINDTURBINE_OFFSHORE_3;
+GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_ONSHORE, WINDTURBINE_OFFSHORE;
+
+*ACRONYMS for subtech groups
+* They can be used for multiple purposes
+* They should generally not be changed.
+* New technology types may be added only if also code specifying their properties are added.
+ACRONYMS RG1,RG2,RG3,RG1-OFF1,RG2-OFF1,RG3-OFF1,RG1-OFF2,RG2-OFF2,RG3-OFF2,RG1-OFF3,RG2-OFF3,RG3-OFF3,RG1-OFF4,RG2-OFF4,RG3-OFF4,RG1-OFF5,RG2-OFF5,RG3-OFF5,AIR,EXCESSHEAT,GROUND;
 
 * ACRONYMS for user defined fuels will be given as part of file FFF.inc
 
@@ -474,9 +479,6 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
    IWATERTANK(G)= YES$(GDATA(G,'GDTECHGROUP') EQ WATERTANK);
    IPIT(G)      = YES$(GDATA(G,'GDTECHGROUP') EQ PIT);
    IHEATPUMP(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP);
-   IHEATPUMPAIR(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP_AIR);
-   IHEATPUMPEXCESSHEAT(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP_EXCESSHEAT);
-   IHEATPUMPGROUND(G) = YES$(GDATA(G,'GDTECHGROUP') EQ HEATPUMP_GROUND);
 
 *-------------------------
 
@@ -1336,6 +1338,10 @@ EQUATIONS
    QKTECHGROUPR(Y,RRR,TECH_GROUP) "Maximum capacity by year, region and technology group (MW)"
    QKTECHGROUPA(Y,AAA,TECH_GROUP) "Maximum capacity by year, area and technology group (MW)"
 
+   QKSUBTECHGROUPC(Y,C,TECH_GROUP,SUBTECH_GROUP)   "Maximum capacity by year, country and subtechnology group (MW)"
+   QKSUBTECHGROUPR(Y,RRR,TECH_GROUP,SUBTECH_GROUP) "Maximum capacity by year, region and subtechnology group (MW)"
+   QKSUBTECHGROUPA(Y,AAA,TECH_GROUP,SUBTECH_GROUP) "Maximum capacity by year, area and subtechnology group (MW)"
+
    QGMINFUELC(Y,C,FFF)      "Minimum electricity generation year, country and fuel (MWh)"
    QGMAXFUELC(Y,C,FFF)      "Maximum electricity generation year, country and fuel (MWh)"
    QGMINFUELR(Y,RRR,FFF)    "Minimum electricity generation by year, region and fuel (MWh)"
@@ -2157,6 +2163,40 @@ $include "../../base/addons/_hooks/qktechgroupa.inc"
 
 *--- End of Capacity restrictions by Technology Group--------------------------------------------
 
+*--- Capacity restrictions by Sub Technology Group--------------------------------------------
+
+* "Maximum capacity by year, country and subtechnology group (MW)"
+QKSUBTECHGROUPC(IY411,C,TECH_GROUP,SUBTECH_GROUP)$SUBTECHGROUPKPOT(C,TECH_GROUP,SUBTECH_GROUP).. !! EPS convention on SUBTECHGROUPKPOT: 0 implies no restriction, "EPS" implies zero MW.
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP) AND GDATA(G,'GDSUBTECHGROUP') EQ SUBTECH_GROUP_VALUE(SUBTECH_GROUP) AND ICA(C,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)$IGDECOMEXOPOT(IY411,IA,G)
+    )
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP) AND GDATA(G,'GDSUBTECHGROUP') EQ SUBTECH_GROUP_VALUE(SUBTECH_GROUP) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
+      =L=  SUBTECHGROUPKPOT(C,TECH_GROUP,SUBTECH_GROUP)
+;
+
+* "Maximum capacity by year, region and subtechnology group (MW)"
+QKSUBTECHGROUPR(IY411,IR,TECH_GROUP,SUBTECH_GROUP)$SUBTECHGROUPKPOT(IR,TECH_GROUP,SUBTECH_GROUP).. !! EPS convention on SUBTECHGROUPKPOT: 0 implies no restriction, "EPS" implies zero MW.
+    SUM((IA,G)$(IAGKFX(IY411,IA,G) AND GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP) AND GDATA(G,'GDSUBTECHGROUP') EQ SUBTECH_GROUP_VALUE(SUBTECH_GROUP) AND RRRAAA(IR,IA)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)$IGDECOMEXOPOT(IY411,IA,G)
+    )
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP) AND GDATA(G,'GDSUBTECHGROUP') EQ SUBTECH_GROUP_VALUE(SUBTECH_GROUP) AND RRRAAA(IR,IA)), VGKNACCUMNET(IY411,IA,G))
+      =L=  SUBTECHGROUPKPOT(IR,TECH_GROUP,SUBTECH_GROUP)
+;
+
+* "Maximum capacity by year, area and subtechnology group (MW)"
+QKSUBTECHGROUPA(IY411,IA,TECH_GROUP,SUBTECH_GROUP)$SUBTECHGROUPKPOT(IA,TECH_GROUP,SUBTECH_GROUP).. !! EPS convention on SUBTECHGROUPKPOT: 0 implies no restriction, "EPS" implies zero MW.
+    SUM(G$(IAGKFX(IY411,IA,G) AND GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP) AND GDATA(G,'GDSUBTECHGROUP') EQ SUBTECH_GROUP_VALUE(SUBTECH_GROUP)),
+    GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)$IGDECOMEXOPOT(IY411,IA,G)
+    )
+      +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP) AND GDATA(G,'GDSUBTECHGROUP') EQ SUBTECH_GROUP_VALUE(SUBTECH_GROUP)), VGKNACCUMNET(IY411,IA,G))
+      =L=  SUBTECHGROUPKPOT(IA,TECH_GROUP,SUBTECH_GROUP)
+;
+
+*--- End of Capacity restrictions by Technology Group--------------------------------------------
+
 
 
 *----------- Transmission (MW):------------------------------------------------
@@ -2538,6 +2578,10 @@ $ifi not %TechInvest%==yes $ifi not %DECOM%==yes  $goto NO_TECH_INVESTMENTS_NO_D
                                  QKTECHGROUPC
                                  QKTECHGROUPR
                                  QKTECHGROUPA
+*--- Potential capacity restrictions per subtechnology group ------------------------------------------------
+                                 QKSUBTECHGROUPC
+                                 QKSUBTECHGROUPR
+                                 QKSUBTECHGROUPA
 *--- Fuel potential restrictions ------------------------------------------------
                                  QKEFUELC
                                  QKEFUELR

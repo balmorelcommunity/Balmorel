@@ -142,6 +142,16 @@ $if     EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE      '../data/TECH_GROUP_V
 $if not EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/TECH_GROUP_VALUE.inc';
 %semislash%;
 
+SET SUBTECH_GROUP     "SubTechnology Groups" %semislash%
+$if     EXIST '../data/SUBTECH_GROUP.inc' $INCLUDE      '../data/SUBTECH_GROUP.inc';
+$if not EXIST '../data/SUBTECH_GROUP.inc' $INCLUDE '../../base/data/SUBTECH_GROUP.inc';
+%semislash%;
+
+PARAMETER SUBTECH_GROUP_VALUE(SUBTECH_GROUP)         "Technology Groups value" %semislash%
+$if     EXIST '../data/SUBTECH_GROUP_VALUE.inc' $INCLUDE      '../data/SUBTECH_GROUP_VALUE.inc';
+$if not EXIST '../data/SUBTECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/SUBTECH_GROUP_VALUE.inc';
+%semislash%;
+
 SET G(GGG)    "Generation technologies in the simulation"  %semislash%
 $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
 $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
