@@ -310,10 +310,10 @@ $setglobal bb4weighty shareYYY
 *===============================================================================
 *===============================================================================
 
-$ifi     %bb1%==yes $setglobal modelname balbase1
-$ifi     %bb2%==yes $setglobal modelname balbase2
-$ifi     %bb3%==yes $setglobal modelname balbase3
-$ifi     %bb4%==yes $setglobal modelname balbase4
+$ifi     %bb1%==yes $setglobal modelname BALBASE1
+$ifi     %bb2%==yes $setglobal modelname BALBASE2
+$ifi     %bb3%==yes $setglobal modelname BALBASE3
+$ifi     %bb4%==yes $setglobal modelname BALBASE4
 
 
 *===============================================================================
