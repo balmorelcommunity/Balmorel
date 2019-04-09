@@ -149,7 +149,7 @@ $setglobal full_timeseries_scaling
 *---- Heat storage loading restrictions ------    '
 *overall control variable heatsto_loading_rest must be 'yes' if any of the other heat storage loading restriction controls are:
 
-$setglobal heatsto_loading_rest  
+$setglobal heatsto_loading_rest
 *!option yes
 
 *Heat storages are forbidden to load other heat storages (if option "yes", heat storages will not be allowed to load other heat storages)
@@ -304,6 +304,17 @@ $setglobal DHFPCALIB
 $setglobal bb4weighty shareYYY
 *!option same       !Text "Use same weights for all Y"
 *!option shareYYY   !Text "Years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)"
+*===============================================================================
+*===============================================================================
+* Model name
+*===============================================================================
+*===============================================================================
+
+$ifi     %bb1%==yes $setglobal modelname balbase1
+$ifi     %bb2%==yes $setglobal modelname balbase2
+$ifi     %bb3%==yes $setglobal modelname balbase3
+$ifi     %bb4%==yes $setglobal modelname balbase4
+
 
 *===============================================================================
 *===============================================================================

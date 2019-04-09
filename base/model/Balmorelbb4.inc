@@ -393,6 +393,12 @@ PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the se
 PARAMETER VHYRS_SL(Y,AAA,SSS)       "To be saved for comparison with BB1/BB2 solution value for VHYRS_S.L (initial letter is V although declared as a parameter) (MWh)"
 PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transferred to model Balbase3 (input-Money/MWh)";
 
+* Model and solver status codes and statistics
+PARAMETER OMODELSTAT(Y) "Model status code";
+PARAMETER OSOLVESTAT(Y) "Solver status code";
+PARAMETER OCPUTIME(Y) "Time the solver used to solve the model in CPU seconds";
+
+
 * ------------------------------------------------------------------------------
 * All remaining (cf. ... .inc above) data files af included from the following file
 $ifi     exist "bb4datainc.inc" $include                   "bb4datainc.inc";
@@ -1025,7 +1031,7 @@ $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF          IGEQF(Y,CCCRRRAAA,FFF) = GEQF(Y,CCCR
 * Unload input data to gdx and possibly MDB files.
 * Note that this is a compile time operation, such that only the 'direct' data
 * definitions (and no assignments) are reflected:
-execute_unload '%relpathModel%../output/temp/1INPUT.gdx';
+execute_unload '%relpathtemp%1INPUT.gdx';
 
 *------------------------------
 
@@ -2134,7 +2140,7 @@ $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htequations.in
 * Definition of the models:
 *-------------------------------------------------------------------------------
 
-MODEL BALBASE4  "Balmorel model with endogeneous investments"
+MODEL %modelname%  "Balmorel model with endogeneous investments"
 /
 *--- Objective function --------------------------------------------------------
                                 QOBJ
@@ -2277,7 +2283,7 @@ $offtext
 /;
 
 * Scale the model: only equation QOBJ is really badly scaled:
-BALBASE4.SCALEOPT=1;
+%modelname%.SCALEOPT=1;
 QOBJ.SCALE=IOF1000000;
 
 *-------------------------------------------------------------------------------
@@ -2325,6 +2331,8 @@ $ifi %bb4%==yes $INCLUDE "../../base/addons/BB4/BB4overview.inc";
 *-------------------------------------------------------------------------------
 $ifi %bb4%==yes $INCLUDE "../../base/model/Balmorelbb4.sim";
 *-------------------------------------------------------------------------------
+
+execute_unload  "%relpathtemp%SOLVESTAT.gdx" OMODELSTAT, OSOLVESTAT, OCPUTIME;
 
 $ifi %bb4%==yes execute_unload  "../../simex/HYRSG.gdx", HYRSG;
 $ifi %bb4%==yes execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;

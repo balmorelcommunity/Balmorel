@@ -35,7 +35,7 @@ VDECOM.l(Y,IA,G)      = 0;
 
 
 * Unload IWEIGHTY for the output tool
-execute_unload '%relpathModel%../output/temp/IWEIGHTY.gdx' IWEIGHTY;
+execute_unload '%relpathtemp%IWEIGHTY.gdx' IWEIGHTY;
 
 *IFIRSTYEARNEXTBB4 = SUM(Y$(ORD(Y) EQ 1), YVALUE(Y)); !! todo not in use
 IY411PREVY(Y,Y-1)= YES;
@@ -485,11 +485,11 @@ $include "../../base/addons/_hooks/varloupfx.inc"
 * solution basis, which is used for generating results database.
 OPTION Savepoint=1;
 
-$ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
+$ifi not %USEOPTIONFILE%==0 %modelname%.optfile = %USEOPTIONFILE%;
 
 
-$ifi not %SOLVEMIP%==yes SOLVE BALBASE4 USING LP  MINIMIZING VOBJ;  !! =====================
-$ifi  %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;  !! =====================
+$ifi not %SOLVEMIP%==yes SOLVE %modelname% USING LP  MINIMIZING VOBJ;  !! =====================
+$ifi  %SOLVEMIP%==yes SOLVE %modelname% USING MIP MINIMIZING VOBJ;  !! =====================
 
 $include "../../base/addons/_hooks/solveend.inc"
 *-------------------------------------------------------------------------------
@@ -497,6 +497,10 @@ $include "../../base/addons/_hooks/solveend.inc"
 *-------------------------------------------------------------------------------
 
 $ifi %bb4%==yes $INCLUDE '../../base/logerror/logerinc/balbase4.mss';
+
+OMODELSTAT(IYALIAS) = %modelname%.MODELSTAT;
+OSOLVESTAT(IYALIAS) = %modelname%.SOLVESTAT;
+OCPUTIME(IYALIAS) = %modelname%.RESUSD;
 
 
 * ------------------------------------------------------------------------------
@@ -509,7 +513,7 @@ $ifi %bb4%==yes $INCLUDE '../../base/logerror/logerinc/balbase4.mss';
 $ifi not %system.filesys%==MSNT $goto endofMSNTmove
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move "%relpathModel%''BALBASE4_p.gdx" '  '"%relpathModel%%relpathoutput%temp/'IYALIAS.tl:0:0 '.gdx"';
+$ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move "%relpathModel%''%modelname%_p.gdx" '  '"%relpathtemp%'IYALIAS.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes  execute  "%batfileMERGESAVEPOINTRESULTS%";
 
@@ -518,7 +522,7 @@ $label endofMSNTmove
 $ifi not %system.filesys%==UNIX $goto endofUNIXmove
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''BALBASE4_p.gdx" "%relpathModel%%relpathoutput%temp/'IYALIAS.tl:0:0 '.gdx"';
+$ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''%modelname%_p.gdx" "%relpathtemp%'IYALIAS.tl:0:0 '.gdx"';
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';

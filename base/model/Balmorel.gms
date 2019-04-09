@@ -58,9 +58,9 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm *.gdx";
 $ifi %system.filesys%==MSNT
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "del *.gdx";
 $ifi %system.filesys%==UNIX
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ../output/temp/*.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm %relpathtemp%*.gdx";
 $ifi %system.filesys%==MSNT
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ..\output\temp\*.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del %relpathtemp%*.gdx";
 
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ $ifi not dexist "../logerror/logerinc"   execute 'mkdir -p "../logerror/logerinc
 $ifi not dexist "../output/economic"     execute 'mkdir -p "../output/economic"';
 $ifi not dexist "../output/inputout"     execute 'mkdir -p "../output/inputout"';
 $ifi not dexist "../output/printout"     execute 'mkdir -p "../output/printout"';
-$ifi not dexist "../output/temp"         execute 'mkdir -p "../output/temp"';
+$ifi not dexist "%relpathtemp%"         execute 'mkdir -p "%relpathtemp%"';
 
 
 *-------------------------------------------------------------------------------
@@ -1755,13 +1755,13 @@ $ifi %INPUTDATA2GDX%==yes execute_unload '%relpathInputdata2GDX%INPUTDATAOUT.gdx
 $ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDATAOUT.gdx"';
 
 $ifi %MERGEINPUTDATA%==yes
-$ifi NOT (%BB3%==yes) execute_unload '../output/temp/1INPUT.gdx';
+$ifi NOT (%BB3%==yes) execute_unload '%relpathtemp%1INPUT.gdx';
 
 $ifi %MERGEINPUTDATA%==yes
-$ifi %BB3%==yes $ifi not (%limitedresults%==yes) execute_unload '../output/temp/1INPUT.gdx';
+$ifi %BB3%==yes $ifi not (%limitedresults%==yes) execute_unload '%relpathtemp%1INPUT.gdx';
 
 $ifi %MERGEINPUTDATA%==yes
-$ifi %BB3%==yes $ifi %limitedresults%==yes execute_unload '../output/temp/1INPUT.gdx'
+$ifi %BB3%==yes $ifi %limitedresults%==yes execute_unload '%relpathtemp%1INPUT.gdx'
 $ifi %MERGEINPUTDATA%==yes
 $ifi %BB3%==yes $ifi %limitedresults%==yes $INCLUDE '../../base/model/syminput.inc';
 
@@ -3232,7 +3232,7 @@ $ifi not %system.filesys%==MSNT $goto endofMSNToutput
 *The following section until $label endofMSNToutput is related to Windows output only
 *Please use only backslash \ instead of forward slash / in this section until the label
 
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%temp\*.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathtemp%*.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%.gdx"';
 
 $ifi %MERGECASE%==NONE
@@ -3268,7 +3268,7 @@ $ifi not %system.filesys%==UNIX $goto endofUNIXoutput
 *The following section until $label endofUNIXoutput is related to UNIX output only
 *Please use only forward slash / instead of backslash \ in this section until the label
 
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/temp/*.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathtemp%*.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%.gdx"';
 
 $ifi %MERGECASE%==NONE
