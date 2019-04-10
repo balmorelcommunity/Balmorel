@@ -439,6 +439,11 @@ $if     EXIST '../data/TECHGROUPKPOT.inc' $INCLUDE      '../data/TECHGROUPKPOT.i
 $if not EXIST '../data/TECHGROUPKPOT.inc' $INCLUDE '../../base/data/TECHGROUPKPOT.inc';
 %semislash%;
 
+PARAMETER SUBTECHGROUPKPOT(CCCRRRAAA,TECH_GROUP,SUBTECH_GROUP)    "Subtechnology group capacity restriction by geography (MW)"   %semislash%
+$if     EXIST '../data/SUBTECHGROUPKPOT.inc' $INCLUDE      '../data/SUBTECHGROUPKPOT.inc';
+$if not EXIST '../data/SUBTECHGROUPKPOT.inc' $INCLUDE '../../base/data/SUBTECHGROUPKPOT.inc';
+%semislash%;
+
 /* Todo
 PARAMETER FKMIN(YYY,CCCRRRAAA,FFF)    "Capacity restricted by geography (MW)"   %semislash%
 $if     EXIST '../data/FKMIN.inc' $INCLUDE      '../data/FKMIN.inc';
