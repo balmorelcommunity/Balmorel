@@ -18,6 +18,11 @@ $if     EXIST '../data/OFFSHOREGRID_XKN_ES.inc' $INCLUDE         '../data/OFFSHO
 $if not EXIST '../data/OFFSHOREGRID_XKN_ES.inc' $INCLUDE '../../base/data/OFFSHOREGRID_XKN_ES.inc';
 
 $onmulti
+$if     EXIST '../data/OFFSHOREGRID_WNDFLH.inc' $INCLUDE         '../data/OFFSHOREGRID_WNDFLH.inc';
+$if not EXIST '../data/OFFSHOREGRID_WNDFLH.inc' $INCLUDE '../../base/data/OFFSHOREGRID_WNDFLH.inc';
+$offmulti
+
+$onmulti
 $if     EXIST '../data/OFFSHOREGRID_WND_VAR_T.inc' $INCLUDE         '../data/OFFSHOREGRID_WND_VAR_T.inc';
 $if not EXIST '../data/OFFSHOREGRID_WND_VAR_T.inc' $INCLUDE '../../base/data/OFFSHOREGRID_WND_VAR_T.inc';
 $offmulti
