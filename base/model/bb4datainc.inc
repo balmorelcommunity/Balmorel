@@ -29,35 +29,49 @@ SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)" %semislash%
 $if     EXIST '../data/CCCRRRAAA.inc' $INCLUDE         '../data/CCCRRRAAA.inc';
 $if not EXIST '../data/CCCRRRAAA.inc' $INCLUDE '../../base/data/CCCRRRAAA.inc';
 %semislash%;
+*------------- Any CCCRRRAAA additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/cccrrraaaadditions.inc"
 
 SET CCC(CCCRRRAAA)       "All Countries" %semislash%
 $if     EXIST '../data/CCC.inc' $INCLUDE         '../data/CCC.inc';
 $if not EXIST '../data/CCC.inc' $INCLUDE '../../base/data/CCC.inc';
 %semislash%;
+*------------- Any CCC additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/cccadditions.inc"
 
 SET RRR(CCCRRRAAA)       "All regions" %semislash%
 $if     EXIST '../data/RRR.inc' $INCLUDE         '../data/RRR.inc';
 $if not EXIST '../data/RRR.inc' $INCLUDE '../../base/data/RRR.inc';
 %semislash%;
+*------------- Any RRR additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/rrradditions.inc"
 
 SET AAA(CCCRRRAAA)       "All areas" %semislash%
 $if     EXIST '../data/AAA.inc' $INCLUDE         '../data/AAA.inc';
 $if not EXIST '../data/AAA.inc' $INCLUDE '../../base/data/AAA.inc';
 %semislash%;
+*------------- Any AAA additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/aaaadditions.inc"
 
 SET CCCRRR(CCC,RRR)      "Regions in countries" %semislash%
 $if     EXIST '../data/CCCRRR.inc' $INCLUDE      '../data/CCCRRR.inc';
 $if not EXIST '../data/CCCRRR.inc' $INCLUDE '../../base/data/CCCRRR.inc';
 %semislash%;
+*------------- Any CCCRRRAAA additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/cccrrradditions.inc"
 
 SET RRRAAA(RRR,AAA)      "Areas in regions" %semislash%
 $if     EXIST '../data/RRRAAA.inc' $INCLUDE         '../data/RRRAAA.inc';
 $if not EXIST '../data/RRRAAA.inc' $INCLUDE '../../base/data/RRRAAA.inc';
 %semislash%;
+*------------- Any RRRAAA additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/rrraaaadditions.inc"
 
 SET C(CCC)    "Countries in the simulation"  %semislash%
 $if     EXIST '../data/C.inc' $INCLUDE         '../data/C.inc';
 $if not EXIST '../data/C.inc' $INCLUDE '../../base/data/C.inc';
+*------------- Any C additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/cadditions.inc"
 
 * ------------------------------------------------------------------------------
 %ONOFFCODELISTING%
@@ -157,7 +171,6 @@ $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
 $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 %semislash%;
 
-
 *-------------------------------------------------------------------------------
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
 *-------------------------------------------------------------------------------
@@ -177,14 +190,9 @@ $ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
 PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics" %semislash%
 $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
-
-
-*This could be placed more elegantly elsewhere
-*-------------------------------------------------------------------------------
+%semislash%;
 *------------- Any GDATA additions for addon to be placed here: ----------------
-*-------------------------------------------------------------------------------
 $include "../../base/addons/_hooks/gdataadditions.inc"
-
 
 * ------------------------------------------------------------------------------
 %ONOFFCODELISTING%

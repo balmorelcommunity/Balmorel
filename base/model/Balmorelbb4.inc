@@ -111,7 +111,7 @@ GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_O
 * They can be used for multiple purposes
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
-ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,EXCESSHEAT,GROUND;
+ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,EXCESSHEAT,GROUND,HUB_OFF;
 
 * ACRONYMS for user defined fuels will be given as part of file FFF.inc
 
@@ -1472,10 +1472,10 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 *   discounted back to the first year in the present BB4 model, this latter is represented by factor IY4GINVCOSTWEIGHT below.
 *   Discounting further back from first year in the present BB4 model to the first year in Y is handled by the factor IDISCOUNTFACTOR(Y) above.
 *   The relative weight of the years is represented by   TODO: sammenlign med SONYstick:
-   + IOF1000000*(SUM((IA,G)$IAGKNY(Y,IA,G), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYG(Y,IYALIAS2,G))))
+   + IOF1000000*(SUM((IA,G)$(IAGKNY(Y,IA,G) AND (NOT IGKN_ES(G))), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYG(Y,IYALIAS2,G))))
 
 * Investment costs, generation and storage capacity invested in previous years
-   + IOF1000000*(SUM((IYALIAS2,IA,G)$(IAGKNY(IYALIAS2,IA,G) AND (ORD(IYALIAS2) LT ORD(Y))), VGKN(IYALIAS2,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*IYHASANNUITYG(IYALIAS2,Y,G)))
+   + IOF1000000*(SUM((IYALIAS2,IA,G)$(IAGKNY(IYALIAS2,IA,G) AND (ORD(IYALIAS2) LT ORD(Y)) AND (NOT IGKN_ES(G))), VGKN(IYALIAS2,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*IYHASANNUITYG(IYALIAS2,Y,G)))
 
 * Investment costs, new transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):
