@@ -2203,7 +2203,7 @@ $ifi %TransInvest%==yes         QXK_UP
                                 QKMAXFNA
                                 QKEQFNA
 
-*                                QKMINFA  TODO
+                                QKMINFA   
 *                                QKMAXFA  TODO
 *                                QKEQFA   TODO
 
@@ -2300,6 +2300,8 @@ $ifi %CREATETIME%==yes $goto ENDOFMODEL
 
 * For Producing the Jacobian Matrix
 $ifi %ANNOTATION%==yes   $include "../../base/AnnotationPlotting/Annotating_Time_BB4_Declaration.gms";
+
+
 
 $ifi %bb4%==yes $INCLUDE "../../base/addons/BB4/BB4overview.inc";
 

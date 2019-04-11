@@ -223,6 +223,7 @@ $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
 $if not EXIST '../data/Y.inc' $INCLUDE '../../base/data/Y.inc';
 %semislash%;
 
+
 SET S(SSS)    "Seasons in the simulation"   %semislash%
 $if     EXIST '../data/S.inc' $INCLUDE      '../data/S.inc';
 $if not EXIST '../data/S.inc' $INCLUDE '../../base/data/S.inc';
@@ -787,6 +788,7 @@ $if not EXIST '../data/YMODELDELTA.inc' $INCLUDE '../../base/data/YMODELDELTA.in
 $label label_BB4_1
 
 
+
 *-------------------------------------------------------------------------------
 *---- Miscellaneous ------------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -819,3 +821,5 @@ PARAMETER DECOM_G(YYY,YYY,AAA,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERAT
 $if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
 $if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
 %semislash%;
+
+$label endoffile

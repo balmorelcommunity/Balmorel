@@ -22,11 +22,28 @@ $setglobal vqdebug
 
 
 * hans --------
-* some testing f anotation (general setting for annotation below)
+* some testing of annotation (general setting for annotation below)
+
+$setglobal  limitY3   Y3_2016_20
+*!option  Y3_2016              single year
+*!option  Y3_2030              single year
+*!option  Y3_2016_20           two years
+*!option  Y3_2016_20_30        three years
+*!option
+*!option
+* Files: Y, YMODEL, YMODELDELTA
 
 
 
+$setglobal limitST  yes
+*!option yes    S01,S02,s03 ,  T001,T002,T003 ,
+*!option  ''    S01*S52, T001*T168
+* Files:    S, T
 
+$setglobal limitCR ''
+*!option DKNO      NORWAY+DENMARK,  CCCRRR('denmark',RRR) has dk1, CCCRRR('NORWAY',RRR) has NO1
+*!option DK        DENMARK,  CCCRRR('denmark',RRR) has dk1
+* Files: C, CCCRRR, RRRAAA, GEQF
 
 
 
@@ -100,7 +117,6 @@ $setglobal testbb1234
 $setglobal SPEEDUP
 
 
-
 * For making the Block Picture providing equations and variables in the specified model
 $setglobal GMSCHK
 
@@ -110,7 +126,7 @@ $setglobal DICTMAP
 
 
 * For producing the Jacobian and the Plotted annotation
-$setglobal ANNOTATION   yes
+$setglobal ANNOTATION    yes
 
 $ifi %ANNOTATION%==yes     $setglobal ANNO_TIME     yes
 $ifi %ANNOTATION%==yes     $setglobal ANNO_DAY
@@ -158,7 +174,7 @@ $ifi %DICTMAP%==yes                    putclose cp;
 *---- Generation investments options----
 
 * Permit investments in generation capacity:
-$setglobal GenInvest  yes
+$setglobal GenInvest yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
@@ -319,7 +335,7 @@ $Setglobal FlowBased
 
 * Set short storages to be inter- or intra-seasonal
 * according to GDSTOINTERS in GDATA (default) or all or none
-$setglobal stointers  all
+$setglobal stointers   all
 *! option  default    Use as specified by GDSTOINTERS in GDATA
 *! option  all        Let all storage technologies be inter-seasonal
 *! option  none       Let no storage technologies be inter-seasonal (i.e., let all be intra-seasonal)

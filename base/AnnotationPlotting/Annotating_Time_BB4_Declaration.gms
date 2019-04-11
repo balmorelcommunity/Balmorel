@@ -26,6 +26,9 @@ SET blockAssignmentTime(Y,blocks,S);
 
 SCALAR annot_blockFirst /1/;
 SCALAR annot_blockLast;
+* For testing something:
+scalar  annot_blockLast_plus1;
+
 
 PARAMETER annot_blockStage(S,Y);
 
@@ -35,4 +38,8 @@ SCALAR   Annotating_Time_BB4_BASIC "Basic sets and assigments for the BB4 time a
 
 display "Basic from the Annotation_Time_BB4_Declaration.gms file, in order of Definitions:", IYS,  blocks, timeHelper;
 
+option blockAssignment:0,  annot_blockFirst:0,  annot_blockLast:0,  annot_blockStage:0 ;
+
 $LOG "##### Leaving Annotating_Time_BB4_Declaration.inc #####"
+
+
