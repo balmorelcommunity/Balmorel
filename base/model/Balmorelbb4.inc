@@ -720,6 +720,8 @@ SET IXKN(Y,IRRRE,IRRRI)  "Pair of regions that may get new transmission capacity
 SET IAGKN(AAA,G) "Area, technology where technology may be invested based on AGKN and implicit year independent constraints from FKPOT";
 SET IAGKNY(Y,AAA,G) "Area, technology where technology may be invested based on IAGKN and implicit constraint from first investment year";
 
+SET IGKN_ES(GGG)         "Technologies lines whose cost depends on economy of scale";
+SET IXKN_ES(IRRRE,IRRRI) "Transmission lines whose cost depends on economy of scale";
 
 SET IXK_HASORPOT(Y,IRRRE,IRRRI) "Transmission lines with existing or potentially invested capacity current year";
 SET IAGK_HASORPOT(Y,AAA,G) "Technologies with existing or potentially invested capacity current year";
@@ -735,6 +737,10 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 *------------------------------------------------------------------------------
 *Initializing the set IGDECOMEXOPOT in case the add-on DECOM is not activated
 IGDECOMEXOPOT(Y,IA,G)=0;
+
+*Initializing the sets IGKN_ES and IXKN_ES in case the add-on OFFSHOREGRID is not activated
+$ifi not %OFFSHOREGRID%==yes IGKN_ES(G)=0;
+$ifi not %OFFSHOREGRID%==yes IXKN_ES(IRRRE,IRRRI)=0;
 
 PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y";
 * Set the relative weight of the individual years in Y.
@@ -1480,11 +1486,11 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 * Investment costs, new transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):
 * TODO: sammenlign med SONYstick:
-    + SUM((IRE,IRI)$IXKN(Y,IRI,IRE),IOF05*VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
+    + SUM((IRE,IRI)$(IXKN(Y,IRI,IRE) AND (NOT IXKN_ES(IRE,IRI))),IOF05*VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
       (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYX(IYALIAS2,Y)))
 
 *Investment costs, transmission capacity invested in previous years
-    + SUM((IYALIAS2,IRE,IRI)$(IXKN(IYALIAS2,IRI,IRE) AND (ORD(IYALIAS2) LT ORD(Y))),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*
+    + SUM((IYALIAS2,IRE,IRI)$(IXKN(IYALIAS2,IRI,IRE) AND (NOT IXKN_ES(IRE,IRI))  AND (ORD(IYALIAS2) LT ORD(Y))),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*
       (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*IYHASANNUITYX(IYALIAS2,Y))
 
 

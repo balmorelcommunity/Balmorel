@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug 
+$setglobal vqdebug
 *!option yes
 
 
@@ -127,6 +127,10 @@ XINVESTSTART= 2030;
 
 *----END: Investments
 *-----------------------
+
+* Allow to build a complicated offshore grid with hubs in the sea. Requires MIP since technologies are modelled with economies of scale via SOS variables.
+$setglobal OFFSHOREGRID  yes
+*!option yes
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
 $setglobal WNDSHUTDOWN
@@ -681,7 +685,7 @@ putclose fileMERGEWITHBASEbat;
 
 * The model type has implications for the solver type.
 * Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Progtramming).
-$setglobal SOLVEMIP
+$setglobal SOLVEMIP  YES
 *!option yes
 *!mustif %AGKNDISC%==yes
 *!mustif %UnitComm%==yes

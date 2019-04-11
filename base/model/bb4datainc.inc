@@ -232,6 +232,8 @@ $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
 $offmulti
+*------------- Any XINVCOST additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/agknadditions.inc"
 
 SET Y(YYY)    "Years in the simulation"   %semislash%
 $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
@@ -658,6 +660,8 @@ PARAMETER XINVCOST(YYY,IRRRE,IRRRI)  "Investment cost in new transmission capaci
 $if     EXIST '../data/XINVCOST.inc' $INCLUDE         '../data/XINVCOST.inc';
 $if not EXIST '../data/XINVCOST.inc' $INCLUDE '../../base/data/XINVCOST.inc';
 %semislash%;
+*------------- Any XINVCOST additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/xinvcostadditions.inc"
 
 PARAMETER XKFX(YYY,IRRRE,IRRRI)  "Capacity of exogenously given transmission capacity between regions (MW)"   %semislash%
 $if     EXIST '../data/XKFX.inc' $INCLUDE         '../data/XKFX.inc';
