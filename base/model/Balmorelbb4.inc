@@ -2203,7 +2203,7 @@ $ifi %TransInvest%==yes         QXK_UP
                                 QKMAXFNA
                                 QKEQFNA
 
-                                QKMINFA   
+*                                QKMINFA  TODO
 *                                QKMAXFA  TODO
 *                                QKEQFA   TODO
 

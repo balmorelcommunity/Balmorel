@@ -40,7 +40,7 @@ $setglobal limitST  yes
 *!option  ''    S01*S52, T001*T168
 * Files:    S, T
 
-$setglobal limitCR ''
+$setglobal limitCRA ''
 *!option DKNO      NORWAY+DENMARK,  CCCRRR('denmark',RRR) has dk1, CCCRRR('NORWAY',RRR) has NO1
 *!option DK        DENMARK,  CCCRRR('denmark',RRR) has dk1
 * Files: C, CCCRRR, RRRAAA, GEQF
