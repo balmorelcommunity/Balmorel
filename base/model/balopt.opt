@@ -96,7 +96,7 @@ $setglobal testbb1234
 *---- Generation investments options----
 
 * Permit investments in generation and storage capacity:
-$setglobal TechInvest  yes
+$setglobal TechInvest    YES
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
@@ -107,7 +107,7 @@ GINVESTSTART= 2020;
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest yes
+$setglobal TransInvest    YES
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which engoenous decisions in transmission capacities are allowed' ;
@@ -117,6 +117,14 @@ XINVESTSTART= 2030;
 
 *----END: Investments
 *-----------------------
+
+*----BEGIN: Investments transition -------
+*Save generation and transmission investments from model run to hard drive
+$setglobal SaveInvestData
+
+* Load generation and transmission investmets to hard drive
+$setglobal LoadInvestData yes
+*----BEGIN: Investments transition -------
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
 $setglobal WNDSHUTDOWN
@@ -185,7 +193,7 @@ $Setglobal HYDROGEN
 $Setglobal STEPWISEPRICE
 
 * Use stepwise linear potentials for installed capacity (currently for wind power)
-$Setglobal STEPWISEKPOT    yes
+$Setglobal STEPWISEKPOT  yes
 
 * Set a common maximum for fuels.
 $Setglobal LIMITSFORFUELS  yes
@@ -216,7 +224,7 @@ $setglobal GRIDTARIFFS yes
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 1 in Flex4Res
-$SETGLOBAL SCENARIO1
+$SETGLOBAL SCENARIO1 yes
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 2 in Flex4Res
@@ -346,7 +354,7 @@ $setglobal DEGCAL yes
 *-------------------------------------------------------------------------------
 
 * Algorithm to improve calculation time. Reduces the set IAGKNY by identifying technologies that are not attractive given assumed costs, fuel prices and taxes.
-$setglobal VARIABLE_TRIMMING  yes
+$setglobal VARIABLE_TRIMMING yes
 *!option yes
 
 * Tool that aggregates areas in preprocessing
@@ -592,7 +600,7 @@ putclose fileMERGESAVEPOINTRESULTSbash;
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
-$setglobal MERGEDSAVEPOINTRESULTS2SQLITE
+$setglobal MERGEDSAVEPOINTRESULTS2SQLITE yes
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
 

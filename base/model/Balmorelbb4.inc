@@ -385,6 +385,8 @@ PARAMETER X3FX_VAR_T(RRR,SSS,TTT)                  "Variation in fixed exchange 
 PARAMETER HYPPROFILS(AAA,SSS)                      "Hydro with storage seasonal price profile (Money/MWh)";
 
 $ifi %YIELDREQUIREMENT%==yes  PARAMETER YIELDREQ(GGG) "Differentiates yield requirements for different technologies ()"; !! () todo
+PARAMETER XKACC(Y,IRRRE,IRRRI)   'Investments in electricity transmission by BB2 up to and including year Y';
+PARAMETER GKVACCDECOM(YYY,AAA,GGG)   'INVESTMENTS IN BB4';
 
 
 * Data for handling of annual hydro constraints in BB3, to be saved by BB1/BB2 and used by BB3:
@@ -757,7 +759,6 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 
 
 
-
 * Set GDCV value to one for those technologies with capacity defined on HEAT and that are not IGEXT so that their fuel consumption and O&M costs
 * can be found using the same formula as for IGCND and IGEXT:
 GDATA(IGBPR,'GDCV') = 1;
@@ -780,11 +781,12 @@ IGDEUSER(G,DEUSER) = YES$SUM(TECH_GROUP$(TECHGROUP_DEUSER(TECH_GROUP,DEUSER) EQ 
 PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 * Transfer data from data file and insert default 1 as needed (Eps1-convention):
 * Note that the default value is 1, this is assigned here if nothing or 0 is entered in data file.
+$ontext
 $ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
 $ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T)$((NOT GKRATE(IA,G,S)) AND ((SUM(Y,GKFX(Y,IA,G))) OR  AGKN(IA,G))) = 1;   !! Insert default values.
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T) = GKRATE(IA,G,S,T);
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T)$((NOT GKRATE(IA,G,S,T)) AND ((SUM(Y,GKFX(Y,IA,G))) OR  AGKN(IA,G))) = 1; !! Insert default values.
-
+$offtext
 * The following parameters contain information about CO2 and SO2 emission
 * from technology G based on the fuel used and its emission data:
 PARAMETER   IM_CO2(G)   "CO2 emission coefficient for fuel, fossil and renewable (kg/GJ)";
@@ -989,15 +991,17 @@ $ifi %INPUTDATAGDX2MDB%==yes execute '=GDX2ACCESS "%relpathInputdata2GDX%INPUTDA
 
 $include "../../base/addons/_hooks/reducecard.inc"
 
+
 DE_VAR_T(RRR,DEUSER,SSS,TTT)$((NOT IR(RRR)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 DH_VAR_T(AAA,DHUSER,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 WND_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 SOLE_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
-SOLH_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
+*SOLH_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 WTRRSVAR_S(AAA,SSS)$((NOT IA(AAA)) OR (NOT S(SSS))) = 0;
 WTRRRVAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 WAVE_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 X3FX_VAR_T(RRR,SSS,TTT)$((NOT IR(RRR)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
+
 
 *DEF_STEPS(RRR,SSS,TTT,DF_QP,DEF)$((NOT IR(RRR)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;      moved to _hooks - still testing
 *DEF_STEPS(IR,S,T,DF_QP,DEF)$((NOT DEF_D1(DEF) AND (NOT DEF_D2(DEF)) AND (NOT DEF_D3(DEF)) AND (NOT DEF_U1(DEF)) AND (NOT DEF_U2(DEF)) AND (NOT DEF_U3(DEF)))) = 0;
@@ -1033,6 +1037,16 @@ PARAMETER IGEQF(YYY,CCCRRRAAA,FFF)          "Exact annual (any year) fuel use by
 $ifi %GEQF_DOL%==CCCRRRAAA_FFF              IGEQF(Y,CCCRRRAAA,FFF) = GEQF(CCCRRRAAA,FFF);
 $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF          IGEQF(Y,CCCRRRAAA,FFF) = GEQF(Y,CCCRRRAAA,FFF);
 
+
+$ifi %LoadInvestData%==yes PARAMETER IGKFX_KPOTSTEP_TEMP(YYY,AAA,GGG,KPOTSTEP)
+$ifi %LoadInvestData%==yes execute_load  '../../simex/GENINVEST_%CASEID%.gdx' GKVACCDECOM=GKVACCDECOM IGKFX_KPOTSTEP_TEMP=VGKNACCUMNET_KPOTSTEP.L;
+$ifi %LoadInvestData%==yes GKFX(YYY,AAA,GGG)=GKFX(YYY,AAA,GGG)+GKVACCDECOM(YYY,AAA,GGG);
+$ifi %LoadInvestData%==yes IGKFX_KPOTSTEP(Y,AAA,G,KPOTSTEP)=IGKFX_KPOTSTEP(Y,AAA,G,KPOTSTEP)+IGKFX_KPOTSTEP_TEMP(Y,AAA,G,KPOTSTEP);
+
+$ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
+$ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T)$((NOT GKRATE(IA,G,S)) AND ((SUM(Y,GKFX(Y,IA,G))) OR  AGKN(IA,G))) = 1;   !! Insert default values.
+$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T) = GKRATE(IA,G,S,T);
+$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T)$((NOT GKRATE(IA,G,S,T)) AND ((SUM(Y,GKFX(Y,IA,G))) OR  AGKN(IA,G))) = 1; !! Insert default values.
 
 
 * Unload input data to gdx and possibly MDB files.
@@ -1631,7 +1645,7 @@ QHSTOVGHTLIM(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO) AND SUM(Y$(Y
 QHSTOVGHTLIMS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)))..
 * Existing, accumulated new previous capacity and new investment this year limit storage output
      (   GKFX(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,"GDSTOHUNLD")
-      + VGKNACCUMNET(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,"GDSTOHUNLD")
+     + VGKNACCUMNET(IY411,IA,IGHSTOS)/GDATA(IGHSTOS,"GDSTOHUNLD")
      )*IGKRATE(IA,IGHSTOS,S,T)
          =G=
    VGH_T(IY411,IA,IGHSTOS,S,T)
@@ -2065,16 +2079,16 @@ QGKE_LO(IY411,IA,IGDISPATCH(IGKENOSTO),IS3,T)$(IAGK_HASORPOT(IY411,IA,IGKENOSTO)
 and SUM(FFF$IGF(IGKENOSTO,FFF), GKF_LO(FFF)))..
         VGE_T(IY411,IA,IGKENOSTO,IS3,T) + (VGH_T(IY411,IA,IGKENOSTO,IS3,T) * GDATA(IGKENOSTO,'GDCV'))$(IGEXT(IGKENOSTO))=G=
         SUM(FFF$IGF(IGKENOSTO,FFF), GKF_LO(FFF))*(
-       +((GKFX(IY411,IA,IGKENOSTO) + VGKNACCUMNET(IY411,IA,IGKENOSTO))*IGKRATE(IA,IGKENOSTO,IS3,T) )
-         )
+       +((GKFX(IY411,IA,IGKENOSTO) + VGKNACCUMNET(IY411,IA,IGKENOSTO)
+         )*IGKRATE(IA,IGKENOSTO,IS3,T)))
 ;
 
 * Minimum capacity usage constraint on heat generation capacity (MW) (not including exogeneous capacity)
 QGKH_LO(IY411,IA,IGDISPATCH(IGKHNOSTO),FFF,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGKHNOSTO) AND SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGKHNOSTO)) and IGF(IGKHNOSTO,FFF) and GKF_LO(FFF)>0)..
         VGH_T(IY411,IA,IGKHNOSTO,IS3,T) =G=
         GKF_LO(FFF)*(
-       +(VGKNACCUMNET(IY411,IA,IGKHNOSTO)*IGKRATE(IA,IGKHNOSTO,IS3,T))
-         )
+       +(VGKNACCUMNET(IY411,IA,IGKHNOSTO)
+         )*IGKRATE(IA,IGKHNOSTO,IS3,T))
 ;
 
 
@@ -2342,6 +2356,7 @@ QOBJ.SCALE=IOF1000000;
 *-------------------------------------------------------------------------------
 *----- End: Any further models to be defined here
 *-------------------------------------------------------------------------------
+
 
 *-------------------------------------------------------------------------------
 *----- End of definition of models ---------------------------------------------

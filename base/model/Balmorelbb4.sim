@@ -146,8 +146,7 @@ LOOP(C,
 
 * ----------------- Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT ----------------------------------
 
-
-IAGKFX(Y,IA,G) = YES$GKFX(Y,IA,G);
+IAGKFX(Y,IA,G)        = YES$GKFX(Y,IA,G);
 IAGK_HASORPOT(Y,IA,G) = YES$GKFX(Y,IA,G);
 
 IAGKN(IA,G)=NO;
@@ -400,24 +399,61 @@ $ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_3.gdx" IBB1234_VG
 
 * Existing windpower, hydro-run-of-river, solarpower, solarheat and wavepower can not be dispatched.
 * Complement to equation QWNDDISPATCH for the case with no endogenous IGWND investments.
-$ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND)))) =
-$ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND)))) =
+$ontext
+$ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND)))
+$ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND)))
+$ifi %STEPWISEKPOT%==YES            AND NOT IKPOTSTEP(IA,IGWND)
+$ifi %WNDFLH_DOL%==AAA        ) = ((WNDFLH(IA)       * GKFX(IY411,IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi %WNDFLH_DOL%==AAA_GGG    ) = ((WNDFLH(IA,IGWND) * GKFX(IY411,IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA)
+$offtext
+
+
+$ifi %TechInvest%==yes $goto NotTechInvestWindgen
+$ifi not %STEPWISEKPOT%==YES      $goto Nostepwisepot
+$ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND))) AND IWND_SUMST(IA) AND IKPOTSTEP(IA,IGWND)
+$ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND))) AND IWND_SUMST(IA) AND IKPOTSTEP(IA,IGWND)
+$ifi %WNDFLH_DOL%==AAA             ) = WNDFLH(IA)               * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T) * SUM(KPOTSTEP,  IGKFX_KPOTSTEP(IY411,IA,IGWND,KPOTSTEP) *IKPOTSTEP_FLHA(IA,IGWND,KPOTSTEP) ) / IWND_SUMST(IA);
+$ifi %WNDFLH_DOL%==AAA_GGG  ) = WNDFLH(IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T) * SUM(KPOTSTEP,  IGKFX_KPOTSTEP(IY411,IA,IGWND,KPOTSTEP) *IKPOTSTEP_FLHA(IA,IGWND,KPOTSTEP) ) / IWND_SUMST(IA);
+
+$ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND))) AND IWND_SUMST(IA) AND NOT IKPOTSTEP(IA,IGWND)) =
+$ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND))) AND IWND_SUMST(IA) AND NOT IKPOTSTEP(IA,IGWND)) =
 $ifi %WNDFLH_DOL%==AAA        ((WNDFLH(IA)       * GKFX(IY411,IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
 $ifi %WNDFLH_DOL%==AAA_GGG    ((WNDFLH(IA,IGWND) * GKFX(IY411,IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$label Nostepwisepot
+
+$ifi %STEPWISEKPOT%==YES      $goto yesstepwisepot
+$ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND))) AND IWND_SUMST(IA)  =
+$ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND))) AND IWND_SUMST(IA)  =
+$ifi %WNDFLH_DOL%==AAA        ((WNDFLH(IA)       * GKFX(IY411,IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi %WNDFLH_DOL%==AAA_GGG    ((WNDFLH(IA,IGWND) * GKFX(IY411,IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$label yesstepwisepot
+
+$label NotTechInvestWindgen
+
+$ifi not %TechInvest%==yes $goto TechInvestWindgen
+$ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND)))) =
+$ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGWND,S,T)$(GKFX(IY411,IA,IGWND) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND))) ) =
+$ifi %WNDFLH_DOL%==AAA        ((WNDFLH(IA)       * GKFX(IY411,IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi %WNDFLH_DOL%==AAA_GGG    ((WNDFLH(IA,IGWND) * GKFX(IY411,IA,IGWND) * IGKRATE(IA,IGWND,S,T) * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$label TechInvestWindgen
+
 * Complement to equation QHYRRDISPATCH for the case with no endogenous IGHYRR investments.
 $ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGHYRR,S,T)$(GKFX(IY411,IA,IGHYRR) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRR)))) =
 $ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGHYRR,S,T)$(GKFX(IY411,IA,IGHYRR) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRR)))) =
    ((WTRRRFLH(IA)* GKFX(IY411,IA,IGHYRR) * IGKRATE(IA,IGHYRR,S,T) * WTRRRVAR_T(IA,S,T)) / IWTRRRSUM(IA))$IWTRRRSUM(IA);
+
 * Complement to equation QSOLEDISPATCH for the case with no endogenous IGSOLE investments.
 $ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGSOLE,S,T)$(GKFX(IY411,IA,IGSOLE) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGSOLE)))) =
 $ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGSOLE,S,T)$(GKFX(IY411,IA,IGSOLE) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGSOLE)))) =
 $ifi %SOLEFLH_DOL%==AAA       ((SOLEFLH(IA)        * GKFX(IY411,IA,IGSOLE) * IGKRATE(IA,IGSOLE,S,T) * SOLE_VAR_T(IA,S,T)) / ISOLESUMST(IA))$ISOLESUMST(IA);
 $ifi %SOLEFLH_DOL%==AAA_GGG   ((SOLEFLH(IA,IGSOLE) * GKFX(IY411,IA,IGSOLE) * IGKRATE(IA,IGSOLE,S,T) * SOLE_VAR_T(IA,S,T)) / ISOLESUMST(IA))$ISOLESUMST(IA);
+
 * Complement to equation QSOLHDISPATCH for the case with no endogenous IGSOLH investments.
 $ifi not %VRESHUTDOWN%==yes VGH_T.FX(IY411,IA,IGSOLH,S,T)$(GKFX(IY411,IA,IGSOLH) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGSOLH)))) =
 $ifi %VRESHUTDOWN%==yes     VGH_T.UP(IY411,IA,IGSOLH,S,T)$(GKFX(IY411,IA,IGSOLH) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGSOLH)))) =
-$ifi %SOLHFLH_DOL%==AAA   ((SOLHFLH(IA) * GKFX(IY411,IA,IGSOLH) * IGKRATE(IA,IGSOLH,S,T) * SOLH_VAR_T(IA,S,T)) / ISOLHSUMST(IA))$ISOLHSUMST(IA);
+$ifi %SOLHFLH_DOL%==AAA       ((SOLHFLH(IA) * GKFX(IY411,IA,IGSOLH) * IGKRATE(IA,IGSOLH,S,T) * SOLH_VAR_T(IA,S,T)) / ISOLHSUMST(IA))$ISOLHSUMST(IA);
 $ifi %SOLHFLH_DOL%==AAA_GGG   ((SOLHFLH(IA,IGSOLH) * GKFX(IY411,IA,IGSOLH) * IGKRATE(IA,IGSOLH,S,T) * SOLH_VAR_T(IA,S,T)) / ISOLHSUMST(IA))$ISOLHSUMST(IA);
+
 * Complement to equation QWAVEDISPATCH for the case with no endogenous IGWAVE investments.
 $ifi not %VRESHUTDOWN%==yes VGE_T.FX(IY411,IA,IGWAVE,S,T)$(GKFX(IY411,IA,IGWAVE) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWAVE)))) =
 $ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGWAVE,S,T)$(GKFX(IY411,IA,IGWAVE) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWAVE)))) =
@@ -477,7 +513,6 @@ IAGK_HASORPOT(IY411,IA,G)$(SUM(IY402$IY411PREVY(IY411,IY402), IAGK_NOINVEST(IY40
 *-------------------------------------------------------------------------------
 * End: Set bounds on variables current simulation year
 *-------------------------------------------------------------------------------
-
 
 *-------------------------------------------------------------------------------
 * SOLVE
@@ -593,9 +628,19 @@ $ifi %bb4%==yes  HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHY
 $ifi %bb4%==yes  VHYRS_SL(Y,IA,S)  = VHYRS_S.l(Y,IA,S);
 $ifi %bb4%==yes  WATERVAL(Y,IA,S)  = QHYRSSEQ.m(Y,IA,S);
 
+*------------------------------------------------------------------------------
+*                GENERATE INVESTMENT DATA FILES
+*------------------------------------------------------------------------------
+
+$ifi %BB4%==yes
+$ifi %TransInvest%==yes XKACC(Y,IRE,IRI) = VXKNACCUMNET.L(Y,IRE,IRI);
+$ifi %BB4%==yes
+$ifi %TechInvest%==yes GKVACCDECOM(Y,IA,IGKFIND) = VGKNACCUMNET.L(Y,IA,IGKFIND);
+
+$ifi %SaveInvestData%==yes execute_unload '../../simex/GENINVEST_%CASEID%.gdx', GKVACCDECOM,VGKNACCUMNET_KPOTSTEP;
+$ifi %SaveInvestData%==yes execute_unload '../../simex/TRANSINVEST_%CASEID%.gdx', XKACC;
+
 
 *-------------------------------------------------------------------------------
 * End of file
 *-------------------------------------------------------------------------------
-
-
