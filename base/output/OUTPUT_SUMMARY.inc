@@ -52,6 +52,9 @@ IWEIGHSUMT = SUM(T, WEIGHT_T(T));
 IHOURSINST(SSS,TTT)=0;
 IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
 
+*Modification in case the rolling season mode has been applied. 
+$ifi %RollingSeasons%==yes IHOURSINST(S,T)=IHOURSINST(S,T)/CARD(S);
+
 * -------------------- ENERGY CAPACITY ---------------------
 
 * ------------- ELECTRICITY CAPACITY --------------
