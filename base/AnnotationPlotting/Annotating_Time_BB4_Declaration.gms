@@ -1,3 +1,4 @@
+* 20190425 Hans
 * Subset of year and Season
 $oninline
 $oneolcom
@@ -27,7 +28,6 @@ SET blockAssignmentTime(Y,blocks,S);
 SCALAR annot_blockFirst /1/;
 SCALAR annot_blockLast;
 * For testing something:
-scalar  annot_blockLast_plus1;
 
 
 PARAMETER annot_blockStage(S,Y);

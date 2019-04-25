@@ -1,3 +1,4 @@
+* 20190425 Hans
 * Subset of year and Season
 $ontext
 Note: The checks of correct annotation is taken as "no errors generated from running checkanno.gms"
@@ -13,7 +14,8 @@ $offtext
 
 $LOG "##### Entering Annotating_Time_BB4.inc #####"
 
-$setglobal useNew yes
+*$setglobal use...
+*!option yes
 
 $oninline
 $oneolcom
@@ -27,24 +29,25 @@ blockAssignment(Y,blocks,IS3) =no;
 blockAssignment(IY411,blocks,IS3)$(IYS_sub(IY411,IS3)) = yes;
 
 * blockAssignmentHelper(Y,IS3,blocks,timeHelper)$(ord(blocks)=(ord(Y)*ord(IS3))) = yes;     !! Hans questionable for multi-years - should yse IY411, but no ord...
+* Hans TODO: make sure that the set-up of years will give you only a single model!
 iscalar1 = 0;
 loop(y$iy411(y),
   blockAssignmentHelper(y,IS3,blocks,timeHelper)$((ord(blocks)=(iscalar1*card(IS3) + ord(IS3)))) = yes;     !! Hans organized first by year then by Season
   iscalar1 = iscalar1 + 1;
 );
 
-Option blockAssignmentTime < blockAssignmentHelper ;
+Option blockAssignmentTime < blockAssignmentHelper;
 
 BlockSelected(blocks) = sum((IS3,Y)$(IYS_sub(Y,IS3)),blockAssignmentTime(Y,blocks,IS3));
 
 annot_blockLast = card(BlockSelected) + 2;  !! Different from before (one higher)
-annot_blockLast_plus1 = annot_blockLast + 1;    !! Testing
+
 
 annot_blockStage(IS3,IY411) = sum(blockAssignmentTime(IY411,BlockSelected,IS3), ord(BlockSelected)) + 1;
 
 display "Basic from the Annotation_Time_BB4.gms file, in order of assignments:",  IYS_sub, blockAssignment, blockAssignmentHelper, blockAssignmentTime, BlockSelected, annot_blockFirst, annot_blockStage, annot_blockLast;
 
-execute_unload "Annotating_Time_BB4_basic.gdx" Annotating_Time_BB4_BASIC, YYY, Y, YMODEL, YMODELDELTA, IY411, SSS, TTT, S, IS3, T,  C, IR, IA, IYS, IYS_sub, blocks, BlockSelected, annot_blockFirst, annot_blockLast, annot_blockLast_plus1, timeHelper, blockAssignment, blockAssignmentHelper, blockAssignmentTime,  annot_blockStage, SystemDateTime;
+execute_unload "Annotating_Time_BB4_basic.gdx" Annotating_Time_BB4_BASIC, YYY, Y, YMODEL, YMODELDELTA, IY411, SSS, TTT, S, IS3, T,  C, IR, IA, IYS, IYS_sub, blocks, BlockSelected, annot_blockFirst, annot_blockLast, timeHelper, blockAssignment, blockAssignmentHelper, blockAssignmentTime,  annot_blockStage, SystemDateTime;
 
 $onorder
 
@@ -54,7 +57,6 @@ $onorder
 ****************************************************************************************************
 
 * Objective function
-QOBJ.stage = annot_blockLast_plus1;   !!
 QOBJ.stage = annot_blockLast;   !!
 
 * Electricity generation equals demand (MW)
@@ -98,7 +100,9 @@ QHYMAXG.stage(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) = annot
 
 * Intra-seasonal electricty storage dynamic equation (MWh)
 QESTOVOLT.stage(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO)    and ord(T)<card(T)) =  annot_blockStage(IS3,IY411);
+
 QESTOVOLTS.stage(IY411,IA,IGESTOS,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) and ord(T)<card(T)) =  annot_blockStage(IS3,IY411);
+
 QESTOVOLT.stage(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO)    and ord(T)=card(T)) =  annot_blockStage(IS3,IY411);
 QESTOVOLTS.stage(IY411,IA,IGESTOS,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) and ord(T)=card(T)) =  annot_blockLast;
 
@@ -240,13 +244,12 @@ VGF_T.stage(IY411,IA,G,IS3,T)$IAGK_HASORPOT(IY411,IA,G) = annot_blockStage(IS3,I
  VX_T.stage(IY411,IRE,IRI,IS3,T)$(IXK_HASORPOT(IY411,IRE,IRI)) = annot_blockStage(IS3,IY411);
 
 * "New electricity transmission capacity (MW)";
- VXKN.stage(IY411,IRE,IRI)$(IXK_HASORPOT(IY411,IRE,IRI))  = annot_blockLast;
-
+VXKN.stage(IY411,IRE,IRI)$(IXK_HASORPOT(IY411,IRE,IRI))  = annot_blockFirst;
 *  "Accumulated new investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
 VGKNACCUMNET.stage(IY411,IA,G)$IAGK_HASORPOT(IY411,IA,G) = annot_blockFirst;
 
 * "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
- VXKNACCUMNET.stage(IY411,IRE,IRI)$(IXK_HASORPOT(IY411,IRE,IRI))  = annot_blockLast;
+VXKNACCUMNET.stage(IY411,IRE,IRI)$(IXK_HASORPOT(IY411,IRE,IRI))  = annot_blockFirst;
 
 *  "New generation capacity (MW)";  !! se kommentarer til YYY  i bb4.sim Hans TODO
 VGKN.stage(IY411,IA,G)$IAGK_HASORPOT(IY411,IA,G)  = 1;
@@ -264,11 +267,12 @@ VHSTOLOADTS.stage(IY411,IA,G,IS3,T)$IAGK_HASORPOT(IY411,IA,G)  = annot_blockStag
 
 *  "Electricity storage contents at beginning of time segment (MWh)";
 VESTOVOLT.stage(IY411,IA,IGESTO,IS3,T)$IAGK_HASORPOT(IY411,IA,IGESTO)      =  annot_blockStage(IS3,IY411);
-VESTOVOLTS.stage(IY411,IA,IGESTOS,IS3,T)$IAGK_HASORPOT(IY411,IA,IGESTOS)   =  annot_blockStage(IS3,IY411);
+VESTOVOLTS.stage(IY411,IA,IGESTOS,IS3,T)$IAGK_HASORPOT(IY411,IA,IGESTOS)   =  annot_blockStage(IS3,IY411);     !! orig
 
 *  "Heat storage contents at beginning of time segment (MWh)";
 VHSTOVOLT.stage(IY411,IA,IGHSTO,IS3,T)$IAGK_HASORPOT(IY411,IA,IGHSTO)      =  annot_blockStage(IS3,IY411);
 VHSTOVOLTS.stage(IY411,IA,IGHSTOS,IS3,T)$IAGK_HASORPOT(IY411,IA,IGHSTOS)   =  annot_blockStage(IS3,IY411);
+
 
 *  Feasibility variables VQxxx are not handled
 *  'Feasibility in intra-seasonal electricity storage equation QESTOVOLT (MWh)';
@@ -309,7 +313,7 @@ VHSTOVOLTS.stage(IY411,IA,IGHSTOS,IS3,T)$IAGK_HASORPOT(IY411,IA,IGHSTOS)   =  an
 display "End of Annotating_Time_BB4_stages.gms - Variables:",VOBJ.stage, VGE_T.stage, VGH_T.stage, VGF_T.stage,
 VHYRS_S.stage,  VGKN.stage, VGKNACCUMNET.stage, VX_T.stage, VXKN.stage, VXKNACCUMNET.stage,
 VESTOLOADT.stage, VESTOLOADTS.stage, VHSTOLOADT.stage, VHSTOLOADTS.stage, VESTOVOLT.stage, VESTOVOLTS.stage, VhSTOVOLT.stage, VhSTOVOLTS.stage,
-IAGK_HASORPOT, annot_blockFirst, annot_blockLast, annot_blockLast_plus1, SystemDateTime;
+IAGK_HASORPOT, annot_blockFirst, annot_blockLast,  SystemDateTime;
 
 
 
@@ -327,7 +331,7 @@ VHYRS_S.stage,
 VGKN.stage, VGKNACCUMNET.stage,
 VX_T.stage, VXKN.stage, VXKNACCUMNET.stage,
 VESTOLOADT.stage, VESTOLOADTS.stage, VHSTOLOADT.stage, VHSTOLOADTS.stage, VESTOVOLT.stage, VESTOVOLTS.stage, VhSTOVOLT.stage, VhSTOVOLTS.stage,
-IAGK_HASORPOT, annot_blockFirst, annot_blockLast, annot_blockLast_plus1,
+IAGK_HASORPOT, annot_blockFirst, annot_blockLast,
 C, CCCRRR, IA, Y, YMODEL, YMODELDELTA, S, T, SystemDateTime;
 
 
