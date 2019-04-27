@@ -4,7 +4,7 @@
 * therefore set a default and update if investments are intended.
 * Even though IXHK_HASORPOT and IXHKN are sets, it is convenient to define them here
 
-PARAMETER IYHASANNUITYX(Y,Y)           "Binary parameter to establish whether the annuity of an investment of a heat transmission line investment made in Y (first index) should be paid in the time period Y (second index) (0,1)";
+PARAMETER IYHASANNUITYXH(Y,Y)           "Binary parameter to establish whether the annuity of an investment of a heat transmission line investment made in Y (first index) should be paid in the time period Y (second index) (0,1)";
 SET IXHK_HASORPOT(Y,IAAAE,IAAAI)  "Heat transmission lines with existing or potentially invested capacity current year";
 SET IXHKN(Y,IAAAE,IAAAI) 'Pair of areas that may get new heat transmission capacity, yearly dependent';
 
@@ -59,13 +59,13 @@ LOOP(IYALIAS,
 );
 
 
-IXHKN(Y,IAE,IAI) = YES$(XHINVCOST(Y,IAE,IAI) AND XHINVCOST(Y,IAE,IAI) LT INF);
+IXHKN(Y,IAE,IAI) = YES$(XHINVCOST(Y,IAE,IAI) AND XHINVCOST(Y,IAE,IAI) LT INF AND (XHINVESTSTART LE YVALUE(Y)));
 
 *This loop makes sure that if you invest in one line in the year Y, you can use this line in the future, even if you do not allow for investments on this line in the future
 LOOP(Y$(ORD(Y) GT 1),
   LOOP(IAE,
     LOOP(IAI,
-      IF ((XHINVCOST(Y-1,IAE,IAI) AND XHINVCOST(Y-1,IAE,IAI) LT INF),
+      IF ((XHINVCOST(Y-1,IAE,IAI) AND XHINVCOST(Y-1,IAE,IAI) LT INF AND (XHINVESTSTART LE YVALUE(Y))),
         IXHK_HASORPOT(Y,IAE,IAI)=IXHKN(Y,IAE,IAI)+YES$XHKFX(Y,IAE,IAI);
       );
       LOOP(IYALIAS2$((ORD(IYALIAS2) GE ORD(Y)) AND (ORD(IYALIAS2) NE CARD(IYALIAS2))),
@@ -74,6 +74,7 @@ LOOP(Y$(ORD(Y) GT 1),
     );
   );
 );
+
 
 $label  Heat_Transmission_investments_end
 

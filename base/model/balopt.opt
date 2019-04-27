@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug
+$setglobal vqdebug YES
 *!option yes
 
 
@@ -132,12 +132,15 @@ XINVESTSTART= 2030;
 *overall control variable HEATTRANS must be 'yes' if any of the other heat trans controls are.
 
 * Permit heat transmission between areas.
-$setglobal HEATTRANS
+$setglobal HEATTRANS yes
 *!option yes
 
 * Permit heat transmission investments between areas.
 $setglobal HeatTransInvest
 *!option yes
+
+SCALAR XHINVESTSTART 'Year from which endogenous decisions in heat transmission capacities are allowed' ;
+XHINVESTSTART= 2020;
 
 * Permit temperature lift from heat pumps to move energy from low temperature areas to high temperature ones (NOT WORKING, TO BE CHECKED).
 $setglobal HeatTempLift
@@ -145,11 +148,11 @@ $setglobal HeatTempLift
 *-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
 
 * Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
-$setglobal INDUSTRY
+$setglobal INDUSTRY yes
 *!option yes
 
 * Allow to build a complicated offshore grid with hubs in the sea. Requires MIP since technologies are modelled with economies of scale via SOS variables.
-$setglobal OFFSHOREGRID  
+$setglobal OFFSHOREGRID
 *!option yes
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
@@ -701,7 +704,7 @@ putclose fileMERGEWITHBASEbat;
 
 * The model type has implications for the solver type.
 * Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Progtramming).
-$setglobal SOLVEMIP  YES
+$setglobal SOLVEMIP
 *!option yes
 *!mustif %AGKNDISC%==yes
 *!mustif %UnitComm%==yes
