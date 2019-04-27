@@ -26,6 +26,6 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 $ifi %STEPWISE_RAMPING%==yes  $include "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_eqndecdef.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_eqndecdef.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_eqndecdef.inc";
-
+$ifi %HEATTRANS%==yes  $include   "../../base/addons/heattrans/bb4/heattrans_eqndecdef.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_eqndecdef.inc";
 $label endoffile

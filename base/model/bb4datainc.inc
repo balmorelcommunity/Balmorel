@@ -179,10 +179,6 @@ $include "../../base/addons/_hooks/acronyms.inc"
 $include "../../base/addons/_hooks/setdeclare.inc"
 $include "../../base/addons/_hooks/setdefine.inc"
 
-* Duplication of sets for describing possible heat exchange between areas (option HEATTRANS).
-$ifi %HEATTRANS%==yes ALIAS (AAA,IAAAE,IAAAI);
-$ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
-
 *-------------------------------------------------------------------------------
 * End: Any declarations and definitions of sets, aliases and acronyms for addon
 *-------------------------------------------------------------------------------
@@ -396,10 +392,12 @@ $ifi %DHFPCALIB%==yes %semislash%;
 
 
 
-PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of existing generation technologies (MW)" %semislash%
+PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of existing generation technologies (MW except for storages, where it is MWh)" %semislash%
 $if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
 $if not EXIST '../data/GKFX.inc' $INCLUDE '../../base/data/GKFX.inc';
 %semislash%;
+*------------- Any GKFX additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/gkfxadditions.inc"
 
 
 PARAMETER FMAXINVEST(CCC,FFF)   "Maximum investment (MW) by fuel type for each year simulated"    %semislash%
@@ -650,6 +648,8 @@ PARAMETER DH(YYY,AAA,DHUSER)    "Annual heat consumption (MWh)"  %semislash%
 $if     EXIST '../data/DH.inc' $INCLUDE         '../data/DH.inc';
 $if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
 %semislash%;
+*------------- Any DH additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/dhadditions.inc"
 
 
 
@@ -752,6 +752,8 @@ PARAMETER DH_VAR_T(AAA,DHUSER,SSS,TTT)                    "Variation in heat dem
 $if     EXIST '../data/DH_VAR_T.inc' $INCLUDE      '../data/DH_VAR_T.inc';
 $if not EXIST '../data/DH_VAR_T.inc' $INCLUDE '../../base/data/DH_VAR_T.inc';
 %semislash%;
+*------------- Any DH_VAR_T additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/dh_var_tadditions.inc"
 
 PARAMETER WTRRSVAR_S(AAA,SSS)                      "Variation of the water inflow to reservoirs"   %semislash%
 $if     EXIST '../data/WTRRSVAR_S.inc' $INCLUDE      '../data/WTRRSVAR_S.inc';

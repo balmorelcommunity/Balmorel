@@ -264,7 +264,7 @@ SET ILINKSTO(G,G)          "1st set: Heat storage, 2nd set: technologies allowed
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFDATALISTING%
 
-PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of exogenously given generation technologies (MW)";
+PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of exogenously given generation technologies (MW except for storages, where it is MWh)";
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFCODELISTING%
 
@@ -620,8 +620,6 @@ $include "../../base/addons/_hooks/isetdecdef.inc"
 
 $include "../../base/addons/_hooks/pardeclare.inc"
 
-$ifi %HEATTRANS%==yes $if     EXIST '../data/htrans.inc' $INCLUDE         '../data/htrans.inc';
-$ifi %HEATTRANS%==yes $if not EXIST '../data/htrans.inc' $INCLUDE '../../base/data/htrans.inc';
 
 $ifi %POLICIES%==yes   $if exist 'POLREQ.inc' $INCLUDE 'POLREQ.inc';
 $ifi %POLICIES%==yes   $if not exist 'POLREQ.inc' $INCLUDE '../../base/addons/policies/data/POLREQ.inc';
@@ -1026,9 +1024,6 @@ $ifi %HYRS_AGG%==hydro_year_agg    IHYRST(S,T)=IHOURSINST(S,T);
 *-------------------------------------------------------------------------------
 
 $INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
-
-* These internal parameters and sets pertain to heat transmission.
-$if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.inc';
 
 *-------------------------------------------------------------------------------
 *----- End: Any internal sets and parameters for addon to be placed here -------
@@ -1485,7 +1480,6 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 * Investment costs, new transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):
-* TODO: sammenlign med SONYstick:
     + SUM((IRE,IRI)$(IXKN(Y,IRI,IRE) AND (NOT IXKN_ES(IRE,IRI))),IOF05*VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
       (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYX(IYALIAS2,Y)))
 
@@ -1508,8 +1502,6 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 $include "../../base/addons/_hooks/qobj.inc";
 
-* This file contains Heat transmission induced additions to the objective function.
-$ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htcosts.inc";
 
 
 )
@@ -1552,8 +1544,6 @@ QHEQ(IY411,IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))) ..
     =E=
      (SUM(DHUSER, ((DH(IY411,IA,DHUSER) * DH_VAR_T(IA,DHUSER,IS3,T)) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0))
          )/(1-DISLOSS_H(IA))
-* Adds heat transmission if selected in the gas add-on
-$ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htheatbalance.inc";
 
 $include "../../base/addons/_hooks/qheq.inc"
 ;
@@ -2464,8 +2454,6 @@ $ifi not %WINDTARGET%==yes $goto end_windtarget_eq
 $ifi EXIST "wndtargetdata.inc" $include "wndtargetdata.inc";
 $label end_windtarget_eq
 
-* These add-on equations pertain to heat transmission.
-$ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htequations.inc";
 
 *-------------------------------------------------------------------------------
 *----- End: Any equations for addon to be placed here. -------------------------
@@ -2630,7 +2618,6 @@ $ontext
 
 $ifi %FOSSILTARGET%==yes QFOSSILTARGET
 $ifi %RENEWTARGET%==yes QRENEW
-$ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htbb1.inc";
 
 $offtext
 

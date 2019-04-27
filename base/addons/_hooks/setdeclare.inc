@@ -14,6 +14,7 @@ $ifi not %BB4%==yes $goto endoffile
 
 $label  beginbb4
 
+$ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_setdeclare.inc";
 $ifi %OFFSHOREGRID%==yes  $include   "../../base/addons/offshoregrid/bb4/offshoregrid_setdeclare.inc";
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_setdeclare.inc";
 $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_setdeclare.inc";

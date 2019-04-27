@@ -78,6 +78,10 @@ SCALAR    LIFETIME_X               "Lifetime of transmission lines (years)";
 $if     EXIST '../data/LIFETIME_X.inc' $INCLUDE         '../data/LIFETIME_X.inc';
 $if not EXIST '../data/LIFETIME_X.inc' $INCLUDE '../../base/data/LIFETIME_X.inc';
 
+SCALAR    LIFETIME_XH               "Lifetime of heat transmission lines (years)";
+$if     EXIST '../data/HEATTRANS_LIFETIME_XH.inc' $INCLUDE         '../data/HEATTRANS_LIFETIME_XH.inc';
+$if not EXIST '../data/HEATTRANS_LIFETIME_XH.inc' $INCLUDE '../../base/data/HEATTRANS_LIFETIME_XH.inc';
+
 PARAMETER ANNUITYCG(C,G)               "Transforms investment in technologies into annual payment (fraction)";
 
 PARAMETER DEBT_SHARE_G(G)              "Share of debt for the investment of each generation technology (fraction)";
@@ -104,6 +108,20 @@ SCALAR    PAYBACK_TIME_X               "Payback time of the loan for transmissio
 *Assumption: payback time equals lifetime
 PAYBACK_TIME_X = LIFETIME_X;
 
+PARAMETER ANNUITYCXH(CCC)  "Transforms investment in heat transmission lines into annual payment (fraction). Possibly different meaning in BB4";
+
+SCALAR DEBT_SHARE_XH                    "Share of debt for the investment of heat transmission lines (fraction)";
+*Assumption: share of debt equal to 0
+DEBT_SHARE_XH=0;
+
+SCALAR    INTEREST_RATE_XH              "Interest rate applied to the loan of heat transmission lines";
+*Assumption: interest rate equals socio economic discount rate
+INTEREST_RATE_XH = DISCOUNTRATE;
+
+SCALAR    PAYBACK_TIME_XH               "Payback time of the loan for heat transmission lines (years)";
+*Assumption: payback time equals lifetime
+PAYBACK_TIME_XH = LIFETIME_XH;
+
 *----------END OF INPUT DATA--------------------
 
 
@@ -113,6 +131,8 @@ PAYBACK_TIME_X = LIFETIME_X;
 ANNUITYCG(C,G)$(GDATA(G,'GDKVARIABL') EQ 1)= ((1-DEBT_SHARE_G(G))*DISCOUNTRATE + INTEREST_RATE_G(G) * DEBT_SHARE_G (G)* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_G(G))) / (1 - (1 + INTEREST_RATE_G(G)) **( -PAYBACK_TIME_G(G)))) / (1 - (1 + DISCOUNTRATE) ** (-GDATA(G,'GDLIFETIME')));
 
 ANNUITYCX(C)= ((1-DEBT_SHARE_X)*DISCOUNTRATE + INTEREST_RATE_X * DEBT_SHARE_X* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_X)) / (1 - (1 + INTEREST_RATE_X) ** (-PAYBACK_TIME_X))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_X));
+
+ANNUITYCXH(C)= ((1-DEBT_SHARE_XH)*DISCOUNTRATE + INTEREST_RATE_XH * DEBT_SHARE_XH* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_XH)) / (1 - (1 + INTEREST_RATE_XH) ** (-PAYBACK_TIME_XH))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_XH));
 
 *------------END OF CALCULATIONS-------------
 
@@ -135,6 +155,15 @@ put annuity_transmission;
 put '*PARAMETER ANNUITYCX(C) CALCULATED WITH AUXILS' //
 loop(C,
           put ANNUITYCX.tn(C),'=' ANNUITYCX(C) :0 ';' /
+);
+putclose;
+
+file annuity_transmission_heat /'../../base/auxils/annuity_calculation/HEATTRANS_ANNUITYCXH.inc'/;
+annuity_transmission_heat.nd  = 12;
+put annuity_transmission_heat;
+put '*PARAMETER ANNUITYCXH(C) CALCULATED WITH AUXILS' //
+loop(C,
+          put ANNUITYCXH.tn(C),'=' ANNUITYCXH(C) :0 ';' /
 );
 putclose;
 

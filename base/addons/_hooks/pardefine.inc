@@ -30,6 +30,7 @@ $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_pardef
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_pardefine.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_pardefine.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_pardefine.inc";
+$ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_pardefine.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardefine.inc";
 
 

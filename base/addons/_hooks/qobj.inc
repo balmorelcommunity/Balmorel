@@ -27,6 +27,7 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_qobj.inc";
 $ifi %TAXES%==yes  $include   "../../base/addons/taxes/tax_qobj.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_qobj.inc";
+$ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_qobj.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_qobj.inc";
 
 

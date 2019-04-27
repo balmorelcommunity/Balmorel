@@ -100,8 +100,8 @@ ROLLINGSEASONSNUMBER= 1;
 
 *-------- END: Seasonal rolling horizon  ---------
 
-*-----------------------
-*---- Investments ------
+*-----------------------------------------------------------------
+*---- Investments ------------------------------------------------
 
 *---- Generation investments options----
 
@@ -125,11 +125,31 @@ XINVESTSTART= 2030;
 
 *---- End: Transmission investments options----
 
-*----END: Investments
-*-----------------------
+*----END: Investments---------------------------------------------------
+*-----------------------------------------------------------------------
+
+*-----------------------HEAT TRANSFER--------------------------------------------------------
+*overall control variable HEATTRANS must be 'yes' if any of the other heat trans controls are.
+
+* Permit heat transmission between areas.
+$setglobal HEATTRANS
+*!option yes
+
+* Permit heat transmission investments between areas.
+$setglobal HeatTransInvest
+*!option yes
+
+* Permit temperature lift from heat pumps to move energy from low temperature areas to high temperature ones (NOT WORKING, TO BE CHECKED).
+$setglobal HeatTempLift
+*!option yes
+*-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
+
+* Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
+$setglobal INDUSTRY
+*!option yes
 
 * Allow to build a complicated offshore grid with hubs in the sea. Requires MIP since technologies are modelled with economies of scale via SOS variables.
-$setglobal OFFSHOREGRID  yes
+$setglobal OFFSHOREGRID  
 *!option yes
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
@@ -245,10 +265,6 @@ $setglobal PLANTCLOSURES
 
 * Differentiate yield requirements for different technologies.
 $setglobal YIELDREQUIREMENT
-*!option yes
-
-* Permit heat transmission between areas.
-$setglobal HEATTRANS
 *!option yes
 
 * Renewable energy share in electricity generation.
