@@ -3,7 +3,8 @@
 
 $ifi %HYRSBB123%==none    $goto label_no_hydro_results_import
 
-$ifi not %HYRSBB123%==price  QWATERVOLINI
+$ifi %HYRSBB123%==quant  QWATERVOLINI
+$ifi %HYRSBB123%==quant  QHYRSG
 
 $ontext
 $ifi %HYRSBB123%==quant        QHYRSG
@@ -15,4 +16,9 @@ $offtext
 $label label_no_hydro_results_import
 
 $ifi %ADDELECSTORCONT%==yes  QVESTOVOLTS
+$ifi %ADDELECSTORCONT%==yes  QGESTOSLOADING
+$ifi %ADDELECSTORCONT%==yes  QGESTOSUNLOADING
+
 $ifi %ADDHEATSTORCONT%==yes  QVHSTOVOLTS
+$ifi %ADDHEATSTORCONT%==yes  QGHSTOSLOADING
+$ifi %ADDHEATSTORCONT%==yes  QGHSTOSUNLOADING

@@ -18,6 +18,8 @@ PARAMETER XHMAXK(YYY,IAAAE,IAAAI)  "Max heat transmission capacity between two a
 
 SCALAR    LIFETIME_XH                   "Lifetime of heat transmission lines (years)";
 
+PARAMETER  XHKACCUMNET(YYY,IAAAE,IAAAI) "Resulting heat transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
+
 $ontext
 *to be checked
 * In case of temperature lift by heat pump:

@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug YES
+$setglobal vqdebug
 *!option yes
 
 
@@ -121,7 +121,7 @@ $setglobal TransInvest yes
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
-XINVESTSTART= 2030;
+XINVESTSTART= 2025;
 
 *---- End: Transmission investments options----
 
@@ -136,11 +136,11 @@ $setglobal HEATTRANS yes
 *!option yes
 
 * Permit heat transmission investments between areas.
-$setglobal HeatTransInvest
+$setglobal HeatTransInvest YES
 *!option yes
 
 SCALAR XHINVESTSTART 'Year from which endogenous decisions in heat transmission capacities are allowed' ;
-XHINVESTSTART= 2020;
+XHINVESTSTART= 2025;
 
 * Permit temperature lift from heat pumps to move energy from low temperature areas to high temperature ones (NOT WORKING, TO BE CHECKED).
 $setglobal HeatTempLift
@@ -482,11 +482,11 @@ $setglobal HYRSBB123 quant
 * ------------------ END OF HYDRO---------------------------------
 
 *--------------------INTERSEASONAL STORAGE-----------------------------------------------------------
-*Import Electricity storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
+*Import Electricity storage contents at beginning of time segment (MWh) for the first element in set T and S, and limits loading and unloading from previous runs
 $Setglobal ADDELECSTORCONT yes
 *!option yes
 
-*Import Heat storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
+*Import Heat storage contents at beginning of time segment (MWh) for the first element in set T and S, and limits loading and unloading from previous runs
 $Setglobal ADDHEATSTORCONT yes
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
@@ -501,6 +501,10 @@ $setglobal ADDTECHDEV   yes
 
 *Import transmission development from previous runs
 $setglobal ADDTRANSDEV  yes
+*!option yes
+
+*Import heat transmission development from previous runs
+$setglobal ADDHEATTRANSDEV  yes
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 *-------------------------------------------------------------------------------

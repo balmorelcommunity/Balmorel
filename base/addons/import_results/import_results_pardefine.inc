@@ -20,11 +20,17 @@ $label label_no_hydro_results_import
 
 *Interseasonal storage
 $ifi %ADDELECSTORCONT%==yes  execute_load  '../../simex/GVESTOVOLTS.gdx', GVESTOVOLTS;
+$ifi %ADDELECSTORCONT%==yes  execute_load  '../../simex/GESTOSLOADING.gdx',    GESTOSLOADING;
+$ifi %ADDELECSTORCONT%==yes  execute_load  '../../simex/GESTOSUNLOADING.gdx',  GESTOSUNLOADING;
+
 $ifi %ADDHEATSTORCONT%==yes  execute_load  '../../simex/GVHSTOVOLTS.gdx', GVHSTOVOLTS;
+$ifi %ADDHEATSTORCONT%==yes  execute_load  '../../simex/GHSTOSLOADING.gdx',    GHSTOSLOADING;
+$ifi %ADDHEATSTORCONT%==yes  execute_load  '../../simex/GHSTOSUNLOADING.gdx',  GHSTOSUNLOADING;
 
 *Investments with/without decommissioning of endogenous capacity
-$ifi %ADDTECHDEV%==yes  execute_load  '../../simex/GKACCUMNET.gdx', GKACCUMNET;
-$ifi %ADDTRANSDEV%==yes execute_load  '../../simex/XKACCUMNET.gdx', XKACCUMNET;
+$ifi %ADDTECHDEV%==yes      execute_load  '../../simex/GKACCUMNET.gdx', GKACCUMNET;
+$ifi %ADDTRANSDEV%==yes     execute_load  '../../simex/XKACCUMNET.gdx', XKACCUMNET;
+$ifi %ADDHEATTRANSDEV%==yes execute_load  '../../simex/XHKACCUMNET.gdx', XHKACCUMNET;
 
 
 

@@ -390,8 +390,12 @@ PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at 
 PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
 
 * Data for handling interseasonal storage
-PARAMETER GVESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs";
-PARAMETER GVHSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Heat storage contents at beginning of time segment (MWh) to be transferred to future runs";
+PARAMETER GVESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
+PARAMETER GVHSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
+PARAMETER GESTOSLOADING(YYY,AAA,GGG,SSS)   "Storage loading from GESTOS technology per year, area, technology and season (MWh)" ;
+PARAMETER GESTOSUNLOADING(YYY,AAA,GGG,SSS) "Storage unloading from GESTOS technology per year, area, technology and season (MWh)"  ;
+PARAMETER GHSTOSLOADING(YYY,AAA,GGG,SSS)   "Storage loading from GHSTOS technology per year, area, technology and season (MWh)"  ;
+PARAMETER GHSTOSUNLOADING(YYY,AAA,GGG,SSS) "Storage unloading from GHSTOS technology per year, area, technology and season (MWh)"  ;
 ** End: Export data
 
 * ------------------------------------------------------------------------------
@@ -1480,11 +1484,11 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 * Investment costs, new transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):
-    + SUM((IRE,IRI)$(IXKN(Y,IRI,IRE) AND (NOT IXKN_ES(IRE,IRI))),IOF05*VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
+    + SUM((IRE,IRI)$((IXKN(Y,IRI,IRE) OR IXKN(Y,IRE,IRI)) AND (NOT (IXKN_ES(IRE,IRI) OR IXKN_ES(IRI,IRE)))),IOF05*VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
       (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYX(IYALIAS2,Y)))
 
 *Investment costs, transmission capacity invested in previous years
-    + SUM((IYALIAS2,IRE,IRI)$(IXKN(IYALIAS2,IRI,IRE) AND (NOT IXKN_ES(IRE,IRI))  AND (ORD(IYALIAS2) LT ORD(Y))),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*
+    + SUM((IYALIAS2,IRE,IRI)$((IXKN(IYALIAS2,IRI,IRE) OR IXKN(IYALIAS2,IRE,IRI)) AND (NOT (IXKN_ES(IRE,IRI) OR IXKN_ES(IRI,IRE)))  AND (ORD(IYALIAS2) LT ORD(Y))),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*
       (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*IYHASANNUITYX(IYALIAS2,Y))
 
 
@@ -2684,7 +2688,7 @@ $ifi not %export_results%==yes $goto result_export
 
 * For hydro with reservoir save the following, to be used in future runs by addon "import_results":
 
-HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHOURSINST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
+HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHYRST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
 VHYRS_SL(Y,IA,S)  = VHYRS_S.L(Y,IA,S);
 WATERVAL(Y,IA,S)  = QHYRSSEQ.M(Y,IA,S);
 
@@ -2696,6 +2700,7 @@ execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
 XKACCUMNET(Y,IRE,IRI)=XKFX(Y,IRE,IRI)
 $ifi %TransInvest%==yes +VXKNACCUMNET.L(Y,IRE,IRI)
 ;
+
 GKACCUMNET(Y,IA,G)= GKFX(Y,IA,G)
 $ifi %DECOM%==yes       -VDECOM_EXO_ACCUM.L(Y,IA,G)
 $ifi %TechInvest%==yes  +VGKNACCUMNET.L(Y,IA,G)
@@ -2703,8 +2708,13 @@ $ifi %TechInvest%==yes  +VGKNACCUMNET.L(Y,IA,G)
 *Modification of GKFX values in case they are negative or extremely small (sometimes there can be issues with the decimals)
 GKACCUMNET(Y,IA,G)$(GKACCUMNET(Y,IA,G) LT 0)= 0;
 
+$ifi %HEATTRANS%==yes    XHKACCUMNET(Y,IAE,IAI)=XHKFX(Y,IAE,IAI)
+$ifi %HEATTRANS%==yes    $ifi %HeatTransInvest%==yes +VXHKNACCUMNET.L(Y,IAE,IAI)
+$ifi %HEATTRANS%==yes    ;
+
 execute_unload  "../../simex/XKACCUMNET.gdx", XKACCUMNET;
 execute_unload  "../../simex/GKACCUMNET.gdx", GKACCUMNET;
+$ifi %HEATTRANS%==yes  execute_unload  "../../simex/XHKACCUMNET.gdx", XHKACCUMNET;
 
 * For runs with interseasonal storages save the following, to be used in future runs by addon "import_results":
 *Initial energy storage volumen at the beginning of each week
@@ -2719,6 +2729,17 @@ GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$((ORD(T) EQ 1) AND GVHSTOVOLTS(Y,IA,IGHSTOS,S,T) A
 
 execute_unload  "../../simex/GVESTOVOLTS.gdx", GVESTOVOLTS;
 execute_unload  "../../simex/GVHSTOVOLTS.gdx", GVHSTOVOLTS;
+
+*Loading and unloading of interseasonal storages per season
+GESTOSLOADING(Y,IA,IGESTOS,S)$IAGK_HASORPOT(Y,IA,IGESTOS)=SUM(T, WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS))*VESTOLOADTS.L(Y,IA,IGESTOS,S,T));
+GESTOSUNLOADING(Y,IA,IGESTOS,S)$IAGK_HASORPOT(Y,IA,IGESTOS)=SUM(T, WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS))*VGE_T.L(Y,IA,IGESTOS,S,T));
+GHSTOSLOADING(Y,IA,IGHSTOS,S)$IAGK_HASORPOT(Y,IA,IGHSTOS)=SUM(T, WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS))*VHSTOLOADTS.L(Y,IA,IGHSTOS,S,T));
+GHSTOSUNLOADING(Y,IA,IGHSTOS,S)$IAGK_HASORPOT(Y,IA,IGHSTOS)=SUM(T, WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS))*VGH_T.L(Y,IA,IGHSTOS,S,T));
+
+execute_unload  "../../simex/GESTOSLOADING.gdx",    GESTOSLOADING;
+execute_unload  "../../simex/GESTOSUNLOADING.gdx",  GESTOSUNLOADING;
+execute_unload  "../../simex/GHSTOSLOADING.gdx",    GHSTOSLOADING;
+execute_unload  "../../simex/GHSTOSUNLOADING.gdx",  GHSTOSUNLOADING;
 
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
