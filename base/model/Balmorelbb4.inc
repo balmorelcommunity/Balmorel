@@ -1305,11 +1305,10 @@ EQUATIONS
    QGCVGEXT(Y,AAA,G,S,T)         "CHP generation (extraction) limited by Cv-line (MW)"
    QGGETOH(Y,AAA,G,S,T)          "Electric heat generation (MW)"
 
-   QHYRSSEQ(Y,AAA,S)        "Hydropower with reservoir seasonal energy constraint (MW)"
+   QHYRSSEQ(Y,AAA,S)        "Hydropower with reservoir seasonal energy constraint (MWh)"
    QHYRSMINVOL(Y,AAA,S)     "Hydropower reservoir - minimum level (MWh)"
    QHYRSMAXVOL(Y,AAA,S)     "Hydropower reservoir - maximum level (MWh)"
-   QHYMAXG(Y,AAA,S,T)       "Regulated and unregulated hydropower production lower than capacity (MW)" !! NB:exclude hydro-run-of-river   Hans TODO
-   QHYMINRS(Y,AAA,G,S)      "Hydropower reservoir - minimum level (MWh)"
+   QHYMAXG(Y,AAA,S,T)       "Regulated plus unregulated hydropower production lower than capacity (MW)"
 
    QESTOVOLT(Y,AAA,G,S,T)     "Intra-seasonal electricty storage dynamic equation (MWh)"
    QESTOVOLTS(Y,AAA,G,S,T)    "Inter-seasonal electricty storage dynamic equation (MWh)"
@@ -1665,9 +1664,10 @@ $include "../../base/addons/_hooks/qhyrsmaxvol.inc"
 
 
 
-* "Regulated and unregulated hydropower production lower than capacity (MW)"
+* "Regulated plus unregulated hydropower production lower than capacity (MW)"
 QHYMAXG(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS))..
       SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),VGE_T(IY411,IA,IGHYRS,IS3,T))
+      +SUM(IGHYRR$IAGK_HASORPOT(IY411,IA,IGHYRR),VGE_T(IY411,IA,IGHYRR,IS3,T))
       =L=
       SUM(IGHYRS,
          (GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
