@@ -290,6 +290,9 @@ $ifi  %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;
 *=====================
 
 $ifi %RollingSeasons%==yes * Fixing relevant variables from previous optimization
+$ifi %RollingSeasons%==yes   VHYRS_S.FX(IY411,IA,S)$(ORD(IS3LOOPSET) EQ ORD(S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1))=  VHYRS_S.L(IY411,IA,S);
+$ifi %RollingSeasons%==yes   VESTOVOLTS.FX(IY411,IA,IGESTOS,S,T)$(ORD(IS3LOOPSET) EQ ORD(S) AND ORD(T) EQ CARD(T) AND IAGK_HASORPOT(IY411,IA,IGESTOS))= VESTOVOLTS.L(IY411,IA,IGESTOS,S,T);
+$ifi %RollingSeasons%==yes   VHSTOVOLTS.FX(IY411,IA,IGHSTOS,S,T)$(ORD(IS3LOOPSET) EQ ORD(S) AND ORD(T) EQ CARD(T) AND IAGK_HASORPOT(IY411,IA,IGHSTOS))= VHSTOVOLTS.L(IY411,IA,IGHSTOS,S,T);
 $ifi %RollingSeasons%==yes   $include "../../base/addons/_hooks/sim_rollingseasons.inc"
 
 $ifi %RollingSeasons%==yes * End of loop over seasons:

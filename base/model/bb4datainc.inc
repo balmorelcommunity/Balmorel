@@ -843,7 +843,7 @@ $if not EXIST '../data/PENALTYQ.inc' $INCLUDE '../../base/data/PENALTYQ.inc';
 *-------------------------------------------------------------------------------
 *----- Any declarations and definitions of parameters:
 *-------------------------------------------------------------------------------
-*$include "../../base/addons/_hooks/pardeclare.inc"
+$include "../../base/addons/_hooks/pardeclare.inc"
 $include "../../base/addons/_hooks/pardefine.inc"
 
 

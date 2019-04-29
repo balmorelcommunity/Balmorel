@@ -621,10 +621,6 @@ $include "../../base/addons/_hooks/isetdecdef.inc"
 *-------------------------------------------------------------------------------
 *----- Any parameters for addon to be placed here: -----------------------------
 *-------------------------------------------------------------------------------
-
-$include "../../base/addons/_hooks/pardeclare.inc"
-
-
 $ifi %POLICIES%==yes   $if exist 'POLREQ.inc' $INCLUDE 'POLREQ.inc';
 $ifi %POLICIES%==yes   $if not exist 'POLREQ.inc' $INCLUDE '../../base/addons/policies/data/POLREQ.inc';
 
