@@ -392,10 +392,6 @@ PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity developme
 * Data for handling interseasonal storage
 PARAMETER GVESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER GVHSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
-PARAMETER GESTOSLOADING(YYY,AAA,GGG,SSS)   "Storage loading from GESTOS technology per year, area, technology and season (MWh)" ;
-PARAMETER GESTOSUNLOADING(YYY,AAA,GGG,SSS) "Storage unloading from GESTOS technology per year, area, technology and season (MWh)"  ;
-PARAMETER GHSTOSLOADING(YYY,AAA,GGG,SSS)   "Storage loading from GHSTOS technology per year, area, technology and season (MWh)"  ;
-PARAMETER GHSTOSUNLOADING(YYY,AAA,GGG,SSS) "Storage unloading from GHSTOS technology per year, area, technology and season (MWh)"  ;
 ** End: Export data
 
 * ------------------------------------------------------------------------------
@@ -1691,7 +1687,9 @@ $include "../../base/addons/_hooks/qestovolt.inc"
 ;
 
 * "Inter-seasonal electricty storage dynamic equation (MWh)"
-QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
+QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S)
+$ifi %RollingSeasons%==yes AND (NOT (ORD(S) EQ CARD(S) AND (ORD(T) EQ CARD(T))))
+)..
     VESTOVOLTS(IY411,IA,IGESTOS,S,T)
   + CHRONOHOUR(S,T)*
   (VESTOLOADTS(IY411,IA,IGESTOS,S,T)
@@ -1714,7 +1712,9 @@ $include "../../base/addons/_hooks/qhstovolt.inc"
 ;
 
 *  "Inter-seasonal heat storage dynamic equation (MWh)"
-QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
+QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S)
+$ifi %RollingSeasons%==yes AND (NOT (ORD(S) EQ CARD(S) AND (ORD(T) EQ CARD(T))))
+)..
     VHSTOVOLTS(IY411,IA,IGHSTOS,S,T)
   + CHRONOHOUR(S,T)*
   (VHSTOLOADTS(IY411,IA,IGHSTOS,S,T)
@@ -2725,17 +2725,6 @@ GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$((ORD(T) EQ 1) AND GVHSTOVOLTS(Y,IA,IGHSTOS,S,T) A
 
 execute_unload  "../../simex/GVESTOVOLTS.gdx", GVESTOVOLTS;
 execute_unload  "../../simex/GVHSTOVOLTS.gdx", GVHSTOVOLTS;
-
-*Loading and unloading of interseasonal storages per season
-GESTOSLOADING(Y,IA,IGESTOS,S)$IAGK_HASORPOT(Y,IA,IGESTOS)=SUM(T, WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS))*VESTOLOADTS.L(Y,IA,IGESTOS,S,T));
-GESTOSUNLOADING(Y,IA,IGESTOS,S)$IAGK_HASORPOT(Y,IA,IGESTOS)=SUM(T, WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS))*VGE_T.L(Y,IA,IGESTOS,S,T));
-GHSTOSLOADING(Y,IA,IGHSTOS,S)$IAGK_HASORPOT(Y,IA,IGHSTOS)=SUM(T, WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS))*VHSTOLOADTS.L(Y,IA,IGHSTOS,S,T));
-GHSTOSUNLOADING(Y,IA,IGHSTOS,S)$IAGK_HASORPOT(Y,IA,IGHSTOS)=SUM(T, WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS))*VGH_T.L(Y,IA,IGHSTOS,S,T));
-
-execute_unload  "../../simex/GESTOSLOADING.gdx",    GESTOSLOADING;
-execute_unload  "../../simex/GESTOSUNLOADING.gdx",  GESTOSUNLOADING;
-execute_unload  "../../simex/GHSTOSLOADING.gdx",    GHSTOSLOADING;
-execute_unload  "../../simex/GHSTOSUNLOADING.gdx",  GHSTOSUNLOADING;
 
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
