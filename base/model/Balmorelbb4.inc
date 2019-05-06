@@ -392,6 +392,8 @@ PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity developme
 * Data for handling interseasonal storage
 PARAMETER GVESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER GVHSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
+PARAMETER GVESTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Electricity storage content annual value (in input money) to be transferred to future runs (input-Money/MWh)";
+PARAMETER GVHSTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Heat storage content annual value (in input money) to be transferred to future runs (input-Money/MWh)";
 ** End: Export data
 
 * ------------------------------------------------------------------------------
@@ -2686,7 +2688,7 @@ $ifi not %export_results%==yes $goto result_export
 
 HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHYRST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
 VHYRS_SL(Y,IA,S)  = VHYRS_S.L(Y,IA,S);
-WATERVAL(Y,IA,S)  = QHYRSSEQ.M(Y,IA,S);
+WATERVAL(Y,IA,S)  = QHYRSSEQ.M(Y,IA,S)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
 
 execute_unload  "../../simex/HYRSG.gdx", HYRSG;
 execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
@@ -2713,18 +2715,16 @@ execute_unload  "../../simex/GKACCUMNET.gdx", GKACCUMNET;
 $ifi %HEATTRANS%==yes  execute_unload  "../../simex/XHKACCUMNET.gdx", XHKACCUMNET;
 
 * For runs with interseasonal storages save the following, to be used in future runs by addon "import_results":
-*Initial energy storage volumen at the beginning of each week
-
+*Initial energy storage volumen at the beginning of each week, storage content value
 GVESTOVOLTS(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1)=VESTOVOLTS.L(Y,IA,IGESTOS,S,T);
 GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1)=VHSTOVOLTS.L(Y,IA,IGHSTOS,S,T);
-
-*Correction of seasonal values to avoid infeasibilities due to decimal errors by substracting a very small number to the storage levels
-
-GVESTOVOLTS(Y,IA,IGESTOS,S,T)$((ORD(T) EQ 1) AND GVESTOVOLTS(Y,IA,IGESTOS,S,T) AND (GKACCUMNET(Y,IA,IGESTOS) LE VESTOVOLTS.L(Y,IA,IGESTOS,S,T)))=GVESTOVOLTS(Y,IA,IGESTOS,S,T)-0.000000001;
-GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$((ORD(T) EQ 1) AND GVHSTOVOLTS(Y,IA,IGHSTOS,S,T) AND (GKACCUMNET(Y,IA,IGHSTOS) LE VESTOVOLTS.L(Y,IA,IGHSTOS,S,T)))=GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)-0.000000001;
+GVESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1)=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
+GVHSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1)=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
 
 execute_unload  "../../simex/GVESTOVOLTS.gdx", GVESTOVOLTS;
 execute_unload  "../../simex/GVHSTOVOLTS.gdx", GVHSTOVOLTS;
+execute_unload  "../../simex/GVESTOVOLTSVAL.gdx", GVESTOVOLTSVAL;
+execute_unload  "../../simex/GVHSTOVOLTSVAL.gdx", GVHSTOVOLTSVAL;
 
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN

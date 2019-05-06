@@ -3,15 +3,7 @@
 
 $ifi %HYRSBB123%==none    $goto label_no_hydro_results_import
 
-$ifi %HYRSBB123%==quant  QWATERVOLINI
-$ifi %HYRSBB123%==quant  QHYRSG
-
-$ontext
-$ifi %HYRSBB123%==quant        QHYRSG
-$ifi %HYRSBB123%==quantprice   QHYRSG
-$ifi %HYRSBB123%==quantprice   QWATERVOLINI
-$offtext
-
+$ifi %HYRSBB123%==contprice  QWATERVOLINI
 
 $label label_no_hydro_results_import
 

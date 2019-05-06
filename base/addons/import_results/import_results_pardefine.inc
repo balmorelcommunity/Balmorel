@@ -21,6 +21,8 @@ $label label_no_hydro_results_import
 *Interseasonal storage
 $ifi %ADDELECSTORCONT%==yes  execute_load  '../../simex/GVESTOVOLTS.gdx', GVESTOVOLTS;
 $ifi %ADDHEATSTORCONT%==yes  execute_load  '../../simex/GVHSTOVOLTS.gdx', GVHSTOVOLTS;
+$ifi %ADDELECSTORCONT%==yes  execute_load  '../../simex/GVESTOVOLTSVAL.gdx', GVESTOVOLTSVAL;
+$ifi %ADDHEATSTORCONT%==yes  execute_load  '../../simex/GVHSTOVOLTSVAL.gdx', GVHSTOVOLTSVAL;
 
 
 *Investments with/without decommissioning of endogenous capacity

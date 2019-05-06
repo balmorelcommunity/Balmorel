@@ -15,6 +15,7 @@ $ifi not %BB4%==yes $goto endoffile
 $label  beginbb4
 
 $ifi not %bb4%==yes $goto endoffile
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_vardeclare.inc"; 
 
 $ifi %HYDROGEN%==yes      $include   "../../base/addons/hydrogen/bb4/hydrogen_vardeclare.inc";
 $ifi %OFFSHOREGRID%==yes  $include   "../../base/addons/offshoregrid/bb4/offshoregrid_vardeclare.inc";

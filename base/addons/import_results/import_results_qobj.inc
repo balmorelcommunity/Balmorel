@@ -4,15 +4,31 @@
 
 $ifi %HYRSBB123%==none    $goto label_no_hydro_results_import
 
-$ifi %HYRSBB123%==price       + SUM((IA,IGHYRS)$IAGK_HASORPOT(Y,IA,IGHYRS), SUM((IS3,T), WATERVAL(Y,IA,IS3)* IHOURSINST(IS3,T) * VGE_T(Y,IA,IGHYRS,IS3,T)))
+$ifi not %HYRSBB123%==contprice    $goto label_no_hydro_contprice
+                                    + SUM(IAGK_HASORPOT(IY411,IA,IGHYRS),
+                                         SUM((S,T)$((IS3(S) OR IS3(S--1)) AND ORD(T) EQ 1),
+                                                 IHOURSINST(S,T)*WATERVAL(Y,IA,S)*(VHYRS_SDELTAMWHPOS(Y,IA,S) + VHYRS_SDELTAMWHNEG(Y,IA,S))
+                                         )
+                                    )
+$label label_no_hydro_contprice
 
-
-
-$ontext
-$ifi %HYRSBB123%==price       + SUM(IAGK_HASORPOT(IY411,IA,IGHYRS),SUM((IS3,T), IWATERVAL_Y(Y,IA,IS3)* IHOURSINST(IS3,T) * VGE_T(Y,IA,IGHYRS,IS3,T)))
-
-$ifi %HYRSBB123%==quantprice  + SUM(IAGK_HASORPOT(IY411,IA,IGHYRS),SUM((IS3,T), IWATERVAL_Y(IA,IS3)* IHOURSINST(IS3,T) * VGE_T(Y,IA,IGHYRS,IS3,T)))   !!  no investments in  BB3
-$ifi %HYRSBB123%==quantprice  + SUM((IA,IS3)$IHYRSBB123G_Y(IA,IS3), (SUM(T,IHOURSINST(IS3,T)))* SUM(IHYRSBB12DELTASET, VIHYRSBB12DELTAMHW(IA,IHYRSBB12DELTASET) *IHYRSBB123EXTRAVAL(IA,IS3,IHYRSBB12DELTASET)))
-$offtext
 
 $label label_no_hydro_results_import
+
+
+$ifi not %ADDELECSTORCONT%==yes    $goto label_no_intraseasonal_electricity_storage_content
+                                   + SUM((IA,IGESTOS)$IAGK_HASORPOT(Y,IA,IGESTOS),
+                                         SUM((S,T)$((IS3(S) OR IS3(S--1)) AND ORD(T) EQ 1),
+                                                 GVESTOVOLTSVAL(Y,IA,IGESTOS,S,T)*(VESTOVOLTSDELTAMWHPOS(Y,IA,IGESTOS,S,T)+VESTOVOLTSDELTAMWHNEG(Y,IA,IGESTOS,S,T))
+                                         )
+                                   )
+$label label_no_intraseasonal_electricity_storage_content
+
+$ifi not %ADDHEATSTORCONT%==yes    $goto label_no_intraseasonal_heat_storage_content
+                                   + SUM((IA,IGHSTOS)$IAGK_HASORPOT(Y,IA,IGHSTOS),
+                                         SUM((S,T)$((IS3(S) OR IS3(S--1)) AND ORD(T) EQ 1),
+                                                 GVHSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)*(VHSTOVOLTSDELTAMWHPOS(Y,IA,IGHSTOS,S,T)+VHSTOVOLTSDELTAMWHNEG(Y,IA,IGHSTOS,S,T))
+                                         )
+                                   )
+
+$label label_no_intraseasonal_heat_storage_content
