@@ -1621,7 +1621,9 @@ QGGETOH(IAGK_HASORPOT(IY411,IA,IGETOH),IS3,T) ..
 
 * TODO eventually: linking between years in BB4
 * "Hydropower with reservoir seasonal energy constraint (MWh)"
-QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) AND IS3(S))..
+QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) AND IS3(S)
+$ifi %RollingSeasons%==yes AND NOT(ORD(S) EQ CARD(S))
+)..
       VHYRS_S(IY411,IA,S)
        +  IHYINF_S(IA,S) * (
       SUM(IGHYRS,
@@ -1689,7 +1691,9 @@ $include "../../base/addons/_hooks/qestovolt.inc"
 ;
 
 * "Inter-seasonal electricty storage dynamic equation (MWh)"
-QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
+QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S)
+$ifi %RollingSeasons%==yes AND NOT(ORD(S) EQ CARD(S) AND ORD(T) EQ CARD(T))   
+)..
     VESTOVOLTS(IY411,IA,IGESTOS,S,T)
   + CHRONOHOUR(S,T)*
   (VESTOLOADTS(IY411,IA,IGESTOS,S,T)
@@ -1712,7 +1716,9 @@ $include "../../base/addons/_hooks/qhstovolt.inc"
 ;
 
 *  "Inter-seasonal heat storage dynamic equation (MWh)"
-QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
+QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S)
+$ifi %RollingSeasons%==yes AND NOT(ORD(S) EQ CARD(S) AND ORD(T) EQ CARD(T))
+)..
     VHSTOVOLTS(IY411,IA,IGHSTOS,S,T)
   + CHRONOHOUR(S,T)*
   (VHSTOLOADTS(IY411,IA,IGHSTOS,S,T)
