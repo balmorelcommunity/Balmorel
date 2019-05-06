@@ -1689,9 +1689,7 @@ $include "../../base/addons/_hooks/qestovolt.inc"
 ;
 
 * "Inter-seasonal electricty storage dynamic equation (MWh)"
-QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S)
-$ifi %RollingSeasons%==yes AND (NOT (ORD(S) EQ CARD(S) AND (ORD(T) EQ CARD(T))))
-)..
+QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
     VESTOVOLTS(IY411,IA,IGESTOS,S,T)
   + CHRONOHOUR(S,T)*
   (VESTOLOADTS(IY411,IA,IGESTOS,S,T)
@@ -1714,9 +1712,7 @@ $include "../../base/addons/_hooks/qhstovolt.inc"
 ;
 
 *  "Inter-seasonal heat storage dynamic equation (MWh)"
-QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S)
-$ifi %RollingSeasons%==yes AND (NOT (ORD(S) EQ CARD(S) AND (ORD(T) EQ CARD(T))))
-)..
+QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
     VHSTOVOLTS(IY411,IA,IGHSTOS,S,T)
   + CHRONOHOUR(S,T)*
   (VHSTOLOADTS(IY411,IA,IGHSTOS,S,T)
