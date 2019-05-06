@@ -110,8 +110,9 @@ $ONEMPTY
 * E.g., for using CBC for LP problems specify option   LP=CBC
 * E.g., for using IPOPT for LP problems specify option LP=IPOPT
 
-option LP = CPLEX
-option MIP= CPLEX
+option LP   = CPLEX
+option RMIP = CPLEX
+option MIP  = CPLEX
 
 *-------------------------------------------------------------------------------
 * From GAMS many basic solver options may be specified, applicable for some or all solvers,
@@ -129,6 +130,9 @@ option optcr = 0.000001
 * RESLIM specifies the maximum time (seconds) that the computer can run during execution of a solver.
 * Default value is 1000.
 option RESLIM = 1209600
+
+* Set default upper bound on integer variables
+option intVarUp = 0
 
 *-------------------------------------------------------------------------------
 * Solvers may be controlled by solver specific options in a solver option file,

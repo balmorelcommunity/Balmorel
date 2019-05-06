@@ -106,7 +106,7 @@ ROLLINGSEASONSNUMBER= 1;
 *---- Generation investments options----
 
 * Permit investments in generation and storage capacity:
-$setglobal TechInvest yes
+$setglobal TechInvest  yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
@@ -136,7 +136,7 @@ $setglobal HEATTRANS yes
 *!option yes
 
 * Permit heat transmission investments between areas.
-$setglobal HeatTransInvest YES
+$setglobal HeatTransInvest yes
 *!option yes
 
 SCALAR XHINVESTSTART 'Year from which endogenous decisions in heat transmission capacities are allowed' ;
@@ -465,7 +465,7 @@ $Setglobal export_results yes
 * Overall control to import results so they can be used in future runs:
 *NOTE: In order for results to work fine, the set S used in the runs should be contained in the import results.
 *NOTE: In order for results to work fine, the first element in set T of the import results should match the one used in the current run.
-$Setglobal import_results
+$Setglobal import_results  
 *!option yes
 
 *------------ IMPORT OPTIONS ----------------
@@ -484,11 +484,11 @@ $setglobal HYRSBB123 contprice
 
 *--------------------INTERSEASONAL STORAGE-----------------------------------------------------------
 *Import electricity storage contents at beginning of time segment (GVESTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with GVESTOVOLTSVAL.gdx from previous runs
-$Setglobal ADDELECSTORCONT yes
+$Setglobal ADDELECSTORCONT YES
 *!option yes
 
 *Import Heat storage contents at beginning of time segment (GVHSTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with GVHSTOVOLTSVAL.gdx from previous runs
-$Setglobal ADDHEATSTORCONT yes
+$Setglobal ADDHEATSTORCONT  YES
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 
@@ -498,6 +498,10 @@ $Setglobal ADDHEATSTORCONT yes
 
 *Import generation and storage technology capacity development from previous runs
 $setglobal ADDTECHDEV   yes
+*!option yes
+
+*Add expensive to operate backup power and heat generation technology. It often occurs that the investment optimization underestimates the need for power.
+$setglobal ADDBACKUPGEN   yes
 *!option yes
 
 *Import transmission development from previous runs
@@ -544,7 +548,7 @@ $setglobal inputdatatxt ""
 * e.g. viewing (Gdxviewer), comparing (Gdxdiff), or transferring to other data formats like Excel or Access.
 * Note that this will be done as a  compile time operation,
 * such that only the 'direct' data definitions (and no assignments) are reflected.
-$setglobal INPUTDATA2GDX  yes
+$setglobal INPUTDATA2GDX
 *!option yes
 
 
