@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug 
+$setglobal vqdebug
 *!option yes
 
 
@@ -285,7 +285,7 @@ $setglobal REShareEH
 $setglobal AGKNDISC
 *!option yes
 *!onlyif %BB2%==yes
-*!onlyif %solvemip%==yes
+*!onlyif %solvetype%==MIP
 
 
 * Use the flow-based capacity allocation methodology
@@ -359,17 +359,17 @@ $setglobal REVERT_DECOM_EXO_G   yes
 *-------------------- UNIT COMMITMENT -----------------------------------------------------------
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
-$setglobal UnitComm
+$setglobal UnitComm YES
 *!option yes
 
 * Adds minimal production-when-on:
 $setglobal MINFUELCONS YES
 *!option yes
 * Adds respecting minimum off time of the capacities:
-$setglobal MINSTARTUPTIME  yes
+$setglobal MINSTARTUPTIME
 *!option yes
 * Adds respecting minimum on time of the capacities:
-$setglobal MINSHUTDOWNTIME  yes
+$setglobal MINSHUTDOWNTIME
 *!option yes
 * Adds ramping technical limitations and stepwise costs to the Power plants when-on:
 $setglobal STEPWISE_RAMPING_UC  ramp_const
@@ -379,7 +379,7 @@ $setglobal STEPWISE_RAMPING_UC  ramp_const
 
 * Seasonal link is on for all UC options activated. This means that past seasons will influence future seasons.
 * This option increases computanional time but assures continuity in the fuel consumption profile.
-$setglobal SEASONALLINKUC yes
+$setglobal SEASONALLINKUC
 *!option yes
 
 * The production interval is segmented into a number of disjunct pieces, each with its own costs: NOT IMPLEMENTED
@@ -708,8 +708,12 @@ putclose fileMERGEWITHBASEbat;
 *===============================================================================
 
 * The model type has implications for the solver type.
-* Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Progtramming).
-$setglobal SOLVEMIP
+* Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Programming).
+$setglobal SOLVETYPE RMIP
+*!option LP      "Linear Programming"
+*!option RMIP    "Relaxed Mixed Integer Programming"
+*!option MIP     "Mixed Integer Programming"
+
 *!option yes
 *!mustif %AGKNDISC%==yes
 *!mustif %UnitComm%==yes
