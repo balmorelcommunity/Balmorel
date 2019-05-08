@@ -36,3 +36,8 @@ $onmulti
 $if     EXIST '../data/OFFSHOREGRID_XLOSS.inc' $INCLUDE         '../data/OFFSHOREGRID_XLOSS.inc';
 $if not EXIST '../data/OFFSHOREGRID_XLOSS.inc' $INCLUDE '../../base/data/OFFSHOREGRID_XLOSS.inc';
 $offmulti
+
+$onmulti
+$if     EXIST '../data/OFFSHOREGRID_XCOST.inc' $INCLUDE         '../data/OFFSHOREGRID_XCOST.inc';
+$if not EXIST '../data/OFFSHOREGRID_XCOST.inc' $INCLUDE '../../base/data/OFFSHOREGRID_XCOST.inc';
+$offmulti
