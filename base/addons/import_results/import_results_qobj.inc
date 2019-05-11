@@ -7,7 +7,7 @@ $ifi %HYRSBB123%==none    $goto label_no_hydro_results_import
 $ifi not %HYRSBB123%==contprice    $goto label_no_hydro_contprice
                                     + SUM(IAGK_HASORPOT(IY411,IA,IGHYRS),
                                          SUM((S,T)$((IS3(S) OR IS3(S--1)) AND ORD(T) EQ 1 AND WATERVAL(Y,IA,S)),
-                                                 IHOURSINST(S,T)*WATERVAL(Y,IA,S)*(VHYRS_SDELTAMWHPOS(Y,IA,S) + VHYRS_SDELTAMWHNEG(Y,IA,S))
+                                                 IHYRST(S,T)*WATERVAL(Y,IA,S)*(VHYRS_SDELTAMWHPOS(Y,IA,S) + VHYRS_SDELTAMWHNEG(Y,IA,S))
                                          )
                                     )
 $label label_no_hydro_contprice
