@@ -2690,26 +2690,26 @@ $ifi not %export_results%==yes $goto result_export
 * For hydro with reservoir save the following, to be used in future runs by addon "import_results":
 
 HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHYRST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
-VHYRS_SL(Y,IA,S)  = VHYRS_S.L(Y,IA,S);
-WATERVAL(Y,IA,S)  = QHYRSSEQ.M(Y,IA,S)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
+VHYRS_SL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = VHYRS_S.L(Y,IA,S);
+WATERVAL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS))= QHYRSSEQ.M(Y,IA,S)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
 
 execute_unload  "../../simex/HYRSG.gdx", HYRSG;
 execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
 execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
 
 * For runs with investments and/or decommissionning save the following, to be used in future runs by addon "import_results":
-XKACCUMNET(Y,IRE,IRI)=XKFX(Y,IRE,IRI)
+XKACCUMNET(Y,IRE,IRI)$IXK_HASORPOT(Y,IRE,IRI)=XKFX(Y,IRE,IRI)
 $ifi %TransInvest%==yes +VXKNACCUMNET.L(Y,IRE,IRI)
 ;
 
-GKACCUMNET(Y,IA,G)= GKFX(Y,IA,G)
+GKACCUMNET(Y,IA,G)$IAGK_HASORPOT(Y,IA,G)= GKFX(Y,IA,G)
 $ifi %DECOM%==yes       -VDECOM_EXO_ACCUM.L(Y,IA,G)
 $ifi %TechInvest%==yes  +VGKNACCUMNET.L(Y,IA,G)
 ;
 *Modification of GKFX values in case they are negative or extremely small (sometimes there can be issues with the decimals)
 GKACCUMNET(Y,IA,G)$(GKACCUMNET(Y,IA,G) LT 0)= 0;
 
-$ifi %HEATTRANS%==yes    XHKACCUMNET(Y,IAE,IAI)=XHKFX(Y,IAE,IAI)
+$ifi %HEATTRANS%==yes    XHKACCUMNET(Y,IAE,IAI)$IXHK_HASORPOT(Y,IAE,IAI)=XHKFX(Y,IAE,IAI)
 $ifi %HEATTRANS%==yes    $ifi %HeatTransInvest%==yes +VXHKNACCUMNET.L(Y,IAE,IAI)
 $ifi %HEATTRANS%==yes    ;
 
@@ -2719,15 +2719,16 @@ $ifi %HEATTRANS%==yes  execute_unload  "../../simex/XHKACCUMNET.gdx", XHKACCUMNE
 
 * For runs with interseasonal storages save the following, to be used in future runs by addon "import_results":
 *Initial energy storage volumen at the beginning of each week, storage content value
-GVESTOVOLTS(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1)=VESTOVOLTS.L(Y,IA,IGESTOS,S,T);
-GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1)=VHSTOVOLTS.L(Y,IA,IGHSTOS,S,T);
-GVESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1)=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
-GVHSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1)=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
+GVESTOVOLTS(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGESTOS))=VESTOVOLTS.L(Y,IA,IGESTOS,S,T);
+GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGHSTOS))=VHSTOVOLTS.L(Y,IA,IGHSTOS,S,T);
+GVESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGESTOS))=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
+GVHSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGHSTOS))=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
 
 execute_unload  "../../simex/GVESTOVOLTS.gdx", GVESTOVOLTS;
 execute_unload  "../../simex/GVHSTOVOLTS.gdx", GVHSTOVOLTS;
 execute_unload  "../../simex/GVESTOVOLTSVAL.gdx", GVESTOVOLTSVAL;
 execute_unload  "../../simex/GVHSTOVOLTSVAL.gdx", GVHSTOVOLTSVAL;
+
 
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
