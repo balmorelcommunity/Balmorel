@@ -40,6 +40,7 @@ $ifi not  %SEASONALLINKUC%==yes         AND (NOT (ORD(T) EQ 1))
 $ifi not %SEASONALLINKUC%==yes  - VUCON(IY411,IA,IGUC,S,T-1)
 $ifi %SEASONALLINKUC%==yes      - VUCON(IY411,IA,IGUC,S-1,T--1)$(ORD(T) EQ 1)  - VUCON(IY411,IA,IGUC,S,T-1)$(NOT (ORD(T) EQ 1))
 
+$include "../../base/addons/_hooks/qucstartq.inc"
 ;
 
 QUCMAXVGF(IY411,IA,IGUC,IS3,T)$IAGK_HASORPOT(IY411,IA,IGUC)..    !! 'Unit commitment: Fuel consumption below maximum (of units online)'
