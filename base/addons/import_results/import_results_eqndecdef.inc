@@ -12,8 +12,6 @@ QWATERVOLINI(IY411,IA,S)$(WATERVAL(IY411,IA,S) AND SUM(IGHYRS,IAGK_HASORPOT(IY41
   VHYRS_S(IY411,IA,S) - VHYRS_SL(IY411,IA,S)
   =E=
   VHYRS_SDELTAMWHPOS(IY411,IA,S)-VHYRS_SDELTAMWHNEG(IY411,IA,S)
-
-$include "../../base/addons/_hooks/qwatervolini.inc"
 ;
 $label label_no_hydro_contprice
 
@@ -29,7 +27,6 @@ VESTOVOLTS(IY411,IA,IGESTOS,S,T) - GVESTOVOLTS(IY411,IA,IGESTOS,S,T)
 =E=
 VESTOVOLTSDELTAMWHPOS(IY411,IA,IGESTOS,S,T) - VESTOVOLTSDELTAMWHNEG(IY411,IA,IGESTOS,S,T)
 
-$include "../../base/addons/_hooks/qestovoltsimport.inc"
 ;
 
 $label label_no_intraseasonal_electricity_storage_content
@@ -46,6 +43,5 @@ VHSTOVOLTS(IY411,IA,IGHSTOS,S,T)   - GVHSTOVOLTS(IY411,IA,IGHSTOS,S,T)
 =E=
 VHSTOVOLTSDELTAMWHPOS(IY411,IA,IGHSTOS,S,T) - VHSTOVOLTSDELTAMWHNEG(IY411,IA,IGHSTOS,S,T)
 
-$include "../../base/addons/_hooks/qhstovoltsimport.inc"
 ;
 $label label_no_intraseasonal_heat_storage_content

@@ -36,9 +36,5 @@ POSITIVE VARIABLE VQKTECHGROUP(Y,CCCRRRAAA,TECH_GROUP)       "Feasibility in max
 
 POSITIVE VARIABLE VQGEQF(Y,CCCRRRAAA,FFF,IPLUSMINUS)         "Feasibility in exact fuel use by year (country, region and area) (IMINUS is short of fuel use, IPLUS is surplus fuel use"
 
-POSITIVE VARIABLE VQWATERVOLINI(Y,AAA,S,IPLUSMINUS)          "Feasibility of QWATERVOLINI (MWh)";
-POSITIVE VARIABLE VQESTOVOLTSIMPORT(Y,AAA,G,S,T,IPLUSMINUS)  "Feasibility in inter-seasonal electricity storage equation QESTOVOLTSIMPORT (MWh)";
-POSITIVE VARIABLE VQHSTOVOLTSIMPORT(Y,AAA,G,S,T,IPLUSMINUS)  "Feasibility in inter-seasonal heat storage equation VQHSTOVOLTSIMPORT (MWh)";
-
 POSITIVE VARIABLE VQUCSTARTQ(Y,AAA,G,S,T,IPLUSMINUS)         "Feasibility of QUCSTARTQ";  
 
