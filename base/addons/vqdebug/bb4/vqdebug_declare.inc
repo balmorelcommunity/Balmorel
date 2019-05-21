@@ -36,5 +36,7 @@ POSITIVE VARIABLE VQKTECHGROUP(Y,CCCRRRAAA,TECH_GROUP)       "Feasibility in max
 
 POSITIVE VARIABLE VQGEQF(Y,CCCRRRAAA,FFF,IPLUSMINUS)         "Feasibility in exact fuel use by year (country, region and area) (IMINUS is short of fuel use, IPLUS is surplus fuel use"
 
-POSITIVE VARIABLE VQUCSTARTQ(Y,AAA,G,S,T,IPLUSMINUS)         "Feasibility of QUCSTARTQ";  
+POSITIVE VARIABLE VQUCSTARTQ(Y,AAA,G,S,T,IPLUSMINUS)         "Feasibility of QUCSTARTQ";
+POSITIVE VARIABLE VQUCRAMPU(Y,AAA,G,S,T,IPLUSMINUS)          "Feasibility of QUCRAMPU";
+POSITIVE VARIABLE VQUCRAMPD(Y,AAA,G,S,T,IPLUSMINUS)          "Feasibility of QUCRAMPD";
 
