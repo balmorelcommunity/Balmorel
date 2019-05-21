@@ -393,8 +393,8 @@ PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity developme
 * Data for handling interseasonal storage
 PARAMETER GVESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER GVHSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
-PARAMETER GVESTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Electricity storage content annual value (in input money) to be transferred to future runs (input-Money/MWh)";
-PARAMETER GVHSTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Heat storage content annual value (in input money) to be transferred to future runs (input-Money/MWh)";
+PARAMETER GVESTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Electricity storage content  value (in input money) to be transferred to future runs (input-Money/MWh)";
+PARAMETER GVHSTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Heat storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
 ** End: Export data
 
 * ------------------------------------------------------------------------------
@@ -2691,7 +2691,7 @@ $ifi not %export_results%==yes $goto result_export
 
 HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHYRST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
 VHYRS_SL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = VHYRS_S.L(Y,IA,S);
-WATERVAL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS))= QHYRSSEQ.M(Y,IA,S)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
+WATERVAL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS))= QHYRSSEQ.M(Y,IA,S)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y));
 
 execute_unload  "../../simex/HYRSG.gdx", HYRSG;
 execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
@@ -2721,8 +2721,8 @@ $ifi %HEATTRANS%==yes  execute_unload  "../../simex/XHKACCUMNET.gdx", XHKACCUMNE
 *Initial energy storage volumen at the beginning of each week, storage content value
 GVESTOVOLTS(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGESTOS))=VESTOVOLTS.L(Y,IA,IGESTOS,S,T);
 GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGHSTOS))=VHSTOVOLTS.L(Y,IA,IGHSTOS,S,T);
-GVESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGESTOS))=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
-GVHSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGHSTOS))=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)/IDISCOUNTFACTOR(Y)*IWEIGHTY(Y);
+GVESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGESTOS))=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y));
+GVHSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGHSTOS))=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y));
 
 execute_unload  "../../simex/GVESTOVOLTS.gdx", GVESTOVOLTS;
 execute_unload  "../../simex/GVHSTOVOLTS.gdx", GVHSTOVOLTS;
