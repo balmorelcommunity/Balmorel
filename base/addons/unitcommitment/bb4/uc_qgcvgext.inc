@@ -12,10 +12,9 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGEXT)$IGDECOMEXOPOT(IY411,IA,IGE
 
 
 *Introducing new capacity limitation based on units that are on
- 
+
      -(
      (
      GDATA(IGEXT,'GDUCUNITSIZE')*VUCON(IY411,IA,IGEXT,IS3,T)
-     )*
-     (1$(NOT IGKRATE(IA,IGEXT,IS3,T)) + IGKRATE(IA,IGEXT,IS3,T))
+     )
      )$(IGUC(IGEXT))

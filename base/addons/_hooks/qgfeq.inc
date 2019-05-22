@@ -1,6 +1,9 @@
 * Location of contributions to the RHS of QGFEQ by add-ons
 * Latest revision 20180920 (ida)
 
+$ifi %vqdebug%==yes   $setglobal equation qgfeq
+$ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
+
 
 $ifi %BB4%==yes $goto beginbb4
 
