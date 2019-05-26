@@ -15,13 +15,13 @@ $ifi not %BB4%==yes $goto endoffile
 
 
 $label bb4_begin
-
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_sim.inc"; 
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_sim.inc";
 $ifi %X3V%==yes  $include   "../../base/addons/x3v/bb4/x3v_sim.inc";
 $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_sim.inc";
 $ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_sim.inc";
 
-$ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_sim.inc";    
+$ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_sim.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_sim.inc";
 
 $label endoffile

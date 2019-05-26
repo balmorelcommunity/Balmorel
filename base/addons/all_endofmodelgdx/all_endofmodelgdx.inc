@@ -36,10 +36,10 @@ $ifi not %vqdebug%==yes $goto bb4end
 * BB4 --------------------------------------------------------------------------
 VQEEQ.M(Y,IR,S,T,IPLUSMINUS)            = 0;
 VQHEQ.M(Y,IA,S,T,IPLUSMINUS)            = 0;
-VQESTOVOLT.M(Y,IA,S,T,IPLUSMINUS)       = 0;
-VQESTOVOLTS.M(Y,IA,S,T,IPLUSMINUS)      = 0;
-VQHSTOVOLT.M(Y,IA,S,T,IPLUSMINUS)       = 0;
-VQHSTOVOLTS.M(Y,IA,S,T,IPLUSMINUS)      = 0;
+VQESTOVOLT.M(Y,IA,G,S,T,IPLUSMINUS)     = 0;
+VQESTOVOLTS.M(Y,IA,G,S,T,IPLUSMINUS)    = 0;
+VQHSTOVOLT.M(Y,IA,G,S,T,IPLUSMINUS)     = 0;
+VQHSTOVOLTS.M(Y,IA,G,S,T,IPLUSMINUS)    = 0;
 VQHYRSSEQ.M(Y,IA,S,IPLUSMINUS)          = 0;
 VQHYMAXG.M(Y,IA,S,T,IPLUSMINUS)         = 0;
 VQGKNACCUMNET.M(Y,IA,G,IPLUSMINUS)      = 0;

@@ -1266,6 +1266,12 @@ POSITIVE VARIABLE VHSTOVOLTS(Y,AAA,G,S,T)          "Heat storage contents at beg
 POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)            "Accumulated new investments this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
 POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)          "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
 POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)      "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
+POSITIVE VARIABLE VHYRS_SDELTAMWHPOS(Y,AAA,S)    "Positive delta between hydro storage content in previous runs and the one in this run";
+POSITIVE VARIABLE VHYRS_SDELTAMWHNEG(Y,AAA,S)    "Negative delta between hydro storage content in previous runs and the one in this run";
+POSITIVE VARIABLE VESTOVOLTSDELTAMWHPOS(Y,AAA,G,S,T)   "Positive delta between electricity interseasonal storage content in previous runs and the one in this run";
+POSITIVE VARIABLE VESTOVOLTSDELTAMWHNEG(Y,AAA,G,S,T)   "Negative delta between electricity interseasonal storage content in previous runs and the one in this run";
+POSITIVE VARIABLE VHSTOVOLTSDELTAMWHPOS(Y,AAA,G,S,T)   "Positive delta between heat interseasonal storage content in previous runs and the one in this run";
+POSITIVE VARIABLE VHSTOVOLTSDELTAMWHNEG(Y,AAA,G,S,T)   "Negative delta between heat interseasonal storage content in previous runs and the one in this run";
 
 *-------------------------------------------------------------------------------
 *----- Any variables, and possibly equations, for addon to be placed here: -----
@@ -1601,7 +1607,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGEXT)$IGDECOMEXOPOT(IY411,IA,IGE
          - VGH_T(IY411,IA,IGEXT,IS3,T) * GDATA(IGEXT,'GDCV')
 
 $ifi %COMBTECH%==yes  * This will have a value in case of a combination technology. !!TODO
-$ifi %COMBTECH%==yes    + SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGH_T(IY411,IA,IGCOMB2,IS3,T) * GDATA(IGCOMB2,"GDCV"))$IGCOMB1(IGEXT)   !!TODO
+$ifi %COMBTECH%==yes    - SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGH_T(IY411,IA,IGCOMB2,IS3,T) * GDATA(IGCOMB2,"GDCV"))$IGCOMB1(IGEXT)   !!TODO
     =G=
    VGE_T(IY411,IA,IGEXT,IS3,T)
 $ifi %COMBTECH%==yes  * Add secondary generation if combination technologies are used     !!TODO
@@ -1627,9 +1633,7 @@ QGGETOH(IAGK_HASORPOT(IY411,IA,IGETOH),IS3,T) ..
 
 * TODO eventually: linking between years in BB4
 * "Hydropower with reservoir seasonal energy constraint (MWh)"
-QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) AND IS3(S)
-$ifi %RollingSeasons%==yes AND NOT(ORD(S) EQ CARD(S))
-)..
+QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) AND IS3(S))..
       VHYRS_S(IY411,IA,S)
        +  IHYINF_S(IA,S) * (
       SUM(IGHYRS,
@@ -1639,14 +1643,15 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IG
         )
          )
          -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHYRST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))
-
-      =G=  VHYRS_S(IY411,IA,S++1)
+       =G=
+       VHYRS_S(IY411,IA,S++1)
+$ifi %RollingSeasons%==yes  +VHYRS_SDELTAMWHNEG(IY411,IA,S++1)$(ORD(S) EQ CARD(S))
 
 $include "../../base/addons/_hooks/qhyrsseq.inc"
 ;
 
 * "Hydropower reservoir - minimum level (MWh)"
-QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND IS3(S))..
+QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND (IS3(S) OR IS3(S--1)))..
      VHYRS_S(IY411,IA,S)  =G=  HYRSDATA(IA,"HYRSMINVOL",S)*
        SUM(IGHYRS,   HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
@@ -1657,7 +1662,7 @@ $include "../../base/addons/_hooks/qhyrsminvol.inc"
 ;
 
 * "Hydropower reservoir - maximum level (MWh)"
-QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND IS3(S))..
+QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND (IS3(S) OR IS3(S--1)))..
        HYRSDATA(IA,"HYRSMAXVOL",S) *
        SUM(IGHYRS,  HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
@@ -1697,16 +1702,15 @@ $include "../../base/addons/_hooks/qestovolt.inc"
 ;
 
 * "Inter-seasonal electricty storage dynamic equation (MWh)"
-QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S)
-$ifi %RollingSeasons%==yes AND NOT(ORD(S) EQ CARD(S) AND ORD(T) EQ CARD(T))
-)..
+QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
     VESTOVOLTS(IY411,IA,IGESTOS,S,T)
   + CHRONOHOUR(S,T)*
   (VESTOLOADTS(IY411,IA,IGESTOS,S,T)
   - SUM(IAGK_HASORPOT(IY411,IA,IGESTOS), VGE_T(IY411,IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
   )
     =E=
-VESTOVOLTS(IY411,IA,IGESTOS,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
+VESTOVOLTS(IY411,IA,IGESTOS,S,T+1) +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
+$ifi %RollingSeasons%==yes  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),(VESTOVOLTSDELTAMWHNEG(IY411,IA,IGESTOS,S++1,ITALIAS)-VESTOVOLTSDELTAMWHPOS(IY411,IA,IGESTOS,S++1,ITALIAS)))$(ORD(S) EQ CARD(S) AND ORD(T) EQ CARD(T))
 
 $include "../../base/addons/_hooks/qestovolts.inc"
 ;
@@ -1722,16 +1726,15 @@ $include "../../base/addons/_hooks/qhstovolt.inc"
 ;
 
 *  "Inter-seasonal heat storage dynamic equation (MWh)"
-QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S)
-$ifi %RollingSeasons%==yes AND NOT(ORD(S) EQ CARD(S) AND ORD(T) EQ CARD(T))
-)..
+QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
     VHSTOVOLTS(IY411,IA,IGHSTOS,S,T)
   + CHRONOHOUR(S,T)*
   (VHSTOLOADTS(IY411,IA,IGHSTOS,S,T)
   - SUM(IAGK_HASORPOT(IY411,IA,IGHSTOS), VGH_T(IY411,IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE'))
   )
     =E=
-VHSTOVOLTS(IY411,IA,IGHSTOS,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
+VHSTOVOLTS(IY411,IA,IGHSTOS,S,T+1) + SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
+$ifi %RollingSeasons%==yes   +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),(VHSTOVOLTSDELTAMWHNEG(IY411,IA,IGHSTOS,S++1,T)-VHSTOVOLTSDELTAMWHPOS(IY411,IA,IGHSTOS,S++1,T)))$(ORD(S) EQ CARD(S) AND ORD(T) EQ CARD(T))
 
 $include "../../base/addons/_hooks/qhstovolts.inc"
 ;
@@ -1871,7 +1874,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTO)$IGDECOMEXOPOT(IY411,IA,IG
 ;
 
 * "Heat storage capacity limit (MWh)"
-QHSTOVOLTLIMS(IY411,IA,IGHSTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)) OR IGDECOMEXOPOT(IY411,IA,IGHSTOS)) AND IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
+QHSTOVOLTLIMS(IY411,IA,IGHSTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS)) OR IGDECOMEXOPOT(IY411,IA,IGHSTOS)) AND IAGK_HASORPOT(IY411,IA,IGHSTOS) AND (IS3(S) OR IS3(S--1)))..
 * Existing, accumulated new previous capacity and new investment this year
      GKFX(IY411,IA,IGHSTOS)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHSTOS)$IGDECOMEXOPOT(IY411,IA,IGHSTOS)
@@ -1890,7 +1893,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTO)$IGDECOMEXOPOT(IY411,IA,IG
   VESTOVOLT(IY411,IA,IGESTO,IS3,T)
 ;
 
-QESTOVOLTLIMS(IY411,IA,IGESTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)) OR IGDECOMEXOPOT(IY411,IA,IGESTOS)) AND IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
+QESTOVOLTLIMS(IY411,IA,IGESTOS,S,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGESTOS)) OR IGDECOMEXOPOT(IY411,IA,IGESTOS)) AND IAGK_HASORPOT(IY411,IA,IGESTOS) AND (IS3(S) OR IS3(S--1)))..
 * Existing or accumulated capacity
    GKFX(IY411,IA,IGESTOS)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTOS)$IGDECOMEXOPOT(IY411,IA,IGESTOS)

@@ -8,10 +8,10 @@ $ifi not declared  IPLUSMINUS  SET IPLUSMINUS "Violation of equation"  /IPLUS "V
 
 POSITIVE VARIABLE VQEEQ(Y,RRR,S,T,IPLUSMINUS)                "Feasibility in electricity balance QEEQ (IMINUS is short of el, IPLUS is surplus el) (MW)";
 POSITIVE VARIABLE VQHEQ(Y,AAA,S,T,IPLUSMINUS)                "Feasibility in heat balance QHEQ (IMINUS is short of heat, IPLUS is surplus heat) (MW)";
-POSITIVE VARIABLE VQESTOVOLT(Y,AAA,S,T,IPLUSMINUS)           "Feasibility in intra-seasonal electricity storage equation QESTOVOLT (MWh)";
-POSITIVE VARIABLE VQESTOVOLTS(Y,AAA,S,T,IPLUSMINUS)          "Feasibility in inter-seasonal electricity storage equation QESTOVOLTS (MWh)";
-POSITIVE VARIABLE VQHSTOVOLT(Y,AAA,S,T,IPLUSMINUS)           "Feasibility in intra-seasonal heat storage equation VQHSTOVOLT (MWh)";
-POSITIVE VARIABLE VQHSTOVOLTS(Y,AAA,S,T,IPLUSMINUS)          "Feasibility in inter-seasonal heat storage equation VQHSTOVOLTS (MWh)";
+POSITIVE VARIABLE VQESTOVOLT(Y,AAA,G,S,T,IPLUSMINUS)           "Feasibility in intra-seasonal electricity storage equation QESTOVOLT (MWh)";
+POSITIVE VARIABLE VQESTOVOLTS(Y,AAA,G,S,T,IPLUSMINUS)          "Feasibility in inter-seasonal electricity storage equation QESTOVOLTS (MWh)";
+POSITIVE VARIABLE VQHSTOVOLT(Y,AAA,G,S,T,IPLUSMINUS)           "Feasibility in intra-seasonal heat storage equation VQHSTOVOLT (MWh)";
+POSITIVE VARIABLE VQHSTOVOLTS(Y,AAA,G,S,T,IPLUSMINUS)          "Feasibility in inter-seasonal heat storage equation VQHSTOVOLTS (MWh)";
 POSITIVE VARIABLE VQHYRSSEQ(Y,AAA,S,IPLUSMINUS)              "Feasibility of QHYRSSEQ (MWh)";
 POSITIVE VARIABLE VQHYMAXG(Y,AAA,S,T,IPLUSMINUS)             "Feasibility of QHYMAXG (MW)";
 *POSITIVE VARIABLE VGE2LEVEL(Y,AAA,G,S,DAYTYPE)              "Average load of slowly regulating production (MW)";

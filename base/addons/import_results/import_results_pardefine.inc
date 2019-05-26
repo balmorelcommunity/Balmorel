@@ -19,10 +19,10 @@ VHYRS_SL(Y,AAA,SSS)$(not S(SSS)) = 0;
 $label label_no_hydro_results_import
 
 *Interseasonal storage
-$ifi %ADDELECSTORCONT%==yes  execute_load  '../../simex/GVESTOVOLTS.gdx', GVESTOVOLTS;
-$ifi %ADDHEATSTORCONT%==yes  execute_load  '../../simex/GVHSTOVOLTS.gdx', GVHSTOVOLTS;
-$ifi %ADDELECSTORCONT%==yes  execute_load  '../../simex/GVESTOVOLTSVAL.gdx', GVESTOVOLTSVAL;
-$ifi %ADDHEATSTORCONT%==yes  execute_load  '../../simex/GVHSTOVOLTSVAL.gdx', GVHSTOVOLTSVAL;
+$ifi not %ADDELECSTORCONT%==none  execute_load  '../../simex/GVESTOVOLTS.gdx', GVESTOVOLTS;
+$ifi not %ADDHEATSTORCONT%==none  execute_load  '../../simex/GVHSTOVOLTS.gdx', GVHSTOVOLTS;
+$ifi not %ADDELECSTORCONT%==none  execute_load  '../../simex/GVESTOVOLTSVAL.gdx', GVESTOVOLTSVAL;
+$ifi not %ADDHEATSTORCONT%==none  execute_load  '../../simex/GVHSTOVOLTSVAL.gdx', GVHSTOVOLTSVAL;
 
 
 *Investments with/without decommissioning of endogenous capacity
