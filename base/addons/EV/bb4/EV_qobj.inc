@@ -53,8 +53,8 @@ $ifi not %DEGCAL%==yes $goto V2GDEGCAL_END
 
 
 $label  V2GDEGCAL_END
-+( SUM((IR),EV_CHARGERCOST(Y) * EV_BEV_Avail(Y,'S01','T001',IR)) )$(Y.val>2019)+0
-*+ SUM((IR),EV_CHARGERCOST(Y) * EV_PHEV_Avail(Y,'S01','T001',IR))
++( SUM((S,T,IR)$(ORD(S) EQ 1 AND ORD(T) EQ 1),EV_CHARGERCOST(Y) * EV_BEV_Avail(Y,S,T,IR)) )$(Y.val>2019)+0
+*+ SUM((S,T,IR)$(ORD(S) EQ 1 AND ORD(T) EQ 1),EV_CHARGERCOST(Y) * EV_PHEV_Avail(Y,S,T,IR))
 
 $label  V2G_END
 
@@ -95,6 +95,6 @@ $ifi not %DEGCAL%==yes $goto DEGCAL_END3
 
 $label  DEGCAL_END3
 
-+ ((SUM((IR),EV_CHARGERCOST(Y) * EV_BEV_Avail(Y,'S01','T001',IR)))$(Y.val>2019))$cs('v2g',Y)
++ ((SUM((S,T,IR)$(ORD(S) EQ 1 AND ORD(T) EQ 1),EV_CHARGERCOST(Y) * EV_BEV_Avail(Y,S,T,IR)))$(Y.val>2019))$cs('v2g',Y)
 
 $label  STEPCHARGSCHEME_END
