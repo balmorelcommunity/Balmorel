@@ -783,6 +783,11 @@ $if     EXIST '../data/HYPPROFILS.inc' $INCLUDE      '../data/HYPPROFILS.inc';
 $if not EXIST '../data/HYPPROFILS.inc' $INCLUDE '../../base/data/HYPPROFILS.inc';
 %semislash%;
 
+PARAMETER TEMP_VAR_T(SSS,TTT,RRR)                      "Temperature profiles"   %semislash%
+$if     EXIST '../data/TEMP_VAR_T.inc' $INCLUDE      '../data/TEMP_VAR_T.inc';
+$if not EXIST '../data/TEMP_VAR_T.inc' $INCLUDE '../../base/data/TEMP_VAR_T.inc';
+%semislash%;
+
 
 $ifi %bb3%==yes WEIGHT_T(T)=1;
 

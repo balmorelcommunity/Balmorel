@@ -205,8 +205,11 @@ $Setglobal FV
 *!option yes
 
 * Includes individual heating
-$Setglobal INDHEAT yes
+$setglobal INDHEAT  yes
 *!option yes
+
+SCALAR INDHEAT_GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
+INDHEAT_GINVESTSTART= 2020;
 
 *
 $setglobal POLICIES
