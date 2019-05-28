@@ -844,7 +844,7 @@ $if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
 $if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
 %semislash%;
 
-
+*Flex4Res
 *$ontext
 GMINF(Y,'estonia','NATGAS')$(Y.VAL GE 2030) = 0 ;
 M_POL('2050','LIM_CO2',C) = EPS   ;
@@ -909,3 +909,13 @@ GMAXF('2040','GERMANY','Lignite')=EPS;
 GMAXF('2050','GERMANY','Coal')=EPS;
 GMAXF('2050','GERMANY','Lignite')=EPS;
 *$offtext
+
+
+** Higer Woodchips prices
+FUELPRICE('2030',IA,'WOODCHIPS') = 8.292520198;
+FUELPRICE('2040',IA,'WOODCHIPS') = 10.13943185;
+FUELPRICE('2050',IA,'WOODCHIPS') = 10.70013031;
+
+** no investments into straw except for Denmark where the limit is also set a little higher.
+AGKN(IA,G)$((NOT ICA('DENMARK',IA)) AND (GDATA(G,'GDFUEL') = STRAW)) = NO;
+GMAXF(Y,'DENMARK','STRAW') = 20000000;
