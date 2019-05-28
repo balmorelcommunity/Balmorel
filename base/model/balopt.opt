@@ -149,7 +149,7 @@ $setglobal full_timeseries_scaling
 *---- Heat storage loading restrictions ------    '
 *overall control variable heatsto_loading_rest must be 'yes' if any of the other heat storage loading restriction controls are:
 
-$setglobal heatsto_loading_rest  
+$setglobal heatsto_loading_rest
 *!option yes
 
 *Heat storages are forbidden to load other heat storages (if option "yes", heat storages will not be allowed to load other heat storages)
@@ -174,11 +174,11 @@ $setglobal watertank_loading_rest
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH
+$setglobal COMBTECH yes
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN
+$Setglobal HYDROGEN yes
 *!option yes
 
 * Use stepwise linear fuel prices

@@ -1,10 +1,9 @@
 Equations
    QHYDROGEN_GGETOH2(Y,AAA,G,S,T)       'Hydrogen production - existing electrolysis plant'
    QHYDROGEN_HGETOH2(Y,AAA,G,S,T)       'Heat generated - existing electrolysis plant'
-
-*Ida additions
    QHYDROGEN_GGEHTOH2(Y,AAA,G,S,T)       'Hydrogen production - existing SOEC plant'
    QHYDROGEN_HGEHTOH2(Y,AAA,G,S,T)       'Heat used - existing SOEC plant'
+   QHYDROGEN_H2TOEH(Y,AAA,G,S,T)       'Heat production in fuel cells'
 
    QHYDROGEN_GCH4KT(Y,AAA,G,S,T)       'Hydrogen production of steam reforming plants restricted by capacity'
 
@@ -37,6 +36,11 @@ QHYDROGEN_GGEHTOH2(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GEHTOH2),IS3,T) ..
 QHYDROGEN_HGEHTOH2(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GEHTOH2),IS3,T)..
 
        VGE_T(IY411,IA,IHYDROGEN_GEHTOH2,IS3,T) =E= VGH_T(IY411,IA,IHYDROGEN_GEHTOH2,IS3,T)*GDATA(IHYDROGEN_GEHTOH2,'GDCB');
+
+
+QHYDROGEN_H2TOEH(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2TOE),IS3,T) ..
+
+       VGE_T(IY411,IA,IHYDROGEN_GH2TOE,IS3,T) =E= VGH_T(IY411,IA,IHYDROGEN_GH2TOE,IS3,T)*GDATA(IHYDROGEN_GH2TOE,'GDCB');
 
 * Hydrogen gas storage, dynamic balance for weekly time horizon:
 * Start and end filling degree in each week fixed to values obtained

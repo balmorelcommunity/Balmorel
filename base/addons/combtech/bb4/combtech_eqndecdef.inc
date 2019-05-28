@@ -29,6 +29,7 @@ EQUATIONS
    QHCOMBGSHAREK12(Y,AAA,G,G,S,T)   "Secondary combtech technology Heat Production is limited by GDCOMBGSHAREK1"
    QCOMBFSHAREK1(Y,AAA,G,S,T)       "Primary combtech technology fuel consumption is limited by GDCOMBGSHAREK1"
    QCOMBFSHAREK12(Y,AAA,G,G,S,T)    "Secondary combtech technology fuel consumption is limited by GDCOMBGSHAREK1"
+   QGKE_UP_ADD(Y,AAA,G,S,T)         "Capacity adjustment constraint on electricity generation from biogas upgraded plants (MW)"
 ;
 
 * Existing and new capacity:  ----------------------------------------------------------
@@ -177,5 +178,14 @@ QCOMBFSHAREK12(IY411,IA,IGCOMB1,IGCOMB2,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGCOMB2) 
   (VGKNACCUMNET(IY411,IA,IGCOMB1)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGCOMB1)) + GKFX(IY411,IA,IGCOMB1)) * (1$(NOT IGKRATE(IA,IGCOMB1,IS3,T)) + IGKRATE(IA,IGCOMB1,IS3,T)) * GDATA(IGCOMB2,'GDCOMBFSHAREK1')
    =G=
    VGF_T(IY411,IA,IGCOMB2,IS3,T)
+
+;
+
+*"Capacity adjustment constraint on electricity generation from biogas upgraded plants (MW)"
+QGKE_UP_ADD(IY411,IA,IGCOMB1,IS3,T)..
+
+  VGE_T(IY411,IA,IGCOMB1,IS3,T)+ SUM(IGCOMB2$GGCOMB(IGCOMB1,IGCOMB2),(VGE_T(IY411,IA,IGCOMB2,IS3,T)*(1+HYDROGEN_H2TOF(IGCOMB2))))
+  =L=
+  GKFX(IY411,IA,IGCOMB1)+VGKNACCUMNET(IY411,IA,IGCOMB1)
 
 ;
