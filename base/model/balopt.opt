@@ -120,10 +120,10 @@ XINVESTSTART= 2030;
 
 *----BEGIN: Investments transition -------
 *Save generation and transmission investments from model run to hard drive
-$setglobal SaveInvestData
+$setglobal SaveInvestData yes
 
 * Load generation and transmission investmets to hard drive
-$setglobal LoadInvestData yes
+$setglobal LoadInvestData
 *----BEGIN: Investments transition -------
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
@@ -239,7 +239,7 @@ $SETGLOBAL SCENARIO3OR4
 SCALAR GR_SCALAR_THRESHOLD /.9/ ;
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
-$SETGLOBAL SCENARIO4 yes
+$SETGLOBAL SCENARIO4
 *!option yes
 
 * Taxes addon
@@ -333,7 +333,7 @@ $setglobal DUMB
 *!option
 
 * Adds smart charging. Only smart charging, without V2G!:
-$setglobal SMART
+$setglobal SMART yes
 *!option
 
 * Adds V2G charging:
@@ -341,7 +341,7 @@ $setglobal V2G
 *!option
 
 * Adds V2G charging:
-$setglobal STEPCHARGSCHEME yes
+$setglobal STEPCHARGSCHEME
 *!option
 
 * Adds cycle degradation charging:
@@ -600,7 +600,7 @@ putclose fileMERGESAVEPOINTRESULTSbash;
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
-$setglobal MERGEDSAVEPOINTRESULTS2SQLITE yes
+$setglobal MERGEDSAVEPOINTRESULTS2SQLITE
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
 
