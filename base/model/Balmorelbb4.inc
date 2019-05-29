@@ -1678,7 +1678,7 @@ $include "../../base/addons/_hooks/qhyrsmaxvol.inc"
 * "Regulated plus unregulated hydropower production lower than capacity (MW)"
 QHYMAXG(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS))..
       SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),VGE_T(IY411,IA,IGHYRS,IS3,T))
-      +SUM(IGHYRR$IAGK_HASORPOT(IY411,IA,IGHYRR),VGE_T(IY411,IA,IGHYRR,IS3,T))
+*      +SUM(IGHYRR$IAGK_HASORPOT(IY411,IA,IGHYRR),VGE_T(IY411,IA,IGHYRR,IS3,T))  !!to be activated only if data is in line with this constraint
       =L=
       SUM(IGHYRS,
          (GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
