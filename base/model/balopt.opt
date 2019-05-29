@@ -80,6 +80,23 @@ $setglobal testbb1234
 *!option yes
 
 
+
+* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 1 in Flex4Res
+$SETGLOBAL SCENARIO1
+*!option yes
+
+* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 2 in Flex4Res
+$SETGLOBAL SCENARIO2
+*!option yes
+
+* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
+$SETGLOBAL SCENARIO3  yes
+*!option yes
+
+* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
+$SETGLOBAL SCENARIO4
+*!option yes
+
 *===============================================================================
 *===============================================================================
 * Basic models details and Addon modules:
@@ -182,11 +199,11 @@ $setglobal watertank_loading_rest yes
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH yes
+$setglobal COMBTECH
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN yes
+$Setglobal HYDROGEN
 *!option yes
 
 * Use stepwise linear fuel prices
@@ -223,24 +240,13 @@ $setglobal POLICIES
 $setglobal GRIDTARIFFS yes
 *!option yes
 
-* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 1 in Flex4Res
-$SETGLOBAL SCENARIO1 yes
-*!option yes
-
-* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 2 in Flex4Res
-$SETGLOBAL SCENARIO2
-*!option yes
-
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 3 and 4 in Flex4Res
-$SETGLOBAL SCENARIO3OR4
+$ifi %SCENARIO3%==YES  $SETGLOBAL SCENARIO3OR4   yes
+$ifi %SCENARIO4%==YES  $SETGLOBAL SCENARIO3OR4   yes
 *!option yes
 
 *Scalar for setting threshold for congestion based grid tariff   /0 to 1/
 SCALAR GR_SCALAR_THRESHOLD /.9/ ;
-
-* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
-$SETGLOBAL SCENARIO4
-*!option yes
 
 * Taxes addon
 $setglobal TAXES yes
@@ -720,7 +726,7 @@ $setglobal GWAVE_DOL AAA
 *-------------------------------------------------------------------------------
 * Active options will be reported to log file via file hellolog.inc
 *-------------------------------------------------------------------------------
-$setglobal VGF ST
+$setglobal VGF Y
 * Y or ST
 
 *-------------------------------------------------------------------------------
