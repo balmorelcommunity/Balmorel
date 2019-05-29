@@ -13,7 +13,7 @@ $label  beginbb4
 
 $ifi not %bb4%==yes $goto endoffile
 
-* $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/fucked up!!    **** Hans : make better!   fucked up  !! TODO 
+$ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_qheq.inc";
 
 $ifi %vqdebug%==yes   $setglobal equation qheq
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
