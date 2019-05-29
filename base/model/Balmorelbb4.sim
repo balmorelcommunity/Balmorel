@@ -468,6 +468,10 @@ $ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_5.gdx" IBB1234_VG
 
 IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
 
+* quickfix for nuclear flexibility
+
+VGE_T.lo(IY411,IA,G,S,T)$IGF(G,'NUCLEAR')=GKFX(IY411,IA,G)*(1$(NOT IGKRATE(IA,G,S,T)) + IGKRATE(IA,G,S,T))*0.7;
+
 
 *---- End: Bounds on generation technologies -----------------------------------
 
