@@ -468,9 +468,14 @@ $ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_5.gdx" IBB1234_VG
 
 IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
 
+*Flex4RES
 * quickfix for nuclear flexibility
+$ifi %GKRATE_DOL%==AAA_GGG_SSS     VGE_T.lo(IY411,IA,G,S,T)$IGF(G,'NUCLEAR')=GKFX(IY411,IA,G)*(1$(NOT IGKRATE(IA,G,S,T)) + IGKRATE(IA,G,S,T))*0.7;
+$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT VGE_T.lo(IY411,IA,G,S,T)$IGF(G,'NUCLEAR')=GKFX(IY411,IA,G)*(1$(NOT IGKRATE(IA,G,S,T)) + IGKRATE(IA,G,S,T))*0.7;
 
-VGE_T.lo(IY411,IA,G,S,T)$IGF(G,'NUCLEAR')=GKFX(IY411,IA,G)*(1$(NOT IGKRATE(IA,G,S,T)) + IGKRATE(IA,G,S,T))*0.7;
+* Generation on existing plants (except inter and intra seasonal storages) is restricted by the capacity (MW) adjusted by GKDERATE:
+* (For storages and fluctuating sources (wind, etc.) overwritten later.)
+*F4R
 
 
 *---- End: Bounds on generation technologies -----------------------------------

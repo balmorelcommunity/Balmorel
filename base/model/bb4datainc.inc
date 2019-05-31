@@ -918,4 +918,4 @@ FUELPRICE('2050',IA,'WOODCHIPS') = 10.70013031;
 
 ** no investments into straw except for Denmark where the limit is also set a little higher.
 AGKN(IA,G)$((NOT ICA('DENMARK',IA)) AND (GDATA(G,'GDFUEL') = STRAW)) = NO;
-GMAXF(Y,'DENMARK','STRAW') = 20000000;
+*GMAXF(Y,'DENMARK','STRAW') = 20000000;
