@@ -362,8 +362,10 @@ $setglobal DEGCAL yes
 *-------------------------------------------------------------------------------
 
 * Algorithm to improve calculation time. Reduces the set IAGKNY by identifying technologies that are not attractive given assumed costs, fuel prices and taxes.
-$setglobal VARIABLE_TRIMMING
+$setglobal VARIABLE_TRIMMING        YES
 *!option yes
+$ifi %COMBTECH%==yes  $setglobal VARIABLE_TRIMMING
+
 
 * Tool that aggregates areas in preprocessing
 $setglobal AREA_AGGREGATION yes
@@ -728,8 +730,10 @@ $setglobal GWAVE_DOL AAA
 *-------------------------------------------------------------------------------
 * Active options will be reported to log file via file hellolog.inc
 *-------------------------------------------------------------------------------
-$setglobal VGF ST
+$setglobal VGF Y
 * Y or ST
+$ifi %COMBTECH%==yes  $setglobal VGF ST
+
 
 *-------------------------------------------------------------------------------
 * End of Balopt.opt
