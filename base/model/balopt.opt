@@ -82,7 +82,7 @@ $setglobal testbb1234
 
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 1 in Flex4Res
-$SETGLOBAL SCENARIO1
+$SETGLOBAL SCENARIO1   YES
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 2 in Flex4Res
@@ -90,7 +90,7 @@ $SETGLOBAL SCENARIO2
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
-$SETGLOBAL SCENARIO3  yes
+$SETGLOBAL SCENARIO3
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
@@ -124,7 +124,9 @@ GINVESTSTART= 2020;
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest    YES
+$setglobal TransInvest
+$ifi %Scenario2%==YES  $setglobal TransInvest    YES
+$ifi %Scenario4%==YES  $setglobal TransInvest    YES
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which engoenous decisions in transmission capacities are allowed' ;
@@ -199,11 +201,11 @@ $setglobal watertank_loading_rest yes
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH
+$setglobal COMBTECH        yes
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN
+$Setglobal HYDROGEN        yes
 *!option yes
 
 * Use stepwise linear fuel prices
@@ -360,7 +362,7 @@ $setglobal DEGCAL yes
 *-------------------------------------------------------------------------------
 
 * Algorithm to improve calculation time. Reduces the set IAGKNY by identifying technologies that are not attractive given assumed costs, fuel prices and taxes.
-$setglobal VARIABLE_TRIMMING yes
+$setglobal VARIABLE_TRIMMING
 *!option yes
 
 * Tool that aggregates areas in preprocessing
@@ -726,7 +728,7 @@ $setglobal GWAVE_DOL AAA
 *-------------------------------------------------------------------------------
 * Active options will be reported to log file via file hellolog.inc
 *-------------------------------------------------------------------------------
-$setglobal VGF Y
+$setglobal VGF ST
 * Y or ST
 
 *-------------------------------------------------------------------------------
