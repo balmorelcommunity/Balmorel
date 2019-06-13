@@ -1676,15 +1676,15 @@ $include "../../base/addons/_hooks/qhyrsmaxvol.inc"
 
 
 * "Regulated plus unregulated hydropower production lower than capacity (MW)"
-QHYMAXG(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS))..
+QHYMAXG(IY411,IA,IS3,T)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) OR SUM(IGHYRR,IAGK_HASORPOT(IY411,IA,IGHYRR)))..
       SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),VGE_T(IY411,IA,IGHYRS,IS3,T))
-*      +SUM(IGHYRR$IAGK_HASORPOT(IY411,IA,IGHYRR),VGE_T(IY411,IA,IGHYRR,IS3,T))  !!to be activated only if data is in line with this constraint
+      +SUM(IGHYRR$IAGK_HASORPOT(IY411,IA,IGHYRR),VGE_T(IY411,IA,IGHYRR,IS3,T))  !!to be activated only if data is in line with this constraint
       =L=
-      SUM(IGHYRS,
-         (GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
-$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IGHYRS)
-         +VGKNACCUMNET(IY411,IA,IGHYRS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRS))
-         )*(1$(NOT IGKRATE(IA,IGHYRS,IS3,T)) + IGKRATE(IA,IGHYRS,IS3,T))
+      SUM(IGE$(IGHYRS(IGE) OR IGHYRR(IGE)),
+         (GKFX(IY411,IA,IGE)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGE)$IGDECOMEXOPOT(IY411,IA,IGE)
+         +VGKNACCUMNET(IY411,IA,IGE)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGE))
+         )*(1$(NOT IGKRATE(IA,IGE,IS3,T)) + IGKRATE(IA,IGE,IS3,T))
        )
 $include "../../base/addons/_hooks/qhymaxg.inc"
 ;
