@@ -1,4 +1,4 @@
-
+$ifi %EV2%==YES $goto EV_END
 
 
 $ifi not %DUMB%==yes $goto DUMB_END
@@ -43,3 +43,16 @@ $ifi not %STEPCHARGSCHEME%==yes $goto STEPCHARGSCHEME_END
          -VEV_VNETDISCHARGE_BEV(IY411,IR,IS3,T))$cs('v2g',IY411)
 
 $label  STEPCHARGSCHEME_END
+
+$label EV_END
+
+$ifi not %EV2%==YES $goto EV2_END
+
+                                + VEV_VG2V_BEV(IY411,IR,IS3,T)$(IY411.val>2019)
+                                + VEV_VG2V_PHEV(IY411,IR,IS3,T)$(IY411.val>2019)
+$ifi %V2G%==yes                 - VEV_VV2G_BEV(IY411,IR,IS3,T)$(IY411.val>2019)
+$ifi %V2G%==yes                 - VEV_VV2G_PHEV(IY411,IR,IS3,T)$(IY411.val>2019)
+$ifi %STEPCHARGSCHEME%==yes     - VEV_VV2G_BEV(IY411,IR,IS3,T)$((IY411.val>2019) AND cs('v2g',IY411))
+$ifi %STEPCHARGSCHEME%==yes     - VEV_VV2G_PHEV(IY411,IR,IS3,T)$((IY411.val>2019) AND cs('v2g',IY411))
+
+$label EV2_END

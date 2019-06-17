@@ -24,6 +24,7 @@ $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_e
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_eqndecdef.inc";
 
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_eqndecdef.inc";
-$ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_eqndecdef.inc";
+$ifi not %EV2%==YES $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_eqndecdef.inc";
+$ifi %EV2%==YES  $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_eqndecdef_gus.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_eqndecdef.inc";
 $label endoffile
