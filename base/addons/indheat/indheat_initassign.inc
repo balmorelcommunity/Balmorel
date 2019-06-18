@@ -26,14 +26,18 @@ INDHEAT_IAGKNY(Y,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP)$(INDHEAT_GINGROUP(INDHEAT_G
 
 INDHEAT_IAGK_HASORPOT(Y,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP)$INDHEAT_IAGKNY(Y,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP) = YES;
 
+Parameter TestOutput;
+Parameter TestYear;
 ***This loop makes sure that if you invest in a technology in the year Y, you can use it until it is decommissioned, even if you do not allow for investments on this technology in the future
 LOOP(Y$(ORD(Y) NE CARD(Y)),
                    LOOP(INDHEAT_IA,
                          LOOP(INDHEAT_GROUP,
                                LOOP(INDHEAT_G$(INDHEAT_IAGKNY(Y,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP) AND INDHEAT_GINGROUP(INDHEAT_G,INDHEAT_GROUP)),
                                         LOOP(IYALIAS2$((ORD(IYALIAS2) GT ORD(Y)) AND ((YVALUE(Y)+INDHEAT_GDATA(INDHEAT_G,'GDLIFETIME')) GT (YVALUE(IYALIAS2)))),
-                                                                    INDHEAT_IAGK_HASORPOT(Y++1,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP)= INDHEAT_IAGK_HASORPOT(Y++1,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP)+INDHEAT_IAGKNY(Y,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP);
-                                        );
+                                                                 TestOutput = (YVALUE(Y)+INDHEAT_GDATA(INDHEAT_G,'GDLIFETIME'));
+                                                                 TestYear = YVALUE(IYALIAS2);
+                                                                 INDHEAT_IAGK_HASORPOT(Y++1,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP)= INDHEAT_IAGK_HASORPOT(Y++1,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP)+INDHEAT_IAGKNY(Y,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP);
+                                         );
                                );
                          );
                     );

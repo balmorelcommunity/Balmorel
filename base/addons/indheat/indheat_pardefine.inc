@@ -1,11 +1,16 @@
-PARAMETER INDHEAT_DH_VAR_T(INDHEAT_AAA,SSS,TTT) 'Variation in individual heat demand' %semislash%
+PARAMETER INDHEAT_DH_VAR_T(INDHEAT_AAA,INDHEAT_DHUSER,SSS,TTT) 'Variation in individual heat demand' %semislash%
 $if     EXIST '../data/INDHEAT_DH_VAR_T.inc' $INCLUDE         '../data/INDHEAT_DH_VAR_T.inc';
 $if not EXIST '../data/INDHEAT_DH_VAR_T.inc' $INCLUDE '../../base/data/INDHEAT_DH_VAR_T.inc';
 %semislash%
 
-PARAMETER INDHEAT_DH(YYY,INDHEAT_AAA) 'BRUTTO nominal annual individual heat consumption' %semislash%
+PARAMETER INDHEAT_DH(YYY,INDHEAT_AAA,INDHEAT_DHUSER) 'BRUTTO nominal annual individual heat consumption' %semislash%
 $if     EXIST '../data/INDHEAT_DH.inc' $INCLUDE         '../data/INDHEAT_DH.inc';
 $if not EXIST '../data/INDHEAT_DH.inc' $INCLUDE '../../base/data/INDHEAT_DH.inc';
+%semislash%
+
+PARAMETER INDHEAT_GINSTALL(YYY,INDHEAT_AAA,INDHEAT_GGG,INDHEAT_GROUP) 'Initial installed capacities percentage' %semislash%
+$if     EXIST '../data/INDHEAT_GINSTALL.inc' $INCLUDE         '../data/INDHEAT_GINSTALL.inc';
+$if not EXIST '../data/INDHEAT_GINSTALL.inc' $INCLUDE '../../base/data/INDHEAT_GINSTALL.inc';
 %semislash%
 
 PARAMETER INDHEAT_GKFX(YYY,INDHEAT_AAA,INDHEAT_GGG,INDHEAT_GROUP) 'Installed capacities' %semislash%
@@ -46,4 +51,9 @@ $if not EXIST '../data/INDHEAT_SOLH_VAR_T.inc' $INCLUDE '../../base/data/INDHEAT
 PARAMETER INDHEAT_SOLHFLH(INDHEAT_AAA) 'Solar heating FLH' %semislash%
 $if     EXIST '../data/INDHEAT_SOLHFLH.inc' $INCLUDE         '../data/INDHEAT_SOLHFLH.inc';
 $if not EXIST '../data/INDHEAT_SOLHFLH.inc' $INCLUDE '../../base/data/INDHEAT_SOLHFLH.inc';
+%semislash%
+
+PARAMETER INDHEAT_CARDGROUP(INDHEAT_GROUP) 'Cardinality of groups of technologies' %semislash%
+$if     EXIST '../data/INDHEAT_CARDGROUP.inc' $INCLUDE         '../data/INDHEAT_CARDGROUP.inc';
+$if not EXIST '../data/INDHEAT_CARDGROUP.inc' $INCLUDE '../../base/data/INDHEAT_CARDGROUP.inc';
 %semislash%

@@ -17,9 +17,21 @@ $if not EXIST '../data/INDHEAT_GGG.inc' $INCLUDE '../../base/data/INDHEAT_GGG.in
 %semislash%
 
 SET
+INDHEAT_DHUSER 'Individual heating user groups' %semislash%
+$if     EXIST '../data/INDHEAT_DHUSER.inc' $INCLUDE         '../data/INDHEAT_DHUSER.inc';
+$if not EXIST '../data/INDHEAT_DHUSER.inc' $INCLUDE '../../base/data/INDHEAT_DHUSER.inc';
+%semislash%
+
+SET
 INDHEAT_G(INDHEAT_GGG) 'Individual heating technologies in simulation' %semislash%
 $if     EXIST '../data/INDHEAT_G.inc' $INCLUDE         '../data/INDHEAT_G.inc';
 $if not EXIST '../data/INDHEAT_G.inc' $INCLUDE '../../base/data/INDHEAT_G.inc';
+%semislash%
+
+SET
+INDHEAT_GTODHUSER(INDHEAT_G,INDHEAT_DHUSER) 'Individual heating technologies combined with user group'%semislash%
+$if     EXIST '../data/INDHEAT_GTODHUSER.inc' $INCLUDE         '../data/INDHEAT_GTODHUSER.inc';
+$if not EXIST '../data/INDHEAT_GTODHUSER.inc' $INCLUDE '../../base/data/INDHEAT_GTODHUSER.inc';
 %semislash%
 
 SET
@@ -30,10 +42,20 @@ $if not EXIST '../data/INDHEAT_GINGROUP.inc' $INCLUDE '../../base/data/INDHEAT_G
 
 ALIAS(INDHEAT_GROUP, INDHEAT_GROUPFROM);
 ALIAS(INDHEAT_GROUP, INDHEAT_GROUPTO);
+ALIAS(INDHEAT_GGG,INDHEAT_IGGGALIAS);
 ALIAS(INDHEAT_G,INDHEAT_GALIAS);
+ALIAS(INDHEAT_G,INDHEAT_GALIAS2);
 
 SET
 INDHEAT_GMOVE(INDHEAT_GGG,INDHEAT_GROUPFROM,INDHEAT_GROUPTO) 'Technologies that can be moved from group GROUPFROM to GROUPTO' %semislash%
 $if     EXIST '../data/INDHEAT_GMOVE.inc' $INCLUDE         '../data/INDHEAT_GMOVE.inc';
 $if not EXIST '../data/INDHEAT_GMOVE.inc' $INCLUDE '../../base/data/INDHEAT_GMOVE.inc';
 %semislash%
+
+$ifi not %COMBTECH%==yes $goto endcombtech
+SET
+INDHEAT_GGCOMB(INDHEAT_GGG,INDHEAT_IGGGALIAS) 'Combination technologies' %semislash%
+$if     EXIST '../data/INDHEAT_GGCOMB.inc' $INCLUDE         '../data/INDHEAT_GGCOMB.inc';
+$if not EXIST '../data/INDHEAT_GGCOMB.inc' $INCLUDE '../../base/data/INDHEAT_GGCOMB.inc';
+%semislash%
+$label endcombtech
