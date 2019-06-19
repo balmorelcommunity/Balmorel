@@ -13,9 +13,9 @@ TAX_F_HEAT(YYY,CCC,GGG)$(YYY.val > 2020) = 0;
 
 
 * Taxes on end-consumption:
-*TAX_DE(CCC,'PII')       = 0;
+$ifi %SCENARIO34_ALT%==YES TAX_DE(CCC,'PII')       = 0;
 *TAX_DH(CCC,DHUSER)       = 0;                        !! TAX_DH not in use
-TAX_DE(CCC,DEUSER)       = 0;
+$ifi not %SCENARIO34_ALT%==YES TAX_DE(CCC,DEUSER)  = 0;
 
 
 ** loading the file for scenario 3
@@ -33,8 +33,8 @@ TAX_DE(CCC,DEUSER)       = 0;
 IGR_PRICE_TECH(Y,IR,GRDATASET)$(Y.val > 2020) =0;
 
 * for power intensive industry
-*IGR_PRICE_DEUSER(Y,IR,'PII',GRDATASET)$(Y.val > 2020) = 0;
-IGR_PRICE_DEUSER(Y,IR,DEUSER,GRDATASET)$(Y.val > 2020) = 0;
+$ifi %SCENARIO34_ALT%==YES IGR_PRICE_DEUSER(Y,IR,'PII',GRDATASET)$(Y.val > 2020) = 0;
+$ifi not %SCENARIO34_ALT%==YES IGR_PRICE_DEUSER(Y,IR,DEUSER,GRDATASET)$(Y.val > 2020) = 0;
 
 
 ** 2.2 Congestion pricing
