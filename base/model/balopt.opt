@@ -86,16 +86,19 @@ $SETGLOBAL SCENARIO1
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 2 in Flex4Res
-$SETGLOBAL SCENARIO2  YES
+$SETGLOBAL SCENARIO2
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
-$SETGLOBAL SCENARIO3
+$SETGLOBAL SCENARIO3 YES  
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
 $SETGLOBAL SCENARIO4
 *!option yes
+
+* This option alters scenario 3 and 4 so that the tax and tariff change does not apply to residential and service sector
+$SETGLOBAL SCENARIO34_ALT    yes
 
 * Strategy to limit long term heat storage: limit with higher price assumption or limit capacity potential
 $SETGLOBAL HEATSTORE_LIM_PRICE      yes
