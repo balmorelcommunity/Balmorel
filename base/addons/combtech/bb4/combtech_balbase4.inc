@@ -1,4 +1,4 @@
-* Equations for addon combtech used in Balbase3 model definition
+* Equations for addon combtech used in Balbase4 model definition
 
 QCOMBFUP
 
@@ -24,3 +24,4 @@ QHCOMBGSHAREK1
 QHCOMBGSHAREK12
 QCOMBFSHAREK1
 QCOMBFSHAREK12
+QGKE_UP_ADD
