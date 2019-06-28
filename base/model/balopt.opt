@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug
+$setglobal vqdebug yes
 *!option yes
 
 
@@ -187,6 +187,13 @@ $setglobal timeseries_scaling  usedtimesteps_timseries_scaling
 *-------------------------------------------------
 
 *-------------------------------------------------
+*---- IGKRATE data ------
+$setglobal IGKRATE_STOCHASTIC yes
+*!option IGKRATE_STOCHASTIC   !Text  "If activated, IGKRATE will take the values in file IGKRATE.gdx, else it will be built based on GKRATE"
+*---- end: IGKRATE calculation ------
+*-------------------------------------------------
+
+*-------------------------------------------------
 *---- Heat storage loading restrictions ------
 *overall control variable heatsto_loading_rest must be 'yes' if any of the other heat storage loading restriction controls are:
 
@@ -226,7 +233,7 @@ $Setglobal HYDROGEN
 $Setglobal STEPWISEPRICE   yes
 
 * Set a common maximum for fuels.
-$Setglobal LIMITSFORFUELS  
+$Setglobal LIMITSFORFUELS
 *!option yes
 
 * Allow demand elasticity
