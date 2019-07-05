@@ -26,7 +26,7 @@ LOOP (UC_TECH_TYPE,
 
 
 $ifi not %MINSTARTUPTIME%==yes $goto MINSTARTUPTIME_END
-SET IGUCUT(GGG,SSS,TTT,SSS,TTT) "Internal set to assign for each GGG, SSS(first) and TTT(first), the timesteps in SSS(second) and TTT(second) linked to the minimum start up time" ;
+SET IGUCUT(GGG,SSS,TTT,SSS,TTT) "Internal set to assign for each GGG, SSS(first) and TTT(first), the timesteps in SSS(second) and TTT(second) linked to the minimum on time" ;
 
 *IGUCUT CALCULATION
 LOOP(SREV(ISALIAS2,ISALIAS3),
@@ -52,7 +52,7 @@ $label  MINSTARTUPTIME_END
 
 $ifi not %MINSHUTDOWNTIME%==yes $goto MINSHUTDOWNTIME_END
 
-SET IGUCDT(GGG,SSS,TTT,SSS,TTT) "Internal set to assign for each GGG, SSS(first) and TTT(first), the timesteps in SSS(second) and TTT(second) linked to the minimum start up time" ;                                                                                                                                      ;
+SET IGUCDT(GGG,SSS,TTT,SSS,TTT) "Internal set to assign for each GGG, SSS(first) and TTT(first), the timesteps in SSS(second) and TTT(second) linked to the minimum off time" ;                                                                                                                                      ;
 
 *IGUCDT CALCULATION
 LOOP(SREV(ISALIAS2,ISALIAS3),

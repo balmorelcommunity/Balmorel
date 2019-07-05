@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug yes
+$setglobal vqdebug 
 *!option yes
 
 
@@ -188,7 +188,7 @@ $setglobal timeseries_scaling  usedtimesteps_timseries_scaling
 
 *-------------------------------------------------
 *---- IGKRATE data ------
-$setglobal IGKRATE_STOCHASTIC yes
+$setglobal IGKRATE_STOCHASTIC
 *!option IGKRATE_STOCHASTIC   !Text  "If activated, IGKRATE will take the values in file IGKRATE.gdx, else it will be built based on GKRATE"
 *---- end: IGKRATE calculation ------
 *-------------------------------------------------
@@ -373,10 +373,10 @@ $setglobal UnitComm YES
 $setglobal MINFUELCONS YES
 *!option yes
 * Adds respecting minimum off time of the capacities:
-$setglobal MINSTARTUPTIME
+$setglobal MINSTARTUPTIME  yes
 *!option yes
 * Adds respecting minimum on time of the capacities:
-$setglobal MINSHUTDOWNTIME
+$setglobal MINSHUTDOWNTIME  yes
 *!option yes
 * Adds ramping technical limitations and stepwise costs to the Power plants when-on:
 $setglobal STEPWISE_RAMPING_UC  ramp_const
@@ -479,7 +479,7 @@ $Setglobal import_results
 
 * ------------------HYDRO---------------------------------
 * For this model run it is possible to use values found from previuos solutions to specify use of hydro power
-$setglobal HYRSBB123 contprice
+$setglobal HYRSBB123 none
 *!option quant         !Text "Use seasonal quantities of hydro generation (from HYRSG.gdx??) in this run ('primal decomposition')(not implemented in BB4)"
 *!option price         !Text "Use seasonal prices for hydro generation (from WATERVAL.gdx) in this run ('dual decomposition') (not implemented in BB4)"
 *!option quantprice    !Text "Use seasonal quantities and prices for hydro generation (from HYRSG.gdx?? and WATERVAL.gdx) in in this run (not implemented in BB4)"
@@ -492,13 +492,13 @@ $setglobal HYRSBB123 contprice
 
 *--------------------INTERSEASONAL STORAGE-----------------------------------------------------------
 *Import electricity storage data from previous runs
-$Setglobal ADDELECSTORCONT contprice
+$Setglobal ADDELECSTORCONT none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
 *!option contprice     !Text (STILL TESTING)"Import electricity storage contents at beginning of time segment (GVESTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with GVESTOVOLTSVAL.gdx from previous runs "
 *!option none          !Text "Do not not use this addon"
 
 *Import heat storage data from previous runs
-$Setglobal ADDHEATSTORCONT  contprice
+$Setglobal ADDHEATSTORCONT  none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
 *!option contprice     !Text (STILL TESTING)"Import Heat storage contents at beginning of time segment (GVHSTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with GVHSTOVOLTSVAL.gdx from previous runs"
 *!option none          !Text "Do not not use this addon"
@@ -513,7 +513,7 @@ $setglobal ADDTECHDEV   yes
 *!option yes
 
 *Add expensive to operate backup power and heat generation technology. It often occurs that the investment optimization underestimates the need for power.
-$setglobal ADDBACKUPGEN   yes
+$setglobal ADDBACKUPGEN
 *!option yes
 
 *Import transmission development from previous runs
