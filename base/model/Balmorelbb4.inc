@@ -332,6 +332,7 @@ $offtext
 
 PARAMETER ANNUITYCG(CCC,GGG)           "Transforms investment in technologies into annual payment (fraction)";
 PARAMETER ANNUITYCX(CCC)               "Transforms investment in transmission lines into annual payment (fraction)";
+
 SCALAR    LIFETIME_X                   "Lifetime of transmission lines (years)";
 SCALAR    DISCOUNTRATE                 "Discount rate (applied to all terms in the objective function) (fraction)";
 PARAMETER GINVCOST(AAA,GGG)            "Investment cost for new technology (overwriting default value GDATA(G,'GDINVCOST0') if non-zero or EPS in data file) (MMoney/MW)";
