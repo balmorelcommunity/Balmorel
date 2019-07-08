@@ -5,6 +5,18 @@ $if not EXIST '../data/INDHEAT_GROUP.inc' $INCLUDE '../../base/data/INDHEAT_GROU
 %semislash%
 
 SET
+INDHEAT_SUMGROUP 'Summed group of technologies' %semislash%
+$if     EXIST '../data/INDHEAT_SUMGROUP.inc' $INCLUDE         '../data/INDHEAT_SUMGROUP.inc';
+$if not EXIST '../data/INDHEAT_SUMGROUP.inc' $INCLUDE '../../base/data/INDHEAT_SUMGROUP.inc';
+%semislash%
+
+SET
+INDHEAT_RELGROUP(INDHEAT_SUMGROUP,INDHEAT_GROUP) 'Relation of summed groups and groups' %semislash%
+$if     EXIST '../data/INDHEAT_RELGROUP.inc' $INCLUDE         '../data/INDHEAT_RELGROUP.inc';
+$if not EXIST '../data/INDHEAT_RELGROUP.inc' $INCLUDE '../../base/data/INDHEAT_RELGROUP.inc';
+%semislash%
+
+SET
 INDHEAT_AAA(AAA) 'Areas with individual heating' %semislash%
 $if     EXIST '../data/INDHEAT_AAA.inc' $INCLUDE         '../data/INDHEAT_AAA.inc';
 $if not EXIST '../data/INDHEAT_AAA.inc' $INCLUDE '../../base/data/INDHEAT_AAA.inc';

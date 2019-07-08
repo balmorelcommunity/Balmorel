@@ -38,6 +38,11 @@ $if     EXIST '../data/INDHEAT_MINPERCENT.inc' $INCLUDE         '../data/INDHEAT
 $if not EXIST '../data/INDHEAT_MINPERCENT.inc' $INCLUDE '../../base/data/INDHEAT_MINPERCENT.inc';
 %semislash%
 
+PARAMETER INDHEAT_MINPERCENTREL(YYY,INDHEAT_AAA,INDHEAT_SUMGROUP) 'Minimum percentage assumed to be fixed to a specific summed group' %semislash%
+$if     EXIST '../data/INDHEAT_MINPERCENTREL.inc' $INCLUDE         '../data/INDHEAT_MINPERCENTREL.inc';
+$if not EXIST '../data/INDHEAT_MINPERCENTREL.inc' $INCLUDE '../../base/data/INDHEAT_MINPERCENTREL.inc';
+%semislash%
+
 PARAMETER INDHEAT_COP(INDHEAT_AAA,INDHEAT_GGG,SSS,TTT)  'COP of heat pump technologies' %semislash%
 $if     EXIST '../data/INDHEAT_COP.inc' $INCLUDE         '../data/INDHEAT_COP.inc';
 $if not EXIST '../data/INDHEAT_COP.inc' $INCLUDE '../../base/data/INDHEAT_COP.inc';
