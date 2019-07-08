@@ -1,10 +1,10 @@
 * Tax(+)/subsidy(-) on fuel use for electricity generation
     + SUM((C,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(ICA(C,IA) AND IGE(G) AND TAX_F_EL(Y,C,G)),
-         IHOURSINST(IS3,T) * TAX_F_EL(Y,C,G)  * VGE_T(Y,IA,G,IS3,T)/ (GDATA(G,'GDFE') * GEFFRATE(IA,G))))
+         IHOURSINST(IS3,T) * TAX_F_EL(Y,C,G)  * VGE_T(Y,IA,G,IS3,T)/ (GDATA(G,'GDFE') * (1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G)))))
 
 * Tax(+)/subsidy(-) on fuel use for heat generation
     + SUM((C,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(ICA(C,IA) AND IGH(G) AND TAX_F_HEAT(Y,C,G)),
-         IHOURSINST(IS3,T) * TAX_F_HEAT(Y,C,G) * GDATA(G,'GDCV') * VGH_T(Y,IA,G,IS3,T)/ (GDATA(G,'GDFE') * GEFFRATE(IA,G))))
+         IHOURSINST(IS3,T) * TAX_F_HEAT(Y,C,G) * GDATA(G,'GDCV') * VGH_T(Y,IA,G,IS3,T)/ (GDATA(G,'GDFE') * (1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G)))))
 
 * Tax(+)/subsidy(-) on fuel use
     + SUM((C,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(ICA(C,IA) AND TAX_F(Y,C,G)),

@@ -15,6 +15,9 @@ $ifi %equation%==qhstovolts       - VQHSTOVOLTS(IY411,IA,S,T,'IPLUS') + VQHSTOVO
 $ifi %equation%==qkefuelc         + VQKFUEL(IY411,C,FFF)
 $ifi %equation%==qkefuelr         + VQKFUEL(IY411,IR,FFF)
 $ifi %equation%==qkefuela         + VQKFUEL(IY411,IA,FFF)
+$ifi %equation%==qgeqcf           + VQGEQF(IY411,C,FFF,'IPLUS') -  VQGEQF(IY411,C,FFF,'IMINUS')
+$ifi %equation%==qgeqrf           + VQGEQF(IY411,IR,FFF,'IPLUS') - VQGEQF(IY411,IR,FFF,'IMINUS')
+$ifi %equation%==qgeqaf           + VQGEQF(IY411,IA,FFF,'IPLUS') - VQGEQF(IY411,IA,FFF,'IMINUS')
 $ifi %equation%==qktechgroupc     + VQKTECHGROUP(IY411,C,TECH_GROUP)
 $ifi %equation%==qktechgroupr     + VQKTECHGROUP(IY411,IR,TECH_GROUP)
 $ifi %equation%==qktechgroupa     + VQKTECHGROUP(IY411,IA,TECH_GROUP)
@@ -66,6 +69,10 @@ $ifi %BB2%==yes    +SUM((IA,IS3)$SUM(IGHYRS,IAGKFX(IA,IGHYRS)),(VQHYRSMINMAXVOL(
      +SUM((IR,FFF)$FKPOT(IR,FFF), VQKFUEL(Y,IR,FFF))
      +SUM((IA,FFF)$FKPOT(IA,FFF), VQKFUEL(Y,IA,FFF))
 
+     +SUM((C,FFF)$IGEQF(Y,C,FFF),   VQGEQF(Y,C,FFF,"IPLUS") + VQGEQF(Y,C,FFF,"IMINUS"))
+     +SUM((IR,FFF)$IGEQF(Y,IR,FFF), VQGEQF(Y,IR,FFF,"IPLUS") + VQGEQF(Y,IR,FFF,"IMINUS"))
+     +SUM((IA,FFF)$IGEQF(Y,IA,FFF), VQGEQF(Y,IA,FFF,"IPLUS") + VQGEQF(Y,IA,FFF,"IMINUS"))
+ 
      +SUM((C,TECH_GROUP)$TECHGROUPKPOT(C,TECH_GROUP),   VQKTECHGROUP(Y,C,TECH_GROUP))
      +SUM((IR,TECH_GROUP)$TECHGROUPKPOT(IR,TECH_GROUP), VQKTECHGROUP(Y,IR,TECH_GROUP))
      +SUM((IA,TECH_GROUP)$TECHGROUPKPOT(IA,TECH_GROUP), VQKTECHGROUP(Y,IA,TECH_GROUP))
