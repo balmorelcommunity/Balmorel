@@ -15,7 +15,7 @@ $if     EXIST '../data/UC_FUELS_VALUE.inc' $INCLUDE         '../data/UC_FUELS_VA
 $if not EXIST '../data/UC_FUELS_VALUE.inc' $INCLUDE '../../base/data/UC_FUELS_VALUE.inc';
 %semislash%;
 
-$ifi not %STEPWISERAMPING%==yes $goto STEPWISERAMPING_END
+$ifi not %STEPWISE_RAMPING_UC%==ramp_const_cost $goto STEPWISERAMPING_END
 
 PARAMETER RAMPING_COSTS_UP(UC_TECH_TYPE,UC_TECH_GROUP,UC_FUELS,RAMPING_RATE) 'Ramping up costs for each technology group, tech gype, fuel and ramping rate (Money/MWh)'   %semislash%
 $if     EXIST '../data/RAMPING_COSTS_UP.inc' $INCLUDE         '../data/RAMPING_COSTS_UP.inc';

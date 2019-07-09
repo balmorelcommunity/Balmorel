@@ -1,0 +1,30 @@
+DECOMMISSIONING ADD-ON --------------- Juan Gea Bermudez 2019
+
+Several possibilities are allowed for decommissioning or exogenous and/or endogenous capacities. 
+The add-on differenciates between endogenous and exogenous capacities. Different options can be used for each of them:
+
+
+*--------ENDOGENOUS CAPACITIES DECOMISSIONING------------
+If no option is activated, endogenous capacities will not be decommissioned:
+1. LIFETIME_DECOM_ENDO_G: Endogenous capacities will maximum stay in the system as much as their lifetimes. It can be combined with the other options.  
+2. ECONOMIC_DECOM_ENDO_G: Endogenous capacities can be decommissioned based on their profitability. It can be combined with the other options. 
+3. REVERT_DECOM_ENDO_G: Endogenous decommissioned endogenous capacities can be brought back to the energy system. If activated, it must be combined with any of the other decommissioning options of endogenous capacity.    
+
+
+*--------EXOGENOUS CAPACITIES DECOMISSIONING------------
+If either NO_DECOM_EXO_G, or LIFETIME_DECOM_EXO_G, or ECONOMIC_DECOM_EXO_Gor is activated, then the parameter GKFX will be recalculated:
+1. NO_DECOM_EXO_G: No decommissioning of exogenous capacities will take place at all. GKFX capacities development will be recalculated so capacities only increase in the system. It can't be combined with the others.
+2. LIFETIME_DECOM_EXO_G: Exogenous capacities will maximum stay in the system as much as their lifetimes (or as much as political decissions suggest it, for instance), which should be represented in the yearly development of capacities of the input parameter GKFX. It can be combined with the other options. 
+3. ECONOMIC_DECOM_EXO_G: Exogenous capacities can be decommissioned based on their profitability. It can be combined with the other options.  
+4. REVERT_DECOM_EXO_G: Endogenous decommissioned exogenous capacities can be brought back to the energy system. If activated, it must be combined with any of the other decommissioning options of exogenous capacity that allow for decommissioning.        
+
+When the recalculation of GKFX makes sure that capacities only increse in the system. This is done to calculate the decommissioning potentials for each year. For example, have a look at the following table:
+                      2015              2016              2017             2018               2019                2020
+Original GKFX         100               100               50                25                 75                  75
+Modified GKFX         100               100               100               100               150                  150
+Now it is known that in 2017 50 MW  and in 2018 25 MW were supposed to be decommissioned (based on exogenous decommissioning assumptions that can be either lifetime or whatever). This information is then used in the add-on to "force" decommissioning, in case decommissioning is activated.
+
+Two parameters are defined related to the decommissioning of exogenous capacities:
+GDECOMEXOSTART = Year from which endogenous decisions in decommissioning of exogenous generation capacities are allowed. This means that no endogenous decommissioning will take place before this year.
+GDECOMEXOPOTSTART =Starting year to calculate the yearly decommissioning capacity potential, i.e. exogenous decommissioning occuring before this year will not be considered. This is meant to be used in case the base year of data is different to the first year used in the simulations.
+
