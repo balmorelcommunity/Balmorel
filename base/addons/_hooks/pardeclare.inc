@@ -25,5 +25,6 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_pardeclare.inc";
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_pardeclare.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardeclare.inc";
+$ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_pardeclare.inc";
 
 $label endoffile

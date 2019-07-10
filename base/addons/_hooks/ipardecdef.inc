@@ -17,6 +17,7 @@ $ifi %TAXES%==yes  $include   "../../base/addons/taxes/tax_ipardecdef.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_ipardecdef.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_ipardecdef.inc";
 $ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_ipardecdef.inc";
+$ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_ipardecdef.inc";
 
 $label endoffile
 

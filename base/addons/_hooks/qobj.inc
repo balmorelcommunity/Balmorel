@@ -14,7 +14,7 @@ $ifi not %BB4%==yes $goto endoffile
 $label  beginbb4
 
 $ifi not %bb4%==yes $goto endoffile
-$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_qobj.inc";    
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_qobj.inc";
 
 $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_qobj.inc";
 $ifi %UnitComm%==yes   $include   "../../base/addons/unitcommitment/bb4/uc_qobj.inc";
@@ -28,6 +28,7 @@ $ifi %TAXES%==yes  $include   "../../base/addons/taxes/tax_qobj.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_qobj.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_qobj.inc";
 $ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_qobj.inc";
+$ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_qobj.inc";
 
 
 $ifi %vqdebug%==yes   $setglobal equation qobj

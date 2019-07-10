@@ -11,5 +11,6 @@ $label  beginbb4
 
 
 $ifi %COMBTECH%==yes $include "../../base/addons/combtech/bb4/combtech_error2.inc"
+$ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_error2.inc";
 
 $label endoffile

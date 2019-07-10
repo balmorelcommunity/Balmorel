@@ -28,4 +28,5 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_eqndecdef.inc";
 
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_eqndecdef.inc";
+$ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_eqndecdef.inc";
 $label endoffile
