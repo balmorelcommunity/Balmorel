@@ -307,7 +307,7 @@ SCALAR XHINVESTSTART 'Year from which endogenous decisions in heat transmission 
 XHINVESTSTART= 2025;
 
 * Permit temperature lift from heat pumps to move energy from low temperature areas to high temperature ones (NOT WORKING, TO BE CHECKED).
-$setglobal HeatTempLift
+$setglobal HeatTempLift yes
 *!option yes
 *-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
 
