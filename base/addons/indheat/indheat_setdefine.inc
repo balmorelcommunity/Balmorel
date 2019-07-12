@@ -16,11 +16,21 @@ $if     EXIST '../data/INDHEAT_RELGROUP.inc' $INCLUDE         '../data/INDHEAT_R
 $if not EXIST '../data/INDHEAT_RELGROUP.inc' $INCLUDE '../../base/data/INDHEAT_RELGROUP.inc';
 %semislash%
 
+$onmulti
+$if     EXIST '../data/INDHEAT_CCCRRRAAA.inc' $INCLUDE         '../data/INDHEAT_CCCRRRAAA.inc';
+$if not EXIST '../data/INDHEAT_CCCRRRAAA.inc' $INCLUDE '../../base/data/INDHEAT_CCCRRRAAA.inc';
+$offmulti
+
 SET
 INDHEAT_AAA(AAA) 'Areas with individual heating' %semislash%
 $if     EXIST '../data/INDHEAT_AAA.inc' $INCLUDE         '../data/INDHEAT_AAA.inc';
 $if not EXIST '../data/INDHEAT_AAA.inc' $INCLUDE '../../base/data/INDHEAT_AAA.inc';
 %semislash%
+
+$onmulti
+$if     EXIST '../data/INDHEAT_RRRAAA.inc' $INCLUDE         '../data/INDHEAT_RRRAAA.inc';
+$if not EXIST '../data/INDHEAT_RRRAAA.inc' $INCLUDE '../../base/data/INDHEAT_RRRAAA.inc';
+$offmulti
 
 SET
 INDHEAT_GGG 'Individual heating technologies' %semislash%
