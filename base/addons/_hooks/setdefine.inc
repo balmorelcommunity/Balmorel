@@ -23,11 +23,11 @@ $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_setdef
 
 $ifi %X3V%==yes  $include   "../../base/addons/x3v/bb4/x3v_setdefine.inc";
 
+$ifi %INDUSTRY%==yes      $include        "../../base/addons/industry/industry_setdefine.inc";
+
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_setdefine.inc";
 
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_setdefine.inc";
-
-$ifi %INDUSTRY%==yes      $include        "../../base/addons/industry/industry_setdefine.inc";
 
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_setdefine.inc";
 
