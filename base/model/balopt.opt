@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug 
+$setglobal vqdebug
 *!option yes
 
 
@@ -106,7 +106,7 @@ ROLLINGSEASONSNUMBER= 1;
 *---- Generation investments options----
 
 * Permit investments in generation and storage capacity:
-$setglobal TechInvest  yes
+$setglobal TechInvest   yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
