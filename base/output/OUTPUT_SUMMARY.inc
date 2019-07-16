@@ -54,7 +54,7 @@ PARAMETER EMI_YCRAG(Y,C,RRR,AAA,G,FFF,TECH_TYPE,UNITS) "Annual CO2 emissions(kto
 PARAMETER CURT_YCRAGFST(Y,C,RRR,AAA,G,FFF,SSS,TTT,COMMODITY,TECH_TYPE,UNITS) "Hourly energy curtailment per country, region, area, technology, fuel, hour and technology type (MWh)";
 PARAMETER CURT_YCRAGF(Y,C,RRR,AAA,G,FFF,COMMODITY,TECH_TYPE,UNITS) "Hourly energy curtailment per country, region, area, technology, fuel, hour and technology type (MWh)";
 PARAMETER EL_BALANCE_YCRST(Y,C,RRR,EL_BAL_TYPE,SSS,TTT,UNITS);
-PARAMETER H_BALANCE_YCRAST(Y,C,RRR,AAA,H_BAL_TYPE,SSS,TTT,UNITS)
+PARAMETER H_BALANCE_YCRAST(Y,C,RRR,AAA,H_BAL_TYPE,SSS,TTT,UNITS);
 
 *Addon output
 $ifi %HEATTRANS%==yes PARAMETER XH_CAP_YCA(Y,C,IAAAE,IAAAI,VARIABLE_CATEGORY,UNITS) "Heat Transmission capacity for each year, country, from area to area (GW)";
@@ -507,7 +507,7 @@ ECO_G_YCRAG(Y,C,IR,IA,G,FFF,TECH_TYPE,'COSTS','GENERATION_FIXED_COSTS','Mmoney')
          OMONEY/IOF1000*GOMFCOST(IA,G)*(
          GKFX(Y,IA,G)
          +VGKNACCUMNET.L(Y,IA,G)
-         -VDECOM_EXO_ACCUM.L(Y,IA,G)$IGDECOMEXOPOT(Y,IA,G)
+$ifi %DECOM%==yes         -VDECOM_EXO_ACCUM.L(Y,IA,G)$IGDECOMEXOPOT(Y,IA,G)
          )
 ;
 
