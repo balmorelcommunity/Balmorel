@@ -20,6 +20,33 @@
 $setglobal vqdebug
 *!option yes
 
+*===============================================================================
+*===============================================================================
+* FUTURE GAS PROJECT_SCENARIO AND TECHNOLOGY ALTERNATIVE SELECTION:
+*===============================================================================
+*===============================================================================
+
+$setglobal SCNAME _LS
+*!option _LS *Late Sprint
+*!option _M  *Marathon
+
+$setglobal TECHALT  _DEcentral_lo
+*!option _DEcentral_lo     *REdecentral alternative: Decrease investment costs for solar/wind technology by uncertainty ranges in technology catalogue of the costs
+*!option _DEcentral_up     *REdecentral alternative: Increase investment costs for solar/wind technology by uncertainty ranges in technology catalogue of the costs
+*!option _CEntral_lo       *REcentral alternative: Decrease investment costs for technologies that are installed in central areas by uncertainty ranges in technology catalogue of the costs
+*!option _CEntral_up       *REcentral alternative: Increase investment costs for technologies that are installed in central areas by uncertainty ranges in technology catalogue of the costs
+*!option _REgastech_lo     *REgastech alternative: Decrease investment costs for renewable gas technologies by uncertainty ranges in technology catalogue of the costs
+*!option _REgastech_up     *REgastech alternative: Increase investment costs for renewable gas technologies by uncertainty ranges in technology catalogue of the costs
+*!option _cheapHP_lo       *cheapHP alterantive: Decrease investment costs for heat pumps by uncertainty ranges in technology catalogue
+*!option _cheapHP_up       *cheapHP alterantive: Increase investment costs for heat pumps by uncertainty ranges in technology catalogue
+*!option _cheapStorage_lo  *cheapStorage alternative: Cheap storage for EL and HE: Reduce the storage investment cost by uncertainty ranges in technology catalogue for all EL and HEAT storages
+*!option _cheapStorage_up  *cheapStorage alternative: Cheap storage for EL and HE: Increase the storage investment cost by uncertainty ranges in technology catalogue for all EL and HEAT storages
+*!option _noBioImport      *noBioImport alternative: No import of biomasses
+*!option _1.5Degrees       *1.5Degrees alternative: New CO2 targets
+*!option _CO2 capture      *CO2 capture alternative: Technologies to capture CO2   from air and central sources gets cheap
+*!option _lessELtransm     *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 20/50/100 %
+*!option _strongDH         *strongDH alternative: No natural gas for heating
+*!option _noGrid           *noGrid alternative: No Gas infrastructure from 2030
 
 
 *===============================================================================

@@ -175,9 +175,14 @@ $ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
 *-------------------------------------------------------------------------------
 
 PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics" %semislash%
+PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics" %semislash%
+$if     EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE         '../data/GDATA%TECHALT%.inc';
+$if not EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../../base/data/GDATA.inc';
+
+$ontext
 $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
-
+$offtext
 
 *This could be placed more elegantly elsewhere
 *-------------------------------------------------------------------------------
@@ -684,19 +689,30 @@ $if not EXIST '../data/XMAXINV.inc' $INCLUDE '../../base/data/XMAXINV.inc';
 *-------------------------------------------------------------------------------
 
 PARAMETER FUELPRICE(YYY,AAA,FFF)                   "Fuel prices (Money/GJ)"   %semislash%
+$if     EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE         '../data/FUELPRICE%SCNAME%.inc';
+$if not EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
+%semislash%;
+
+$ontext
 $if     EXIST '../data/FUELPRICE.inc' $INCLUDE      '../data/FUELPRICE.inc';
 $if not EXIST '../data/FUELPRICE.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
 %semislash%;
-
+$offtext
 
 *-------------------------------------------------------------------------------
 *---- Emission policy data: ---------------------------------------------------
 *-------------------------------------------------------------------------------
 
 PARAMETER M_POL(YYY,MPOLSET,CCC)    "Emission policy data"   %semislash%
+$if     EXIST '../data/M_POL%SCNAME%.inc' $INCLUDE         '../data/M_POL%SCNAME%.inc';
+$if not EXIST '../data/M_POL%SCNAME%.inc' $INCLUDE '../../base/data/M_POL.inc';
+%semislash%;
+
+$ontext
 $if     EXIST '../data/M_POL.inc' $INCLUDE         '../data/M_POL.inc';
 $if not EXIST '../data/M_POL.inc' $INCLUDE '../../base/data/M_POL.inc';
 %semislash%;
+$offtext
 
 /*
 PARAMETER M_POLNA(YYY,MPOLSET)    "Emission policy data"   %semislash%
