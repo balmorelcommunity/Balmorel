@@ -55,5 +55,5 @@ VQKFUEL.M(Y,CCCRRRAAA,FFF)              = 0;
 * ------------------------------------------------------------------------------
 $label bb4end
 
-execute_unload "all_endofmodel.gdx";
+execute_unload "all_endofmodel%SCNAME%%TECHALT%.gdx";
 
