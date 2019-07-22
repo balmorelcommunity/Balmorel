@@ -1,4 +1,4 @@
-* Decommissioning introduced by Juan Gea Bermúdez 2018.
+* Decommissioning introduced by Juan Gea BermÃºdez 2018.
 
 *Fixing the decommissioning and accumulated  decommissioning from previous optimization for the next optimization (only the first year of IY411 is fixed)
 *(IMPORTANT!: The following code only works if the years are optimized consecutively. For example, this two-year mode optimization would not provide coherent results: [2020,2040] and [2030;2050]
@@ -12,4 +12,4 @@ $label  DECOMMISSIONING_ENDOGENOUS_GENERATION
 
 VDECOM_EXO.FX(IY411FIRST,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IGDECOMEXOPOT(Y,IA,G)))= VDECOM_EXO.L(IY411FIRST,IA,G);
 VDECOM_EXO_ACCUM.FX(IY411FIRST,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IGDECOMEXOPOT(Y,IA,G)))= VDECOM_EXO_ACCUM.L(IY411FIRST,IA,G);
-VDECOM_EXO_BACK.FX(IY411FIRST,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IGDECOMEXOPOT(Y,IA,G))) = VDECOM_EXO_BACK.L(IY411FIRST,IA,G);
+$ifi %REVERT_DECOM_EXO_G%==yes VDECOM_EXO_BACK.FX(IY411FIRST,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IGDECOMEXOPOT(Y,IA,G))) = VDECOM_EXO_BACK.L(IY411FIRST,IA,G);
