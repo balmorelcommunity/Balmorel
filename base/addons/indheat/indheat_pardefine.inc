@@ -19,8 +19,8 @@ $if not EXIST '../data/INDHEAT_GKFX.inc' $INCLUDE '../../base/data/INDHEAT_GKFX.
 %semislash%
 
 PARAMETER INDHEAT_GDATA(INDHEAT_GGG,GDATASET) 'Technology characteristics' %semislash%
-$if     EXIST '../data/INDHEAT_GDATA.inc' $INCLUDE         '../data/INDHEAT_GDATA.inc';
-$if not EXIST '../data/INDHEAT_GDATA.inc' $INCLUDE '../../base/data/INDHEAT_GDATA.inc';
+$if     EXIST '../data/INDHEAT_GDATA%TECHALT%.inc' $INCLUDE         '../data/INDHEAT_GDATA%TECHALT%.inc';
+$if not EXIST '../data/INDHEAT_GDATA%TECHALT%.inc' $INCLUDE '../../base/data/INDHEAT_GDATA.inc';
 %semislash%
 
 PARAMETER INDHEAT_ANNUITYCG(CCC,INDHEAT_GGG) 'Transforms investment to annual payment (fraction)' %semislash%
