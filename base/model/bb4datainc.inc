@@ -175,9 +175,9 @@ $ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
 *-------------------------------------------------------------------------------
 
 PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics" %semislash%
-PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics" %semislash%
-$if     EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE         '../data/GDATA%TECHALT%.inc';
-$if not EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../../base/data/GDATA.inc';
+$if     EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../data/GDATA%TECHALT%.inc';
+$if not EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../data/GDATA.inc';
+$if not EXIST '../data/GDATA.inc'          $INCLUDE '../../base/data/GDATA.inc';
 
 $ontext
 $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
@@ -689,8 +689,9 @@ $if not EXIST '../data/XMAXINV.inc' $INCLUDE '../../base/data/XMAXINV.inc';
 *-------------------------------------------------------------------------------
 
 PARAMETER FUELPRICE(YYY,AAA,FFF)                   "Fuel prices (Money/GJ)"   %semislash%
-$if     EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE         '../data/FUELPRICE%SCNAME%.inc';
-$if not EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
+$if     EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE '../data/FUELPRICE%SCNAME%.inc';
+$if not EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE '../data/FUELPRICE.inc';
+$if not EXIST '../data/FUELPRICE.inc'         $INCLUDE '../../base/data/FUELPRICE.inc';
 %semislash%;
 
 $ontext
