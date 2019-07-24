@@ -44,7 +44,9 @@ $setglobal TECHALT  _DEcentral_lo
 *!option _noBioImport      *noBioImport alternative: No import of biomasses
 *!option _1.5Degrees       *1.5Degrees alternative: New CO2 targets
 *!option _CO2 capture      *CO2 capture alternative: Technologies to capture CO2   from air and central sources gets cheap
-*!option _lessELtransm     *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 20/50/100 %
+*!option _lessELtransm_0.5 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 50 %
+*!option _lessELtransm_0.2 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 20 %
+*!option _lessELtransm_0.0 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 100 %
 *!option _strongDH         *strongDH alternative: No natural gas for heating
 *!option _noGrid           *noGrid alternative: No Gas infrastructure from 2030
 
