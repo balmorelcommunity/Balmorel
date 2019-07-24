@@ -1,4 +1,4 @@
-* Hans: søg "/*"
+* Hans: sÃ¸g "/*"
 
 * File bb4datainc.inc for including data for Balmorel, model BB4.
 
@@ -22,7 +22,7 @@
 %ONOFFDATALISTING%
 
 
-* TESTING: (indsætter datainc1 her, plus lidt kode) ----------------------------
+* TESTING: (indsÃ¦tter datainc1 her, plus lidt kode) ----------------------------
 * Geography
 
 SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)" %semislash%
@@ -502,8 +502,9 @@ $if not EXIST '../data/GMINF.inc' $INCLUDE '../../base/data/GMINF.inc';
 
 $ifi %GMAXF_DOL%==CCCRRRAAA_FFF      PARAMETER GMAXF(CCCRRRAAA,FFF)             'Maximum fuel use (GJ) per year' %semislash%
 $ifi %GMAXF_DOL%==YYY_CCCRRRAAA_FFF  PARAMETER GMAXF(YYY,CCCRRRAAA,FFF)         'Maximum fuel use (GJ) per year' %semislash%
-$if     EXIST '../data/GMAXF.inc' $INCLUDE      '../data/GMAXF.inc';
-$if not EXIST '../data/GMAXF.inc' $INCLUDE '../../base/data/GMAXF.inc';
+$if     EXIST '../data/GMAXF%TECHALT%.inc' $INCLUDE '../data/GMAXF%TECHALT%.inc';
+$if not EXIST '../data/GMAXF%TECHALT%.inc' $INCLUDE '../data/GMAXF.inc';
+$if not EXIST '../data/GMAXF.inc'          $INCLUDE '../../base/data/GMAXF.inc';
 %semislash%;
 
 $ifi %GEQF_DOL%==CCCRRRAAA_FFF       PARAMETER GEQF(CCCRRRAAA,FFF)              'Required fuel use (GJ) per year' %semislash%
@@ -674,8 +675,9 @@ $if not EXIST '../data/XLOSS.inc' $INCLUDE '../../base/data/XLOSS.inc';
 $ifi %XKRATE_DOL%==IRRRE_IRRRI          PARAMETER XKRATE(IRRRE,IRRRI)         "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS      PARAMETER XKRATE(IRRRE,IRRRI,SSS)     "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT  PARAMETER XKRATE(IRRRE,IRRRI,SSS,TTT) "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
-$if     EXIST '../data/XKRATE.inc' $INCLUDE         '../data/XKRATE.inc';
-$if not EXIST '../data/XKRATE.inc' $INCLUDE '../../base/data/XKRATE.inc';
+$if     EXIST '../data/XKRATE%TECHALT%.inc' $INCLUDE '../data/XKRATE%TECHALT%.inc';
+$if not EXIST '../data/XKRATE%TECHALT%.inc' $INCLUDE '../data/XKRATE.inc';
+$if not EXIST '../data/XKRATE.inc'          $INCLUDE '../../base/data/XKRATE.inc';
 %semislash%;
 
 PARAMETER XMAXINV(IRRRE,IRRRI)   "Max investment in transmission capacity between two regions for each simulated year (each 5th year)"  %semislash%
