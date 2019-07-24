@@ -3272,7 +3272,7 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/temp/*.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%.gdx"';
 
 $ifi %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/%CASEID%.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/%CASEID%%SCNAME%%TECHALT%.gdx"';
 $ifi %MERGECASE%==NONE
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.gdx"'
 
