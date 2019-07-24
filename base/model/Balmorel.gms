@@ -3264,23 +3264,22 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move diffile.gdx "%relpathoutput%%CA
 
 $label endofMSNToutput
 *--- Results collection for this case ------------------------------------------
+$ifi not %system.filesys%==UNIX $goto endofUNIXoutput
+*The following section until $label endofUNIXoutput is related to UNIX output only
+*Please use only forward slash / instead of backslash \ in this section until the label
 
-$ifi not %system.filesys%==MSNT $goto endofMSNToutput
-*The following section until $label endofMSNToutput is related to Windows output only
-*Please use only backslash \ instead of forward slash / in this section until the label
-
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "%relpathoutput%temp\*.gdx"';
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%%SCNAME%%TECHALT%.gdx"';
-
-$ifi %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "..\output\%CASEID%%SCNAME%%TECHALT%.gdx"';
-$ifi %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'move merged.gdx "%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.gdx"'
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/temp/*.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%.gdx"';
 
 $ifi %MERGECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access "%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/%CASEID%.gdx"';
 $ifi %MERGECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i "%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.gdx" -o "%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.db"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.gdx"'
+
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.gdx"';
+$ifi %MERGECASE%==NONE
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.gdx" -o ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.db"';
 
 
 *--- Results collection and comparison for differents cases --------------------
