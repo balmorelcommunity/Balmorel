@@ -705,8 +705,9 @@ $offtext
 *-------------------------------------------------------------------------------
 
 PARAMETER M_POL(YYY,MPOLSET,CCC)    "Emission policy data"   %semislash%
-$if     EXIST '../data/M_POL%SCNAME%.inc' $INCLUDE         '../data/M_POL%SCNAME%.inc';
-$if not EXIST '../data/M_POL%SCNAME%.inc' $INCLUDE '../../base/data/M_POL.inc';
+$if     EXIST '../data/M_POL%SCNAME%.inc' $INCLUDE '../data/M_POL%SCNAME%.inc';
+$if not EXIST '../data/M_POL%SCNAME%.inc' $INCLUDE '../data/M_POL.inc';
+$if not EXIST '../data/M_POL.inc';        $INCLUDE '../../base/data/M_POL.inc';
 %semislash%;
 
 $ontext
