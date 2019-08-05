@@ -7,4 +7,7 @@ $if not EXIST '../data/INDUSTRY_DH_VAR_T.inc' $INCLUDE '../../base/data/INDUSTRY
 
 $if     EXIST '../data/INDUSTRY_AGKN.inc' $INCLUDE         '../data/INDUSTRY_AGKN.inc';
 $if not EXIST '../data/INDUSTRY_AGKN.inc' $INCLUDE '../../base/data/INDUSTRY_AGKN.inc';
+
+$if     EXIST '../data/INDUSTRY_GKFX.inc' $INCLUDE         '../data/INDUSTRY_GKFX.inc';
+$if not EXIST '../data/INDUSTRY_GKFX.inc' $INCLUDE '../../base/data/INDUSTRY_GKFX.inc';
 $offmulti
