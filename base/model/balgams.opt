@@ -145,7 +145,7 @@ option RESLIM = 1209600
 * In the following a few option file possibilities are mentioned for use with Cplex,
 * their use assumes that appropriate files exist in the model folder.
 
-$Setglobal USEOPTIONFILE 6
+$Setglobal USEOPTIONFILE 1
 *!option 0   No option file is used. Note that not setting anything will generate an error.
 *!option 1   Use option file SolverName.opt.
 *!option 6   Predefined, don't change. Used with CPLEX it opens cplex.op6 and sets 'LPmethod 6' to run multiple methods in parallel.
