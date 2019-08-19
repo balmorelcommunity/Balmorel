@@ -3225,6 +3225,7 @@ $label ENDOFMODEL
 $include "../../base/addons/_hooks/endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
 
+$include "../../base/model/Open_MODEX_output.inc"
 
 *--- Results collection for this case ------------------------------------------
 
@@ -3304,7 +3305,6 @@ $label endofUNIXoutput
 *--- Main results calculation -----------------------------------------------
 $ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY.inc';
 *--- End of Main results calculation ---------------------------------------
-
 
 *----- End of file:------------------------------------------------------------
 $label endoffile

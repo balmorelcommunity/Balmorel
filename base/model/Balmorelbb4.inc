@@ -1697,9 +1697,9 @@ $include "../../base/addons/_hooks/qestovolt.inc"
 
 * "Inter-seasonal electricty storage dynamic equation (MWh)"
 QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
-    VESTOVOLTS(IY411,IA,IGESTOS,S,T)
+    VESTOVOLTS(IY411,IA,IGESTOS,S,T)*(1-GDATA(IGESTOS,'GDSTOLOSS'))
   + CHRONOHOUR(S,T)*
-  (VESTOLOADTS(IY411,IA,IGESTOS,S,T)
+  (VESTOLOADTS(IY411,IA,IGESTOS,S,T)*(1-GDATA(IGESTOS,'GDLOADLOSS'))
   - SUM(IAGK_HASORPOT(IY411,IA,IGESTOS), VGE_T(IY411,IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
   )
     =E=
@@ -2739,7 +2739,6 @@ $label  result_export
 
 *$ifi %X3V%==yes $INCLUDE "../../base/addons/x3v/bb4/x3vgdx.inc";
 *--- End: Results which can be transfered between simulations are placed here --
-
 
 DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile: <case>/logerror/logfile.out." ;
 *----- End of file:------------------------------------------------------------
