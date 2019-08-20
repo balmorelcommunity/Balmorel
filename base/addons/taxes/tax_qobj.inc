@@ -12,7 +12,7 @@
 
 * Tax(+)/subsidy(-) on heat generation
     + SUM((C,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(ICA(C,IA) AND TAX_G_HEAT(Y,C,G)),
-         IHOURSINST(IS3,T) * TAX_G_HEAT(Y,C,G)  * VGE_T(Y,IA,G,IS3,T)))
+         IHOURSINST(IS3,T) * TAX_G_HEAT(Y,C,G)  * VGH_T(Y,IA,G,IS3,T)))
 
 * Tax(+)/subsidy(-) on heat generation
     + SUM((C,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(ICA(C,IA) AND TAX_G_EL(Y,C,G)),

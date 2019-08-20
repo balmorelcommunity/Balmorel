@@ -30,7 +30,7 @@ $setglobal SCNAME _LS
 *!option _LS *Late Sprint
 *!option _M  *Marathon
 
-$setglobal TECHALT  
+$setglobal TECHALT
 *!option _DEcentral_lo     *REdecentral alternative: Decrease investment costs for solar/wind technology by uncertainty ranges in technology catalogue of the costs
 *!option _DEcentral_up     *REdecentral alternative: Increase investment costs for solar/wind technology by uncertainty ranges in technology catalogue of the costs
 *!option _CEntral_lo       *REcentral alternative: Decrease investment costs for technologies that are installed in central areas by uncertainty ranges in technology catalogue of the costs
@@ -268,6 +268,10 @@ $setglobal GRIDTARIFFS
 
 * Taxes addon
 $setglobal TAXES
+*!option yes
+
+* Subsidies addon
+$setglobal SUBSIDIES
 *!option yes
 
 *

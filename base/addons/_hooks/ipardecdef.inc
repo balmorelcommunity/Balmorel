@@ -14,6 +14,7 @@ $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/ste
 $ifi %X3V%==yes $include '../../base/addons/x3v/bb4/x3v_ipardecdef.inc';
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_ipardecdef.inc";
 $ifi %TAXES%==yes  $include   "../../base/addons/taxes/tax_ipardecdef.inc";
+$ifi %SUBSIDIES%==yes  $include   "../../base/addons/subsidies/subsidies_ipardecdef.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_ipardecdef.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_ipardecdef.inc";
 $ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_ipardecdef.inc";
