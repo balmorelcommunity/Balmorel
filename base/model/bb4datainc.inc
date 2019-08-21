@@ -147,6 +147,11 @@ $if     EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE      '../data/TECHGROUP_DE
 $if not EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE '../../base/data/TECHGROUP_DEUSER.inc';
 %semislash%;
 
+PARAMETER TECHGROUP_DHUSER(TECH_GROUP,DHUSER) "assignment of tech groups into user groups for heat"   %semislash%
+$if     EXIST '../data/TECHGROUP_DHUSER.inc' $INCLUDE      '../data/TECHGROUP_DHUSER.inc';
+$if not EXIST '../data/TECHGROUP_DHUSER.inc' $INCLUDE '../../base/data/TECHGROUP_DHUSER.inc';
+%semislash%;
+
 SET G(GGG)    "Generation technologies in the simulation"  %semislash%
 $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
 $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
