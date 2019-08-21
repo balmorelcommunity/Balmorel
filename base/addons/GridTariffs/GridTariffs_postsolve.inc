@@ -133,44 +133,46 @@ GR_GETOH_TCFX(Y,TECH_GROUP)   = SUM((IA,IGETOH)$(GDATA(IGETOH,'GDTECHGROUP') EQ 
 
 * Calculate the capacity usage for the demand charges
 GR_GETOH_CAP1(Y,MMM) = SMAX((S,T)$ISSSTTTMMM(S,T,MMM), GR_GETOH_VAR_T(Y,S,T));
-GR_GETOH_CAP2(Y,C,MMM) = SMAX((S,T)$ISSSTTTMMM(S,T,MMM), GR_GETOH_VAR_T(Y,S,T)$SUM(IR$CCCRRR(C,IR), IGR_TIME('GRDDCTOU',IR,S,T)));
-GR_GETOH_CAPY(Y,C) = SMAX((S,T),  GR_GETOH_VAR_T(Y,S,T)$SUM(IR$CCCRRR(C,IR), IGR_TIME('GRDDCY',IR,S,T)));
+GR_GETOH_CAP2(Y,IR,MMM) = SMAX((S,T)$ISSSTTTMMM(S,T,MMM), GR_GETOH_VAR_T(Y,S,T)$IGR_TIME('GRDDCTOU',IR,S,T));
+GR_GETOH_CAPY(Y,IR) = SMAX((S,T),  GR_GETOH_VAR_T(Y,S,T)$IGR_TIME('GRDDCY',IR,S,T));
+
+
 
 
 * Calculate total grid tariffs payed per country given the aggregated load profile for P2H.
-GR_GETOH_TOTAL(Y,C) =
+GR_GETOH_TOTAL(Y,IR) =
 
 $ifi %BB4%==yes   IOF1_ *  (
 
-                 + IOF1000 * SMAX(IR$CCCRRR(C,IR),  IGR_PRICE_TECH(Y,IR,'GRDSUBS')  * GR_GETOH_FX(Y)    )                                                         !! Fixed charge / subscribed charge
+                 + IOF1000 * IGR_PRICE_TECH(Y,IR,'GRDSUBS')  * GR_GETOH_FX(Y)                                                            !! Fixed charge / subscribed charge
 
-                 + SMAX(IR$CCCRRR(C,IR),  IGR_PRICE_TECH(Y,IR,'GRDECW')) * SUM((S,T)$SMAX(IR$CCCRRR(C,IR), IGR_TIME('GRDECW',IR,S,T)), IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))    !! Energy charge winter
+                 + IGR_PRICE_TECH(Y,IR,'GRDECW')  * SUM((S,T)$IGR_TIME('GRDECW',IR,S,T),  IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))    !! Energy charge winter
 
-                 + SMAX(IR$CCCRRR(C,IR), IGR_PRICE_TECH(Y,IR,'GRDECS'))  * SUM((S,T)$SMAX(IR$CCCRRR(C,IR), IGR_TIME('GRDECS',IR,S,T)), IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))    !! Energy charge summer
+                 + IGR_PRICE_TECH(Y,IR,'GRDECS')  * SUM((S,T)$IGR_TIME('GRDECS',IR,S,T),  IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))    !! Energy charge summer
 
-                 + SMAX(IR$CCCRRR(C,IR), IGR_PRICE_TECH(Y,IR,'GRDTOU1')) * SUM((S,T)$SMAX(IR$CCCRRR(C,IR), IGR_TIME('GRDTOU1',IR,S,T)), IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))   !! Energy charge TOU step 1
+                 + IGR_PRICE_TECH(Y,IR,'GRDTOU1') * SUM((S,T)$IGR_TIME('GRDTOU1',IR,S,T), IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))   !! Energy charge TOU step 1
 
-                 + SMAX(IR$CCCRRR(C,IR), IGR_PRICE_TECH(Y,IR,'GRDTOU2')) * SUM((S,T)$SMAX(IR$CCCRRR(C,IR), IGR_TIME('GRDTOU2',IR,S,T)), IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))   !! Energy charge TOU step 2
+                 + IGR_PRICE_TECH(Y,IR,'GRDTOU2') * SUM((S,T)$IGR_TIME('GRDTOU2',IR,S,T), IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))   !! Energy charge TOU step 2
 
-                 + SMAX(IR$CCCRRR(C,IR), IGR_PRICE_TECH(Y,IR,'GRDTOU3')) * SUM((S,T)$SMAX(IR$CCCRRR(C,IR), IGR_TIME('GRDTOU3',IR,S,T)), IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))   !! Energy charge TOU step 3
+                 + IGR_PRICE_TECH(Y,IR,'GRDTOU3') * SUM((S,T)$IGR_TIME('GRDTOU3',IR,S,T), IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))   !! Energy charge TOU step 3
 
-                 + SMAX(IR$CCCRRR(C,IR), IGR_PRICE_TECH(Y,IR,'GRDTOU4')) * SUM((S,T)$SMAX(IR$CCCRRR(C,IR), IGR_TIME('GRDTOU4',IR,S,T)), IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))   !! Energy charge TOU step 4
+                 + IGR_PRICE_TECH(Y,IR,'GRDTOU4') * SUM((S,T)$IGR_TIME('GRDTOU4',IR,S,T), IHOURSINST(S,T)*GR_GETOH_VAR_T(Y,S,T))   !! Energy charge TOU step 4
 
 * Demand charges:
-                 + IOF1000 * SUM(MMM$(IGR_MONTHSINSIM2(MMM) AND SUM((S,T)$SMAX(IR$CCCRRR(C,IR), IGR_TIME('GRDDCW',IR,S,T)), ISSSTTTMMM(S,T,MMM))), GR_GETOH_CAP1(Y,MMM) *  SMAX(IR$CCCRRR(C,IR), IGR_PRICE_TECH(Y,IR,'GRDDCW')))/(IGR_MONTHSINSIM/card(MMM))    !! Demand charge winter
+                 + IOF1000 * SUM(MMM$(IGR_MONTHSINSIM2(MMM) AND SUM((S,T)$IGR_TIME('GRDDCW',IR,S,T), ISSSTTTMMM(S,T,MMM))), GR_GETOH_CAP1(Y,MMM) *  IGR_PRICE_TECH(Y,IR,'GRDDCW'))/(IGR_MONTHSINSIM/card(MMM))    !! Demand charge winter
 
-                 + IOF1000 * SUM(MMM$(IGR_MONTHSINSIM2(MMM) AND SUM((S,T)$SMAX(IR$CCCRRR(C,IR),IGR_TIME('GRDDCS',IR,S,T)), ISSSTTTMMM(S,T,MMM))), GR_GETOH_CAP1(Y,MMM) *  SMAX(IR$CCCRRR(C,IR), IGR_PRICE_TECH(Y,IR,'GRDDCS')))/(IGR_MONTHSINSIM/card(MMM))    !! Demand charge summer
+                 + IOF1000 * SUM(MMM$(IGR_MONTHSINSIM2(MMM) AND SUM((S,T)$IGR_TIME('GRDDCS',IR,S,T), ISSSTTTMMM(S,T,MMM))), GR_GETOH_CAP1(Y,MMM) *  IGR_PRICE_TECH(Y,IR,'GRDDCS'))/(IGR_MONTHSINSIM/card(MMM))    !! Demand charge summer
 
-                 + IOF1000 * SUM(MMM$(IGR_MONTHSINSIM2(MMM) AND SUM((S,T)$SMAX(IR$CCCRRR(C,IR),IGR_TIME('GRDDC2',IR,S,T)), ISSSTTTMMM(S,T,MMM))), GR_GETOH_CAP1(Y,MMM) *  SMAX(IR$CCCRRR(C,IR), IGR_PRICE_TECH(Y,IR,'GRDDC2')))/(IGR_MONTHSINSIM/card(MMM))    !! Demand charge 2
+                 + IOF1000 * SUM(MMM$(IGR_MONTHSINSIM2(MMM) AND SUM((S,T)$IGR_TIME('GRDDC2',IR,S,T), ISSSTTTMMM(S,T,MMM))), GR_GETOH_CAP1(Y,MMM) *  IGR_PRICE_TECH(Y,IR,'GRDDC2'))/(IGR_MONTHSINSIM/card(MMM))    !! Demand charge 2
 
-                 + IOF1000 * SUM(MMM$IGR_MONTHSINSIM2(MMM),   GR_GETOH_CAP2(Y,C,MMM)  *  SMAX(IR$CCCRRR(C,IR), IGR_PRICE_TECH(Y,IR,'GRDDCTOU')))/(IGR_MONTHSINSIM/card(MMM))
+                 + IOF1000 * SUM(MMM$IGR_MONTHSINSIM2(MMM),   GR_GETOH_CAP2(Y,IR,MMM)  *  IGR_PRICE_TECH(Y,IR,'GRDDCTOU'))/(IGR_MONTHSINSIM/card(MMM))
 
-                 + IOF1000 *   GR_GETOH_CAPY(Y,C) *  SMAX(IR$CCCRRR(C,IR), IGR_PRICE_TECH(Y,IR,'GRDDCY'))
+                 + IOF1000 *   GR_GETOH_CAPY(Y,IR) *  IGR_PRICE_TECH(Y,IR,'GRDDCY')
 
 );
 
 * Then the capacity based tariff is calculated as follows:
-GR_GETOH_PRICE(Y,C)  =  GR_GETOH_TOTAL(Y,C) / GR_GETOH_FX(Y);
+GR_GETOH_PRICE(Y,C)  =  (SUM(IR$CCCRRR(C,IR), GR_GETOH_TOTAL(Y,IR))/SUM(IR, 1*CCCRRR(C,IR))) / GR_GETOH_FX(Y);
 
 * Tax that is transferred from Scenario 1 or 2 to scenario 3 or 4:
 $ifi not %SCENARIO3OR4%==YES $ifi %TAXES%==YES TAX_GETOH(Y,C) =  SUM((S,T,TECH_GROUP)$GR_GETOH_TCFX(Y,TECH_GROUP), SMAX(IGETOH$(GDATA(IGETOH,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP)), TAX_F_HEAT(Y,C,IGETOH)) * IHOURSINST(S,T)  * GR_GETOH_VAR_TCT(Y,TECH_GROUP,S,T)) /   GR_GETOH_FX(Y);

@@ -40,8 +40,8 @@ $ifi not %SCENARIO34_ALT%==YES IGR_PRICE_DEUSER(Y,IR,DEUSER,GRDATASET)$(Y.val > 
 ** 2.2 Congestion pricing
 
 * Set the grid tariff according to desired level
-IGR_PRICE_TECH(Y,IR,'GRDDCY')$(Y.val > 2020) = 00;
-IGR_PRICE_DEUSER(Y,IR,'PII','GRDDCY')$(Y.val > 2020) = 00;
+IGR_PRICE_TECH(Y,IR,'GRDDCY')$(Y.val > 2020) = 75;
+IGR_PRICE_DEUSER(Y,IR,'PII','GRDDCY')$(Y.val > 2020) = 75;
 
 
 ** 2.3 capacity pricing (included for P2H only since its the only consumer group have endogenous investments in the model)
@@ -82,3 +82,4 @@ EXECUTE_UNLOAD '../output/scen34.gdx'  IGR_TIME_Y, DE_VAR_T_PEAK, GR_PRICE_TECH,
 
 
 $LABEL label_scenario3OR4_ISETDECDEF_END
+

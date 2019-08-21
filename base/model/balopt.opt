@@ -42,7 +42,7 @@ $setglobal PROJECTID
 * (or Access MDBs) will have the CASEID as filename with the appropriate extension.
 * Note that CASEID MUST be identical to folder name of the diretory holding the case.
 *
-$setglobal CASEID  BASE
+$setglobal CASEID  test
 *!option !fixedvalue
 
 
@@ -82,7 +82,7 @@ $setglobal testbb1234
 
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 1 in Flex4Res
-$SETGLOBAL SCENARIO1
+$SETGLOBAL SCENARIO1    yes
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 2 in Flex4Res
@@ -90,7 +90,7 @@ $SETGLOBAL SCENARIO2
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
-$SETGLOBAL SCENARIO3 YES  
+$SETGLOBAL SCENARIO3
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
@@ -341,7 +341,7 @@ $setglobal UnitCseg
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV   yes
+$setglobal EV
 *!option
 
 * Adds DUMB charging:

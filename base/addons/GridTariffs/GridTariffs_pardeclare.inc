@@ -16,8 +16,8 @@ GR_GETOH_VAR_T(YYY,SSS,TTT)     'total power to heat electricity consumption'
 GR_GETOH_TCFX(YYY,TECH_GROUP)                'installed power to heat electricity consumption capacity'
 GR_GETOH_FX(YYY)                'installed power to heat electricity consumption capacity'
 GR_GETOH_CAP1(YYY,MMM)
-GR_GETOH_CAP2(YYY,CCC,MMM)
-GR_GETOH_CAPY(YYY,CCC)
-GR_GETOH_TOTAL(YYY,CCC)
+GR_GETOH_CAP2(YYY,RRR,MMM)
+GR_GETOH_CAPY(YYY,RRR)
+GR_GETOH_TOTAL(YYY,RRR)
 GR_GETOH_PRICE(YYY,CCC)
 ;
