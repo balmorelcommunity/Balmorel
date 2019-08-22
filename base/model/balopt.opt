@@ -49,6 +49,7 @@ $setglobal TECHALT
 *!option _lessELtransm_0.0 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 100 %
 *!option _strongDH         *strongDH alternative: No natural gas for heating
 *!option _noGrid           *noGrid alternative: No Gas infrastructure from 2030
+*!option _includeReg       *including regulation
 
 
 *===============================================================================
@@ -263,16 +264,19 @@ $setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use
-$setglobal GRIDTARIFFS
+$ifi not %TECHALT%=="_includeReg" $goto noregulation
+$setglobal GRIDTARIFFS yes
 *!option yes
 
 * Taxes addon
-$setglobal TAXES
+$setglobal TAXES yes
 *!option yes
 
 * Subsidies addon
-$setglobal SUBSIDIES
+$setglobal SUBSIDIES yes
 *!option yes
+
+$label noregulation
 
 *
 $setglobal SYSTEMCOST
