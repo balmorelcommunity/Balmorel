@@ -1125,7 +1125,8 @@ $label  Transmission_investments_end
 *--------END of EXCEPTIONS: Convenient internal sets and parameters
 *------------------------------------------------------------
 
-
+Parameter STOVOLTSINIT(AAA,GGG);
+STOVOLTSINIT('South-A','pmp_hydro2')= 0.5;
 
 *-------------------------------------------------------------------------------
 * End: Internal parameters and settings
@@ -1313,6 +1314,7 @@ EQUATIONS
 
    QESTOVOLT(Y,AAA,G,S,T)     "Intra-seasonal electricty storage dynamic equation (MWh)"
    QESTOVOLTS(Y,AAA,G,S,T)    "Inter-seasonal electricty storage dynamic equation (MWh)"
+   QESTOVOLTSINIT(Y,AAA,G,S,T) "Inter-seasonal electricty storage level on initial timestep  (MWh)"
    QHSTOVOLT(Y,AAA,G,S,T)     "Intra-seasonal heat storage dynamic equation (MWh)"
    QHSTOVOLTS(Y,AAA,G,S,T)    "Inter-seasonal heat storage dynamic equation (MWh)"
 
@@ -1703,9 +1705,21 @@ QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
   - SUM(IAGK_HASORPOT(IY411,IA,IGESTOS), VGE_T(IY411,IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
   )
     =E=
-VESTOVOLTS(IY411,IA,IGESTOS,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
+VESTOVOLTS(IY411,IA,IGESTOS,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(ORD(T) EQ CARD(T))
 
 $include "../../base/addons/_hooks/qestovolts.inc"
+;
+
+* "Inter-seasonal electricty storage level on initial timestep  (MWh)"
+QESTOVOLTSINIT(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND ORD(S) EQ 1 AND ORD(T) EQ 1)..
+         VESTOVOLTS(IY411,IA,IGESTOS,S,T)
+         =G=
+         (STOVOLTSINIT(IA,IGESTOS)*(
+      GKFX(IY411,IA,IGESTOS)$IAGKFX(IY411,IA,IGESTOS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGESTOS)$IGDECOMEXOPOT(IY411,IA,IGESTOS)
+      + VGKNACCUMNET(IY411,IA,IGESTOS)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IAGKN(IA,IGESTOS))
+      )*(1$(NOT GEFFRATE(IA,IGESTOS))+GEFFRATE(IA,IGESTOS)))$(IYFIRST(IY411))
+         + SUM((ISALIAS,ITALIAS)$(IY401(IY411) AND ORD(ISALIAS) EQ 1 AND ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,ISALIAS,ITALIAS))
 ;
 
 * "Heat storage dynamic equation (MWh)"
@@ -2500,6 +2514,7 @@ $ifi %bypass%==yes              QGCBGBPRBYPASS2
 *--- Storage restrictions ------------------------------------------------------
                                 QESTOVOLT
                                 QESTOVOLTS
+                                QESTOVOLTSINIT
                                 QHSTOVOLT
                                 QHSTOVOLTS
 
