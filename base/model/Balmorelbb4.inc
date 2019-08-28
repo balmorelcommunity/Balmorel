@@ -290,7 +290,7 @@ PARAMETER DISCOST_E(RRR)               "Cost of electricity distribution (Money/
 PARAMETER DISCOST_H(AAA)               "Cost of heat distribution (Money/MWh)";
 PARAMETER FKPOT(CCCRRRAAA,FFF)         "Fuel potential restriction by geography (default 0 implies irrelevant, EPS implies no potential) (MW)";
 PARAMETER FGEMIN(CCCRRRAAA,FFF)        "Minimum electricity generation by fuel (default 0 implies irrelevant, EPS implies no potential) (MWh)";
-PARAMETER FGEMAX(CCCRRRAAA,FFF)        "Maximum electricity generation by fuel (default 0 implies irrelevant, EPS implies no potential) (MWh)";
+PARAMETER FGEMAX(YYY,CCCRRRAAA,FFF)        "Maximum electricity generation by fuel (default 0 implies irrelevant, EPS implies no potential) (MWh)";
 
 
 PARAMETER FKMIN(YYY,CCCRRRAAA,FFF)     "Minimum capacity by fuel per year (MW)"  !! not really used presently
@@ -1939,9 +1939,9 @@ QGMINFUELC(IY411,C,FFF)$FGEMIN(C,FFF)..
       =G= FGEMIN(C,FFF);
 
 * "Maximum electricity generation year, country and fuel (MWh)"
-QGMAXFUELC(IY411,C,FFF)$FGEMAX(C,FFF)..
+QGMAXFUELC(IY411,C,FFF)$FGEMAX(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND ICA(C,IA)),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-      =L= FGEMAX(C,FFF);
+      =L= FGEMAX(IY411,C,FFF);
 
 * "Minimum electricity generation by year, region and fuel (MWh)"
 QGMINFUELR(IY411,IR,FFF)$FGEMIN(IR,FFF)..
@@ -1949,9 +1949,9 @@ QGMINFUELR(IY411,IR,FFF)$FGEMIN(IR,FFF)..
       =G= FGEMIN(IR,FFF);
 
 * "Maximum electricity generation by year, region and fuel (MWh)"
-QGMAXFUELR(IY411,IR,FFF)$FGEMAX(IR,FFF)..
+QGMAXFUELR(IY411,IR,FFF)$FGEMAX(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,IGE)$(IGF(IGE,FFF) AND RRRAAA(IR,IA)),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-      =L= FGEMAX(IR,FFF);
+      =L= FGEMAX(IY411,IR,FFF);
 
 * "Minimum electricity generation by year, area and fuel (MWh)"
 QGMINFUELA(IY411,IA,FFF)$FGEMIN(IA,FFF)..
@@ -1959,9 +1959,9 @@ QGMINFUELA(IY411,IA,FFF)$FGEMIN(IA,FFF)..
                 =G= FGEMIN(IA,FFF);
 
 * "Maximum electricity generation by year, area and fuel (MWh)"
-QGMAXFUELA(IY411,IA,FFF)$FGEMAX(IA,FFF)..
+QGMAXFUELA(IY411,IA,FFF)$FGEMAX(IY411,IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,IGE)$IGF(IGE,FFF),SUM((IS3,T),IHOURSINST(IS3,T)*VGE_T(IY411,IA,IGE,IS3,T)*(1$(NOT GEFFRATE(IA,IGE))+GEFFRATE(IA,IGE))))
-      =L= FGEMAX(IA,FFF);
+      =L= FGEMAX(IY411,IA,FFF);
 
 
 *--- Fuel use restrictions by fuel--------------------------------------------
@@ -2046,7 +2046,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)$IGDECOMEXOPOT(IY411,IA,G)
       +SUM(IAGK_HASORPOT(IY411,IA,G)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G)) AND IGF(G,FFF) AND ICA(C,IA)), VGKNACCUMNET(IY411,IA,G))
       =G=  FKMIN(IY411,C,FFF);
 
-* "Maximum capacityby year, country and fuel (MW)"
+* "Maximum capacity by year, country and fuel (MW)"
 QKMAXFC(IY411,C,FFF)$FKMAX(IY411,C,FFF).. !! EPS convention on FKPOT: 0 implies no restriction, "EPS" implies zero MW.
     SUM((IA,G)$(IAGKFX(IY411,IA,G) AND IGF(G,FFF) AND ICA(C,IA)),
     GKFX(IY411,IA,G)
