@@ -853,76 +853,146 @@ $if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
 *$ontext
 GMINF(Y,'estonia','NATGAS')$(Y.VAL GE 2030) = 0 ;
 M_POL('2050','LIM_CO2',C) = EPS   ;
-GMAXF('2020','NORWAY','Coal')=EPS;
-GMAXF('2020','NORWAY','Lignite')=EPS;
-GMAXF('2030','NORWAY','Coal')=EPS;
-GMAXF('2030','NORWAY','Lignite')=EPS;
-GMAXF('2040','NORWAY','Coal')=EPS;
-GMAXF('2040','NORWAY','Lignite')=EPS;
-GMAXF('2050','NORWAY','Coal')=EPS;
-GMAXF('2050','NORWAY','Lignite')=EPS;
 GMAXF('2020','SWEDEN','Coal')=EPS;
-GMAXF('2020','SWEDEN','Lignite')=EPS;
 GMAXF('2030','SWEDEN','Coal')=EPS;
-GMAXF('2030','SWEDEN','Lignite')=EPS;
 GMAXF('2040','SWEDEN','Coal')=EPS;
-GMAXF('2040','SWEDEN','Lignite')=EPS;
 GMAXF('2050','SWEDEN','Coal')=EPS;
-GMAXF('2050','SWEDEN','Lignite')=EPS;
 GMAXF('2030','FINLAND','Coal')=EPS;
-GMAXF('2030','FINLAND','Lignite')=EPS;
 GMAXF('2040','FINLAND','Coal')=EPS;
-GMAXF('2040','FINLAND','Lignite')=EPS;
 GMAXF('2050','FINLAND','Coal')=EPS;
-GMAXF('2050','FINLAND','Lignite')=EPS;
 GMAXF('2030','DENMARK','Coal')=EPS;
-GMAXF('2030','DENMARK','Lignite')=EPS;
 GMAXF('2040','DENMARK','Coal')=EPS;
-GMAXF('2040','DENMARK','Lignite')=EPS;
 GMAXF('2050','DENMARK','Coal')=EPS;
-GMAXF('2050','DENMARK','Lignite')=EPS;
-GMAXF('2030','UNITED_KINGDOM','Coal')=EPS;
-GMAXF('2030','UNITED_KINGDOM','Lignite')=EPS;
-GMAXF('2040','UNITED_KINGDOM','Coal')=EPS;
-GMAXF('2040','UNITED_KINGDOM','Lignite')=EPS;
-GMAXF('2050','UNITED_KINGDOM','Coal')=EPS;
-GMAXF('2050','UNITED_KINGDOM','Lignite')=EPS;
-GMAXF('2020','FRANCE','Coal')=EPS;
-GMAXF('2020','FRANCE','Lignite')=EPS;
-GMAXF('2030','FRANCE','Coal')=EPS;
-GMAXF('2030','FRANCE','Lignite')=EPS;
-GMAXF('2040','FRANCE','Coal')=EPS;
-GMAXF('2040','FRANCE','Lignite')=EPS;
-GMAXF('2050','FRANCE','Coal')=EPS;
-GMAXF('2050','FRANCE','Lignite')=EPS;
-GMAXF('2020','BELGIUM','Coal')=EPS;
-GMAXF('2020','BELGIUM','Lignite')=EPS;
-GMAXF('2030','BELGIUM','Coal')=EPS;
-GMAXF('2030','BELGIUM','Lignite')=EPS;
-GMAXF('2040','BELGIUM','Coal')=EPS;
-GMAXF('2040','BELGIUM','Lignite')=EPS;
-GMAXF('2050','BELGIUM','Coal')=EPS;
-GMAXF('2050','BELGIUM','Lignite')=EPS;
-GMAXF('2030','NETHERLANDS','Coal')=EPS;
-GMAXF('2030','NETHERLANDS','Lignite')=EPS;
-GMAXF('2040','NETHERLANDS','Coal')=EPS;
-GMAXF('2040','NETHERLANDS','Lignite')=EPS;
-GMAXF('2050','NETHERLANDS','Coal')=EPS;
-GMAXF('2050','NETHERLANDS','Lignite')=EPS;
-GMAXF('2040','GERMANY','Coal')=EPS;
-GMAXF('2040','GERMANY','Lignite')=EPS;
-GMAXF('2050','GERMANY','Coal')=EPS;
-GMAXF('2050','GERMANY','Lignite')=EPS;
 *$offtext
 
 
-** Higer Woodchips prices
+** Higer Woodchips prices  (corresponding to NETP)
 FUELPRICE('2030',IA,'WOODCHIPS') = 8.292520198;
 FUELPRICE('2040',IA,'WOODCHIPS') = 10.13943185;
 FUELPRICE('2050',IA,'WOODCHIPS') = 10.70013031;
+
+
+
+** Limit to heat storage implementation that capacity cannot be higher than 0.75% of annual heat demand in each area.
+$ifi %HEATSTORE_LIM_CAPACITY%==YES TECHGROUPKPOT(IA,'PIT')$(SUM(G$(GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE('PIT')), AGKN(IA,G)) AND SUM((Y,DHUSER), DH(Y,IA,DHUSER))) =  SUM(DHUSER, DH('2020',IA,DHUSER)) * 0.0075;
+
+
+*$ontext
+*** NORENS UPDATE Gustav
+$onmulti
+* Load new input data
+$INCLUDE         '../data/GKFX_EUR.inc';
+$offmulti
+
+* delete old installed capacity and replace them with new. For France, Belgium, Netherlands and UK
+GKFX(Y,IA,G)$((ICA('FRANCE',IA) OR ICA('BELGIUM',IA) OR ICA('NETHERLANDS',IA) OR ICA('UNITED_KINGDOM',IA))) = 0;
+GKFX(Y,IA,G)$((ICA('FRANCE',IA) OR ICA('BELGIUM',IA) OR ICA('NETHERLANDS',IA) OR ICA('UNITED_KINGDOM',IA))) = GKFX_EUR(IA,G,Y);
+
+* replacing installed capacity for Germany. First copy existing HOB and ETOH capacities
+GKFX_EUR('DE4-N_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-N_A',G,Y);
+GKFX_EUR('DE4-S_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-S_A',G,Y);
+GKFX_EUR('DE4-E_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-E_A',G,Y);
+GKFX_EUR('DE4-W_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-W_A',G,Y);
+
+* Then replace capacity for CND, BPR and EXT
+GKFX(Y,IA,G)$(ICA('GERMANY',IA) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GBPR) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH))) = 0;
+GKFX(Y,IA,G)$(ICA('GERMANY',IA) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GBPR) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH))) = GKFX_EUR(IA,G,Y);
+
+* Germany has now designated areas for DH. Copy DH demand for German areas and then delete old values
+DH(YYY,'DE4-N_DH',DHUSER) = DH(YYY,'DE4-N_A',DHUSER);    DH(YYY,'DE4-N_A',DHUSER) = 0;
+DH(YYY,'DE4-S_DH',DHUSER) = DH(YYY,'DE4-S_A',DHUSER);    DH(YYY,'DE4-S_A',DHUSER) = 0;
+DH(YYY,'DE4-E_DH',DHUSER) = DH(YYY,'DE4-E_A',DHUSER);    DH(YYY,'DE4-E_A',DHUSER) = 0;
+DH(YYY,'DE4-W_DH',DHUSER) = DH(YYY,'DE4-W_A',DHUSER);    DH(YYY,'DE4-W_A',DHUSER) = 0;
+
+*Copy DH demand profile for Germany
+DH_VAR_T('DE4-N_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-N_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-N_A',DHUSER,SSS,TTT) = 0;
+DH_VAR_T('DE4-S_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-S_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-S_A',DHUSER,SSS,TTT) = 0;
+DH_VAR_T('DE4-E_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-E_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-E_A',DHUSER,SSS,TTT) = 0;
+DH_VAR_T('DE4-W_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-W_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-W_A',DHUSER,SSS,TTT) = 0;
+
+* Copy DH demand for France, Belgium, Netherlands and UK
+DH(YYY,IA,DHUSER)$((ICA('FRANCE',IA) OR ICA('BELGIUM',IA) OR ICA('NETHERLANDS',IA) OR ICA('UNITED_KINGDOM',IA)))  = DH2(DHUSER,IA,YYY);
+
+* New wind, solar and hydropower profiles for France
+WND_VAR_T('FR_A',SSS,TTT)= WND_VAR_T2(SSS,TTT,'FR_A')    ;
+SOLE_VAR_T('FR_A',SSS,TTT)= SOLE_VAR_T2(SSS,TTT,'FR_A')    ;
+WTRRRVAR_T('FR_A',S,T) = WTRRRVAR_S1('FR_A',S);
+
+** remove investment options for DH areas currently not in use
+AGKN('UK_DH',G) = NO;
+AGKN('FR_DH',G) = NO;
+AGKN('NL_DH',G) = NO;
+AGKN('BE_DH',G) = NO;
+
+*Redefine some German storage technologies as short term energy storage
+GDATA('AGG-DE4-E_RES_WTR_PMP','GDTYPE') = GESTO;
+GDATA('AGG-DE4-N_RES_WTR_PMP','GDTYPE') = GESTO;
+GDATA('AGG-DE4-S_RES_WTR_PMP','GDTYPE') = GESTO;
+GDATA('AGG-DE4-W_RES_WTR_PMP','GDTYPE') = GESTO;
+
+* And reduce the efficiency down from 1 to 0.8
+GDATA('AGG-DE4-E_RES_WTR_PMP','GDFE') = 0.8;
+GDATA('AGG-DE4-N_RES_WTR_PMP','GDFE') = 0.8;
+GDATA('AGG-DE4-S_RES_WTR_PMP','GDFE') = 0.8;
+GDATA('AGG-DE4-W_RES_WTR_PMP','GDFE') = 0.8;
+
+*GDATA('AGG-DE4-E_RES_WTR_PMP','GDSTOHLOAD') = 10;
+
+
+* minimum fuel limit on seasonal level for German Biogas
+* (Gustav 29.08.19 this is for testing, assures a seasonal profile for use of biogas, but biogas plants operates VERY flexible over the day)
+PARAMETER GMINF_S(YYY,AAA,FFF,SSS) 'Minimum fuel use (GJ) per season'  ;
+GMINF_S(Y,IA,FFF,S)$ICA('GERMANY',IA) = GMINF(Y,IA,FFF)/CARD(S);
+
+
+* Introducing fuel factor - defined in balmorelbb4.inc
+* (Gustav 29.08.19 this is a concept we can use to get rid of VGF on hourly level also in UC and Combtech addon)
+PARAMETER IGFE_FACTOR(YYY,AAA,GGG) 'Fuel consumption per generated MW electricity';
+PARAMETER IGFH_FACTOR(YYY,AAA,GGG) 'Fuel consumption per generated MW electricity';
+
+
+* Set a default level for GKFX for all EXT, BPR, CND, HOB and ETOH technologies. (to 0.9)
+GKRATE(IA,G,S)$(SUM(SSS, GKRATE(IA,G,SSS) = 0) AND (SUM(Y, GKFX(Y,IA,G)) OR AGKN(IA,G)) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GBPR) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH))) = .95;
+
+* Refurbishment of Coal to wood pellets is included as an investment option. A limit to VGKN implemented in Balmorelbb4.sim
+* (Gustav 29.08.19 simple version. There might be more elegant ways to do this)
+SET Y_YYY(Y,YYY);  Y_YYY(Y,YYY) = YES$((YVALUE(YYY) LE YVALUE(Y)) AND YVALUE(YYY) GT YVALUE(Y-1));
+GMAXINVEST(Y,IA,G) = SUM(YYY$Y_YYY(Y,YYY), GMAXINVEST1(IA,G,YYY));
+
+** add the new investment option to AGKN
+AGKN(IA,G)$SUM(Y,GMAXINVEST(Y,IA,G)) = YES;
+
+* assumption on how much of solar generation that can be used on site (and hence get indirect subsidy)
+** (Gustav 29.08.19) we have to assess how good such assumption is and perhaps find some source to back it up)
+SCALAR SELF_CONSUMPTION_RATE /0.5/;
+
+*TEST: setting idv heat demand to zero
+DH(YYY,IA,DHUSER)$(INVDATA(IA,'INDIVHEAT') EQ 1) = 0;
+
+* Necessary if running EV module with more years:  ( but more changes are needed)
+*EV_PEFF(Y) = EV_PEFF('2020');
+
+* Adjustment to natural gas price to better fit with todays price for 2021 (aug 2019)
+FUELPRICE(YYY,AAA,'NATGAS') = FUELPRICE(YYY,AAA,'NATGAS') * 0.84;
+
+
+*** END NORENS Update ***
+
+
+** Transmission capacities existing. A new dataset here that includes existing lines and individual plans for upgrades.
+$onmulti
+$INCLUDE         '../data/XKFX_EUR.inc';
+$offmulti
+XKINI(YYY,IRRRE,IRRRI) = XKFX(YYY,IRRRE,IRRRI);
+
+*$offtext
 
 ** no investments into straw except for Denmark where the limit is also set a little higher.
 AGKN(IA,G)$((NOT ICA('DENMARK',IA)) AND (GDATA(G,'GDFUEL') = STRAW)) = NO;
 *GMAXF(Y,'DENMARK','STRAW') = 20000000;
 
-$ifi %HEATSTORE_LIM_CAPACITY%==YES TECHGROUPKPOT(IA,'PIT')$(SUM(G$(GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE('PIT')), AGKN(IA,G)) AND SUM((Y,DHUSER), DH(Y,IA,DHUSER))) =  SUM(DHUSER, DH('2020',IA,DHUSER)) * 0.0075;
+* Investment into coal is only allowed in Poland
+AGKN(IA,G)$((GDATA(G,'GDFUEL') EQ COAL) AND NOT ICA('POLAND',IA)) = NO;
+
+
+

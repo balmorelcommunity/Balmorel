@@ -926,6 +926,21 @@ SCALAR ILOOPBREAK     "Scalar used as binary number to break any loop function";
 
 $INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
 
+* FUEL FACTOR:
+IGFE_FACTOR(Y,IA,G)$(GKFX(Y,IA,G) OR AGKN(IA,G)
+$ifi %COMBTECH%==yes OR SUM(IGCOMB1$((GKFX(Y,IA,IGCOMB1) OR AGKN(IA,IGCOMB1)) AND GGCOMB(IGCOMB1,G)),1)$IGCOMB2(G)
+) = (1 /(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGNOTETOH(G) AND IGE(G) AND NOT IGBYPASS(G))
++    ((GDATA(G,'GDCB')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
++    ((GDATA(G,'GDCV')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
+$ifi %HYDROGEN%==YES +        1$(IHYDROGEN_GETOH2(G) OR IHYDROGEN_GEHTOH2(G))
+;
+
+IGFH_FACTOR(Y,IA,G)$(GKFX(Y,IA,G) OR AGKN(IA,G)
+$ifi %COMBTECH%==yes OR SUM(IGCOMB1$((GKFX(Y,IA,IGCOMB1) OR AGKN(IA,IGCOMB1)) AND GGCOMB(IGCOMB1,G)),1)$IGCOMB2(G)
+) = (GDATA(G,'GDCV')/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGH(G)  AND NOT IGBYPASS(G))
++    ((GDATA(G,'GDCB')*GDATA(G,'GDBYPASSC')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
++    ((GDATA(G,'GDCV')*GDATA(G,'GDBYPASSC')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
+;
 
 
 * These internal parameters and sets pertain to heat transmission.
@@ -1181,6 +1196,8 @@ $ifi %VGF%==Y QGFEQ(Y,AAA,G)       "Calculate fuel consumption, existing units (
    QGMAXRF(Y,RRR,FFF)       "Maximum fuel use by year, region and fuel constraint (GJ)"
    QGEQRF(Y,RRR,FFF)        "Exact fuel use by year, region and fuel (GJ)"
    QGMINAF(Y,AAA,FFF)       "Minimum fuel use by year, area and fuel (GJ)"
+* Gustav addition
+   QGMINAF_S(Y,AAA,FFF,S)   "Minimum fuel use by season, area and fuel (GJ)"
    QGMAXAF(Y,AAA,FFF)       "Maximum fuel use by year, area and fuel (GJ)"
    QGEQAF(Y,AAA,FFF)        "Exact fuel use by year, area and fuel (GJ)"
    QKMINFC(Y,C,FFF)         "Minimum capacity by year, country and fuel (MW)" !! renamed from QKMAXFC(Y,C,FFF), similar with others below  Hans
@@ -1387,7 +1404,7 @@ QDENET(IY411,IR,DEUSER,IS3,T)$(IDE_SUMST(IR,DEUSER) GT 0)..
          VDENET_T(IY411,IR,DEUSER,IS3,T)
          =G=
                               ((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))
-                               - SUM((G,IA)$(RRRAAA(IR,IA) AND IGDEUSER(G,DEUSER) AND IAGK_HASORPOT(IY411,IA,G)), VGE_T(IY411,IA,G,IS3,T))
+                               - SUM((G,IA)$(RRRAAA(IR,IA) AND IGDEUSER(G,DEUSER) AND IAGK_HASORPOT(IY411,IA,G)), VGE_T(IY411,IA,G,IS3,T))*SELF_CONSUMPTION_RATE
 $ifi %DemandResponse%==yes  + SUM((IA,DR_TECH)$(IADR(IY411,IA,DR_TECH) AND RRRAAA(IR,IA) AND DR_TECH_USER(DR_TECH,DEUSER)),  VDR_UP(IY411,IA,DR_TECH,IS3,T) - VDR_DOWN(IY411,IA,DR_TECH,IS3,T))
 $ifi %EV%==yes              + (VEV_VNETCHARGE_BEV(IY411,IR,IS3,T) + VEV_VNETCHARGE_PHEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_BEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_PHEV(IY411,IR,IS3,T))$IRESE(DEUSER)
 
@@ -1824,6 +1841,11 @@ QGEQAF(IY411,IA,FFF)$IGEQF(IY411,IA,FFF)..
 $ifi %VGF%==ST    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * VGF_T(IY411,IA,G))
     =E= IGEQF(IY411,IA,FFF);
+
+** GUSTAV ADDITION:
+QGMINAF_S(IY411,IA,FFF,IS3)$GMINF_S(IY411,IA,FFF,IS3)..
+SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM(T, IHOURSINST(IS3,T) * (  VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
+    =G= GMINF_S(IY411,IA,FFF,IS3);
 
 
 *--- Capacity restrictions by fuel--------------------------------------------
@@ -2310,7 +2332,8 @@ $ifi %TransInvest%==yes         QXK_UP
                                 QGMINRF
                                 QGMAXRF
                                 QGEQRF
-*                                QGMINAF TODO
+                                QGMINAF
+                                QGMINAF_S
 *                                QGMAXAF TODO
 *                                QGEQAF  TODO
 
@@ -2406,7 +2429,6 @@ $ifi %MAKEINVEST%==yes execute_unload "../../base/data/XKACC.gdx", XKACC;
 
 *$ifi %X3V%==yes $INCLUDE "../../base/addons/x3v/bb4/x3vgdx.inc";
 *--- End: Results which can be transfered between simulations are placed here --
-
 
 DISPLAY INFODISPLAY , "For BB4: see at the end of the logfile: <case>/logerror/logfile.out." ;
 *----- End of file:------------------------------------------------------------
