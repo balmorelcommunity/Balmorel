@@ -1,0 +1,13 @@
+SET  MorrisParameters "Parameters in the simulation"
+/
+
+P2H_TAX
+SOS_TAX_BIOMASS
+VOL_GRID_TARIFF
+DISCOUNT_RATE
+HEAT_STO_POT
+BOILER_POT
+HP_POT
+BYPASS
+
+/;
