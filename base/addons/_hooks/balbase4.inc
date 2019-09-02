@@ -15,5 +15,7 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_balbase4.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_balbase4.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_balbase4.inc";
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_balbase4.inc";
+
 
 $label endoffile

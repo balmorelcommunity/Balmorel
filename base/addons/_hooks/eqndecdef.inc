@@ -26,4 +26,6 @@ $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_e
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_eqndecdef.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_eqndecdef.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_eqndecdef.inc";
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_eqndecdef.inc";
+
 $label endoffile

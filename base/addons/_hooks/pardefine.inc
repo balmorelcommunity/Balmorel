@@ -31,6 +31,8 @@ $ifi %AREA_AGGREGATION%==yes      $include        "../../base/addons/area_aggreg
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_pardefine.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_pardefine.inc";
 
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_pardefine.inc";
+
 $ifi %SCENARIO3OR4%==YES $include        "../../base/addons/scenario3_4/scen34_pardefine.inc";
 $label endoffile
 

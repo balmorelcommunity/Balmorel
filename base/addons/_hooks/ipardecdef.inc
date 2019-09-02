@@ -18,6 +18,9 @@ $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_i
 $ifi %VARIABLE_TRIMMING%==yes           $include       "../../base/addons/variable_trimming/bb4/vt_ipardecdef.inc";
 
 $ifi %SCENARIO3OR4%==YES  $include        "../../base/addons/scenario3_4/scen34_ipardecdef.inc";
+
+$ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_ipardecdef.inc";
+
 $label endoffile
 
 

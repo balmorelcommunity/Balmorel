@@ -24,5 +24,7 @@ $ifi %VARIABLE_TRIMMING%==yes $include "../../base/addons/variable_trimming/bb4/
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_isetdecdef.inc";
 $ifi %EV%==YES    $include   "../../base/addons/EV/bb4/EV_isetdecdef.inc";
 
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_isetdecdef.inc";  
+
 
 $label endoffile

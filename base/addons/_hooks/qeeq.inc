@@ -19,6 +19,7 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_qeeq.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_qeeq.inc";
 
+$ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_qeeq.inc";
 
 $ifi %vqdebug%==yes   $setglobal equation qeeq
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";

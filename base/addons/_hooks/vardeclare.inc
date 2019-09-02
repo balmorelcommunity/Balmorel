@@ -32,6 +32,7 @@ $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowba
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_vardeclare.inc";
 $ifi %VARIABLE_TRIMMING%==yes $include "../../base/addons/variable_trimming/bb4/vt_isetdecdef2.inc";
 
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_vardeclare.inc";
 
 
 $ifi %vqdebug%==yes       $include   "../../base/addons/vqdebug/bb4/vqdebug_declare.inc";

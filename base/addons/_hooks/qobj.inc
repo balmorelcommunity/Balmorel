@@ -28,6 +28,7 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_qobj.inc";
 $ifi %SCENARIO3OR4%==YES  $include        "../../base/addons/scenario3_4/scen34_qobj.inc";
 
+$ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_qobj.inc";
 
 $ifi %vqdebug%==yes   $setglobal equation qobj
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";

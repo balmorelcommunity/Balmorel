@@ -30,4 +30,6 @@ $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_setdec
 
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_setdeclare.inc";
 
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_setdefine.inc";
+
 $label endoffile

@@ -147,11 +147,6 @@ $if     EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE      '../data/TECHGROUP_DE
 $if not EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE '../../base/data/TECHGROUP_DEUSER.inc';
 %semislash%;
 
-PARAMETER TECHGROUP_DHUSER(TECH_GROUP,DHUSER) "assignment of tech groups into user groups for heat"   %semislash%
-$if     EXIST '../data/TECHGROUP_DHUSER.inc' $INCLUDE      '../data/TECHGROUP_DHUSER.inc';
-$if not EXIST '../data/TECHGROUP_DHUSER.inc' $INCLUDE '../../base/data/TECHGROUP_DHUSER.inc';
-%semislash%;
-
 SET G(GGG)    "Generation technologies in the simulation"  %semislash%
 $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
 $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
@@ -796,6 +791,11 @@ $if     EXIST '../data/HYPPROFILS.inc' $INCLUDE      '../data/HYPPROFILS.inc';
 $if not EXIST '../data/HYPPROFILS.inc' $INCLUDE '../../base/data/HYPPROFILS.inc';
 %semislash%;
 
+PARAMETER TEMP_VAR_T(SSS,TTT,RRR)                      "Temperature profiles"   %semislash%
+$if     EXIST '../data/TEMP_VAR_T.inc' $INCLUDE      '../data/TEMP_VAR_T.inc';
+$if not EXIST '../data/TEMP_VAR_T.inc' $INCLUDE '../../base/data/TEMP_VAR_T.inc';
+%semislash%;
+
 
 $ifi %bb3%==yes WEIGHT_T(T)=1;
 
@@ -918,11 +918,6 @@ WND_VAR_T('FR_A',SSS,TTT)= WND_VAR_T2(SSS,TTT,'FR_A')    ;
 SOLE_VAR_T('FR_A',SSS,TTT)= SOLE_VAR_T2(SSS,TTT,'FR_A')    ;
 WTRRRVAR_T('FR_A',S,T) = WTRRRVAR_S1('FR_A',S);
 
-** remove investment options for DH areas currently not in use
-AGKN('UK_DH',G) = NO;
-AGKN('FR_DH',G) = NO;
-AGKN('NL_DH',G) = NO;
-AGKN('BE_DH',G) = NO;
 
 *Redefine some German storage technologies as short term energy storage
 GDATA('AGG-DE4-E_RES_WTR_PMP','GDTYPE') = GESTO;
@@ -965,9 +960,6 @@ AGKN(IA,G)$SUM(Y,GMAXINVEST(Y,IA,G)) = YES;
 * assumption on how much of solar generation that can be used on site (and hence get indirect subsidy)
 ** (Gustav 29.08.19) we have to assess how good such assumption is and perhaps find some source to back it up)
 SCALAR SELF_CONSUMPTION_RATE /0.5/;
-
-*TEST: setting idv heat demand to zero
-DH(YYY,IA,DHUSER)$(INVDATA(IA,'INDIVHEAT') EQ 1) = 0;
 
 * Necessary if running EV module with more years:  ( but more changes are needed)
 *EV_PEFF(Y) = EV_PEFF('2020');
