@@ -738,6 +738,11 @@ $if     EXIST '../data/CHRONOHOUR.inc' $INCLUDE         '../data/CHRONOHOUR.inc'
 $if not EXIST '../data/CHRONOHOUR.inc' $INCLUDE '../../base/data/CHRONOHOUR.inc';
 %semislash%;
 
+PARAMETER SSIZE(SSS)      'The number of Seasons that are aggregated into Season S'  %semislash%
+$if     EXIST '../data/SSIZE.inc' $INCLUDE         '../data/SSIZE.inc';
+$if not EXIST '../data/SSIZE.inc' $INCLUDE '../../base/data/SSIZE.inc';
+%semislash%;
+
 PARAMETER GKRATE(AAA,GGG,SSS)                       "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)" %semislash%
 $if     EXIST '../data/GKRATE.inc' $INCLUDE         '../data/GKRATE.inc';
 $if not EXIST '../data/GKRATE.inc' $INCLUDE '../../base/data/GKRATE.inc';

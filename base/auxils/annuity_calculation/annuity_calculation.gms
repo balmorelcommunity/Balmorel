@@ -84,17 +84,17 @@ $if not EXIST '../data/HEATTRANS_LIFETIME_XH.inc' $INCLUDE '../../base/data/HEAT
 
 PARAMETER ANNUITYCG(C,G)               "Transforms investment in technologies into annual payment (fraction)";
 
-PARAMETER DEBT_SHARE_G(G)              "Share of debt for the investment of each generation technology (fraction)";
-DEBT_SHARE_G(G)$(GDATA(G,'GDKVARIABL') EQ 1)=0.8;
+PARAMETER DEBT_SHARE_G(GGG)              "Share of debt for the investment of each generation technology (fraction)";
+DEBT_SHARE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.8;
 
-PARAMETER INTEREST_RATE_G(G)           "Interest rate applied to the loan of each generation technology (fraction)";
-INTEREST_RATE_G(G)$(GDATA(G,'GDKVARIABL') EQ 1)=0.06;
+PARAMETER INTEREST_RATE_G(GGG)           "Interest rate applied to the loan of each generation technology (fraction)";
+INTEREST_RATE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.06;
 
-PARAMETER PAYBACK_TIME_G(G)            "Payback time of the loan for generation technologies (years)";
+PARAMETER PAYBACK_TIME_G(GGG)            "Payback time of the loan for generation technologies (years)";
 * Loan repayment assumption: lifetime of the technology if lifetime is higher than 20 years, else 20 years
-PAYBACK_TIME_G(G)$(GDATA(G,'GDKVARIABL') EQ 1)=MIN(GDATA(G,'GDLIFETIME'),20);
+PAYBACK_TIME_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=MIN(GDATA(GGG,'GDLIFETIME'),20);
 
-PARAMETER ANNUITYCX(C)                 "Transforms investment in transmission lines into annual payment (fraction)";
+PARAMETER ANNUITYCX(CCC)                 "Transforms investment in transmission lines into annual payment (fraction)";
 
 SCALAR DEBT_SHARE_X                    "Share of debt for the investment of transmission lines (fraction)";
 *Assumption: share of debt equal to 0
@@ -128,9 +128,9 @@ PAYBACK_TIME_XH = LIFETIME_XH;
 
 *------------CALCULATIONS-------------
 
-ANNUITYCG(C,G)$(GDATA(G,'GDKVARIABL') EQ 1)= ((1-DEBT_SHARE_G(G))*DISCOUNTRATE + INTEREST_RATE_G(G) * DEBT_SHARE_G (G)* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_G(G))) / (1 - (1 + INTEREST_RATE_G(G)) **( -PAYBACK_TIME_G(G)))) / (1 - (1 + DISCOUNTRATE) ** (-GDATA(G,'GDLIFETIME')));
+ANNUITYCG(CCC,GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)= ((1-DEBT_SHARE_G(GGG))*DISCOUNTRATE + INTEREST_RATE_G(GGG) * DEBT_SHARE_G (GGG)* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_G(GGG))) / (1 - (1 + INTEREST_RATE_G(GGG)) **( -PAYBACK_TIME_G(GGG)))) / (1 - (1 + DISCOUNTRATE) ** (-GDATA(GGG,'GDLIFETIME')));
 
-ANNUITYCX(C)= ((1-DEBT_SHARE_X)*DISCOUNTRATE + INTEREST_RATE_X * DEBT_SHARE_X* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_X)) / (1 - (1 + INTEREST_RATE_X) ** (-PAYBACK_TIME_X))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_X));
+ANNUITYCX(CCC)= ((1-DEBT_SHARE_X)*DISCOUNTRATE + INTEREST_RATE_X * DEBT_SHARE_X* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_X)) / (1 - (1 + INTEREST_RATE_X) ** (-PAYBACK_TIME_X))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_X));
 
 ANNUITYCXH(C)= ((1-DEBT_SHARE_XH)*DISCOUNTRATE + INTEREST_RATE_XH * DEBT_SHARE_XH* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_XH)) / (1 - (1 + INTEREST_RATE_XH) ** (-PAYBACK_TIME_XH))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_XH));
 
@@ -143,18 +143,18 @@ ANNUITYCXH(C)= ((1-DEBT_SHARE_XH)*DISCOUNTRATE + INTEREST_RATE_XH * DEBT_SHARE_X
 file annuity_generation /'../../base/auxils/annuity_calculation/ANNUITYCG.inc'/;
 annuity_generation.nd  = 12;
 put annuity_generation;
-put '*PARAMETER ANNUITYCG(C,G) CALCULATED WITH AUXILS' //
-loop((C,G)$(GDATA(G,'GDKVARIABL') EQ 1),
-          put ANNUITYCG.tn(C,G),'=' ANNUITYCG(C,G) :0 ';' /
+put '*PARAMETER ANNUITYCG(CCC,GGG) CALCULATED WITH AUXILS' //
+loop((CCC,GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1),
+          put ANNUITYCG.tn(CCC,GGG),'=' ANNUITYCG(CCC,GGG) :0 ';' /
 );
 putclose;
 
 file annuity_transmission /'../../base/auxils/annuity_calculation/ANNUITYCX.inc'/;
 annuity_transmission.nd  = 12;
 put annuity_transmission;
-put '*PARAMETER ANNUITYCX(C) CALCULATED WITH AUXILS' //
-loop(C,
-          put ANNUITYCX.tn(C),'=' ANNUITYCX(C) :0 ';' /
+put '*PARAMETER ANNUITYCX(CCC) CALCULATED WITH AUXILS' //
+loop(CCC,
+          put ANNUITYCX.tn(CCC),'=' ANNUITYCX(CCC) :0 ';' /
 );
 putclose;
 
