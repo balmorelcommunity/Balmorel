@@ -1126,7 +1126,7 @@ $label  Transmission_investments_end
 *------------------------------------------------------------
 
 Parameter STOVOLTSINIT(AAA,GGG);
-STOVOLTSINIT('South-A','pmp_hydro2')= 0.5;
+*STOVOLTSINIT('South-A','pmp_hydro2')= 0.5;
 
 *-------------------------------------------------------------------------------
 * End: Internal parameters and settings
@@ -2514,7 +2514,7 @@ $ifi %bypass%==yes              QGCBGBPRBYPASS2
 *--- Storage restrictions ------------------------------------------------------
                                 QESTOVOLT
                                 QESTOVOLTS
-                                QESTOVOLTSINIT
+*                                QESTOVOLTSINIT
                                 QHSTOVOLT
                                 QHSTOVOLTS
 
