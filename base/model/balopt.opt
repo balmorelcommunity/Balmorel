@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug 
+$setglobal vqdebug
 *!option yes
 
 
@@ -106,7 +106,7 @@ ROLLINGSEASONSNUMBER= 1;
 *---- Generation investments options----
 
 * Permit investments in generation and storage capacity:
-$setglobal TechInvest yes
+$setglobal TechInvest
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
@@ -117,7 +117,7 @@ GINVESTSTART= 2020;
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest yes
+$setglobal TransInvest
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
@@ -133,7 +133,7 @@ $setglobal WNDSHUTDOWN
 *!option yes
 
 * Allow curtailment of variable renewable energy generators  (BB4)
-$setglobal VRESHUTDOWN   yes
+$setglobal VRESHUTDOWN yes
 *!option yes
 
 *-----------------------------------------------------------
@@ -144,7 +144,7 @@ $setglobal HYRS_AGG hydro_year_agg
 *!option hydro_season_agg     !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent a  seasonal behaviour"
 
 * Relax seasonal limits for hydropower storages when running the model with less than 26 seasons (in HYRSDATA.inc)
-$setglobal RELAX_HYDROSTORAGE yes
+$setglobal RELAX_HYDROSTORAGE
 *!option yes
 *---------------END: HYDRO RESERVOIRS OPTIONS--------------
 *----------------------------------------------------------
@@ -199,7 +199,7 @@ $Setglobal HYDROGEN
 $Setglobal STEPWISEPRICE
 
 * Set a common maximum for fuels.
-$Setglobal LIMITSFORFUELS  yes
+$Setglobal LIMITSFORFUELS
 *!option yes
 
 * Allow demand elasticity
@@ -278,28 +278,28 @@ $setglobal stointers
 
 
 * Bypass of 'turbine' (electricity production) on backpressure units.
-$setglobal bypass yes
+$setglobal bypass
 *!option yes
 
 
 *-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
 * overall control variable DECOM must be 'yes' if any of the other decommissioning controls are.
-$setglobal DECOM yes
+$setglobal DECOM
 *!option yes
 
 *-------ENDOGENOUS CAPACITIES----------
 * Note: If no option for endogenous capacities is activated, endogenous investments will not be decommissioned
 
 * Adds Endogenous capacities will maximum stay in the system as much as their lifetimes:
-$setglobal LIFETIME_DECOM_ENDO_G YES
+$setglobal LIFETIME_DECOM_ENDO_G
 *!option yes
 
 * Adds Endogenous capacities can be decommissioned based on their profitability:
-$setglobal ECONOMIC_DECOM_ENDO_G   yes
+$setglobal ECONOMIC_DECOM_ENDO_G
 *!option yes
 
 * Adds Endogenous decommissioned endogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
-$setglobal REVERT_DECOM_ENDO_G   yes
+$setglobal REVERT_DECOM_ENDO_G
 *!option yes
 
 *--------END OF ENDOGENOUS CAPACITIES-----
@@ -319,15 +319,15 @@ $setglobal NO_DECOM_EXO_G
 *!option yes
 
 * Adds Exogenous capacities will maximum stay in the system as much as their lifetimes (or as much as political decissions suggest it, for instance), which should be represented in the yearly development of capacities of the input parameter GKFX:
-$setglobal LIFETIME_DECOM_EXO_G  YES
+$setglobal LIFETIME_DECOM_EXO_G
 *!option yes
 
 * Adds Exogenous capacities can be decommissioned based on their profitability:
-$setglobal ECONOMIC_DECOM_EXO_G    yes
+$setglobal ECONOMIC_DECOM_EXO_G
 *!option yes
 
 * Adds Endogenous decommissioned exogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
-$setglobal REVERT_DECOM_EXO_G   yes
+$setglobal REVERT_DECOM_EXO_G
 *!option yes
 *--------END OF ENDOGENOUS CAPACITIES-----
 *-----------------------End of TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
@@ -340,23 +340,23 @@ $setglobal UnitComm
 *!option yes
 
 * Adds minimal production-when-on:
-$setglobal MINFUELCONS YES
+$setglobal MINFUELCONS
 *!option yes
 * Adds respecting minimum off time of the capacities:
-$setglobal MINSTARTUPTIME  yes
+$setglobal MINSTARTUPTIME
 *!option yes
 * Adds respecting minimum on time of the capacities:
-$setglobal MINSHUTDOWNTIME  yes
+$setglobal MINSHUTDOWNTIME
 *!option yes
 * Adds ramping technical limitations and stepwise costs to the Power plants when-on:
-$setglobal STEPWISE_RAMPING_UC  ramp_const
+$setglobal STEPWISE_RAMPING_UC
 *!option ramp_const_cost !Text "With ramping constraints and ramping costs"
 *!option ramp_const  !Text "With ramping constraints but without ramping costs"
 *!option no_ramping  !Text "Neither ramping constraints nor ramping costs"
 
 * Seasonal link is on for all UC options activated. This means that past seasons will influence future seasons.
 * This option increases computanional time but assures continuity in the fuel consumption profile.
-$setglobal SEASONALLINKUC yes
+$setglobal SEASONALLINKUC
 *!option yes
 
 * The production interval is segmented into a number of disjunct pieces, each with its own costs: NOT IMPLEMENTED
@@ -375,7 +375,7 @@ $setglobal STEPWISE_RAMPING
 
 * Seasonal ramping link is on. This means that the fuel consumption of the last element ot the set T of the set S will be linked to the first element of the set T of the set S+1.
 * This option increases computanional time but assures continuity in the fuel consumption profile.
-$setglobal SEASONALLINKRAMPING  YES
+$setglobal SEASONALLINKRAMPING
 *!option yes
 
 *----------------END OF STEPWISE RAMPING (LINEAR VERSION)----------------------------------------------------------
@@ -433,7 +433,7 @@ $label endofMSNTrelpaths
 * e.g. one model output serving as input to another model.
 
 * Overall control to export results so they can be used in future runs :
-$Setglobal export_results   yes
+$Setglobal export_results
 *!option yes
 
 *--------------------------------------------
@@ -460,11 +460,11 @@ $setglobal HYRSBB123 quant
 
 *--------------------INTERSEASONAL STORAGE-----------------------------------------------------------
 *Import Electricity storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
-$Setglobal ADDELECSTORCONT yes
+$Setglobal ADDELECSTORCONT
 *!option yes
 
 *Import Heat storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
-$Setglobal ADDHEATSTORCONT yes
+$Setglobal ADDHEATSTORCONT
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 
@@ -473,11 +473,11 @@ $Setglobal ADDHEATSTORCONT yes
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
 
 *Import generation and storage technology capacity development from previous runs
-$setglobal ADDTECHDEV   yes
+$setglobal ADDTECHDEV
 *!option yes
 
 *Import transmission development from previous runs
-$setglobal ADDTRANSDEV  yes
+$setglobal ADDTRANSDEV
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -516,7 +516,7 @@ $setglobal inputdatatxt ""
 * e.g. viewing (Gdxviewer), comparing (Gdxdiff), or transferring to other data formats like Excel or Access.
 * Note that this will be done as a  compile time operation,
 * such that only the 'direct' data definitions (and no assignments) are reflected.
-$setglobal INPUTDATA2GDX  yes
+$setglobal INPUTDATA2GDX
 *!option yes
 
 
@@ -527,7 +527,7 @@ $setglobal INPUTDATAGDX2MDB
 * close all tables in it before executing Balmorel in order to ensure updating of the links.
 
 * Merge input data with the output into the gdx file %CASEID%.gdx
-$setglobal MERGEINPUTDATA yes
+$setglobal MERGEINPUTDATA
 *!option yes
 
 
@@ -563,7 +563,7 @@ $Setglobal limitedresults
 $setglobal PRINTFILES
 *!option yes
 
-$setglobal OUTPUT_SUMMARY   yes
+$setglobal OUTPUT_SUMMARY
 *!option yes
 
 * PRINTSEPARATOR is a single character used for separating columns in printfiles,
@@ -603,13 +603,13 @@ $setglobal PRINTSEPARATOR ';'
 * The value specified by $Setglobal SAVEPOINTVALUE will be used for savepoint.
 * To be used with subsequent handling of output.
 *
-$setglobal SAVEPOINTVALUE 1
+$setglobal SAVEPOINTVALUE 0
 *!option 0
 *!option 1   !mustif  %MERGESAVEPOINTRESULTS%==yes  !mustif  %MERGEDSAVEPOINTRESULTS2GDX%==yes   !mustif  %MERGEDSAVEPOINTRESULTS2XLS%==yes   !mustif not %MERGECASE%==none  !mustif not %DIFFCASE%==none
 *!option 2   !text Note: nothing implemented nor tested, so do not use it.
 
 * Use the $setglobal MERGESAVEPOINTRESULTS to choose whether to merge annual/seasonal results or not:
-$setglobal MERGESAVEPOINTRESULTS   YES
+$setglobal MERGESAVEPOINTRESULTS
 *!option yes  !onlyif  %SAVEPOINTVALUE%==1
 * Note: make sure that it is possible to make the new merged gdx file,
 * e.g. make sure that the file *.gdx is not open in another application (like GAMD IDE).
