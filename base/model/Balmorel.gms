@@ -3225,7 +3225,7 @@ $label ENDOFMODEL
 $include "../../base/addons/_hooks/endofmodel_post.inc"
 *----- End of model ------------------------------------------------------------
 
-$include "../../base/model/Open_MODEX_output.inc"
+$include "../../base/output/Open_MODEX_output.inc"
 
 *--- Results collection for this case ------------------------------------------
 
