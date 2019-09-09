@@ -24,4 +24,5 @@ $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_sim.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_sim.inc";
 $ifi %SCENARIO3OR4%==YES  $include        "../../base/addons/scenario3_4/scen34_sim.inc";      
 
+$ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_sim.inc";    
 $label endoffile

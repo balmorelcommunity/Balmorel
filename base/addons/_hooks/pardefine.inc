@@ -17,6 +17,8 @@ $ifi not %BB4%==yes $goto endoffile
 
 $label  beginbb4
 
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_pardefine.inc"; 
+
 $ifi %X3V%==yes  $include   "../../base/addons/x3v/bb4/x3v_pardefine.inc";
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_pardefine.inc";
 $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_pardefine.inc";
@@ -24,9 +26,11 @@ $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_pardef
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_pardefine.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_pardefine.inc";
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_pardefine.inc";
+$ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_pardefine.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_pardefine.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_pardefine.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_pardefine.inc";
+$ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardefine.inc";
 $ifi %AREA_AGGREGATION%==yes      $include        "../../base/addons/area_aggregation/aa_pardefine.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_pardefine.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_pardefine.inc";

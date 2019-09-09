@@ -142,6 +142,16 @@ $if     EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE      '../data/TECH_GROUP_V
 $if not EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/TECH_GROUP_VALUE.inc';
 %semislash%;
 
+SET SUBTECH_GROUP     "SubTechnology Groups" %semislash%
+$if     EXIST '../data/SUBTECH_GROUP.inc' $INCLUDE      '../data/SUBTECH_GROUP.inc';
+$if not EXIST '../data/SUBTECH_GROUP.inc' $INCLUDE '../../base/data/SUBTECH_GROUP.inc';
+%semislash%;
+
+PARAMETER SUBTECH_GROUP_VALUE(SUBTECH_GROUP)         "Technology Groups value" %semislash%
+$if     EXIST '../data/SUBTECH_GROUP_VALUE.inc' $INCLUDE      '../data/SUBTECH_GROUP_VALUE.inc';
+$if not EXIST '../data/SUBTECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/SUBTECH_GROUP_VALUE.inc';
+%semislash%;
+
 PARAMETER TECHGROUP_DEUSER(TECH_GROUP,DEUSER) "assignment of tech groups into user groups for electricity"   %semislash%
 $if     EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE      '../data/TECHGROUP_DEUSER.inc';
 $if not EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE '../../base/data/TECHGROUP_DEUSER.inc';
@@ -169,9 +179,6 @@ $include "../../base/addons/_hooks/setdefine.inc"
 * Duplication of sets for describing possible heat exchange between areas (option HEATTRANS).
 $ifi %HEATTRANS%==yes ALIAS (AAA,IAAAE,IAAAI);
 $ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
-
-
-$ifi not %HYRSBB123%==none   $include "../../base/addons/hyrsbb123/hyrsbb123internals.inc";
 
 *-------------------------------------------------------------------------------
 * End: Any declarations and definitions of sets, aliases and acronyms for addon
@@ -242,25 +249,22 @@ $if     EXIST '../data/S.inc' $INCLUDE      '../data/S.inc';
 $if not EXIST '../data/S.inc' $INCLUDE '../../base/data/S.inc';
 %semislash%;
 
+* Calculation of reverse indexed sets
+SREV(S,S+(card(S)-2*ord(S)+1)) = YES;
+SREV2(S,S+(card(S)-2*ord(S)+1)) = YES;
+
 SET T(TTT)    "Time periods within the season in the simulation"  %semislash%
 $if     EXIST '../data/T.inc' $INCLUDE         '../data/T.inc';
 $if not EXIST '../data/T.inc' $INCLUDE '../../base/data/T.inc';
 %semislash%;
 
+TREV(T,T+(card(T)-2*ord(T)+1)) = YES;
+TREV2(T,T+(card(T)-2*ord(T)+1)) = YES;
+
 PARAMETER YVALUE(YYY)   "Numerical value of the years labels"  %semislash%
 $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
 $if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
 %semislash%;
-
-PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y";
-* Set the relative weight of the individual years in Y.
-* Two ideas implemented here. Used according to option bb4weighty.
-* Simple idea is to give equal weights:
-$ifi "%bb4weighty%"=="same"      IWEIGHTY(Y) = 1;
-* More complex weighting of the individual years (years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)):
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$(ORD(Y) EQ 1) = 1$(CARD(Y) EQ 1) + ((YVALUE(Y+1)-YVALUE(Y)-1)+1)$(CARD(Y) GT 1);
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) GT 1) AND (ORD(Y) LT CARD(Y))) = (YVALUE(Y) - YVALUE(Y-1) -1)/2  + (YVALUE(Y+1) - YVALUE(Y) -1)/2    +1;
-$ifi "%bb4weighty%"=="shareYYY"  IWEIGHTY(Y)$((ORD(Y) EQ CARD(Y)) AND (CARD(Y) GT 1)) = ((YVALUE(Y)-YVALUE(Y-1)-1)+1);
 
 *SET DAYTYPE       "Types of days within the week, typically workdays/weekend" %semislash%
 *$if     EXIST '../data/DAYTYPE.inc' $INCLUDE         '../data/DAYTYPE.inc';
@@ -286,8 +290,6 @@ SET ECONSETCATEGORY "Set for econ"  %semislash%
 $if     EXIST '../data/ECONSETCATEGORY.inc' $INCLUDE         '../data/ECONSETCATEGORY.inc';
 $if not EXIST '../data/ECONSETCATEGORY.inc' $INCLUDE '../../base/data/ECONSETCATEGORY.inc';
 %semislash%                            */
-
-
 
 
 *-------------------------------------------------------------------------------
@@ -447,6 +449,11 @@ $if     EXIST '../data/TECHGROUPKPOT.inc' $INCLUDE      '../data/TECHGROUPKPOT.i
 $if not EXIST '../data/TECHGROUPKPOT.inc' $INCLUDE '../../base/data/TECHGROUPKPOT.inc';
 %semislash%;
 
+PARAMETER SUBTECHGROUPKPOT(CCCRRRAAA,TECH_GROUP,SUBTECH_GROUP)    "Subtechnology group capacity restriction by geography (MW)"   %semislash%
+$if     EXIST '../data/SUBTECHGROUPKPOT.inc' $INCLUDE      '../data/SUBTECHGROUPKPOT.inc';
+$if not EXIST '../data/SUBTECHGROUPKPOT.inc' $INCLUDE '../../base/data/SUBTECHGROUPKPOT.inc';
+%semislash%;
+
 /* Todo
 PARAMETER FKMIN(YYY,CCCRRRAAA,FFF)    "Capacity restricted by geography (MW)"   %semislash%
 $if     EXIST '../data/FKMIN.inc' $INCLUDE      '../data/FKMIN.inc';
@@ -508,6 +515,11 @@ $ifi %GEQF_DOL%==CCCRRRAAA_FFF       PARAMETER GEQF(CCCRRRAAA,FFF)              
 $ifi %GEQF_DOL%== YYY_CCCRRRAAA_FFF  PARAMETER GEQF(YYY,CCCRRRAAA,FFF)          'Required fuel use (GJ) per year' %semislash%
 $if     EXIST '../data/GEQF.inc' $INCLUDE      '../data/GEQF.inc';
 $if not EXIST '../data/GEQF.inc' $INCLUDE '../../base/data/GEQF.inc';
+%semislash%;
+
+PARAMETER GMAXFS(YYY,CCCRRRAAA,FFF,SSS)         'Maximum fuel use (GJ) per year and season' %semislash%
+$if     EXIST '../data/GMAXFS.inc' $INCLUDE      '../data/GMAXFS.inc';
+$if not EXIST '../data/GMAXFS.inc' $INCLUDE '../../base/data/GMAXFS.inc';
 %semislash%;
 
 * Maximum capacity at new technologies. Presently not implemented.
@@ -582,9 +594,14 @@ $if     EXIST '../data/GINVCOST.inc' $INCLUDE         '../data/GINVCOST.inc';
 $if not EXIST '../data/GINVCOST.inc' $INCLUDE '../../base/data/GINVCOST.inc';
 %semislash%;
 
-PARAMETER GOMVCOST(AAA,GGG)    "Variable operating and maintenance costs (Money/MWh)"  %semislash%
-$if     EXIST '../data/GOMVCOST.inc' $INCLUDE         '../data/GOMVCOST.inc';
-$if not EXIST '../data/GOMVCOST.inc' $INCLUDE '../../base/data/GOMVCOST.inc';
+PARAMETER GOMVCOSTO(AAA,GGG)    "Variable operating and maintenance costs relative to the output(Money/MWh)"  %semislash%
+$if     EXIST '../data/GOMVCOSTO.inc' $INCLUDE         '../data/GOMVCOSTO.inc';
+$if not EXIST '../data/GOMVCOSTO.inc' $INCLUDE '../../base/data/GOMVCOSTO.inc';
+%semislash%;
+
+PARAMETER GOMVCOSTIN(AAA,GGG)    "Variable operating and maintenance costs relative to the input(Money/MWh)"  %semislash%
+$if     EXIST '../data/GOMVCOSTIN.inc' $INCLUDE         '../data/GOMVCOSTIN.inc';
+$if not EXIST '../data/GOMVCOSTIN.inc' $INCLUDE '../../base/data/GOMVCOSTIN.inc';
 %semislash%;
 
 PARAMETER GOMFCOST(AAA,GGG)    "Annual fixed operating costs (kMoney/MW)"  %semislash%
@@ -596,8 +613,6 @@ PARAMETER GEFFRATE(AAA,GGG)    "Fuel efficiency rating (strictly positive, typic
 $if     EXIST '../data/GEFFRATE.inc' $INCLUDE         '../data/GEFFRATE.inc';
 $if not EXIST '../data/GEFFRATE.inc' $INCLUDE '../../base/data/GEFFRATE.inc';
 %semislash%;
-* Default value inserted:
-GEFFRATE(IA,G)$(NOT GEFFRATE(IA,G)) = 1;
 
 PARAMETER DEFP_BASE(RRR)    "Nominal annual average consumer electricity price (Money/MWh)"  %semislash%
 $if     EXIST '../data/DEFP_BASE.inc' $INCLUDE         '../data/DEFP_BASE.inc';
@@ -641,21 +656,17 @@ $if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
 *-------------------------------------------------------------------------------
 *---- Transmission data: ------------------------------------------------------
 *-------------------------------------------------------------------------------
-!! Previous name XKINI; for data consistency, kept for data inclusion for this specific version, data copied to XKFX below.     todo
-PARAMETER XKINI(YYY,IRRRE,IRRRI)  "Capacity of exogenously given transmission capacity between regions (MW)"   %semislash%
-$if     EXIST '../data/XKINI.inc' $INCLUDE         '../data/XKINI.inc';
-$if not EXIST '../data/XKINI.inc' $INCLUDE '../../base/data/XKINI.inc';
-%semislash%;
-
-PARAMETER XKFX(YYY,IRRRE,IRRRI)  "Capacity of exogenously given transmission capacity between regions (MW)"; !! New suggested name for XKINI. XKFX data copie3d to XKFX.
-XKFX(YYY,IRRRE,IRRRI) = XKINI(YYY,IRRRE,IRRRI);
-
 $ifi %LoadInvestData%==yes execute_load  '../../simex/TRANSINVEST_%CASEID%.gdx', XKACC;
 $ifi %LoadInvestData%==yes XKFX(Y,IRE,IRI)= XKFX(Y,IRE,IRI)+XKACC(Y,IRE,IRI);
 
 PARAMETER XINVCOST(YYY,IRRRE,IRRRI)  "Investment cost in new transmission capacity, default: INF or 0: no investment, EPS or positive: possible with stated cost (Money/MW)"    %semislash%
 $if     EXIST '../data/XINVCOST.inc' $INCLUDE         '../data/XINVCOST.inc';
 $if not EXIST '../data/XINVCOST.inc' $INCLUDE '../../base/data/XINVCOST.inc';
+%semislash%;
+
+PARAMETER XKFX(YYY,IRRRE,IRRRI)  "Capacity of exogenously given transmission capacity between regions (MW)"   %semislash%
+$if     EXIST '../data/XKFX.inc' $INCLUDE         '../data/XKFX.inc';
+$if not EXIST '../data/XKFX.inc' $INCLUDE '../../base/data/XKFX.inc';
 %semislash%;
 
 PARAMETER XCOST(IRRRE,IRRRI)      "Transmission cost between regions (Money/MWh)"   %semislash%
@@ -674,12 +685,6 @@ $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT  PARAMETER XKRATE(IRRRE,IRRRI,SSS,TTT) "T
 $if     EXIST '../data/XKRATE.inc' $INCLUDE         '../data/XKRATE.inc';
 $if not EXIST '../data/XKRATE.inc' $INCLUDE '../../base/data/XKRATE.inc';
 %semislash%;
-* Default value inserted:
-$ifi %XKRATE_DOL%==IRRRE_IRRRI          XKRATE(IRE,IRI)$(NOT XKRATE(IRE,IRI)) = 1;
-$ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS      XKRATE(IRE,IRI,S)$(NOT XKRATE(IRE,IRI,S)) = 1;
-$ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT  XKRATE(IRE,IRI,S,T)$(NOT XKRATE(IRE,IRI,S,T)) = 1;
-
-
 
 PARAMETER XMAXINV(IRRRE,IRRRI)   "Max investment in transmission capacity between two regions for each simulated year (each 5th year)"  %semislash%
 $if     EXIST '../data/XMAXINV.inc' $INCLUDE         '../data/XMAXINV.inc';
@@ -738,8 +743,6 @@ PARAMETER GKRATE(AAA,GGG,SSS)                       "Capacity rating (non-negati
 $if     EXIST '../data/GKRATE.inc' $INCLUDE         '../data/GKRATE.inc';
 $if not EXIST '../data/GKRATE.inc' $INCLUDE '../../base/data/GKRATE.inc';
 %semislash%;
-* Default value inserted:
-GKRATE(IA,G,S)$(NOT GKRATE(IA,G,S) AND (SUM(Y, GKFX(Y,IA,G)) OR AGKN(IA,G))) = 1;
 
 PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)                    "Variation in electricity demand"   %semislash%
 $if     EXIST '../data/DE_VAR_T.inc' $INCLUDE      '../data/DE_VAR_T.inc';

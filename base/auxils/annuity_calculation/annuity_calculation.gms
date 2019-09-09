@@ -16,7 +16,13 @@ ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GH
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
 ACRONYMS STEAMTURBINE_SUBCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILER, COMBINEDCYCLE, EXCESS_HEAT, ELECTRICITY_BATTERY, GEOTHERMAL,
-GASTURBINE, HEATPUMP, HEATPUMP_AIR, HEATPUMP_EXCESSHEAT, HEATPUMP_GROUND, PIT, WATERTANK, SOLARPV, SOLARHEATING, WINDTURBINE_OFFSHORE_FAR, WINDTURBINE_OFFSHORE_NEARSHORE, WINDTURBINE_ONSHORE;
+GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_ONSHORE, WINDTURBINE_OFFSHORE;
+
+*ACRONYMS for subtech groups
+* They can be used for multiple purposes
+* They should generally not be changed.
+* New technology types may be added only if also code specifying their properties are added.
+ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,EXCESSHEAT,GROUND;
 
 SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)"
 $if     EXIST '../data/CCCRRRAAA.inc' $INCLUDE         '../data/CCCRRRAAA.inc';
@@ -72,19 +78,19 @@ SCALAR    LIFETIME_X               "Lifetime of transmission lines (years)";
 $if     EXIST '../data/LIFETIME_X.inc' $INCLUDE         '../data/LIFETIME_X.inc';
 $if not EXIST '../data/LIFETIME_X.inc' $INCLUDE '../../base/data/LIFETIME_X.inc';
 
-PARAMETER ANNUITYCG(C,G)               "Transforms investment in technologies into annual payment (fraction)";
+PARAMETER ANNUITYCG(CCC,GGG)               "Transforms investment in technologies into annual payment (fraction)";
 
-PARAMETER DEBT_SHARE_G(G)              "Share of debt for the investment of each generation technology (fraction)";
-DEBT_SHARE_G(G)$(GDATA(G,'GDKVARIABL') EQ 1)=0.8;
+PARAMETER DEBT_SHARE_G(GGG)              "Share of debt for the investment of each generation technology (fraction)";
+DEBT_SHARE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.8;
 
-PARAMETER INTEREST_RATE_G(G)           "Interest rate applied to the loan of each generation technology (fraction)";
-INTEREST_RATE_G(G)$(GDATA(G,'GDKVARIABL') EQ 1)=0.06;
+PARAMETER INTEREST_RATE_G(GGG)           "Interest rate applied to the loan of each generation technology (fraction)";
+INTEREST_RATE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.06;
 
-PARAMETER PAYBACK_TIME_G(G)            "Payback time of the loan for generation technologies (years)";
+PARAMETER PAYBACK_TIME_G(GGG)            "Payback time of the loan for generation technologies (years)";
 * Loan repayment assumption: lifetime of the technology if lifetime is higher than 20 years, else 20 years
-PAYBACK_TIME_G(G)$(GDATA(G,'GDKVARIABL') EQ 1)=MIN(GDATA(G,'GDLIFETIME'),20);
+PAYBACK_TIME_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=MIN(GDATA(GGG,'GDLIFETIME'),20);
 
-PARAMETER ANNUITYCX(C)                 "Transforms investment in transmission lines into annual payment (fraction)";
+PARAMETER ANNUITYCX(CCC)                 "Transforms investment in transmission lines into annual payment (fraction)";
 
 SCALAR DEBT_SHARE_X                    "Share of debt for the investment of transmission lines (fraction)";
 *Assumption: share of debt equal to 0
@@ -104,9 +110,9 @@ PAYBACK_TIME_X = LIFETIME_X;
 
 *------------CALCULATIONS-------------
 
-ANNUITYCG(C,G)$(GDATA(G,'GDKVARIABL') EQ 1)= ((1-DEBT_SHARE_G(G))*DISCOUNTRATE + INTEREST_RATE_G(G) * DEBT_SHARE_G (G)* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_G(G))) / (1 - (1 + INTEREST_RATE_G(G)) **( -PAYBACK_TIME_G(G)))) / (1 - (1 + DISCOUNTRATE) ** (-GDATA(G,'GDLIFETIME')));
+ANNUITYCG(CCC,GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)= ((1-DEBT_SHARE_G(GGG))*DISCOUNTRATE + INTEREST_RATE_G(GGG) * DEBT_SHARE_G (GGG)* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_G(GGG))) / (1 - (1 + INTEREST_RATE_G(GGG)) **( -PAYBACK_TIME_G(GGG)))) / (1 - (1 + DISCOUNTRATE) ** (-GDATA(GGG,'GDLIFETIME')));
 
-ANNUITYCX(C)= ((1-DEBT_SHARE_X)*DISCOUNTRATE + INTEREST_RATE_X * DEBT_SHARE_X* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_X)) / (1 - (1 + INTEREST_RATE_X) ** (-PAYBACK_TIME_X))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_X));
+ANNUITYCX(CCC)= ((1-DEBT_SHARE_X)*DISCOUNTRATE + INTEREST_RATE_X * DEBT_SHARE_X* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_X)) / (1 - (1 + INTEREST_RATE_X) ** (-PAYBACK_TIME_X))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_X));
 
 *------------END OF CALCULATIONS-------------
 
@@ -117,18 +123,18 @@ ANNUITYCX(C)= ((1-DEBT_SHARE_X)*DISCOUNTRATE + INTEREST_RATE_X * DEBT_SHARE_X* (
 file annuity_generation /'../../base/auxils/annuity_calculation/ANNUITYCG.inc'/;
 annuity_generation.nd  = 12;
 put annuity_generation;
-put '*PARAMETER ANNUITYCG(C,G) CALCULATED WITH AUXILS' //
-loop((C,G)$(GDATA(G,'GDKVARIABL') EQ 1),
-          put ANNUITYCG.tn(C,G),'=' ANNUITYCG(C,G) :0 ';' /
+put '*PARAMETER ANNUITYCG(CCC,GGG) CALCULATED WITH AUXILS' //
+loop((CCC,GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1),
+          put ANNUITYCG.tn(CCC,GGG),'=' ANNUITYCG(CCC,GGG) :0 ';' /
 );
 putclose;
 
 file annuity_transmission /'../../base/auxils/annuity_calculation/ANNUITYCX.inc'/;
 annuity_transmission.nd  = 12;
 put annuity_transmission;
-put '*PARAMETER ANNUITYCX(C) CALCULATED WITH AUXILS' //
-loop(C,
-          put ANNUITYCX.tn(C),'=' ANNUITYCX(C) :0 ';' /
+put '*PARAMETER ANNUITYCX(CCC) CALCULATED WITH AUXILS' //
+loop(CCC,
+          put ANNUITYCX.tn(CCC),'=' ANNUITYCX(CCC) :0 ';' /
 );
 putclose;
 
