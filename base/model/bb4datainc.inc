@@ -147,7 +147,7 @@ $if     EXIST '../data/SUBTECH_GROUP.inc' $INCLUDE      '../data/SUBTECH_GROUP.i
 $if not EXIST '../data/SUBTECH_GROUP.inc' $INCLUDE '../../base/data/SUBTECH_GROUP.inc';
 %semislash%;
 
-PARAMETER SUBTECH_GROUP_VALUE(SUBTECH_GROUP)         "Technology Groups value" %semislash%
+*PARAMETER SUBTECH_GROUP_VALUE(SUBTECH_GROUP)         "Technology Groups value" %semislash%
 $if     EXIST '../data/SUBTECH_GROUP_VALUE.inc' $INCLUDE      '../data/SUBTECH_GROUP_VALUE.inc';
 $if not EXIST '../data/SUBTECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/SUBTECH_GROUP_VALUE.inc';
 %semislash%;
@@ -847,10 +847,10 @@ $include "../../base/addons/_hooks/pardefine.inc"
 
 
 *Decommissioning definition has to be included after all AGKN parameters have been defined
-PARAMETER DECOM_G(YYY,YYY,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERATION INVESTMENTS' %semislash%
-$if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
-$if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
-%semislash%;
+*PARAMETER DECOM_G(YYY,YYY,GGG)    'DECOMMISIONING YEAR OF ENDOGENOUS GENERATION INVESTMENTS' %semislash%
+*$if     EXIST '../data/DECOM_G.inc' $INCLUDE      '../data/DECOM_G.inc';
+*$if not EXIST '../data/DECOM_G.inc' $INCLUDE '../../base/data/DECOM_G.inc';
+*%semislash%;
 
 *Flex4Res
 *$ontext
@@ -980,13 +980,6 @@ FUELPRICE(YYY,AAA,'NATGAS') = FUELPRICE(YYY,AAA,'NATGAS') * 0.84;
 
 
 *** END NORENS Update ***
-
-
-** Transmission capacities existing. A new dataset here that includes existing lines and individual plans for upgrades.
-$onmulti
-$INCLUDE         '../data/XKFX_EUR.inc';
-$offmulti
-XKINI(YYY,IRRRE,IRRRI) = XKFX(YYY,IRRRE,IRRRI);
 
 *$offtext
 

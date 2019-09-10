@@ -24,6 +24,7 @@ $ifi %ADDHEATSTORCONT%==yes  execute_load  '../../simex/GVHSTOVOLTS.gdx', GVHSTO
 
 *Investments with/without decommissioning of endogenous capacity
 $ifi %ADDTECHDEV%==yes  execute_load  '../../simex/GKACCUMNET.gdx', GKACCUMNET;
+$ifi %STEPWISEKPOT%==YES $ifi %ADDTECHDEV%==yes  execute_load  '../../simex/VGKNACCUMNET_KPOTSTEP.gdx', GKACCUMNET_KPOTSTEP;
 $ifi %ADDTRANSDEV%==yes execute_load  '../../simex/XKACCUMNET.gdx', XKACCUMNET;
 
 

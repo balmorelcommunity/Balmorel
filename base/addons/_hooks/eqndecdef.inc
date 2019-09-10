@@ -28,6 +28,7 @@ $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_e
 
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_eqndecdef.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_eqndecdef.inc";
-$ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_eqndecdef.inc";
+$ifi not %EV2%==YES $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_eqndecdef.inc";
+$ifi %EV2%==YES  $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_eqndecdef_gus.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_eqndecdef.inc";
 $label endoffile

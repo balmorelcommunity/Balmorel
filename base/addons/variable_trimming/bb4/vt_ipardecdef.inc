@@ -30,8 +30,9 @@ ITV_FIXED(Y,IA,G)$(IAGKNY_IY411(Y,IA,G)) = IOF1000*GOMFCOST(IA,G)  + IOF1000000*
 
 * Variable costs for electricity generation
 ITV_VAREL(Y,IA,G)$(IAGKNY_IY411(Y,IA,G) AND  IGNOTETOH(G) AND IGE(G)) =
-           GOMVCOST(IA,G)$IGKE(G)                                                                     !! variable operation costs
+           GOMVCOSTO(IA,G)$IGKE(G)                                                                     !! variable operation costs
          + (SUM(FFF$IGF(G,FFF), FUELPRICE(Y,IA,FFF) * IOF3P6 )                                 !! fuel costs
+         + GOMVCOSTIN(IA,G)                                                                    !! Variable operation costs on fuel
          + IM_CO2(G)*IOF0001 * IOF3P6 * SUM(C$ICA(C,IA), M_POL(Y,"TAX_CO2",C))                 !! CO2 costs
          + IM_SO2(G)*IOF0001 * IOF3P6 * SUM(C$ICA(C,IA), M_POL(Y,"TAX_SO2",C))                 !! SO2 costs
          + GDATA(G,'GDNOX')*IOF0000001 * SUM(C$ICA(C,IA), M_POL(Y,"TAX_NOX",C))                !! NOX costs
@@ -44,9 +45,10 @@ $ifi %TAXES%==yes         +      SUM(C$ICA(C,IA),TAX_F(Y,C,G))  ) / (GDATA(G,'GD
 
 *Variable cost for heat generation
 ITV_VARHEAT(Y,IA,G)$(IAGKNY_IY411(Y,IA,G) AND IGH(G))  =
-                   (GOMVCOST(IA,G) * GDATA(G,'GDCV'))$IGKH(G)
+                   (GOMVCOSTO(IA,G) * GDATA(G,'GDCV'))$IGKH(G)
                  + GDATA(G,'GDCV') * (
                    SUM(FFF$IGF(G,FFF), FUELPRICE(Y,IA,FFF) * IOF3P6 )
+                 + GOMVCOSTIN(IA,G)  
                  + IM_CO2(G) * IOF0001 * IOF3P6 * SUM(C$ICA(C,IA), M_POL(Y,"TAX_CO2",C))
                  + IM_SO2(G) * IOF0001 * IOF3P6 * SUM(C$ICA(C,IA), M_POL(Y,"TAX_SO2",C))
                  + GDATA(G,'GDNOX') * IOF0000001 * SUM(C$ICA(C,IA), M_POL(Y,"TAX_NOX",C))

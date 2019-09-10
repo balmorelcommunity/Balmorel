@@ -31,7 +31,5 @@ $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_setdec
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_setdeclare.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_setdeclare.inc";
 
-$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_setdeclare.inc";
-
 
 $label endoffile

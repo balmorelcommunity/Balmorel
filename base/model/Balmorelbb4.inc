@@ -888,10 +888,9 @@ IGDEUSER(G,DEUSER) = YES$SUM(TECH_GROUP$(TECHGROUP_DEUSER(TECH_GROUP,DEUSER) EQ 
 PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 * Transfer data from data file and insert default 1 as needed (Eps1-convention):
 * Note that the default value is 1, this is assigned here if nothing or 0 is entered in data file.
-$ontext
 $ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T) = GKRATE(IA,G,S,T);
-$offtext
+
 * The following parameters contain information about CO2 and SO2 emission
 * from technology G based on the fuel used and its emission data:
 PARAMETER   IM_CO2(G)   "CO2 emission coefficient for fuel, fossil and renewable (kg/GJ)";
@@ -1615,7 +1614,8 @@ QDENET(IY411,IR,DEUSER,IS3,T)$(IDE_SUMST(IR,DEUSER) GT 0)..
                               ((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))
                                - SUM((G,IA)$(RRRAAA(IR,IA) AND IGDEUSER(G,DEUSER) AND IAGK_HASORPOT(IY411,IA,G)), VGE_T(IY411,IA,G,IS3,T))*SELF_CONSUMPTION_RATE
 $ifi %DemandResponse%==yes  + SUM((IA,DR_TECH)$(IADR(IY411,IA,DR_TECH) AND RRRAAA(IR,IA) AND DR_TECH_USER(DR_TECH,DEUSER)),  VDR_UP(IY411,IA,DR_TECH,IS3,T) - VDR_DOWN(IY411,IA,DR_TECH,IS3,T))
-$ifi %EV%==yes              + (VEV_VNETCHARGE_BEV(IY411,IR,IS3,T) + VEV_VNETCHARGE_PHEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_BEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_PHEV(IY411,IR,IS3,T))$IRESE(DEUSER)
+$ifi not %EV2%==yes $ifi %EV%==yes              + (VEV_VNETCHARGE_BEV(IY411,IR,IS3,T) + VEV_VNETCHARGE_PHEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_BEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_PHEV(IY411,IR,IS3,T))$IRESE(DEUSER)
+$ifi %EV2%==yes $ifi %EV%==yes              + (VEV_VG2V_BEV(IY411,IR,IS3,T) + VEV_VG2V_PHEV(IY411,IR,IS3,T) - VEV_VV2G_BEV(IY411,IR,IS3,T) - VEV_VV2G_PHEV(IY411,IR,IS3,T))$IRESE(DEUSER)
 
               ;
 
@@ -2103,17 +2103,17 @@ $include "../../base/addons/_hooks/qgeqaf.inc"
 
 * "Maximum fuel use by year, season, country and fuel (GJ)"
 QGMAXCFS(IY411,C,FFF,IS3)$IGMAXFS(IY411,C,FFF,IS3)..
-    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM(T, WEIGHT_S(IS3)/IWEIGHSUMT * VGF_T(IY411,IA,G,IS3,T)))
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM(T, WEIGHT_S(IS3)/IWEIGHSUMT * (  VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =L= IGMAXFS(IY411,C,FFF,IS3);
 
 * "Maximum fuel use by year, season, region and fuel (GJ)"
 QGMAXRFS(IY411,IR,FFF,IS3)$IGMAXFS(IY411,IR,FFF,IS3)..
-    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM(T, WEIGHT_S(IS3)/IWEIGHSUMT * VGF_T(IY411,IA,G,IS3,T)))
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM(T, WEIGHT_S(IS3)/IWEIGHSUMT * (  VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =L= IGMAXFS(IY411,IR,FFF,IS3);
 
 * "Maximum fuel use by year, season, area and fuel (GJ)"
 QGMAXAFS(IY411,IA,FFF,IS3)$IGMAXFS(IY411,IA,FFF,IS3)..
-    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM(T, WEIGHT_S(IS3)/IWEIGHSUMT * VGF_T(IY411,IA,G,IS3,T)))
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM(T, WEIGHT_S(IS3)/IWEIGHSUMT * (  VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =L= IGMAXFS(IY411,IA,FFF,IS3);
 
 
@@ -2439,7 +2439,7 @@ and SUM(FFF$IGF(IGKENOSTO,FFF), GKF_LO(FFF)))..
         VGE_T(IY411,IA,IGKENOSTO,IS3,T) + (VGH_T(IY411,IA,IGKENOSTO,IS3,T) * GDATA(IGKENOSTO,'GDCV'))$(IGEXT(IGKENOSTO))=G=
         SUM(FFF$IGF(IGKENOSTO,FFF), GKF_LO(FFF))*(
        +((GKFX(IY411,IA,IGKENOSTO) + VGKNACCUMNET(IY411,IA,IGKENOSTO)
-         )*(1$(NOT IGKRATE(IA,IGKENOSTO,IS3,T)) + IGKRATE(IA,IGKENOSTO,IS3,T))
+         )*(1$(NOT IGKRATE(IA,IGKENOSTO,IS3,T)) + IGKRATE(IA,IGKENOSTO,IS3,T))))
 ;
 
 * Minimum capacity usage constraint on heat generation capacity (MW) (not including exogeneous capacity)
@@ -2802,11 +2802,17 @@ GKACCUMNET(Y,IA,G)= GKFX(Y,IA,G)
 $ifi %DECOM%==yes       -VDECOM_EXO_ACCUM.L(Y,IA,G)
 $ifi %TechInvest%==yes  +VGKNACCUMNET.L(Y,IA,G)
 ;
+
+GKACCUMNET_KPOTSTEP(Y,IA,G,KPOTSTEP)= IGKFX_KPOTSTEP(Y,IA,G,KPOTSTEP)
+$ifi %TechInvest%==yes  + VGKNACCUMNET_KPOTSTEP.L(Y,IA,G,KPOTSTEP)
+;
+
 *Modification of GKFX values in case they are negative or extremely small (sometimes there can be issues with the decimals)
 GKACCUMNET(Y,IA,G)$(GKACCUMNET(Y,IA,G) LT 0)= 0;
 
-execute_unload  "../../simex/XKACCUMNET.gdx", XKACCUMNET;
-execute_unload  "../../simex/GKACCUMNET.gdx", GKACCUMNET;
+$ifi %export_invest%==YES execute_unload  "../../simex/XKACCUMNET.gdx", XKACCUMNET;
+$ifi %export_invest%==YES execute_unload  "../../simex/GKACCUMNET.gdx", GKACCUMNET;
+$ifi %export_invest%==YES $ifi %STEPWISEKPOT%==YES execute_unload '../../simex/VGKNACCUMNET_KPOTSTEP.gdx', GKACCUMNET_KPOTSTEP;
 
 * For runs with interseasonal storages save the following, to be used in future runs by addon "import_results":
 *Initial energy storage volumen at the beginning of each week
