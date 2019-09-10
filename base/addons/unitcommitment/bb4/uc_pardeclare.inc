@@ -5,6 +5,12 @@ PARAMETER UC_TECH_GROUP_VALUE(UC_TECH_GROUP)  'UC technology groups';
 PARAMETER UC_FUELS_VALUE(UC_FUELS) 'UC fuels';
 
 
+PARAMETER UCU(Y,AAA,G,S,T) 'Start up, Unit commitment (0,1) on electricity generation to be transferred to future runs';
+PARAMETER UCD(Y,AAA,G,S,T) 'Unit commitment Shutdown (0,1) on electricity generation to be transferred to future runs';
+PARAMETER UCON(Y,AAA,G,S,T) 'Unit commitment (0,1) on electricity generation to be transferred to future runs';
+
+
+
 $ifi not %STEPWISE_RAMPING_UC%==ramp_const_cost $goto STEPWISERAMPING_END
 
 PARAMETER RAMPING_COSTS_UP(UC_TECH_TYPE,UC_TECH_GROUP,UC_FUELS,RAMPING_RATE) 'Ramping up costs for each technology group, tech gype, fuel and ramping rate (Money/MWh)';
@@ -12,4 +18,8 @@ PARAMETER RAMPING_COSTS_DOWN(UC_TECH_TYPE,UC_TECH_GROUP,UC_FUELS,RAMPING_RATE) '
 PARAMETER RAMPING_CAPABILITY_UP(UC_TECH_TYPE,UC_TECH_GROUP,UC_FUELS,RAMPING_RATE) 'Ramping up capability for each technology group, tech gype, fuel and ramping rate (% capacity)';
 PARAMETER RAMPING_CAPABILITY_DOWN(UC_TECH_TYPE,UC_TECH_GROUP,UC_FUELS,RAMPING_RATE) 'Ramping down capability for each technology group, tech gype, fuel and ramping rate (% capacity)';
 
+PARAMETER RAMPING_DOWN(Y,AAA,G,RAMPING_RATE,S,T) 'Hourly ramping down for each technology and ramping rate to be transferred to future runs' ;
+PARAMETER RAMPING_UP(Y,AAA,G,RAMPING_RATE,S,T) 'Hourly ramping up for each technology and ramping rate to be transferred to future runs';
+
 $label  STEPWISERAMPING_END
+

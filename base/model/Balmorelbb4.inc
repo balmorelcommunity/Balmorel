@@ -391,11 +391,28 @@ PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transfer
 PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
 PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
 
-* Data for handling interseasonal storage
-PARAMETER GVESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
-PARAMETER GVHSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
-PARAMETER GVESTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Electricity storage content  value (in input money) to be transferred to future runs (input-Money/MWh)";
-PARAMETER GVHSTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Heat storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
+* Data for handling storage
+PARAMETER ESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
+PARAMETER HSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
+PARAMETER ESTOVOLT(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
+PARAMETER HSTOVOLT(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
+PARAMETER ESTOLOADT(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal electricity storage loading to be transferred to future runs (MW)";
+PARAMETER ESTOLOADTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal electricity storage loading to be transferred to future runs (MW)";;
+PARAMETER HSTOLOADT(YYY,AAA,GGG,SSS,TTT)  "Intra-seasonal heat storage loading to be transferred to future runs (MW)";
+PARAMETER HSTOLOADTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal heat storage loading to be transferred to future runs (MW)";
+PARAMETER ESTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Electricity storage content  value (in input money) to be transferred to future runs (input-Money/MWh)";
+PARAMETER HSTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Heat storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
+PARAMETER ESTOVOLTVAL(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Electricity storage content  value (in input money) to be transferred to future runs (input-Money/MWh)";
+PARAMETER HSTOVOLTVAL(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Heat storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
+
+* Data for handling remaining energy dispatch
+PARAMETER  DE_T(Y,RRR,S,T)                 "Electricity demand (MW) to be transferred to future runs";
+PARAMETER  DH_T(Y,AAA,S,T)                 "Heat demand (MW) to be transferred to future runs";
+PARAMETER  GE_T(Y,AAA,G,S,T)               "Electricity generation (MW)  to be transferred to future runs";
+PARAMETER  GH_T(Y,AAA,G,S,T)               "Heat generation (MW)  to be transferred to future runs";
+PARAMETER  GF_T(Y,AAA,G,S,T)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
+PARAMETER  X_T(Y,IRRRE,IRRRI,S,T)          "Electricity export from region IRRRE to IRRRI to be transferred to future runs (MW)";
+
 ** End: Export data
 
 * ------------------------------------------------------------------------------
@@ -1275,6 +1292,10 @@ POSITIVE VARIABLE VESTOVOLTSDELTAMWHPOS(Y,AAA,G,S,T)   "Positive delta between e
 POSITIVE VARIABLE VESTOVOLTSDELTAMWHNEG(Y,AAA,G,S,T)   "Negative delta between electricity interseasonal storage content in previous runs and the one in this run";
 POSITIVE VARIABLE VHSTOVOLTSDELTAMWHPOS(Y,AAA,G,S,T)   "Positive delta between heat interseasonal storage content in previous runs and the one in this run";
 POSITIVE VARIABLE VHSTOVOLTSDELTAMWHNEG(Y,AAA,G,S,T)   "Negative delta between heat interseasonal storage content in previous runs and the one in this run";
+POSITIVE VARIABLE VESTOVOLTDELTAMWHPOS(Y,AAA,G,S,T)   "Positive delta between electricity intraseasonal storage content in previous runs and the one in this run";
+POSITIVE VARIABLE VESTOVOLTDELTAMWHNEG(Y,AAA,G,S,T)   "Negative delta between electricity intraseasonal storage content in previous runs and the one in this run";
+POSITIVE VARIABLE VHSTOVOLTDELTAMWHPOS(Y,AAA,G,S,T)   "Positive delta between heat intraseasonal storage content in previous runs and the one in this run";
+POSITIVE VARIABLE VHSTOVOLTDELTAMWHNEG(Y,AAA,G,S,T)   "Negative delta between heat intraseasonal storage content in previous runs and the one in this run";
 
 *-------------------------------------------------------------------------------
 *----- Any variables, and possibly equations, for addon to be placed here: -----
@@ -1696,11 +1717,14 @@ $include "../../base/addons/_hooks/qhymaxg.inc"
 
 * "Electricty storage dynamic equation (MWh)"
 QESTOVOLT(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO))..
-    VESTOVOLT(IY411,IA,IGESTO,IS3,T++1) =E= VESTOVOLT(IY411,IA,IGESTO,IS3,T)
+    VESTOVOLT(IY411,IA,IGESTO,IS3,T++1)
+$ifi %RollingSeasons%==yes  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),(VESTOVOLTDELTAMWHNEG(IY411,IA,IGESTO,S,ITALIAS)-VESTOVOLTDELTAMWHPOS(IY411,IA,IGESTO,S,ITALIAS)))$(ORD(T) EQ CARD(T))
+=E= VESTOVOLT(IY411,IA,IGESTO,IS3,T)
   + CHRONOHOUR(IS3,T)*
     (VESTOLOADT(IY411,IA,IGESTO,IS3,T)
   - SUM(IAGK_HASORPOT(IY411,IA,IGESTO), VGE_T(IY411,IA,IGESTO,IS3,T)/GDATA(IGESTO,'GDFE'))
   )
+
 $include "../../base/addons/_hooks/qestovolt.inc"
 ;
 
@@ -1725,6 +1749,7 @@ QHSTOVOLT(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO))..
   (VHSTOLOADT(IY411,IA,IGHSTO,IS3,T)
   - SUM(IAGK_HASORPOT(IY411,IA,IGHSTO), VGH_T(IY411,IA,IGHSTO,IS3,T)/GDATA(IGHSTO,'GDFE')) )
     =E= VHSTOVOLT(IY411,IA,IGHSTO,IS3,T++1)
+$ifi %RollingSeasons%==yes  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),(VHSTOVOLTDELTAMWHNEG(IY411,IA,IGHSTO,S,ITALIAS)-VHSTOVOLTDELTAMWHPOS(IY411,IA,IGHSTO,S,ITALIAS)))$(ORD(T) EQ CARD(T))
 $include "../../base/addons/_hooks/qhstovolt.inc"
 ;
 
@@ -2728,18 +2753,59 @@ execute_unload  "../../simex/XKACCUMNET.gdx", XKACCUMNET;
 execute_unload  "../../simex/GKACCUMNET.gdx", GKACCUMNET;
 $ifi %HEATTRANS%==yes  execute_unload  "../../simex/XHKACCUMNET.gdx", XHKACCUMNET;
 
-* For runs with interseasonal storages save the following, to be used in future runs by addon "import_results":
-*Initial energy storage volumen at the beginning of each week, storage content value
-GVESTOVOLTS(Y,IA,IGESTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGESTOS))=VESTOVOLTS.L(Y,IA,IGESTOS,S,T);
-GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$(ORD(T) EQ 1 AND IAGK_HASORPOT(Y,IA,IGHSTOS))=VHSTOVOLTS.L(Y,IA,IGHSTOS,S,T);
-GVESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
-GVHSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
+* For runs with storage save the following, to be used in future runs by addon "import_results":
+ESTOVOLTS(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=VESTOVOLTS.L(Y,IA,IGESTOS,S,T);
+HSTOVOLTS(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=VHSTOVOLTS.L(Y,IA,IGHSTOS,S,T);
+ESTOVOLT(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=VESTOVOLT.L(Y,IA,IGESTO,S,T);
+HSTOVOLT(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=VHSTOVOLT.L(Y,IA,IGHSTO,S,T);
+ESTOLOADT(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=VESTOLOADT.L(Y,IA,IGESTO,S,T);
+ESTOLOADTS(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=VESTOLOADTS.L(Y,IA,IGESTOS,S,T);
+HSTOLOADT(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=VESTOLOADT.L(Y,IA,IGHSTO,S,T);
+HSTOLOADTS(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=VESTOLOADTS.L(Y,IA,IGHSTOS,S,T);
+ESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
+HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
+ESTOVOLTVAL(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=QESTOVOLT.M(Y,IA,IGESTO,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
+HSTOVOLTVAL(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=QHSTOVOLT.M(Y,IA,IGHSTO,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
 
-execute_unload  "../../simex/GVESTOVOLTS.gdx", GVESTOVOLTS;
-execute_unload  "../../simex/GVHSTOVOLTS.gdx", GVHSTOVOLTS;
-execute_unload  "../../simex/GVESTOVOLTSVAL.gdx", GVESTOVOLTSVAL;
-execute_unload  "../../simex/GVHSTOVOLTSVAL.gdx", GVHSTOVOLTSVAL;
+execute_unload  "../../simex/ESTOVOLTS.gdx", ESTOVOLTS;
+execute_unload  "../../simex/HSTOVOLTS.gdx", HSTOVOLTS;
+execute_unload  "../../simex/ESTOVOLT.gdx", ESTOVOLT;
+execute_unload  "../../simex/HSTOVOLT.gdx", HSTOVOLT;
+execute_unload  "../../simex/ESTOLOADT.gdx", ESTOLOADT;
+execute_unload  "../../simex/ESTOLOADTS.gdx", ESTOLOADTS;
+execute_unload  "../../simex/HSTOLOADT.gdx", HSTOLOADT;
+execute_unload  "../../simex/HSTOLOADTS.gdx", HSTOLOADTS;
+execute_unload  "../../simex/ESTOVOLTSVAL.gdx", ESTOVOLTSVAL;
+execute_unload  "../../simex/HSTOVOLTSVAL.gdx", HSTOVOLTSVAL;
+execute_unload  "../../simex/ESTOVOLTVAL.gdx", ESTOVOLTVAL;
+execute_unload  "../../simex/HSTOVOLTVAL.gdx", HSTOVOLTVAL;
 
+*Energy dispatch to be used in future runs by addon "import_results"
+DE_T(Y,IR,S,T)= SUM(DEUSER, ((DE(Y,IR,DEUSER) * DE_VAR_T(IR,DEUSER,S,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0))/(1-DISLOSS_E(IR));
+DH_T(Y,IA,S,T)=SUM(DHUSER, ((DH(Y,IA,DHUSER) * DH_VAR_T(IA,DHUSER,S,T)) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0))/(1-DISLOSS_H(IA));
+GE_T(Y,IA,IGE,S,T)$IAGK_HASORPOT(Y,IA,IGE)=VGE_T.L(Y,IA,IGE,S,T);
+GH_T(Y,IA,IGH,S,T)$IAGK_HASORPOT(Y,IA,IGH)=VGH_T.L(Y,IA,IGH,S,T);
+GF_T(Y,IA,G,S,T)$IAGK_HASORPOT(Y,IA,G)=VGF_T.L(Y,IA,G,S,T);
+X_T(Y,IRE,IRI,S,T)$IXK_HASORPOT(Y,IRE,IRI)=VX_T.L(Y,IRE,IRI,S,T);
+$ifi %HEATTRANS%==yes XH_T(Y,IAE,IAI,S,T)$IXHK_HASORPOT(Y,IAE,IAI)=VXH_T.L(Y,IAE,IAI,S,T);
+$ifi %UnitComm%==yes UCU(Y,IA,IGUC,S,T)$IAGK_HASORPOT(Y,IA,IGUC)=VUCU.L(Y,IA,IGUC,S,T);
+$ifi %UnitComm%==yes UCD(Y,IA,IGUC,S,T)$IAGK_HASORPOT(Y,IA,IGUC)=VUCD.L(Y,IA,IGUC,S,T);
+$ifi %UnitComm%==yes UCON(Y,IA,IGUC,S,T)$IAGK_HASORPOT(Y,IA,IGUC)=VUCON.L(Y,IA,IGUC,S,T);
+$ifi %UnitComm%==yes $ifi %STEPWISE_RAMPING_UC%==ramp_const_cost  RAMPING_DOWN(Y,IA,IGUC,RAMPING_RATE,S,T)$IAGK_HASORPOT(Y,IA,IGUC)=VRAMPING_DOWN.L(Y,IA,IGUC,RAMPING_RATE,S,T);
+$ifi %UnitComm%==yes $ifi %STEPWISE_RAMPING_UC%==ramp_const_cos RAMPING_UP(Y,IA,IGUC,RAMPING_RATE,S,T)$IAGK_HASORPOT(Y,IA,IGUC)=VRAMPING_UP.L(Y,IA,IGUC,RAMPING_RATE,S,T);
+
+execute_unload  "../../simex/DE_T.gdx", DE_T;
+execute_unload  "../../simex/DH_T.gdx", DH_T;
+execute_unload  "../../simex/GE_T.gdx", GE_T;
+execute_unload  "../../simex/GH_T.gdx", GH_T;
+execute_unload  "../../simex/GF_T.gdx", GF_T;
+execute_unload  "../../simex/X_T.gdx", X_T;
+$ifi %HEATTRANS%==yes execute_unload  "../../simex/XH_T.gdx", XH_T;
+$ifi %UnitComm%==yes  execute_unload  "../../simex/UCU.gdx", UCU;
+$ifi %UnitComm%==yes  execute_unload  "../../simex/UCD.gdx", UCD;
+$ifi %UnitComm%==yes  execute_unload  "../../simex/UCON.gdx", UCON;
+$ifi %UnitComm%==yes $ifi %STEPWISE_RAMPING_UC%==ramp_const_cost  execute_unload  "../../simex/RAMPING_DOWN.gdx", RAMPING_DOWN;
+$ifi %UnitComm%==yes $ifi %STEPWISE_RAMPING_UC%==ramp_const_cost  execute_unload  "../../simex/RAMPING_UP.gdx", RAMPING_UP;
 
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN

@@ -212,6 +212,14 @@ $setglobal watertank_loading_rest
 *----END: Heat storage loading restrictions
 *-----------------------------------------------
 
+*-------- Balancing market ---------
+* Peform the balancing market optimization. It is meant to be combined with previous results (Day-Ahead dispatch, for example) by using the "import_results" options.
+*Note: it can be combined with other add-ons, just check that all the relevant code lines are implemented
+$setglobal BalancingMarket
+*!option yes
+
+*-------- END: Balancing market  ---------
+
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of add-on modules to include.
 * Include a module by assigning   yes .
@@ -477,6 +485,13 @@ $Setglobal import_results
 
 *------------ IMPORT OPTIONS ----------------
 
+* -----------------ENERGY DISPATCH--------------------------
+
+*Adds energy dispatch (demand, generation and transmission) from previous runs
+$setglobal ADDENERGYDISPATCH
+*!option yes
+
+
 * ------------------HYDRO---------------------------------
 * For this model run it is possible to use values found from previuos solutions to specify use of hydro power
 $setglobal HYRSBB123 none
@@ -491,16 +506,28 @@ $setglobal HYRSBB123 none
 * ------------------ END OF HYDRO---------------------------------
 
 *--------------------INTERSEASONAL STORAGE-----------------------------------------------------------
-*Import electricity storage data from previous runs
-$Setglobal ADDELECSTORCONT none
+*Import inter-seasonal electricity storage data from previous runs
+$Setglobal ADDESTOVOLTS none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
-*!option contprice     !Text (STILL TESTING)"Import electricity storage contents at beginning of time segment (GVESTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with GVESTOVOLTSVAL.gdx from previous runs "
+*!option contprice     !Text (STILL TESTING)"Import electricity storage contents at beginning of time segment (ESTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with ESTOVOLTSVAL.gdx from previous runs "
 *!option none          !Text "Do not not use this addon"
 
-*Import heat storage data from previous runs
-$Setglobal ADDHEATSTORCONT  none
+*Import inter-seasonal heat storage data from previous runs
+$Setglobal ADDHSTOVOLTS  none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
-*!option contprice     !Text (STILL TESTING)"Import Heat storage contents at beginning of time segment (GVHSTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with GVHSTOVOLTSVAL.gdx from previous runs"
+*!option contprice     !Text (STILL TESTING)"Import Heat storage contents at beginning of time segment (HSTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with HSTOVOLTSVAL.gdx from previous runs"
+*!option none          !Text "Do not not use this addon"
+
+*Import intra-seasonal electricity storage data from previous runs
+$Setglobal ADDESTOVOLT none
+*!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
+*!option contprice     !Text (STILL TESTING)"Import electricity storage contents at beginning of time segment (ESTOVOLT.gdx) for the first element in set T and S, and penalizes deviating from them with ESTOVOLTVAL.gdx from previous runs "
+*!option none          !Text "Do not not use this addon"
+
+*Import intra-seasonal heat storage data from previous runs
+$Setglobal ADDHSTOVOLT  none
+*!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
+*!option contprice     !Text (STILL TESTING)"Import Heat storage contents at beginning of time segment (HSTOVOLT.gdx) for the first element in set T and S, and penalizes deviating from them with HSTOVOLTVAL.gdx from previous runs"
 *!option none          !Text "Do not not use this addon"
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 
@@ -509,7 +536,7 @@ $Setglobal ADDHEATSTORCONT  none
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
 
 *Import generation and storage technology capacity development from previous runs
-$setglobal ADDTECHDEV   yes
+$setglobal ADDTECHDEV
 *!option yes
 
 *Add expensive to operate backup power and heat generation technology. It often occurs that the investment optimization underestimates the need for power.
@@ -517,11 +544,11 @@ $setglobal ADDBACKUPGEN
 *!option yes
 
 *Import transmission development from previous runs
-$setglobal ADDTRANSDEV  yes
+$setglobal ADDTRANSDEV
 *!option yes
 
 *Import heat transmission development from previous runs
-$setglobal ADDHEATTRANSDEV  yes
+$setglobal ADDHEATTRANSDEV
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 *-------------------------------------------------------------------------------
