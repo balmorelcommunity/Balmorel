@@ -15,14 +15,14 @@ ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GH
 * They can be used for multiple purposes
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
-ACRONYMS STEAMTURBINE_SUBCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILER, COMBINEDCYCLE, EXCESS_HEAT, ELECTRICITY_BATTERY, GEOTHERMAL,
+ACRONYMS STEAMTURBINE_SUBCRITICAL, STEAMTURBINE_SUPERCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILER, COMBINEDCYCLE, EXCESS_HEAT, ELECTRICITY_BATTERY, GEOTHERMAL,
 GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_ONSHORE, WINDTURBINE_OFFSHORE;
 
 *ACRONYMS for subtech groups
 * They can be used for multiple purposes
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
-ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,EXCESSHEAT,GROUND;
+ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,EXCESSHEAT,GROUND,HUB_OFF;
 
 SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)"
 $if     EXIST '../data/CCCRRRAAA.inc' $INCLUDE         '../data/CCCRRRAAA.inc';
@@ -81,10 +81,10 @@ $if not EXIST '../data/LIFETIME_X.inc' $INCLUDE '../../base/data/LIFETIME_X.inc'
 PARAMETER ANNUITYCG(CCC,GGG)               "Transforms investment in technologies into annual payment (fraction)";
 
 PARAMETER DEBT_SHARE_G(GGG)              "Share of debt for the investment of each generation technology (fraction)";
-DEBT_SHARE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.8;
+DEBT_SHARE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0;
 
 PARAMETER INTEREST_RATE_G(GGG)           "Interest rate applied to the loan of each generation technology (fraction)";
-INTEREST_RATE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.06;
+INTEREST_RATE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.04;
 
 PARAMETER PAYBACK_TIME_G(GGG)            "Payback time of the loan for generation technologies (years)";
 * Loan repayment assumption: lifetime of the technology if lifetime is higher than 20 years, else 20 years

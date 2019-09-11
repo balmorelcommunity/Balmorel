@@ -489,7 +489,7 @@ $if     EXIST '../data/FGEMIN.inc' $INCLUDE      '../data/FGEMIN.inc';
 $if not EXIST '../data/FGEMIN.inc' $INCLUDE '../../base/data/FGEMIN.inc';
 %semislash%;
 
-PARAMETER FGEMAX(CCCRRRAAA,FFF)     "Maximum electricity generation by fuel (MWh)"   %semislash%
+PARAMETER FGEMAX(YYY,CCCRRRAAA,FFF)     "Maximum electricity generation by fuel (MWh)"   %semislash%
 $if     EXIST '../data/FGEMAX.inc' $INCLUDE      '../data/FGEMAX.inc';
 $if not EXIST '../data/FGEMAX.inc' $INCLUDE '../../base/data/FGEMAX.inc';
 %semislash%;
