@@ -3303,8 +3303,8 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./diffile.gdx ./"%relpathoutput%%
 $label endofUNIXoutput
 
 *--- Main results calculation -----------------------------------------------
-$ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY.inc';
-*$ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY_FG.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY_FG.inc';
+*$ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY.inc';
+$ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY_FG.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY_FG.inc';
 *--- End of Main results calculation ---------------------------------------
 
 
