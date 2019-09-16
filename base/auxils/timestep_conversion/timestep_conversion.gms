@@ -1,9 +1,10 @@
 * CODE TO CALCULATE CONVERT THE TIMESTEP USED - JUAN GEA BERMUDEZ
+* Important note: make sure the full year data is used, otherwise there will be errors in some files
 
 *---------- DATA DEFINITION--------------------
 *Possible conversion of timesteps
 
-$setglobal timestep_conversion DaysHours_Hours5min
+$setglobal timestep_conversion WeeksHours_DaysHours
 *!option WeeksHours_DaysHours
 *!option WeeksHours_HoursHours
 *!option DaysHours_HoursHours
@@ -43,69 +44,89 @@ $ifi  %timestep_conversion%==DaysHours_Hours5min    $INCLUDE   '../../base/auxil
 
 
 ALIAS(SSS_NEW,ISSS_NEW);
+ALIAS(SSS,ISSS);
 ALIAS(TTT_NEW,ITTT_NEW);
+ALIAS(TTT,ITTT);
 
 
 SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)" ;
-$INCLUDE         '../../base/auxils/timestep_conversion/input/CCCRRRAAA.inc';
+$INCLUDE         '../data/CCCRRRAAA.inc';
+$include   "../../base/addons/offshoregrid/bb4/offshoregrid_cccrrraaaadditions.inc";
+$include   "../../base/addons/industry/bb4/industry_cccrrraaaadditions.inc";
 
 SET RRR(CCCRRRAAA)       "All regions" ;
-$INCLUDE         '../../base/auxils/timestep_conversion/input/RRR.inc';
+$INCLUDE         '../data/RRR.inc';
+$include   "../../base/addons/offshoregrid/bb4/offshoregrid_rrradditions.inc";
+
+ALIAS(RRR,IRRR);
 
 SET AAA(CCCRRRAAA)       "All areas";
-$INCLUDE         '../../base/auxils/timestep_conversion/input/AAA.inc';
+$INCLUDE         '../data/AAA.inc';
+$include   "../../base/addons/offshoregrid/bb4/offshoregrid_aaaadditions.inc";
+$include   "../../base/addons/industry/bb4/industry_aaaadditions.inc";
+
+ALIAS(AAA,IAAA);
 
 SET DEUSER             "Electricity demand user groups. Set must include element RESE for holding demand not included in any other user group" ;
-$INCLUDE         '../../base/auxils/timestep_conversion/input/DEUSER.inc';
+$INCLUDE         '../data/DEUSER.inc';
 
 SET DHUSER             "Heat demand user groups. Set must include element RESH for holding demand not included in any other user group"  ;
-$INCLUDE         '../../base/auxils/timestep_conversion/input/DHUSER.inc';
+$INCLUDE         '../data/DHUSER.inc';
 
 SET GGG          "All generation technologies"   ;
-$INCLUDE         '../../base/auxils/timestep_conversion/input/GGG.inc';
+$INCLUDE         '../data/GGG.inc';
+
+SET FFF       "All fuels"
+$INCLUDE         '../data/FFF.inc';
 
 SET YYY                "All years" ;
-$INCLUDE         '../../base/auxils/timestep_conversion/input/YYY.inc';
+$INCLUDE         '../data/YYY.inc';
 
 SET HYRSDATASET  "Characteristics of hydro reservoirs" ;
-$INCLUDE         '../../base/auxils/timestep_conversion/input/HYRSDATASET.inc';
+$INCLUDE         '../data/HYRSDATASET.inc';
+
+PARAMETER GMAXF(YYY,CCCRRRAAA,FFF)  "Maximum annual fuel use by year, geography and fuel and (GJ)";
+$INCLUDE         '../data/GMAXF.inc';
+
+PARAMETER GMAXFS(YYY,CCCRRRAAA,FFF,SSS)  "Maximum annual fuel use by year, season, geography and fuel and (GJ)";
+$INCLUDE         '../data/GMAXFS.inc';
 
 *Original timeseries
 PARAMETER WND_VAR_T(AAA,SSS,TTT)                   "Variation of the wind generation"    ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', WND_VAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WND_VAR_T;
 
 PARAMETER SOLE_VAR_T(AAA,SSS,TTT)                  "Variation of the solarE generation"   ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', SOLE_VAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', SOLE_VAR_T;
 
 PARAMETER SOLH_VAR_T(AAA,SSS,TTT)                  "Variation of the solarH generation"   ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', SOLH_VAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', SOLH_VAR_T;
 
 PARAMETER WTRRSVAR_S(AAA,SSS)                      "Variation of the water inflow to reservoirs"   ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', WTRRSVAR_S;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WTRRSVAR_S;
 
 PARAMETER WTRRRVAR_T(AAA,SSS,TTT)                  "Variation of generation of hydro run-of-river"  ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', WTRRRVAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WTRRRVAR_T;
 
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)    "Data for hydro with storage"  ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', HYRSDATA;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', HYRSDATA;
 
 PARAMETER HYPPROFILS(AAA,SSS)                      "Hydro with storage seasonal price profile" ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', HYPPROFILS;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', HYPPROFILS;
 
 PARAMETER GKRATE(AAA,GGG,SSS)                       "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)" ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', GKRATE;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', GKRATE;
 
 PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)                    "Variation in electricity demand"   ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', DE_VAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', DE_VAR_T;
 
 PARAMETER DH_VAR_T(AAA,DHUSER,SSS,TTT)                    "Variation in heat demand"   ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', DH_VAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', DH_VAR_T;
 
 PARAMETER WEIGHT_S(SSS)                            "Weight (relative length) of each season"    ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', WEIGHT_S;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WEIGHT_S;
 
 PARAMETER WEIGHT_T(TTT)                            "Weight (relative length) of each time period"  ;
-execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', WEIGHT_T;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WEIGHT_T;
 
 PARAMETER ESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 execute_load  '../../base/auxils/timestep_conversion/input/ESTOVOLTS.gdx', ESTOVOLTS;
@@ -164,6 +185,20 @@ execute_load  '../../base/auxils/timestep_conversion/input/X_T.gdx', X_T;
 PARAMETER  XH_T(YYY,AAA,AAA,SSS,TTT)          "Heat export from region IAAAE to IAAAI to be transferred to future runs (MW)";
 execute_load  '../../base/auxils/timestep_conversion/input/XH_T.gdx', XH_T;
 
+PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the seasons to be transferred to future runs (MWh)";
+execute_load  '../../base/auxils/timestep_conversion/input/HYRSG.gdx', HYRSG;
+
+PARAMETER VHYRS_SL(YYY,AAA,SSS)       "Hydro storage content at the beginning of each season (initial letter is V although declared as a parameter) (MWh)"
+execute_load  '../../base/auxils/timestep_conversion/input/VHYRS_SL.gdx', VHYRS_SL;
+
+PARAMETER VHYRS_STL(YYY,AAA,SSS,TTT)       "Hydro storage content at the beginning of each TTT (initial letter is V although declared as a parameter) (MWh)"
+execute_load  '../../base/auxils/timestep_conversion/input/VHYRS_STL.gdx', VHYRS_STL;
+
+PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transferred to future runs (input-Money/MWh)";
+execute_load  '../../base/auxils/timestep_conversion/input/WATERVAL.gdx', WATERVAL;
+
+PARAMETER F_T(YYY,CCCRRRAAA,FFF,SSS,TTT) "Aggregated fuel use by year, season, T, geography and fuel (GJ)"
+execute_load  '../../base/auxils/timestep_conversion/input/F_T.gdx', F_T;
 
 *REST OF HYDRO PARAMETERS.........
 
@@ -200,6 +235,10 @@ PARAMETER HSTOLOADT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)  "Intra-seasonal heat stora
 PARAMETER HSTOLOADTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal heat storage loading to be transferred to future runs (MW)";
 PARAMETER  X_T_NEW(YYY,RRR,RRR,SSS_NEW,TTT_NEW)          "Electricity export from region IRRRE to IRRRI to be transferred to future runs (MW)";
 PARAMETER  XH_T_NEW(YYY,AAA,AAA,SSS_NEW,TTT_NEW)          "Heat export from region IAAAE to IAAAI to be transferred to future runs (MW)";
+PARAMETER HYRSG_NEW(YYY,AAA,SSS_NEW)        "Water (hydro) generation quantity of the seasons to be transferred to future runs (MWh)";
+PARAMETER VHYRS_SL_NEW(YYY,AAA,SSS_NEW)       "To be saved for comparison with BB1/BB2 solution value for VHYRS_S.L (initial letter is V although declared as a parameter) (MWh)"
+PARAMETER WATERVAL_NEW(YYY,AAA,SSS_NEW)     "Water value (in input Money) to be transferred to future runs (input-Money/MWh)";
+PARAMETER GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)  "Minimum annual fuel use by year, season, geography and fuel and (GJ)";
 
 *----------END OF INPUT DATA--------------------
 
@@ -234,8 +273,13 @@ ESTOLOADT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW
 ESTOLOADTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOLOADTS(YYY,AAA,GGG,SSS,TTT)) ;
 HSTOLOADT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HSTOLOADT(YYY,AAA,GGG,SSS,TTT)) ;
 HSTOLOADTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HSTOLOADTS(YYY,AAA,GGG,SSS,TTT)) ;
-X_T_NEW(YYY,RRR,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),X_T(YYY,RRR,RRR,SSS,TTT))         ;
-XH_T_NEW(YYY,AAA,AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),XH_T(YYY,AAA,AAA,SSS,TTT))         ;
+X_T_NEW(YYY,RRR,IRRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),X_T(YYY,RRR,IRRR,SSS,TTT))         ;
+XH_T_NEW(YYY,AAA,IAAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),XH_T(YYY,AAA,IAAA,SSS,TTT))         ;
+HYRSG_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),HYRSG(YYY,AAA,SSS));
+VHYRS_SL_NEW(YYY,AAA,SSS_NEW)=SUM(TTT_NEW$(ORD(TTT_NEW) EQ 1), SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),VHYRS_STL(YYY,AAA,SSS,TTT)));
+WATERVAL_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),WATERVAL(YYY,AAA,SSS));
+GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)$(GMAXF(YYY,CCCRRRAAA,FFF) OR SUM(ISSS,GMAXFS(YYY,CCCRRRAAA,FFF,ISSS)))=SUM((SSS,TTT,TTT_NEW)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),F_T(YYY,CCCRRRAAA,FFF,SSS,TTT)*WEIGHT_S(SSS))/SUM(TTT, WEIGHT_T(TTT));
+
 
 $ifi  NOT %timestep_conversion%==WeeksHours_DaysHours   $goto No_WeeksHours_DaysHours
 
@@ -281,7 +325,8 @@ HYPPROFILS_NEW=HYPPROFILS,
 DE_VAR_T_NEW=DE_VAR_T,
 DH_VAR_T_NEW=DH_VAR_T,
 WEIGHT_S_NEW=WEIGHT_S,
-WEIGHT_T_NEW=WEIGHT_T
+WEIGHT_T_NEW=WEIGHT_T,
+GMAXFS_NEW=GMAXFS
 ;
 
 execute_unload  "../../base/auxils/timestep_conversion/output/DE_T.gdx", DE_T_NEW=DE_T;
@@ -303,6 +348,13 @@ execute_unload  "../../base/auxils/timestep_conversion/output/ESTOVOLTSVAL.gdx",
 execute_unload  "../../base/auxils/timestep_conversion/output/HSTOVOLTSVAL.gdx", HSTOVOLTSVAL_NEW=HSTOVOLTSVAL;
 execute_unload  "../../base/auxils/timestep_conversion/output/ESTOVOLTVAL.gdx", ESTOVOLTVAL_NEW=ESTOVOLTVAL;
 execute_unload  "../../base/auxils/timestep_conversion/output/HSTOVOLTVAL.gdx", HSTOVOLTVAL_NEW=HSTOVOLTVAL;
+execute_unload  "../../base/auxils/timestep_conversion/output/HYRSG.gdx", HYRSG_NEW=HYRSG;
+execute_unload  "../../base/auxils/timestep_conversion/output/VHYRS_SL.gdx", VHYRS_SL_NEW=VHYRS_SL;
+execute_unload  "../../base/auxils/timestep_conversion/output/WATERVAL.gdx", WATERVAL_NEW=WATERVAL;
+execute_unload  "../../base/auxils/timestep_conversion/output/GMAXFS.gdx", GMAXFS_NEW=GMAXFS;
+
+
+
 
 *$ONTEXT
 *WND_VAR_T timeseries
@@ -424,6 +476,8 @@ loop(TTT_NEW,
             put "WEIGHT_T('",TTT_NEW.tl :0,"')=", WEIGHT_T_NEW(TTT_NEW) :0 ';' /
 );
 putclose;
+
+
 
 *$OFFTEXT
 *------------END OF OUTPUT GENERATION-------------

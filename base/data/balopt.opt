@@ -480,7 +480,7 @@ $Setglobal export_results yes
 * Overall control to import results so they can be used in future runs:
 *NOTE: In order for results to work fine, the set S used in the runs should be contained in the import results.
 *NOTE: In order for results to work fine, the first element in set T of the import results should match the one used in the current run.
-$Setglobal import_results  
+$Setglobal import_results yes
 *!option yes
 
 *------------ IMPORT OPTIONS ----------------
@@ -490,7 +490,7 @@ $Setglobal import_results
 *Adds energy dispatch (demand, generation and transmission) from previous runs
 $setglobal ADDENERGYDISPATCH
 *!option yes
-* -----------------END OF ENERGY DISPATCH--------------------------
+
 
 * ------------------HYDRO---------------------------------
 * For this model run it is possible to use values found from previuos solutions to specify use of hydro power
@@ -501,6 +501,8 @@ $setglobal HYRSBB123 none
 *!option cont          !Text "Use seasonal content for hydro generation (from VHYRS_SL.gdx) in in this run"
 *!option contprice     !Text (STILL TESTING)"Use seasonal content and prices for deviation (from VHYRS_SL.gdx and WATERVAL.gdx) in in this run"
 *!option none          !Text "Do not not use this hydro addon"
+
+
 * ------------------ END OF HYDRO---------------------------------
 
 *--------------------INTERSEASONAL STORAGE-----------------------------------------------------------
@@ -527,7 +529,8 @@ $Setglobal ADDHSTOVOLT  none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
 *!option contprice     !Text (STILL TESTING)"Import Heat storage contents at beginning of time segment (HSTOVOLT.gdx) for the first element in set T and S, and penalizes deviating from them with HSTOVOLTVAL.gdx from previous runs"
 *!option none          !Text "Do not not use this addon"
-*--------------------END OF INTERSEASONAL STORAGE-----------------------------------------------------------
+*--------------------END OF INVESTMENTS-----------------------------------------------------------
+
 
 *--------------------INVESTMENTS AND DECOMMISSIONING-----------------------------------------------------------
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
@@ -537,7 +540,7 @@ $setglobal ADDTECHDEV
 *!option yes
 
 *Add expensive to operate backup power and heat generation technology. It often occurs that the investment optimization underestimates the need for power.
-$setglobal ADDBACKUPGEN  yes
+$setglobal ADDBACKUPGEN   yes
 *!option yes
 
 *Import transmission development from previous runs
@@ -547,21 +550,21 @@ $setglobal ADDTRANSDEV
 *Import heat transmission development from previous runs
 $setglobal ADDHEATTRANSDEV
 *!option yes
-*--------------------END OF INVESTMENTS AND DECOMMISSIONING-----------------------------------------------------------
+*--------------------END OF INVESTMENTS-----------------------------------------------------------
+*-------------------------------------------------------------------------------
+
 
 *--------------------FUEL PRICES-----------------------------------------------------------
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
+
 *Import fuel prices development from previous runs
 $setglobal ADDFUELPRICE
 *!option yes
-*--------------------END OF FUEL PRICES-----------------------------------------------------------
 
-*--------------------FUEL USE-----------------------------------------------------------
-*NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
-*Import seasonal fuel use upper limit from previous runs
-$setglobal ADDMAXFUELUSES
-*!option yes
-*--------------------END OF FUEL USE-----------------------------------------------------------
+
+*--------------------END OF INVESTMENTS-----------------------------------------------------------
+*-------------------------------------------------------------------------------
+
 
 *------------- END OF IMPORT OPTIONS ----------------
 *--------------------------------------------

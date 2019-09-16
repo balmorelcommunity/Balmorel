@@ -50,5 +50,12 @@ $ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/X_T.gdx', X_T;
 $ifi %ADDENERGYDISPATCH%==yes $ifi %HEATTRANS%==yes execute_load  '../../simex/XH_T.gdx', XH_T;
 
 
+*Fuel prices from previous optimization
+$ifi %ADDFUELPRICE%==yes execute_load  '../../simex/FUELPRICE_EXC.gdx', FUELPRICE_EXC;
+
+*Import maximum fuel use per season from previous runs
+$ifi %ADDMAXFUELUSES%==yes GMAXFS(Y,CCCRRRAAA,FFF,S)=0;
+$ifi %ADDMAXFUELUSES%==yes execute_load  '../../simex/GMAXFS.gdx', GMAXFS;
+
 
 

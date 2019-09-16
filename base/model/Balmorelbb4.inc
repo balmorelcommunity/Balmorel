@@ -385,8 +385,9 @@ $ifi %YIELDREQUIREMENT%==yes  PARAMETER YIELDREQ(GGG) "Differentiates yield requ
 ** Export data
 * Data for handling of annual hydro constraints in future runs:
 PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the seasons to be transferred to future runs (MWh)";
-PARAMETER VHYRS_SL(YYY,AAA,SSS)       "To be saved for comparison with BB1/BB2 solution value for VHYRS_S.L (initial letter is V although declared as a parameter) (MWh)"
+PARAMETER VHYRS_SL(YYY,AAA,SSS)       "To be saved for comparison with BB1/BB2 solution value for VHYRS_S.L (initial letter is V although declared as a parameter) (MWh)";
 PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transferred to future runs (input-Money/MWh)";
+PARAMETER VHYRS_STL(YYY,AAA,SSS,TTT)  "Hourly hydro storage level (MWh)";
 * Data for handling investments in future runs:
 PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
 PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
@@ -406,12 +407,18 @@ PARAMETER ESTOVOLTVAL(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Electricity storage c
 PARAMETER HSTOVOLTVAL(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Heat storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
 
 * Data for handling remaining energy dispatch
-PARAMETER  DE_T(Y,RRR,S,T)                 "Electricity demand (MW) to be transferred to future runs";
-PARAMETER  DH_T(Y,AAA,S,T)                 "Heat demand (MW) to be transferred to future runs";
-PARAMETER  GE_T(Y,AAA,G,S,T)               "Electricity generation (MW)  to be transferred to future runs";
-PARAMETER  GH_T(Y,AAA,G,S,T)               "Heat generation (MW)  to be transferred to future runs";
-PARAMETER  GF_T(Y,AAA,G,S,T)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
-PARAMETER  X_T(Y,IRRRE,IRRRI,S,T)          "Electricity export from region IRRRE to IRRRI to be transferred to future runs (MW)";
+PARAMETER  DE_T(YYY,RRR,SSS,TTT)                 "Electricity demand (MW) to be transferred to future runs";
+PARAMETER  DH_T(YYY,AAA,SSS,TTT)                 "Heat demand (MW) to be transferred to future runs";
+PARAMETER  GE_T(YYY,AAA,GGG,SSS,TTT)               "Electricity generation (MW)  to be transferred to future runs";
+PARAMETER  GH_T(YYY,AAA,GGG,SSS,TTT)               "Heat generation (MW)  to be transferred to future runs";
+PARAMETER  GF_T(YYY,AAA,GGG,SSS,TTT)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
+PARAMETER  X_T(YYY,IRRRE,IRRRI,SSS,TTT)          "Electricity export from region IRRRE to IRRRI to be transferred to future runs (MW)";
+
+*Fuel use
+PARAMETER F_T(YYY,CCCRRRAAA,FFF,SSS,TTT) "Aggregated fuel use by year, season, T, geography and fuel to b transferred to future runs (GJ)"
+
+*Fuel price
+PARAMETER FUELPRICE_EXC(YYY,AAA,FFF)             "Fuel prices to be transferred to future runs(Money/GJ)";
 
 ** End: Export data
 
@@ -962,10 +969,6 @@ PARAMETER IX3FX_T(Y,RRR,S,T) "Fixed export to third countries for each time segm
 * The following is used in balbase1.sim and balbase2.sim
 PARAMETER IHYINF_S(AAA,SSS)  "Water inflow to hydro reservoirs in areas in each season (MWh/MW)";
 
-* Inflow in areas each season:
-* The following is used in balbase1.sim and balbase2.sim
-PARAMETER IHYINF_S(AAA,SSS)  "Water inflow to hydro reservoirs in areas in each season (MWh/MW)";
-
 PARAMETER IGROWTHCAPCG(C,G)  "Limit on growth of technology dependent on years between optimisation (MW) TODO";
 *PARAMETER IGKNMAX(Y,AAA,G)   "Maximum capacity at new technologies (MW)"; !!TODO. Relevant?   Presently not implemented.
 
@@ -1012,11 +1015,11 @@ ISOLESUMST(IA)=SUM((SSS,TTT), IHOURSINST(SSS,TTT)*SOLE_VAR_T(IA,SSS,TTT));
 ISOLHSUMST(IA)=SUM((SSS,TTT), IHOURSINST(SSS,TTT)*SOLH_VAR_T(IA,SSS,TTT));
 IWAVESUMST(IA)=SUM((SSS,TTT), IHOURSINST(SSS,TTT)*WAVE_VAR_T(IA,SSS,TTT));
 IWTRRRSUM(IA)=SUM((SSS,TTT),  IHOURSINST(SSS,TTT)*WTRRRVAR_T(IA,SSS,TTT));
-IWTRRSSUM(IA)=SUM(SSS, (WEIGHT_S(SSS)/IWEIGHSUMS)*WTRRSVAR_S(IA,SSS));
+
 
 * Calculate hydro inflow to reservoirs in MWh/MW installed capacity (new and old):
-
-IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
+IWTRRSSUM(IA)=0;
+IHYINF_S(IA,S)= (WTRRSFLH(IA) * WTRRSVAR_S(IA,S) / SUM(SSS, WTRRSVAR_S(IA,SSS)))$SUM(SSS, WTRRSVAR_S(IA,SSS));
 
 *Redefinition of time parameters so annual constraints are respected
 IWEIGHSUMS = SUM(S, WEIGHT_S(S));
@@ -1241,7 +1244,7 @@ PARAMETER IGEQF(YYY,CCCRRRAAA,FFF)          "Exact annual (any year) fuel use by
 $ifi %GEQF_DOL%==CCCRRRAAA_FFF              IGEQF(Y,CCCRRRAAA,FFF) = GEQF(CCCRRRAAA,FFF);
 $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF          IGEQF(Y,CCCRRRAAA,FFF) = GEQF(Y,CCCRRRAAA,FFF);
 
-PARAMETER IGMAXFS(Y,CCCRRRAAA,FFF,S)         "Minimum annual fuel use by year, season, geography and fuel and (GJ)";
+PARAMETER IGMAXFS(Y,CCCRRRAAA,FFF,S)         "Maximum annual fuel use by year, season, geography and fuel and (GJ)";
 IGMAXFS(Y,CCCRRRAAA,FFF,S) = GMAXFS(Y,CCCRRRAAA,FFF,S);
 
 * Unload input data to gdx and possibly MDB files.
@@ -1718,7 +1721,7 @@ $include "../../base/addons/_hooks/qhymaxg.inc"
 * "Electricty storage dynamic equation (MWh)"
 QESTOVOLT(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO))..
     VESTOVOLT(IY411,IA,IGESTO,IS3,T++1)
-$ifi %RollingSeasons%==yes  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),(VESTOVOLTDELTAMWHNEG(IY411,IA,IGESTO,S,ITALIAS)-VESTOVOLTDELTAMWHPOS(IY411,IA,IGESTO,S,ITALIAS)))$(ORD(T) EQ CARD(T))
+$ifi %RollingSeasons%==yes $ifi %ADDESTOVOLT%==contprice  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),(VESTOVOLTDELTAMWHNEG(IY411,IA,IGESTO,S,ITALIAS)-VESTOVOLTDELTAMWHPOS(IY411,IA,IGESTO,S,ITALIAS)))$(ORD(T) EQ CARD(T))
 =E= VESTOVOLT(IY411,IA,IGESTO,IS3,T)
   + CHRONOHOUR(IS3,T)*
     (VESTOLOADT(IY411,IA,IGESTO,IS3,T)
@@ -1749,7 +1752,7 @@ QHSTOVOLT(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO))..
   (VHSTOLOADT(IY411,IA,IGHSTO,IS3,T)
   - SUM(IAGK_HASORPOT(IY411,IA,IGHSTO), VGH_T(IY411,IA,IGHSTO,IS3,T)/GDATA(IGHSTO,'GDFE')) )
     =E= VHSTOVOLT(IY411,IA,IGHSTO,IS3,T++1)
-$ifi %RollingSeasons%==yes  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),(VHSTOVOLTDELTAMWHNEG(IY411,IA,IGHSTO,S,ITALIAS)-VHSTOVOLTDELTAMWHPOS(IY411,IA,IGHSTO,S,ITALIAS)))$(ORD(T) EQ CARD(T))
+$ifi %RollingSeasons%==yes  $ifi %ADDHSTOVOLT%==contprice +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),(VHSTOVOLTDELTAMWHNEG(IY411,IA,IGHSTO,S,ITALIAS)-VHSTOVOLTDELTAMWHPOS(IY411,IA,IGHSTO,S,ITALIAS)))$(ORD(T) EQ CARD(T))
 $include "../../base/addons/_hooks/qhstovolt.inc"
 ;
 
@@ -2547,19 +2550,19 @@ $ifi %TransInvest%==yes         QXINVSYMMETRY
 $ifi %TransInvest%==yes         QXK_UP
 
 *--- Electricity generation restrictions by fuel -------------------------------
-                                QGMINFUELC
-                                QGMAXFUELC
-                                QGMINFUELR
-                                QGMAXFUELR
+$ifi not %RollingSeasons%==yes QGMINFUELC
+$ifi not %RollingSeasons%==yes QGMAXFUELC
+$ifi not %RollingSeasons%==yes QGMINFUELR
+$ifi not %RollingSeasons%==yes QGMAXFUELR
 *                                QGMINFUELA TODO
 *                                QGMAXFUELA TODO
 *--- Fuel consumption restrictions ---------------------------------------------
-                                QGMINCF
-                                QGMAXCF
-                                QGEQCF
-                                QGMINRF
-                                QGMAXRF
-                                QGEQRF
+$ifi not %RollingSeasons%==yes  QGMINCF
+$ifi not %RollingSeasons%==yes  QGMAXCF
+$ifi not %RollingSeasons%==yes  QGEQCF
+$ifi not %RollingSeasons%==yes  QGMINRF
+$ifi not %RollingSeasons%==yes  QGMAXRF
+$ifi not %RollingSeasons%==yes  QGEQRF
 
                                 QGMAXCFS
                                 QGMAXRFS
@@ -2570,10 +2573,10 @@ $ifi %TransInvest%==yes         QXK_UP
 *                                QGEQAF  TODO
 
 *--- Emissions restrictions ----------------------------------------------------
-                                QLIMCO2
-                                QLIMSO2
-                                QLIMNOX
-                                QLIMCO2NA
+$ifi not %RollingSeasons%==yes  QLIMCO2
+$ifi not %RollingSeasons%==yes  QLIMSO2
+$ifi not %RollingSeasons%==yes  QLIMNOX
+$ifi not %RollingSeasons%==yes  QLIMCO2NA
 
 
 *---------------------------------------------------------------
@@ -2728,10 +2731,16 @@ $ifi not %export_results%==yes $goto result_export
 HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHYRST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
 VHYRS_SL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = VHYRS_S.L(Y,IA,S);
 WATERVAL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS))= QHYRSSEQ.M(Y,IA,S)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y));
+VHYRS_STL(Y,IA,S,T)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = VHYRS_S.L(Y,IA,S)
+       +  IHYINF_S(IA,S) * ( SUM(IGHYRS, GKFX(Y,IA,IGHYRS)$IAGKFX(Y,IA,IGHYRS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM.L(Y,IA,IGHYRS)$IGDECOMEXOPOT(Y,IA,IGHYRS)
+       +VGKNACCUMNET.L(Y,IA,IGHYRS)))/CARD(T)*SUM(ITALIAS$(ORD(ITALIAS) LT ORD(T)),1)
+         -SUM(ITALIAS$(ORD(ITALIAS) LT ORD(T)),SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),IHYRST(S,ITALIAS)*VGE_T.L(Y,IA,IGHYRS,S,ITALIAS)));
 
 execute_unload  "../../simex/HYRSG.gdx", HYRSG;
 execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
 execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
+execute_unload  "../../simex/VHYRS_STL.gdx", VHYRS_STL;
 
 * For runs with investments and/or decommissionning save the following, to be used in future runs by addon "import_results":
 XKACCUMNET(Y,IRE,IRI)$IXK_HASORPOT(Y,IRE,IRI)=XKFX(Y,IRE,IRI)
@@ -2760,8 +2769,8 @@ ESTOVOLT(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=VESTOVOLT.L(Y,IA,IGESTO,S,T
 HSTOVOLT(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=VHSTOVOLT.L(Y,IA,IGHSTO,S,T);
 ESTOLOADT(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=VESTOLOADT.L(Y,IA,IGESTO,S,T);
 ESTOLOADTS(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=VESTOLOADTS.L(Y,IA,IGESTOS,S,T);
-HSTOLOADT(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=VESTOLOADT.L(Y,IA,IGHSTO,S,T);
-HSTOLOADTS(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=VESTOLOADTS.L(Y,IA,IGHSTOS,S,T);
+HSTOLOADT(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=VHSTOLOADT.L(Y,IA,IGHSTO,S,T);
+HSTOLOADTS(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=VHSTOLOADTS.L(Y,IA,IGHSTOS,S,T);
 ESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
 HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
 ESTOVOLTVAL(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=QESTOVOLT.M(Y,IA,IGESTO,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
@@ -2788,11 +2797,6 @@ GH_T(Y,IA,IGH,S,T)$IAGK_HASORPOT(Y,IA,IGH)=VGH_T.L(Y,IA,IGH,S,T);
 GF_T(Y,IA,G,S,T)$IAGK_HASORPOT(Y,IA,G)=VGF_T.L(Y,IA,G,S,T);
 X_T(Y,IRE,IRI,S,T)$IXK_HASORPOT(Y,IRE,IRI)=VX_T.L(Y,IRE,IRI,S,T);
 $ifi %HEATTRANS%==yes XH_T(Y,IAE,IAI,S,T)$IXHK_HASORPOT(Y,IAE,IAI)=VXH_T.L(Y,IAE,IAI,S,T);
-$ifi %UnitComm%==yes UCU(Y,IA,IGUC,S,T)$IAGK_HASORPOT(Y,IA,IGUC)=VUCU.L(Y,IA,IGUC,S,T);
-$ifi %UnitComm%==yes UCD(Y,IA,IGUC,S,T)$IAGK_HASORPOT(Y,IA,IGUC)=VUCD.L(Y,IA,IGUC,S,T);
-$ifi %UnitComm%==yes UCON(Y,IA,IGUC,S,T)$IAGK_HASORPOT(Y,IA,IGUC)=VUCON.L(Y,IA,IGUC,S,T);
-$ifi %UnitComm%==yes $ifi %STEPWISE_RAMPING_UC%==ramp_const_cost  RAMPING_DOWN(Y,IA,IGUC,RAMPING_RATE,S,T)$IAGK_HASORPOT(Y,IA,IGUC)=VRAMPING_DOWN.L(Y,IA,IGUC,RAMPING_RATE,S,T);
-$ifi %UnitComm%==yes $ifi %STEPWISE_RAMPING_UC%==ramp_const_cos RAMPING_UP(Y,IA,IGUC,RAMPING_RATE,S,T)$IAGK_HASORPOT(Y,IA,IGUC)=VRAMPING_UP.L(Y,IA,IGUC,RAMPING_RATE,S,T);
 
 execute_unload  "../../simex/DE_T.gdx", DE_T;
 execute_unload  "../../simex/DH_T.gdx", DH_T;
@@ -2801,11 +2805,33 @@ execute_unload  "../../simex/GH_T.gdx", GH_T;
 execute_unload  "../../simex/GF_T.gdx", GF_T;
 execute_unload  "../../simex/X_T.gdx", X_T;
 $ifi %HEATTRANS%==yes execute_unload  "../../simex/XH_T.gdx", XH_T;
-$ifi %UnitComm%==yes  execute_unload  "../../simex/UCU.gdx", UCU;
-$ifi %UnitComm%==yes  execute_unload  "../../simex/UCD.gdx", UCD;
-$ifi %UnitComm%==yes  execute_unload  "../../simex/UCON.gdx", UCON;
-$ifi %UnitComm%==yes $ifi %STEPWISE_RAMPING_UC%==ramp_const_cost  execute_unload  "../../simex/RAMPING_DOWN.gdx", RAMPING_DOWN;
-$ifi %UnitComm%==yes $ifi %STEPWISE_RAMPING_UC%==ramp_const_cost  execute_unload  "../../simex/RAMPING_UP.gdx", RAMPING_UP;
+
+*fuel use to be used in future runs by addon "import_results"
+F_T(Y,C,FFF,S,T)$(GMAXF(Y,C,FFF) OR SUM(ISALIAS,GMAXFS(Y,C,FFF,ISALIAS))
+$ifi %STEPWISEPRICE%==yes OR STEPWISEPRICE_FFF(FFF)
+)=IOF3P6*SUM(IA$ICA(C,IA),SUM(IAGK_HASORPOT(Y,IA,G)$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)));
+F_T(Y,IR,FFF,S,T)$(GMAXF(Y,IR,FFF) OR SUM(ISALIAS,GMAXFS(Y,IR,FFF,ISALIAS))
+$ifi %STEPWISEPRICE%==yes OR STEPWISEPRICE_FFF(FFF)
+)=IOF3P6*SUM(IA$RRRAAA(IR,IA),SUM(IAGK_HASORPOT(Y,IA,G)$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)));
+F_T(Y,IA,FFF,S,T)$(GMAXF(Y,IA,FFF) OR SUM(ISALIAS,GMAXFS(Y,IA,FFF,ISALIAS))
+$ifi %STEPWISEPRICE%==yes OR STEPWISEPRICE_FFF(FFF)
+)=IOF3P6*SUM(IAGK_HASORPOT(Y,IA,G)$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T));
+
+execute_unload  "../../simex/F_T.gdx", F_T;
+
+*Fuel price to be used in future runs by addon "import_results"
+FUELPRICE_EXC(Y,IA,FFF)=FUELPRICE(Y,IA,FFF);
+$ifi not %STEPWISEPRICE%==yes $goto NO_STEPWISEPRICE
+FUELPRICE_EXC(Y,IA,STEPWISEPRICE_FFF)$SUM(C$ICA(C,IA),ISTEPWISEPRICE_F(Y,C,STEPWISEPRICE_FFF))=
+ +   SUM(C$ICA(C,IA),
+     (SUM(STEPWISEPRICE_L,STEPWISEPRICE_FUELPRICE_STEP(Y,C,STEPWISEPRICE_L,STEPWISEPRICE_FFF)*VSTEPWISEPRICE_VGF_T_STEP.L(Y,C,STEPWISEPRICE_L,STEPWISEPRICE_FFF))
+     /SUM(STEPWISEPRICE_L,VSTEPWISEPRICE_VGF_T_STEP.L(Y,C,STEPWISEPRICE_L,STEPWISEPRICE_FFF))
+     )$(SUM(STEPWISEPRICE_L,VSTEPWISEPRICE_VGF_T_STEP.L(Y,C,STEPWISEPRICE_L,STEPWISEPRICE_FFF)))
++   SUM(STEPWISEPRICE_L$(ORD(STEPWISEPRICE_L) EQ 1),STEPWISEPRICE_FUELPRICE_STEP(Y,C,STEPWISEPRICE_L,STEPWISEPRICE_FFF))$(NOT SUM(STEPWISEPRICE_L,VSTEPWISEPRICE_VGF_T_STEP.L(Y,C,STEPWISEPRICE_L,STEPWISEPRICE_FFF)))
+    )
+;
+$label NO_STEPWISEPRICE
+execute_unload  "../../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
 
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
