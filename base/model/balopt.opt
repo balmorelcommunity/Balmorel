@@ -42,11 +42,12 @@ $setglobal PROJECTID
 * (or Access MDBs) will have the CASEID as filename with the appropriate extension.
 * Note that CASEID MUST be identical to folder name of the diretory holding the case.
 *
-$setglobal CASEID  BASE
+$setglobal CASEID  BASE  !!%PyLinkScen%
+
 *!option !fixedvalue
 
-
-$SETGLOBAL BBMODE HYDRO
+*  %PyLinkScen%
+$SETGLOBAL BBMODE BB3
 *!option INVEST
 *!option HYDRO
 *!option BB3
@@ -88,11 +89,11 @@ $setglobal testbb1234
 
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 1 in Flex4Res
-$SETGLOBAL SCENARIO1
+$SETGLOBAL SCENARIO1  YES
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 2 in Flex4Res
-$SETGLOBAL SCENARIO2   YES
+$SETGLOBAL SCENARIO2
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
@@ -129,7 +130,7 @@ $ifi %BBMODE%==BB3 $setglobal RollingSeasons  yes
 *!option yes
 
 SCALAR ROLLINGSEASONSNUMBER 'Number of seasons to be optimized at a time in each rolling season optimization';
-ROLLINGSEASONSNUMBER = 1;
+ROLLINGSEASONSNUMBER = 4;
 
 *-------- END: Seasonal rolling horizon  ---------
 
@@ -184,11 +185,13 @@ $setglobal VRESHUTDOWN   yes
 *---------------HYDRO RESERVOIRS OPTIONS--------------------
 *Interpretation of the seasonal level of hydro reservoirs (QHYRSSEQ)
 $setglobal HYRS_AGG hydro_year_agg
+*$ifi %BBMODE%==BB3    $setglobal HYRS_AGG   hydro_season_agg
 *!option hydro_year_agg       !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent an annual behaviour"
 *!option hydro_season_agg     !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent a  seasonal behaviour"
 
 * Relax seasonal limits for hydropower storages when running the model with less than 26 seasons (in HYRSDATA.inc)
 $setglobal RELAX_HYDROSTORAGE yes
+*$ifi not %BBMODE%==BB3 $setglobal RELAX_HYDROSTORAGE yes
 *!option yes
 *---------------END: HYDRO RESERVOIRS OPTIONS--------------
 *----------------------------------------------------------
@@ -197,6 +200,7 @@ $setglobal RELAX_HYDROSTORAGE yes
 *---- Timeseries scaling ------
 
 $setglobal timeseries_scaling  usedtimesteps_timseries_scaling
+$ifi %BBMODE%==BB3 $setglobal timeseries_scaling full_timeseries_scaling
 *!option usedtimesteps_timseries_scaling   !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries"
 *!option full_timeseries_scaling           !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries"
 
@@ -255,7 +259,7 @@ $setglobal DFLEXQUANT
 *!option yes
 
 * Allow demand response
-$setglobal DEMANDRESPONSE    yes
+$setglobal DEMANDRESPONSE  yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
@@ -440,7 +444,7 @@ $setglobal SEASONALLINKRAMPING  YES
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV yes
+$setglobal EV  yes
 *!option
 
 * Adds DUMB charging:
@@ -448,7 +452,7 @@ $setglobal DUMB
 *!option
 
 * Adds smart charging. Only smart charging, without V2G!:
-$setglobal SMART  yes
+$setglobal SMART   yes
 *!option
 
 * Adds V2G charging:

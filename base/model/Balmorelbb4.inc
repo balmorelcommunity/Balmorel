@@ -1023,11 +1023,10 @@ IWTRRSSUM(IA)=SUM(SSS, (WEIGHT_S(SSS)/IWEIGHSUMS)*WTRRSVAR_S(IA,SSS));
 IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
 
 *Redefinition of time parameters so annual constraints are respected
-IWEIGHSUMS = SUM(S, WEIGHT_S(S));
-IWEIGHSUMT = SUM(T, WEIGHT_T(T));
-IHOURSINST(SSS,TTT)=0;
-IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
-
+$ifi not %BBMODE%==BB3 IWEIGHSUMS = SUM(S, WEIGHT_S(S));
+$ifi not %BBMODE%==BB3 IWEIGHSUMT = SUM(T, WEIGHT_T(T));
+$ifi not %BBMODE%==BB3 IHOURSINST(SSS,TTT)=0;
+$ifi not %BBMODE%==BB3 IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
 $label  full_timeseries_scaling_end
 
 
@@ -2594,9 +2593,9 @@ $ifi %bypass%==yes              QGCBGBPRBYPASS2
 
 *--- Hydro reservior restrictions ----------------------------------------------
 
-                                QHYRSSEQ
-                                QHYRSMINVOL
-                                QHYRSMAXVOL
+$ifi not %HYRSBB123%==quant     QHYRSSEQ
+$ifi not %HYRSBB123%==quant     QHYRSMINVOL
+$ifi not %HYRSBB123%==quant     QHYRSMAXVOL
                                 QHYMAXG
 
 *--- Storage restrictions ------------------------------------------------------

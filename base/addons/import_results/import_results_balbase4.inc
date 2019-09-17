@@ -7,8 +7,8 @@ $ifi not %HYRSBB123%==price  QWATERVOLINI
 
 *$ontext
 $ifi %HYRSBB123%==quant        QHYRSG
-*$ifi %HYRSBB123%==quantprice   QHYRSG
-*$ifi %HYRSBB123%==quantprice   QWATERVOLINI
+$ifi %HYRSBB123%==quantprice   QHYRSG
+$ifi %HYRSBB123%==quantprice   QWATERVOLINI
 *$offtext
 
 

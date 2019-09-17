@@ -25,7 +25,7 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_pardeclare.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_pardeclare.inc";
-
+$ifi %import_results%==YES  $include        "../../base/addons/import_results/import_results_pardeclare.inc";     
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_pardeclare.inc";
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_pardeclare.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardeclare.inc";

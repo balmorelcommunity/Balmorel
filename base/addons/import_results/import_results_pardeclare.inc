@@ -3,6 +3,8 @@
 
 $ifi %HYRSBB123%==none    $goto label_no_hydro_results_import
 
+SET       IHYRSBB12DELTASET           "Increase steps of hydro generation above BB1 level" / IHYRSBB123G1*IHYRSBB123G5  /;
+
 PARAMETER IHYRSBB123G_Y(Y,AAA,SSS)      "Water (hydro) generation quantity of the seasons transferred from model BB1/BB2 for use in model Balbase3 (MWh)";
 PARAMETER IWATERVAL_Y(Y,AAA,SSS)        "Water value (in input Money) transferred from model BB1/BB2 for use in model Balbase3 (MWh)";
 PARAMETER IHYRSBB123BB3GACCUM(Y,AAA)    "The amount of water used so far during present year during BB3 solutions (MWh)";
