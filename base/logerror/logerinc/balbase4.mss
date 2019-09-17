@@ -73,36 +73,36 @@ PUT "       Some Balmorel errors were detected before optimisation of year " IYA
 
 
 PUT IYALIAS.TL:5 "  " ;
-PUT$(BALBASE4.MODELSTAT EQ 1)  " Optimal                     ";
-PUT$(BALBASE4.MODELSTAT EQ 2)  " Locally optimal             ";
-PUT$(BALBASE4.MODELSTAT EQ 3)  " Unbounded                   ";
-PUT$(BALBASE4.MODELSTAT EQ 4)  " Infeasible                  ";
-PUT$(BALBASE4.MODELSTAT EQ 5)  " Locally infeasible          ";
-PUT$(BALBASE4.MODELSTAT EQ 6)  " Intermediate infeasible     ";
-PUT$(BALBASE4.MODELSTAT EQ 7)  " Intermediate nonoptimal     ";
-PUT$(BALBASE4.MODELSTAT EQ 8)  " Integer solution            ";
-PUT$(BALBASE4.MODELSTAT EQ 9)  " Intermediate non-integer    ";
-PUT$(BALBASE4.MODELSTAT EQ 10) " Integer infeasible          ";
-PUT$(BALBASE4.MODELSTAT EQ 12) " Error unknown               ";
-PUT$(BALBASE4.MODELSTAT EQ 13) " Error no solution           ";
-PUT$(BALBASE4.MODELSTAT EQ 14) " No solution returned        ";
-PUT$(BALBASE4.MODELSTAT EQ 15) " Solved unique               ";
-PUT$(BALBASE4.MODELSTAT EQ 16) " Solved                      ";
-PUT$(BALBASE4.MODELSTAT EQ 17) " Solved singular             ";
-PUT$(BALBASE4.MODELSTAT EQ 18) " Unbounded no solution       ";
-PUT$(BALBASE4.MODELSTAT EQ 19) " Infeasible no solution      ";
-PUT$(BALBASE4.MODELSTAT GE 20) " Error no. " BALBASE4.MODELSTAT:3:0 " ";
+PUT$(%modelname%.MODELSTAT EQ 1)  " Optimal                     ";
+PUT$(%modelname%.MODELSTAT EQ 2)  " Locally optimal             ";
+PUT$(%modelname%.MODELSTAT EQ 3)  " Unbounded                   ";
+PUT$(%modelname%.MODELSTAT EQ 4)  " Infeasible                  ";
+PUT$(%modelname%.MODELSTAT EQ 5)  " Locally infeasible          ";
+PUT$(%modelname%.MODELSTAT EQ 6)  " Intermediate infeasible     ";
+PUT$(%modelname%.MODELSTAT EQ 7)  " Intermediate nonoptimal     ";
+PUT$(%modelname%.MODELSTAT EQ 8)  " Integer solution            ";
+PUT$(%modelname%.MODELSTAT EQ 9)  " Intermediate non-integer    ";
+PUT$(%modelname%.MODELSTAT EQ 10) " Integer infeasible          ";
+PUT$(%modelname%.MODELSTAT EQ 12) " Error unknown               ";
+PUT$(%modelname%.MODELSTAT EQ 13) " Error no solution           ";
+PUT$(%modelname%.MODELSTAT EQ 14) " No solution returned        ";
+PUT$(%modelname%.MODELSTAT EQ 15) " Solved unique               ";
+PUT$(%modelname%.MODELSTAT EQ 16) " Solved                      ";
+PUT$(%modelname%.MODELSTAT EQ 17) " Solved singular             ";
+PUT$(%modelname%.MODELSTAT EQ 18) " Unbounded no solution       ";
+PUT$(%modelname%.MODELSTAT EQ 19) " Infeasible no solution      ";
+PUT$(%modelname%.MODELSTAT GE 20) " Error no. " %modelname%.MODELSTAT:3:0 " ";
 
-PUT$(BALBASE4.SOLVESTAT EQ 1)  " Normal completion           ";
-PUT$(BALBASE4.SOLVESTAT EQ 2)  " Max iterations reached      ";
-PUT$(BALBASE4.SOLVESTAT EQ 3)  " Resource limit reached      ";
-PUT$(BALBASE4.SOLVESTAT GE 4)  " Non optimal - error no.  "
-BALBASE4.SOLVESTAT:3:0 ;
+PUT$(%modelname%.SOLVESTAT EQ 1)  " Normal completion           ";
+PUT$(%modelname%.SOLVESTAT EQ 2)  " Max iterations reached      ";
+PUT$(%modelname%.SOLVESTAT EQ 3)  " Resource limit reached      ";
+PUT$(%modelname%.SOLVESTAT GE 4)  " Non optimal - error no.  "
+%modelname%.SOLVESTAT:3:0 ;
 
 PUT VOBJ.L:16:2 " ";
-PUT BALBASE4.ITERUSD:11:0 " " ;
-PUT BALBASE4.NUMINFES:12:0 " " ;
-PUT BALBASE4.NUMNOPT:13:0 /;
+PUT %modelname%.ITERUSD:11:0 " " ;
+PUT %modelname%.NUMINFES:12:0 " " ;
+PUT %modelname%.NUMNOPT:13:0 /;
 
 * ------------------------------------------------------------------------------
 * End: BB4 specific ------------------------------------------------------------

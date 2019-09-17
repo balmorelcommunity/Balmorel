@@ -399,6 +399,12 @@ PARAMETER GVESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Electricity storage contents at begi
 PARAMETER GVHSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Heat storage contents at beginning of time segment (MWh) to be transferred to future runs";
 ** End: Export data
 
+* Model and solver status codes and statistics
+PARAMETER OMODELSTAT(Y) "Model status code";
+PARAMETER OSOLVESTAT(Y) "Solver status code";
+PARAMETER OCPUTIME(Y) "Time the solver used to solve the model in CPU seconds";
+
+
 * ------------------------------------------------------------------------------
 * All remaining (cf. ... .inc above) data files af included from the following file
 $ifi     exist "bb4datainc.inc" $include                   "bb4datainc.inc";
@@ -1273,7 +1279,7 @@ $ifi %COMBTECH%==yes OR SUM(IGCOMB1$((GKFX(Y,IA,IGCOMB1) OR AGKN(IA,IGCOMB1)) AN
 * Unload input data to gdx and possibly MDB files.
 * Note that this is a compile time operation, such that only the 'direct' data
 * definitions (and no assignments) are reflected:
-execute_unload '%relpathModel%../output/temp/1INPUT.gdx';
+execute_unload '%relpathtemp%1INPUT.gdx';
 
 *------------------------------
 
@@ -2569,7 +2575,7 @@ $ifi %HEATTRANS%==yes $include "../../base/addons/heattrans/model/htequations.in
 * Definition of the models:
 *-------------------------------------------------------------------------------
 
-MODEL BALBASE4  "Balmorel model with endogeneous investments"
+MODEL %modelname%  "Balmorel model with endogeneous investments"
 /
 *--- Objective function --------------------------------------------------------
                                 QOBJ
@@ -2728,7 +2734,7 @@ $offtext
 /;
 
 * Scale the model: only equation QOBJ is really badly scaled:
-BALBASE4.SCALEOPT=1;
+%modelname%.SCALEOPT=1;
 QOBJ.SCALE=IOF1000000;
 
 *-------------------------------------------------------------------------------

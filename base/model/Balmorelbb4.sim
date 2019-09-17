@@ -325,12 +325,12 @@ $ifi %RollingSeasons%==yes IHOURSINST(IS3,T)=IOF8760*WEIGHT_S(IS3)*WEIGHT_T(T)/(
 * solution basis, which is used for generating results database.
 OPTION Savepoint=1;
 
-$ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
+$ifi not %USEOPTIONFILE%==0 %modelname%.optfile = %USEOPTIONFILE%;
 
 
-$ifi not %SOLVEMIP%==yes SOLVE BALBASE4 USING LP  MINIMIZING VOBJ;
+$ifi not %SOLVEMIP%==yes SOLVE %modelname% USING LP  MINIMIZING VOBJ;  !! =====================
 *=====================
-$ifi  %SOLVEMIP%==yes SOLVE BALBASE4 USING MIP MINIMIZING VOBJ;
+$ifi  %SOLVEMIP%==yes SOLVE %modelname% USING MIP MINIMIZING VOBJ;  !! =====================
 *=====================
 
 $ifi %RollingSeasons%==yes * Fixing relevant variables from previous optimization
@@ -347,6 +347,10 @@ $include "../../base/addons/_hooks/solveend.inc"
 
 $ifi %bb4%==yes $INCLUDE '../../base/logerror/logerinc/balbase4.mss';
 
+OMODELSTAT(IYALIAS) = %modelname%.MODELSTAT;
+OSOLVESTAT(IYALIAS) = %modelname%.SOLVESTAT;
+OCPUTIME(IYALIAS) = %modelname%.RESUSD;
+
 
 * ------------------------------------------------------------------------------
 * --- Verify and Save results --------------------------------------------------
@@ -358,7 +362,7 @@ $ifi %bb4%==yes $INCLUDE '../../base/logerror/logerinc/balbase4.mss';
 $ifi not %system.filesys%==MSNT $goto endofMSNTmove
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move "%relpathModel%''BALBASE4_p.gdx" '  '"%relpathModel%%relpathoutput%temp/'IYALIAS.tl:0:0 '.gdx"';
+$ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move "%relpathModel%''%modelname%_p.gdx" '  '"%relpathtemp%'IYALIAS.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes  execute  "%batfileMERGESAVEPOINTRESULTS%";
 
@@ -367,7 +371,7 @@ $label endofMSNTmove
 $ifi not %system.filesys%==UNIX $goto endofUNIXmove
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''BALBASE4_p.gdx" "%relpathModel%%relpathoutput%temp/'IYALIAS.tl:0:0 '.gdx"';
+$ifi %bb4%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''%modelname%_p.gdx" "%relpathtemp%'IYALIAS.tl:0:0 '.gdx"';
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb4%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';
