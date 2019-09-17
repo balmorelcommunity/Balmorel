@@ -891,6 +891,7 @@ PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close
 $ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T) = GKRATE(IA,G,S,T);
 
+
 * The following parameters contain information about CO2 and SO2 emission
 * from technology G based on the fuel used and its emission data:
 PARAMETER   IM_CO2(G)   "CO2 emission coefficient for fuel, fossil and renewable (kg/GJ)";
@@ -1083,22 +1084,6 @@ LOOP((FFF,G)$IGF(G,FFF),
 IAGKNY(Y,IA,G) = IAGKN(IA,G);
 IAGKNY(Y,IA,G)$(YVALUE(Y) LT GDATA(G,'GDFROMYEAR') OR (YVALUE(Y) GT GDATA(G,'GDLASTYEAR')) AND (GDATA(G,'GDLASTYEAR') GT 0) OR (YVALUE(Y) LT GINVESTSTART))=NO;
 
-* FUEL FACTOR:
-IGFE_FACTOR(Y,IA,G)$(GKFX(Y,IA,G) OR AGKN(IA,G)
-$ifi %COMBTECH%==yes OR SUM(IGCOMB1$((GKFX(Y,IA,IGCOMB1) OR AGKN(IA,IGCOMB1)) AND GGCOMB(IGCOMB1,G)),1)$IGCOMB2(G)
-) = (1 /(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGNOTETOH(G) AND IGE(G) AND NOT IGBYPASS(G))
-+    ((GDATA(G,'GDCB')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
-+    ((GDATA(G,'GDCV')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
-$ifi %HYDROGEN%==YES +        1$(IHYDROGEN_GETOH2(G) OR IHYDROGEN_GEHTOH2(G))
-;
-
-IGFH_FACTOR(Y,IA,G)$(GKFX(Y,IA,G) OR AGKN(IA,G)
-$ifi %COMBTECH%==yes OR SUM(IGCOMB1$((GKFX(Y,IA,IGCOMB1) OR AGKN(IA,IGCOMB1)) AND GGCOMB(IGCOMB1,G)),1)$IGCOMB2(G)
-) = (GDATA(G,'GDCV')/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGH(G)  AND NOT IGBYPASS(G))
-+    ((GDATA(G,'GDCB')*GDATA(G,'GDBYPASSC')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
-+    ((GDATA(G,'GDCV')*GDATA(G,'GDBYPASSC')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
-;
-
 
 * These internal parameters and sets pertain to heat transmission.
 $if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.inc';
@@ -1269,6 +1254,22 @@ $ifi %LoadInvestData%==yes GKFX(YYY,AAA,GGG)=GKFX(YYY,AAA,GGG)+GKVACCDECOM(YYY,A
 $ifi %LoadInvestData%==yes IGKFX_KPOTSTEP(Y,AAA,G,KPOTSTEP)=IGKFX_KPOTSTEP(Y,AAA,G,KPOTSTEP)+IGKFX_KPOTSTEP_TEMP(Y,AAA,G,KPOTSTEP);
 
 
+* FUEL FACTOR:
+IGFE_FACTOR(Y,IA,G)$(GKFX(Y,IA,G) OR AGKN(IA,G)
+$ifi %COMBTECH%==yes OR SUM(IGCOMB1$((GKFX(Y,IA,IGCOMB1) OR AGKN(IA,IGCOMB1)) AND GGCOMB(IGCOMB1,G)),1)$IGCOMB2(G)
+) = (1 /(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGNOTETOH(G) AND IGE(G) AND NOT IGBYPASS(G))
++    ((GDATA(G,'GDCB')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
++    ((GDATA(G,'GDCV')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
+$ifi %HYDROGEN%==YES +        1$(IHYDROGEN_GETOH2(G) OR IHYDROGEN_GEHTOH2(G))
+;
+
+IGFH_FACTOR(Y,IA,G)$(GKFX(Y,IA,G) OR AGKN(IA,G)
+$ifi %COMBTECH%==yes OR SUM(IGCOMB1$((GKFX(Y,IA,IGCOMB1) OR AGKN(IA,IGCOMB1)) AND GGCOMB(IGCOMB1,G)),1)$IGCOMB2(G)
+) = (GDATA(G,'GDCV')/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGH(G)  AND NOT IGBYPASS(G))
++    ((GDATA(G,'GDCB')*GDATA(G,'GDBYPASSC')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
++    ((GDATA(G,'GDCV')*GDATA(G,'GDBYPASSC')/(GDATA(G,'GDCB') + GDATA(G,'GDBYPASSC')))/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGBYPASS(G)
+;
+
 * Unload input data to gdx and possibly MDB files.
 * Note that this is a compile time operation, such that only the 'direct' data
 * definitions (and no assignments) are reflected:
@@ -1396,6 +1397,8 @@ $ifi %VGF%==Y QGFEQ(Y,AAA,G)       "Calculate fuel consumption, existing units (
    QGMAXFUELR(Y,RRR,FFF)    "Maximum electricity generation by year, region and fuel (MWh)"
    QGMINFUELA(Y,AAA,FFF)    "Minimum electricity generation by year, area and fuel (MWh)"
    QGMAXFUELA(Y,AAA,FFF)    "Maximum electricity generation by year, area and fuel (MWh)"
+*Gustav addition:
+   QGMINAF_S(YYY,AAA,FFF,SSS)
 
    QGMINCF(Y,C,FFF)         "Minimum fuel use by year, country and fuel (GJ)"
    QGMAXCF(Y,C,FFF)         "Maximum fuel use by year, country and fuel (GJ)"
@@ -1599,7 +1602,7 @@ QHEQ(IY411,IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))) ..
    + SUM(IGETOH$IAGK_HASORPOT(IY411,IA,IGETOH),VGH_T(IY411,IA,IGETOH,IS3,T))
    - SUM(IGHSTO$IAGK_HASORPOT(IY411,IA,IGHSTO),VHSTOLOADT(IY411,IA,IGHSTO,IS3,T))
    - SUM(IGHSTOS$IAGK_HASORPOT(IY411,IA,IGHSTOS),VHSTOLOADTS(IY411,IA,IGHSTOS,IS3,T))
-    =E=
+    =G=
      (SUM(DHUSER, ((DH(IY411,IA,DHUSER) * DH_VAR_T(IA,DHUSER,IS3,T)) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0))
          )/(1-DISLOSS_H(IA))
 * Adds heat transmission if selected in the gas add-on
@@ -2097,9 +2100,9 @@ $include "../../base/addons/_hooks/qgeqaf.inc"
 ;
 
 ** GUSTAV ADDITION:
-*QGMINAF_S(IY411,IA,FFF,IS3)$GMINF_S(IY411,IA,FFF,IS3)..
-*SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM(T, IHOURSINST(IS3,T) * (  VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
-*    =G= GMINF_S(IY411,IA,FFF,IS3);
+QGMINAF_S(IY411,IA,FFF,IS3)$GMINF_S(IY411,IA,FFF,IS3)..
+SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM(T, IHOURSINST(IS3,T) * (  VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
+    =G= GMINF_S(IY411,IA,FFF,IS3);
 
 * "Maximum fuel use by year, season, country and fuel (GJ)"
 QGMAXCFS(IY411,C,FFF,IS3)$IGMAXFS(IY411,C,FFF,IS3)..
@@ -2623,7 +2626,7 @@ $ifi %TransInvest%==yes         QXK_UP
                                 QGMAXCFS
                                 QGMAXRFS
                                 QGMAXAFS
-
+                                QGMINAF_S
 *                                QGMINAF TODO
 *                                QGMAXAF TODO
 *                                QGEQAF  TODO
@@ -2803,8 +2806,8 @@ $ifi %DECOM%==yes       -VDECOM_EXO_ACCUM.L(Y,IA,G)
 $ifi %TechInvest%==yes  +VGKNACCUMNET.L(Y,IA,G)
 ;
 
-GKACCUMNET_KPOTSTEP(Y,IA,G,KPOTSTEP)= IGKFX_KPOTSTEP(Y,IA,G,KPOTSTEP)
-$ifi %TechInvest%==yes  + VGKNACCUMNET_KPOTSTEP.L(Y,IA,G,KPOTSTEP)
+$ifi %STEPWISEKPOT%==YES GKACCUMNET_KPOTSTEP(Y,IA,G,KPOTSTEP)= IGKFX_KPOTSTEP(Y,IA,G,KPOTSTEP)
+$ifi %STEPWISEKPOT%==YES $ifi %TechInvest%==yes  + VGKNACCUMNET_KPOTSTEP.L(Y,IA,G,KPOTSTEP)
 ;
 
 *Modification of GKFX values in case they are negative or extremely small (sometimes there can be issues with the decimals)
@@ -2827,6 +2830,12 @@ GVHSTOVOLTS(Y,IA,IGHSTOS,S,T)$((ORD(T) EQ 1) AND GVHSTOVOLTS(Y,IA,IGHSTOS,S,T) A
 
 execute_unload  "../../simex/GVESTOVOLTS.gdx", GVESTOVOLTS;
 execute_unload  "../../simex/GVHSTOVOLTS.gdx", GVHSTOVOLTS;
+
+$ifi not %RollingSeasons%==YES $ifi %GRIDTARIFFS%==YES IGRGETOHLEVEL_1(Y,IA,MMM)$(SUM(IR$RRRAAA(IR,IA), IGR_PRICE_TECH(Y,IR,'GRDDCW')) OR SUM(IR$RRRAAA(IR,IA), IGR_PRICE_TECH(Y,IR,'GRDDCS')) OR SUM(IR$RRRAAA(IR,IA), IGR_PRICE_TECH(Y,IR,'GRDDC2'))) = VGETOH_CAP1.L(Y,IA,MMM);
+$ifi not %RollingSeasons%==YES $ifi %GRIDTARIFFS%==YES IGRGETOHLEVEL_2(Y,IA,MMM)$SUM(IR$RRRAAA(IR,IA), IGR_PRICE_TECH(Y,IR,'GRDDCTOU')) = VGETOH_CAP2.L(Y,IA,MMM) ;
+$ifi not %RollingSeasons%==YES $ifi %GRIDTARIFFS%==YES IGRGETOHLEVEL_Y(Y,IA)$SUM(IR$RRRAAA(IR,IA), IGR_PRICE_TECH(Y,IR,'GRDDCY')) = VGETOH_CAPY.L(Y,IA);
+
+$ifi %GRIDTARIFFS%==YES execute_unload  "../../simex/IGRGETOHLEVEL.gdx", IGRGETOHLEVEL_1, IGRGETOHLEVEL_2, IGRGETOHLEVEL_Y;
 
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN

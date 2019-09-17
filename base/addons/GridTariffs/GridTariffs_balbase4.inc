@@ -1,6 +1,8 @@
-QGETOH_CAP1
-QGETOH_CAP2
-QGETOH_CAPY
-QDEUSER_CAP1
-QDEUSER_CAP2
-QDEUSER_CAPY
+$ifi not %RollingSeasons%==YES QGETOH_CAP1
+$ifi not %RollingSeasons%==YES QGETOH_CAP2
+$ifi not %RollingSeasons%==YES QGETOH_CAPY
+$ifi not %RollingSeasons%==YES QDEUSER_CAP1
+$ifi not %RollingSeasons%==YES QDEUSER_CAP2
+$ifi not %RollingSeasons%==YES QDEUSER_CAPY
+
+$ifi %RollingSeasons%==YES QGETOH_CAPBB3

@@ -51,6 +51,8 @@ $SETGLOBAL BBMODE HYDRO
 *!option HYDRO
 *!option BB3
 
+$ifi %BBMODE%==BB3  $Setglobal USEOPTIONFILE 6
+
 *===============================================================================
 *===============================================================================
 * Model choices:
@@ -86,11 +88,11 @@ $setglobal testbb1234
 
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 1 in Flex4Res
-$SETGLOBAL SCENARIO1  YES
+$SETGLOBAL SCENARIO1
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 2 in Flex4Res
-$SETGLOBAL SCENARIO2
+$SETGLOBAL SCENARIO2   YES
 *!option yes
 
 * This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
@@ -106,7 +108,7 @@ $SETGLOBAL SCENARIO34_ALT    yes
 
 * Strategy to limit long term heat storage: limit with higher price assumption or limit capacity potential
 $SETGLOBAL HEATSTORE_LIM_PRICE      yes
-$SETGLOBAL HEATSTORE_LIM_CAPACITY   yes
+$ifi %INVEST%==YES $SETGLOBAL HEATSTORE_LIM_CAPACITY   yes
 *!option yes
 
 *===============================================================================
@@ -123,10 +125,11 @@ $SETGLOBAL HEATSTORE_LIM_CAPACITY   yes
 * Optimize seasons with a rolling horizon approach instead of all together.
 *NOTE: This option is supposed to be combined with the option "import_results", which must contain information for all S and at least the first element in T
 $setglobal RollingSeasons
+$ifi %BBMODE%==BB3 $setglobal RollingSeasons  yes
 *!option yes
 
 SCALAR ROLLINGSEASONSNUMBER 'Number of seasons to be optimized at a time in each rolling season optimization';
-ROLLINGSEASONSNUMBER= 1;
+ROLLINGSEASONSNUMBER = 1;
 
 *-------- END: Seasonal rolling horizon  ---------
 
@@ -136,8 +139,8 @@ ROLLINGSEASONSNUMBER= 1;
 *---- Generation investments options----
 
 * Permit investments in generation and storage capacity:
-$setglobal TechInvest
-$ifi %BBMODE%==INVEST $setglobal TechInvest YES
+$setglobal TechInvest  YES
+$ifi %BBMODE%==BB3 $setglobal TechInvest
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
@@ -252,7 +255,7 @@ $setglobal DFLEXQUANT
 *!option yes
 
 * Allow demand response
-$setglobal DEMANDRESPONSE  yes
+$setglobal DEMANDRESPONSE    yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
@@ -280,7 +283,7 @@ $ifi %SCENARIO4%==YES  $SETGLOBAL SCENARIO3OR4   yes
 SCALAR GR_SCALAR_THRESHOLD /.9/ ;
 
 * Taxes addon
-$setglobal TAXES yes
+$setglobal TAXES   yes
 *!option yes
 
 *
@@ -437,7 +440,7 @@ $setglobal SEASONALLINKRAMPING  YES
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV    yes
+$setglobal EV yes
 *!option
 
 * Adds DUMB charging:
@@ -445,7 +448,7 @@ $setglobal DUMB
 *!option
 
 * Adds smart charging. Only smart charging, without V2G!:
-$setglobal SMART   yes
+$setglobal SMART  yes
 *!option
 
 * Adds V2G charging:
@@ -466,6 +469,7 @@ $setglobal DEGCAL yes
 *-------------------------------------------------------------------------------
 
 * Algorithm to improve calculation time. Reduces the set IAGKNY by identifying technologies that are not attractive given assumed costs, fuel prices and taxes.
+$setglobal VARIABLE_TRIMMING
 $ifi %BBMODE%==INVEST $setglobal VARIABLE_TRIMMING   YES
 *!option yes
 
@@ -542,6 +546,7 @@ $ifi %BBMODE%==BB3 $Setglobal export_results
 * export investments
 $Setglobal export_invest
 $ifi %BBMODE%==INVEST $Setglobal export_invest yes
+*$ifi %BBMODE%==HYDRO $Setglobal export_invest yes
 *!option yes
 
 *--------------------------------------------
@@ -558,7 +563,7 @@ $ifi %BBMODE%==INVEST  $Setglobal import_results
 
 * ------------------HYDRO---------------------------------
 * For this model run it is possible to use values found from previuos solutions to specify use of hydro power
-$setglobal HYRSBB123
+$setglobal HYRSBB123 none
 $ifi %BBMODE%==BB3 $setglobal HYRSBB123 quant
 *!option quant         !Text "Use seasonal quantities of hydro generation (from HYRSG.gdx??) in this run ('primal decomposition')"
 *!option price         !Text "Use seasonal prices for hydro generation (from WATERVAL.gdx) in this run ('dual decomposition') (TBD)"
@@ -603,6 +608,8 @@ $setglobal ADDTRANSDEV  yes
 
 * Options timeaggr control automatic aggregation of time segments (to be tested!!).
 $setglobal timeaggr
+*$ifi %BBMODE%==INVEST $setglobal timeaggr yes
+*$ifi %BBMODE%==HYDRO $setglobal timeaggr yes
 *!option yes
 
 

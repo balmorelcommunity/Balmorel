@@ -17,7 +17,7 @@ $ifi not %BB4%==yes $goto endoffile
 
 $label  beginbb4
 
-$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_pardefine.inc"; 
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_pardefine.inc";
 
 $ifi %X3V%==yes  $include   "../../base/addons/x3v/bb4/x3v_pardefine.inc";
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_pardefine.inc";
