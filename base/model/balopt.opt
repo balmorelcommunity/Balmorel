@@ -106,7 +106,7 @@ ROLLINGSEASONSNUMBER= 1;
 *---- Generation investments options----
 
 * Permit investments in generation and storage capacity:
-$setglobal TechInvest
+$setglobal TechInvest   yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
@@ -117,7 +117,7 @@ GINVESTSTART= 2020;
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest
+$setglobal TransInvest yes
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
@@ -136,7 +136,7 @@ $setglobal HEATTRANS yes
 *!option yes
 
 * Permit heat transmission investments between areas.
-$setglobal HeatTransInvest
+$setglobal HeatTransInvest yes
 *!option yes
 
 SCALAR XHINVESTSTART 'Year from which endogenous decisions in heat transmission capacities are allowed' ;
@@ -179,7 +179,7 @@ $setglobal RELAX_HYDROSTORAGE yes
 *-------------------------------------------------
 *---- Timeseries scaling ------
 
-$setglobal timeseries_scaling  full_timeseries_scaling
+$setglobal timeseries_scaling  usedtimesteps_timseries_scaling
 *!option usedtimesteps_timseries_scaling   !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries"
 *!option full_timeseries_scaling           !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries"
 
@@ -322,7 +322,7 @@ $setglobal bypass yes
 
 *-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
 * overall control variable DECOM must be 'yes' if any of the other decommissioning controls are.
-$setglobal DECOM
+$setglobal DECOM yes
 *!option yes
 
 *-------ENDOGENOUS CAPACITIES----------
@@ -413,7 +413,7 @@ $setglobal STEPWISE_RAMPING
 
 * Seasonal ramping link is on. This means that the fuel consumption of the last element ot the set T of the set S will be linked to the first element of the set T of the set S+1.
 * This option increases computanional time but assures continuity in the fuel consumption profile.
-$setglobal SEASONALLINKRAMPING  YES
+$setglobal SEASONALLINKRAMPING  
 *!option yes
 
 *----------------END OF STEPWISE RAMPING (LINEAR VERSION)----------------------------------------------------------
@@ -597,7 +597,7 @@ $setglobal inputdatatxt ""
 * e.g. viewing (Gdxviewer), comparing (Gdxdiff), or transferring to other data formats like Excel or Access.
 * Note that this will be done as a  compile time operation,
 * such that only the 'direct' data definitions (and no assignments) are reflected.
-$setglobal INPUTDATA2GDX  yes
+$setglobal INPUTDATA2GDX
 *!option yes
 
 
