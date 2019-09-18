@@ -46,8 +46,7 @@ $setglobal CASEID  BASE  !!%PyLinkScen%
 
 *!option !fixedvalue
 
-*  %PyLinkScen%
-$SETGLOBAL BBMODE BB3
+$SETGLOBAL BBMODE invest
 *!option INVEST
 *!option HYDRO
 *!option BB3
