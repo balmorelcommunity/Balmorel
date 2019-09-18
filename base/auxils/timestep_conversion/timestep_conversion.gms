@@ -93,40 +93,40 @@ $INCLUDE         '../data/GMAXFS.inc';
 
 *Original timeseries
 PARAMETER WND_VAR_T(AAA,SSS,TTT)                   "Variation of the wind generation"    ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WND_VAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', WND_VAR_T;
 
 PARAMETER SOLE_VAR_T(AAA,SSS,TTT)                  "Variation of the solarE generation"   ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', SOLE_VAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', SOLE_VAR_T;
 
 PARAMETER SOLH_VAR_T(AAA,SSS,TTT)                  "Variation of the solarH generation"   ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', SOLH_VAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', SOLH_VAR_T;
 
 PARAMETER WTRRSVAR_S(AAA,SSS)                      "Variation of the water inflow to reservoirs"   ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WTRRSVAR_S;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', WTRRSVAR_S;
 
 PARAMETER WTRRRVAR_T(AAA,SSS,TTT)                  "Variation of generation of hydro run-of-river"  ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WTRRRVAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', WTRRRVAR_T;
 
 PARAMETER HYRSDATA(AAA,HYRSDATASET,SSS)    "Data for hydro with storage"  ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', HYRSDATA;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', HYRSDATA;
 
 PARAMETER HYPPROFILS(AAA,SSS)                      "Hydro with storage seasonal price profile" ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', HYPPROFILS;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', HYPPROFILS;
 
 PARAMETER GKRATE(AAA,GGG,SSS)                       "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)" ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', GKRATE;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', GKRATE;
 
 PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)                    "Variation in electricity demand"   ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', DE_VAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', DE_VAR_T;
 
 PARAMETER DH_VAR_T(AAA,DHUSER,SSS,TTT)                    "Variation in heat demand"   ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', DH_VAR_T;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', DH_VAR_T;
 
 PARAMETER WEIGHT_S(SSS)                            "Weight (relative length) of each season"    ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WEIGHT_S;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', WEIGHT_S;
 
 PARAMETER WEIGHT_T(TTT)                            "Weight (relative length) of each time period"  ;
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WEIGHT_T;
+execute_load  '../../base/auxils/timestep_conversion/input/all_endofmodel.gdx', WEIGHT_T;
 
 PARAMETER ESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 execute_load  '../../base/auxils/timestep_conversion/input/ESTOVOLTS.gdx', ESTOVOLTS;
