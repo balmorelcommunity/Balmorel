@@ -92,6 +92,8 @@ $if     EXIST '../data/SSS.inc' $INCLUDE      '../data/SSS.inc';
 $if not EXIST '../data/SSS.inc' $INCLUDE '../../base/data/SSS.inc';
 %semislash%;
 
+ALIAS(SSS,SSSALIAS);
+
 SET TTT                "All time periods" %semislash%
 $if     EXIST '../data/TTT.inc' $INCLUDE      '../data/TTT.inc';
 $if not EXIST '../data/TTT.inc' $INCLUDE '../../base/data/TTT.inc';
@@ -884,7 +886,8 @@ $ifi %HEATSTORE_LIM_CAPACITY%==YES TECHGROUPKPOT(IA,'PIT')$(SUM(G$(GDATA(G,'GDTE
 *** NORENS UPDATE Gustav
 $onmulti
 * Load new input data
-$INCLUDE         '../data/GKFX_EUR.inc';
+$if     EXIST '../data/GKFX_EUR.inc' $INCLUDE         '../data/GKFX_EUR.inc';
+$if not EXIST '../data/GKFX_EUR.inc' $INCLUDE         '../../base/data/GKFX_EUR.inc';
 $offmulti
 
 * delete old installed capacity and replace them with new. For France, Belgium, Netherlands and UK
@@ -956,7 +959,7 @@ PARAMETER IGFH_FACTOR(YYY,AAA,GGG) 'Fuel consumption per generated MW electricit
 
 
 * Set a default level for GKFX for all EXT, BPR, CND, HOB and ETOH technologies. (to 0.9)
-GKRATE(IA,G,S)$(SUM(SSS, GKRATE(IA,G,SSS) = 0) AND (SUM(Y, GKFX(Y,IA,G)) OR AGKN(IA,G)) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GBPR) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH))) = .95;
+GKRATE(IA,G,SSS)$(SUM(SSSALIAS, GKRATE(IA,G,SSSALIAS) = 0) AND (SUM(Y, GKFX(Y,IA,G)) OR AGKN(IA,G)) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GBPR) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH))) = .95;
 
 * Refurbishment of Coal to wood pellets is included as an investment option. A limit to VGKN implemented in Balmorelbb4.sim
 * (Gustav 29.08.19 simple version. There might be more elegant ways to do this)

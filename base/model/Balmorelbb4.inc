@@ -411,7 +411,7 @@ $ifi     exist "bb4datainc.inc" $include                   "bb4datainc.inc";
 $ifi not exist "bb4datainc.inc" $include  "../../base/model/bb4datainc.inc";
 
 * UPS! Forgot DOL! TODO
-GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS))) = 0;
+GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) ) = 0;       !! OR (NOT S(SSS)) Gustav: for timeaggregation SSS set needs to be full
 *GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = INF;    Presently not implemented.
 GKRATE(IA,G,S)$(GKRATE(IA,G,S) EQ 1) = 0; !! Should give no reduction in size unless the data files does not exploit that default value is 1.
 
