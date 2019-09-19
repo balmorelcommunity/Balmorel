@@ -428,7 +428,6 @@ $ifi     exist "bb4datainc.inc" $include                   "bb4datainc.inc";
 $ifi not exist "bb4datainc.inc" $include  "../../base/model/bb4datainc.inc";
 
 * UPS! Forgot DOL! TODO
-GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS))) = 0;
 *GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = INF;    Presently not implemented.
 GKRATE(IA,G,S)$(GKRATE(IA,G,S) EQ 1) = 0; !! Should give no reduction in size unless the data files does not exploit that default value is 1.
 
@@ -1215,6 +1214,7 @@ X3FX_VAR_T(RRR,SSS,TTT)$((NOT IR(RRR)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 *DHF_STEPS(AAA,SSS,TTT,DF_QP,DHF)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 *DHF_STEPS(IA,S,T,DF_QP,DHF)$((NOT DHF_D1(DHF) AND (NOT DHF_D2(DHF)) AND (NOT DHF_D3(DHF)) AND (NOT DHF_U1(DHF)) AND (NOT DHF_U2(DHF)) AND (NOT DHF_U3(DHF)))) = 0;
 
+GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS))) = 0;
 
 * Discounting
 * One, implicitly given in ANNUITY, represent the companies' perception of financing costs, alternatives, expectations to profit, etc.
@@ -2725,7 +2725,6 @@ $ifi not %export_results%==yes $goto result_export
 *------------------------------------------------------------------------------
 *                GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
 *------------------------------------------------------------------------------
-
 * For hydro with reservoir save the following, to be used in future runs by addon "import_results":
 
 HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHYRST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
@@ -2816,7 +2815,6 @@ $ifi %STEPWISEPRICE%==yes OR STEPWISEPRICE_FFF(FFF)
 F_T(Y,IA,FFF,S,T)$(GMAXF(Y,IA,FFF) OR SUM(ISALIAS,GMAXFS(Y,IA,FFF,ISALIAS))
 $ifi %STEPWISEPRICE%==yes OR STEPWISEPRICE_FFF(FFF)
 )=IOF3P6*SUM(IAGK_HASORPOT(Y,IA,G)$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T));
-
 execute_unload  "../../simex/F_T.gdx", F_T;
 
 *Fuel price to be used in future runs by addon "import_results"
@@ -2832,6 +2830,10 @@ FUELPRICE_EXC(Y,IA,STEPWISEPRICE_FFF)$SUM(C$ICA(C,IA),ISTEPWISEPRICE_F(Y,C,STEPW
 ;
 $label NO_STEPWISEPRICE
 execute_unload  "../../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
+
+*Planned maintenaince
+$ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S,T)=UCONMAINT.L(Y,IA,IGUC,S,T);
+$ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes execute_unload  "../../simex/UCONMAINT.gdx", UCONMAINT;
 
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN

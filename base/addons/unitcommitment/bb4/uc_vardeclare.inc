@@ -15,3 +15,12 @@ POSITIVE VARIABLE   VRAMPING_UP(Y,AAA,G,RAMPING_RATE,S,T)   'Hourly ramping up f
 POSITIVE VARIABLE   VRAMPING_DOWN(Y,AAA,G,RAMPING_RATE,S,T) 'Hourly Ramping down for each technology and ramping rate';
 $label  STEPWISERAMPING_END
 
+
+$ifi not %PLANNED_MAINTENANCE%==yes $goto NO_PLANNED_MAINTENANCE
+INTEGER  VARIABLE  VUCONMAINT(Y,AAA,G,S,T)    'Unit commitment maintenance (0,1) on electricity generation';
+
+POSITIVE VARIABLE  VUCUMAINT(Y,AAA,G,S,T)     'Start up maintenance, Unit commitment (0,1) on  electricity generation';
+POSITIVE VARIABLE  VUCDMAINT(Y,AAA,G,S,T)     'Unit commitment Shutdown maintenance (0,1) on maintenance electricity generation';
+
+
+$label NO_PLANNED_MAINTENANCE
