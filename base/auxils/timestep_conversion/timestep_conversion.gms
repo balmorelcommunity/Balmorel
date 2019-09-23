@@ -200,6 +200,9 @@ execute_load  '../../base/auxils/timestep_conversion/input/WATERVAL.gdx', WATERV
 PARAMETER F_T(YYY,CCCRRRAAA,FFF,SSS,TTT) "Aggregated fuel use by year, season, T, geography and fuel (GJ)"
 execute_load  '../../base/auxils/timestep_conversion/input/F_T.gdx', F_T;
 
+PARAMETER UCONMAINT(YYY,AAA,GGG,SSS)    'Unit commitment maintenance (0,1) on electricity generation to be used in future runs';
+execute_load  '../../base/auxils/timestep_conversion/input/UCONMAINT.gdx', UCONMAINT;
+
 *REST OF HYDRO PARAMETERS.........
 
 *New timeseries
@@ -215,6 +218,7 @@ PARAMETER DE_VAR_T_NEW(RRR,DEUSER,SSS_NEW,TTT_NEW)                    "Variation
 PARAMETER DH_VAR_T_NEW(AAA,DHUSER,SSS_NEW,TTT_NEW)                    "Variation in heat demand"   ;
 PARAMETER WEIGHT_S_NEW(SSS_NEW)                            "Weight (relative length) of each season"    ;
 PARAMETER WEIGHT_T_NEW(TTT_NEW)                            "Weight (relative length) of each time period" ;
+PARAMETER GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)  "Minimum annual fuel use by year, season, geography and fuel and (GJ) (INPUT DATA)";
 
 PARAMETER ESTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER HSTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
@@ -239,6 +243,7 @@ PARAMETER HYRSG_NEW(YYY,AAA,SSS_NEW)        "Water (hydro) generation quantity o
 PARAMETER VHYRS_SL_NEW(YYY,AAA,SSS_NEW)       "To be saved for comparison with BB1/BB2 solution value for VHYRS_S.L (initial letter is V although declared as a parameter) (MWh)"
 PARAMETER WATERVAL_NEW(YYY,AAA,SSS_NEW)     "Water value (in input Money) to be transferred to future runs (input-Money/MWh)";
 PARAMETER GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)  "Minimum annual fuel use by year, season, geography and fuel and (GJ)";
+PARAMETER UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)    'Unit commitment maintenance (0,1) on electricity generation to be used in future runs';
 
 *----------END OF INPUT DATA--------------------
 
@@ -264,11 +269,11 @@ ESTOVOLT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,
 HSTOVOLT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HSTOVOLT(YYY,AAA,GGG,SSS,TTT)) ;
 ESTOVOLTVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOVOLTVAL(YYY,AAA,GGG,SSS,TTT)) ;
 HSTOVOLTVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HSTOVOLTVAL(YYY,AAA,GGG,SSS,TTT));
-DE_T_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),DE_T(YYY,RRR,SSS,TTT))               ;
-DH_T_NEW(YYY,AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),DH_T(YYY,AAA,SSS,TTT))                ;
-GE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GE_T(YYY,AAA,GGG,SSS,TTT))               ;
-GH_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GH_T(YYY,AAA,GGG,SSS,TTT))              ;
-GF_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GF_T(YYY,AAA,GGG,SSS,TTT))              ;
+DE_T_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),DE_T(YYY,RRR,SSS,TTT))       ;
+DH_T_NEW(YYY,AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),DH_T(YYY,AAA,SSS,TTT))          ;
+GE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GE_T(YYY,AAA,GGG,SSS,TTT))       ;
+GH_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GH_T(YYY,AAA,GGG,SSS,TTT))       ;
+GF_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GF_T(YYY,AAA,GGG,SSS,TTT))         ;
 ESTOLOADT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOLOADT(YYY,AAA,GGG,SSS,TTT)) ;
 ESTOLOADTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOLOADTS(YYY,AAA,GGG,SSS,TTT)) ;
 HSTOLOADT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HSTOLOADT(YYY,AAA,GGG,SSS,TTT)) ;
@@ -279,7 +284,8 @@ HYRSG_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),HYRSG(YYY,AAA,SSS));
 VHYRS_SL_NEW(YYY,AAA,SSS_NEW)=SUM(TTT_NEW$(ORD(TTT_NEW) EQ 1), SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),VHYRS_STL(YYY,AAA,SSS,TTT)));
 WATERVAL_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),WATERVAL(YYY,AAA,SSS));
 GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)$(GMAXF(YYY,CCCRRRAAA,FFF) OR SUM(ISSS,GMAXFS(YYY,CCCRRRAAA,FFF,ISSS)))=SUM((SSS,TTT,TTT_NEW)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),F_T(YYY,CCCRRRAAA,FFF,SSS,TTT)*WEIGHT_S(SSS))/SUM(TTT, WEIGHT_T(TTT));
-
+GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXFS(YYY,CCCRRRAAA,FFF,SSS));
+UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),UCONMAINT(YYY,AAA,GGG,SSS));
 
 $ifi  NOT %timestep_conversion%==WeeksHours_DaysHours   $goto No_WeeksHours_DaysHours
 
@@ -352,7 +358,7 @@ execute_unload  "../../base/auxils/timestep_conversion/output/HYRSG.gdx", HYRSG_
 execute_unload  "../../base/auxils/timestep_conversion/output/VHYRS_SL.gdx", VHYRS_SL_NEW=VHYRS_SL;
 execute_unload  "../../base/auxils/timestep_conversion/output/WATERVAL.gdx", WATERVAL_NEW=WATERVAL;
 execute_unload  "../../base/auxils/timestep_conversion/output/GMAXFS.gdx", GMAXFS_NEW=GMAXFS;
-
+execute_unload  "../../base/auxils/timestep_conversion/output/UCONMAINT.gdx", UCONMAINT_NEW=UCONMAINT;
 
 
 
@@ -477,6 +483,15 @@ loop(TTT_NEW,
 );
 putclose;
 
+*GMAXFS timeseries
+file GMAXFS_timeseries /'../../base/auxils/timestep_conversion/output/GMAXFS.inc'/;
+GMAXFS_timeseries.nd  = 6;
+put GMAXFS_timeseries;
+put '*PARAMETER GMAXFS CALCULATED WITH AUXILS' //
+loop((YYY,CCCRRRAAA,FFF,SSS_NEW)$GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW),
+            put "GMAXFS('",YYY.tl :0,"','",CCCRRRAAA.tl :0,"','",FFF.tl :0,"','",SSS_NEW.tl :0,"')=", GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW) :0 ';' /
+);
+putclose;
 
 
 *$OFFTEXT

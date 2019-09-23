@@ -17,10 +17,10 @@ $label  STEPWISERAMPING_END
 
 
 $ifi not %PLANNED_MAINTENANCE%==yes $goto NO_PLANNED_MAINTENANCE
-INTEGER  VARIABLE  VUCONMAINT(Y,AAA,G,S,T)    'Unit commitment maintenance (0,1) on electricity generation';
+INTEGER  VARIABLE  VUCONMAINT(Y,AAA,G,S)    'Unit commitment maintenance (0,1) on electricity generation';
 
-POSITIVE VARIABLE  VUCUMAINT(Y,AAA,G,S,T)     'Start up maintenance, Unit commitment (0,1) on  electricity generation';
-POSITIVE VARIABLE  VUCDMAINT(Y,AAA,G,S,T)     'Unit commitment Shutdown maintenance (0,1) on maintenance electricity generation';
+POSITIVE VARIABLE  VUCUMAINT(Y,AAA,G,S)     'Start up maintenance, Unit commitment (0,1) on  electricity generation';
+POSITIVE VARIABLE  VUCDMAINT(Y,AAA,G,S)     'Unit commitment Shutdown maintenance (0,1) on maintenance electricity generation';
 
 
 $label NO_PLANNED_MAINTENANCE

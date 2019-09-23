@@ -77,24 +77,20 @@ $label  MINSHUTDOWNTIME_END
 
 
 $ifi not %PLANNED_MAINTENANCE%==yes $goto NO_PLANNED_MAINTENANCE
-SET IGUCUTMAINT(GGG,SSS,TTT,SSS,TTT) "Internal set to assign for each GGG, SSS(first) and TTT(first), the timesteps in SSS(second) and TTT(second) linked to the minimum time off due to mainteinance" ;                                                                                                                                      ;
-
+SET IGUCUTMAINT(GGG,SSS,SSS) "Internal set to assign for each GGG, SSS(first), the timesteps in SSS(second) linked to the minimum time off due to mainteinance" ;                                                                                                                                      ;
+SCALAR ISCOUNT;
 *IGUCUTMAINT CALCULATION
-LOOP(SREV(ISALIAS2,ISALIAS3),
-   LOOP(TREV(ITALIAS2,ITALIAS3),
-      LOOP(IGUC$(GDATA(IGUC,'GDPLANMAINT') GT CHRONOHOUR(ISALIAS3,ITALIAS3)),
-         ICOUNT_LEFT=GDATA(IGUC,'GDPLANMAINT');
-         LOOP(SREV2(S,ISALIAS)$((ICOUNT_LEFT GT 0) AND (ORD(ISALIAS) LE ORD(ISALIAS3))),
-            LOOP(TREV2(T,ITALIAS)$((ICOUNT_LEFT GT 0) AND (NOT (ORD(ISALIAS) EQ ORD(ISALIAS3) AND (ORD(ITALIAS3) LT ORD(ITALIAS))) ) ),
-               IGUCUTMAINT(IGUC,ISALIAS3,ITALIAS3,ISALIAS,ITALIAS)=YES;
-               IF(ORD(ITALIAS) EQ 1,
-                  ICOUNT_LEFT=ICOUNT_LEFT-CHRONOHOUR(ISALIAS-1,ITALIAS--1);
-               ELSE
-                  ICOUNT_LEFT=ICOUNT_LEFT-CHRONOHOUR(ISALIAS,ITALIAS-1);
-               );
-            );
-         );
+LOOP(IGUC$GDATA(IGUC,'GDPLANMAINT'),
+LOOP(ISALIAS,
+      ICOUNT_LEFT=GDATA(IGUC,'GDPLANMAINT');
+      ISCOUNT=0;
+      WHILE((ICOUNT_LEFT GT 0) AND (ICOUNT_LEFT/(SSIZE(ISALIAS)*WEIGHT_S(ISALIAS)) GE 0.5),
+         IGUCUTMAINT(IGUC,ISALIAS,ISALIAS--ISCOUNT)=YES;
+         ISCOUNT=ISCOUNT+1;
+         ICOUNT_LEFT= ICOUNT_LEFT - SSIZE(ISALIAS)*WEIGHT_S(ISALIAS);
       );
    );
 );
 $label NO_PLANNED_MAINTENANCE
+
+

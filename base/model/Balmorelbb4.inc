@@ -2832,7 +2832,7 @@ $label NO_STEPWISEPRICE
 execute_unload  "../../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
 
 *Planned maintenaince
-$ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S,T)=UCONMAINT.L(Y,IA,IGUC,S,T);
+$ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S)=VUCONMAINT.L(Y,IA,IGUC,S);
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes execute_unload  "../../simex/UCONMAINT.gdx", UCONMAINT;
 
 *------------------------------------------------------------------------------

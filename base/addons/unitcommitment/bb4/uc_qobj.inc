@@ -11,4 +11,13 @@
 $ifi %STEPWISE_RAMPING_UC%==ramp_const_cost      +SUM(RAMPING_RATE,VRAMPING_DOWN(Y,IA,IGUC,RAMPING_RATE,IS3,T)*IRAMPING_G_COSTS_DOWN(IGUC,RAMPING_RATE)+VRAMPING_UP(Y,IA,IGUC,RAMPING_RATE,IS3,T)*IRAMPING_G_COSTS_UP(IGUC,RAMPING_RATE))  !! ramping cost
 ))
 
+$ifi not %PLANNED_MAINTENANCE%==yes $goto NO_PLANNED_MAINTENANCE
++ SUM((IA,IGUC,IS3)$IAGK_HASORPOT(Y,IA,IGUC), SSIZE(IS3)*(
+                                          +(VUCONMAINT(Y,IA,IGUC,IS3)*IOF0000001)$(
+$ifi not %ADDPLANNEDMAINTENANCE%==yes     IGPLANMAINT(IGUC)
+$ifi     %ADDPLANNEDMAINTENANCE%==yes     UCONMAINT(Y,IA,IGUC,IS3)
+                                           ) !! fixed hourly cost of maintenance (applied to remove multiple solutions)
+))
+$label NO_PLANNED_MAINTENANCE
+
 

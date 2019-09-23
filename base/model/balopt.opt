@@ -568,8 +568,8 @@ $setglobal ADDMAXFUELUSES
 
 *--------------------PLANNED MAINTENANCE-----------------------------------------------------------
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
-*Import planned maintenance from previous runs
-$setglobal ADDPLANNEDMAINTENANCE
+*Import planned maintenance from previous runs (investments and/or decomissioning must not be allowed if this option is activated)
+$setglobal ADDPLANNEDMAINTENANCE 
 *!option yes
 *--------------------END OF PLANNED MAINTENANCE-----------------------------------------------------------
 

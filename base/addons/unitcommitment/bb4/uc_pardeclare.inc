@@ -13,4 +13,4 @@ PARAMETER RAMPING_CAPABILITY_DOWN(UC_TECH_TYPE,UC_TECH_GROUP,UC_FUELS,RAMPING_RA
 $label  STEPWISERAMPING_END
 
 
-PARAMETER UCONMAINT(YYY,AAA,GGG,SSS,TTT)    'Unit commitment maintenance (0,1) on electricity generation to be used in future runs';
+PARAMETER UCONMAINT(YYY,AAA,GGG,SSS)    'Unit commitment maintenance (0,1) on electricity generation to be used in future runs';
