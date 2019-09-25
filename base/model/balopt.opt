@@ -235,7 +235,7 @@ $setglobal watertank_loading_rest
 * however, it has not been checked. Please take contact if problems.
 
 * Includes individual heating !!Might not work with combtech and hydrogen yet.
-$setglobal INDHEAT    YES
+$setglobal INDHEAT
 *!option yes
 * Choose geographic coverage, denmark only or EU
 $setglobal INDHEAT_GEO   INDHEAT_EU
