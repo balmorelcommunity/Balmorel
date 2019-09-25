@@ -445,7 +445,7 @@ putclose;
 
 *DE_VAR_T timeseries
 file DE_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/DE_VAR_T.inc'/;
-DE_VAR_T_timeseries.nd  = 2;
+DE_VAR_T_timeseries.nd  = 6;
 put DE_VAR_T_timeseries;
 put '*PARAMETER DE_VAR_T CALCULATED WITH AUXILS' //
 loop((RRR,DEUSER,SSS_NEW,TTT_NEW)$DE_VAR_T_NEW(RRR,DEUSER,SSS_NEW,TTT_NEW),
@@ -455,7 +455,7 @@ putclose;
 
 *DH_VAR_T timeseries
 file DH_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/DH_VAR_T.inc'/;
-DH_VAR_T_timeseries.nd  = 2;
+DH_VAR_T_timeseries.nd  = 6;
 put DH_VAR_T_timeseries;
 put '*PARAMETER DH_VAR_T CALCULATED WITH AUXILS' //
 loop((AAA,DHUSER,SSS_NEW,TTT_NEW)$DH_VAR_T_NEW(AAA,DHUSER,SSS_NEW,TTT_NEW),
@@ -465,7 +465,7 @@ putclose;
 
 *WEIGHT_S timeseries
 file WEIGHT_S_timeseries /'../../base/auxils/timestep_conversion/output/WEIGHT_S.inc'/;
-WEIGHT_S_timeseries.nd  = 7;
+WEIGHT_S_timeseries.nd  = 6;
 put WEIGHT_S_timeseries;
 put '*PARAMETER WEIGHT_S CALCULATED WITH AUXILS' //
 loop(SSS_NEW,
@@ -475,7 +475,7 @@ putclose;
 
 *WEIGHT_T timeseries
 file WEIGHT_T_timeseries /'../../base/auxils/timestep_conversion/output/WEIGHT_T.inc'/;
-WEIGHT_T_timeseries.nd  = 7;
+WEIGHT_T_timeseries.nd  = 6;
 put WEIGHT_T_timeseries;
 put '*PARAMETER WEIGHT_T CALCULATED WITH AUXILS' //
 loop(TTT_NEW,

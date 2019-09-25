@@ -245,17 +245,10 @@ $if     EXIST '../data/S.inc' $INCLUDE      '../data/S.inc';
 $if not EXIST '../data/S.inc' $INCLUDE '../../base/data/S.inc';
 %semislash%;
 
-* Calculation of reverse indexed sets
-SREV(S,S+(card(S)-2*ord(S)+1)) = YES;
-SREV2(S,S+(card(S)-2*ord(S)+1)) = YES;
-
 SET T(TTT)    "Time periods within the season in the simulation"  %semislash%
 $if     EXIST '../data/T.inc' $INCLUDE         '../data/T.inc';
 $if not EXIST '../data/T.inc' $INCLUDE '../../base/data/T.inc';
 %semislash%;
-
-TREV(T,T+(card(T)-2*ord(T)+1)) = YES;
-TREV2(T,T+(card(T)-2*ord(T)+1)) = YES;
 
 PARAMETER YVALUE(YYY)   "Numerical value of the years labels"  %semislash%
 $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
