@@ -249,7 +249,25 @@ PARAMETER UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)    'Unit commitment maintenance (0,
 
 
 *------------CALCULATIONS-------------
+$ifi  NOT %timestep_conversion%==WeeksHours_DaysHours   $goto No_WeeksHours_DaysHours
+WEIGHT_S_NEW(SSS_NEW)=24;
+WEIGHT_T_NEW(TTT_NEW)=1;
+$label No_WeeksHours_DaysHours
 
+$ifi  NOT %timestep_conversion%==WeeksHours_HoursHours   $goto No_WeeksHours_HoursHours
+WEIGHT_S_NEW(SSS_NEW)=1;
+WEIGHT_T_NEW(TTT_NEW)=1;
+$label No_WeeksHours_HoursHours
+
+$ifi  NOT %timestep_conversion%==DaysHours_HoursHours   $goto No_DaysHours_HoursHours
+WEIGHT_S_NEW(SSS_NEW)=1;
+WEIGHT_T_NEW(TTT_NEW)=1;
+$label No_DaysHours_HoursHours
+
+$ifi  NOT %timestep_conversion%==DaysHours_Hours5min   $goto No_DaysHours_Hours5min
+WEIGHT_S_NEW(SSS_NEW)=1;
+WEIGHT_T_NEW(TTT_NEW)=1/12;
+$label No_DaysHours_Hours5min
 
 WND_VAR_T_NEW(AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),WND_VAR_T(AAA,SSS,TTT));
 SOLE_VAR_T_NEW(AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),SOLE_VAR_T(AAA,SSS,TTT));
@@ -284,30 +302,8 @@ HYRSG_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),HYRSG(YYY,AAA,SSS));
 VHYRS_SL_NEW(YYY,AAA,SSS_NEW)=SUM(TTT_NEW$(ORD(TTT_NEW) EQ 1), SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),VHYRS_STL(YYY,AAA,SSS,TTT)));
 WATERVAL_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),WATERVAL(YYY,AAA,SSS));
 GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)$(GMAXF(YYY,CCCRRRAAA,FFF) OR SUM(ISSS,GMAXFS(YYY,CCCRRRAAA,FFF,ISSS)))=SUM((SSS,TTT,TTT_NEW)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),F_T(YYY,CCCRRRAAA,FFF,SSS,TTT)*WEIGHT_S(SSS))/SUM(TTT, WEIGHT_T(TTT));
-GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXFS(YYY,CCCRRRAAA,FFF,SSS));
+GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXFS(YYY,CCCRRRAAA,FFF,SSS)*WEIGHT_S_NEW(SSS_NEW)/WEIGHT_S(SSS));
 UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),UCONMAINT(YYY,AAA,GGG,SSS));
-
-$ifi  NOT %timestep_conversion%==WeeksHours_DaysHours   $goto No_WeeksHours_DaysHours
-
-WEIGHT_S_NEW(SSS_NEW)=24;
-WEIGHT_T_NEW(TTT_NEW)=1;
-
-$label No_WeeksHours_DaysHours
-
-$ifi  NOT %timestep_conversion%==WeeksHours_HoursHours   $goto No_WeeksHours_HoursHours
-WEIGHT_S_NEW(SSS_NEW)=1;
-WEIGHT_T_NEW(TTT_NEW)=1;
-$label No_WeeksHours_HoursHours
-
-$ifi  NOT %timestep_conversion%==DaysHours_HoursHours   $goto No_DaysHours_HoursHours
-WEIGHT_S_NEW(SSS_NEW)=1;
-WEIGHT_T_NEW(TTT_NEW)=1;
-$label No_DaysHours_HoursHours
-
-$ifi  NOT %timestep_conversion%==DaysHours_Hours5min   $goto No_DaysHours_Hours5min
-WEIGHT_S_NEW(SSS_NEW)=1;
-WEIGHT_T_NEW(TTT_NEW)=1/12;
-$label No_DaysHours_Hours5min
 
 *------------END OF CALCULATIONS-------------
 
