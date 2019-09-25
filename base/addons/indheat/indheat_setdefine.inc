@@ -23,6 +23,12 @@ $if not EXIST '../data/INDHEAT_AAA.inc' $INCLUDE '../../base/data/INDHEAT_AAA.in
 %semislash%
 
 SET
+INDHEAT_AAAINSECTOR(INDHEAT_AAA,SECTOR) 'Areas with individual heating by sector' %semislash%
+$if     EXIST '../data/INDHEAT_AAA.inc' $INCLUDE         '../data/INDHEAT_AAAINSECTOR.inc';
+$if not EXIST '../data/INDHEAT_AAA.inc' $INCLUDE '../../base/data/INDHEAT_AAAINSECTOR.inc';
+%semislash%
+
+SET
 INDHEAT_GGG 'Individual heating technologies' %semislash%
 $if     EXIST '../data/INDHEAT_GGG.inc' $INCLUDE         '../data/INDHEAT_GGG.inc';
 $if not EXIST '../data/INDHEAT_GGG.inc' $INCLUDE '../../base/data/INDHEAT_GGG.inc';

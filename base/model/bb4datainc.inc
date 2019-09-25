@@ -137,6 +137,11 @@ $if     EXIST '../data/TECH_GROUP.inc' $INCLUDE      '../data/TECH_GROUP.inc';
 $if not EXIST '../data/TECH_GROUP.inc' $INCLUDE '../../base/data/TECH_GROUP.inc';
 %semislash%;
 
+SET SECTOR     "residential, tertiary, industry in individual heating" %semislash%
+$if     EXIST '../data/SECTOR.inc' $INCLUDE      '../data/SECTOR.inc';
+$if not EXIST '../data/SECTOR.inc' $INCLUDE '../../base/data/SECTOR.inc';
+%semislash%;
+
 PARAMETER TECH_GROUP_VALUE(TECH_GROUP)         "Technology Groups value" %semislash%
 $if     EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE      '../data/TECH_GROUP_VALUE.inc';
 $if not EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/TECH_GROUP_VALUE.inc';
@@ -701,11 +706,11 @@ $if     EXIST '../data/M_POL.inc' $INCLUDE         '../data/M_POL.inc';
 $if not EXIST '../data/M_POL.inc' $INCLUDE '../../base/data/M_POL.inc';
 %semislash%;
 
-/*
+
 PARAMETER M_POLNA(YYY,MPOLSET)    "Emission policy data"   %semislash%
 $if     EXIST '../data/M_POLNA.inc' $INCLUDE         '../data/M_POLNA.inc';
 $if not EXIST '../data/M_POLNA.inc' $INCLUDE '../../base/data/M_POLNA.inc';
-%semislash%;  */    M_POLNA(YYY,MPOLSET)=0;
+%semislash%;
 
 *-------------------------------------------------------------------------------
 *---- Seasonal and daily variations: ------------------------------------------
@@ -791,7 +796,7 @@ $if     EXIST '../data/HYPPROFILS.inc' $INCLUDE      '../data/HYPPROFILS.inc';
 $if not EXIST '../data/HYPPROFILS.inc' $INCLUDE '../../base/data/HYPPROFILS.inc';
 %semislash%;
 
-PARAMETER TEMP_VAR_T(SSS,TTT,RRR)                      "Temperature profiles"   %semislash%
+PARAMETER TEMP_VAR_T(RRR,SSS,TTT)                      "Temperature profiles"   %semislash%
 $if     EXIST '../data/TEMP_VAR_T.inc' $INCLUDE      '../data/TEMP_VAR_T.inc';
 $if not EXIST '../data/TEMP_VAR_T.inc' $INCLUDE '../../base/data/TEMP_VAR_T.inc';
 %semislash%;

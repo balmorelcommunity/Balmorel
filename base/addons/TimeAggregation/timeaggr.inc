@@ -76,7 +76,7 @@ T006                           1    1    1    1    1    1    1    1    1    1   
 * ------------------------------------------------------------------------------
 $offtext
 
-$ontext
+*$ontext
 * ------------------------------------------------------------------------------
 * Example data.
 * This dataset distinguishes between workdays and weekdays.
@@ -144,10 +144,10 @@ T023                                                                            
 T024                                                                                                                                                                                                           1        1
 ;
 * ------------------------------------------------------------------------------
-$offtext
+*$offtext
 
 
-*$ontext
+$ontext
 * ------------------------------------------------------------------------------
 * Example data.
 * This dataset distinguishes between workdays and weekdays.
@@ -157,54 +157,54 @@ abort$(CARD(T) NE 72) "Addon timeaggr, file timeaggr.inc: This data TINDAY assum
 
 TABLE TINDAY(T,DAY) "T to DAY mapping"
          MONDAY     TUESDAY     WEDNESDAY     THURSDAY     FRIDAY     SATURDAY     SUNDAY
-T001     1          1           1                                                  
-T002     1          1           1                                                  
-T003     1          1           1                                                  
-T004     1          1           1                                                  
-T005     1          1           1                                                  
-T006     1          1           1                                                  
-T007     1          1           1                                                  
-T008     1          1           1                                                  
-T009     1          1           1                                                  
-T010     1          1           1                                                  
-T011     1          1           1                                                  
-T012     1          1           1                                                  
-T013     1          1           1                                                  
-T014     1          1           1                                                  
-T015     1          1           1                                                  
-T016     1          1           1                                                  
-T017     1          1           1                                                  
-T018     1          1           1                                                  
-T019     1          1           1                                                  
-T020     1          1           1                                                  
-T021     1          1           1                                                  
-T022     1          1           1                                                  
-T023     1          1           1                                                  
-T024     1          1           1                                                  
-T025                                          1            1                       
-T026                                          1            1                       
-T027                                          1            1                       
-T028                                          1            1                       
-T029                                          1            1                       
-T030                                          1            1                       
-T031                                          1            1                       
-T032                                          1            1                       
-T033                                          1            1                       
-T034                                          1            1                       
-T035                                          1            1                       
-T036                                          1            1                       
-T037                                          1            1                       
-T038                                          1            1                       
-T039                                          1            1                       
-T040                                          1            1                       
-T041                                          1            1                       
-T042                                          1            1                       
-T043                                          1            1                       
-T044                                          1            1                       
-T045                                          1            1                       
-T046                                          1            1                       
-T047                                          1            1                       
-T048                                          1            1                       
+T001     1          1           1
+T002     1          1           1
+T003     1          1           1
+T004     1          1           1
+T005     1          1           1
+T006     1          1           1
+T007     1          1           1
+T008     1          1           1
+T009     1          1           1
+T010     1          1           1
+T011     1          1           1
+T012     1          1           1
+T013     1          1           1
+T014     1          1           1
+T015     1          1           1
+T016     1          1           1
+T017     1          1           1
+T018     1          1           1
+T019     1          1           1
+T020     1          1           1
+T021     1          1           1
+T022     1          1           1
+T023     1          1           1
+T024     1          1           1
+T025                                          1            1
+T026                                          1            1
+T027                                          1            1
+T028                                          1            1
+T029                                          1            1
+T030                                          1            1
+T031                                          1            1
+T032                                          1            1
+T033                                          1            1
+T034                                          1            1
+T035                                          1            1
+T036                                          1            1
+T037                                          1            1
+T038                                          1            1
+T039                                          1            1
+T040                                          1            1
+T041                                          1            1
+T042                                          1            1
+T043                                          1            1
+T044                                          1            1
+T045                                          1            1
+T046                                          1            1
+T047                                          1            1
+T048                                          1            1
 T121                                                                  1            1
 T122                                                                  1            1
 T123                                                                  1            1
@@ -237,81 +237,81 @@ abort$(CARD(HOURS24) NE 24) "Addon timeaggr, file timeaggr.inc: This data HOURS2
 TABLE T2HOURS24(T,HOURS24) "T to HOURS24 relationship"
 
          HR01     HR02     HR03     HR04     HR05     HR06     HR07     HR08     HR09     HR10     HR11     HR12     HR13     HR14     HR15     HR16     HR17     HR18     HR19     HR20     HR21     HR22     HR23     HR24
-T001     1                                                                                                                                                                                                              
-T002              1                                                                                                                                                                                                     
-T003                       1                                                                                                                                                                                            
-T004                                1                                                                                                                                                                                   
-T005                                         1                                                                                                                                                                          
-T006                                                  1                                                                                                                                                                 
-T007                                                           1                                                                                                                                                        
-T008                                                                    1                                                                                                                                               
-T009                                                                             1                                                                                                                                      
-T010                                                                                      1                                                                                                                             
-T011                                                                                               1                                                                                                                    
-T012                                                                                                        1                                                                                                           
-T013                                                                                                                 1                                                                                                  
-T014                                                                                                                          1                                                                                         
-T015                                                                                                                                   1                                                                                
-T016                                                                                                                                            1                                                                       
-T017                                                                                                                                                     1                                                              
-T018                                                                                                                                                              1                                                     
-T019                                                                                                                                                                       1                                            
-T020                                                                                                                                                                                1                                   
-T021                                                                                                                                                                                         1                          
-T022                                                                                                                                                                                                  1                 
-T023                                                                                                                                                                                                           1        
+T001     1
+T002              1
+T003                       1
+T004                                1
+T005                                         1
+T006                                                  1
+T007                                                           1
+T008                                                                    1
+T009                                                                             1
+T010                                                                                      1
+T011                                                                                               1
+T012                                                                                                        1
+T013                                                                                                                 1
+T014                                                                                                                          1
+T015                                                                                                                                   1
+T016                                                                                                                                            1
+T017                                                                                                                                                     1
+T018                                                                                                                                                              1
+T019                                                                                                                                                                       1
+T020                                                                                                                                                                                1
+T021                                                                                                                                                                                         1
+T022                                                                                                                                                                                                  1
+T023                                                                                                                                                                                                           1
 T024                                                                                                                                                                                                                    1
-T025     1                                                                                                                                                                                                              
-T026              1                                                                                                                                                                                                     
-T027                       1                                                                                                                                                                                            
-T028                                1                                                                                                                                                                                   
-T029                                         1                                                                                                                                                                          
-T030                                                  1                                                                                                                                                                 
-T031                                                           1                                                                                                                                                        
-T032                                                                    1                                                                                                                                               
-T033                                                                             1                                                                                                                                      
-T034                                                                                      1                                                                                                                             
-T035                                                                                               1                                                                                                                    
-T036                                                                                                        1                                                                                                           
-T037                                                                                                                 1                                                                                                  
-T038                                                                                                                          1                                                                                         
-T039                                                                                                                                   1                                                                                
-T040                                                                                                                                            1                                                                       
-T041                                                                                                                                                     1                                                              
-T042                                                                                                                                                              1                                                     
-T043                                                                                                                                                                       1                                            
-T044                                                                                                                                                                                1                                   
-T045                                                                                                                                                                                         1                          
-T046                                                                                                                                                                                                  1                 
-T047                                                                                                                                                                                                           1        
+T025     1
+T026              1
+T027                       1
+T028                                1
+T029                                         1
+T030                                                  1
+T031                                                           1
+T032                                                                    1
+T033                                                                             1
+T034                                                                                      1
+T035                                                                                               1
+T036                                                                                                        1
+T037                                                                                                                 1
+T038                                                                                                                          1
+T039                                                                                                                                   1
+T040                                                                                                                                            1
+T041                                                                                                                                                     1
+T042                                                                                                                                                              1
+T043                                                                                                                                                                       1
+T044                                                                                                                                                                                1
+T045                                                                                                                                                                                         1
+T046                                                                                                                                                                                                  1
+T047                                                                                                                                                                                                           1
 T048                                                                                                                                                                                                                    1
-T121     1                                                                                                                                                                                                              
-T122              1                                                                                                                                                                                                     
-T123                       1                                                                                                                                                                                            
-T124                                1                                                                                                                                                                                   
-T125                                         1                                                                                                                                                                          
-T126                                                  1                                                                                                                                                                 
-T127                                                           1                                                                                                                                                        
-T128                                                                    1                                                                                                                                               
-T129                                                                             1                                                                                                                                      
-T130                                                                                      1                                                                                                                             
-T131                                                                                               1                                                                                                                    
-T132                                                                                                        1                                                                                                           
-T133                                                                                                                 1                                                                                                  
-T134                                                                                                                          1                                                                                         
-T135                                                                                                                                   1                                                                                
-T136                                                                                                                                            1                                                                       
-T137                                                                                                                                                     1                                                              
-T138                                                                                                                                                              1                                                     
-T139                                                                                                                                                                       1                                            
-T140                                                                                                                                                                                1                                   
-T141                                                                                                                                                                                         1                          
-T142                                                                                                                                                                                                  1                 
-T143                                                                                                                                                                                                           1        
+T121     1
+T122              1
+T123                       1
+T124                                1
+T125                                         1
+T126                                                  1
+T127                                                           1
+T128                                                                    1
+T129                                                                             1
+T130                                                                                      1
+T131                                                                                               1
+T132                                                                                                        1
+T133                                                                                                                 1
+T134                                                                                                                          1
+T135                                                                                                                                   1
+T136                                                                                                                                            1
+T137                                                                                                                                                     1
+T138                                                                                                                                                              1
+T139                                                                                                                                                                       1
+T140                                                                                                                                                                                1
+T141                                                                                                                                                                                         1
+T142                                                                                                                                                                                                  1
+T143                                                                                                                                                                                                           1
 T144                                                                                                                                                                                                                    1
 ;
 * ------------------------------------------------------------------------------
-*$offtext
+$offtext
 
 
 $ontext
@@ -471,13 +471,19 @@ SOLE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 SOLH_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 WAVE_VAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
 WTRRRVAR_T(AAA,SSS,TTT)$(not IA(AAA)) = 0;
+TEMP_VAR_T(RRR,SSS,TTT)$(not IR(RRR)) = 0;
+
+$ifi %INDHEAT%==yes INDHEAT_DH_VAR_T(INDHEAT_AAA,INDHEAT_DHUSER,SSS,TTT)$(not INDHEAT_IA(INDHEAT_AAA)) = 0;
+$ifi %INDHEAT%==yes INDHEAT_SOLH_VAR_T(INDHEAT_AAA,SSS,TTT)$(not INDHEAT_IA(INDHEAT_AAA)) = 0;
 
 ISUMWEIGHT = SUM(T,WEIGHT_T(T));
 
 
 $batinclude '../../base/addons/timeaggregation/aggr_1_s_t_demands.inc' DE_VAR_T IR DEUSER
 $batinclude '../../base/addons/timeaggregation/aggr_1_s_t_demands.inc' DH_VAR_T IA DHUSER
+$ifi %INDHEAT%==yes  $batinclude '../../base/addons/timeaggregation/aggr_1_s_t_demands.inc' INDHEAT_DH_VAR_T INDHEAT_IA INDHEAT_DHUSER
 $batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' X3FX_VAR_T IR
+$batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' TEMP_VAR_T IR
 * $batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' WND_VAR_T IA
 *$batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' SOLE_VAR_T IA
 *$batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' SOLH_VAR_T IA
@@ -489,6 +495,7 @@ $batinclude '../../base/addons/timeaggregation/aggr_2_s_t.inc' WND_VAR_T IA
 
 SOLE_VAR_T(IA,S,T) = Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), SOLE_VAR_T(IA,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
 SOLH_VAR_T(IA,S,T) = Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), SOLH_VAR_T(IA,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
+$ifi %INDHEAT%==yes  INDHEAT_SOLH_VAR_T(INDHEAT_IA,S,T) = Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), INDHEAT_SOLH_VAR_T(INDHEAT_IA,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
 
 WTRRRVAR_T(IA,S,T) = Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), WTRRRVAR_T(IA,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
 
@@ -505,6 +512,9 @@ $ifi %GKRATE_DOL%==AAA_GGG_SSS     GKRATE(IA,G,S)   = Sum(SSS, PS2SSS(S,SSS)*GKR
 HYPPROFILS(IA,S)    = Sum(SSS,  PS2SSS(S,SSS)*HYPPROFILS(IA,SSS))/COUNTELEMENTS(S);
 * Inflow is given in units of energy, therefore a sum is used, not an average:
 WTRRSVAR_S(IA,S)    = Sum(SSS,  PS2SSS(S,SSS)*WTRRSVAR_S(IA,SSS));
+
+HYRSDATA(IA,'HYRSMAXVOL',S) = Sum(SSS,  PS2SSS(S,SSS)*HYRSDATA(IA,'HYRSMAXVOL',SSS))/COUNTELEMENTS(S);
+HYRSDATA(IA,'HYRSMINVOL',S) = Sum(SSS,  PS2SSS(S,SSS)*HYRSDATA(IA,'HYRSMINVOL',SSS))/COUNTELEMENTS(S);
 
 $ifi %X3V%==yes X3VPEX(Y,IR,X3VPLACE,X3VSTEP,S,T)= Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), X3VPEX(Y,IR,X3VPLACE,X3VSTEP,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
 $ifi %X3V%==yes X3VPIM(Y,IR,X3VPLACE,X3VSTEP,S,T)= Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), X3VPIM(Y,IR,X3VPLACE,X3VSTEP,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
@@ -529,9 +539,13 @@ $ifi %GKRATE_DOL%==AAA_GGG_SSS      GKRATE(IA,G,SSS)$(NOT S(SSS))        = 0;
 
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT XKRATE(IRRRE,IRRRI,SSS,TTT)$(NOT S(SSS))    = 0;
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS     XKRATE(IRRRE,IRRRI,SSS)$(NOT S(SSS))        = 0;
-execute_unload 'gkrate.gdx' gkrate; 
+execute_unload 'gkrate.gdx' gkrate;
 HYPPROFILS(IA,SSS)$(NOT S(SSS))       = 0;
 WTRRSVAR_S(IA,SSS)$(NOT S(SSS))       = 0;
+HYRSDATA(IA,'HYRSMAXVOL',SSS)$(NOT S(SSS)) =0;
+HYRSDATA(IA,'HYRSMINVOL',SSS)$(NOT S(SSS)) =0;
 
-SOLH_VAR_T(IA,S,T)$(SOLH_VAR_T(IA,S,T) LE 0) =0
+
+SOLH_VAR_T(IA,S,T)$(SOLH_VAR_T(IA,S,T) LE 0) =0;
+$ifi %INDHEAT%==yes  INDHEAT_SOLH_VAR_T(INDHEAT_IA,S,T)$(INDHEAT_SOLH_VAR_T(INDHEAT_IA,S,T) LE 0) =0;
 $label NoAggregation;

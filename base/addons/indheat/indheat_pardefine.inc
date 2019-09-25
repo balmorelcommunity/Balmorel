@@ -62,3 +62,18 @@ PARAMETER INDHEAT_CARDGROUP(INDHEAT_GROUP) 'Cardinality of groups of technologie
 $if     EXIST '../data/INDHEAT_CARDGROUP.inc' $INCLUDE         '../data/INDHEAT_CARDGROUP.inc';
 $if not EXIST '../data/INDHEAT_CARDGROUP.inc' $INCLUDE '../../base/data/INDHEAT_CARDGROUP.inc';
 %semislash%
+
+PARAMETER INDHEAT_M_POL(YYY,MPOLSET,SECTOR,CCC) 'Emission policy for individual heating' %semislash%
+$if     EXIST '../data/INDHEAT_M_POL.inc' $INCLUDE         '../data/INDHEAT_M_POL.inc';
+$if not EXIST '../data/INDHEAT_M_POL.inc' $INCLUDE '../../base/data/INDHEAT_M_POL.inc';
+%semislash%
+
+PARAMETER INDHEAT_M_POLNA(YYY,MPOLSET,SECTOR) 'Emission policy for individual heating' %semislash%
+$if     EXIST '../data/INDHEAT_M_POLNA.inc' $INCLUDE         '../data/INDHEAT_M_POLNA.inc';
+$if not EXIST '../data/INDHEAT_M_POLNA.inc' $INCLUDE '../../base/data/INDHEAT_M_POLNA.inc';
+%semislash%
+
+PARAMETER INDHEAT_DE_VAR_BASIC(RRR,DEUSER,SSS,TTT) 'Electricity consumption profile excluding heating.' %semislash%
+$if     EXIST '../data/INDHEAT_M_POLNA.inc' $INCLUDE         '../data/INDHEAT_DE_VAR_BASIC.inc';
+$if not EXIST '../data/INDHEAT_M_POLNA.inc' $INCLUDE '../../base/data/INDHEAT_DE_VAR_BASIC.inc';
+%semislash%
