@@ -42,9 +42,16 @@ $setglobal PROJECTID
 * (or Access MDBs) will have the CASEID as filename with the appropriate extension.
 * Note that CASEID MUST be identical to folder name of the diretory holding the case.
 *
-$setglobal CASEID  BASE
+$setglobal CASEID  BASE  !!%PyLinkScen%
+
 *!option !fixedvalue
 
+$SETGLOBAL BBMODE invest
+*!option INVEST
+*!option HYDRO
+*!option BB3
+
+$ifi %BBMODE%==BB3  $Setglobal USEOPTIONFILE 6
 
 *===============================================================================
 *===============================================================================
@@ -71,7 +78,6 @@ $setglobal bb3
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
 $setglobal bb4 yes
 *!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
-
 
 * During test period for BB4 make comparisons between BB4 and BB1, BB2, BB3.
 * The present implementation is for comparison of models (BB4 and one of BB1/BB2/BB3) with a single year (where results should be identical)
@@ -102,7 +108,7 @@ $SETGLOBAL SCENARIO34_ALT    yes
 
 * Strategy to limit long term heat storage: limit with higher price assumption or limit capacity potential
 $SETGLOBAL HEATSTORE_LIM_PRICE      yes
-$SETGLOBAL HEATSTORE_LIM_CAPACITY   yes
+$ifi %INVEST%==YES $SETGLOBAL HEATSTORE_LIM_CAPACITY   yes
 *!option yes
 
 *===============================================================================
@@ -115,16 +121,29 @@ $SETGLOBAL HEATSTORE_LIM_CAPACITY   yes
 * The following global variables concern the choice of details in some of the models.
 * Note that some of the choices are mutually dependent.
 
+*-------- Seasonal rolling horizon  ---------
+* Optimize seasons with a rolling horizon approach instead of all together.
+*NOTE: This option is supposed to be combined with the option "import_results", which must contain information for all S and at least the first element in T
+$setglobal RollingSeasons
+$ifi %BBMODE%==BB3 $setglobal RollingSeasons  yes
+*!option yes
+
+SCALAR ROLLINGSEASONSNUMBER 'Number of seasons to be optimized at a time in each rolling season optimization';
+ROLLINGSEASONSNUMBER = 4;
+
+*-------- END: Seasonal rolling horizon  ---------
+
 *-----------------------
 *---- Investments ------
 
 *---- Generation investments options----
 
 * Permit investments in generation and storage capacity:
-$setglobal TechInvest YES
+$setglobal TechInvest  YES
+$ifi %BBMODE%==BB3 $setglobal TechInvest
 *!option yes
 
-SCALAR GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
+SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
 GINVESTSTART= 2020;
 
 *---- End: Generation investments options----
@@ -137,7 +156,7 @@ $ifi %Scenario2%==YES  $setglobal TransInvest    YES
 $ifi %Scenario4%==YES  $setglobal TransInvest    YES
 *!option yes
 
-SCALAR XINVESTSTART 'Year from which engoenous decisions in transmission capacities are allowed' ;
+SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
 XINVESTSTART= 2030;
 
 *---- End: Transmission investments options----
@@ -147,7 +166,7 @@ XINVESTSTART= 2030;
 
 *----BEGIN: Investments transition -------
 *Save generation and transmission investments from model run to hard drive
-$setglobal SaveInvestData    yes
+$setglobal SaveInvestData
 
 * Load generation and transmission investmets to hard drive
 $setglobal LoadInvestData
@@ -161,27 +180,34 @@ $setglobal WNDSHUTDOWN
 $setglobal VRESHUTDOWN   yes
 *!option yes
 
+*-----------------------------------------------------------
+*---------------HYDRO RESERVOIRS OPTIONS--------------------
+*Interpretation of the seasonal level of hydro reservoirs (QHYRSSEQ)
+$setglobal HYRS_AGG hydro_year_agg
+*$ifi %BBMODE%==BB3    $setglobal HYRS_AGG   hydro_season_agg
+*!option hydro_year_agg       !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent an annual behaviour"
+*!option hydro_season_agg     !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent a  seasonal behaviour"
+
 * Relax seasonal limits for hydropower storages when running the model with less than 26 seasons (in HYRSDATA.inc)
 $setglobal RELAX_HYDROSTORAGE yes
+*$ifi not %BBMODE%==BB3 $setglobal RELAX_HYDROSTORAGE yes
 *!option yes
+*---------------END: HYDRO RESERVOIRS OPTIONS--------------
+*----------------------------------------------------------
 
-*-----------------------
+*-------------------------------------------------
 *---- Timeseries scaling ------
-* Only one option should be activated!!!!
 
-*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries
-$setglobal usedtimesteps_timseries_scaling  yes
-*!option yes
-
-*Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries
-$setglobal full_timeseries_scaling
-*!option yes
+$setglobal timeseries_scaling  usedtimesteps_timseries_scaling
+$ifi %BBMODE%==BB3 $setglobal timeseries_scaling full_timeseries_scaling
+*!option usedtimesteps_timseries_scaling   !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries"
+*!option full_timeseries_scaling           !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries"
 
 *----END: Timeseries scaling
-*-----------------------
+*-------------------------------------------------
 
-*-----------------------
-*---- Heat storage loading restrictions ------    '
+*-------------------------------------------------
+*---- Heat storage loading restrictions ------
 *overall control variable heatsto_loading_rest must be 'yes' if any of the other heat storage loading restriction controls are:
 
 $setglobal heatsto_loading_rest
@@ -197,7 +223,7 @@ $setglobal watertank_loading_rest
 
 
 *----END: Heat storage loading restrictions
-*-----------------------
+*-----------------------------------------------
 
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of add-on modules to include.
@@ -209,7 +235,7 @@ $setglobal watertank_loading_rest
 * however, it has not been checked. Please take contact if problems.
 
 * Includes individual heating !!Might not work with combtech and hydrogen yet.
-$setglobal INDHEAT
+$setglobal INDHEAT    YES
 *!option yes
 * Choose geographic coverage, denmark only or EU
 $setglobal INDHEAT_GEO   INDHEAT_EU
@@ -231,10 +257,11 @@ $Setglobal HYDROGEN
 $Setglobal STEPWISEPRICE
 
 * Use stepwise linear potentials for installed capacity (currently for wind power)
-$Setglobal STEPWISEKPOT  yes
+$Setglobal STEPWISEKPOT
+$ifi %BBMODE%==INVEST $Setglobal STEPWISEKPOT   yes
 
 * Set a common maximum for fuels.
-$Setglobal LIMITSFORFUELS  yes
+$Setglobal LIMITSFORFUELS
 *!option yes
 
 * Allow demand elasticity
@@ -270,14 +297,14 @@ $ifi %SCENARIO4%==YES  $SETGLOBAL SCENARIO3OR4   yes
 SCALAR GR_SCALAR_THRESHOLD /.9/ ;
 
 * Taxes addon
-$setglobal TAXES yes
+$setglobal TAXES   yes
 *!option yes
 
 *
 $setglobal SYSTEMCOST
 *!option yes
 
-* PLANTCLOSURES indicates that technology is decomissioned on the basis of profitability.
+* PLANTCLOSURES indicates that technology is decomissioned on the basis of profitability. (OLD CODE, USE "DECOM" ADD-ON INSTEAD)
 * When revenues can no longer cover both variable and fixed operating costs, capacity is decomissioned.
 $setglobal PLANTCLOSURES
 *!option yes
@@ -320,39 +347,114 @@ $setglobal stointers
 *! option  none       Let no storage technologies be inter-seasonal (i.e., let all be intra-seasonal)
 
 
-* Bypass of 'turbine' (electricity production) on backpressure units. To be implemented pronto.
-$setglobal bypass
+* Bypass of 'turbine' (electricity production) on backpressure units.
+$setglobal bypass yes
 *!option yes
 
-*-------------------------------------------------------------------------------
-* Unit Commitment:
+
+*-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
+* overall control variable DECOM must be 'yes' if any of the other decommissioning controls are.
+$setglobal DECOM
+*!option yes
+
+*-------ENDOGENOUS CAPACITIES----------
+* Note: If no option for endogenous capacities is activated, endogenous investments will not be decommissioned
+
+* Adds Endogenous capacities will maximum stay in the system as much as their lifetimes:
+$setglobal LIFETIME_DECOM_ENDO_G YES
+*!option yes
+
+* Adds Endogenous capacities can be decommissioned based on their profitability:
+$setglobal ECONOMIC_DECOM_ENDO_G
+*!option yes
+
+* Adds Endogenous decommissioned endogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
+$setglobal REVERT_DECOM_ENDO_G
+*!option yes
+
+*--------END OF ENDOGENOUS CAPACITIES-----
+
+*--------EXOGENOUS CAPACITIES------------
+* Note: If either NO_DECOM_EXO_G, or LIFETIME_DECOM_EXO_G, or ECONOMIC_DECOM_EXO_Gor is activated, then the parameter GKFX will be recalculated so capacities only increase in the system.
+
+SCALAR GDECOMEXOSTART 'Year from which endogenous decisions in decommissioning of exogenous generation capacities are allowed';
+GDECOMEXOSTART= 2020;
+
+SCALAR GDECOMEXOPOTSTART 'Starting year to calculate the yearly decommissioning capacity potential, i.e. exogenous decommissioning occuring before this year will not be considered' ;
+GDECOMEXOPOTSTART= 2016;
+
+* Adds No decommissioning of exogenous capacities will take place at all. The capacities in the recalculated GKFX will take place in the optimization
+* Note: This option is not compatible with the other exogenous capacities decommissioning options.
+$setglobal NO_DECOM_EXO_G
+*!option yes
+
+* Adds Exogenous capacities will maximum stay in the system as much as their lifetimes (or as much as political decissions suggest it, for instance), which should be represented in the yearly development of capacities of the input parameter GKFX:
+$setglobal LIFETIME_DECOM_EXO_G
+*!option yes
+
+* Adds Exogenous capacities can be decommissioned based on their profitability:
+$setglobal ECONOMIC_DECOM_EXO_G
+*!option yes
+
+* Adds Endogenous decommissioned exogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
+$setglobal REVERT_DECOM_EXO_G
+*!option yes
+*--------END OF ENDOGENOUS CAPACITIES-----
+*-----------------------End of TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
+
+
+*-------------------- UNIT COMMITMENT -----------------------------------------------------------
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
 $setglobal UnitComm
 *!option yes
 
 * Adds minimal production-when-on:
-$setglobal MINFUELCONS
+$setglobal MINFUELCONS YES
 *!option yes
 * Adds respecting minimum off time of the capacities:
-$setglobal MINSTARTUPTIME
+$setglobal MINSTARTUPTIME  yes
 *!option yes
 * Adds respecting minimum on time of the capacities:
-$setglobal MINSHUTDOWNTIME
+$setglobal MINSHUTDOWNTIME  yes
 *!option yes
 * Adds ramping technical limitations and stepwise costs to the Power plants when-on:
-$setglobal STEPWISERAMPING
+$setglobal STEPWISE_RAMPING_UC  ramp_const
+*!option ramp_const_cost !Text "With ramping constraints and ramping costs"
+*!option ramp_const  !Text "With ramping constraints but without ramping costs"
+*!option no_ramping  !Text "Neither ramping constraints nor ramping costs"
+
+* Seasonal link is on for all UC options activated. This means that past seasons will influence future seasons.
+* This option increases computanional time but assures continuity in the fuel consumption profile.
+$setglobal SEASONALLINKUC yes
 *!option yes
+
 * The production interval is segmented into a number of disjunct pieces, each with its own costs: NOT IMPLEMENTED
 $setglobal UnitCseg
 *!option yes
-*-------------------------------------------------------------------------------
+*-------------------- End of UNIT COMMITMENT -----------------------------------------------------------
+
+*--------------------STEPWISE RAMPING (LINEAR VERSION)-----------------------------------------------------------
+* overall control variable Stepwise_ramping must be 'yes' if any of the other stepwise ramping controls are:
+* This add-on is an alternative to Unit Commitment to model ramping constraints without using MIP. This add-on uses currently the relevant data and sets from the Unit Commitment add-on
+* This add-on is not compatible with the Unit Commitment stepwiseramping option
+* The use of this add-on togeter with the rest of options of Unit Commitment add-on has not been tested, so, unless tested, this add-on should not be activated if UnitComm is on.
+
+$setglobal STEPWISE_RAMPING
+*!option yes
+
+* Seasonal ramping link is on. This means that the fuel consumption of the last element ot the set T of the set S will be linked to the first element of the set T of the set S+1.
+* This option increases computanional time but assures continuity in the fuel consumption profile.
+$setglobal SEASONALLINKRAMPING  YES
+*!option yes
+
+*----------------END OF STEPWISE RAMPING (LINEAR VERSION)----------------------------------------------------------
 
 
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV
+$setglobal EV  yes
 *!option
 
 * Adds DUMB charging:
@@ -381,7 +483,8 @@ $setglobal DEGCAL yes
 *-------------------------------------------------------------------------------
 
 * Algorithm to improve calculation time. Reduces the set IAGKNY by identifying technologies that are not attractive given assumed costs, fuel prices and taxes.
-$setglobal VARIABLE_TRIMMING   YES
+$setglobal VARIABLE_TRIMMING
+$ifi %BBMODE%==INVEST $setglobal VARIABLE_TRIMMING   YES
 *!option yes
 
 
@@ -398,11 +501,21 @@ $setglobal DEFPCALIB
 $setglobal DHFPCALIB
 *!option yes
 
-
 * In model Balbase4 (BB4) indicate the strategy for relative weighting of years
 $setglobal bb4weighty shareYYY
 *!option same       !Text "Use same weights for all Y"
 *!option shareYYY   !Text "Years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)"
+*===============================================================================
+*===============================================================================
+* Model name
+*===============================================================================
+*===============================================================================
+
+$ifi     %bb1%==yes $setglobal modelname BALBASE1
+$ifi     %bb2%==yes $setglobal modelname BALBASE2
+$ifi     %bb3%==yes $setglobal modelname BALBASE3
+$ifi     %bb4%==yes $setglobal modelname BALBASE4
+
 
 
 *-------------------------------------------------------------------------------
@@ -446,44 +559,83 @@ $label endofMSNTrelpaths
 * Some interaction between models:
 *===============================================================================
 *===============================================================================
+
 * The following options are related to interplay between models,
 * e.g. one model output serving as input to another model.
-*
-* ------------------------------------------------------------------------------
-* For model BB3 it is possible to use values found from BB1 or BB2 solutions to specify use of hydro power
-* that corresponds (possibly approximately) to that found in a BB1 or BB2 solution.
-$setglobal HYRSBB123 quant
-*!option quant         !Text "Use seasonal quantities of hydro generation (from HYRSG.gdx??) in BB3 ('primal decomposition')"
-*!mayif %BB3%==yes
-*!option price         !Text "Use seasonal prices for hydro generation (from WATERVAL.gdx) in BB3 ('dual decomposition')"
-*!mayif %BB3%==yes
-*!option quantprice    !Text "Use seasonal quantities and prices for hydro generation (from HYRSG.gdx?? and WATERVAL.gdx) in BB3"
-*!mayif %BB3%==yes
+
+* Overall control to export results so they can be used in future runs :
+$Setglobal export_results   yes
+$ifi %BBMODE%==BB3 $Setglobal export_results
+*!option yes
+
+* export investments
+$Setglobal export_invest
+$ifi %BBMODE%==INVEST $Setglobal export_invest yes
+*$ifi %BBMODE%==HYDRO $Setglobal export_invest yes
+*!option yes
+
+*--------------------------------------------
+*--------------IMPORT OF RESULTS----------------
+*--------------------------------------------
+* Overall control to import results so they can be used in future runs:
+*NOTE: In order for results to work fine, the set S used in the runs should be contained in the import results.
+*NOTE: In order for results to work fine, the first element in set T of the import results should match the one used in the current run.
+$Setglobal import_results  yes
+$ifi %BBMODE%==INVEST  $Setglobal import_results
+*!option yes
+
+*------------ IMPORT OPTIONS ----------------
+
+* ------------------HYDRO---------------------------------
+* For this model run it is possible to use values found from previuos solutions to specify use of hydro power
+$setglobal HYRSBB123 none
+$ifi %BBMODE%==BB3 $setglobal HYRSBB123 quant
+*!option quant         !Text "Use seasonal quantities of hydro generation (from HYRSG.gdx??) in this run ('primal decomposition')"
+*!option price         !Text "Use seasonal prices for hydro generation (from WATERVAL.gdx) in this run ('dual decomposition') (TBD)"
+*!option quantprice    !Text "Use seasonal quantities and prices for hydro generation (from HYRSG.gdx?? and WATERVAL.gdx) in in this run (TBD)"
 *!option none          !Text "Do not not use this hydro addon"
-*!mustif not %BB3%==yes
-$ifi not %BB3%==yes   $setglobal HYRSBB123 none
 
 
+* ------------------ END OF HYDRO---------------------------------
 
+*--------------------INTERSEASONAL STORAGE-----------------------------------------------------------
+*Import Electricity storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
+$Setglobal ADDELECSTORCONT
+$ifi %BBMODE%==BB3 $Setglobal ADDELECSTORCONT yes
+*!option yes
+
+*Import Heat storage contents at beginning of time segment (MWh) from previous runs for the first element in set T of each S
+$Setglobal ADDHEATSTORCONT
+$ifi %BBMODE%==BB3 $Setglobal ADDHEATSTORCONT yes
+*!option yes
+*--------------------END OF INVESTMENTS-----------------------------------------------------------
+
+
+*--------------------INVESTMENTS AND DECOMMISSIONING-----------------------------------------------------------
+*NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
+
+*Import generation and storage technology capacity development from previous runs
+$setglobal ADDTECHDEV
+$ifi %BBMODE%==HYDRO $setglobal ADDTECHDEV   yes
+$ifi %BBMODE%==BB3 $setglobal ADDTECHDEV   yes
+*!option yes
+
+*Import transmission development from previous runs
+$setglobal ADDTRANSDEV  yes
+*!option yes
+*--------------------END OF INVESTMENTS-----------------------------------------------------------
 *-------------------------------------------------------------------------------
-* Options timeaggr control automatic aggregation of time segments.
-*
+
+*------------- END OF IMPORT OPTIONS ----------------
+*--------------------------------------------
+*--------------END OF IMPORT OF RESULTS----------------
+*--------------------------------------------
+
+* Options timeaggr control automatic aggregation of time segments (to be tested!!).
 $setglobal timeaggr
+*$ifi %BBMODE%==INVEST $setglobal timeaggr yes
+*$ifi %BBMODE%==HYDRO $setglobal timeaggr yes
 *!option yes
-
-
-*-------------------------------------------------------------------------------
-* Make investments
-* Used in a BB2 model to generate additional capacity for other models
-$setglobal MAKEINVEST
-*!option yes
-
-* Used in a BB1 or BB3 model to load investments as generated in BB2
-$setglobal ADDINVEST
-*!option yes
-
-$ifi     %bb2%==yes $Setglobal ADDINVEST no
-$ifi not %bb2%==yes $Setglobal MAKEINVEST no
 
 
 *===============================================================================
@@ -557,7 +709,7 @@ $Setglobal limitedresults
 $setglobal PRINTFILES
 *!option yes
 
-$setglobal OUTPUT_SUMMARY
+$setglobal OUTPUT_SUMMARY   yes
 *!option yes
 
 * PRINTSEPARATOR is a single character used for separating columns in printfiles,

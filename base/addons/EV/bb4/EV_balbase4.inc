@@ -1,3 +1,4 @@
+$ifi %EV2%==YES $goto EV_END
 $ifi not %DUMB%==yes $goto DUMB_END
 QEV_BEV_NETCHARGETAX
 QEV_PHEV_NETCHARGETAX
@@ -40,3 +41,16 @@ QEV_PHEV_NETCHARGETAX
 QEV_BEV_NETDISCHARGETAX
 QEV_PHEV_NETDISCHARGETAX
 $label  STEPCHARGSCHEME_END
+$label EV_END
+
+$ifi not %EV2%==YES $goto EV2_END
+$ifi %DUMB%==yes $goto DUMB_BB4_END
+                                 QEV_BEV_SOCBALANCE
+$ifi %V2G%==yes                  QEV_BEV_CHARGEBALANCE
+$ifi %STEPCHARGSCHEME%==yes      QEV_BEV_CHARGEBALANCE
+                                 QEV_PHEV_SOCBALANCE
+$ifi %V2G%==yes                  QEV_PHEV_CHARGEBALANCE
+$ifi %STEPCHARGSCHEME%==yes      QEV_PHEV_CHARGEBALANCE
+
+$label  DUMB_BB4_END
+$label EV2_END

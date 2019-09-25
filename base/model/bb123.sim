@@ -21,13 +21,13 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm *.gdx";
 $ifi %system.filesys%==MSNT
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute "del *.gdx";
 $ifi %system.filesys%==UNIX
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ../output/temp/*.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm %relpathtemp%*.gdx";
 $ifi %system.filesys%==MSNT
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ../output/temp/*.gdx";
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del %relpathtemp%*.gdx";
 $ifi %system.filesys%==UNIX
-$ifi     dexist "../output/temp"   execute 'rm "../output/temp/*.*"';
+$ifi     dexist "%relpathtemp%"   execute 'rm "%relpathtemp%*.*"';
 $ifi %system.filesys%==MSNT
-$ifi     dexist "../output/temp"   execute 'del "../output/temp/*.*"';
+$ifi     dexist "%relpathtemp%"   execute 'del "%relpathtemp%*.*"';
 
 
 * Initialize the first year in the simulation:
@@ -576,12 +576,12 @@ $ifi %bb3%==yes ); /* LOOP(IS3LOOPSET,...) */
 $ifi not %system.filesys%==MSNT $goto endofMSNTmerge
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE1_p.gdx" '  '"%relpathModel%%relpathoutput%temp\'Y.tl:0:0 '.gdx"';
+$ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE1_p.gdx" '  '"%relpathtemp%'Y.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb1%==yes  execute   "%batfileMERGESAVEPOINTRESULTS%";
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb2%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE2_p.gdx" '  '"%relpathModel%%relpathoutput%temp\'Y.tl:0:0 '.gdx"';
+$ifi %bb2%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE2_p.gdx" '  '"%relpathtemp%'Y.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb2%==yes execute  "%batfileMERGESAVEPOINTRESULTS%";
 
@@ -594,7 +594,7 @@ $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %BB3%==yes $ifi %limitedresults%==yes $INCLUDE '../../base/model/symoutput.inc';
 ;
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %BB3%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '%relpathModel%''BALBASE3.gdx '  '%relpathModel%../output/temp/'Y.tl:0:0 '.gdx';
+$ifi %BB3%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '%relpathModel%''BALBASE3.gdx '  '%relpathtemp%'Y.tl:0:0 '.gdx';
 $ifi %MERGEINPUTDATA%==yes
 $ifi %BB3%==yes execute "%batfileMERGESAVEPOINTRESULTS%";
 
@@ -604,14 +604,14 @@ $label endofMSNTmerge
 $ifi not %system.filesys%==UNIX  $goto endofUNIXmerge
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''BALBASE1_p.gdx" "%relpathModel%%relpathoutput%temp/'Y.tl:0:0 '.gdx"';
+$ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''BALBASE1_p.gdx" "%relpathtemp%'Y.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb1%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb1%==yes  execute   './"%bashfileMERGESAVEPOINTRESULTS%"';
 
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb2%==yes putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv  "%relpathModel%''BALBASE2_p.gdx"  "%relpathModel%%relpathoutput%temp/'Y.tl:0:0 '.gdx"';
+$ifi %bb2%==yes putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv  "%relpathModel%''BALBASE2_p.gdx"  "%relpathtemp%'Y.tl:0:0 '.gdx"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb2%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';
 $ifi %MERGESAVEPOINTRESULTS%==yes
@@ -626,7 +626,7 @@ $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %BB3%==yes $ifi %limitedresults%==yes $INCLUDE '../../base/model/symoutput.inc';
 ;
 $ifi %MERGESAVEPOINTRESULTS%==yes
-$ifi %bb3%==yes putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv  "%relpathModel%''BALBASE3.gdx"  %relpathModel%../output/temp/'Y.tl:0:0 '.gdx';
+$ifi %bb3%==yes putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv  "%relpathModel%''BALBASE3.gdx"  %relpathtemp%'Y.tl:0:0 '.gdx';
 $ifi %MERGESAVEPOINTRESULTS%==yes
 $ifi %bb3%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';
 $ifi %MERGESAVEPOINTRESULTS%==yes

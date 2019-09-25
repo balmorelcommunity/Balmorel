@@ -35,6 +35,7 @@ IF((SUM(YMODEL,YMODELDELTA(YMODEL)) GT CARD(Y)-1),
 
 PUT "BB4: Presently there are only rudimentaty checks on the solution - TODO"//;
 
+$ontext
 /*  TODP      CHECK THESE VQs: (not all are necessarily used, and there may be others)
 
 POSITIVE VARIABLE VQEEQ(Y,RRR,S,T,IPLUSMINUS)      'Feasibility in electricity generation equals demand equation QEEQ';
@@ -58,3 +59,4 @@ $ifi %BB4%==yes DISPLAY   VQXKN(Y,IRRRE,IRRRI,YMODEL,IPLUSMINUS)      'Feasibili
 $ifi %BB4%==yes DISPLAY   VQVGKNINT(AAA, G, Y, YMODEL,IPLUSMINUS)     'Feasibility in - NOT IMPLEMENTED PRESENTLYT '
 $ifi %BB4%==yes DISPLAY   VQVXKNINT(IRRRE,IRRRI,Y, YMODEL,IPLUSMINUS) 'Feasibility in - NOT IMPLEMENTED PRESENTLYT '
 */
+$offtext  

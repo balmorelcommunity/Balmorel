@@ -26,8 +26,8 @@ QGKNACCUMNET_KPOTSTEP_PREV(IY411,IA,IGKFIND,KPOTSTEP)$(IKPOTSTEP(IA,IGKFIND) AND
    SUM(IY402$IY411PREVY(IY411,IY402), VGKNACCUMNET_KPOTSTEP(IY402,IA,IGKFIND,KPOTSTEP)$SUM(Y$(YVALUE(Y) LT YVALUE(IY411)),IAGKNY(Y,IA,IGKFIND)))$(NOT IYFIRST(IY411))
  + VGKN_KPOTSTEP(IY411,IA,IGKFIND,KPOTSTEP)$IAGKNY(IY411,IA,IGKFIND)
 
-*Decomissioning of endogenous capacities
-- SUM(Y$(YVALUE(Y)< YVALUE(IY411)),VGKN_KPOTSTEP(Y,IA,IGKFIND,KPOTSTEP)*DECOM_G(Y,IY411,IGKFIND))
+*Decomissioning of endogenous capacities (Apperently not in use anymore)
+*- SUM(Y$(YVALUE(Y)< YVALUE(IY411)),VGKN_KPOTSTEP(Y,IA,IGKFIND,KPOTSTEP)*DECOM_G(Y,IY411,IGKFIND))
  ;
 
 
@@ -73,7 +73,7 @@ $ifi %WNDFLH_DOL%==AAA_GGG     (WNDFLH(IA,IGWND) *
                                SUM(KPOTSTEP,
                                          (VGKNACCUMNET_KPOTSTEP(IY411,IA,IGWND,KPOTSTEP) + IGKFX_KPOTSTEP(IY411,IA,IGWND,KPOTSTEP))
                                          *IKPOTSTEP_FLHA(IA,IGWND,KPOTSTEP)     )
-                               * WND_VAR_T(IA,IS3,T) * IGKRATE(IA,IGWND,IS3,T)) / IWND_SUMST(IA)
+                               * WND_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGWND,IS3,T)) + IGKRATE(IA,IGWND,IS3,T))) / IWND_SUMST(IA)
 ;
 
 ** Maximum generation of solar power
@@ -88,5 +88,5 @@ $ifi %SOLEFLH_DOL%==AAA_GGG   (SOLEFLH(IA,IGSOLE) *
                               SUM(KPOTSTEP,
                                          (VGKNACCUMNET_KPOTSTEP(IY411,IA,IGSOLE,KPOTSTEP) + IGKFX_KPOTSTEP(IY411,IA,IGSOLE,KPOTSTEP))
                                          *IKPOTSTEP_FLHA(IA,IGSOLE,KPOTSTEP)     )
-                              * SOLE_VAR_T(IA,IS3,T) * IGKRATE(IA,IGSOLE,IS3,T)) / ISOLESUMST(IA)
+                              * SOLE_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGSOLE,IS3,T)) + IGKRATE(IA,IGSOLE,IS3,T))) / ISOLESUMST(IA)
 ;

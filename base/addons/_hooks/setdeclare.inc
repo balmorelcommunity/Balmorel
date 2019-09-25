@@ -28,6 +28,7 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_setdeclare.inc";
 
+$ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_setdeclare.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_setdeclare.inc";
 
 $ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_setdefine.inc";

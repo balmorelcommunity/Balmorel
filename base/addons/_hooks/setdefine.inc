@@ -31,10 +31,11 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_setdefine.inc";
 
+$ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_setdefine.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_setdefine.inc";
 
-$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_setdefine.inc";
 
+$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_setdefine.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_setdefine.inc";
 
 $ifi %VARIABLE_TRIMMING%==yes      $include        "../../base/addons/variable_trimming/bb4/vt_setdefine.inc";
