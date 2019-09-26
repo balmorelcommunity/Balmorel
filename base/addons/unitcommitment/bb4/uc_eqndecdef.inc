@@ -1,4 +1,4 @@
-* UC Translated to BB4 by Juan Gea Bermúdez 2018.
+﻿* UC Translated to BB4 by Juan Gea Bermúdez 2018.
 
 EQUATION  QUCVUCON(Y,AAA,G,S,T)    'Unit commitment: Number of endogenous units on limited by unit size and capacity)';
 EQUATION  QUCVUCU(Y,AAA,G,S,T)     'Unit commitment: Number of start up endogenous units on limited by unit size and capacity)';
@@ -306,7 +306,7 @@ QUCSTARTQMAINT(IY411,IA,IGUC,S)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IS3(S) AND IGP
 QUCUTMAINT(IAGK_HASORPOT(IY411,IA,IGUC),S)$(IS3(S) AND IGPLANMAINT(IGUC)) ..
 
 SUM(ISALIAS$IGUCUTMAINT(IGUC,S,ISALIAS), VUCUMAINT(IY411,IA,IGUC,ISALIAS))
-         =E=
+         =L=
          VUCONMAINT(IY411,IA,IGUC,S)
 ;
 
