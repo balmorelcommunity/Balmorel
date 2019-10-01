@@ -74,6 +74,6 @@ $if not EXIST '../data/INDHEAT_M_POLNA.inc' $INCLUDE '../../base/data/INDHEAT_M_
 %semislash%
 
 PARAMETER INDHEAT_DE_VAR_BASIC(RRR,DEUSER,SSS,TTT) 'Electricity consumption profile excluding heating.' %semislash%
-$if     EXIST '../data/INDHEAT_M_POLNA.inc' $INCLUDE         '../data/INDHEAT_DE_VAR_BASIC.inc';
-$if not EXIST '../data/INDHEAT_M_POLNA.inc' $INCLUDE '../../base/data/INDHEAT_DE_VAR_BASIC.inc';
+$if     EXIST '../data/INDHEAT_DE_VAR_BASIC.inc' $INCLUDE         '../data/INDHEAT_DE_VAR_BASIC.inc';
+$if not EXIST '../data/INDHEAT_DE_VAR_BASIC.inc' $INCLUDE '../../base/data/INDHEAT_DE_VAR_BASIC.inc';
 %semislash%
