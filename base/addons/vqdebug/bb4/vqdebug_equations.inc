@@ -31,6 +31,7 @@ $ifi %equation%==qgkh_up          + VQGKH_UP(IY411,IA,IGKHNOSTO,IS3,T,'IMINUS')-
 $ifi %equation%==qucstartq        - VQUCSTARTQ(IY411,IA,IGUC,S,T,'IPLUS') + VQUCSTARTQ(IY411,IA,IGUC,S,T,'IMINUS')
 $ifi %equation%==qucrampu         - VQUCRAMPU(IY411,IA,IGUC,S,T,'IPLUS') + VQUCRAMPU(IY411,IA,IGUC,S,T,'IMINUS')
 $ifi %equation%==qucrampd         - VQUCRAMPD(IY411,IA,IGUC,S,T,'IPLUS') + VQUCRAMPD(IY411,IA,IGUC,S,T,'IMINUS')
+$ifi %equation%==qucvucon_existing  - VQUCVUCON_EXISTING(IY411,IA,IGUC,IS3,T,'IPLUS') + VQUCVUCON_EXISTING(IY411,IA,IGUC,IS3,T,'IMINUS')     
 
 
 $ifi not %equation%==qobj  $goto endoffile
@@ -88,7 +89,7 @@ $ifi %UnitComm%==yes  $ifi not %STEPWISE_RAMPING_UC%==no_ramping  +SUM((IA,IGUC,
 $ifi %UnitComm%==yes   $ifi not %STEPWISE_RAMPING_UC%==no_ramping +SUM((IA,IGUC,IS3,T)$(IAGK_HASORPOT(Y,IA,IGUC) AND GDATA(IGUC,'GDUCRAMPD') LT CHRONOHOUR(IS3,T)), (VQUCRAMPD(Y,IA,IGUC,IS3,T,'IMINUS')+VQUCRAMPD(Y,IA,IGUC,IS3,T,'IPLUS')))
 $ifi %UnitComm%==yes  $ifi %PLANNED_MAINTENANCE%==yes  +SUM((IA,IGUC,IS3,T)$(IAGK_HASORPOT(Y,IA,IGUC) AND NOT(IAGKN(IA,IGUC)) AND NOT(IGDECOMEXOPOT(Y,IA,IGUC))
 $ifi %UnitComm%==yes  $ifi %PLANNED_MAINTENANCE%==yes $ifi not %ADDPLANNEDMAINTENANCE%==yes AND IGPLANMAINT(IGUC)
-$ifi %UnitComm%==yes  $ifi %PLANNED_MAINTENANCE%==yes $ifi     %ADDPLANNEDMAINTENANCE%==yes AND UCONMAINT(IY411,IA,IGUC,IS3)
+$ifi %UnitComm%==yes  $ifi %PLANNED_MAINTENANCE%==yes $ifi     %ADDPLANNEDMAINTENANCE%==yes AND UCONMAINT(Y,IA,IGUC,IS3)
 $ifi %UnitComm%==yes  $ifi %PLANNED_MAINTENANCE%==yes ), (VQUCVUCON_EXISTING(Y,IA,IGUC,IS3,T,'IMINUS')+VQUCVUCON_EXISTING(Y,IA,IGUC,IS3,T,'IPLUS')))
            )
 * -- Objective function End ----------------------------------------------------

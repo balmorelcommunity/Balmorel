@@ -35,14 +35,14 @@ TimeelapsedCentral = TimeElapsed;
 
 * The folders inputdata and outputdata are set by the user (the remaining ones are not to be changed!)
 * Set the full path for the input data to be used
-$setglobal inputdata       "..\data"
-*!option set the full path like e.g.    C:\Balmorel\base\data
+$setglobal inputdata       "../data"
+*!option set the full path like e.g.    C:/Balmorel/base/data
 * Note: use double quotes around and no termination slash or backslash
 * Note: the folder must exist
 
 * Set the full path for the output data generated
-$setglobal outputdata   "..\..\base\auxils\UnitoutageDispatch\dataoutput"
-*!optiononly:  set the full path like e.g.    C:\Balmorel\base\data\timeaggregated
+$setglobal outputdata   "../../base/auxils/UnitoutageDispatch/dataoutput"
+*!optiononly:  set the full path like e.g.    C:/Balmorel/base/data/timeaggregated
 * Note that within the folder a subfolder is generated with a name that indicates the aggragation method
 * Note: use double quotes around and no termination slash or backslash
 * Note: the folder must exist
@@ -52,9 +52,9 @@ $ifi not dexist "%inputdata%"  $abort "Input data folder  '%inputdata%'  does no
 $ifi not dexist "%outputdata%" $abort "Output data folder  '%outputdata%'  does not exist";
 
 * The following are not meant to be changed by the user
-*$setglobal output_inputdescription           "%outputdata%\inputdescription"
-*$setglobal output_intermediategdx            "%outputdata%\intermediategdx"
-*$setglobal output_generatedinc               "%outputdata%\generatedinc"
+*$setglobal output_inputdescription           "%outputdata%/inputdescription"
+*$setglobal output_intermediategdx            "%outputdata%/intermediategdx"
+*$setglobal output_generatedinc               "%outputdata%/generatedinc"
 
 * Make sure that appropriate subfolders to the output data folder exist
 *$ifi not dexist "%output_inputdescription%"         execute 'md "%output_inputdescription%"';
@@ -134,13 +134,13 @@ ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_O
 
 $offlisting
 * I do not know if all this is to be used, nor if more is to be taken
-$include "%inputdata%\CCCRRRAAA.inc";
-$include "%inputdata%\CCC.inc";
-$include "%inputdata%\C.inc";
-$include "%inputdata%\RRR.inc";
-$include "%inputdata%\AAA.inc";
-$include "%inputdata%\CCCRRR.inc";
-$include "%inputdata%\RRRAAA.inc";
+$include "%inputdata%/CCCRRRAAA.inc";
+$include "%inputdata%/CCC.inc";
+$include "%inputdata%/C.inc";
+$include "%inputdata%/RRR.inc";
+$include "%inputdata%/AAA.inc";
+$include "%inputdata%/CCCRRR.inc";
+$include "%inputdata%/RRRAAA.inc";
 
 ALIAS (RRR,IRRRE,IRRRI);
 SET IR(RRR)            'Regions in the simulation';
@@ -153,29 +153,24 @@ IA(AAA) = YES$(SUM(C,ICA(C,AAA)));
 
 * Time structure.
 * It is presently assumed that the only time index are SSS, S, TTT, T (i.e., no YYY or Y).
-$include "%inputdata%\SSS.inc";
-$include "%inputdata%\S.inc";
-$include "%inputdata%\TTT.inc";
-$include "%inputdata%\T.inc";
-$include "%inputdata%\YYY.inc";
-$include "%inputdata%\Y.inc";
+$include "%inputdata%/SSS.inc";
+$include "%inputdata%/S.inc";
+$include "%inputdata%/TTT.inc";
+$include "%inputdata%/T.inc";
+$include "%inputdata%/YYY.inc";
+$include "%inputdata%/Y.inc";
 
-PARAMETER WEIGHT_S(SSS);     !! Why?
-PARAMETER WEIGHT_T(TTT);     !! Why?
-$include "%inputdata%\WEIGHT_S.inc";
-$include "%inputdata%\WEIGHT_T.inc";
-
-$include "%inputdata%\GGG.inc";
-$include "%inputdata%\G.inc";
-$include "%inputdata%\FFF.inc";
-$include "%inputdata%\FDATASET.inc";
-$include "%inputdata%\FDATA.inc";
-$include "%inputdata%\GDATASET.inc";
-$include "%inputdata%\GDATA.inc";
-$include "%inputdata%\GKFX.inc";
+$include "%inputdata%/GGG.inc";
+$include "%inputdata%/G.inc";
+$include "%inputdata%/FFF.inc";
+$include "%inputdata%/FDATASET.inc";
+$include "%inputdata%/FDATA.inc";
+$include "%inputdata%/GDATASET.inc";
+$include "%inputdata%/GDATA.inc";
+$include "%inputdata%/GKFX.inc";
 SET AGKN(AAA,GGG);
-$include "%inputdata%\AGKN.inc";
-$include "%inputdata%\GKRATE.inc";
+$include "%inputdata%/AGKN.inc";
+$include "%inputdata%/GKRATE.inc";
 
 
 * gdata was somehow not appropriae, alle data set to 0, therefor repair here:
@@ -185,7 +180,7 @@ $include "%inputdata%\GKRATE.inc";
 
 
 * Display some data:
-display  C, ia;
+
 
 $onlisting
 * More?
@@ -195,15 +190,6 @@ $onlisting
 * End: Get needed data
 * ==============================================================================
 
-$ontext
-scalar  uniformVALUE;
-for(iscalar5=1 to 100000,       !!  for 1 mio more than two minutes - too much!  For 100.000 some secs, ok. So execution time in this essentail part might becomne an issue.
-       LOOP((S,T),
-       uniformVALUE = uniform(0,1);
-       iscalar1$(uniform(0,1) LT 0.1) =    uniformVALUE ;
-));
-$goto endoffile
-$offtext
 
 
 *$goto ENDOFfile
@@ -215,10 +201,10 @@ $offtext
 
 * All three valid - but the quotes have to be in the correct nesting ( the  '  outside the  " !)  Why?
 * Also the slash has to be correct:  '/' does not work (everywhere, somewhere?) here
-$ifi not dexist "%outputdata%\original" execute 'md  "%outputdata%\original"';
-$ifi not dexist "%outputdata%\original" $call   'md  "%outputdata%\original"';
-$ifi not dexist "%outputdata%\original" execute 'md  "%outputdata%\original"';
-execute  'copy   "%inputdata%\GKRATE.inc"  "%outputdata%\original\GKRATE.inc"  ';
+*$ifi not dexist "%outputdata%/original" execute 'md  "%outputdata%/original"';
+*$ifi not dexist "%outputdata%/original" $call   'md  "%outputdata%/original"';
+*$ifi not dexist "%outputdata%/original" execute 'md  "%outputdata%/original"';
+*execute  'copy   "%inputdata%/GKRATE.inc"  "%outputdata%/original/GKRATE.inc"  ';
 *  Summary: relevant operating system commands:
 * On directories:  dexist, fjerne, skabe,
 * On Files:     exist, fjerne, skabe (put), flytte, omdøbe, kopiere,
@@ -244,17 +230,6 @@ execute  'copy   "%inputdata%\GKRATE.inc"  "%outputdata%\original\GKRATE.inc"  '
 *
 
 *scalar counterYtest "" /0/;   !! NB: not a test thing,  GKRATE  and IGKRATE have no index Y
-scalar counterAtest "" /0/;
-scalar counterSTtest "" /0/;
-SCALAR counterGtest "" /0/;
-SCALAR counterWHILEtest "" /0/;
-SCALAR counterUniformtest "" /0/;
-SCALAR counterUniformbasictest "" /0/;
-scalar counterSTtestUP "" /INF/;
-scalar counterAtestUP "" /INF/;
-SCALAR counterGtestUP "" /INF/;
-SCALAR counterWHILEtestUP "" /INF/;
-
 
 SCALAR IGKFXSREMAIN "";
 SCALAR IGKFXSAVAIL "";
@@ -262,58 +237,41 @@ SCALAR IGDUCUNITSIZEDISCORD "";
 *SCALAR DISPATCHGENFORDISCSIZE "";
 SCALAR IFAILURE "Indicates whether unit fails or not (1/0)" ;
 
-PARAMETER IGKRATE(AAA,G,S,T) "";
+PARAMETER IGKRATE(AAA,GGG,SSS,TTT) "";
+PARAMETER IGKRATE2(AAA,GGG,SSS,TTT) "";
 
-display S,T;
-display "initially: ",GKFX,  GKRATE;        !! toDO: Handle nubmer of indexes properly
 * GKRATE and IGKRATE: be very careful to handle that default value is 1, and this that is to be represented by 0!  IGKRATE(IA,G,S,T) can be VERY large!
 * Check:
 ISCALAR1 = CARD(GKRATE);
+IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
 GKRATE(IA,G,S)$(GKRATE(IA,G,S) EQ 1) = 0;
 ISCALAR2 = CARD(GKRATE);
-IF((ISCALAR1 ne ISCALAR2), DISPLAY "Error in input data GKRATE: value 1 is default, should not be in input, use 0", ISCALAR1, ISCALAR2; );
-IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
+*IF((ISCALAR1 ne ISCALAR2), DISPLAY "Error in input data GKRATE: value 1 is default, should not be in input, use 0", ISCALAR1, ISCALAR2; );
 
-TimeelapsedCentral = TimeElapsed;
-
-*counterYtest = 1;            !! NB: not a test thing,  GKRATE  and IGKRATE have no index Y
-set calctimetestloop /01*11/;
-counterUniformtest = 0;
-
-*loop(calctimetestloop,
 LOOP(Y$(ORD(Y) EQ 1),
-* IGKRATE(IA,G,S,T)$GKFX(Y,IA,G) = GKRATE(IA,G,S);  DISPLAY "initially: ", IGKRATE;  !! toDO: Handle number of indexes properly  nb: mAYBE MORE EFFICIENT HERE THATN IN LOOP BELOW, BUT NICER FOR TESTING IF BELOW
-counterSTtest = 1;
-LOOP((S,T)$(counterSTtest le counterSTtestUP),     !! Condition is Test only
-counterSTtest = counterSTtest + 1;
-counterAtest = 1;
-LOOP(IA$(counterAtest le counterAtestUP),    !! Condition is Test only
-  counterAtest = counterAtest + 1;
-  !!display infodisplay,  "Starting new Area", counterAtest;
-  counterGtest = 1;
-  LOOP(G$(GKFX(Y,IA,G) AND GDATA(G,'GDFOR') and (counterGtest le counterGtestUP)),  !! Second condition is Test only
-    counterGtest = counterGtest + 1; !! display "Starting new unit", counterGtest; !! For testing only
-    IGKFXSREMAIN = GKFX(Y,IA,G);    !! display "Initially:", IGKFXSREMAIN;
-    IGKFXSAVAIL  = GKFX(Y,IA,G);    !! display "Initially:", IGKFXSAVAIL;
-    counterWHILEtest = 1;
-    WHILE(((IGKFXSREMAIN GT (GDATA(G,'GDUCUNITSIZE')*1.5)) and (counterWHILEtest le counterWHILEtestUP)), !! This has to be done with some care, this is a suggestion         !! Second condition is Test only
+LOOP(S,
+LOOP(T,
+LOOP(IA,
+  LOOP(G$(GKFX(Y,IA,G) AND GDATA(G,'GDFOR')),
+    IGKFXSREMAIN = GKFX(Y,IA,G);
+    IGKFXSAVAIL  = GKFX(Y,IA,G);
+    WHILE(((IGKFXSREMAIN GT (GDATA(G,'GDUCUNITSIZE')*1.5))),
        IGKFXSREMAIN = IGKFXSREMAIN - GDATA(G,'GDUCUNITSIZE');
        IFAILURE = 0;
-       !!IF((uniform(0,1) LT GDATA(G,'GDFOR')), IFAILURE = 1;);       !! these two lines may be simplifid to below
-       !!IGKFXSAVAIL = IGKFXSAVAIL - GDATA(G,'GDUCUNITSIZE')*IFAILURE;  !! these two lines may be simplifid to below
-       IGKFXSAVAIL$(uniform(0,1) LT GDATA(G,'GDFOR')) = IGKFXSAVAIL - GDATA(G,'GDUCUNITSIZE');     !!  display "presently: ", IGKFXSAVAIL;  !! TODO: Why uniform distribution? Why not binomial?
-       counterUniformtest = counterUniformtest + 1; !! Test only
+       IGKFXSAVAIL$(uniform(0,1) LT GDATA(G,'GDFOR')) = IGKFXSAVAIL - GDATA(G,'GDUCUNITSIZE');
     );
     IGKRATE(IA,G,S,T) = (IGKRATE(IA,G,S,T) + 1$(NOT IGKRATE(IA,G,S,T)))*(IGKFXSAVAIL/GKFX(Y,IA,G));
-    IGKRATE(IA,G,S,T)$(IGKRATE(IA,G,S,T) EQ 1) = 0;  !! Exploit that default value is 1
-  );
+    IGKRATE(IA,G,S,T)$(IGKRATE(IA,G,S,T) EQ 1) = 0;
+    IGKRATE2(IA,G,S,T)=IGKRATE(IA,G,S,T);
+
 );
+);
+);
+*execute_unload "%outputdata%/IGKRATE.gdx", IGKRATE;
+IGKRATE(AAA,GGG,SSS,TTT)=0;
 ));
 *); !! Calc time test
 
-TimeelapsedCentral = TimeElapsed - TimeelapsedCentral;
-* NOte this display:
-display "Final: ",calctimetestloop, counterUniformtest,  TimeelapsedCentral , counterSTtest, IGKRATE;
 * ==============================================================================
 *  End Main code
 * ==============================================================================
@@ -323,7 +281,7 @@ display "Final: ",calctimetestloop, counterUniformtest,  TimeelapsedCentral , co
 $LABEL endoffile
 
 * ==============================================================================
-*$ontext
+$ontext
 *binomial(n,k)    NLP  returns the (generalized) binomial coefficient for n,k = 0
 * randBinomial(N,P)  none  generates a random number with binomial distribution where n is the number of trials and p the probability of success for each trial, see MathWorld
 * NOTE: I have a more binomial dedicated tester in Outagebyunit.gms (GAMStestere)
@@ -344,7 +302,7 @@ parameter proboccur(N) "";
 isc1 =  binomial(100,prob);  display isc1;
 isc1 =  randBinomial(100,prob);  display isc1;
 *put / / "Binomial: Prob of events == x.  x left, prob occurrence right.  Probability in binomial distr. is " prob:3:2 /;
-$ontext  time consuing, presumably
+*$ontext  time consuing, presumably
 counterUniformbasictest = TimeElapsed;
 put / / "Binomial: The (generalized) binomial coefficient for number of tests " (card(n)-1):3:0 " and probability in binomial distr. is " prob:3:2 /;
 loop(n,
@@ -371,17 +329,10 @@ option decimals = 4;
 display  proboccur;
 put  "According to theory: Mean: " (prob*(card(n)-1)):7:6 ";  Var: "  (prob*(1-prob)*(card(n)-1)):7:6 ". Found mean " (sum(n, (ord(n)-1)*proboccur(n))):7:6/;
 $offtext
-
-scalar Alltimeelapsed "Time (seconds)";
-Alltimeelapsed = TimeElapsed; display  Alltimeelapsed, counterUniformtest;
-
-/*
-http://www.epixanalytics.com/modelassist/AtRisk/Model_Assist.htm#Distributions/Approximations/Recursive_formulae_for_discrete_distributions.htm    og der er xls sheet hertil
 */
 
 * ==============================================================================
 *$offtext
 
-
-execute_unload "%outputdata%\OutageDispatch.gdx";
+execute_unload "%outputdata%/IGKRATE.gdx", IGKRATE2=IGKRATE;
 

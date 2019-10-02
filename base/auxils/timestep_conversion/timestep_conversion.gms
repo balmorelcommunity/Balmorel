@@ -129,79 +129,108 @@ PARAMETER WEIGHT_T(TTT)                            "Weight (relative length) of 
 execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WEIGHT_T;
 
 PARAMETER ESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
-execute_load  '../../base/auxils/timestep_conversion/input/ESTOVOLTS.gdx', ESTOVOLTS;
+$ifi  exist '../../base/auxils/timestep_conversion/input/ESTOVOLTS.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/ESTOVOLTS.gdx', ESTOVOLTS;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/ESTOVOLTS.gdx' ESTOVOLTS(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER HSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
-execute_load  '../../base/auxils/timestep_conversion/input/HSTOVOLTS.gdx', HSTOVOLTS;
+$ifi  exist '../../base/auxils/timestep_conversion/input/HSTOVOLTS.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HSTOVOLTS.gdx', HSTOVOLTS;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/HSTOVOLTS.gdx' HSTOVOLTS(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER ESTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Electricity storage content  value (in input money) to be transferred to future runs (input-Money/MWh)";
-execute_load  '../../base/auxils/timestep_conversion/input/ESTOVOLTSVAL.gdx', ESTOVOLTSVAL;
+$ifi  exist '../../base/auxils/timestep_conversion/input/ESTOVOLTSVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/ESTOVOLTSVAL.gdx', ESTOVOLTSVAL;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/ESTOVOLTSVAL.gdx' ESTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER HSTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Heat storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
-execute_load  '../../base/auxils/timestep_conversion/input/HSTOVOLTSVAL.gdx', HSTOVOLTSVAL;
+$ifi  exist '../../base/auxils/timestep_conversion/input/HSTOVOLTSVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HSTOVOLTSVAL.gdx', HSTOVOLTSVAL;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/HSTOVOLTSVAL.gdx' HSTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER ESTOVOLT(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
-execute_load  '../../base/auxils/timestep_conversion/input/ESTOVOLT.gdx', ESTOVOLT;
+$ifi  exist '../../base/auxils/timestep_conversion/input/ESTOVOLT.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/ESTOVOLT.gdx', ESTOVOLT;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/ESTOVOLT.gdx' ESTOVOLT(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER HSTOVOLT(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
-execute_load  '../../base/auxils/timestep_conversion/input/HSTOVOLT.gdx', HSTOVOLT;
+$ifi  exist '../../base/auxils/timestep_conversion/input/HSTOVOLT.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HSTOVOLT.gdx', HSTOVOLT;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/HSTOVOLT.gdx' HSTOVOLT(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER ESTOVOLTVAL(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Electricity storage content  value (in input money) to be transferred to future runs (input-Money/MWh)";
-execute_load  '../../base/auxils/timestep_conversion/input/ESTOVOLTVAL.gdx', ESTOVOLTVAL;
+$ifi  exist '../../base/auxils/timestep_conversion/input/ESTOVOLTVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/ESTOVOLTVAL.gdx', ESTOVOLTVAL;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/ESTOVOLTVAL.gdx' ESTOVOLTVAL(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER HSTOVOLTVAL(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Heat storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
-execute_load  '../../base/auxils/timestep_conversion/input/HSTOVOLTVAL.gdx', HSTOVOLTVAL;
+$ifi  exist '../../base/auxils/timestep_conversion/input/HSTOVOLTVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HSTOVOLTVAL.gdx', HSTOVOLTVAL;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/HSTOVOLTVAL.gdx' HSTOVOLTVAL(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER  DE_T(YYY,RRR,SSS,TTT)                 "Electricity demand (MW) to be transferred to future runs";
-execute_load  '../../base/auxils/timestep_conversion/input/DE_T.gdx', DE_T;
+$ifi  exist '../../base/auxils/timestep_conversion/input/DE_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/DE_T.gdx', DE_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/DE_T.gdx' DE_T(YYY,RRR,SSS,TTT)=0;
 
 PARAMETER  DH_T(YYY,AAA,SSS,TTT)                 "Heat demand (MW) to be transferred to future runs";
-execute_load  '../../base/auxils/timestep_conversion/input/DH_T.gdx', DH_T;
+$ifi  exist '../../base/auxils/timestep_conversion/input/DH_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/DH_T.gdx', DH_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/DH_T.gdx' DH_T(YYY,aAAA,SSS,TTT)=0;
 
 PARAMETER  GE_T(YYY,AAA,GGG,SSS,TTT)               "Electricity generation (MW)  to be transferred to future runs";
-execute_load  '../../base/auxils/timestep_conversion/input/GE_T.gdx', GE_T;
+$ifi  exist '../../base/auxils/timestep_conversion/input/GE_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GE_T.gdx', GE_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/GE_T.gdx' GE_T(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER  GH_T(YYY,AAA,GGG,SSS,TTT)               "Heat generation (MW)  to be transferred to future runs";
-execute_load  '../../base/auxils/timestep_conversion/input/GH_T.gdx', GH_T;
+$ifi  exist '../../base/auxils/timestep_conversion/input/GH_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GH_T.gdx', GH_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/GH_T.gdx' GH_T(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER  GF_T(YYY,AAA,GGG,SSS,TTT)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
-execute_load  '../../base/auxils/timestep_conversion/input/GF_T.gdx', GF_T;
+$ifi  exist '../../base/auxils/timestep_conversion/input/GF_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GF_T.gdx', GF_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/GF_T.gdx' GF_T(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER ESTOLOADT(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal electricity storage loading to be transferred to future runs (MW)";
-execute_load  '../../base/auxils/timestep_conversion/input/ESTOLOADT.gdx', ESTOLOADT;
+$ifi  exist '../../base/auxils/timestep_conversion/input/ESTOLOADT.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/ESTOLOADT.gdx', ESTOLOADT;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/ESTOLOADT.gdx' ESTOLOADT(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER ESTOLOADTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal electricity storage loading to be transferred to future runs (MW)";;
-execute_load  '../../base/auxils/timestep_conversion/input/ESTOLOADTS.gdx', ESTOLOADTS;
+$ifi  exist '../../base/auxils/timestep_conversion/input/ESTOLOADTS.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/ESTOLOADTS.gdx', ESTOLOADTS;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/ESTOLOADTS.gdx' ESTOLOADTS(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER HSTOLOADT(YYY,AAA,GGG,SSS,TTT)  "Intra-seasonal heat storage loading to be transferred to future runs (MW)";
-execute_load  '../../base/auxils/timestep_conversion/input/HSTOLOADT.gdx', HSTOLOADT;
+$ifi  exist '../../base/auxils/timestep_conversion/input/HSTOLOADT.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HSTOLOADT.gdx', HSTOLOADT;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/HSTOLOADT.gdx' HSTOLOADT(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER HSTOLOADTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal heat storage loading to be transferred to future runs (MW)";
-execute_load  '../../base/auxils/timestep_conversion/input/HSTOLOADTS.gdx', HSTOLOADTS;
+$ifi  exist '../../base/auxils/timestep_conversion/input/HSTOLOADTS.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HSTOLOADTS.gdx', HSTOLOADTS;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/HSTOLOADTS.gdx' HSTOLOADTS(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER  X_T(YYY,RRR,RRR,SSS,TTT)          "Electricity export from region IRRRE to IRRRI to be transferred to future runs (MW)";
-execute_load  '../../base/auxils/timestep_conversion/input/X_T.gdx', X_T;
+$ifi  exist '../../base/auxils/timestep_conversion/input/X_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/X_T.gdx', X_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/X_T.gdx' X_T(YYY,RRR,RRR,SSS,TTT)=0;
 
 PARAMETER  XH_T(YYY,AAA,AAA,SSS,TTT)          "Heat export from region IAAAE to IAAAI to be transferred to future runs (MW)";
-execute_load  '../../base/auxils/timestep_conversion/input/XH_T.gdx', XH_T;
+$ifi  exist '../../base/auxils/timestep_conversion/input/XH_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/XH_T.gdx', XH_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/XH_T.gdx' XH_T(YYY,AAA,AAA,SSS,TTT)=0;
 
 PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the seasons to be transferred to future runs (MWh)";
-execute_load  '../../base/auxils/timestep_conversion/input/HYRSG.gdx', HYRSG;
+$ifi  exist '../../base/auxils/timestep_conversion/input/HYRSG.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HYRSG.gdx', HYRSG;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/HYRSG.gdx' HYRSG(YYY,AAA,SSS)=0;
 
 PARAMETER VHYRS_SL(YYY,AAA,SSS)       "Hydro storage content at the beginning of each season (initial letter is V although declared as a parameter) (MWh)"
-execute_load  '../../base/auxils/timestep_conversion/input/VHYRS_SL.gdx', VHYRS_SL;
+$ifi  exist '../../base/auxils/timestep_conversion/input/VHYRS_SL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/VHYRS_SL.gdx', VHYRS_SL;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/VHYRS_SL.gdx' VHYRS_SL(YYY,AAA,SSS)=0;
 
 PARAMETER VHYRS_STL(YYY,AAA,SSS,TTT)       "Hydro storage content at the beginning of each TTT (initial letter is V although declared as a parameter) (MWh)"
-execute_load  '../../base/auxils/timestep_conversion/input/VHYRS_STL.gdx', VHYRS_STL;
+$ifi  exist '../../base/auxils/timestep_conversion/input/VHYRS_STL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/VHYRS_STL.gdx', VHYRS_STL;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/VHYRS_STL.gdx' VHYRS_STL(YYY,AAA,SSS,TTT)=0;
 
 PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transferred to future runs (input-Money/MWh)";
-execute_load  '../../base/auxils/timestep_conversion/input/WATERVAL.gdx', WATERVAL;
+$ifi  exist '../../base/auxils/timestep_conversion/input/WATERVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/WATERVAL.gdx', WATERVAL;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/WATERVAL.gdx' WATERVAL(YYY,AAA,SSS)=0;
 
 PARAMETER F_T(YYY,CCCRRRAAA,FFF,SSS,TTT) "Aggregated fuel use by year, season, T, geography and fuel (GJ)"
-execute_load  '../../base/auxils/timestep_conversion/input/F_T.gdx', F_T;
+$ifi  exist '../../base/auxils/timestep_conversion/input/F_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/F_T.gdx', F_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/F_T.gdx' F_T(YYY,CCCRRRAAA,FFF,SSS,TTT)=0;
 
 PARAMETER UCONMAINT(YYY,AAA,GGG,SSS)    'Unit commitment maintenance (0,1) on electricity generation to be used in future runs';
-execute_load  '../../base/auxils/timestep_conversion/input/UCONMAINT.gdx', UCONMAINT;
+$ifi  exist '../../base/auxils/timestep_conversion/input/UCONMAINT.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/UCONMAINT.gdx', UCONMAINT;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/UCONMAINT.gdx' UCONMAINT(YYY,AAA,GGG,SSS)=0;
+
+PARAMETER IGKRATE(AAA,GGG,SSS,TTT)     "Rating of technology capacities (non-negative, typically less than or equal to 0); default/1/, eps for 0)";
+$ifi  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/IGKRATE.gdx', IGKRATE;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx' IGKRATE(AAA,GGG,SSS,TTT)=0;
 
 *REST OF HYDRO PARAMETERS.........
 
@@ -244,6 +273,7 @@ PARAMETER VHYRS_SL_NEW(YYY,AAA,SSS_NEW)       "To be saved for comparison with B
 PARAMETER WATERVAL_NEW(YYY,AAA,SSS_NEW)     "Water value (in input Money) to be transferred to future runs (input-Money/MWh)";
 PARAMETER GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)  "Minimum annual fuel use by year, season, geography and fuel and (GJ)";
 PARAMETER UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)    'Unit commitment maintenance (0,1) on electricity generation to be used in future runs';
+PARAMETER IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)     "Rating of technology capacities (non-negative, typically less than or equal to 0); default/1/, eps for 0)";
 
 *----------END OF INPUT DATA--------------------
 
@@ -304,6 +334,7 @@ WATERVAL_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),WATERVAL(YYY,AAA,SSS))
 GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)$(GMAXF(YYY,CCCRRRAAA,FFF) OR SUM(ISSS,GMAXFS(YYY,CCCRRRAAA,FFF,ISSS)))=SUM((SSS,TTT,TTT_NEW)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),F_T(YYY,CCCRRRAAA,FFF,SSS,TTT)*WEIGHT_S(SSS))/SUM(TTT, WEIGHT_T(TTT));
 GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXFS(YYY,CCCRRRAAA,FFF,SSS)*WEIGHT_S_NEW(SSS_NEW)/WEIGHT_S(SSS));
 UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),UCONMAINT(YYY,AAA,GGG,SSS));
+IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),IGKRATE(AAA,GGG,SSS,TTT)) ;
 
 *------------END OF CALCULATIONS-------------
 
@@ -355,6 +386,7 @@ execute_unload  "../../base/auxils/timestep_conversion/output/VHYRS_SL.gdx", VHY
 execute_unload  "../../base/auxils/timestep_conversion/output/WATERVAL.gdx", WATERVAL_NEW=WATERVAL;
 execute_unload  "../../base/auxils/timestep_conversion/output/GMAXFS.gdx", GMAXFS_NEW=GMAXFS;
 execute_unload  "../../base/auxils/timestep_conversion/output/UCONMAINT.gdx", UCONMAINT_NEW=UCONMAINT;
+execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", IGKRATE_NEW=IGKRATE;
 
 
 

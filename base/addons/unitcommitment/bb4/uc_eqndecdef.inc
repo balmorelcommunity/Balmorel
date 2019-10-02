@@ -1,4 +1,4 @@
-﻿* UC Translated to BB4 by Juan Gea Bermúdez 2018.
+* UC Translated to BB4 by Juan Gea Bermúdez 2018.
 
 EQUATION  QUCVUCON(Y,AAA,G,S,T)    'Unit commitment: Number of endogenous units on limited by unit size and capacity)';
 EQUATION  QUCVUCU(Y,AAA,G,S,T)     'Unit commitment: Number of start up endogenous units on limited by unit size and capacity)';
