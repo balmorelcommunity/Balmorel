@@ -83,7 +83,7 @@ $label  MINSHUTDOWNTIME_END
 
 $ifi not %PLANNED_MAINTENANCE%==yes $goto NO_PLANNED_MAINTENANCE
 SET IGUCUTMAINT(GGG,SSS,SSS) "Internal set to assign for each GGG, SSS(first), the timesteps in SSS(second) linked to the minimum time off due to mainteinance" ;                                                                                                                                      ;
-
+$ifi %ADDPLANNEDMAINTENANCE%==yes $goto NO_ADD_PLANNED_MAINTENANCE
 *IGUCUTMAINT CALCULATION
 LOOP(IGUC$GDATA(IGUC,'GDPLANMAINT'),
 LOOP(ISALIAS,
@@ -96,6 +96,8 @@ LOOP(ISALIAS,
       );
    );
 );
+$label  NO_ADD_PLANNED_MAINTENANCE
+$ifi %ADDPLANNEDMAINTENANCE%==yes  IGUCUTMAINT(G,S,ISALIAS)=0;
 $label NO_PLANNED_MAINTENANCE
 
 

@@ -58,7 +58,7 @@ $ifi %ADDMAXFUELUSES%==yes GMAXFS(Y,CCCRRRAAA,FFF,S)=0;
 $ifi %ADDMAXFUELUSES%==yes execute_load  '../../simex/GMAXFS.gdx', GMAXFS;
 
 *Import planned maintenance
-$ifi %ADDPLANNEDMAINTENANCE%==yes  execute_load  '../../simex/UCONMAINT.gdx', UCONMAINT; 
+$ifi %ADDPLANNEDMAINTENANCE%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCONMAINT.gdx', UCONMAINT; 
 
 
 
