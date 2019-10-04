@@ -1,0 +1,19 @@
+SET IVHYRS_SL(YYY,AAA)  "Internal contains Hourly hydro storage level";
+SET IESTOVOLTS(YYY,AAA,GGG) "Internal contains Inter-seasonal Electricity storage contents";
+SET IHSTOVOLTS(YYY,AAA,GGG) "Internal contains Inter-seasonal Heat storage contents";
+SET IESTOVOLT(YYY,AAA,GGG) "Internal contains Intra-seasonal Electricity storage contents";
+SET IHSTOVOLT(YYY,AAA,GGG) "Internal contains Intra-seasonal Heat storage content";
+
+$ifi %HYRSBB123%==none    IVHYRS_SL(Y,IA)=0;
+$ifi %ADDESTOVOLTS%==none IESTOVOLTS(Y,IA,IGESTOS)=0;
+$ifi %ADDHSTOVOLTS%==none IHSTOVOLTS(Y,IA,IGHSTOS)=0;
+$ifi %ADDESTOVOLT%==none  IESTOVOLT(Y,IA,IGESTO)=0;
+$ifi %ADDHSTOVOLT%==none  IHSTOVOLT(Y,IA,IGHSTO)=0;
+
+$ifi not %HYRSBB123%==none    IVHYRS_SL(Y,IA)$SUM(S,VHYRS_SL(Y,IA,S))=YES;
+$ifi not %ADDESTOVOLTS%==none IESTOVOLTS(Y,IA,IGESTOS)$SUM((S,T)$(ORD(T) EQ 1),ESTOVOLTS(Y,IA,IGESTOS,S,T))=YES;
+$ifi not %ADDHSTOVOLTS%==none IHSTOVOLTS(Y,IA,IGHSTOS)$SUM((S,T)$(ORD(T) EQ 1),HSTOVOLTS(Y,IA,IGHSTOS,S,T))=YES;
+$ifi not %ADDESTOVOLT%==none  IESTOVOLT(Y,IA,IGESTO)$SUM((S,T)$(ORD(T) EQ 1),ESTOVOLT(Y,IA,IGESTO,S,T))=YES;
+$ifi not %ADDHSTOVOLT%==none  IHSTOVOLT(Y,IA,IGHSTO)$SUM((S,T)$(ORD(T) EQ 1),HSTOVOLT(Y,IA,IGHSTO,S,T))=YES;
+
+

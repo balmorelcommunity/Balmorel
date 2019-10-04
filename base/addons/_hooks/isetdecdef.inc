@@ -21,5 +21,7 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_isetdecdef.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_isetdecdef.inc";
 
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_isetdecdef.inc";  
+
 
 $label endoffile

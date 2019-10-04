@@ -895,9 +895,8 @@ IGF(G,FFF)=YES$(GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'));
 PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 * Transfer data from data file and insert default 1 as needed (Eps1-convention):
 * Note that the default value is 1, this is assigned here if nothing or 0 is entered in data file.
-$ifi %GKRATE_DOL%==AAA_GGG_SSS      IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
-$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT  IGKRATE(IA,G,S,T) = GKRATE(IA,G,S,T);
-$ifi %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T)=0;
+$ifi %GKRATE_DOL%==AAA_GGG_SSS     $ifi not %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
+$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT $ifi not %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T) = GKRATE(IA,G,S,T);
 $ifi %IGKRATE_STOCHASTIC%==yes   execute_load "../../simex/IGKRATE.gdx";
 
 * The following parameters contain information about CO2 and SO2 emission

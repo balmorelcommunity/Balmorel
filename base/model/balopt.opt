@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug
+$setglobal vqdebug  YES
 *!option yes
 
 
@@ -569,7 +569,7 @@ $setglobal ADDMAXFUELUSES
 *--------------------PLANNED MAINTENANCE-----------------------------------------------------------
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
 *Import planned maintenance from previous runs (investments and/or decomissioning must not be allowed if this option is activated)
-$setglobal ADDPLANNEDMAINTENANCE 
+$setglobal ADDPLANNEDMAINTENANCE
 *!option yes
 *--------------------END OF PLANNED MAINTENANCE-----------------------------------------------------------
 
