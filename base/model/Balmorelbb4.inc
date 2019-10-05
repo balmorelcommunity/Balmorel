@@ -133,10 +133,6 @@ ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_O
 
 SET IS3(S)     "Balbase3: present season simulated; other models: identical to S";
 SET IS33(S,S)  "Mapping of S (first index) to the following S (second index)";
-SET SREV(S,S)  "Mapping of S (first index) to its reverse element S (second index)";
-SET SREV2(S,S) "Mapping of S (first index) to its reverse element S (second index)";;
-SET TREV(T,T)  "Mapping of T (first index) to its reverse element T (second index)";;
-SET TREV2(T,T) "Mapping of T (first index) to its reverse element T (second index)";;
 
 *-------------------------------------------------------------------------------
 *----- Definitions of SETS and ALIASES that are needed for data entry:
@@ -153,6 +149,8 @@ ALIAS (FFF,IFFFALIAS2);
 ALIAS (YYY,IYYYALIAS);
 ALIAS (YYY,IYYYALIAS2);
 ALIAS (Y,IYALIAS);
+ALIAS (SSS,ISSSALIAS);
+ALIAS (TTT,ITTTALIAS);
 ALIAS (S,ISALIAS,ISALIAS2,ISALIAS3,IS3LOOPSET);
 ALIAS (T,ITALIAS,ITALIAS2,ITALIAS3);
 
@@ -983,7 +981,7 @@ $ifi not %timeseries_scaling%==usedtimesteps_timseries_scaling $goto usedtimeste
 *Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries
 IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 IWEIGHSUMT = SUM(T, WEIGHT_T(T));
-IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
+IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT)*(CARD(ISSSALIAS)*CARD(ITTTALIAS)/8736);
 IDE_SUMST(IR,DEUSER) = SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,DEUSER,S,T));
 IDH_SUMST(IA,DHUSER) = SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,DHUSER,S,T));
 IX3FXSUMST(IR)$(SUM(Y,X3FX(Y,IR)))                  = SUM((S,T), IHOURSINST(S,T)*X3FX_VAR_T(IR,S,T));
@@ -1005,7 +1003,7 @@ $ifi not %timeseries_scaling%==full_timeseries_scaling $goto full_timeseries_sca
 *Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries
 IWEIGHSUMS = SUM(SSS, WEIGHT_S(SSS));
 IWEIGHSUMT = SUM(TTT, WEIGHT_T(TTT));
-IHOURSINST(SSS,TTT)=IOF8760*(WEIGHT_S(SSS)*WEIGHT_T(TTT))/(IWEIGHSUMS*IWEIGHSUMT);
+IHOURSINST(SSS,TTT)=IOF8760*(WEIGHT_S(SSS)*WEIGHT_T(TTT))/(IWEIGHSUMS*IWEIGHSUMT)*(CARD(ISSSALIAS)*CARD(ITTTALIAS)/8736);
 IDE_SUMST(IR,DEUSER) = SUM((SSS,TTT), IHOURSINST(SSS,TTT)*DE_VAR_T(IR,DEUSER,SSS,TTT));
 IDH_SUMST(IA,DHUSER) = SUM((SSS,TTT), IHOURSINST(SSS,TTT)*DH_VAR_T(IA,DHUSER,SSS,TTT));
 IX3FXSUMST(IR) = SUM((SSS,TTT), IHOURSINST(SSS,TTT)*X3FX_VAR_T(IR,SSS,TTT));
@@ -1024,7 +1022,7 @@ IHYINF_S(IA,S)= (WTRRSFLH(IA) * WTRRSVAR_S(IA,S) / SUM(SSS, WTRRSVAR_S(IA,SSS)))
 IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 IWEIGHSUMT = SUM(T, WEIGHT_T(T));
 IHOURSINST(SSS,TTT)=0;
-IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
+IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT)*(CARD(ISSSALIAS)*CARD(ITTTALIAS)/8736);
 
 $label  full_timeseries_scaling_end
 
