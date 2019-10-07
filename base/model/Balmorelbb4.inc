@@ -996,6 +996,10 @@ IWTRRSSUM(IA) = SUM(S, (WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
 
 IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
 
+*Redefinition of time parameters so annual constraints are respected
+IHOURSINST(SSS,TTT)=0;
+IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
+
 $label  usedtimesteps_timseries_scaling_end
 
 $ifi not %timeseries_scaling%==full_timeseries_scaling $goto full_timeseries_scaling_end
@@ -1022,7 +1026,7 @@ IHYINF_S(IA,S)= (WTRRSFLH(IA) * WTRRSVAR_S(IA,S) / SUM(SSS, WTRRSVAR_S(IA,SSS)))
 IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 IWEIGHSUMT = SUM(T, WEIGHT_T(T));
 IHOURSINST(SSS,TTT)=0;
-IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT)*(CARD(ISSSALIAS)*CARD(ITTTALIAS)/8736);
+IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
 
 $label  full_timeseries_scaling_end
 
