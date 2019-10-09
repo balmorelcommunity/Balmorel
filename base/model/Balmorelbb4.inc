@@ -609,6 +609,20 @@ $label  heat_storage_loading_lim
 $ifi not %bypass%==yes   IGBYPASS(G) = NO;
 $ifi %bypass%==yes       IGBYPASS(IGBPR)$GDATA(IGBPR,'GDBYPASSC') = YES;
 
+*The following corrects the economic values in input data to match the relative size of T
+SCALAR IHOURFRAC "Weight of T with respect to 1 hour (if T means 1 hour, then IHOURFRAC is 1, if T means 0.5 hours, IHOURFRAC is 0.5, etc.)";
+IHOURFRAC=8376/(CARD(TTT)*CARD(SSS));
+GDATA(GGG,'GDOMVCOST0')=GDATA(GGG,'GDOMVCOST0')*IHOURFRAC;
+GDATA(GGG,'GDOMVCOSTIN')=GDATA(GGG,'GDOMVCOSTIN')*IHOURFRAC;
+FUELPRICE(YYY,AAA,FFF)=FUELPRICE(YYY,AAA,FFF)*IHOURFRAC;
+HYPPROFILS(AAA,SSS)=HYPPROFILS(AAA,SSS)*IHOURFRAC;
+XCOST(IRRRE,IRRRI)=XCOST(IRRRE,IRRRI)*IHOURFRAC;
+$ifi %HEATTRANS%==yes     XHCOST(IAAAE,IAAAI)=XHCOST(IAAAE,IAAAI)*IHOURFRAC;
+$ifi %STEPWISEPRICE%==yes STEPWISEPRICE_FUELPRICE_STEP(YYY,CCC,STEPWISEPRICE_L,STEPWISEPRICE_FFF)=STEPWISEPRICE_FUELPRICE_STEP(YYY,CCC,STEPWISEPRICE_L,STEPWISEPRICE_FFF)*IHOURFRAC;
+$ifi %X3V%==yes  IX3VPIM_Y(YYY,RRR,X3VPLACE,X3VSTEP,SSS,TT)=IX3VPIM_Y(YYY,RRR,X3VPLACE,X3VSTEP,SSS,TT)*IHOURFRAC;
+$ifi %X3V%==yes  IX3VPEX_Y(YYY,RRR,X3VPLACE,X3VSTEP,SSS,TT)=(YYY,RRR,X3VPLACE,X3VSTEP,SSS,TT)*IHOURFRAC;
+*MISSING: Grid_tariffs, taxes, demandresponse!!!!!!
+
 *-------------------------------------------------------------------------------
 *----- Any internal sets assignments for addon to be placed here: --------------
 *-------------------------------------------------------------------------------
@@ -981,7 +995,7 @@ $ifi not %timeseries_scaling%==usedtimesteps_timseries_scaling $goto usedtimeste
 *Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries
 IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 IWEIGHSUMT = SUM(T, WEIGHT_T(T));
-IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT)*(CARD(ISSSALIAS)*CARD(ITTTALIAS)/8736);
+IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT)/IHOURFRAC;
 IDE_SUMST(IR,DEUSER) = SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,DEUSER,S,T));
 IDH_SUMST(IA,DHUSER) = SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,DHUSER,S,T));
 IX3FXSUMST(IR)$(SUM(Y,X3FX(Y,IR)))                  = SUM((S,T), IHOURSINST(S,T)*X3FX_VAR_T(IR,S,T));
@@ -996,10 +1010,6 @@ IWTRRSSUM(IA) = SUM(S, (WEIGHT_S(S)/IWEIGHSUMS)*WTRRSVAR_S(IA,S));
 
 IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
 
-*Redefinition of time parameters so annual constraints are respected
-IHOURSINST(SSS,TTT)=0;
-IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
-
 $label  usedtimesteps_timseries_scaling_end
 
 $ifi not %timeseries_scaling%==full_timeseries_scaling $goto full_timeseries_scaling_end
@@ -1007,7 +1017,7 @@ $ifi not %timeseries_scaling%==full_timeseries_scaling $goto full_timeseries_sca
 *Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries
 IWEIGHSUMS = SUM(SSS, WEIGHT_S(SSS));
 IWEIGHSUMT = SUM(TTT, WEIGHT_T(TTT));
-IHOURSINST(SSS,TTT)=IOF8760*(WEIGHT_S(SSS)*WEIGHT_T(TTT))/(IWEIGHSUMS*IWEIGHSUMT)*(CARD(ISSSALIAS)*CARD(ITTTALIAS)/8736);
+IHOURSINST(SSS,TTT)=IOF8760*(WEIGHT_S(SSS)*WEIGHT_T(TTT))/(IWEIGHSUMS*IWEIGHSUMT)/IHOURFRAC;
 IDE_SUMST(IR,DEUSER) = SUM((SSS,TTT), IHOURSINST(SSS,TTT)*DE_VAR_T(IR,DEUSER,SSS,TTT));
 IDH_SUMST(IA,DHUSER) = SUM((SSS,TTT), IHOURSINST(SSS,TTT)*DH_VAR_T(IA,DHUSER,SSS,TTT));
 IX3FXSUMST(IR) = SUM((SSS,TTT), IHOURSINST(SSS,TTT)*X3FX_VAR_T(IR,SSS,TTT));
@@ -1026,15 +1036,15 @@ IHYINF_S(IA,S)= (WTRRSFLH(IA) * WTRRSVAR_S(IA,S) / SUM(SSS, WTRRSVAR_S(IA,SSS)))
 IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 IWEIGHSUMT = SUM(T, WEIGHT_T(T));
 IHOURSINST(SSS,TTT)=0;
-IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
+IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT)/IHOURFRAC;
 
 $label  full_timeseries_scaling_end
 
 
-*Timeseries values are not scaled and match exactly the timeseries (it requires changin quite some code) !!TO DO
+*Timeseries values are not scaled and match exactly the timeseries (it requires changing quite some code) !!TO DO
 
 *Calculation of IHYRST
-$ifi %HYRS_AGG%==hydro_season_agg  IHYRST(S,T)=WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS));
+$ifi %HYRS_AGG%==hydro_season_agg  IHYRST(S,T)=WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS))*IHOURFRAC;
 $ifi %HYRS_AGG%==hydro_year_agg    IHYRST(S,T)=IHOURSINST(S,T);
 
 *-------------------------------------------------------------------------------
@@ -2798,6 +2808,7 @@ GH_T(Y,IA,IGH,S,T)$IAGK_HASORPOT(Y,IA,IGH)=VGH_T.L(Y,IA,IGH,S,T);
 GF_T(Y,IA,G,S,T)$IAGK_HASORPOT(Y,IA,G)=VGF_T.L(Y,IA,G,S,T);
 X_T(Y,IRE,IRI,S,T)$IXK_HASORPOT(Y,IRE,IRI)=VX_T.L(Y,IRE,IRI,S,T);
 $ifi %HEATTRANS%==yes XH_T(Y,IAE,IAI,S,T)$IXHK_HASORPOT(Y,IAE,IAI)=VXH_T.L(Y,IAE,IAI,S,T);
+$ifi %UnitComm%==yes  UCON(Y,IA,IGUC,S,T)=VUCON.L(Y,IA,IGUC,S,T)
 
 execute_unload  "../../simex/DE_T.gdx", DE_T;
 execute_unload  "../../simex/DH_T.gdx", DH_T;
@@ -2806,6 +2817,7 @@ execute_unload  "../../simex/GH_T.gdx", GH_T;
 execute_unload  "../../simex/GF_T.gdx", GF_T;
 execute_unload  "../../simex/X_T.gdx", X_T;
 $ifi %HEATTRANS%==yes execute_unload  "../../simex/XH_T.gdx", XH_T;
+$ifi %UnitComm%==yes  execute_unload  "../../simex/UCON.gdx", UCON;
 
 *Fuel use in T to be used in auxils folder "timestep conversion"
 F_T(Y,C,FFF,S,T)$(GMAXF(Y,C,FFF) OR SUM(ISALIAS,GMAXFS(Y,C,FFF,ISALIAS))

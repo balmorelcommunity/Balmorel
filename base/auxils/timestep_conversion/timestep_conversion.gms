@@ -166,7 +166,7 @@ $ifi not  exist '../../base/auxils/timestep_conversion/input/DE_T.gdx' DE_T(YYY,
 
 PARAMETER  DH_T(YYY,AAA,SSS,TTT)                 "Heat demand (MW) to be transferred to future runs";
 $ifi  exist '../../base/auxils/timestep_conversion/input/DH_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/DH_T.gdx', DH_T;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/DH_T.gdx' DH_T(YYY,aAAA,SSS,TTT)=0;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/DH_T.gdx' DH_T(YYY,AAA,SSS,TTT)=0;
 
 PARAMETER  GE_T(YYY,AAA,GGG,SSS,TTT)               "Electricity generation (MW)  to be transferred to future runs";
 $ifi  exist '../../base/auxils/timestep_conversion/input/GE_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GE_T.gdx', GE_T;
@@ -208,11 +208,11 @@ PARAMETER HYRSG(YYY,AAA,SSS)        "Water (hydro) generation quantity of the se
 $ifi  exist '../../base/auxils/timestep_conversion/input/HYRSG.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HYRSG.gdx', HYRSG;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/HYRSG.gdx' HYRSG(YYY,AAA,SSS)=0;
 
-PARAMETER VHYRS_SL(YYY,AAA,SSS)       "Hydro storage content at the beginning of each season (initial letter is V although declared as a parameter) (MWh)"
+PARAMETER VHYRS_SL(YYY,AAA,SSS)       "Hydro storage content at the beginning of each season (initial letter is V although declared as a parameter) (MWh)";
 $ifi  exist '../../base/auxils/timestep_conversion/input/VHYRS_SL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/VHYRS_SL.gdx', VHYRS_SL;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/VHYRS_SL.gdx' VHYRS_SL(YYY,AAA,SSS)=0;
 
-PARAMETER VHYRS_STL(YYY,AAA,SSS,TTT)       "Hydro storage content at the beginning of each TTT (initial letter is V although declared as a parameter) (MWh)"
+PARAMETER VHYRS_STL(YYY,AAA,SSS,TTT)       "Hydro storage content at the beginning of each TTT (initial letter is V although declared as a parameter) (MWh)";
 $ifi  exist '../../base/auxils/timestep_conversion/input/VHYRS_STL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/VHYRS_STL.gdx', VHYRS_STL;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/VHYRS_STL.gdx' VHYRS_STL(YYY,AAA,SSS,TTT)=0;
 
@@ -220,13 +220,17 @@ PARAMETER WATERVAL(YYY,AAA,SSS)     "Water value (in input Money) to be transfer
 $ifi  exist '../../base/auxils/timestep_conversion/input/WATERVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/WATERVAL.gdx', WATERVAL;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/WATERVAL.gdx' WATERVAL(YYY,AAA,SSS)=0;
 
-PARAMETER F_T(YYY,CCCRRRAAA,FFF,SSS,TTT) "Aggregated fuel use by year, season, T, geography and fuel (GJ)"
+PARAMETER F_T(YYY,CCCRRRAAA,FFF,SSS,TTT) "Aggregated fuel use by year, season, T, geography and fuel (GJ)";
 $ifi  exist '../../base/auxils/timestep_conversion/input/F_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/F_T.gdx', F_T;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/F_T.gdx' F_T(YYY,CCCRRRAAA,FFF,SSS,TTT)=0;
 
 PARAMETER UCONMAINT(YYY,AAA,GGG,SSS)    'Unit commitment maintenance (0,1) on electricity generation to be used in future runs';
 $ifi  exist '../../base/auxils/timestep_conversion/input/UCONMAINT.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/UCONMAINT.gdx', UCONMAINT;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/UCONMAINT.gdx' UCONMAINT(YYY,AAA,GGG,SSS)=0;
+
+PARAMETER UCON(YYY,AAA,GGG,SSS,TTT)    'Unit commitment (0,1) on electricity generation to be used in future runs';
+$ifi  exist '../../base/auxils/timestep_conversion/input/UCON.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/UCON.gdx', UCON;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/UCON.gdx' UCON(YYY,AAA,GGG,SSS,TTT)=0;
 
 PARAMETER IGKRATE(AAA,GGG,SSS,TTT)     "Rating of technology capacities (non-negative, typically less than or equal to 0); default/1/, eps for 0)";
 $ifi  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/IGKRATE.gdx', IGKRATE;
@@ -273,6 +277,7 @@ PARAMETER VHYRS_SL_NEW(YYY,AAA,SSS_NEW)       "To be saved for comparison with B
 PARAMETER WATERVAL_NEW(YYY,AAA,SSS_NEW)     "Water value (in input Money) to be transferred to future runs (input-Money/MWh)";
 PARAMETER GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)  "Minimum annual fuel use by year, season, geography and fuel and (GJ)";
 PARAMETER UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)    'Unit commitment maintenance (0,1) on electricity generation to be used in future runs';
+PARAMETER UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)    'Unit commitment (0,1) on electricity generation to be used in future runs';
 PARAMETER IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)     "Rating of technology capacities (non-negative, typically less than or equal to 0); default/1/, eps for 0)";
 
 *----------END OF INPUT DATA--------------------
@@ -334,6 +339,7 @@ WATERVAL_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),WATERVAL(YYY,AAA,SSS))
 GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)$(GMAXF(YYY,CCCRRRAAA,FFF) OR SUM(ISSS,GMAXFS(YYY,CCCRRRAAA,FFF,ISSS)))=SUM((SSS,TTT,TTT_NEW)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),F_T(YYY,CCCRRRAAA,FFF,SSS,TTT)*WEIGHT_S(SSS))/SUM(TTT, WEIGHT_T(TTT));
 GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXFS(YYY,CCCRRRAAA,FFF,SSS)*WEIGHT_S_NEW(SSS_NEW)/WEIGHT_S(SSS));
 UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),UCONMAINT(YYY,AAA,GGG,SSS));
+UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),UCON(YYY,AAA,GGG,SSS,TTT)) ;
 IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),IGKRATE(AAA,GGG,SSS,TTT)) ;
 
 *------------END OF CALCULATIONS-------------
@@ -386,6 +392,7 @@ execute_unload  "../../base/auxils/timestep_conversion/output/VHYRS_SL.gdx", VHY
 execute_unload  "../../base/auxils/timestep_conversion/output/WATERVAL.gdx", WATERVAL_NEW=WATERVAL;
 execute_unload  "../../base/auxils/timestep_conversion/output/GMAXFS.gdx", GMAXFS_NEW=GMAXFS;
 execute_unload  "../../base/auxils/timestep_conversion/output/UCONMAINT.gdx", UCONMAINT_NEW=UCONMAINT;
+execute_unload  "../../base/auxils/timestep_conversion/output/UCON.gdx", UCON_NEW=UCON;
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", IGKRATE_NEW=IGKRATE;
 
 

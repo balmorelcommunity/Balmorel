@@ -271,7 +271,7 @@ $ifi %RollingSeasons%==yes IS3(S)$((ORD(S) LE (ORD(IS3LOOPSET)+ROLLINGSEASONSNUM
 $ifi %RollingSeasons%==yes * Redefinition of IHOURSINT for the current set of season IS3:
 $ifi %RollingSeasons%==yes IHOURSINST(SSS,TTT)=0;
 $ifi %RollingSeasons%==yes IWEIGHSUMS=SUM(IS3, WEIGHT_S(IS3));
-$ifi %RollingSeasons%==yes IHOURSINST(IS3,T)=IOF8760*WEIGHT_S(IS3)*WEIGHT_T(T)/(IWEIGHSUMS*SUM(ITALIAS, WEIGHT_T(ITALIAS)));
+$ifi %RollingSeasons%==yes IHOURSINST(IS3,T)=IOF8760*WEIGHT_S(IS3)*WEIGHT_T(T)/(IWEIGHSUMS*SUM(ITALIAS, WEIGHT_T(ITALIAS)))/IHOURFRAC;
 
 
 *-------------------------------------------------------------------------------
