@@ -995,10 +995,10 @@ $ifi not %timeseries_scaling%==usedtimesteps_timseries_scaling $goto usedtimeste
 *Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries
 IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 IWEIGHSUMT = SUM(T, WEIGHT_T(T));
-IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT)/IHOURFRAC;
+IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT);
 IDE_SUMST(IR,DEUSER) = SUM((S,T), IHOURSINST(S,T)*DE_VAR_T(IR,DEUSER,S,T));
 IDH_SUMST(IA,DHUSER) = SUM((S,T), IHOURSINST(S,T)*DH_VAR_T(IA,DHUSER,S,T));
-IX3FXSUMST(IR)$(SUM(Y,X3FX(Y,IR)))                  = SUM((S,T), IHOURSINST(S,T)*X3FX_VAR_T(IR,S,T));
+IX3FXSUMST(IR)$(SUM(Y,X3FX(Y,IR)))= SUM((S,T), IHOURSINST(S,T)*X3FX_VAR_T(IR,S,T));
 IWND_SUMST(IA)  = SUM((S,T), IHOURSINST(S,T)*WND_VAR_T(IA,S,T));
 ISOLESUMST(IA) = SUM((S,T), IHOURSINST(S,T)*SOLE_VAR_T(IA,S,T));
 ISOLHSUMST(IA) = SUM((S,T), IHOURSINST(S,T)*SOLH_VAR_T(IA,S,T));
@@ -1017,7 +1017,7 @@ $ifi not %timeseries_scaling%==full_timeseries_scaling $goto full_timeseries_sca
 *Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries
 IWEIGHSUMS = SUM(SSS, WEIGHT_S(SSS));
 IWEIGHSUMT = SUM(TTT, WEIGHT_T(TTT));
-IHOURSINST(SSS,TTT)=IOF8760*(WEIGHT_S(SSS)*WEIGHT_T(TTT))/(IWEIGHSUMS*IWEIGHSUMT)/IHOURFRAC;
+IHOURSINST(SSS,TTT)=IOF8760*(WEIGHT_S(SSS)*WEIGHT_T(TTT))/(IWEIGHSUMS*IWEIGHSUMT);
 IDE_SUMST(IR,DEUSER) = SUM((SSS,TTT), IHOURSINST(SSS,TTT)*DE_VAR_T(IR,DEUSER,SSS,TTT));
 IDH_SUMST(IA,DHUSER) = SUM((SSS,TTT), IHOURSINST(SSS,TTT)*DH_VAR_T(IA,DHUSER,SSS,TTT));
 IX3FXSUMST(IR) = SUM((SSS,TTT), IHOURSINST(SSS,TTT)*X3FX_VAR_T(IR,SSS,TTT));
@@ -1035,11 +1035,10 @@ IHYINF_S(IA,S)= (WTRRSFLH(IA) * WTRRSVAR_S(IA,S) / SUM(SSS, WTRRSVAR_S(IA,SSS)))
 *Redefinition of time parameters so annual constraints are respected
 IWEIGHSUMS = SUM(S, WEIGHT_S(S));
 IWEIGHSUMT = SUM(T, WEIGHT_T(T));
-IHOURSINST(SSS,TTT)=0;
-IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT)/IHOURFRAC;
-
 $label  full_timeseries_scaling_end
 
+IHOURSINST(SSS,TTT)=0;
+IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT)/IHOURFRAC;
 
 *Timeseries values are not scaled and match exactly the timeseries (it requires changing quite some code) !!TO DO
 
@@ -1683,7 +1682,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IG
          )
          -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHYRST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))
        =G=
-       VHYRS_S(IY411,IA,S++1)
+       VHYRS_S(IY411,IA,S++1)   
 $ifi %RollingSeasons%==yes  +VHYRS_SDELTAMWHNEG(IY411,IA,S++1)$(ORD(S) EQ CARD(S))
 
 $include "../../base/addons/_hooks/qhyrsseq.inc"
