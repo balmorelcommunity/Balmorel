@@ -11,7 +11,7 @@ $ifi %UnitComm%==yes      $include   "../../base/addons/unitcommitment/bb4/uc_ba
 $ifi %STEPWISE_RAMPING%==yes      $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_balbase4.inc";
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_balbase4.inc";
 $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_balbase4.inc";
-
+$ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_balbase4.inc";
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_balbase4.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_balbase4.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_balbase4.inc";

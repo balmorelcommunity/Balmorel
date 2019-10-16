@@ -21,6 +21,7 @@ $ifi %UnitComm%==yes      $include   "../../base/addons/unitcommitment/bb4/uc_eq
 $ifi %AGKNDISC%==yes $include "../../base/addons/AGKNdisc/bb4/agkndisc_eqndecdef.inc";
 $ifi %COMBTECH%==yes $include "../../base/addons/combtech/bb4/combtech_eqndecdef.inc";
 $ifi %HYDROGEN%==yes $include "../../base/addons/hydrogen/bb4/hydrogen_eqndecdef.inc";
+$ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_eqndecdef.inc"; 
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_eqndecdef.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_eqndecdef.inc";
 $ifi %STEPWISE_RAMPING%==yes  $include "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_eqndecdef.inc";

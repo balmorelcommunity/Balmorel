@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug  
+$setglobal vqdebug
 *!option yes
 
 
@@ -162,6 +162,37 @@ $setglobal WNDSHUTDOWN
 * Allow curtailment of variable renewable energy generators  (BB4)
 $setglobal VRESHUTDOWN   yes
 *!option yes
+
+*------------------------------EV ADDON-------------------------------------------------
+* overall control variable EV must be 'yes' if any of the other EV controls are:
+
+$setglobal EV  YES
+*!option
+
+* Adds DUMB charging:
+$setglobal DUMB yes
+*!option
+
+* Adds smart charging. Only smart charging, without V2G!:
+$setglobal SMART
+*!option
+
+* Adds V2G charging:
+$setglobal V2G
+*!option
+
+* Adds V2G charging:
+$setglobal STEPCHARGSCHEME
+*!option
+
+* Adds cycle degradation charging:
+$setglobal DEGCYCLE
+*!option
+
+* Adds calendar degradation charging:
+$setglobal DEGCAL
+*!option
+*------------------------------END: EV ADDON-------------------------------------------------
 
 *-----------------------------------------------------------
 *---------------HYDRO RESERVOIRS OPTIONS--------------------
