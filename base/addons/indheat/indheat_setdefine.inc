@@ -29,6 +29,12 @@ $if not EXIST '../data/INDHEAT_AAA.inc' $INCLUDE '../../base/data/INDHEAT_AAAINS
 %semislash%
 
 SET
+INDHEAT_FFF 'Fuels' %semislash%
+$if     EXIST '../data/INDHEAT_FFF.inc' $INCLUDE         '../data/INDHEAT_FFF.inc';
+$if not EXIST '../data/INDHEAT_FFF.inc' $INCLUDE '../../base/data/INDHEAT_FFF.inc';
+%semislash%
+
+SET
 INDHEAT_GGG 'Individual heating technologies' %semislash%
 $if     EXIST '../data/INDHEAT_GGG.inc' $INCLUDE         '../data/INDHEAT_GGG.inc';
 $if not EXIST '../data/INDHEAT_GGG.inc' $INCLUDE '../../base/data/INDHEAT_GGG.inc';

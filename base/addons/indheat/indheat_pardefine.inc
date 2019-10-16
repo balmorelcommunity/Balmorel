@@ -1,3 +1,8 @@
+PARAMETER INDHEAT_FDATA(FFF,FDATASET) 'Fuel characteristics' %semislash%
+$if     EXIST '../data/INDHEAT_FDATA.inc' $INCLUDE         '../data/INDHEAT_FDATA.inc';
+$if not EXIST '../data/INDHEAT_FDATA.inc' $INCLUDE '../../base/data/INDHEAT_FDATA.inc';
+%semislash%
+
 PARAMETER INDHEAT_DH_VAR_T(INDHEAT_AAA,INDHEAT_DHUSER,SSS,TTT) 'Variation in individual heat demand' %semislash%
 $if     EXIST '../data/INDHEAT_DH_VAR_T.inc' $INCLUDE         '../data/INDHEAT_DH_VAR_T.inc';
 $if not EXIST '../data/INDHEAT_DH_VAR_T.inc' $INCLUDE '../../base/data/INDHEAT_DH_VAR_T.inc';
@@ -71,6 +76,11 @@ $if not EXIST '../data/INDHEAT_M_POL.inc' $INCLUDE '../../base/data/INDHEAT_M_PO
 PARAMETER INDHEAT_M_POLNA(YYY,MPOLSET,SECTOR) 'Emission policy for individual heating' %semislash%
 $if     EXIST '../data/INDHEAT_M_POLNA.inc' $INCLUDE         '../data/INDHEAT_M_POLNA.inc';
 $if not EXIST '../data/INDHEAT_M_POLNA.inc' $INCLUDE '../../base/data/INDHEAT_M_POLNA.inc';
+%semislash%
+
+PARAMETER INDHEAT_E_H_PERC(CCC,DEUSER) 'Percentage of electricity used in heating.' %semislash%
+$if     EXIST '../data/INDHEAT_E_H_PERC.inc' $INCLUDE         '../data/INDHEAT_E_H_PERC.inc';
+$if not EXIST '../data/INDHEAT_E_H_PERC.inc' $INCLUDE '../../base/data/INDHEAT_E_H_PERC.inc';
 %semislash%
 
 PARAMETER INDHEAT_DE_VAR_BASIC(RRR,DEUSER,SSS,TTT) 'Electricity consumption profile excluding heating.' %semislash%
