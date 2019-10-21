@@ -385,6 +385,15 @@ $include "../../base/addons/_hooks/varloupfx.inc"
 * End: Set bounds on variables current simulation year
 *-------------------------------------------------------------------------------
 
+*-------------------------------------------------------------------------------
+* Scaling:    Hans 201909xx
+
+BALBASE4.scaleopt=0;     !! Use 1 or 0 to activate or not
+*VGE_T.scale(Y,IA,G,S,T)$IAGK_HASORPOT(Y,IA,G) = 1/7630; !! 1e-4;   !!
+display  "first, presolve", IAGK_HASORPOT,  VGE_T.scale;
+*-------------------------------------------------------------------------------
+
+
 
 *-------------------------------------------------------------------------------
 * SOLVE

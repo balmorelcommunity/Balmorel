@@ -2255,9 +2255,12 @@ $offtext
 
 /;
 
+
+
+* The following modified by Hans 201909xx : outcommented, experimenting with scaling in BalmorelBB4.sim
 * Scale the model: only equation QOBJ is really badly scaled:
-BALBASE4.SCALEOPT=1;
-QOBJ.SCALE=IOF1000000;
+*BALBASE4.scaleopt=1;
+*QOBJ.SCALE=IOF1000000;
 
 *-------------------------------------------------------------------------------
 *----- Any further models to be defined here:

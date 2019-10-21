@@ -24,7 +24,7 @@ $setglobal vqdebug
 * hans --------
 * some testing of annotation (general setting for annotation below)
 
-$setglobal  limitY3             Y3_2016_20_30
+$setglobal  limitY3           Y3_2016
 *!option  Y3_2016              single year
 *!option  Y3_2030              single year
 *!option  Y3_2016_20           two years
