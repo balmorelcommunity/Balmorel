@@ -1,49 +1,42 @@
 * Included into the objective function QOBJ in Balmorel.gms.
 
-$ifi %HYRSBB123%==none    $goto label_no_hydro_results_import
 
-$ifi not %HYRSBB123%==contprice    $goto label_no_hydro_contprice
-                                         +    SUM((IA,S,T)$(IS3(S) AND NOT(IS3(S++1)) AND ORD(T) EQ 1 AND SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS))),
-                                                 IHOURSINST(S,T)*SUM(ISALIAS$(NOT IS3(ISALIAS)),WATERVAL(Y,IA,ISALIAS))/SUM(ISALIAS$(NOT IS3(ISALIAS)),1)*(VHYRS_SDELTAMWHNEG(Y,IA,S++1)-VHYRS_SDELTAMWHPOS(Y,IA,S++1))
-                                        )
-$label label_no_hydro_contprice
+$ifi not %HYRSBB123%==price    $goto label_no_hydro_price
+                                       +    SUM((IA,S)$(IS3(S) AND SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) AND IVHYRS_SL(Y,IA)),
+                                             WATERVAL(Y,IA,S)*(VHYRS_S(Y,IA,S)-VHYRS_S(Y,IA,S++1))/SSIZE(S) 
+                                             )
+$label label_no_hydro_price
 
 
-$label label_no_hydro_results_import
-
-$ifi not %ADDESTOVOLTS%==contprice    $goto label_no_interseasonal_electricity_storage_content
-                                   + SUM((IA,IGESTOS)$IAGK_HASORPOT(Y,IA,IGESTOS),
-                                         SUM((S,T)$(IS3(S) AND NOT(IS3(S++1)) AND ORD(T) EQ 1),
-                                                 IHOURSINST(S,T)*SUM((ISALIAS,ITALIAS)$(NOT IS3(ISALIAS)),ESTOVOLTSVAL(Y,IA,IGESTOS,ISALIAS,ITALIAS))/SUM((ISALIAS,ITALIAS)$(NOT IS3(ISALIAS)),WEIGHT_T(ITALIAS))*(VESTOVOLTSDELTAMWHNEG(Y,IA,IGESTOS,S++1,T)-VESTOVOLTSDELTAMWHPOS(Y,IA,IGESTOS,S++1,T))
-                                         )
-                                   )
-$label label_no_interseasonal_electricity_storage_content
-
-$ifi not %ADDHSTOVOLTS%==contprice    $goto label_no_interseasonal_heat_storage_content
-                                   + SUM((IA,IGHSTOS)$IAGK_HASORPOT(Y,IA,IGHSTOS),
-                                         SUM((S,T)$(IS3(S) AND NOT(IS3(S++1)) AND ORD(T) EQ 1),
-                                                 IHOURSINST(S,T)*SUM((ISALIAS,ITALIAS)$(NOT IS3(ISALIAS)),HSTOVOLTSVAL(Y,IA,IGHSTOS,ISALIAS,ITALIAS))/SUM((ISALIAS,ITALIAS)$(NOT IS3(ISALIAS)),WEIGHT_T(ITALIAS))*(VHSTOVOLTSDELTAMWHNEG(Y,IA,IGHSTOS,S++1,T)-VHSTOVOLTSDELTAMWHPOS(Y,IA,IGHSTOS,S++1,T))
-                                         )
+$ifi not %ADDESTOVOLTS%==price    $goto label_no_interseasonal_electricity_storage_price
+                                   +SUM((S,T,IA,IGESTOS)$(IS3(S) AND IAGK_HASORPOT(Y,IA,IGESTOS) AND IESTOVOLTS(Y,IA,IGESTOS)),
+                                                 IHOURSINST(S,T)*ESTOVOLTSVAL(Y,IA,IGESTOS,S,T)*(VESTOVOLTS(Y,IA,IGESTOS,S,T)-
+                                                (VESTOVOLTS(Y,IA,IGESTOS,S,T+1) + SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(Y,IA,IGESTOS,S++1,ITALIAS)$(ORD(T) EQ CARD(T))))
+                                                 )/SSIZE(S)
                                    )
 
-$label label_no_interseasonal_heat_storage_content
 
-$ifi not %ADDESTOVOLT%==contprice    $goto label_no_intraseasonal_electricity_storage_content
-                                   + SUM((IA,IGESTO)$IAGK_HASORPOT(Y,IA,IGESTO),
-                                         SUM((S,T)$(IS3(S) AND NOT(IS3(S++1)) AND ORD(T) EQ 1),
-                                                 IHOURSINST(S,T)*SUM(ITALIAS,ESTOVOLTVAL(Y,IA,IGESTO,S++1,ITALIAS))/SUM(ITALIAS,WEIGHT_T(ITALIAS))*(VESTOVOLTDELTAMWHNEG(Y,IA,IGESTO,S++1,T)-VESTOVOLTDELTAMWHPOS(Y,IA,IGESTO,S++1,T))
-                                         )
+$label label_no_interseasonal_electricity_storage_price
+
+$ifi not %ADDHSTOVOLTS%==price    $goto label_no_interseasonal_heat_storage_price
+                                   +SUM((S,T,IA,IGHSTOS)$(IS3(S) AND IAGK_HASORPOT(Y,IA,IGHSTOS) AND IHSTOVOLTS(Y,IA,IGHSTOS)),
+                                                 IHOURSINST(S,T)*HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)*(VHSTOVOLTS(Y,IA,IGHSTOS,S,T)-
+                                                (VHSTOVOLTS(Y,IA,IGHSTOS,S,T+1) + SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(Y,IA,IGHSTOS,S++1,ITALIAS)$(ORD(T) EQ CARD(T))))
+                                                 )/SSIZE(S)
                                    )
-$label label_no_intraseasonal_electricity_storage_content
+$label label_no_interseasonal_heat_storage_price
 
-$ifi not %ADDHSTOVOLT%==contprice    $goto label_no_intraseasonal_heat_storage_content
-                                   + SUM((IA,IGHSTO)$IAGK_HASORPOT(Y,IA,IGHSTO),
-                                         SUM((S,T)$(IS3(S) AND NOT(IS3(S++1)) AND ORD(T) EQ 1),
-                                                 IHOURSINST(S,T)*SUM(ITALIAS,HSTOVOLTVAL(Y,IA,IGHSTO,S++1,ITALIAS))/SUM(ITALIAS,WEIGHT_T(ITALIAS))*(VHSTOVOLTDELTAMWHNEG(Y,IA,IGHSTO,S++1,T)-VHSTOVOLTDELTAMWHPOS(Y,IA,IGHSTO,S++1,T))
+$ifi not %ADDESTOVOLT%==price    $goto label_no_intraseasonal_electricity_storage_price
+                                       +  SUM((S,T,IA,IGESTO)$(IS3(S) AND IAGK_HASORPOT(Y,IA,IGESTO) AND IESTOVOLT(Y,IA,IGESTO)),
+                                                 IHOURSINST(S,T)*ESTOVOLTVAL(Y,IA,IGESTO,S,T)*(VGE_T(Y,IA,IGESTO,S,T)-VHSTOLOADT(Y,IA,IGESTO,S,T))
                                          )
-                                   )
+$label label_no_intraseasonal_electricity_storage_price
 
-$label label_no_intraseasonal_heat_storage_content
+$ifi not %ADDHSTOVOLT%==price    $goto label_no_intraseasonal_heat_storage_price
+                                       +  SUM((S,T,IA,IGHSTO)$(IS3(S) AND IAGK_HASORPOT(Y,IA,IGHSTO) AND IHSTOVOLT(Y,IA,IGHSTO)),
+                                                 IHOURSINST(S,T)*HSTOVOLTVAL(Y,IA,IGHSTO,S,T)*(VGH_T(Y,IA,IGHSTO,S,T)-VHSTOLOADT(Y,IA,IGHSTO,S,T))
+                                         )
+$label label_no_intraseasonal_heat_storage_price
 
 
 

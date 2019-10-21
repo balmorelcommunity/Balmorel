@@ -529,11 +529,10 @@ $setglobal ADDENERGYDISPATCH
 * ------------------HYDRO---------------------------------
 * For this model run it is possible to use values found from previuos solutions to specify use of hydro power
 $setglobal HYRSBB123 none
-*!option quant         !Text "(STIL TESTING) Use seasonal quantities of hydro generation (from HYRSG.gdx??) in this run ('primal decomposition')(not implemented in BB4)"
-*!option price         !Text "(STIL TESTING)  Use seasonal prices for hydro generation (from WATERVAL.gdx) in this run ('dual decomposition') (not implemented in BB4)"
-*!option quantprice    !Text "(STIL TESTING)  Use seasonal quantities and prices for hydro generation (from HYRSG.gdx?? and WATERVAL.gdx) in in this run (not implemented in BB4)"
+*!option quant         !Text "Use seasonal quantities of hydro generation (from HYRSG.gdx??) in this run ('primal decomposition')(not implemented in BB4)"
+*!option price         !Text (to be tested) "Use seasonal prices for hydro generation (from WATERVAL.gdx) in this run ('dual decomposition')"
+*!option quantprice    !Text "Use seasonal quantities and prices for hydro generation (from HYRSG.gdx?? and WATERVAL.gdx) in in this run (not implemented in BB4)"
 *!option cont          !Text "Use seasonal content for hydro generation (from VHYRS_SL.gdx) in in this run"
-*!option contprice     !Text (STILL TESTING)"Use seasonal content and prices for deviation (from VHYRS_SL.gdx and WATERVAL.gdx) in in this run"
 *!option none          !Text "Do not not use this hydro addon"
 * ------------------ END OF HYDRO---------------------------------
 
@@ -541,25 +540,25 @@ $setglobal HYRSBB123 none
 *Import inter-seasonal electricity storage data from previous runs
 $Setglobal ADDESTOVOLTS none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
-*!option contprice     !Text (STILL TESTING)"Import electricity storage contents at beginning of time segment (ESTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with ESTOVOLTSVAL.gdx from previous runs "
+*!option price         !Text "(to be tested) Import electricity storage contents at beginning of time segment (ESTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with ESTOVOLTSVAL.gdx from previous runs. "
 *!option none          !Text "Do not not use this addon"
 
 *Import inter-seasonal heat storage data from previous runs
 $Setglobal ADDHSTOVOLTS  none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
-*!option contprice     !Text (STILL TESTING)"Import Heat storage contents at beginning of time segment (HSTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with HSTOVOLTSVAL.gdx from previous runs"
+*!option price         !Text "(to be tested) Import Heat storage contents at beginning of time segment (HSTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with HSTOVOLTSVAL.gdx from previous runs."
 *!option none          !Text "Do not not use this addon"
 
 *Import intra-seasonal electricity storage data from previous runs
 $Setglobal ADDESTOVOLT none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
-*!option contprice     !Text (STILL TESTING)"Import electricity storage contents at beginning of time segment (ESTOVOLT.gdx) for the first element in set T and S, and penalizes deviating from them with ESTOVOLTVAL.gdx from previous runs "
+*!option price         !Text "Import electricity storage contents at beginning of time segment (ESTOVOLT.gdx) for the first element in set T and S, and puts a price to generation (ESTOVOLTVAL) from previous runs."
 *!option none          !Text "Do not not use this addon"
 
 *Import intra-seasonal heat storage data from previous runs
 $Setglobal ADDHSTOVOLT  none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
-*!option contprice     !Text (STILL TESTING)"Import Heat storage contents at beginning of time segment (HSTOVOLT.gdx) for the first element in set T and S, and penalizes deviating from them with HSTOVOLTVAL.gdx from previous runs"
+*!option price         !Text "(to be tested) Import Heat storage contents at beginning of time segment (HSTOVOLT.gdx) for the first element in set T and S,  and puts a price to generation (HSTOVOLTVAL) from previous runs"
 *!option none          !Text "Do not not use this addon"
 *--------------------END OF INTERSEASONAL STORAGE-----------------------------------------------------------
 
