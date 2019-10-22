@@ -1,0 +1,145 @@
+* File for doing scaling - needed because GAMS cannot currently use annotation and scaling at the same time.
+* Change the coefficient multiplied onto the objective function QOBJ (defined in Balmorel.gms):
+*SCALAR IOF1_      'Multiplier 1 (used with QOBJ and derivation of marginal values)'   /1/;!! special, possibly to disappear in future versions
+IOF1_ = 1e-2;
+
+* Scaling of equation QGMAXCF, QGEQCF, QGEQRF, QGMAXRF, applied in file BALMORELbb4.inc. There are more eqns wher it should be used, will be made later, if positive experience.
+SCALAR QFUELLIM_SCALE ""   /4/; !! 4 is appromimately  IOF3P6 = 3.6
+$ifi %limitST%==yes    QFUELLIM_SCALE = 4*(52/3)*56;
+
+* XCOST may be set to zero to improve scaling in QOBJ , balopt.opt option XCOSTzero. NOTE: This is cheating with the model!
+* Very low OMVCOST units may have OMV set to zero (e.g. GNR_HS_HEAT_PIT_L-CEN_E-90), balopt.opt option  OMVCOSTcheapToZero. NOTE: This is cheating with the model!
+* Certain units removed ('LT_Other_DH','LIFOSA_ST_HEAT_BP'), balopt.opt option   RemoveUnits. NOTE: This is cheating with the model!
+
+
+
+$ontext
+* This file is included into Balmorel.gms shortly after definition of 'Some generally applicable stuff', in case of annotation
+20191021 Hans
+Following comments from Daniel that Balmorel seems to be badly scaled (especially QOBJ) and that this prevented solution
+and following the realisation that GAMS does not permit annotation and scaling at the same time
+scaling is being investigated.
+
+The goal is to keep coefficients in the constraint matrix (including QOBJ) within a multiplicative factor of no more than 1000 to 10000.
+
+The following observations were made on the current model, the numbers indicate typical ranges (but not full, cf. below) for the coefficients
+
+            QOBJ              QHYRSSEQ    QGMAXCF (and related eqns)
+VOBJ        1
+VGE_T       10000-50000       1000
+VGH_T       1000
+VGF_T       10000-100000                  3500
+VX_T        0.1
+VHYRS_S                       1
+
+Using GAMSCHK (see below, activated ), the following is found:
+
+ ----### List of Variable Block Characteristics
+
+ Note Max and Min do not include Objective Row
+
+ Variable   Sign  Numb Numb Pos  Neg  Nonl  Maximum   Minimum                   Hans: Factor
+   Block    Res   Vars Nonl Coef Coef Coef  Absolute  Absolute
+ VOBJ       <0>     1    0    1    0    0    0.000     0.000
+ VGE_T      >=0  8577    01446317802    0    973.3    0.2611E-01                100000
+ VGH_T      >=0 10242    01621821411    0    25.90    0.5222E-02                10000
+ VGF_T      >=0 13347    01619110818    0    3504.     1.000
+ VX_T       >=0   720    0  720 1440    0    1.000    0.9580
+ VHYRS_S    >=0    39    0   75   75    0    1.000     1.000
+ VESTOLOADT >=0   108    0  108  108    0    1.000     1.000
+ VHSTOLOADT >=0   225    0  225  450    0    1.000     1.000
+ VESTOVOLTS >=0   108    0  108  108    0    1.000     1.000
+ VHSTOVOLTS >=0   225    0  225  225    0    1.000     1.000
+
+
+ ----### List of Equation Block Characteristics
+
+ Note Max and Min do not include RHS and Objective variable
+
+ Equation   Type  Numb Numb Pos  Neg  Nonl Pos  Neg  Maximum  Minimum           Hans: Factor
+   Block    Res   Eqns Nonl Coef Coef Coef RHS  RHS  Absolute  Absolute
+ QOBJ       =E=     1    0    124156    0    1    0  0.5921E+050.9733E-01
+ QEEQ       =E=   216    0 8748 1377    0  216    0   1.000    0.9580
+ QHEQ       =E=   558    0 9684  225    0  558    0   1.000     1.000
+ QGFEQ      =E= 13347    01339218189    0    0    0   7.692    0.5222E-02
+ QGCBGBPR   =E=  4338    0 4338 4338    0    0    0   4.700    0.1000
+ QGCBGEXT   =G=   585    0  585  585    0    0    0   25.90    0.5000E-01
+ QGCVGEXT   =G=   585    0   45 1089    0    0  585   1.000    0.1000E-01
+ QGGETOH    =E=   549    0  549  549    0    0    0   1.250    0.1667
+ QHYRSSEQ   =G=    39    0   39 1002    0    2   37   973.3     1.000
+ QHYRSMINVO =G=    36    0   36    0    0   36    0   1.000     1.000
+ QHYRSMAXVO =G=    36    0    0   36    0    0   36   1.000     1.000
+ QHYMAXG    =L=   117    0  963    0    0  117    0   1.000     1.000
+ QESTOVOLTS =E=   108    0  216  216    0    0    0   1.370     1.000
+ QHSTOVOLTS =E=   225    0  450  450    0    0    0   1.111     1.000
+ QHSTOLOADT =G=   225    0 6444  225    0    0    0   1.000     1.000
+ QGMAXCF    =L=    24    0 2052    0    0   24    0   3504.     3504.
+ QGEQCF     =E=     9    0  504    0    0    8    0   3504.     3504.
+ QGEQRF     =E=     2    0  288    0    0    2    0   3504.     3504.
+
+
+As seen:
+  - interesting variables are  VGE_T,  VGH_T and VGF_T
+  - interesting equations are  QOBJ,  QGFEQ (and maybe QGMAXCF, QGEQCF etc.)
+  - GAMSCHK BLOCKLIST does not provide informattion about combinations of variables and equations? (Apparently not: "The INTERSECT keyword works with procedures DISPLAYCR and POSTOPT.")
+
+
+With IOF1_ = 1e-2 and QFUELLIM_SCALE: (manipulated table layout)
+                                                      Maximum  Minimum          Hans: Factor
+ VGE_T      >=0  8577    01446317802    0             973.3    0.2611E-01       10000
+ VGH_T      >=0 10242    01621821411    0             25.90    0.5222E-02       10000
+ VGF_T      >=0 13347    01619110818    0             1.000    0.9025           1
+
+ QOBJ       =E=     1    0    124156    0    1    0   592.1    0.9733E-03       1000000
+ QGFEQ      =E= 13347    01339218189    0    0    0   7.692    0.5222E-02       1000
+ QGMAXCF    =L=    24    0 2052    0    0   24    0   0.9025   0.9025           1
+
+With IOF1_ = 1e-2, QFUELLIM_SCALE and XCOST=0, QOBJ ændres: (manipulated table layout)
+
+ QOBJ       =E=     1    0    123436    0    1    0   592.1    0.1636E-02       100000  (lidt bedre)
+
+With IOF1_ = 1e-2, QFUELLIM_SCALE and XCOST=0, low OMVCOST set to 0, some units removed,   QOBJ ændres: (manipulated table layout)
+
+ QOBJ       =E=     1    0    124147    0    1    0   592.1     3.434           100
+
+So with this it seems that the range of the coefficients is within a factor 10000; which is high, but usually acceptable
+
+
+NOTE: The manual scaling will change the dual variables!
+$offtext
+* ------------------------------------------------------------------------------
+* ------------------------------------------------------------------------------
+* ------------------------------------------------------------------------------
+
+
+
+
+* ------------------------------------------------------------------------------
+$ontext
+GAMSCHK is an analysis program for a GAMS model.
+
+GAMSCHK is activated in the current Balmorel version by option GAMSCHK, see balopt.opt.
+
+Note: GAMSCHK: has this procedure:
+
+BLOCKLIST
+
+Brief Purpose: The BLOCKLIST procedure displays the number and characteristics of the items in each GAMS variable and equation block.
+
+Usage Notes: The characteristic information gives:
+1.The variable sign restriction or equation inequality type.
+2.The number of variables or equations in this block;
+3.The number of variables or equations with at least one nonlinear term in this block.
+4.The number of positive coefficients under the variables or in the equations.
+5.The number of negative coefficients under the variables or in the equations.
+6.The number of nonlinear coefficients under the variables or in the equations.
+7.The largest coefficient in absolute value in this block;
+8.The smallest coefficient in absolute value in this block. Analysis tests are also performed as discussed under the ANALYSIS procedure.
+
+Note that when GAMS internal scaling features are employed, the default option is that the scaled output is displayed. This can be altered using the DESCALE feature of the solver options file.
+
+Input File: No input other than the procedure name is needed.
+
+For using this I introduced option GAMSCHKBL in the option file; it overwrites option annotation by setting it to no
+
+$offtext
