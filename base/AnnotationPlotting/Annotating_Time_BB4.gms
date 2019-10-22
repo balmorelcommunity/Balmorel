@@ -1,3 +1,9 @@
+* 20191021 Hans
+* Following comments from Daniel that Balmorel seems to be badly scaled (especially QOBJ) and that this prevented solution
+* and following the realisation that GAMS does not permit annotation and scaling at the same time
+* scaling is being investigated.
+* See further in file model/annotation_scaling.txt
+
 * 20190425 Hans
 * Subset of year and Season
 $ontext

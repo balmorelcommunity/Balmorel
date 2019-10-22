@@ -39,12 +39,35 @@ $setglobal  limitY3           Y3_2016
 $setglobal limitST  yes
 *!option yes    S01,S02,s03 ,  T001,T002,T003 ,
 *!option  ''    S01*S52, T001*T168
-* Files:    S, T
+* Files:    S, T, annotation_scaling.txt
 
 $setglobal limitCRA ''
 *!option DKNO      NORWAY+DENMARK,  CCCRRR('denmark',RRR) has dk1, CCCRRR('NORWAY',RRR) has NO1
 *!option DK        DENMARK,  CCCRRR('denmark',RRR) has dk1
 * Files: C, CCCRRR, RRRAAA, GEQF
+
+
+* Options concerning scaling. See file annotation_scaling.txt. Hans 20191021
+$setglobal  XCOSTzero yes
+*!option Yes  Setting XCOST to zero for scaling reasons
+* File XCOST.inc
+
+$setglobal OMVCOSTcheapToZero  yes
+*!option Yes set very low OMVCOST to zero (e.g. GNR_HS_HEAT_PIT_L-CEN_E-90)  for scaling reasons
+* File GOMVCOST
+
+$setglobal RemoveUnits yes
+* Remove units for scaling reasons   ('LT_Other_DH','LIFOSA_ST_HEAT_BP'),            (have not investigated why needed)
+*!option Yes
+* File GKFX
+
+* ---  New 20191021 (Hans):
+* Further options for scaling analysis (cf. file ): option GMSCHK is extended to have two versions, search below GMSCHK
+
+
+
+
+
 
 
 
@@ -119,7 +142,17 @@ $setglobal SPEEDUP
 
 
 * For making the Block Picture providing equations and variables in the specified model
-$setglobal GMSCHK
+* or Block List providing i.a. maximum and minimum numerical values of variables and equations (handy for scaling)
+$setglobal GMSCHK GMSCHKbl
+*!option   GMSCHKpic
+*!option   GMSCHKbl
+* If used, option ANNOTATION cannot be yes.
+* File balmorel.gck  is used. Note that you cannot use options in that file, so the change between  Block Picture and Block List is to be done in that file (so actually the distinction here between GMSCHKpic and GMSCHKbl is not really needed. to be chhanged one day maybe)
+
+
+
+
+
 
 
 * For making the Block Picture providing equations and variables in the specified model
@@ -128,6 +161,11 @@ $setglobal DICTMAP
 
 * For producing the Jacobian and the Plotted annotation
 $setglobal ANNOTATION    yes
+
+* New 20191021 (Hans):
+$ifi %GAMSCHK%==GMSCHKpic  $setglobal ANNOTATION NO
+$ifi %GAMSCHK%==GMSCHKbl   $setglobal ANNOTATION NO
+
 
 $ifi %ANNOTATION%==yes     $setglobal ANNO_TIME     yes
 $ifi %ANNOTATION%==yes     $setglobal ANNO_DAY

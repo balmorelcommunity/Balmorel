@@ -418,7 +418,11 @@ $ifi %DICTMAP%==yes   balbase4.optfile = 5;
 *** Making GAMS CHECK
 * For doing the Equation - Variables Overview (Primarily to the annotation
 * For knowing which equations and variables need to be assigned to stages
-$ifi %GMSCHK%==yes     OPTION LP= GAMSCHK;
+* Modified 20191021 (Hans). Note that option value GMSCHK4bl requires input file balmorel.gck, and if it exists, it will be used also with option GMSCHK4pic
+$ifi %GMSCHK%==GMSCHKpic     OPTION LP= GAMSCHK;
+$ifi %GMSCHK%==GMSCHKbl      OPTION LP= GAMSCHK;
+
+
 
 *** For speedup parameter tuning
 $ifi %SPEEDUP%==yes       OPTION lp = cplex;
