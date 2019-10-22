@@ -7,44 +7,50 @@ close all;
 %file name and sheet 
 input_file_name = 'Input\Time_Series.xlsx';
 
-%Sheet name
-input_sheet_name = 'SOLE';
-
 %thinning of timeslices within each season
-thinning_value = 7;
+thinning_value = 3;
 
-%Number of seasons (1-8)
-number_of_seasons = 3;
-
-%Output file name
-outputfilename = 'Output\SOLE.xlsx';
+%Number of seasons (1 to X)
+number_of_seasons = 13;
 %----------------------------------------------
 
+[status,sheets,xlFormat] = xlsfinfo(input_file_name);
+sheets=string(sheets);
+
+for j=8:length(sheets)
+%Sheet name
+input_sheet_name = sheets(j);
+disp('Sheet %s being processed', input_sheet_name)
+
+%Output file name
+outputfilename = append('Output\',sheets(j),'.xlsx');
+
 T_fullYear = readtable(input_file_name, 'Sheet', input_sheet_name);
-T_fullYear.Week = categorical(T_fullYear.Week);
-T_fullYear.Hour = categorical(T_fullYear.Hour);
+T_fullYear.SEASON = categorical(T_fullYear.SEASON);
+T_fullYear.TIME = categorical(T_fullYear.TIME);
 
 %add more elseif statements to 
 if number_of_seasons == 1
-    T_sel_weeks = T_fullYear(T_fullYear.Week == 'S23', :);
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S23', :);
 elseif number_of_seasons == 2
-    T_sel_weeks = T_fullYear(T_fullYear.Week == 'S16' | T_fullYear.Week == 'S40', :);
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S40', :);
 elseif number_of_seasons == 3
-    T_sel_weeks = T_fullYear(T_fullYear.Week == 'S16' | T_fullYear.Week == 'S25' | T_fullYear.Week == 'S40', :);
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S25' | T_fullYear.SEASON == 'S40', :);
 elseif number_of_seasons == 4
-    T_sel_weeks = T_fullYear(T_fullYear.Week == 'S02' | T_fullYear.Week == 'S16' | T_fullYear.Week == 'S25' | T_fullYear.Week == 'S40', :);
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S02' | T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S25' | T_fullYear.SEASON == 'S40', :);
 elseif number_of_seasons == 5
-    T_sel_weeks = T_fullYear(T_fullYear.Week == 'S03' | T_fullYear.Week == 'S09' | T_fullYear.Week == 'S37' | T_fullYear.Week == 'S44' | T_fullYear.Week == 'S51', :);
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S03' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S37' | T_fullYear.SEASON == 'S44' | T_fullYear.SEASON == 'S51', :);
 elseif number_of_seasons == 6
-    T_sel_weeks = T_fullYear(T_fullYear.Week == 'S03' | T_fullYear.Week == 'S09' | T_fullYear.Week == 'S16' | T_fullYear.Week == 'S23' | T_fullYear.Week == 'S44' | T_fullYear.Week == 'S51', :);
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S03' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S23' | T_fullYear.SEASON == 'S44' | T_fullYear.SEASON == 'S51', :);
 elseif number_of_seasons == 7
-    T_sel_weeks = T_fullYear(T_fullYear.Week == 'S03' | T_fullYear.Week == 'S09' | T_fullYear.Week == 'S16' | T_fullYear.Week == 'S23' | T_fullYear.Week == 'S37' | T_fullYear.Week == 'S44' | T_fullYear.Week == 'S51', :);
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S03' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S23' | T_fullYear.SEASON == 'S37' | T_fullYear.SEASON == 'S44' | T_fullYear.SEASON == 'S51', :);
 elseif number_of_seasons == 8
-    T_sel_weeks = T_fullYear(T_fullYear.Week == 'S03' | T_fullYear.Week == 'S09' | T_fullYear.Week == 'S16' | T_fullYear.Week == 'S23' | T_fullYear.Week == 'S30' | T_fullYear.Week == 'S37' | T_fullYear.Week == 'S44' | T_fullYear.Week == 'S51', :);
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S03' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S23' | T_fullYear.SEASON == 'S30' | T_fullYear.SEASON == 'S37' | T_fullYear.SEASON == 'S44' | T_fullYear.SEASON == 'S51', :);
+elseif number_of_seasons == 13
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S01' | T_fullYear.SEASON == 'S05' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S13' | T_fullYear.SEASON == 'S17' | T_fullYear.SEASON == 'S21' | T_fullYear.SEASON == 'S25' | T_fullYear.SEASON == 'S29' | T_fullYear.SEASON == 'S33' | T_fullYear.SEASON == 'S37' | T_fullYear.SEASON == 'S41' | T_fullYear.SEASON == 'S45' | T_fullYear.SEASON == 'S49', :);
 else
-    disp('please choose the number of seasons between 1-8')
+    disp('please choose the number of seasons between 1 to X')
 end
-    
 
 T_sel_weeks_full=T_sel_weeks;
 T_sel_weeks=T_sel_weeks(1:thinning_value:end,:);
@@ -66,8 +72,7 @@ x_sel_scaled = OBJ_target.icdf(u_sel_orig);
 x_sel_scaled(x_sel_scaled < 0) = 0;
 
 max_original=max(x_f);
-[max_scaled,max_pos] = max(x_sel_scaled);
-x_sel_scaled(max_pos)=max_original;
+x_sel_scaled(x_sel_scaled > max_original)=max_original;
 
 
 T_sel_weeks_scaled{:,i}=x_sel_scaled;
@@ -121,6 +126,8 @@ ylabel('Standardized generation');
 % legend('Full', 'Selected week scaled')
 % std(diff(x_sel_scaled))
 %}
-end
 
+end
 writetable(T_sel_weeks_scaled,outputfilename);
+clear T_fullYear
+end

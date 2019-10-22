@@ -5,7 +5,7 @@
 $ifi not %HYRSBB123%==cont    $goto label_no_hydro_results_import
 
 EQUATION    QWATERVOLINI(Y,AAA,S)   'Hydro energy (volume) in storage at the beginning of the seasons (MWh)' ;
-QWATERVOLINI(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) AND IVHYRS_SL(IY411,IA) AND NOT(IS3(S)) AND IS3(S--1))..
+QWATERVOLINI(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) AND IVHYRS_SL(IY411,IA) AND (IS3(S) OR IS3(S--1)))..
   VHYRS_S(IY411,IA,S) - VHYRS_SL(IY411,IA,S)
   =E=
    0
@@ -16,7 +16,7 @@ $label label_no_hydro_results_import
 
 $ifi not %ADDESTOVOLTS%==cont    $goto label_no_intraseasonal_electricity_storage_content
 EQUATION    QESTOVOLTSIMPORT(Y,AAA,G,S,T)   'Inter-seasonal Electricity storage content at the beginning of each season fixed to results in previous runs (MWh)' ;
-QESTOVOLTSIMPORT(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IESTOVOLTS(IY411,IA,IGESTOS) AND (ORD(T) EQ 1) AND NOT(IS3(S)) AND IS3(S--1))..
+QESTOVOLTSIMPORT(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IESTOVOLTS(IY411,IA,IGESTOS) AND (ORD(T) EQ 1) AND (IS3(S) OR IS3(S--1)))..
    VESTOVOLTS(IY411,IA,IGESTOS,S,T) - ESTOVOLTS(IY411,IA,IGESTOS,S,T)
 =E=
     0
@@ -26,7 +26,7 @@ $label label_no_intraseasonal_electricity_storage_content
 
 $ifi not %ADDHSTOVOLTS%==cont    $goto label_no_interseasonal_heat_storage_content
 EQUATION    QHSTOVOLTSIMPORT(Y,AAA,G,S,T)   'Inter-seasonal heat storage content at the beginning of each season fixed to results in previous runs (MWh)' ;
-QHSTOVOLTSIMPORT(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IHSTOVOLTS(IY411,IA,IGHSTOS) AND (ORD(T) EQ 1) AND NOT(IS3(S)) AND IS3(S--1))..
+QHSTOVOLTSIMPORT(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IHSTOVOLTS(IY411,IA,IGHSTOS) AND (ORD(T) EQ 1) AND (IS3(S) OR IS3(S--1)))..
    VHSTOVOLTS(IY411,IA,IGHSTOS,S,T)   - HSTOVOLTS(IY411,IA,IGHSTOS,S,T)
 =E=
     0
