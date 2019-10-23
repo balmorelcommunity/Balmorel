@@ -633,11 +633,19 @@ $if not EXIST '../data/GKF_LO.inc' $INCLUDE '../../base/data/GKF_LO.inc';
 *-------------------------------------------------------------------------------
 *---- Annual electricity demand : ---------------------------------------------
 *-------------------------------------------------------------------------------
+
 PARAMETER DE(YYY,RRR,DEUSER)    "Annual electricity consumption (MWh)" %semislash%
-$if     EXIST '../data/DE.inc' $INCLUDE         '../data/DE.inc';
-$if not EXIST '../data/DE.inc' $INCLUDE '../../base/data/DE.inc';
+$if     EXIST '../data/DE%SCNAME%.inc' $INCLUDE         '../data/DE%SCNAME%.inc';
+$if not EXIST '../data/DE%SCNAME%.inc' $INCLUDE '../../base/data/DE.inc';
+*$if not EXIST '../data/DE.inc'         $INCLUDE '../../base/data/DE.inc';
 %semislash%;
 
+$ontext
+PARAMETER DE(YYY,RRR,DEUSER)    "Annual electricity consumption (MWh)" %semislash%
+$if     EXIST '../data/DE.inc' $INCLUDE         '../data/DE%SCNAME%.inc';
+$if not EXIST '../data/DE.inc' $INCLUDE '../../base/data/DE.inc';
+%semislash%;
+$offtext
 
 *-------------------------------------------------------------------------------
 *---- Annual heat demand: -----------------------------------------------------
@@ -692,8 +700,8 @@ $if not EXIST '../data/XMAXINV.inc' $INCLUDE '../../base/data/XMAXINV.inc';
 
 PARAMETER FUELPRICE(YYY,AAA,FFF)                   "Fuel prices (Money/GJ)"   %semislash%
 $if     EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE '../data/FUELPRICE%SCNAME%.inc';
-$if not EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE '../data/FUELPRICE.inc';
-$if not EXIST '../data/FUELPRICE.inc'         $INCLUDE '../../base/data/FUELPRICE.inc';
+$if not EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
+*$if not EXIST '../data/FUELPRICE.inc'         $INCLUDE '../../base/data/FUELPRICE.inc';
 %semislash%;
 
 $ontext
@@ -708,8 +716,8 @@ $offtext
 
 PARAMETER M_POL(YYY,MPOLSET,CCC)    "Emission policy data"   %semislash%
 $if     EXIST '../data/M_POL%SCNAME%.inc' $INCLUDE '../data/M_POL%SCNAME%.inc';
-$if not EXIST '../data/M_POL%SCNAME%.inc' $INCLUDE '../data/M_POL.inc';
-$if not EXIST '../data/M_POL.inc';        $INCLUDE '../../base/data/M_POL.inc';
+$if not EXIST '../data/M_POL%SCNAME%.inc' $INCLUDE '../../base/data/M_POL.inc';
+*$if not EXIST '../data/M_POL.inc';        $INCLUDE '../../base/data/M_POL.inc';
 %semislash%;
 
 $ontext
