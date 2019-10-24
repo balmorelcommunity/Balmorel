@@ -58,13 +58,13 @@ $setglobal  XCOSTzero yes
 * File XCOST.inc
 
 $setglobal OMVCOSTcheapToZero  yes
-*!option Yes set very low OMVCOST to zero (e.g. GNR_HS_HEAT_PIT_L-CEN_E-90)  for scaling reasons
-* File GOMVCOST
+*!option Yes set very low OMVCOST to zero or small number like 0.5 (e.g. GNR_HS_HEAT_PIT_L-CEN_E-90)  for scaling reasons
+* File GOMVCOST.inc
 
 $setglobal RemoveUnits yes
-* Remove units for scaling reasons   ('LT_Other_DH','LIFOSA_ST_HEAT_BP'),            (have not investigated why needed)
+* Remove units for scaling reasons   ('LT_Other_DH','LIFOSA_ST_HEAT_BP'),                (have not investigated why needed, but it concerns QOBJ where they have very small coefficients; would be better to modify coeffs)
 *!option Yes
-* File GKFX
+* File GKFX.inc
 
 * ------------------------------------------------------------------------------
 * ---  New 20191021 (Hans):
