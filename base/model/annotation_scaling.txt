@@ -102,7 +102,7 @@ With IOF1_ = 1e-2, QFUELLIM_SCALE and XCOST=0, low OMVCOST set to 0, some units 
 
  QOBJ       =E=     1    0    124147    0    1    0   592.1     3.434           100
 
-So with this it seems that the range of the coefficients is within a factor 10000; which is high, but usually acceptable
+So with this it seems that the range of the coefficients is within a factor 10000; which is high, but usually acceptable.
 
 
 NOTE: The manual scaling will change the dual variables!
@@ -120,7 +120,7 @@ GAMSCHK is an analysis program for a GAMS model.
 
 GAMSCHK is activated in the current Balmorel version by option GAMSCHK, see balopt.opt.
 
-Note: GAMSCHK: has this procedure:
+Note: GAMSCHK: has procedure BLOCKLIST, here is description from McCarl:
 
 BLOCKLIST
 
@@ -139,7 +139,5 @@ Usage Notes: The characteristic information gives:
 Note that when GAMS internal scaling features are employed, the default option is that the scaled output is displayed. This can be altered using the DESCALE feature of the solver options file.
 
 Input File: No input other than the procedure name is needed.
-
-For using this I introduced option GAMSCHKBL in the option file; it overwrites option annotation by setting it to no
 
 $offtext

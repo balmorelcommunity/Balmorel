@@ -21,10 +21,13 @@ $setglobal vqdebug
 *!option yes
 
 
-* hans --------
+* Hans --------
+* ------------------------------------------------------------------------------
+* For convenient quick analysis the model size can be limited as follows.
+* For production runs these options shoulc be set at ''
 * some testing of annotation (general setting for annotation below)
 
-$setglobal  limitY3           Y3_2016
+$setglobal  limitY3   ''
 *!option  Y3_2016              single year
 *!option  Y3_2030              single year
 *!option  Y3_2016_20           two years
@@ -36,7 +39,7 @@ $setglobal  limitY3           Y3_2016
 
 
 
-$setglobal limitST  yes
+$setglobal limitST   ''
 *!option yes    S01,S02,s03 ,  T001,T002,T003 ,
 *!option  ''    S01*S52, T001*T168
 * Files:    S, T, annotation_scaling.txt
@@ -47,7 +50,9 @@ $setglobal limitCRA ''
 * Files: C, CCCRRR, RRRAAA, GEQF
 
 
-* Options concerning scaling. See file annotation_scaling.txt. Hans 20191021
+* ------------------------------------------------------------------------------
+* Options concerning scaling. See file annotation_scaling.txt. Hans 20191021.
+* Note that these options will change the model (which is bad!), but may be needed, at least in current phase.
 $setglobal  XCOSTzero yes
 *!option Yes  Setting XCOST to zero for scaling reasons
 * File XCOST.inc
@@ -61,9 +66,13 @@ $setglobal RemoveUnits yes
 *!option Yes
 * File GKFX
 
+* ------------------------------------------------------------------------------
 * ---  New 20191021 (Hans):
 * Further options for scaling analysis (cf. file ): option GMSCHK is extended to have two versions, search below GMSCHK
+* Note that with this GMSCHK option active the annotation is NOT active, GMSCHK is for analysis only.
 
+*===============================================================================
+*===============================================================================
 
 
 
@@ -143,7 +152,7 @@ $setglobal SPEEDUP
 
 * For making the Block Picture providing equations and variables in the specified model
 * or Block List providing i.a. maximum and minimum numerical values of variables and equations (handy for scaling)
-$setglobal GMSCHK GMSCHKbl
+$setglobal GMSCHK
 *!option   GMSCHKpic
 *!option   GMSCHKbl
 * If used, option ANNOTATION cannot be yes.
