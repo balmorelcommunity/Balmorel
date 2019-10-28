@@ -2243,7 +2243,11 @@ QXINVSYMMETRY(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
 
 * "Limit on annual CO2-emission by year and country (kg/MW)"
 QLIMCO2(IY411,C)$(M_POL(IY411,'LIM_CO2',C) AND (M_POL(IY411,'LIM_CO2',C) LT INF))..
-      SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
+      SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001
+$ifi not %CH4inCO2lim%==yes $goto endCH4inCO2lim
+      + GDATA(G,'GDCH4') * IOF0000001 * CO2EQUIVALENT_FOR_CH4
+$label endCH4inCO2lim
+      ) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
 $include "../../base/addons/_hooks/qlimco2.inc"
       =L= M_POL(IY411,'LIM_CO2',C);
 

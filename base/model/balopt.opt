@@ -26,7 +26,7 @@ $setglobal vqdebug
 *===============================================================================
 *===============================================================================
 
-$setglobal SCNAME _LS
+$setglobal SCNAME _M
 *!option _LS *Late Sprint
 *!option _M  *Marathon
 
@@ -258,6 +258,12 @@ $setglobal INDHEAT yes
 
 SCALAR INDHEAT_GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
 INDHEAT_GINVESTSTART= 2020;
+
+* Add CH4 emissions to CO2 emission target:
+$setglobal CH4inCO2lim yes
+*!option yes
+SCALAR CO2EQUIVALENT_FOR_CH4 'The CO2 equivalent for CH4' ;
+CO2EQUIVALENT_FOR_CH4=28;
 
 *
 $setglobal POLICIES
@@ -705,7 +711,7 @@ putclose fileMERGESAVEPOINTRESULTSbash;
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
-$setglobal MERGEDSAVEPOINTRESULTS2SQLITE 
+$setglobal MERGEDSAVEPOINTRESULTS2SQLITE
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
 
