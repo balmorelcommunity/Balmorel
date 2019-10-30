@@ -26,9 +26,10 @@ $setglobal vqdebug
 *===============================================================================
 *===============================================================================
 
-$setglobal SCNAME _M
+$setglobal SCNAME _ES
 *!option _LS *Late Sprint
 *!option _M  *Marathon
+*!option _ES *Early Sprint
 
 $setglobal TECHALT
 *!option _DEcentral_lo     *REdecentral alternative: Decrease investment costs for solar/wind technology by uncertainty ranges in technology catalogue of the costs
