@@ -1,5 +1,15 @@
 * UC Translated to BB4 by Juan Gea Bermúdez 2018.
 
+PARAMETER IHOURST(SSS,TTT) "Accumulated hours in S and T";
+PARAMETER IACCUMHOURS "Accumulated hours count";
+
+IACCUMHOURS=0;
+LOOP(S,
+   LOOP(T,
+      IHOURST(S,T)=IACCUMHOURS;
+      IACCUMHOURS=IACCUMHOURS+CHRONOHOUR(S,T);
+   );
+);
 
 $ifi not %STEPWISE_RAMPING_UC%==ramp_const_cost $goto STEPWISERAMPING_END
 

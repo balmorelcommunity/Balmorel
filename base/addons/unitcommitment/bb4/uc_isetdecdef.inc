@@ -2,6 +2,8 @@
 
 SET UC_FUELS(FFF) 'Fuels with ramping constraints';
 SET IGUC(G) "Unit commitment: the set of units participating in unit commitment";
+SET IUCUTMIN(G) "Unit commitment: technology with minimum on time";
+SET IUCDTMIN(G) "Unit commitment: technology with minimum off time";
 
 PARAMETER ICOUNT_LEFT "Internal parameter to calculate amount of timesteps left. Relevant for minimum start up time and shut down options";
 SCALAR ISCOUNT;
@@ -23,9 +25,10 @@ LOOP (UC_TECH_TYPE,
    );
 );
 
+IUCUTMIN(IGUC)$GDATA(IGUC,'GDUCUTMIN')=YES;
+IUCDTMIN(IGUC)$GDATA(IGUC,'GDUCDTMIN')=YES;
 
-
-
+$ONTEXT
 $ifi not %MINSTARTUPTIME%==yes $goto MINSTARTUPTIME_END
 SET IGUCUT(GGG,SSS,TTT,SSS,TTT) "Internal set to assign for each GGG, SSS(first) and TTT(first), the timesteps in SSS(second) and TTT(second) linked to the minimum on time" ;
 
@@ -79,7 +82,7 @@ LOOP(ISALIAS,
 );
 
 $label  MINSHUTDOWNTIME_END
-
+$OFFTEXT
 
 $ifi not %PLANNED_MAINTENANCE%==yes $goto NO_PLANNED_MAINTENANCE
 SET IGUCUTMAINT(GGG,SSS,SSS) "Internal set to assign for each GGG, SSS(first), the timesteps in SSS(second) linked to the minimum time off due to mainteinance" ;                                                                                                                                      ;

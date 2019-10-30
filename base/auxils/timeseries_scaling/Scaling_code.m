@@ -11,7 +11,7 @@ input_file_name = 'Input\Time_Series.xlsx';
 thinning_value = 3;
 
 %Number of seasons (1 to X)
-number_of_seasons = 13;
+number_of_seasons = 8;
 %----------------------------------------------
 
 [status,sheets,xlFormat] = xlsfinfo(input_file_name);
@@ -20,7 +20,7 @@ sheets=string(sheets);
 for j=8:length(sheets)
 %Sheet name
 input_sheet_name = sheets(j);
-disp('Sheet %s being processed', input_sheet_name)
+fprintf('Sheet %s is being processed. \n', input_sheet_name)
 
 %Output file name
 outputfilename = append('Output\',sheets(j),'.xlsx');
@@ -45,7 +45,7 @@ elseif number_of_seasons == 6
 elseif number_of_seasons == 7
     T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S03' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S23' | T_fullYear.SEASON == 'S37' | T_fullYear.SEASON == 'S44' | T_fullYear.SEASON == 'S51', :);
 elseif number_of_seasons == 8
-    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S03' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S23' | T_fullYear.SEASON == 'S30' | T_fullYear.SEASON == 'S37' | T_fullYear.SEASON == 'S44' | T_fullYear.SEASON == 'S51', :);
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S03' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S22' | T_fullYear.SEASON == 'S29' | T_fullYear.SEASON == 'S35' | T_fullYear.SEASON == 'S42' | T_fullYear.SEASON == 'S48', :);
 elseif number_of_seasons == 13
     T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S01' | T_fullYear.SEASON == 'S05' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S13' | T_fullYear.SEASON == 'S17' | T_fullYear.SEASON == 'S21' | T_fullYear.SEASON == 'S25' | T_fullYear.SEASON == 'S29' | T_fullYear.SEASON == 'S33' | T_fullYear.SEASON == 'S37' | T_fullYear.SEASON == 'S41' | T_fullYear.SEASON == 'S45' | T_fullYear.SEASON == 'S49', :);
 else

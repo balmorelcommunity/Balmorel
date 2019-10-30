@@ -16,11 +16,12 @@ $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_isetde
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_isetdecdef.inc";
 $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_isetdecdef.inc";
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_isetdecdef.inc";
-$ifi %EV%==YES    $include   "../../base/addons/EV/bb4/EV_isetdecdef.inc"; 
+$ifi %EV%==YES    $include   "../../base/addons/EV/bb4/EV_isetdecdef.inc";
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_isetdecdef.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_isetdecdef.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_isetdecdef.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_isetdecdef.inc";
+$ifi %BalancingMarket%==yes       $include   "../../base/addons/balancing_market/balancing_market_isetdecdef.inc";
 
 $ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_isetdecdef.inc";
 
