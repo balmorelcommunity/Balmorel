@@ -168,6 +168,13 @@ $include "%inputdata%/FDATA.inc";
 $include "%inputdata%/GDATASET.inc";
 $include "%inputdata%/GDATA.inc";
 $include "%inputdata%/GKFX.inc";
+
+*Adding optimized investment and decommissioning in generation
+PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
+$if     EXIST '../../simex/GKACCUMNET.gdx' execute_load  '../../simex/GKACCUMNET.gdx', GKACCUMNET;
+$if     EXIST '../../simex/GKACCUMNET.gdx' GKFX(YYY,AAA,GGG)=0;
+$if     EXIST '../../simex/GKACCUMNET.gdx' GKFX(Y,IA,G)=GKACCUMNET(Y,IA,G);
+
 SET AGKN(AAA,GGG);
 $include "%inputdata%/AGKN.inc";
 $include "%inputdata%/GKRATE.inc";
