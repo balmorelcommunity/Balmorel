@@ -128,6 +128,15 @@ execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WE
 PARAMETER WEIGHT_T(TTT)                            "Weight (relative length) of each time period"  ;
 execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WEIGHT_T;
 
+*---------EV addon-------------------
+PARAMETER EV_BEV_Dumb(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_BEV_Dumb;
+
+PARAMETER EV_PHEV_Dumb(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_PHEV_Dumb;
+*Missing remaining timeseries
+*---------End: EV addon-------------
+
 PARAMETER ESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 $ifi  exist '../../base/auxils/timestep_conversion/input/ESTOVOLTS.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/ESTOVOLTS.gdx', ESTOVOLTS;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/ESTOVOLTS.gdx' ESTOVOLTS(YYY,AAA,GGG,SSS,TTT)=0;
@@ -236,6 +245,8 @@ PARAMETER IGKRATE(AAA,GGG,SSS,TTT)     "Rating of technology capacities (non-neg
 $ifi  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/IGKRATE.gdx', IGKRATE;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx' IGKRATE(AAA,GGG,SSS,TTT)=0;
 
+
+
 *REST OF HYDRO PARAMETERS.........
 
 *New timeseries
@@ -252,7 +263,11 @@ PARAMETER DH_VAR_T_NEW(AAA,DHUSER,SSS_NEW,TTT_NEW)                    "Variation
 PARAMETER WEIGHT_S_NEW(SSS_NEW)                            "Weight (relative length) of each season"    ;
 PARAMETER WEIGHT_T_NEW(TTT_NEW)                            "Weight (relative length) of each time period" ;
 PARAMETER GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)  "Minimum annual fuel use by year, season, geography and fuel and (GJ) (INPUT DATA)";
-
+*---------EV addon-------------------
+PARAMETER EV_BEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_PHEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+*Missing remaining timeseries
+*---------End: EV addon-------------
 PARAMETER ESTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER HSTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER ESTOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal Electricity storage content  value (in input money) to be transferred to future runs (input-Money/MWh)";
@@ -314,6 +329,8 @@ HYRSDATA_NEW(AAA,HYRSDATASET,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),HYRSDATA(AAA,H
 HYPPROFILS_NEW(AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),HYPPROFILS(AAA,SSS));
 DE_VAR_T_NEW(RRR,DEUSER,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),DE_VAR_T(RRR,DEUSER,SSS,TTT));
 DH_VAR_T_NEW(AAA,DHUSER,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),DH_VAR_T(AAA,DHUSER,SSS,TTT));
+EV_BEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_Dumb(YYY,SSS,TTT,RRR)) ;
+EV_PHEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Dumb(YYY,SSS,TTT,RRR)) ;
 ESTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOVOLTS(YYY,AAA,GGG,SSS,TTT)) ;
 HSTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HSTOVOLTS(YYY,AAA,GGG,SSS,TTT));
 ESTOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT));
@@ -528,6 +545,26 @@ loop((YYY,CCCRRRAAA,FFF,SSS_NEW)$GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW),
 );
 putclose;
 
+*EV_BEV_Dumb timeseries
+file EV_BEV_Dumb_timeseries /'../../base/auxils/timestep_conversion/output/EV_BEV_Dumb.inc'/;
+EV_BEV_Dumb_timeseries.nd  = 4;
+put EV_BEV_Dumb_timeseries;
+put '*PARAMETER EV_BEV_Dumb CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_BEV_Dumb('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_BEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_PHEV_Dumb timeseries
+file EV_PHEV_Dumb_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_Dumb.inc'/;
+EV_PHEV_Dumb_timeseries.nd  = 4;
+put EV_PHEV_Dumb_timeseries;
+put '*PARAMETER EV_PHEV_Dumb CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_PHEV_Dumb('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_PHEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
 
 *$OFFTEXT
 *------------END OF OUTPUT GENERATION-------------
+
