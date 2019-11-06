@@ -496,7 +496,9 @@ $if not EXIST '../data/FGEMAX.inc' $INCLUDE '../../base/data/FGEMAX.inc';
 
 $ifi %GMINF_DOL%==CCCRRRAAA_FFF      PARAMETER GMINF(CCCRRRAAA,FFF)             'Minimum fuel use (GJ) per year' %semislash%
 $ifi %GMINF_DOL%==YYY_CCCRRRAAA_FFF  PARAMETER GMINF(YYY,CCCRRRAAA,FFF)         'Minimum fuel use (GJ) per year' %semislash%
-$if     EXIST '../data/GMINF.inc' $INCLUDE      '../data/GMINF.inc';
+$if     EXIST '../data/GMINF%TECHALT%.inc' $INCLUDE '../data/GMINF%TECHALT%.inc';
+$if not EXIST '../data/GMINF%TECHALT%.inc' $INCLUDE '../data/GMINF.inc';
+*$if     EXIST '../data/GMINF.inc' $INCLUDE      '../data/GMINF.inc';
 $if not EXIST '../data/GMINF.inc' $INCLUDE '../../base/data/GMINF.inc';
 %semislash%;
 

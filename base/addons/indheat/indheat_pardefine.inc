@@ -14,7 +14,9 @@ $if not EXIST '../data/INDHEAT_GINSTALL.inc' $INCLUDE '../../base/data/INDHEAT_G
 %semislash%
 
 PARAMETER INDHEAT_GKFX(YYY,INDHEAT_AAA,INDHEAT_GGG,INDHEAT_GROUP) 'Installed capacities' %semislash%
-$if     EXIST '../data/INDHEAT_GKFX.inc' $INCLUDE         '../data/INDHEAT_GKFX.inc';
+*$if     EXIST '../data/INDHEAT_GKFX.inc' $INCLUDE         '../data/INDHEAT_GKFX.inc';
+$if     EXIST '../data/INDHEAT_GKFX%TECHALT%.inc' $INCLUDE '../data/INDHEAT_GKFX%TECHALT%.inc';
+$if not EXIST '../data/INDHEAT_GKFX%TECHALT%.inc' $INCLUDE '../../base/data/INDHEAT_GKFX.inc';
 $if not EXIST '../data/INDHEAT_GKFX.inc' $INCLUDE '../../base/data/INDHEAT_GKFX.inc';
 %semislash%
 
@@ -30,7 +32,9 @@ $if not EXIST '../data/INDHEAT_ANNUITYCG.inc' $INCLUDE '../../base/data/INDHEAT_
 %semislash%
 
 PARAMETER INDHEAT_AGKN(INDHEAT_AAA,INDHEAT_GGG,INDHEAT_GROUP)  'Allowed investment in area' %semislash%
-$if     EXIST '../data/INDHEAT_AGKN.inc' $INCLUDE         '../data/INDHEAT_AGKN.inc';
+*$if     EXIST '../data/.inc' $INCLUDE         '../data/INDHEAT_AGKN.inc';
+$if     EXIST '../data/INDHEAT_AGKN%TECHALT%.inc' $INCLUDE '../data/INDHEAT_AGKN%TECHALT%.inc';
+$if not EXIST '../data/INDHEAT_AGKN%TECHALT%.inc' $INCLUDE '../../base/data/INDHEAT_AGKN.inc';
 $if not EXIST '../data/INDHEAT_AGKN.inc' $INCLUDE '../../base/data/INDHEAT_AGKN.inc';
 %semislash%
 
