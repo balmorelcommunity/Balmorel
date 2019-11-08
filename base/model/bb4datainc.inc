@@ -175,13 +175,14 @@ $ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
 *-------------------------------------------------------------------------------
 
 PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics" %semislash%
+$if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
+$if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
+
+
+$ontext
 $if     EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../data/GDATA%TECHALT%.inc';
 $if not EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc'          $INCLUDE '../../base/data/GDATA.inc';
-
-$ontext
-$if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
-$if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 $offtext
 
 *This could be placed more elegantly elsewhere
