@@ -24,7 +24,7 @@ $setglobal vqdebug
 * Hans --------
 * ------------------------------------------------------------------------------
 * For convenient quick analysis the model size can be limited as follows.
-* For production runs these options shoulc be set at ''
+* For production runs these options should be set at ''
 * some testing of annotation (general setting for annotation below)
 
 $setglobal  limitY3   ''
