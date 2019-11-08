@@ -177,14 +177,14 @@ $ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
 *-------------------------------------------------------------------------------
 
 PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics" %semislash%
-$if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
-$if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
-
-
-$ontext
 $if     EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../data/GDATA%TECHALT%.inc';
 $if not EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc'          $INCLUDE '../../base/data/GDATA.inc';
+
+
+$ontext
+$if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
+$if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 $offtext
 
 *This could be placed more elegantly elsewhere
@@ -765,7 +765,9 @@ $if not EXIST '../data/GKRATE.inc' $INCLUDE '../../base/data/GKRATE.inc';
 %semislash%;
 
 PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)                    "Variation in electricity demand"   %semislash%
-$if     EXIST '../data/DE_VAR_T.inc' $INCLUDE      '../data/DE_VAR_T.inc';
+*$if     EXIST '../data/DE_VAR_T.inc' $INCLUDE      '../data/DE_VAR_T.inc';
+$if     EXIST '../data/DE_VAR_T%TECHALT%.inc' $INCLUDE '../data/DE_VAR_T%TECHALT%.inc';
+$if not EXIST '../data/DE_VAR_T%TECHALT%.inc' $INCLUDE '../data/DE_VAR_T.inc';
 $if not EXIST '../data/DE_VAR_T.inc' $INCLUDE '../../base/data/DE_VAR_T.inc';
 %semislash%;
 
