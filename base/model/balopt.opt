@@ -31,7 +31,7 @@ $setglobal SCNAME _ES
 *!option _M  *Marathon
 *!option _ES *Early Sprint
 
-$setglobal TECHALT
+$setglobal TECHALT _noBioImport+PtX
 *!option _DEcentral_lo     *REdecentral alternative: Decrease investment costs for solar/wind technology by uncertainty ranges in technology catalogue of the costs
 *!option _DEcentral_up     *REdecentral alternative: Increase investment costs for solar/wind technology by uncertainty ranges in technology catalogue of the costs
 *!option _CEntral_lo       *REcentral alternative: Decrease investment costs for technologies that are installed in central areas by uncertainty ranges in technology catalogue of the costs
@@ -52,6 +52,7 @@ $setglobal TECHALT
 *!option _noGrid           *noGrid alternative: No Gas infrastructure from 2030
 *!option _includeReg       *including regulation
 *!option _emiOnImport      *adding emissions to imported biomass - woodpellets and woodchips
+*!option _noBioImport+PtX  *noBioImport+PtX alternative: No import of biomasses, but PtX demand included
 
 *===============================================================================
 *===============================================================================
