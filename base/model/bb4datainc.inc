@@ -118,7 +118,9 @@ $if not EXIST '../data/FDATASET.inc' $INCLUDE '../../base/data/FDATASET.inc';
 %semislash%;
 
 PARAMETER FDATA(FFF,FDATASET)    "Fuel specific values" %semislash%
-$if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
+*$if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
+$if     EXIST '../data/FDATA%TECHALT%.inc' $INCLUDE '../data/FDATA%TECHALT%.inc';
+$if not EXIST '../data/FDATA%TECHALT%.inc' $INCLUDE '../data/FDATA.inc';
 $if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
 %semislash%;
 
