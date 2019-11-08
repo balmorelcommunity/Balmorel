@@ -51,7 +51,7 @@ $setglobal TECHALT
 *!option _strongDH         *strongDH alternative: No natural gas for heating
 *!option _noGrid           *noGrid alternative: No Gas infrastructure from 2030
 *!option _includeReg       *including regulation
-
+*!option _emiOnImport      *adding emissions to imported biomass - woodpellets and woodchips
 
 *===============================================================================
 *===============================================================================
