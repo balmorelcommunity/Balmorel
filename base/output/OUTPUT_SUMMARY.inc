@@ -41,7 +41,6 @@ PARAMETER X_FLOW_YCRST(Y,C,IRRRE,IRRRI,SSS,TTT,UNITS) "Transmission flow for eac
 PARAMETER X_FLOW_YCR(Y,C,IRRRE,IRRRI,UNITS) "Transmission flow for each year, country, from region to region (TWh)";
 PARAMETER ECO_G_YCRAG(Y,C,RRR,AAA,G,FFF,TECH_TYPE,CATEGORY,SUBCATEGORY,UNITS) "Generation Economic Output for each year, country, region, fuel, technology type, area and technology (Mmoney)";
 PARAMETER ECO_X_YCR(Y,C,RRR,CATEGORY,SUBCATEGORY,UNITS) "Electric Transmission Economic Output for each year, country and region (Mmoney)";
-PARAMETER ECO_XH_YCRA(Y,C,RRR,AAA,CATEGORY,SUBCATEGORY,UNITS) "Heat Transmission Economic Output for each year, country and region and area (Mmoney)";
 PARAMETER OBJ_YCR(Y,C,RRR,SUBCATEGORY,UNITS) "Objective function (Mmoney)";
 PARAMETER EL_PRICE_YCR(Y,C,RRR,PRICE_CATEGORY,UNITS) "Average Electricity Prices for each region (money/MWh)";
 PARAMETER EL_PRICE_YCRST(Y,C,RRR,SSS,TTT,UNITS) "Hourly Electricity Prices for each region (money/MWh)";
@@ -62,6 +61,8 @@ PARAMETER H_BALANCE_YCRAST(Y,C,RRR,AAA,H_BAL_TYPE,SSS,TTT,UNITS);
 $ifi %HEATTRANS%==yes PARAMETER XH_CAP_YCA(Y,C,IAAAE,IAAAI,VARIABLE_CATEGORY,UNITS) "Heat Transmission capacity for each year, country, from area to area (GW)";
 $ifi %HEATTRANS%==yes PARAMETER XH_FLOW_YCAST(Y,C,IAAAE,IAAAI,SSS,TTT,UNITS) "Heat Transmission flow for each year, country, from areas to area, for each season and hour (MWh)";
 $ifi %HEATTRANS%==yes PARAMETER XH_FLOW_YCA(Y,C,IAAAE,IAAAI,UNITS) "Heat Transmission flow for each year, country, from area to area (TWh)";
+$ifi %HEATTRANS%==yes PARAMETER ECO_XH_YCRA(Y,C,RRR,AAA,CATEGORY,SUBCATEGORY,UNITS) "Heat Transmission Economic Output for each year, country and region and area (Mmoney)";
+
 
 
 *Modification of IHOURSINST
@@ -988,9 +989,9 @@ H_BALANCE_YCRAST(Y,C,IR,IA,'PRICE',S,T,'Money_per_MWh')$(CCCRRR(C,IR) AND RRRAAA
 
 execute_unload "MainResults.gdx" ECO_G_YCRAG,ECO_X_YCR,OBJ_YCR,EL_PRICE_YCR,EL_PRICE_YCRST,PRO_YCRAGFST,EL_DEMAND_YCRST,EL_DEMAND_YCR,
 H_DEMAND_YCRAST,H_DEMAND_YCRA,PRO_YCRAGF,H_PRICE_YCRAST,H_PRICE_YCRA,G_CAP_YCRAF,G_STO_YCRAF,X_CAP_YCR,X_FLOW_YCRST,X_FLOW_YCR,F_CONS_YCRAST,F_CONS_YCRA,EMI_YCRAG,
-EL_BALANCE_YCRST,CURT_YCRAGFST,CURT_YCRAGF,H_BALANCE_YCRAST,ECO_XH_YCRA
+EL_BALANCE_YCRST,CURT_YCRAGFST,CURT_YCRAGF,H_BALANCE_YCRAST
 
-$ifi %HEATTRANS%==yes ,XH_CAP_YCA,XH_FLOW_YCAST,XH_FLOW_YCA
+$ifi %HEATTRANS%==yes ,XH_CAP_YCA,XH_FLOW_YCAST,XH_FLOW_YCA,ECO_XH_YCRA
 
 ;
 
