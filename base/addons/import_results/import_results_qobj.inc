@@ -3,7 +3,7 @@
 
 $ifi not %HYRSBB123%==price    $goto label_no_hydro_price
                                        +    SUM((IA,S)$(IS3(S) AND SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) AND IVHYRS_SL(Y,IA)),
-                                             WATERVAL(Y,IA,S)*(VHYRS_S(Y,IA,S)-VHYRS_S(Y,IA,S++1))/SSIZE(S) 
+                                             WATERVAL(Y,IA,S)*(VHYRS_S(Y,IA,S)-VHYRS_S(Y,IA,S++1))/SSIZE(S)
                                              )
 $label label_no_hydro_price
 
@@ -28,7 +28,7 @@ $label label_no_interseasonal_heat_storage_price
 
 $ifi not %ADDESTOVOLT%==price    $goto label_no_intraseasonal_electricity_storage_price
                                        +  SUM((S,T,IA,IGESTO)$(IS3(S) AND IAGK_HASORPOT(Y,IA,IGESTO) AND IESTOVOLT(Y,IA,IGESTO)),
-                                                 IHOURSINST(S,T)*ESTOVOLTVAL(Y,IA,IGESTO,S,T)*(VGE_T(Y,IA,IGESTO,S,T)-VHSTOLOADT(Y,IA,IGESTO,S,T))
+                                                 IHOURSINST(S,T)*ESTOVOLTVAL(Y,IA,IGESTO,S,T)*(VGE_T(Y,IA,IGESTO,S,T)-VESTOLOADT(Y,IA,IGESTO,S,T))
                                          )
 $label label_no_intraseasonal_electricity_storage_price
 
