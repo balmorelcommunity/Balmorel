@@ -26,14 +26,18 @@ $setglobal vqdebug
 *===============================================================================
 *===============================================================================
 
-$setglobal SCNAME _ES
+$setglobal SCNAME _M
 *!option _LS *Late Sprint
 *!option _M  *Marathon
 *!option _ES *Early Sprint
 
-$setglobal TECHALT _noBioImport+PtX
-*!option _DEcentral_lo     *REdecentral alternative: Decrease investment costs for solar/wind technology by uncertainty ranges in technology catalogue of the costs
-*!option _DEcentral_up     *REdecentral alternative: Increase investment costs for solar/wind technology by uncertainty ranges in technology catalogue of the costs
+$setglobal TECHALT
+*!option _DEcentral_lo-20  *REdecentral alternative: Decrease investment costs for solar/wind technology by 20%, (Example:INVEST COST*0,8)
+*!option _DEcentral_lo-40  *REdecentral alternative: Decrease investment costs for solar/wind technology by 40%
+*!option _DEcentral_lo-60  *REdecentral alternative: Decrease investment costs for solar/wind technology by 60%
+*!option _DEcentral_up-20  *REdecentral alternative: Increase investment costs for solar/wind technology by 20%
+*!option _DEcentral_up-40  *REdecentral alternative: Increase investment costs for solar/wind technology by 40%
+*!option _DEcentral_up-60  *REdecentral alternative: Increase investment costs for solar/wind technology by 60%
 *!option _CEntral_lo       *REcentral alternative: Decrease investment costs for technologies that are installed in central areas by uncertainty ranges in technology catalogue of the costs
 *!option _CEntral_up       *REcentral alternative: Increase investment costs for technologies that are installed in central areas by uncertainty ranges in technology catalogue of the costs
 *!option _REgastech_lo     *REgastech alternative: Decrease investment costs for renewable gas technologies by uncertainty ranges in technology catalogue of the costs
