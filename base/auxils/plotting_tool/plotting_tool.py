@@ -31,7 +31,8 @@ Year_unique=csvfiles.Year.unique().tolist()
 Subset_unique=csvfiles.Subset.unique().tolist()
 
 #Selecting only to print Output files specified in input file
-var_specs = pd.read_excel(r'./variable_specification.xlsx')
+var_specs = pd.read_csv('variable_specification.csv',
+                        encoding='utf8')
 
 # drop all variables that shall NOT be included and set the index to the
 # variable names
