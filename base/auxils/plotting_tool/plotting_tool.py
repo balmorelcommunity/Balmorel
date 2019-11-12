@@ -11,9 +11,11 @@ import datetime
 import glob
 import pandas as pd
 import numpy as np
+import importlib
+import matplotlib
 
 
-#Reading files to plot
+#Establishing files to plot
 csvfiles = []
 for file in glob.glob("./input/*.csv"):
     csvfiles.append(file)
@@ -31,11 +33,7 @@ Year_unique=csvfiles.Year.unique().tolist()
 Subset_unique=csvfiles.Subset.unique().tolist()
 
 #Selecting only to print Output files specified in input file
-var_specs = pd.read_csv('variable_specification.csv',
-                        encoding='utf8')
-
-# drop all variables that shall NOT be included and set the index to the
-# variable names
+var_specs = pd.read_csv('variable_specification.csv',encoding='utf8')
 var_specs = var_specs[var_specs.include == 'YES']
 var_specs=var_specs.variable.unique().tolist()
 
@@ -43,3 +41,9 @@ Output_unique=list(set(Output_unique).intersection(var_specs))
 
 for output in Output_unique:
     print("File",output,"is being processed")
+    import_file=__import__(output)
+
+
+
+    
+
