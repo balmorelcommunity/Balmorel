@@ -1,0 +1,42 @@
+
+--- Job annuity_calculation.gms Start 09/06/19 20:44:57 24.9.2 r64480 WEX-WEI x86 64bit/MS Windows
+GAMS 24.9.2   Copyright (C) 1987-2017 GAMS Development. All rights reserved
+Licensee: Course License Fall 2019                       G190805/0001AO-GEN
+          Technical University of Denmark, Management Engineering    DCE146
+          License for teaching and research at degree granting institutions
+          License Admin: Thomas Stidsen, thst@man.dtu.dk                   
+--- Starting compilation
+--- annuity_calculation.gms(28) 2 Mb
+--- .../data/CCCRRRAAA.inc(621) 3 Mb
+--- annuity_calculation.gms(33) 3 Mb
+--- .../data/CCC.inc(16) 3 Mb
+--- annuity_calculation.gms(38) 3 Mb
+--- .../data/C.inc(18) 3 Mb
+--- annuity_calculation.gms(42) 3 Mb
+--- .../data/FFF.inc(112) 3 Mb
+--- annuity_calculation.gms(47) 3 Mb
+--- .../data/FDATASET.inc(9) 3 Mb
+--- annuity_calculation.gms(52) 3 Mb
+--- .../data/FDATA.inc(56) 3 Mb
+--- annuity_calculation.gms(57) 3 Mb
+--- .../data/GGG.inc(1194) 3 Mb
+--- annuity_calculation.gms(62) 3 Mb
+--- .../data/G.inc(1194) 3 Mb
+--- annuity_calculation.gms(66) 3 Mb
+--- .../data/GDATASET.inc(62) 3 Mb
+--- annuity_calculation.gms(70) 3 Mb
+--- .../data/GDATA.inc(1208) 4 Mb
+--- annuity_calculation.gms(74) 4 Mb
+--- .../data/DISCOUNTRATE.inc(2) 4 Mb
+--- annuity_calculation.gms(78) 4 Mb
+--- .../data/LIFETIME_X.inc(2) 4 Mb
+--- annuity_calculation.gms(82) 4 Mb
+--- .../data/HEATTRANS_LIFETIME_XH.inc(2) 4 Mb
+--- annuity_calculation.gms(170) 4 Mb
+--- Starting execution: elapsed 0:00:00.333
+--- annuity_calculation.gms(4664) 5 Mb
+--- Putfile annuity_generation C:\Users\rabpe\Desktop\BB4_190906\base\model\../../base/auxils/annuity_calculation/ANNUITYCG.inc
+--- Putfile annuity_transmission C:\Users\rabpe\Desktop\BB4_190906\base\model\../../base/auxils/annuity_calculation/ANNUITYCX.inc
+--- Putfile annuity_transmission_heat C:\Users\rabpe\Desktop\BB4_190906\base\model\../../base/auxils/annuity_calculation/HEATTRANS_ANNUITYCXH.inc
+*** Status: Normal completion
+--- Job annuity_calculation.gms Stop 09/06/19 20:44:57 elapsed 0:00:00.434

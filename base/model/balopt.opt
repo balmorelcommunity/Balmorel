@@ -121,7 +121,7 @@ $setglobal TransInvest yes
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
-XINVESTSTART= 2025;
+XINVESTSTART= 2030;
 
 *---- End: Transmission investments options----
 
@@ -132,11 +132,11 @@ XINVESTSTART= 2025;
 *overall control variable HEATTRANS must be 'yes' if any of the other heat trans controls are.
 
 * Permit heat transmission between areas.
-$setglobal HEATTRANS yes
+$setglobal HEATTRANS
 *!option yes
 
 * Permit heat transmission investments between areas.
-$setglobal HeatTransInvest yes
+$setglobal HeatTransInvest
 *!option yes
 
 SCALAR XHINVESTSTART 'Year from which endogenous decisions in heat transmission capacities are allowed' ;
@@ -148,7 +148,7 @@ $setglobal HeatTempLift
 *-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
 
 * Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
-$setglobal INDUSTRY yes
+$setglobal INDUSTRY
 *!option yes
 
 * Allow to build a complicated offshore grid with hubs in the sea. Requires MIP since technologies are modelled with economies of scale via SOS variables.
@@ -366,17 +366,17 @@ $setglobal REVERT_DECOM_EXO_G   yes
 *-------------------- UNIT COMMITMENT -----------------------------------------------------------
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
-$setglobal UnitComm YES
+$setglobal UnitComm
 *!option yes
 
 * Adds minimal production-when-on:
-$setglobal MINFUELCONS YES
+$setglobal MINFUELCONS
 *!option yes
 * Adds respecting minimum off time of the capacities:
-$setglobal MINSTARTUPTIME  yes
+$setglobal MINSTARTUPTIME
 *!option yes
 * Adds respecting minimum on time of the capacities:
-$setglobal MINSHUTDOWNTIME  yes
+$setglobal MINSHUTDOWNTIME
 *!option yes
 * Adds ramping technical limitations and stepwise costs to the Power plants when-on:
 $setglobal STEPWISE_RAMPING_UC  ramp_const
@@ -405,7 +405,7 @@ $setglobal STEPWISE_RAMPING
 
 * Seasonal ramping link is on. This means that the fuel consumption of the last element ot the set T of the set S will be linked to the first element of the set T of the set S+1.
 * This option increases computanional time but assures continuity in the fuel consumption profile.
-$setglobal SEASONALLINKRAMPING  YES
+$setglobal SEASONALLINKRAMPING yes
 *!option yes
 
 *----------------END OF STEPWISE RAMPING (LINEAR VERSION)----------------------------------------------------------
@@ -725,7 +725,7 @@ putclose fileMERGEWITHBASEbat;
 
 * The model type has implications for the solver type.
 * Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Programming).
-$setglobal SOLVETYPE RMIP
+$setglobal SOLVETYPE LP
 *!option LP      "Linear Programming"
 *!option RMIP    "Relaxed Mixed Integer Programming"
 *!option MIP     "Mixed Integer Programming"

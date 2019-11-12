@@ -82,13 +82,13 @@ SCALAR    LIFETIME_XH               "Lifetime of heat transmission lines (years)
 $if     EXIST '../data/HEATTRANS_LIFETIME_XH.inc' $INCLUDE         '../data/HEATTRANS_LIFETIME_XH.inc';
 $if not EXIST '../data/HEATTRANS_LIFETIME_XH.inc' $INCLUDE '../../base/data/HEATTRANS_LIFETIME_XH.inc';
 
-PARAMETER ANNUITYCG(C,G)               "Transforms investment in technologies into annual payment (fraction)";
+PARAMETER ANNUITYCG(CCC,GGG)               "Transforms investment in technologies into annual payment (fraction)";
 
 PARAMETER DEBT_SHARE_G(GGG)              "Share of debt for the investment of each generation technology (fraction)";
-DEBT_SHARE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.8;
+DEBT_SHARE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0;
 
 PARAMETER INTEREST_RATE_G(GGG)           "Interest rate applied to the loan of each generation technology (fraction)";
-INTEREST_RATE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.06;
+INTEREST_RATE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.04;
 
 PARAMETER PAYBACK_TIME_G(GGG)            "Payback time of the loan for generation technologies (years)";
 * Loan repayment assumption: lifetime of the technology if lifetime is higher than 20 years, else 20 years

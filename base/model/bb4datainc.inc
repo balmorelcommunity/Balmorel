@@ -852,3 +852,91 @@ $include "../../base/addons/_hooks/pardeclare.inc"
 $include "../../base/addons/_hooks/pardefine.inc"
 
 
+
+
+
+
+*Flex4Res
+$ontext
+GMINF(Y,'estonia','NATGAS')$(Y.VAL GE 2030) = 0 ;
+M_POL('2050','LIM_CO2',C) = EPS   ;
+GMAXF('2020','NORWAY','Coal')=EPS;
+GMAXF('2020','NORWAY','Lignite')=EPS;
+GMAXF('2030','NORWAY','Coal')=EPS;
+GMAXF('2030','NORWAY','Lignite')=EPS;
+GMAXF('2040','NORWAY','Coal')=EPS;
+GMAXF('2040','NORWAY','Lignite')=EPS;
+GMAXF('2050','NORWAY','Coal')=EPS;
+GMAXF('2050','NORWAY','Lignite')=EPS;
+GMAXF('2020','SWEDEN','Coal')=EPS;
+GMAXF('2020','SWEDEN','Lignite')=EPS;
+GMAXF('2030','SWEDEN','Coal')=EPS;
+GMAXF('2030','SWEDEN','Lignite')=EPS;
+GMAXF('2040','SWEDEN','Coal')=EPS;
+GMAXF('2040','SWEDEN','Lignite')=EPS;
+GMAXF('2050','SWEDEN','Coal')=EPS;
+GMAXF('2050','SWEDEN','Lignite')=EPS;
+GMAXF('2030','FINLAND','Coal')=EPS;
+GMAXF('2030','FINLAND','Lignite')=EPS;
+GMAXF('2040','FINLAND','Coal')=EPS;
+GMAXF('2040','FINLAND','Lignite')=EPS;
+GMAXF('2050','FINLAND','Coal')=EPS;
+GMAXF('2050','FINLAND','Lignite')=EPS;
+GMAXF('2030','DENMARK','Coal')=EPS;
+GMAXF('2030','DENMARK','Lignite')=EPS;
+GMAXF('2040','DENMARK','Coal')=EPS;
+GMAXF('2040','DENMARK','Lignite')=EPS;
+GMAXF('2050','DENMARK','Coal')=EPS;
+GMAXF('2050','DENMARK','Lignite')=EPS;
+GMAXF('2030','UNITED_KINGDOM','Coal')=EPS;
+GMAXF('2030','UNITED_KINGDOM','Lignite')=EPS;
+GMAXF('2040','UNITED_KINGDOM','Coal')=EPS;
+GMAXF('2040','UNITED_KINGDOM','Lignite')=EPS;
+GMAXF('2050','UNITED_KINGDOM','Coal')=EPS;
+GMAXF('2050','UNITED_KINGDOM','Lignite')=EPS;
+GMAXF('2020','FRANCE','Coal')=EPS;
+GMAXF('2020','FRANCE','Lignite')=EPS;
+GMAXF('2030','FRANCE','Coal')=EPS;
+GMAXF('2030','FRANCE','Lignite')=EPS;
+GMAXF('2040','FRANCE','Coal')=EPS;
+GMAXF('2040','FRANCE','Lignite')=EPS;
+GMAXF('2050','FRANCE','Coal')=EPS;
+GMAXF('2050','FRANCE','Lignite')=EPS;
+GMAXF('2020','BELGIUM','Coal')=EPS;
+GMAXF('2020','BELGIUM','Lignite')=EPS;
+GMAXF('2030','BELGIUM','Coal')=EPS;
+GMAXF('2030','BELGIUM','Lignite')=EPS;
+GMAXF('2040','BELGIUM','Coal')=EPS;
+GMAXF('2040','BELGIUM','Lignite')=EPS;
+GMAXF('2050','BELGIUM','Coal')=EPS;
+GMAXF('2050','BELGIUM','Lignite')=EPS;
+GMAXF('2030','NETHERLANDS','Coal')=EPS;
+GMAXF('2030','NETHERLANDS','Lignite')=EPS;
+GMAXF('2040','NETHERLANDS','Coal')=EPS;
+GMAXF('2040','NETHERLANDS','Lignite')=EPS;
+GMAXF('2050','NETHERLANDS','Coal')=EPS;
+GMAXF('2050','NETHERLANDS','Lignite')=EPS;
+GMAXF('2040','GERMANY','Coal')=EPS;
+GMAXF('2040','GERMANY','Lignite')=EPS;
+GMAXF('2050','GERMANY','Coal')=EPS;
+GMAXF('2050','GERMANY','Lignite')=EPS;
+$offtext
+
+*GMAXF('2020','FRANCE','NUCLEAR')=1434;
+
+
+M_POL('2050','LIM_CO2',C) = EPS   ;
+
+
+
+** Higer Woodchips prices
+*FUELPRICE('2030',IA,'WOODCHIPS') = 8.292520198;
+*FUELPRICE('2040',IA,'WOODCHIPS') = 10.13943185;
+*FUELPRICE('2050',IA,'WOODCHIPS') = 10.70013031;
+
+** no investments into straw except for Denmark where the limit is also set a little higher.
+AGKN(IA,G)$((NOT ICA('DENMARK',IA)) AND (GDATA(G,'GDFUEL') = STRAW)) = NO;
+*GMAXF(Y,'DENMARK','STRAW') = 20000000;
+
+$ifi %HEATSTORE_LIM_CAPACITY%==YES TECHGROUPKPOT(IA,'PIT')$(SUM(G$(GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE('PIT')), AGKN(IA,G)) AND SUM((Y,DHUSER), DH(Y,IA,DHUSER))) =  SUM(DHUSER, DH('2020',IA,DHUSER)) * 0.0075;
+
