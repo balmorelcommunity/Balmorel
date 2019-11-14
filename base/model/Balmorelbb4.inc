@@ -1684,6 +1684,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IG
          -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHYRST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))
        =G=
        VHYRS_S(IY411,IA,S++1)$(CARD(S) NE ORD(S))
+$ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                            VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
 $ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi not %HYRSBB123%==price    VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
 $ifi     %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %HYRSBB123%==cont     SUM(SSS$(ICOUNTSSS(S) EQ ICOUNTSSS(SSS)),VHYRS_SL(IY411,IA,SSS++1))$(CARD(S) EQ ORD(S))
 $include "../../base/addons/_hooks/qhyrsseq.inc"
@@ -1751,6 +1752,7 @@ QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
     )*(SSIZE(S)-1))$(ORD(T) EQ CARD(T))
     =E=
        VESTOVOLTS(IY411,IA,IGESTOS,S,T+1)
+$ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                             +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi not %ADDESTOVOLTS%==price  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi     %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %ADDESTOVOLTS%==cont   +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),ESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $include "../../base/addons/_hooks/qestovolts.inc"
@@ -1775,6 +1777,7 @@ QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
     )*(SSIZE(S)-1))$(ORD(T) EQ CARD(T))
     =E=
        VHSTOVOLTS(IY411,IA,IGHSTOS,S,T+1)
+$ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                             +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi not %ADDHSTOVOLTS%==price  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi     %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %ADDHSTOVOLTS%==cont   +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),HSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 
