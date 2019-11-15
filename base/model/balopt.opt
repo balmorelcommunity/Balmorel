@@ -57,6 +57,7 @@ $setglobal TECHALT
 *!option _includeReg       *including regulation
 *!option _emiOnImport      *adding emissions to imported biomass - woodpellets and woodchips
 *!option _noBioImport+PtX  *noBioImport+PtX alternative: No import of biomasses, but PtX demand included
+*!option _cheapGasHP_COP250*cheapGasHP_COP250 alternative: Allow to install GNR_HP_NGAS_GE_COP-250  
 
 *===============================================================================
 *===============================================================================
