@@ -303,6 +303,10 @@ $setglobal GRIDTARIFFS
 $setglobal TAXES
 *!option yes
 
+* Transmission ramping addon (it asssumes seasonal linking)
+$setglobal TRANS_RAMP
+*!option yes
+
 *
 $setglobal SYSTEMCOST
 *!option yes

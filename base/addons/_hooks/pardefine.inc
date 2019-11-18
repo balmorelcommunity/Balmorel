@@ -26,13 +26,14 @@ $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_pardef
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_pardefine.inc";
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_pardefine.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_pardefine.inc";
-$ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_pardefine.inc"; 
+$ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_pardefine.inc";
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_pardefine.inc";
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_pardefine.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_pardefine.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_pardefine.inc";
 $ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_pardefine.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardefine.inc";
+$ifi %TRANS_RAMP%==yes  $include   "../../base/addons/transmission_ramping/transmission_ramping_pardefine.inc";
 
 
 $label endoffile
