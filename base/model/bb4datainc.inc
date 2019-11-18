@@ -395,7 +395,9 @@ $ifi %DHFPCALIB%==yes %semislash%;
 
 
 PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of existing generation technologies (MW)" %semislash%
-$if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
+*$if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
+$if     EXIST '../data/GKFX%TECHALT%.inc' $INCLUDE '../data/GKFX%TECHALT%.inc';
+$if not EXIST '../data/GKFX%TECHALT%.inc' $INCLUDE '../data/GKFX.inc';
 $if not EXIST '../data/GKFX.inc' $INCLUDE '../../base/data/GKFX.inc';
 %semislash%;
 
