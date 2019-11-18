@@ -49,6 +49,7 @@ $setglobal TECHALT
 *!option _noBioImport      *noBioImport alternative: No import of biomasses
 *!option _1.5Degrees       *1.5Degrees alternative: New CO2 targets
 *!option _CO2 capture      *CO2 capture alternative: Technologies to capture CO2   from air and central sources gets cheap
+*!option _lessELtransm_0.95 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 95 %
 *!option _lessELtransm_0.5 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 50 %
 *!option _lessELtransm_0.2 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 20 %
 *!option _lessELtransm_0.0 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 100 %
@@ -57,6 +58,8 @@ $setglobal TECHALT
 *!option _includeReg       *including regulation
 *!option _emiOnImport      *adding emissions to imported biomass - woodpellets and woodchips
 *!option _noBioImport+PtX  *noBioImport+PtX alternative: No import of biomasses, but PtX demand included
+*!option _cheapGasHP_COP250*cheapGasHP_COP250 alternative: Allow to install GNR_HP_NGAS_GE_COP-250
+*!option _cheapBiomass     *cheapBiomass alternative: reduce biomass cost
 
 *===============================================================================
 *===============================================================================

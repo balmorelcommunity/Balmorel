@@ -228,7 +228,9 @@ $if not EXIST '../data/MPOLSET.inc' $INCLUDE '../../base/data/MPOLSET.inc';
 
 $onmulti
 SET AGKN(AAA,GGG)   "Areas for possible location of new technologies"   %semislash%
-$if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
+*$if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
+$if     EXIST '../data/AGKN%TECHALT%.inc' $INCLUDE '../data/AGKN%TECHALT%.inc';
+$if not EXIST '../data/AGKN%TECHALT%.inc' $INCLUDE '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
 $offmulti
