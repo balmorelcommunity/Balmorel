@@ -2,7 +2,7 @@ PARAMETER INDHEAT_FDATA(FFF,FDATASET) 'Fuel characteristics' %semislash%
 $if     EXIST '../data/INDHEAT_FDATA.inc' $INCLUDE         '../data/INDHEAT_FDATA.inc';
 $if not EXIST '../data/INDHEAT_FDATA.inc' $INCLUDE '../../base/data/INDHEAT_FDATA.inc';
 %semislash%
-*This file contains also fuel prices and taxes. 
+*This file contains also fuel prices and taxes.
 
 PARAMETER INDHEAT_DH_VAR_T(INDHEAT_AAA,INDHEAT_DHUSER,SSS,TTT) 'Variation in individual heat demand' %semislash%
 $if     EXIST '../data/INDHEAT_DH_VAR_T.inc' $INCLUDE         '../data/INDHEAT_DH_VAR_T.inc';
@@ -88,3 +88,5 @@ PARAMETER INDHEAT_DE_VAR_BASIC(RRR,DEUSER,SSS,TTT) 'Electricity consumption prof
 $if     EXIST '../data/INDHEAT_DE_VAR_BASIC.inc' $INCLUDE         '../data/INDHEAT_DE_VAR_BASIC.inc';
 $if not EXIST '../data/INDHEAT_DE_VAR_BASIC.inc' $INCLUDE '../../base/data/INDHEAT_DE_VAR_BASIC.inc';
 %semislash%
+
+PARAMETER INDHEAT_GMINPERCENT 'To ensure all technologies in a group generate.' /0.15/;
