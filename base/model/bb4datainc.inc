@@ -397,7 +397,9 @@ $ifi %DHFPCALIB%==yes %semislash%;
 
 
 PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of existing generation technologies (MW)" %semislash%
-$if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
+*$if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
+$if     EXIST '../data/GKFX%TECHALT%.inc' $INCLUDE '../data/GKFX%TECHALT%.inc';
+$if not EXIST '../data/GKFX%TECHALT%.inc' $INCLUDE '../data/GKFX.inc';
 $if not EXIST '../data/GKFX.inc' $INCLUDE '../../base/data/GKFX.inc';
 %semislash%;
 
@@ -642,8 +644,9 @@ $if not EXIST '../data/GKF_LO.inc' $INCLUDE '../../base/data/GKF_LO.inc';
 *-------------------------------------------------------------------------------
 
 PARAMETER DE(YYY,RRR,DEUSER)    "Annual electricity consumption (MWh)" %semislash%
-$if     EXIST '../data/DE%SCNAME%.inc' $INCLUDE         '../data/DE%SCNAME%.inc';
-$if not EXIST '../data/DE%SCNAME%.inc' $INCLUDE '../../base/data/DE.inc';
+*$if     EXIST '../data/DE%SCNAME%.inc' $INCLUDE         '../data/DE%SCNAME%.inc';
+$if     EXIST '../data/DE%SCNAME%%TECHALT%.inc' $INCLUDE         '../data/DE%SCNAME%%TECHALT%.inc';
+$if not EXIST '../data/DE%SCNAME%%TECHALT%.inc' $INCLUDE '../../base/data/DE%SCNAME%.inc';
 *$if not EXIST '../data/DE.inc'         $INCLUDE '../../base/data/DE.inc';
 %semislash%;
 
