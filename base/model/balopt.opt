@@ -307,6 +307,10 @@ $setglobal TAXES
 $setglobal TRANS_RAMP
 *!option yes
 
+* Ancilliary services addon (it requires UnitComm to be active). It introduces reserve requirement per region in the Dispatch Optimization.
+$setglobal ANC_SERV YES
+*!option yes
+
 *
 $setglobal SYSTEMCOST
 *!option yes
@@ -525,7 +529,7 @@ $Setglobal import_results YES
 
 * -----------------ENERGY DISPATCH--------------------------
 
-*Adds energy dispatch (demand, generation and transmission) from previous runs
+*Adds energy dispatch (demand, generation, transmission, reserves) from previous runs
 $setglobal ADDENERGYDISPATCH
 *!option yes
 * -----------------END OF ENERGY DISPATCH--------------------------

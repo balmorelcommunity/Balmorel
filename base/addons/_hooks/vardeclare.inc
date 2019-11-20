@@ -28,6 +28,7 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_vardeclare.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_vardeclare.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_vardeclare.inc";
+$ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_vardeclare.inc";
 
 $ifi %vqdebug%==yes       $include   "../../base/addons/vqdebug/bb4/vqdebug_declare.inc";
 

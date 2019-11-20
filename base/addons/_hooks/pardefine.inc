@@ -34,6 +34,7 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_pardefine.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardefine.inc";
 $ifi %TRANS_RAMP%==yes  $include   "../../base/addons/transmission_ramping/transmission_ramping_pardefine.inc";
+$ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_pardefine.inc";    
 
 
 $label endoffile

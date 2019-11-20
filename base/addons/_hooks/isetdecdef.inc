@@ -22,6 +22,7 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_isetdecdef.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_isetdecdef.inc";
 $ifi %BalancingMarket%==yes       $include   "../../base/addons/balancing_market/balancing_market_isetdecdef.inc";
+$ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_isetdecdef.inc";
 
 $ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_isetdecdef.inc";
 

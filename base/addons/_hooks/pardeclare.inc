@@ -28,5 +28,6 @@ $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/ste
 $ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_pardeclare.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardeclare.inc";
 $ifi %TRANS_RAMP%==yes  $include   "../../base/addons/transmission_ramping/transmission_ramping_pardeclare.inc";
+$ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_pardeclare.inc";
 
 $label endoffile

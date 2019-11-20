@@ -50,6 +50,9 @@ QUCMAXVGF(IY411,IA,IGUC,IS3,T)$IAGK_HASORPOT(IY411,IA,IGUC)..    !! 'Unit commit
     =G=
    VGF_T(IY411,IA,IGUC,IS3,T)
 $ifi %COMBTECH%==yes + sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,IS3,T))$IGCOMB1(IGUC)
+
+
+$include "../../base/addons/_hooks/qucmaxvgf.inc"
 ;
 
 
@@ -98,7 +101,7 @@ $ifi not %MINSHUTDOWNTIME%==yes $goto MINSHUTDOWNTIME_END
 
 EQUATION  QUCDT(Y,AAA,G,S,T)  'Unit commitment: Number of unit shutdowns respecting minimum off time';
 
-QUCDT(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((GDATA(IGUC,'GDUCDTMIN') GT CHRONOHOUR(S,T)) AND IS3(S) AND IUCDTMIN(IGUC) 
+QUCDT(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((GDATA(IGUC,'GDUCDTMIN') GT CHRONOHOUR(S,T)) AND IS3(S) AND IUCDTMIN(IGUC)
 $ifi      %SEASONALLINKUC%==yes         AND (NOT (ORD(S) EQ 1 AND (ORD(T) EQ 1)))
 $ifi not  %SEASONALLINKUC%==yes         AND (NOT (ORD(T) EQ 1))
 ) ..

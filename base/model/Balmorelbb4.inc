@@ -1684,9 +1684,9 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IG
          -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHYRST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))
        =G=
        VHYRS_S(IY411,IA,S++1)$(CARD(S) NE ORD(S))
-$ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                            VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
-$ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi not %HYRSBB123%==price    VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
-$ifi     %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %HYRSBB123%==cont     SUM(SSS$(ICOUNTSSS(S) EQ ICOUNTSSS(SSS)),VHYRS_SL(IY411,IA,SSS++1))$(CARD(S) EQ ORD(S))
+$ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                            +VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
+$ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi not %HYRSBB123%==price    +VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
+$ifi     %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %HYRSBB123%==cont     +SUM(SSS$(ICOUNTSSS(S) EQ ICOUNTSSS(SSS)),VHYRS_SL(IY411,IA,SSS++1))$(CARD(S) EQ ORD(S))
 $include "../../base/addons/_hooks/qhyrsseq.inc"
 ;
 
@@ -2856,6 +2856,12 @@ execute_unload  "../../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
 *Planned maintenaince
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S)=VUCONMAINT.L(Y,IA,IGUC,S);
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes execute_unload  "../../simex/UCONMAINT.gdx", UCONMAINT;
+
+*Ancilliary servies
+$ifi %UnitComm%==yes $ifi %ANC_SERV%==yes ASSECRES_T(Y,IA,G,S,T)=VASSECRES_T.L(Y,IA,G,S,T);
+$ifi %UnitComm%==yes $ifi %ANC_SERV%==yes ASTERRES_T(Y,IA,G,S,T)=VASTERRES_T.L(Y,IA,G,S,T);
+$ifi %UnitComm%==yes $ifi %ANC_SERV%==yes execute_unload  "../../simex/ASSECRES_T.gdx", ASSECRES_T;
+$ifi %UnitComm%==yes $ifi %ANC_SERV%==yes execute_unload  "../../simex/ASTERRES_T.gdx", ASTERRES_T;
 
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN

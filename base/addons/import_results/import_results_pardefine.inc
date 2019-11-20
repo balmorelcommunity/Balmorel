@@ -48,8 +48,9 @@ $ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/HSTOLOADT.gdx', HSTOLOA
 $ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/HSTOLOADTS.gdx', HSTOLOADTS;
 $ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/X_T.gdx', X_T;
 $ifi %ADDENERGYDISPATCH%==yes $ifi %HEATTRANS%==yes execute_load  '../../simex/XH_T.gdx', XH_T;
-$ifi %ADDENERGYDISPATCH%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCON.gdx', UCON; 
-
+$ifi %ADDENERGYDISPATCH%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCON.gdx', UCON;
+$ifi %ADDENERGYDISPATCH%==yes $ifi %UnitComm%==yes $ifi %ANC_SERV%==yes execute_load  '../../simex/ASSECRES_T.gdx', ASSECRES_T;
+$ifi %ADDENERGYDISPATCH%==yes $ifi %UnitComm%==yes $ifi %ANC_SERV%==yes execute_load  '../../simex/ASTERRES_T.gdx', ASTERRES_T;
 
 *Fuel prices from previous optimization
 $ifi %ADDFUELPRICE%==yes execute_load  '../../simex/FUELPRICE_EXC.gdx', FUELPRICE_EXC;
@@ -59,7 +60,7 @@ $ifi %ADDMAXFUELUSES%==yes GMAXFS(Y,CCCRRRAAA,FFF,S)=0;
 $ifi %ADDMAXFUELUSES%==yes execute_load  '../../simex/GMAXFS.gdx', GMAXFS;
 
 *Import planned maintenance
-$ifi %ADDPLANNEDMAINTENANCE%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCONMAINT.gdx', UCONMAINT; 
+$ifi %ADDPLANNEDMAINTENANCE%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCONMAINT.gdx', UCONMAINT;
 
 
 
