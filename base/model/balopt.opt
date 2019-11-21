@@ -244,8 +244,8 @@ $setglobal watertank_loading_rest
 *-----------------------------------------------
 
 *-------- Balancing market ---------
-* Peform the balancing market optimization. It is meant to be combined with previous results (Day-Ahead dispatch, for example) by using the "import_results" options.
-*Note: it can be combined with other add-ons, just check that all the relevant code lines are implemented
+* Peform the balancing market optimization
+*Note: it is meant to be combined with Unit Commitment, ancilliary services and import_results add-ons
 $setglobal BalancingMarket
 *!option yes
 
