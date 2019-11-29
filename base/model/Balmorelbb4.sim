@@ -31,7 +31,7 @@ IY411PREVY(Y,Y-1)= YES;
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 
-$include "../../base/addons/_hooks/initassign.inc"
+$ifi %INDHEAT%==yes  INDHEAT_VGKN.L(Y,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP)        = 0;
 
 *----COMBTECH----
 

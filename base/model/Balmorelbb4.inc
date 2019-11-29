@@ -1046,6 +1046,7 @@ $ifi %HYRS_AGG%==hydro_year_agg    IHYRST(S,T)=IHOURSINST(S,T);
 *-------------------------------------------------------------------------------
 
 $INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
+$INCLUDE '../../base/addons/_hooks/initassign.inc';
 
 * These internal parameters and sets pertain to heat transmission.
 $if %HEATTRANS% == yes $include '../../base/addons/heattrans/model/htinternal.inc';
