@@ -245,15 +245,6 @@ PARAMETER IGKRATE(AAA,GGG,SSS,TTT)     "Rating of technology capacities (non-neg
 $ifi  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/IGKRATE.gdx', IGKRATE;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx' IGKRATE(AAA,GGG,SSS,TTT)=0;
 
-PARAMETER ASSECRES_T(YYY,AAA,GGG,SSS,TTT)   'Allocated Secondary reserve for each technology (MW). To be transferred to future runs.';
-$ifi  exist '../../base/auxils/timestep_conversion/input/ASSECRES_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/ASSECRES_T.gdx', ASSECRES_T;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/ASSECRES_T.gdx' ASSECRES_T(YYY,AAA,GGG,SSS,TTT)=0;
-
-PARAMETER ASTERRES_T(YYY,AAA,GGG,SSS,TTT)   'Allocated Tertiary reserve for each technology (MW). To be transferred to future runs.';
-$ifi  exist '../../base/auxils/timestep_conversion/input/ASTERRES_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/ASTERRES_T.gdx', ASTERRES_T;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/ASTERRES_T.gdx' ASTERRES_T(YYY,AAA,GGG,SSS,TTT)=0;
-
-
 
 *REST OF HYDRO PARAMETERS.........
 
@@ -302,8 +293,6 @@ PARAMETER GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)  "Minimum annual fuel use by yea
 PARAMETER UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)    'Unit commitment maintenance (0,1) on electricity generation to be used in future runs';
 PARAMETER UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)    'Unit commitment (0,1) on electricity generation to be used in future runs';
 PARAMETER IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)     "Rating of technology capacities (non-negative, typically less than or equal to 0); default/1/, eps for 0)";
-PARAMETER ASSECRES_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)   'Allocated Secondary reserve for each technology (MW). To be transferred to future runs.';
-PARAMETER ASTERRES_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)   'Allocated Tertiary reserve for each technology (MW). To be transferred to future runs.';
 
 *----------END OF INPUT DATA--------------------
 
@@ -368,8 +357,6 @@ GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXF
 UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),UCONMAINT(YYY,AAA,GGG,SSS));
 UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),UCON(YYY,AAA,GGG,SSS,TTT)) ;
 IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),IGKRATE(AAA,GGG,SSS,TTT)) ;
-ASSECRES_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ASSECRES_T(YYY,AAA,GGG,SSS,TTT)) ;
-ASTERRES_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ASTERRES_T(YYY,AAA,GGG,SSS,TTT)) ;
 
 *------------END OF CALCULATIONS-------------
 
@@ -423,8 +410,6 @@ execute_unload  "../../base/auxils/timestep_conversion/output/GMAXFS.gdx", GMAXF
 execute_unload  "../../base/auxils/timestep_conversion/output/UCONMAINT.gdx", UCONMAINT_NEW=UCONMAINT;
 execute_unload  "../../base/auxils/timestep_conversion/output/UCON.gdx", UCON_NEW=UCON;
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", IGKRATE_NEW=IGKRATE;
-execute_unload  "../../base/auxils/timestep_conversion/output/ASSECRES_T.gdx", ASSECRES_T_NEW=ASSECRES_T;
-execute_unload  "../../base/auxils/timestep_conversion/output/ASTERRES_T.gdx", ASTERRES_T_NEW=ASTERRES_T;
 
 *$ONTEXT
 *WND_VAR_T timeseries

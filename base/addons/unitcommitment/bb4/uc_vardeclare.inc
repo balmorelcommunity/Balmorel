@@ -6,9 +6,14 @@
 
 $ifi %SOLVETYPE%==MIP          INTEGER  VARIABLE    VUCON(Y,AAA,G,S,T)    'Unit commitment (0,1) on electricity generation';
 $ifi not %SOLVETYPE%==MIP      POSITIVE VARIABLE    VUCON(Y,AAA,G,S,T)    'Unit commitment (0,1) on electricity generation';
+$ifi %SOLVETYPE%==MIP          INTEGER  VARIABLE    VUCON_STOLOAD(Y,AAA,G,S,T)    'Unit commitment (0,1) on electricity generation for storage loading';
+$ifi not %SOLVETYPE%==MIP      POSITIVE VARIABLE    VUCON_STOLOAD(Y,AAA,G,S,T)    'Unit commitment (0,1) on electricity generation for storage loading';
 
 POSITIVE VARIABLE  VUCU(Y,AAA,G,S,T)     'Start up, Unit commitment (0,1) on electricity generation';
 POSITIVE VARIABLE  VUCD(Y,AAA,G,S,T)     'Unit commitment Shutdown (0,1) on electricity generation';
+
+POSITIVE VARIABLE  VUCU_STOLOAD(Y,AAA,G,S,T)     'Start up, Unit commitment (0,1) on electricity generation for storage loading';
+POSITIVE VARIABLE  VUCD_STOLOAD(Y,AAA,G,S,T)     'Unit commitment Shutdown (0,1) on electricity generation for storage loading';
 
 
 $ifi not %STEPWISE_RAMPING_UC%==ramp_const_cost $goto STEPWISERAMPING_END

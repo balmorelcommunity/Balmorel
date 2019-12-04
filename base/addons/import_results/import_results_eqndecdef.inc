@@ -52,3 +52,23 @@ VHSTOVOLT(IY411,IA,IGHSTO,S,T)   - HSTOVOLT(IY411,IA,IGHSTO,S,T)
 0
 ;
 $label label_no_intraseasonal_heat_storage_content
+
+
+$ifi not %HYRSBB123%==price    $goto label_no_hydro_price
+EQUATION QHYRSSEQCURT(Y,AAA,S) 'Hydro curtailment equation (MWh)';
+
+QHYRSSEQCURT(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) AND IS3(S) AND NOT(ORD(S) EQ CARD(S)))..
+      VHYRS_S(IY411,IA,S)
+       +  IHYINF_S(IA,S) * (
+      SUM(IGHYRS,
+        GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IGHYRS)
+       +VGKNACCUMNET(IY411,IA,IGHYRS)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRS))
+        )
+         )
+         -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHYRST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T)+VHYRS_CURT(IY411,IA,IGHYRS,S,T))))
+       =E=
+       VHYRS_S(IY411,IA,S++1)
+;
+
+$label label_no_hydro_price

@@ -1,13 +1,30 @@
 * UC Translated to BB4 by Juan Gea Bermúdez 2018.
 
 EQUATION  QUCVUCON(Y,AAA,G,S,T)    'Unit commitment: Number of endogenous units on limited by unit size and capacity)';
+EQUATION  QUCVUCON_STOLOAD(Y,AAA,G,S,T)    'Unit commitment: Number of endogenous units on limited by unit size and capacity) for storage technologies';
 EQUATION  QUCVUCU(Y,AAA,G,S,T)     'Unit commitment: Number of start up endogenous units on limited by unit size and capacity)';
+EQUATION  QUCVUCU_STOLOAD(Y,AAA,G,S,T)     'Unit commitment: Number of start up endogenous units on limited by unit size and capacity) for storage technologies';
 EQUATION  QUCVUCD(Y,AAA,G,S,T)     'Unit commitment: Number of shut down endogenous units on limited by unit size and capacity)';
+EQUATION  QUCVUCD_STOLOAD(Y,AAA,G,S,T)     'Unit commitment: Number of shut down endogenous units on limited by unit size and capacity) for storage technologies';
 EQUATION  QUCSTARTQ(Y,AAA,G,S,T)   'Unit commitment: on-off logic';
+EQUATION  QUCSTARTQ_STOLOAD_INTRA(Y,AAA,G,S,T)   'Unit commitment: on-off logic for intraseasonal storage technologies';
+EQUATION  QUCSTARTQ_STOLOAD_INTER(Y,AAA,G,S,T)   'Unit commitment: on-off logic for interseasonal storage technologies';
 EQUATION  QUCMAXVGF(Y,AAA,G,S,T)   'Unit commitment: Fuel consumption below maximum (of units online)';
+EQUATION  QUCMAXVGF_STOLOAD(Y,AAA,G,S,T)   'Unit commitment: Fuel consumption below maximum for storage technologies (of units online)';
+$ifi %COMBTECH%==yes EQUATION  QUCMAXVGF_ECOMBGUP(Y,AAA,G,S,T) 'Unit commitment: Bounds on individual units are assigned individually to .UP, however, the sum-of-bounds may exceed 1';
+$ifi %COMBTECH%==yes EQUATION  QUCMAXVGF_HCOMBGUP(Y,AAA,G,S,T) 'Unit commitment: Bounds on individual units are assigned individually to .UP, however, the sum-of-bounds may exceed 1';
 
 QUCVUCON(IY411,IA,IGUC,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC)) OR IGDECOMEXOPOT(IY411,IA,IGUC))..  !! 'Unit commitment: Number of endogenous units on limited by unit size and capacity)'
 VUCON(IY411,IA,IGUC,IS3,T)
+$ifi %PLANNED_MAINTENANCE%==yes  + VUCONMAINT(IY411,IA,IGUC,IS3)$IGPLANMAINT(IGUC)
+=L=
+(GKFX(IY411,IA,IGUC)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC)
++VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC)))/GDATA(IGUC,'GDUCUNITSIZE')*(1$(NOT IGKRATE(IA,IGUC,IS3,T)) + IGKRATE(IA,IGUC,IS3,T))
+;
+
+QUCVUCON_STOLOAD(IY411,IA,IGUC,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC)) OR IGDECOMEXOPOT(IY411,IA,IGUC) AND (IGESTOALL(IGUC) OR IGHSTOALL(IGUC)))..  !! 'Unit commitment: Number of endogenous units on limited by unit size and capacity)'
+VUCON_STOLOAD(IY411,IA,IGUC,IS3,T)
 $ifi %PLANNED_MAINTENANCE%==yes  + VUCONMAINT(IY411,IA,IGUC,IS3)$IGPLANMAINT(IGUC)
 =L=
 (GKFX(IY411,IA,IGUC)
@@ -23,8 +40,24 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC
 +VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC)))/GDATA(IGUC,'GDUCUNITSIZE')
 ;
 
+QUCVUCU_STOLOAD(IY411,IA,IGUC,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC)) OR IGDECOMEXOPOT(IY411,IA,IGUC) AND (IGESTOALL(IGUC) OR IGHSTOALL(IGUC)))..  !! 'Unit commitment: Number of start up endogenous units on limited by unit size and capacity)'
+VUCU_STOLOAD(IY411,IA,IGUC,IS3,T)
+=L=
+(GKFX(IY411,IA,IGUC)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC)
++VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC)))/GDATA(IGUC,'GDUCUNITSIZE')
+;
+
 QUCVUCD(IY411,IA,IGUC,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC)) OR IGDECOMEXOPOT(IY411,IA,IGUC))..  !! 'Unit commitment: Number of shut down endogenous units on limited by unit size and capacity)'
 VUCD(IY411,IA,IGUC,IS3,T)
+=L=
+(GKFX(IY411,IA,IGUC)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC)
++VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC)))/GDATA(IGUC,'GDUCUNITSIZE')
+;
+
+QUCVUCD_STOLOAD(IY411,IA,IGUC,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC)) OR IGDECOMEXOPOT(IY411,IA,IGUC) AND (IGESTOALL(IGUC) OR IGHSTOALL(IGUC)))..  !! 'Unit commitment: Number of shut down endogenous units on limited by unit size and capacity)'
+VUCD_STOLOAD(IY411,IA,IGUC,IS3,T)
 =L=
 (GKFX(IY411,IA,IGUC)
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC)
@@ -44,6 +77,25 @@ $ifi %SEASONALLINKUC%==yes      - VUCON(IY411,IA,IGUC,S-1,T--1)$(ORD(T) EQ 1)  -
 $include "../../base/addons/_hooks/qucstartq.inc"
 ;
 
+QUCSTARTQ_STOLOAD_INTRA(IY411,IA,IGUC,S,T)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IS3(S) AND (IGESTO(IGUC) OR IGHSTO(IGUC)) AND (NOT (ORD(T) EQ 1))
+)..   !! 'Unit commitment: on-off logic'
+   VUCU_STOLOAD(IY411,IA,IGUC,S,T) - VUCD_STOLOAD(IY411,IA,IGUC,S,T)
+    =E=
+   VUCON_STOLOAD(IY411,IA,IGUC,S,T)
+- VUCON_STOLOAD(IY411,IA,IGUC,S,T-1)
+;
+
+QUCSTARTQ_STOLOAD_INTER(IY411,IA,IGUC,S,T)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IS3(S) AND (IGESTOS(IGUC) OR IGHSTOS(IGUC))
+$ifi      %SEASONALLINKUC%==yes         AND (NOT (ORD(S) EQ 1 AND (ORD(T) EQ 1)))
+$ifi not  %SEASONALLINKUC%==yes         AND (NOT (ORD(T) EQ 1))
+)..   !! 'Unit commitment: on-off logic'
+   VUCU_STOLOAD(IY411,IA,IGUC,S,T) - VUCD_STOLOAD(IY411,IA,IGUC,S,T)
+    =E=
+   VUCON_STOLOAD(IY411,IA,IGUC,S,T)
+$ifi not %SEASONALLINKUC%==yes  - VUCON_STOLOAD(IY411,IA,IGUC,S,T-1)
+$ifi %SEASONALLINKUC%==yes      - VUCON_STOLOAD(IY411,IA,IGUC,S-1,T--1)$(ORD(T) EQ 1)  - VUCON_STOLOAD(IY411,IA,IGUC,S,T-1)$(NOT (ORD(T) EQ 1))
+;
+
 QUCMAXVGF(IY411,IA,IGUC,IS3,T)$IAGK_HASORPOT(IY411,IA,IGUC)..    !! 'Unit commitment: Fuel consumption below maximum (of units online)'
    VUCON(IY411,IA,IGUC,IS3,T)*GDATA(IGUC,'GDUCUNITSIZE')*(1+(1/GDATA(IGUC,'GDCB'))$IGBPR(IGUC))/(1$((NOT IGESTO(IGUC)) AND (NOT IGESTOS(IGUC)) AND (NOT IGHSTO(IGUC)) AND (NOT IGHSTOS(IGUC))) + GDATA(IGUC,'GDSTOHUNLD')$(IGESTO(IGUC) OR IGESTOS(IGUC) OR IGHSTO(IGUC) OR IGHSTOS(IGUC)))
          /(GDATA(IGUC,'GDFE')*(1$(NOT GEFFRATE(IA,IGUC))+GEFFRATE(IA,IGUC)))
@@ -51,18 +103,43 @@ QUCMAXVGF(IY411,IA,IGUC,IS3,T)$IAGK_HASORPOT(IY411,IA,IGUC)..    !! 'Unit commit
    VGF_T(IY411,IA,IGUC,IS3,T)
 $ifi %COMBTECH%==yes + sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,IS3,T))$IGCOMB1(IGUC)
 
-
 $include "../../base/addons/_hooks/qucmaxvgf.inc"
 ;
+
+QUCMAXVGF_STOLOAD(IY411,IA,IGUC,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGUC) AND (IGESTOALL(IGUC) OR IGHSTOALL(IGUC)))..
+   VUCON_STOLOAD(IY411,IA,IGUC,IS3,T)*GDATA(IGUC,'GDUCUNITSIZE')/GDATA(IGUC,'GDSTOHLOAD')
+             =G=
++(VESTOLOADT(IY411,IA,IGUC,IS3,T))$IGESTO(IGUC)
++(VESTOLOADTS(IY411,IA,IGUC,IS3,T))$IGESTOS(IGUC)
++(VHSTOLOADT(IY411,IA,IGUC,IS3,T))$IGHSTO(IGUC)
++(VHSTOLOADTS(IY411,IA,IGUC,IS3,T))$IGHSTOS(IGUC)
+;
+
+$ifi NOT %COMBTECH%==yes $goto NO_COMBTECH
+* Bounds on individual units are assigned individually to .UP, however, the sum-of-bounds may exceed 1
+QUCMAXVGF_ECOMBGUP(IY411,IA,IGCOMB1,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGCOMB1) AND GDATA(IGCOMB1,'GDCOMBGUP') AND IGKE(IGCOMB1) AND IGUC(IGCOMB1))..
+   VUCON(IY411,IA,IGCOMB1,IS3,T)*GDATA(IGCOMB1,'GDUCUNITSIZE')/(1$((NOT IGESTO(IGCOMB1)) AND (NOT IGESTOS(IGCOMB1)) AND (NOT IGHSTO(IGCOMB1)) AND (NOT IGHSTOS(IGCOMB1))) + GDATA(IGCOMB1,'GDSTOHUNLD')$(IGESTO(IGCOMB1) OR IGESTOS(IGCOMB1) OR IGHSTO(IGCOMB1) OR IGHSTOS(IGCOMB1)))
+          =G=
+  VGE_T(IY411,IA,IGCOMB1,IS3,T) + SUM(IGCOMB2$GGCOMB(IGCOMB1,IGCOMB2), VGE_T(IY411,IA,IGCOMB2,IS3,T))
+;
+
+* Bounds on individual units are assigned individually to .UP, however, the sum-of-bounds may exceed 1
+QUCMAXVGF_HCOMBGUP(IY411,IA,IGCOMB1,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGCOMB1) AND GDATA(IGCOMB1,'GDCOMBGUP') AND IGKH(IGCOMB1) AND IGUC(IGCOMB1))..
+   VUCON(IY411,IA,IGCOMB1,IS3,T)*GDATA(IGCOMB1,'GDUCUNITSIZE')/(1$((NOT IGESTO(IGCOMB1)) AND (NOT IGESTOS(IGCOMB1)) AND (NOT IGHSTO(IGCOMB1)) AND (NOT IGHSTOS(IGCOMB1))) + GDATA(IGCOMB1,'GDSTOHUNLD')$(IGESTO(IGCOMB1) OR IGESTOS(IGCOMB1) OR IGHSTO(IGCOMB1) OR IGHSTOS(IGCOMB1)))
+          =G=
+  VGH_T(IY411,IA,IGCOMB1,IS3,T) + SUM(IGCOMB2$GGCOMB(IGCOMB1,IGCOMB2), VGH_T(IY411,IA,IGCOMB2,IS3,T))
+;
+$label NO_COMBTECH
 
 
 $ifi not %MINFUELCONS%==yes $goto MINFUELCONS_END
 
-EQUATION  QUCMINVGF(Y,AAA,G,S,T)   'Unit commitment: Fuel consumption above minimum (of units online)';
+EQUATION  QUCMINVGF(Y,AAA,G,S,T)   'Unit commitment: Fuel consumption above minimum(of units online)';
 
 QUCMINVGF(IY411,IA,IGUC,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGUC) AND GDATA(IGUC,'GDUCGMIN'))..  !! 'Unit commitment: Fuel consumption above minimum (of units online)'
    VGF_T(IY411,IA,IGUC,IS3,T)
 $ifi %COMBTECH%==yes + sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,IS3,T))$IGCOMB1(IGUC)
+
     =G=
 * Fuel consumption at minimum load is defined by Fmin = [ Emin (1-F0) +Emax*F0 ]/FE
   (
@@ -73,6 +150,26 @@ $ifi %COMBTECH%==yes + sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,I
 * FE
    )*(1+(1/GDATA(IGUC,'GDCB'))$IGBPR(IGUC))/(1$((NOT IGESTO(IGUC)) AND (NOT IGESTOS(IGUC)) AND (NOT IGHSTO(IGUC)) AND (NOT IGHSTOS(IGUC))) + GDATA(IGUC,'GDSTOHUNLD')$(IGESTO(IGUC) OR IGESTOS(IGUC) OR IGHSTO(IGUC) OR IGHSTOS(IGUC)))
        /(GDATA(IGUC,'GDFE')*(1$(NOT GEFFRATE(IA,IGUC))+GEFFRATE(IA,IGUC)))
+$include "../../base/addons/_hooks/qucminvgf.inc"
+;
+
+EQUATION  QUCMINVGF_STOLOAD(Y,AAA,G,S,T)   'Unit commitment: Fuel consumption above minimum for storage technologies (of units online)';
+
+QUCMINVGF_STOLOAD(IY411,IA,IGUC,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGUC) AND GDATA(IGUC,'GDUCGMIN') AND (IGESTOALL(IGUC) OR IGHSTOALL(IGUC)))..  !! 'Unit commitment: Fuel consumption above minimum (of units online)'
+
++(VESTOLOADT(IY411,IA,IGUC,IS3,T))$IGESTO(IGUC)
++(VESTOLOADTS(IY411,IA,IGUC,IS3,T))$IGESTOS(IGUC)
++(VHSTOLOADT(IY411,IA,IGUC,IS3,T))$IGHSTO(IGUC)
++(VHSTOLOADTS(IY411,IA,IGUC,IS3,T))$IGHSTOS(IGUC)
+    =G=
+* Fuel consumption at minimum load is defined by Fmin = [ Emin (1-F0) +Emax*F0 ]/FE
+  (
+* Emin
+   VUCON_STOLOAD(IY411,IA,IGUC,IS3,T)*GDATA(IGUC,'GDUCGMIN')*GDATA(IGUC,'GDUCUNITSIZE')*(1-GDATA(IGUC,'GDUCF0'))
+* Emax
+   +VUCON_STOLOAD(IY411,IA,IGUC,IS3,T)*GDATA(IGUC,'GDUCUNITSIZE')*GDATA(IGUC,'GDUCF0')
+* FE
+   )/GDATA(IGUC,'GDSTOHLOAD')
 ;
 
 $label  MINFUELCONS_END
@@ -81,7 +178,7 @@ $ifi not %MINSTARTUPTIME%==yes $goto MINSTARTUPTIME_END
 
 EQUATION  QUCUT(Y,AAA,G,S,T)      'Unit commitment: Number of unit startups respecting minimum on time';
 
-QUCUT(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((GDATA(IGUC,'GDUCUTMIN') GT CHRONOHOUR(S,T)) AND IS3(S) AND IUCUTMIN(IGUC)
+QUCUT(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((GDATA(IGUC,'GDUCUTMIN') GT CHRONOHOUR(S,T)) AND IS3(S)
 $ifi      %SEASONALLINKUC%==yes         AND (NOT (ORD(S) EQ 1 AND (ORD(T) EQ 1)))
 $ifi not  %SEASONALLINKUC%==yes         AND (NOT (ORD(T) EQ 1))
 )..
@@ -101,7 +198,7 @@ $ifi not %MINSHUTDOWNTIME%==yes $goto MINSHUTDOWNTIME_END
 
 EQUATION  QUCDT(Y,AAA,G,S,T)  'Unit commitment: Number of unit shutdowns respecting minimum off time';
 
-QUCDT(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((GDATA(IGUC,'GDUCDTMIN') GT CHRONOHOUR(S,T)) AND IS3(S) AND IUCDTMIN(IGUC)
+QUCDT(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((GDATA(IGUC,'GDUCDTMIN') GT CHRONOHOUR(S,T)) AND IS3(S)
 $ifi      %SEASONALLINKUC%==yes         AND (NOT (ORD(S) EQ 1 AND (ORD(T) EQ 1)))
 $ifi not  %SEASONALLINKUC%==yes         AND (NOT (ORD(T) EQ 1))
 ) ..
@@ -135,6 +232,8 @@ QUCRAMPU(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((1 GT CHRONOHOUR(S,T)*GDATA(IGUC,'GD
 * up gradient at t
 -VGF_T(IY411,IA,IGUC,S-1,T--1)$(ORD(T) EQ 1) - VGF_T(IY411,IA,IGUC,S,T-1)$(NOT (ORD(T) EQ 1))
     + VGF_T(IY411,IA,IGUC,S,T)
+$ifi %COMBTECH%==yes - sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,S-1,T--1)$(ORD(T) EQ 1)+ VGF_T(IY411,IA,IGCOMB2,S,T-1)$(NOT (ORD(T) EQ 1)))$IGCOMB1(IGUC)
+$ifi %COMBTECH%==yes +sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,S,T))$IGCOMB1(IGUC)
          =L=
      (
 * units under start up have an expanded gradient
@@ -147,7 +246,7 @@ QUCRAMPU(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((1 GT CHRONOHOUR(S,T)*GDATA(IGUC,'GD
 $include "../../base/addons/_hooks/qucrampu.inc"
 ;
 
-$ifi %STEPWISE_RAMPING_UC%==ramp_const_cost QUCRAMPING_UP_BALANCE(IY411,IA,IGUC,S,T)$((NOT (ORD(S) EQ 1 AND (ORD(T) EQ 1)))  AND IAGK_HASORPOT(IY411,IA,IGUC) AND IS3(S))..
+$ifi %STEPWISE_RAMPING_UC%==ramp_const_cost QUCRAMPING_UP_BALANCE(IY411,IA,IGUC,S,T)$((NOT (ORD(S) EQ 1 AND (ORD(T) EQ 1))) AND IAGK_HASORPOT(IY411,IA,IGUC) AND IS3(S))..
 $ifi %STEPWISE_RAMPING_UC%==ramp_const_cost SUM(RAMPING_RATE,VRAMPING_UP(IY411,IA,IGUC,RAMPING_RATE,S,T))
 $ifi %STEPWISE_RAMPING_UC%==ramp_const_cost =G=
 $ifi %STEPWISE_RAMPING_UC%==ramp_const_cost -VGF_T(IY411,IA,IGUC,S-1,T--1)$(ORD(T) EQ 1) - VGF_T(IY411,IA,IGUC,S,T-1)$(NOT (ORD(T) EQ 1))
@@ -166,6 +265,9 @@ QUCRAMPD(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((1 GT CHRONOHOUR(S,T)*GDATA(IGUC,'GD
 * down gradient at t
  +VGF_T(IY411,IA,IGUC,S-1,T--1)$(ORD(T) EQ 1) + VGF_T(IY411,IA,IGUC,S,T-1)$(NOT (ORD(T) EQ 1))
     - VGF_T(IY411,IA,IGUC,S,T)
+
+$ifi %COMBTECH%==yes + sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,S-1,T--1)$(ORD(T) EQ 1)+ VGF_T(IY411,IA,IGCOMB2,S,T-1)$(NOT (ORD(T) EQ 1)))$IGCOMB1(IGUC)
+$ifi %COMBTECH%==yes -sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,S,T))$IGCOMB1(IGUC)
          =L=
      (
 * units under shut down have an expanded gradient
@@ -200,6 +302,8 @@ QUCRAMPU(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((1 GT CHRONOHOUR(S,T)*GDATA(IGUC,'GD
 * up gradient at t
 - VGF_T(IY411,IA,IGUC,S,T-1)
     + VGF_T(IY411,IA,IGUC,S,T)
+$ifi %COMBTECH%==yes - sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,S,T-1))$IGCOMB1(IGUC)
+$ifi %COMBTECH%==yes +sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,S,T))$IGCOMB1(IGUC)
 
          =L=
      (
@@ -231,6 +335,8 @@ QUCRAMPD(IAGK_HASORPOT(IY411,IA,IGUC),S,T)$((1 GT CHRONOHOUR(S,T)*GDATA(IGUC,'GD
 * down gradient at t
   + VGF_T(IY411,IA,IGUC,S,T-1)
     - VGF_T(IY411,IA,IGUC,S,T)
+$ifi %COMBTECH%==yes + sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,S,T-1))$IGCOMB1(IGUC)
+$ifi %COMBTECH%==yes -sum(IGCOMB2$GGCOMB(IGUC,IGCOMB2),VGF_T(IY411,IA,IGCOMB2,S,T))$IGCOMB1(IGUC)
          =L=
      (
 * units under shut down have an expanded gradient
@@ -262,6 +368,7 @@ $label  STEPWISERAMPING_END
 
 $ifi not %PLANNED_MAINTENANCE%==yes $goto NO_PLANNED_MAINTENANCE
 EQUATION  QUCVUCON_EXISTING(Y,AAA,G,S,T)    'Unit commitment: Number of endogenous units on limited by unit size and capacity) for existing units';
+EQUATION  QUCVUCON_EXISTING_STOLOAD(Y,AAA,G,S,T)    'Unit commitment: Number of endogenous units on limited by unit size and capacity) for existing storage technology units';
 EQUATION  QUCVUCONMAINT(Y,AAA,G,S)    'Unit commitment: Number of endogenous units on limited by unit size and capacity) in maintenaince ';
 EQUATION  QUCVUCUMAINT(Y,AAA,G,S)     'Unit commitment: Number of start up endogenous units in maintenaince on limited by unit size and capacity)';
 EQUATION  QUCVUCDMAINT(Y,AAA,G,S)     'Unit commitment: Number of shut down endogenous units on in maintenaince limited by unit size and capacity)';
@@ -279,6 +386,15 @@ VUCON(IY411,IA,IGUC,IS3,T) + VUCONMAINT(IY411,IA,IGUC,IS3)
 =L=
 CEIL(GKFX(IY411,IA,IGUC)/GDATA(IGUC,'GDUCUNITSIZE'))
 $include "../../base/addons/_hooks/qucvucon_existing.inc"
+;
+
+QUCVUCON_EXISTING_STOLOAD(IY411,IA,IGUC,IS3,T)$(GKFX(IY411,IA,IGUC) AND NOT(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC))) AND NOT(IGDECOMEXOPOT(IY411,IA,IGUC) AND (IGESTOALL(IGUC) OR IGHSTOALL(IGUC)) )
+$ifi not %ADDPLANNEDMAINTENANCE%==yes AND IGPLANMAINT(IGUC)
+$ifi     %ADDPLANNEDMAINTENANCE%==yes AND UCONMAINT(IY411,IA,IGUC,IS3)
+)..
+VUCON_STOLOAD(IY411,IA,IGUC,IS3,T) + VUCONMAINT(IY411,IA,IGUC,IS3)
+=L=
+CEIL(GKFX(IY411,IA,IGUC)/GDATA(IGUC,'GDUCUNITSIZE'))
 ;
 
 QUCVUCONMAINT(IY411,IA,IGUC,IS3)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC)) OR IGDECOMEXOPOT(IY411,IA,IGUC)) AND IGPLANMAINT(IGUC))..  !! 'Unit commitment: Number of endogenous units on limited by unit size and capacity)'

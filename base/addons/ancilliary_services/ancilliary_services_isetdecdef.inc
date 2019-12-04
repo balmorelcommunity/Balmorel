@@ -1,19 +1,46 @@
 * Ancilliary services by Juan Gea Bermúdez 2019.
 
+SET IASFCRUP(G) "Ancilliary service: technology allowed to provide for frequency containment reserves for up regulation";
+SET IASAFRRUP(G) "Ancilliary service: technology allowed to provide for automatic frequency restoration reserves for up regulation";
+SET IASMFRRUP(G) "Ancilliary service: technology allowed to provide for manual frequency restoration reserves for up regulation";
+SET IASMRRUP(G) "Ancilliary service: technology allowed to provide for manual replacement reserves for up regulation";
 
-SET IASG(G) "Ancilliary service: technology allowed to provide for ancilliary services";
-
-IASG(IGUC)$(GDATA(IGUC,'GDUCRAMPU') GE AS_MIN_RAMPING AND GDATA(IGUC,'GDUCRAMPD') GE AS_MIN_RAMPING AND IGKE(IGUC))=YES;
-
-*Non-flexible CHP units are not allowed to participate in the reserves markets
-IASG(IGBPR)$(NOT (IGBYPASS(IGBPR)))=NO;
-*Storage is not allowed to participate in the reserves markets
-IASG(IGESTOALL)=NO;
-IASG(IGHYRS)=NO;
-*Variable production technologies are not allowed to participate in the reserves markets
-IASG(IGHYRR)=NO;
-IASG(IGWND)=NO;
-IASG(IGSOLE)=NO;
-IASG(IGWAVE)=NO;
+SET IASFCRDOWN(G) "Ancilliary service: technology allowed to provide for frequency containment reserves for down regulation";
+SET IASAFRRDOWN(G) "Ancilliary service: technology allowed to provide for automatic frequency restoration reserves for down regulation";
+SET IASMFRRDOWN(G) "Ancilliary service: technology allowed to provide for manual frequency restoration reserves for down regulation";
+SET IASMRRDOWN(G) "Ancilliary service: technology allowed to provide for manual replacement reserves for down regulation";
 
 
+*Frequency contaainment reserves
+IASFCRUP(IGUC)$(GDATA(IGUC,'GDUCRAMPU') GE MIN_RAMPING_FCR AND IGEE(IGUC))=YES;
+IASFCRDOWN(IGUC)$(GDATA(IGUC,'GDUCRAMPD') GE MIN_RAMPING_FCR AND IGEE(IGUC))=YES;
+
+*Manual frequency restoration reserves
+IASAFRRUP(IGUC)$(GDATA(IGUC,'GDUCRAMPU') GE MIN_RAMPING_AFRR AND IGKE(IGUC))=YES;
+IASAFRRUP(IGUC)$(GDATA(IGUC,'GDUCRAMPD') GE MIN_RAMPING_AFRR AND IGEH(IGUC))=YES;
+IASAFRRDOWN(IGUC)$(GDATA(IGUC,'GDUCRAMPD') GE MIN_RAMPING_AFRR AND IGKE(IGUC))=YES;
+IASAFRRDOWN(IGUC)$(GDATA(IGUC,'GDUCRAMPU') GE MIN_RAMPING_AFRR AND IGEH(IGUC))=YES;
+IASAFRRUP(IGUC)$(GDATA(IGUC,'GDTECHGROUP') EQ ELECTRICITY_BATTERY)=NO;
+IASAFRRDOWN(IGUC)$(GDATA(IGUC,'GDTECHGROUP') EQ ELECTRICITY_BATTERY)=NO;
+
+*Automatic frequency restoration reserves
+IASMFRRUP(IGUC)$(GDATA(IGUC,'GDUCRAMPU') GE MIN_RAMPING_MFRR  AND IGKE(IGUC) AND GDATA(IGUC,'GDUCDTMIN') LE MAX_STARTTIME_MFRR)=YES;
+IASMFRRDOWN(IGUC)$(GDATA(IGUC,'GDUCRAMPU') GE MIN_RAMPING_MFRR AND IGEH(IGUC) AND GDATA(IGUC,'GDUCDTMIN') LE MAX_STARTTIME_MFRR)=YES;
+IASMFRRUP(IGUC)$(GDATA(IGUC,'GDTECHGROUP') EQ ELECTRICITY_BATTERY)=NO;
+IASMFRRDOWN(IGUC)$(GDATA(IGUC,'GDTECHGROUP') EQ ELECTRICITY_BATTERY)=NO;
+
+*Manual replacement reserves
+IASMRRUP(IGUC)$(IGEE(IGUC) AND GDATA(IGUC,'GDUCDTMIN') LE MAX_STARTTIME_MRR)=YES;
+IASMRRDOWN(IGUC)$(IGEE(IGUC) AND GDATA(IGUC,'GDUCDTMIN') LE MAX_STARTTIME_MRR)=YES;
+IASMRRUP(IGUC)$(GDATA(IGUC,'GDTECHGROUP') EQ ELECTRICITY_BATTERY)=NO;
+IASMRRDOWN(IGUC)$(GDATA(IGUC,'GDTECHGROUP') EQ ELECTRICITY_BATTERY)=NO;
+
+*Variable production technologies (solar, wind, wave, etc) are not allowed to provide reserves
+IASFCRUP(IGUC)$(NOT(IGDISPATCH(IGUC)))=NO;
+IASAFRRUP(IGUC)$(NOT(IGDISPATCH(IGUC)))=NO;
+IASMFRRUP(IGUC)$(NOT(IGDISPATCH(IGUC)))=NO;
+IASMRRUP(IGUC)$(NOT(IGDISPATCH(IGUC)))=NO;
+IASFCRDOWN(IGUC)$(NOT(IGDISPATCH(IGUC)))=NO;
+IASAFRRDOWN(IGUC)$(NOT(IGDISPATCH(IGUC)))=NO;
+IASMFRRDOWN(IGUC)$(NOT(IGDISPATCH(IGUC)))=NO;
+IASMRRDOWN(IGUC)$(NOT(IGDISPATCH(IGUC)))=NO;

@@ -392,6 +392,7 @@ PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity developme
 
 *Unit Commitemnt data
 PARAMETER UCON(YYY,AAA,GGG,SSS,TTT)     "Unit commitment (0,1) on electricity generation to be used in future runs";
+PARAMETER UCON_STOLOAD(YYY,AAA,GGG,SSS,TTT)     "Unit commitment (0,1) on storage loading to be used in future runs";
 PARAMETER UCONMAINT(YYY,AAA,GGG,SSS)    "Unit commitment maintenance (0,1) on electricity generation to be used in future runs";
 
 * Data for handling storage
@@ -1124,11 +1125,9 @@ LOOP(Y$(ORD(Y) NE CARD(Y)),
   );
 );
 
-*---END OF COMBTECH
+$label  Technology_investments_end
 
 $ifi %COMBTECH%==yes IAGK_HASORPOT(Y,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(Y,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=YES;
-
-$label  Technology_investments_end
 
 * ----------------- End: Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT -----------------------------
 
@@ -1166,7 +1165,6 @@ $label  Transmission_investments_end
 *------------------------------------------------------------
 *--------END of EXCEPTIONS: Convenient internal sets and parameters
 *------------------------------------------------------------
-
 
 
 *-------------------------------------------------------------------------------
@@ -1682,7 +1680,9 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IG
         )
          )
          -SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),SUM(T,IHYRST(S,T)*(VGE_T(IY411,IA,IGHYRS,S,T))))
+
        =G=
+
        VHYRS_S(IY411,IA,S++1)$(CARD(S) NE ORD(S))
 $ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                            +VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
 $ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi not %HYRSBB123%==price    +VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
@@ -1751,7 +1751,7 @@ QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
    - SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S,ITALIAS))
     )*(SSIZE(S)-1))$(ORD(T) EQ CARD(T))
     =E=
-       VESTOVOLTS(IY411,IA,IGESTOS,S,T+1)
+       VESTOVOLTS(IY411,IA,IGESTOS,S,T+1) +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(T) EQ ORD(T) AND NOT(CARD(S) EQ ORD(S)))
 $ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                             +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi not %ADDESTOVOLTS%==price  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi     %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %ADDESTOVOLTS%==cont   +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),ESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
@@ -1776,7 +1776,7 @@ QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
    - SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S,ITALIAS))
     )*(SSIZE(S)-1))$(ORD(T) EQ CARD(T))
     =E=
-       VHSTOVOLTS(IY411,IA,IGHSTOS,S,T+1)
+       VHSTOVOLTS(IY411,IA,IGHSTOS,S,T+1) +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(T) EQ ORD(T) AND NOT(CARD(S) EQ ORD(S)))
 $ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                             +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi not %ADDHSTOVOLTS%==price  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi     %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %ADDHSTOVOLTS%==cont   +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),HSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
@@ -2531,7 +2531,7 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
                                 QOBJ
 *--- Balance equations ---------------------------------------------------------
                                 QEEQ
-                                QHEQ
+$ifi not %BalancingMarket%==yes $ifi not %NOHEATMARKET%==yes   QHEQ
                                 QGFEQ
 *--- Feasible generation region ------------------------------------------------
                                 QGCBGBPR
@@ -2812,7 +2812,8 @@ GH_T(Y,IA,IGH,S,T)$IAGK_HASORPOT(Y,IA,IGH)=VGH_T.L(Y,IA,IGH,S,T);
 GF_T(Y,IA,G,S,T)$IAGK_HASORPOT(Y,IA,G)=VGF_T.L(Y,IA,G,S,T);
 X_T(Y,IRE,IRI,S,T)$IXK_HASORPOT(Y,IRE,IRI)=VX_T.L(Y,IRE,IRI,S,T);
 $ifi %HEATTRANS%==yes XH_T(Y,IAE,IAI,S,T)$IXHK_HASORPOT(Y,IAE,IAI)=VXH_T.L(Y,IAE,IAI,S,T);
-$ifi %UnitComm%==yes  UCON(Y,IA,IGUC,S,T)=VUCON.L(Y,IA,IGUC,S,T)
+$ifi %UnitComm%==yes  UCON(Y,IA,IGUC,S,T)=VUCON.L(Y,IA,IGUC,S,T);
+$ifi %UnitComm%==yes  UCON_STOLOAD(Y,IA,IGUC,S,T)=VUCON_STOLOAD.L(Y,IA,IGUC,S,T);
 
 execute_unload  "../../simex/DE_T.gdx", DE_T;
 execute_unload  "../../simex/DH_T.gdx", DH_T;
@@ -2822,6 +2823,7 @@ execute_unload  "../../simex/GF_T.gdx", GF_T;
 execute_unload  "../../simex/X_T.gdx", X_T;
 $ifi %HEATTRANS%==yes execute_unload  "../../simex/XH_T.gdx", XH_T;
 $ifi %UnitComm%==yes  execute_unload  "../../simex/UCON.gdx", UCON;
+$ifi %UnitComm%==yes  execute_unload  "../../simex/UCON_STOLOAD.gdx", UCON_STOLOAD;
 
 *Fuel use in T to be used in auxils folder "timestep conversion"
 F_T(Y,C,FFF,S,T)$(GMAXF(Y,C,FFF) OR SUM(ISALIAS,GMAXFS(Y,C,FFF,ISALIAS))
@@ -2856,12 +2858,6 @@ execute_unload  "../../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
 *Planned maintenaince
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S)=VUCONMAINT.L(Y,IA,IGUC,S);
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes execute_unload  "../../simex/UCONMAINT.gdx", UCONMAINT;
-
-*Ancilliary servies
-$ifi %UnitComm%==yes $ifi %ANC_SERV%==yes ASSECRES_T(Y,IA,G,S,T)=VASSECRES_T.L(Y,IA,G,S,T);
-$ifi %UnitComm%==yes $ifi %ANC_SERV%==yes ASTERRES_T(Y,IA,G,S,T)=VASTERRES_T.L(Y,IA,G,S,T);
-$ifi %UnitComm%==yes $ifi %ANC_SERV%==yes execute_unload  "../../simex/ASSECRES_T.gdx", ASSECRES_T;
-$ifi %UnitComm%==yes $ifi %ANC_SERV%==yes execute_unload  "../../simex/ASTERRES_T.gdx", ASTERRES_T;
 
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN

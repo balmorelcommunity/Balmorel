@@ -2,8 +2,6 @@
 
 SET UC_FUELS(FFF) 'Fuels with ramping constraints';
 SET IGUC(G) "Unit commitment: the set of units participating in unit commitment";
-SET IUCUTMIN(G) "Unit commitment: technology with minimum on time";
-SET IUCDTMIN(G) "Unit commitment: technology with minimum off time";
 
 PARAMETER ICOUNT_LEFT "Internal parameter to calculate amount of timesteps left. Relevant for minimum start up time and shut down options";
 SCALAR ISCOUNT;
@@ -25,8 +23,8 @@ LOOP (UC_TECH_TYPE,
    );
 );
 
-IUCUTMIN(IGUC)$GDATA(IGUC,'GDUCUTMIN')=YES;
-IUCDTMIN(IGUC)$GDATA(IGUC,'GDUCDTMIN')=YES;
+* No UC in secondary combination technologies (redundant and could lead to errors):
+$ifi %COMBTECH%==yes    IGUC(IGCOMB2)=NO;
 
 $ONTEXT
 $ifi not %MINSTARTUPTIME%==yes $goto MINSTARTUPTIME_END

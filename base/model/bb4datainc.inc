@@ -125,6 +125,8 @@ SET FFF                "Fuels"  %semislash%
 $if     EXIST '../data/FFF.inc' $INCLUDE      '../data/FFF.inc';
 $if not EXIST '../data/FFF.inc' $INCLUDE '../../base/data/FFF.inc';
 %semislash%;
+*------------- Any FFF additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/fffadditions.inc"
 
 SET FDATASET           "Characteristics of fuels " %semislash%
 $if     EXIST '../data/FDATASET.inc' $INCLUDE      '../data/FDATASET.inc';
@@ -135,11 +137,15 @@ PARAMETER FDATA(FFF,FDATASET)    "Fuel specific values" %semislash%
 $if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
 $if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
 %semislash%;
+*------------- Any FDATA additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/fdataadditions.inc"
 
 SET GGG          "All generation technologies"   %semislash%
 $if     EXIST '../data/GGG.inc' $INCLUDE      '../data/GGG.inc';
 $if not EXIST '../data/GGG.inc' $INCLUDE '../../base/data/GGG.inc';
 %semislash%;
+*------------- Any GGG additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/gggadditions.inc"
 
 SET GDATASET     "Generation technology data" %semislash%
 $if     EXIST '../data/GDATASET.inc' $INCLUDE      '../data/GDATASET.inc';
@@ -170,6 +176,8 @@ SET G(GGG)    "Generation technologies in the simulation"  %semislash%
 $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
 $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 %semislash%;
+*------------- Any G additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/gadditions.inc"
 
 *-------------------------------------------------------------------------------
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
@@ -692,6 +700,8 @@ PARAMETER FUELPRICE(YYY,AAA,FFF)                   "Fuel prices (Money/GJ)"   %s
 $if     EXIST '../data/FUELPRICE.inc' $INCLUDE      '../data/FUELPRICE.inc';
 $if not EXIST '../data/FUELPRICE.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
 %semislash%;
+*------------- Any FUELPRICE additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/fuelpriceadditions.inc"
 
 
 *-------------------------------------------------------------------------------
