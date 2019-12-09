@@ -862,7 +862,7 @@ $include "../../base/addons/_hooks/pardefine.inc"
 *Flex4Res
 *$ontext
 GMINF(Y,'estonia','NATGAS')$(Y.VAL GE 2030) = 0 ;
-M_POL('2050','LIM_CO2',C) = EPS   ;
+*M_POL('2050','LIM_CO2',C) = EPS   ;
 GMAXF('2020','SWEDEN','Coal')=EPS;
 GMAXF('2030','SWEDEN','Coal')=EPS;
 GMAXF('2040','SWEDEN','Coal')=EPS;
