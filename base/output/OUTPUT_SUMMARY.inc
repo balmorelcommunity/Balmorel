@@ -515,10 +515,15 @@ $offtext
 
 *HOURLY heatING PRICE
 
+$ifi %BalancingMarket%==yes $ifi %NOHEATMARKET%==yes $goto NO_HEATMARKET
 H_PRICE_YCRAST(Y,C,IR,IA,S,T,'Money_per_MWh')$(CCCRRR(C,IR) AND RRRAAA(IR,IA) AND SUM(DHUSER, IDH_SUMST(IA,DHUSER)))=OMONEY*QHEQ.M(Y,IA,S,T)
 $ifi %RollingSeasons%==yes         /IHOURSINTROLLINGSEASON(S,T)
 $ifi not %RollingSeasons%==yes     /IHOURSINST(S,T)
 /IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
+$label NO_HEATMARKET
+$ifi %BalancingMarket%==yes $ifi %NOHEATMARKET%==yes H_PRICE_YCRAST(Y,C,IR,IA,S,T,'Money_per_MWh')$(CCCRRR(C,IR) AND RRRAAA(IR,IA) AND SUM(DHUSER, IDH_SUMST(IA,DHUSER)))=0;
+
+
 
 *AVERAGE heatING PRICE
 

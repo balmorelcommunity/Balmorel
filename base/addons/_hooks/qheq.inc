@@ -12,8 +12,7 @@ $ifi not %BB4%==yes $goto endoffile
 $label  beginbb4
 
 $ifi not %bb4%==yes $goto endoffile
-
-* $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/fucked up!!    **** Hans : make better!   fucked up  !! TODO
+$ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_qheq.inc";
 $ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_qheq.inc";
 
 

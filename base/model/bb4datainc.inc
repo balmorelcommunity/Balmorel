@@ -162,6 +162,11 @@ $if     EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE      '../data/TECH_GROUP_V
 $if not EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/TECH_GROUP_VALUE.inc';
 %semislash%;
 
+PARAMETER TECHGROUP_DEUSER(TECH_GROUP,DEUSER) "assignment of tech groups into user groups for electricity"   %semislash%
+$if     EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE      '../data/TECHGROUP_DEUSER.inc';
+$if not EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE '../../base/data/TECHGROUP_DEUSER.inc';
+%semislash%;
+
 SET SUBTECH_GROUP     "SubTechnology Groups" %semislash%
 $if     EXIST '../data/SUBTECH_GROUP.inc' $INCLUDE      '../data/SUBTECH_GROUP.inc';
 $if not EXIST '../data/SUBTECH_GROUP.inc' $INCLUDE '../../base/data/SUBTECH_GROUP.inc';

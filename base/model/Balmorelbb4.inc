@@ -749,6 +749,14 @@ $ifi %timeaggr%==yes  $include '../../base/addons/timeaggregation/timeaggr.inc';
 * The following relates technology and fuel:
 SET IGF(GGG,FFF)   "Relation between technology type and fuel type";
 
+* The following relates technology and tech group:
+SET IGTECH_GROUP(GGG,TECH_GROUP) "Relation between technology and tech group";
+
+* The following relates technology and user group:
+SET IGDEUSER(G,DEUSER) "Relation between distributed generation technologies and user group for electricity";
+
+SET IRESE(DEUSER)  "Associate DEUSER with RESE user";
+
 * Internal scalars:
 SCALAR ILOOPBREAK     "Scalar used as binary number to break any loop function";
 SCALAR IFIRSTYEARNEXTBB4 "First year in the next Balbase4 model";
@@ -914,6 +922,15 @@ GDATA(IGSOLH,'GDCV') = 1;
 * Specifying the relation between technology type and fuel type in IGF:
 
 IGF(G,FFF)=YES$(GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'));
+
+* Specifying the relation between technology type and tech group in IGTECH_GROUP:
+IGTECH_GROUP(G,TECH_GROUP)=YES$(GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP));
+
+* Specifying the relation between technology type and user group in IGDEUSER:
+IGDEUSER(G,DEUSER) = YES$SUM(TECH_GROUP$(TECHGROUP_DEUSER(TECH_GROUP,DEUSER) EQ 1), IGTECH_GROUP(G,TECH_GROUP));
+
+*The definition of IRESE should not be here!!!!!
+IRESE('RESE')=YES;
 
 PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 * Transfer data from data file and insert default 1 as needed (Eps1-convention):
@@ -1308,6 +1325,7 @@ POSITIVE VARIABLE VHSTOVOLTS(Y,AAA,G,S,T)          "Heat storage contents at beg
 POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)            "Accumulated new investments this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
 POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)          "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
 POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)      "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
+POSITIVE VARIABLE VDENET_T(Y,RRR,DEUSER,S,T)     "Load net local generation per user group";
 
 
 *-------------------------------------------------------------------------------
@@ -1337,8 +1355,8 @@ EQUATIONS
    QOBJ                     "Objective function"
    QEEQ(Y,RRR,S,T)          "Electricity generation equals demand (MW)"
    QHEQ(Y,AAA,S,T)          "Heat generation equals demand (MW)"
-   QGFEQ(Y,AAA,G,S,T)       "Calculate fuel consumption, existing units (MW)"
-   QGFNEQ(Y,AAA,G,S,T)      "Calculate fuel consumption, new units NOT IMPLEMENTED (MW)"
+   QDENET(Y,RRR,DEUSER,S,T) "Net power load"
+   QGFEQ(Y,AAA,G,S,T)       "Calculate fuel consumption (MW)"
 
    QGCBGBPR(Y,AAA,G,S,T)         "CHP generation (back pressure) limited by Cb-line (MW)"
    QGCBGBPRBYPASS1(Y,AAA,G,S,T)  "CHP generation (back pressure) with bypass limited by Cb-line (MW)"
@@ -1588,6 +1606,16 @@ QHEQ(IY411,IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))) ..
 
 $include "../../base/addons/_hooks/qheq.inc"
 ;
+
+QDENET(IY411,IR,DEUSER,IS3,T)$(IDE_SUMST(IR,DEUSER) GT 0)..
+         VDENET_T(IY411,IR,DEUSER,IS3,T)
+         =G=
+                              ((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))
+                               - SUM((G,IA)$(RRRAAA(IR,IA) AND IGDEUSER(G,DEUSER) AND IAGK_HASORPOT(IY411,IA,G)), VGE_T(IY411,IA,G,IS3,T))
+$ifi %DemandResponse%==yes  + SUM((IA,DR_TECH)$(IADR(IY411,IA,DR_TECH) AND RRRAAA(IR,IA) AND DR_TECH_USER(DR_TECH,DEUSER)),  VDR_UP(IY411,IA,DR_TECH,IS3,T) - VDR_DOWN(IY411,IA,DR_TECH,IS3,T))
+$ifi %EV%==yes              + (VEV_VNETCHARGE_BEV(IY411,IR,IS3,T) + VEV_VNETCHARGE_PHEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_BEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_PHEV(IY411,IR,IS3,T))$IRESE(DEUSER)
+;
+
 
 
 * Fuel consumption rate.
@@ -2532,6 +2560,7 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
 *--- Balance equations ---------------------------------------------------------
                                 QEEQ
 $ifi not %BalancingMarket%==yes $ifi not %NOHEATMARKET%==yes   QHEQ
+                                QDENET
                                 QGFEQ
 *--- Feasible generation region ------------------------------------------------
                                 QGCBGBPR
@@ -2744,7 +2773,7 @@ $ifi not %export_results%==yes $goto result_export
 HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHYRST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
 VHYRS_SL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = VHYRS_S.L(Y,IA,S);
 WATERVAL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS))= QHYRSSEQ.M(Y,IA,S)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y))
-$ifi %RollingSeasons%==yes    *(ROLLINGSEASONSNUMBER/CARD(ISALIAS))
+$ifi %RollingSeasons%==yes    /(CARD(ISALIAS)/ROLLINGSEASONSNUMBER)
 ;
 VHYRS_STL(Y,IA,S,T)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = VHYRS_S.L(Y,IA,S)
        +  IHYINF_S(IA,S) * ( SUM(IGHYRS, GKFX(Y,IA,IGHYRS)$IAGKFX(Y,IA,IGHYRS)

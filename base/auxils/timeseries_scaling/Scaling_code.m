@@ -17,7 +17,7 @@ number_of_seasons = 8;
 [status,sheets,xlFormat] = xlsfinfo(input_file_name);
 sheets=string(sheets);
 
-for j=8:length(sheets)
+for j=1:length(sheets)
 %Sheet name
 input_sheet_name = sheets(j);
 fprintf('Sheet %s is being processed. \n', input_sheet_name)
