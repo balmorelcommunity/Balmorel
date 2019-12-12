@@ -12,7 +12,7 @@ The Balmorel model has been applied in projects or other activities in a number 
 
 See "Activities" and "Publications" sections in the menu for description of ongoing and past projects using the Balmorel model.
 
-## Who can use Balmorel?
+## Who can use Balmorel? 
 
 Balmorel is a modelling tool that can be used by energy system experts, energy companies, authorities, transmission system operators, researchers and others for the analyses of future developments of a regional energy sector.
 
