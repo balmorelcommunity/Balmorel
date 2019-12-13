@@ -195,7 +195,7 @@ $setglobal DEGCAL
 *------------------------------END: EV ADDON-------------------------------------------------
 
 * Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
-$setglobal TRANSPORT yes
+$setglobal TRANSPORT
 *!option yes
 
 *-----------------------------------------------------------
@@ -437,7 +437,7 @@ $setglobal REVERT_DECOM_EXO_G   yes
 *-------------------- UNIT COMMITMENT -----------------------------------------------------------
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
-$setglobal UnitComm YES
+$setglobal UnitComm 
 *!option yes
 
 * Adds minimal production-when-on:
@@ -638,7 +638,7 @@ $setglobal ADDPLANNEDMAINTENANCE
 *--------------------TRANSPORT DEMAND-----------------------------------------------------------
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
 *Import seasonal electricity demand from the transport sector
-$setglobal ADDSEASONALTRANSPORTDEMAND   
+$setglobal ADDSEASONALTRANSPORTDEMAND
 *!option yes
 *--------------------END OF TRANSPORT DEMAND-----------------------------------------------------------
 

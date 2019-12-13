@@ -145,8 +145,51 @@ execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WE
 PARAMETER EV_BEV_Dumb(YYY,SSS,TTT,RRR);
 execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_BEV_Dumb;
 
+PARAMETER EV_BEV_SOCDumb(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_BEV_SOCDumb;
+
+PARAMETER EV_BEV_Flex(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_BEV_Flex;
+
+PARAMETER EV_BEV_Inflex(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_BEV_Inflex;
+
+PARAMETER EV_BEV_SOCFlex(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_BEV_SOCFlex;
+
+PARAMETER EV_BEV_Avail(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_BEV_Avail;
+
+PARAMETER EV_BEV_Max(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_BEV_Max;
+
+PARAMETER EV_BEV_Min(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_BEV_Min;
+
 PARAMETER EV_PHEV_Dumb(YYY,SSS,TTT,RRR);
 execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_PHEV_Dumb;
+
+PARAMETER EV_PHEV_SOCDumb(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_PHEV_SOCDumb;
+
+PARAMETER EV_PHEV_Flex(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_PHEV_Flex;
+
+PARAMETER EV_PHEV_Inflex(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_PHEV_Inflex;
+
+PARAMETER EV_PHEV_SOCFlex(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_PHEV_SOCFlex;
+
+PARAMETER EV_PHEV_Avail(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_PHEV_Avail;
+
+PARAMETER EV_PHEV_Max(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_PHEV_Max;
+
+PARAMETER EV_PHEV_Min(YYY,SSS,TTT,RRR);
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_PHEV_Min;
+
 *Missing remaining timeseries
 *---------End: EV addon-------------
 
@@ -281,7 +324,21 @@ PARAMETER WEIGHT_T_NEW(TTT_NEW)                            "Weight (relative len
 PARAMETER GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)  "Minimum annual fuel use by year, season, geography and fuel and (GJ) (INPUT DATA)";
 *---------EV addon-------------------
 PARAMETER EV_BEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_BEV_SOCDumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_BEV_Flex_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_BEV_Inflex_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_BEV_SOCFlex_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_BEV_Avail_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_BEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_BEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
 PARAMETER EV_PHEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_PHEV_SOCDumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_PHEV_Flex_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_PHEV_Inflex_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_PHEV_SOCFlex_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_PHEV_Avail_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_PHEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
 *Missing remaining timeseries
 *---------End: EV addon-------------
 PARAMETER ESTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
@@ -347,7 +404,21 @@ HYPPROFILS_NEW(AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),HYPPROFILS(AAA,SSS));
 DE_VAR_T_NEW(RRR,DEUSER,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),DE_VAR_T(RRR,DEUSER,SSS,TTT));
 DH_VAR_T_NEW(AAA,DHUSER,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),DH_VAR_T(AAA,DHUSER,SSS,TTT));
 EV_BEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_Dumb(YYY,SSS,TTT,RRR)) ;
+EV_BEV_SOCDumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_SOCDumb(YYY,SSS,TTT,RRR)) ;
+EV_BEV_Flex_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_Flex(YYY,SSS,TTT,RRR)) ;
+EV_BEV_Inflex_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_Inflex(YYY,SSS,TTT,RRR)) ;
+EV_BEV_SOCFlex_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_SOCFlex(YYY,SSS,TTT,RRR)) ;
+EV_BEV_Avail_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_Avail(YYY,SSS,TTT,RRR)) ;
+EV_BEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_Max(YYY,SSS,TTT,RRR)) ;
+EV_BEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_Min(YYY,SSS,TTT,RRR)) ;
 EV_PHEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Dumb(YYY,SSS,TTT,RRR)) ;
+EV_PHEV_SOCDumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_SOCDumb(YYY,SSS,TTT,RRR)) ;
+EV_PHEV_Flex_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Flex(YYY,SSS,TTT,RRR)) ;
+EV_PHEV_Inflex_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Inflex(YYY,SSS,TTT,RRR)) ;
+EV_PHEV_SOCFlex_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_SOCFlex(YYY,SSS,TTT,RRR)) ;
+EV_PHEV_Avail_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Avail(YYY,SSS,TTT,RRR)) ;
+EV_PHEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Max(YYY,SSS,TTT,RRR)) ;
+EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Min(YYY,SSS,TTT,RRR)) ;
 ESTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOVOLTS(YYY,AAA,GGG,SSS,TTT)) ;
 HSTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HSTOVOLTS(YYY,AAA,GGG,SSS,TTT));
 ESTOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT));
@@ -572,6 +643,83 @@ loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
 );
 putclose;
 
+*EV_BEV_SOCDumb timeseries
+file EV_BEV_SOCDumb_timeseries /'../../base/auxils/timestep_conversion/output/EV_BEV_SOCDumb.inc'/;
+EV_BEV_SOCDumb_timeseries.nd  = 4;
+put EV_BEV_SOCDumb_timeseries;
+put '*PARAMETER EV_BEV_SOCDumb CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_SOCDumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_BEV_SOCDumb('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_BEV_SOCDumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_BEV_Flex timeseries
+file EV_BEV_Flex_timeseries /'../../base/auxils/timestep_conversion/output/EV_BEV_Flex.inc'/;
+EV_BEV_Flex_timeseries.nd  = 4;
+put EV_BEV_Flex_timeseries;
+put '*PARAMETER EV_BEV_Flex CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_Flex_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_BEV_Flex('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_BEV_Flex_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_BEV_Inflex timeseries
+file EV_BEV_Inflex_timeseries /'../../base/auxils/timestep_conversion/output/EV_BEV_Inflex.inc'/;
+EV_BEV_Inflex_timeseries.nd  = 4;
+put EV_BEV_Inflex_timeseries;
+put '*PARAMETER EV_BEV_Inflex CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_Inflex_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_BEV_Inflex('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_BEV_Inflex_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_BEV_SOCFlex timeseries
+file EV_BEV_SOCFlex_timeseries /'../../base/auxils/timestep_conversion/output/EV_BEV_SOCFlex.inc'/;
+EV_BEV_SOCFlex_timeseries.nd  = 4;
+put EV_BEV_SOCFlex_timeseries;
+put '*PARAMETER EV_BEV_SOCFlex CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_SOCFlex_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_BEV_SOCFlex('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_BEV_SOCFlex_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_BEV_Avail timeseries
+file EV_BEV_Avail_timeseries /'../../base/auxils/timestep_conversion/output/EV_BEV_Avail.inc'/;
+EV_BEV_Avail_timeseries.nd  = 4;
+put EV_BEV_Avail_timeseries;
+put '*PARAMETER EV_BEV_Avail CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_Avail_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_BEV_Avail('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_BEV_Avail_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_BEV_Max timeseries
+file EV_BEV_Max_timeseries /'../../base/auxils/timestep_conversion/output/EV_BEV_Max.inc'/;
+EV_BEV_Max_timeseries.nd  = 4;
+put EV_BEV_Max_timeseries;
+put '*PARAMETER EV_BEV_Max CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_BEV_Max('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_BEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_BEV_Min timeseries
+file EV_BEV_Min_timeseries /'../../base/auxils/timestep_conversion/output/EV_BEV_Min.inc'/;
+EV_BEV_Min_timeseries.nd  = 4;
+put EV_BEV_Min_timeseries;
+put '*PARAMETER EV_BEV_Min CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_BEV_Min('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_BEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+
+
+
+
+
+
+
 *EV_PHEV_Dumb timeseries
 file EV_PHEV_Dumb_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_Dumb.inc'/;
 EV_PHEV_Dumb_timeseries.nd  = 4;
@@ -581,6 +729,77 @@ loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
             put "EV_PHEV_Dumb('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_PHEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
 );
 putclose;
+
+*EV_PHEV_SOCDumb timeseries
+file EV_PHEV_SOCDumb_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_SOCDumb.inc'/;
+EV_PHEV_SOCDumb_timeseries.nd  = 4;
+put EV_PHEV_SOCDumb_timeseries;
+put '*PARAMETER EV_PHEV_SOCDumb CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_SOCDumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_PHEV_SOCDumb('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_PHEV_SOCDumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_PHEV_Flex timeseries
+file EV_PHEV_Flex_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_Flex.inc'/;
+EV_PHEV_Flex_timeseries.nd  = 4;
+put EV_PHEV_Flex_timeseries;
+put '*PARAMETER EV_PHEV_Flex CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_Flex_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_PHEV_Flex('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_PHEV_Flex_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_PHEV_Inflex timeseries
+file EV_PHEV_Inflex_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_Inflex.inc'/;
+EV_PHEV_Inflex_timeseries.nd  = 4;
+put EV_PHEV_Inflex_timeseries;
+put '*PARAMETER EV_PHEV_Inflex CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_Inflex_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_PHEV_Inflex('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_PHEV_Inflex_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_PHEV_SOCFlex timeseries
+file EV_PHEV_SOCFlex_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_SOCFlex.inc'/;
+EV_PHEV_SOCFlex_timeseries.nd  = 4;
+put EV_PHEV_SOCFlex_timeseries;
+put '*PARAMETER EV_PHEV_SOCFlex CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_SOCFlex_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_PHEV_SOCFlex('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_PHEV_SOCFlex_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_PHEV_Avail timeseries
+file EV_PHEV_Avail_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_Avail.inc'/;
+EV_PHEV_Avail_timeseries.nd  = 4;
+put EV_PHEV_Avail_timeseries;
+put '*PARAMETER EV_PHEV_Avail CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_Avail_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_PHEV_Avail('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_PHEV_Avail_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_PHEV_Max timeseries
+file EV_PHEV_Max_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_Max.inc'/;
+EV_PHEV_Max_timeseries.nd  = 4;
+put EV_PHEV_Max_timeseries;
+put '*PARAMETER EV_PHEV_Max CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_PHEV_Max('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_PHEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
+*EV_PHEV_Min timeseries
+file EV_PHEV_Min_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_Min.inc'/;
+EV_PHEV_Min_timeseries.nd  = 4;
+put EV_PHEV_Min_timeseries;
+put '*PARAMETER EV_PHEV_Min CALCULATED WITH AUXILS' //
+loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
+            put "EV_PHEV_Min('",YYY.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"','",RRR.tl :0,"')=", EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR) :0 ';' /
+);
+putclose;
+
 
 *$OFFTEXT
 *------------END OF OUTPUT GENERATION-------------
