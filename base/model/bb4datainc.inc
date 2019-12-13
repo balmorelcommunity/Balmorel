@@ -115,6 +115,8 @@ SET DEUSER             "Electricity demand user groups. Set must include element
 $if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DEUSER.inc';
 $if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DEUSER.inc';
 %semislash%;
+*------------- Any DEUSER additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/deuseradditions.inc"
 
 SET DHUSER             "Heat demand user groups. Set must include element RESH for holding demand not included in any other user group"  %semislash%
 $if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DHUSER.inc';
@@ -645,6 +647,8 @@ PARAMETER DE(YYY,RRR,DEUSER)    "Annual electricity consumption (MWh)" %semislas
 $if     EXIST '../data/DE.inc' $INCLUDE         '../data/DE.inc';
 $if not EXIST '../data/DE.inc' $INCLUDE '../../base/data/DE.inc';
 %semislash%;
+*------------- Any DE additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/deadditions.inc"
 
 
 *-------------------------------------------------------------------------------
@@ -760,6 +764,8 @@ PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)                    "Variation in electric
 $if     EXIST '../data/DE_VAR_T.inc' $INCLUDE      '../data/DE_VAR_T.inc';
 $if not EXIST '../data/DE_VAR_T.inc' $INCLUDE '../../base/data/DE_VAR_T.inc';
 %semislash%;
+*------------- Any DE_VAR_T additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/de_var_tadditions.inc"
 
 PARAMETER DH_VAR_T(AAA,DHUSER,SSS,TTT)                    "Variation in heat demand"   %semislash%
 $if     EXIST '../data/DH_VAR_T.inc' $INCLUDE      '../data/DH_VAR_T.inc';

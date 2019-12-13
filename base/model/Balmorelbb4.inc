@@ -2888,6 +2888,12 @@ execute_unload  "../../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S)=VUCONMAINT.L(Y,IA,IGUC,S);
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes execute_unload  "../../simex/UCONMAINT.gdx", UCONMAINT;
 
+*Transport demand
+$ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes TRANSDEMAND_S(Y,C,S)=SUM((T,IR)$CCCRRR(C,IR),VTRANSDEMAND_T.L(Y,IR,S,T))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
+$ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes TRANSDEMAND_T(Y,IR,S,T)=VTRANSDEMAND_T.L(Y,IR,S,T);
+$ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes execute_unload  "../../simex/TRANSDEMAND_S.gdx", TRANSDEMAND_S;
+$ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes execute_unload  "../../simex/TRANSDEMAND_T.gdx", TRANSDEMAND_T;
+
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
 *------------------------------------------------------------------------------

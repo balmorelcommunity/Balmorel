@@ -1,0 +1,31 @@
+* Transport add-on. Added by Juan Gea Bermudez
+
+
+$ifi     %import_results%==yes $ifi %ADDSEASONALTRANSPORTDEMAND%==yes     $goto $SEASONALTRANSPORTDEMAND
+$ifi not %import_results%==yes $ifi %ADDSEASONALTRANSPORTDEMAND%==yes     $goto $SEASONALTRANSPORTDEMAND
+EQUATION  QTRANSDEMAND_Y(Y)    'Annual transport demand has to be met (MWh)';
+
+QTRANSDEMAND_Y(IY411)$SUM(C,TRANSDEMAND_Y(IY411,C))..
+SUM((C,IR)$CCCRRR(C,IR),
+   SUM((IS3,T),
+      VTRANSDEMAND_T(IY411,IR,IS3,T)*IHOURSINST(IS3,T))
+)
+=E=
+SUM(C,TRANSDEMAND_Y(IY411,C))
+;
+$label $SEASONALTRANSPORTDEMAND
+
+$ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes  $goto $NO_SEASONALTRANSPORTDEMAND
+
+EQUATION  QTRANSDEMAND_S(Y,S)    'Seasonal transport demand has to be met (MWh)';
+
+QTRANSDEMAND_S(IY411,IS3)$SUM(C,TRANSDEMAND_S(IY411,C,IS3))..
+SUM((C,IR)$CCCRRR(C,IR),
+   SUM(T,
+      WEIGHT_S(IS3)/IWEIGHSUMT * VTRANSDEMAND_T(IY411,IR,IS3,T))
+)
+=E=
+SUM(C,TRANSDEMAND_S(IY411,C,IS3))
+;
+
+$label $NO_SEASONALTRANSPORTDEMAND

@@ -17,6 +17,7 @@ $label  beginbb4
 $ifi not %bb4%==yes $goto endoffile
 $ifi %HYDROGEN%==yes      $include   "../../base/addons/hydrogen/bb4/hydrogen_vardeclare.inc";
 $ifi %OFFSHOREGRID%==yes  $include   "../../base/addons/offshoregrid/bb4/offshoregrid_vardeclare.inc";
+$ifi %TRANSPORT%==yes       $include   "../../base/addons/transport/bb4/transport_vardeclare.inc";
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_vardeclare.inc";
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_vardeclare.inc";
 $ifi %AGKNDISC%==yes      $include   "../../base/addons/AGKNdisc/bb4/agkndisc_vardeclare.inc";

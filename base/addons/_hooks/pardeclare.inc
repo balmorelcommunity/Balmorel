@@ -16,8 +16,10 @@ $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_pardeclare
 $ifi not %BB4%==yes $goto endoffile
 
 $label  beginbb4
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_pardeclare.inc";
 
 $ifi %OFFSHOREGRID%==yes  $include   "../../base/addons/offshoregrid/bb4/offshoregrid_pardeclare.inc";
+$ifi %TRANSPORT%==yes       $include   "../../base/addons/transport/bb4/transport_pardeclare.inc";  
 $ifi %X3V%==yes  $include   "../../base/addons/x3v/bb4/x3v_pardeclare.inc";
 $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_pardeclare.inc";
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_pardeclare.inc";

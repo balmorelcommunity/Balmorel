@@ -60,5 +60,5 @@ $ifi %ADDMAXFUELUSES%==yes execute_load  '../../simex/GMAXFS.gdx', GMAXFS;
 *Import planned maintenance
 $ifi %ADDPLANNEDMAINTENANCE%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCONMAINT.gdx', UCONMAINT;
 
-
-
+*Import transport seasonal demand
+$ifi %ADDSEASONALTRANSPORTDEMAND%==yes $ifi %transport%==yes execute_load  '../../simex/TRANSDEMAND_S.gdx', TRANSDEMAND_S;

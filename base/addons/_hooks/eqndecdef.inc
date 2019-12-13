@@ -16,6 +16,7 @@ $label  beginbb4
 $ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_eqndecdef.inc";
 
 $ifi %OFFSHOREGRID%==yes  $include   "../../base/addons/offshoregrid/bb4/offshoregrid_eqndecdef.inc";
+$ifi %TRANSPORT%==yes       $include   "../../base/addons/transport/bb4/transport_eqndecdef.inc";
 $ifi %X3V%==yes $include "../../base/addons/x3v/bb4/x3v_eqndecdef.inc";
 $ifi %UnitComm%==yes      $include   "../../base/addons/unitcommitment/bb4/uc_eqndecdef.inc";
 $ifi %AGKNDISC%==yes $include "../../base/addons/AGKNdisc/bb4/agkndisc_eqndecdef.inc";

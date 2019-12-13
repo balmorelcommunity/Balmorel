@@ -67,6 +67,19 @@ $include   "../../base/addons/industry/bb4/industry_aaaadditions.inc";
 
 ALIAS(AAA,IAAA);
 
+SET CCC    "Countries in the simulation";
+$if     EXIST '../data/CCC.inc' $INCLUDE         '../data/CCC.inc';
+$if not EXIST '../data/CCC.inc' $INCLUDE '../../base/data/CCC.inc';
+
+SET C(CCC)    "Countries in the simulation" ;
+$if     EXIST '../data/C.inc' $INCLUDE         '../data/C.inc';
+$if not EXIST '../data/C.inc' $INCLUDE '../../base/data/C.inc';
+
+SET CCCRRR(CCC,RRR)      "Regions in countries";
+$if     EXIST '../data/CCCRRR.inc' $INCLUDE      '../data/CCCRRR.inc';
+$if not EXIST '../data/CCCRRR.inc' $INCLUDE '../../base/data/CCCRRR.inc';
+;
+
 SET DEUSER             "Electricity demand user groups. Set must include element RESE for holding demand not included in any other user group" ;
 $INCLUDE         '../data/DEUSER.inc';
 
@@ -245,6 +258,10 @@ PARAMETER IGKRATE(AAA,GGG,SSS,TTT)     "Rating of technology capacities (non-neg
 $ifi  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/IGKRATE.gdx', IGKRATE;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx' IGKRATE(AAA,GGG,SSS,TTT)=0;
 
+PARAMETER TRANSDEMAND_T(YYY,RRR,SSS,TTT) "Transport demand per country, year, and season and hour (MWh)";
+$ifi  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx', TRANSDEMAND_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx' TRANSDEMAND_T(YYY,RRR,SSS,TTT)=0;
+
 
 *REST OF HYDRO PARAMETERS.........
 
@@ -293,6 +310,7 @@ PARAMETER GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)  "Minimum annual fuel use by yea
 PARAMETER UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)    'Unit commitment maintenance (0,1) on electricity generation to be used in future runs';
 PARAMETER UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)    'Unit commitment (0,1) on electricity generation to be used in future runs';
 PARAMETER IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)     "Rating of technology capacities (non-negative, typically less than or equal to 0); default/1/, eps for 0)";
+PARAMETER TRANSDEMAND_S_NEW(YYY,CCC,SSS_NEW) "Transport demand per country, year, and season (MWh)";
 
 *----------END OF INPUT DATA--------------------
 
@@ -357,6 +375,7 @@ GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXF
 UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),UCONMAINT(YYY,AAA,GGG,SSS));
 UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),UCON(YYY,AAA,GGG,SSS,TTT)) ;
 IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),IGKRATE(AAA,GGG,SSS,TTT)) ;
+TRANSDEMAND_S_NEW(YYY,CCC,SSS_NEW)=SUM((SSS,TTT,TTT_NEW,RRR)$(ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW) AND CCCRRR(CCC,RRR)),TRANSDEMAND_T(YYY,RRR,SSS,TTT)*WEIGHT_S(SSS))/SUM(TTT, WEIGHT_T(TTT));
 
 *------------END OF CALCULATIONS-------------
 
@@ -410,6 +429,7 @@ execute_unload  "../../base/auxils/timestep_conversion/output/GMAXFS.gdx", GMAXF
 execute_unload  "../../base/auxils/timestep_conversion/output/UCONMAINT.gdx", UCONMAINT_NEW=UCONMAINT;
 execute_unload  "../../base/auxils/timestep_conversion/output/UCON.gdx", UCON_NEW=UCON;
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", IGKRATE_NEW=IGKRATE;
+execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", TRANSDEMAND_S_NEW=TRANSDEMAND_S;
 
 *$ONTEXT
 *WND_VAR_T timeseries

@@ -194,6 +194,10 @@ $setglobal DEGCAL
 *!option
 *------------------------------END: EV ADDON-------------------------------------------------
 
+* Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
+$setglobal TRANSPORT yes
+*!option yes
+
 *-----------------------------------------------------------
 *---------------HYDRO RESERVOIRS OPTIONS--------------------
 *Interpretation of the seasonal level of hydro reservoirs (QHYRSSEQ)
@@ -264,7 +268,7 @@ $setglobal NOHEATMARKET
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH 
+$setglobal COMBTECH yes
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
@@ -630,6 +634,13 @@ $setglobal ADDMAXFUELUSES
 $setglobal ADDPLANNEDMAINTENANCE
 *!option yes
 *--------------------END OF PLANNED MAINTENANCE-----------------------------------------------------------
+
+*--------------------TRANSPORT DEMAND-----------------------------------------------------------
+*NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
+*Import seasonal electricity demand from the transport sector
+$setglobal ADDSEASONALTRANSPORTDEMAND   
+*!option yes
+*--------------------END OF TRANSPORT DEMAND-----------------------------------------------------------
 
 *------------- END OF IMPORT OPTIONS ----------------
 *--------------------------------------------
