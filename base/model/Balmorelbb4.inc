@@ -111,7 +111,11 @@ GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_O
 * They can be used for multiple purposes
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
-ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,EXCESSHEAT,GROUND,HUB_OFF;
+ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,EXCESSHEAT,GROUND,HUB_OFF
+$ifi not %INDUSTRY%==yes $goto noindustry
+, INDUSTRY_PH
+$label noindustry
+;
 
 * ACRONYMS for user defined fuels will be given as part of file FFF.inc
 
@@ -2242,7 +2246,11 @@ QXINVSYMMETRY(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
 
 * "Limit on annual CO2-emission by year and country (kg/MW)"
 QLIMCO2(IY411,C)$(M_POL(IY411,'LIM_CO2',C) AND (M_POL(IY411,'LIM_CO2',C) LT INF))..
-      SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
+      SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001
+$ifi not %CH4inCO2lim%==yes $goto endCH4inCO2lim
+      + GDATA(G,'GDCH4') * IOF0000001 * CO2EQUIVALENT_FOR_CH4
+$label endCH4inCO2lim
+      ) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
 $include "../../base/addons/_hooks/qlimco2.inc"
       =L= M_POL(IY411,'LIM_CO2',C);
 

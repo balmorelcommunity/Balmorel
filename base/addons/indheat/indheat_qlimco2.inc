@@ -10,5 +10,9 @@ $ifi not %COMBTECH%==yes $goto endcombtechCO22
 $label endcombtechCO22
          )
          ),
-         SUM( (IS3,T), IHOURSINST(IS3,T) * (FDATA(FFF,'FDCO2')*IOF0001) * IOF3P6 * INDHEAT_VGF_T(IY411,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP,IS3,T))
+         SUM( (IS3,T), IHOURSINST(IS3,T) * (FDATA(FFF,'FDCO2')*IOF0001
+$ifi not %CH4inCO2lim%==yes $goto endCH4inCO2lim
+         + INDHEAT_GDATA(INDHEAT_G,'GDCH4') * IOF0000001 * CO2EQUIVALENT_FOR_CH4
+$label endCH4inCO2lim
+         ) * IOF3P6 * INDHEAT_VGF_T(IY411,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP,IS3,T))
          )

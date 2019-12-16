@@ -26,15 +26,24 @@ $setglobal vqdebug
 *===============================================================================
 *===============================================================================
 
-$setglobal SCNAME _LS
+$setglobal SCNAME _M
 *!option _LS *Late Sprint
 *!option _M  *Marathon
+*!option _ES *Early Sprint
 
 $setglobal TECHALT
-*!option _DEcentral_lo     *REdecentral alternative: Decrease investment costs for solar/wind technology by uncertainty ranges in technology catalogue of the costs
-*!option _DEcentral_up     *REdecentral alternative: Increase investment costs for solar/wind technology by uncertainty ranges in technology catalogue of the costs
-*!option _CEntral_lo       *REcentral alternative: Decrease investment costs for technologies that are installed in central areas by uncertainty ranges in technology catalogue of the costs
-*!option _CEntral_up       *REcentral alternative: Increase investment costs for technologies that are installed in central areas by uncertainty ranges in technology catalogue of the costs
+*!option _DEcentral_lo-20  *REdecentral alternative: Decrease investment costs for solar/wind technology by 20%, (Example:INVEST COST*0,8)
+*!option _DEcentral_lo-40  *REdecentral alternative: Decrease investment costs for solar/wind technology by 40%
+*!option _DEcentral_lo-60  *REdecentral alternative: Decrease investment costs for solar/wind technology by 60%
+*!option _DEcentral_up+20  *REdecentral alternative: Increase investment costs for solar/wind technology by 20%
+*!option _DEcentral_up+40  *REdecentral alternative: Increase investment costs for solar/wind technology by 40%
+*!option _DEcentral_up+60  *REdecentral alternative: Increase investment costs for solar/wind technology by 60%
+*!option _CEntral_lo_20    *REcentral alternative: Decrease investment costs for technologies(natgas,muniwaste,woodchips,woodpellets and straw)that are installed in central areas by 20%
+*!option _CEntral_up_20    *REcentral alternative: Increase investment costs for technologies(natgas,muniwaste,woodchips,woodpellets and straw)that are installed in central areas by 20%
+*!option _CEntral_lo_40    *REcentral alternative: Decrease investment costs for technologies(natgas,muniwaste,woodchips,woodpellets and straw) that are installed in central areas by 40%
+*!option _CEntral_up_40    *REcentral alternative: Increase investment costs for technologies(natgas,muniwaste,woodchips,woodpellets and straw) that are installed in central areas by 40%
+*!option _CEntral_lo_60    *REcentral alternative: Decrease investment costs for technologies(natgas,muniwaste,woodchips,woodpellets and straw) that are installed in central areas by 60%
+*!option _CEntral_up_60    *REcentral alternative: Increase investment costs for technologies(natgas,muniwaste,woodchips,woodpellets and straw) that are installed in central areas by 60%
 *!option _REgastech_lo     *REgastech alternative: Decrease investment costs for renewable gas technologies by uncertainty ranges in technology catalogue of the costs
 *!option _REgastech_up     *REgastech alternative: Increase investment costs for renewable gas technologies by uncertainty ranges in technology catalogue of the costs
 *!option _cheapHP_lo       *cheapHP alterantive: Decrease investment costs for heat pumps by uncertainty ranges in technology catalogue
@@ -44,13 +53,17 @@ $setglobal TECHALT
 *!option _noBioImport      *noBioImport alternative: No import of biomasses
 *!option _1.5Degrees       *1.5Degrees alternative: New CO2 targets
 *!option _CO2 capture      *CO2 capture alternative: Technologies to capture CO2   from air and central sources gets cheap
+*!option _lessELtransm_0.95 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 95 %
 *!option _lessELtransm_0.5 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 50 %
 *!option _lessELtransm_0.2 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 20 %
 *!option _lessELtransm_0.0 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 100 %
 *!option _strongDH         *strongDH alternative: No natural gas for heating
 *!option _noGrid           *noGrid alternative: No Gas infrastructure from 2030
 *!option _includeReg       *including regulation
-
+*!option _emiOnImport      *adding emissions to imported biomass - woodpellets and woodchips
+*!option _noBioImport+PtX  *noBioImport+PtX alternative: No import of biomasses, but PtX demand included
+*!option _cheapGasHP_COP250*cheapGasHP_COP250 alternative: Allow to install GNR_HP_NGAS_GE_COP-250
+*!option _cheapBiomass     *cheapBiomass alternative: reduce biomass cost
 
 *===============================================================================
 *===============================================================================
@@ -258,6 +271,12 @@ $setglobal INDHEAT yes
 
 SCALAR INDHEAT_GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
 INDHEAT_GINVESTSTART= 2020;
+
+* Add CH4 emissions to CO2 emission target:
+$setglobal CH4inCO2lim yes
+*!option yes
+SCALAR CO2EQUIVALENT_FOR_CH4 'The CO2 equivalent for CH4' ;
+CO2EQUIVALENT_FOR_CH4=28;
 
 *
 $setglobal POLICIES

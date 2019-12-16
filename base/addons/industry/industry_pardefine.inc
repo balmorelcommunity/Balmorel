@@ -5,7 +5,9 @@ $if not EXIST '../data/INDUSTRY_DH.inc' $INCLUDE '../../base/data/INDUSTRY_DH.in
 $if     EXIST '../data/INDUSTRY_DH_VAR_T.inc' $INCLUDE         '../data/INDUSTRY_DH_VAR_T.inc';
 $if not EXIST '../data/INDUSTRY_DH_VAR_T.inc' $INCLUDE '../../base/data/INDUSTRY_DH_VAR_T.inc';
 
-$if     EXIST '../data/INDUSTRY_AGKN.inc' $INCLUDE         '../data/INDUSTRY_AGKN.inc';
+*$if     EXIST '../data/INDUSTRY_AGKN.inc' $INCLUDE         '../data/INDUSTRY_AGKN.inc';
+$if     EXIST '../data/INDUSTRY_AGKN%TECHALT%.inc' $INCLUDE '../data/INDUSTRY_AGKN%TECHALT%.inc';
+$if not EXIST '../data/INDUSTRY_AGKN%TECHALT%.inc' $INCLUDE '../data/INDUSTRY_AGKN.inc';
 $if not EXIST '../data/INDUSTRY_AGKN.inc' $INCLUDE '../../base/data/INDUSTRY_AGKN.inc';
 
 $if     EXIST '../data/INDUSTRY_GKFX.inc' $INCLUDE         '../data/INDUSTRY_GKFX.inc';
