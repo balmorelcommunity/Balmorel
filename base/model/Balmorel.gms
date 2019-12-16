@@ -3307,6 +3307,9 @@ $label endofUNIXoutput
 $ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY_FG.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY_FG.inc';
 *--- End of Main results calculation ---------------------------------------
 
+*----optiflow output file
+$ifi %Optiflow%==yes $include '../output/Optiflow_OutputFile.inc';
+
 
 *----- End of file:------------------------------------------------------------
 $label endoffile

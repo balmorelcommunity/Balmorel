@@ -19,6 +19,8 @@ $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwisep
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_isetdecdef.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_isetdecdef.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_isetdecdef.inc";
-$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_isetdecdef.inc";  
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_isetdecdef.inc";
+
+$ifi %OPTIFLOW%==yes  $include   "../../base/addons/optiflow/bb4/optiflow_isetdecdef.inc";
 
 $label endoffile

@@ -22,5 +22,7 @@ $ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_qeeq
 $ifi %vqdebug%==yes   $setglobal equation qeeq
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
 
+$ifi %OPTIFLOW%==yes   $include   "../../base/addons/optiflow/bb4/optiflow_qeeq.inc";
+
 
 $label endoffile

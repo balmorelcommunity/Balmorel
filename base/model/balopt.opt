@@ -464,6 +464,48 @@ $setglobal bb4weighty shareYYY
 *!option same       !Text "Use same weights for all Y"
 *!option shareYYY   !Text "Years in YYY but not in Y are shared between two nearest (first and last years double the shared weight contribution)"
 
+*-------------------------------------------------------------------------------
+* OptiFlow model.
+*-------------------------------------------------------------------------------
+$setglobal OPTIFLOW yes
+*!option yes
+* Addon APKNdisc: discrete size investments in PROC.
+$setglobal APKNdisc
+*!option yes
+*Investments in Optiflow technologies
+$setglobal inv yes
+*! option yes
+*Model solved as MIP
+$setglobal solveOptiFlowmip
+*! option yes
+
+* Debug possibilities:
+$Setglobal addEPStoL
+*! option yes
+* Not needed if there are no capacity bounds on internal proc
+* It will be needed if there are capacity bounds on some internal proc, therefore add them only in that case (requires some coding, TODO).
+* With such minimal use the infeasibilities will be moved to SOSIBU proc whenever possible.
+$Setglobal useQNODEslack
+*! option
+$Setglobal useSSBslack
+*! option yes
+$Setglobal useShareSlack
+*! option yes
+* Option uniquesol permit to use quadratic terms in QOBJ in order to attain unique solution.
+* Should be used for debug on small systems only.
+$Setglobal uniquesol
+*! option yes
+* Testing ONLY:
+$setglobal singlearea
+*! option yes
+* Testing ONLY:
+$setglobal addUP
+*! option yes
+*-------------------------------------------------------------------------------
+*Optiflow end
+*-------------------------------------------------------------------------------
+
+
 *===============================================================================
 *===============================================================================
 * Relative paths
@@ -705,7 +747,7 @@ putclose fileMERGESAVEPOINTRESULTSbash;
 $setglobal MERGEDSAVEPOINTRESULTS2MDB
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
-$setglobal MERGEDSAVEPOINTRESULTS2SQLITE 
+$setglobal MERGEDSAVEPOINTRESULTS2SQLITE
 *!option yes    !onlyif %SAVEPOINTVALUE%==1  !onlyif %MERGESAVEPOINTRESULTS%==yes
 
 

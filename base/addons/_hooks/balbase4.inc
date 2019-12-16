@@ -19,5 +19,7 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_balbase4.inc";
 $ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_balbase4.inc";
 $ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_balbase4.inc";
+$ifi %OPTIFLOW%==yes         $include         "../../base/addons/optiflow/bb4/optiflow_balbase4.inc";
+
 
 $label endoffile

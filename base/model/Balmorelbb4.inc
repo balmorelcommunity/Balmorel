@@ -1977,7 +1977,10 @@ QGMAXCF(IY411,C,FFF)$IGMAXF(IY411,C,FFF)..
     =L= IGMAXF(IY411,C,FFF);
 
 * "Exact fuel use by year, country and fuel (GJ)"
-QGEQCF(IY411,C,FFF)$IGEQF(IY411,C,FFF)..
+QGEQCF(IY411,C,FFF)$(IGEQF(IY411,C,FFF)
+*$ifi %OPTIFLOW==yes% OR 'BioNG'
+)
+..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
     =E= IGEQF(IY411,C,FFF)
 $include "../../base/addons/_hooks/qgeqcf.inc"

@@ -34,6 +34,8 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardefine.inc";
 $ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_pardefine.inc";
 
+$ifi %OPTIFLOW%==yes  $include   "../../base/addons/optiflow/bb4/optiflow_pardefine.inc";
+
 $label endoffile
 
 

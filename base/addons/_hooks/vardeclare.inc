@@ -31,5 +31,6 @@ $ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heat
 
 $ifi %vqdebug%==yes       $include   "../../base/addons/vqdebug/bb4/vqdebug_declare.inc";
 
+$ifi %OPTIFLOW%==yes      $include   "../../base/addons/optiflow/bb4/optiflow_vardeclare.inc";
 
 $label endoffile
