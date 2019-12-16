@@ -83,6 +83,8 @@ QUCSTARTQ_STOLOAD_INTRA(IY411,IA,IGUC,S,T)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IS3
     =E=
    VUCON_STOLOAD(IY411,IA,IGUC,S,T)
 - VUCON_STOLOAD(IY411,IA,IGUC,S,T-1)
+
+$include "../../base/addons/_hooks/qucstartq_stoload_intra.inc"
 ;
 
 QUCSTARTQ_STOLOAD_INTER(IY411,IA,IGUC,S,T)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IS3(S) AND (IGESTOS(IGUC) OR IGHSTOS(IGUC))
@@ -94,6 +96,8 @@ $ifi not  %SEASONALLINKUC%==yes         AND (NOT (ORD(T) EQ 1))
    VUCON_STOLOAD(IY411,IA,IGUC,S,T)
 $ifi not %SEASONALLINKUC%==yes  - VUCON_STOLOAD(IY411,IA,IGUC,S,T-1)
 $ifi %SEASONALLINKUC%==yes      - VUCON_STOLOAD(IY411,IA,IGUC,S-1,T--1)$(ORD(T) EQ 1)  - VUCON_STOLOAD(IY411,IA,IGUC,S,T-1)$(NOT (ORD(T) EQ 1))
+
+$include "../../base/addons/_hooks/qucstartq_stoload_inter.inc"
 ;
 
 QUCMAXVGF(IY411,IA,IGUC,IS3,T)$IAGK_HASORPOT(IY411,IA,IGUC)..    !! 'Unit commitment: Fuel consumption below maximum (of units online)'
@@ -397,6 +401,7 @@ $ifi     %import_results%==yes $ifi     %ADDPLANNEDMAINTENANCE%==yes AND UCONMAI
 VUCON_STOLOAD(IY411,IA,IGUC,IS3,T) + VUCONMAINT(IY411,IA,IGUC,IS3)
 =L=
 CEIL(GKFX(IY411,IA,IGUC)/GDATA(IGUC,'GDUCUNITSIZE'))
+$include "../../base/addons/_hooks/qucvucon_existing_stoload.inc"
 ;
 
 QUCVUCONMAINT(IY411,IA,IGUC,IS3)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC)) OR IGDECOMEXOPOT(IY411,IA,IGUC)) AND IGPLANMAINT(IGUC))..  !! 'Unit commitment: Number of endogenous units on limited by unit size and capacity)'
