@@ -1,0 +1,124 @@
+* File optiwastegams.opt to the OptiWaste model.
+* This file contains GAMS options.
+* This file is part of the OptiWaste model, version ....
+
+*===============================================================================
+* The following are options applying to the GAMS system (unless overwritten).
+* Observe that in order to make them apply everywhere,
+* the option $ONGLOBAL must be set in the OptiWaste.gms file
+* before the $inclusion of the present file.
+*===============================================================================
+
+
+*-------------------------------------------------------------------------------
+* GAMS output:
+*-------------------------------------------------------------------------------
+
+*...............................................................................
+* $OFFLISTING suppresses printing of input to the list file.
+* The listing is convenient for instance if there are errors,
+* because the place of the errors will be specifed by the line numbers in the list file.
+* However, the file produced may be quite large.
+* Moreover, you may be more interested in specific parts of the listing,
+* therefore refinements are given in the following.
+
+* If you are primarily interested in the listing of the code,
+* you may find it annoying to find a listing of the data files in the list file.
+* Therefore the following construction is used to separate listing of code and data.
+* For a minimal listing, use:
+*   $Setglobal ONOFFDATALISTING  $OFFLISTING
+*   $Setglobal ONOFFCODELISTING  $OFFLISTING
+* To list code but not data, use:
+*   $Setglobal ONOFFDATALISTING  $OFFLISTING
+*   $Setglobal ONOFFCODELISTING  $ONLISTING
+* To list both code and data, use:
+*   $Setglobal ONOFFDATALISTING  $ONLISTING
+*   $Setglobal ONOFFCODELISTING  $ONLISTING
+
+$Setglobal ONOFFDATALISTING  $OnLISTING
+$Setglobal ONOFFCODELISTING  $OnLISTING
+%ONOFFCODELISTING%
+
+
+*...............................................................................
+* OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF, with the alternatives
+* ONSYMXREF  ONSYMLIST  ONUELLIST  ONUELXREF control the production of maps
+* in the list file. Useful for inspection of details and overview:
+$OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF
+*$ONSYMXREF ONSYMLIST ONUELLIST ONUELXREF
+
+*...............................................................................
+* LIMROW and LIMCOL specifies the maximum number of rows and columns
+* used in equations listing and inspection of details.
+* Defaults are LIMROW=3, LIMCOL=3;
+* The statement "LIMROW=0" turns the listing off:
+
+OPTIONS LIMROW=   1000, LIMCOL=   1000;
+
+
+*...............................................................................
+* SYSOUT controls the printing of the solved status in the list file.
+* Useful in emergency cases.
+* OPTIONS SYSOUT=OFF (default) or OPTIONS SYSOUT=ON:
+OPTIONS SYSOUT=Off;
+
+*...............................................................................
+* SOLPRINT controls the printing of the solution in the list file.
+* Useful for inspection of details.
+* OPTIONS SOLPRINT=OFF or OPTIONS SOLPRINT=ON (default):
+OPTIONS SOLPRINT=ON;
+
+*...............................................................................
+* $ondollar/$offdollar controls the echoing of dollar control option lines in the listing file:
+$ondollar
+*-------------------------------------------------------------------------------
+
+*-------------------------------------------------------------------------------
+* GAMS input:
+*-------------------------------------------------------------------------------
+
+*...............................................................................
+* ONINLINE makes it possible to comment out parts using /*  */. MUST be present:
+$ONINLINE
+
+* ONEOLCOM makes it possible to use end-of-line comments using !!. MUST be present:
+$ONEOLCOM
+
+
+*...............................................................................
+* Handling of empty sets:
+* $ONEMPTY/OFFEMPTY permits/forbids definition of empty sets:
+$ONEMPTY
+*...............................................................................
+
+
+*-------------------------------------------------------------------------------
+* Model detail related options:
+*-------------------------------------------------------------------------------
+
+$setglobal useSlack
+*!option yes
+
+$setglobal addEPStoL
+*!option yes
+
+
+
+*-------------------------------------------------------------------------------
+* Solver related options:
+*-------------------------------------------------------------------------------
+
+OPTION LP=CPLEX;
+OPTION MIP=CPLEX;
+OPTION MCP=PATH;
+
+* ITERLIM specifies the maximum number of iteration by the solver
+OPTIONS ITERLIM=2000000;
+
+* RESLIM specifies the maximum time (usually seconds) used by the solver
+OPTIONS RESLIM=1000000;
+
+* OPTCR controls the precision of the solution. If optcr is greater than 0,
+* a good but not necessarily optimal solution will be accepted
+option optcr = 0.00001
+
