@@ -65,3 +65,14 @@ $if     EXIST '../data/ANCILLIARY_SERVICES_MAX_STARTTIME_MRR.inc' $INCLUDE      
 $if not EXIST '../data/ANCILLIARY_SERVICES_MAX_STARTTIME_MRR.inc' $INCLUDE '../../base/data/ANCILLIARY_SERVICES_MAX_STARTTIME_MRR.inc';
 %semislash%;
 
+SCALAR MIN_TIMEON_FCR 'Minimum time that a unit needs to be online to deliver FCR (hours)'  %semislash%
+$if     EXIST '../data/ANCILLIARY_SERVICES_MIN_TIMEON_FCR.inc' $INCLUDE         '../data/ANCILLIARY_SERVICES_MIN_TIMEON_FCR.inc';
+$if not EXIST '../data/ANCILLIARY_SERVICES_MIN_TIMEON_FCR.inc' $INCLUDE '../../base/data/ANCILLIARY_SERVICES_MIN_TIMEON_FCR.inc';
+%semislash%;
+
+SCALAR MIN_TIMEON_AFRR 'Minimum time that a unit needs to be online to deliver AFRR (hours)'  %semislash%
+$if     EXIST '../data/ANCILLIARY_SERVICES_MIN_TIMEON_AFRR.inc' $INCLUDE         '../data/ANCILLIARY_SERVICES_MIN_TIMEON_AFRR.inc';
+$if not EXIST '../data/ANCILLIARY_SERVICES_MIN_TIMEON_AFRR.inc' $INCLUDE '../../base/data/ANCILLIARY_SERVICES_MIN_TIMEON_AFRR.inc';
+%semislash%;
+
+

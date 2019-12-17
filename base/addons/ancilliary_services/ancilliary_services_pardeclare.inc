@@ -14,4 +14,6 @@ SCALAR MIN_RAMPING_MFRR 'Minimum ramping requirement for MFRR. Values are unitle
 SCALAR MIN_RAMPING_AFRR 'Minimum ramping requirement for AFRR. Values are unitless. E.g.: 1 means that it is requested to have the speed to go from 0 to full power in 1 hour, 2 means it is requested to go from 0 to full power in 1/2 hour, etc.';
 SCALAR MAX_STARTTIME_MFRR 'Maximum start time requirement for MFRR (hours)' ;
 SCALAR MAX_STARTTIME_MRR 'Maximum start time requirement for MRR (hours)' ;
+SCALAR MIN_TIMEON_FCR  'Minimum time that a unit needs to be online to deliver FCR (hours)';
+SCALAR MIN_TIMEON_AFRR  'Minimum time that a unit needs to be online to deliver AFRR (hours)';
 
