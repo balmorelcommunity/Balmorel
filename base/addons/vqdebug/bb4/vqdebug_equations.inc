@@ -108,7 +108,7 @@ $ifi %UnitComm%==yes  $ifi %PLANNED_MAINTENANCE%==yes $ifi not %ADDPLANNEDMAINTE
 $ifi %UnitComm%==yes  $ifi %PLANNED_MAINTENANCE%==yes $ifi     %ADDPLANNEDMAINTENANCE%==yes AND UCONMAINT(Y,IA,IGUC,IS3)
 $ifi %UnitComm%==yes  $ifi %PLANNED_MAINTENANCE%==yes ), (VQUCVUCON_EXISTING_STOLOAD(Y,IA,IGUC,IS3,T,'IMINUS')+VQUCVUCON_EXISTING_STOLOAD(Y,IA,IGUC,IS3,T,'IPLUS')))
 
-$ifi %BalancingMarket%==yes $ifi %NOHEATMARKET%==yes   +SUM((IA,IGEH,IS3)$IAGK_HASORPOT(Y,IA,IGEH), (VQBMGH_T(Y,IA,IGUC,IS3,'IMINUS')+VQBMGH_T(Y,IA,IGEH,IS3,'IPLUS')))
+$ifi %BalancingMarket%==yes $ifi %NOHEATMARKET%==yes   +SUM((IA,IGEH,IS3)$IAGK_HASORPOT(Y,IA,IGEH), (VQBMGH_T(Y,IA,IGEH,IS3,'IMINUS')+VQBMGH_T(Y,IA,IGEH,IS3,'IPLUS')))
 
            )
 * -- Objective function End ----------------------------------------------------
