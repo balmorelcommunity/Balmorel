@@ -302,7 +302,7 @@ $ifi  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx'  execute_l
 $ifi not  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx' IGKRATE(AAA,GGG,SSS,TTT)=0;
 
 PARAMETER TRANSDEMAND_T(YYY,RRR,SSS,TTT) "Transport demand per country, year, and season and hour (MWh)";
-$ifi  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx', TRANSDEMAND_T;
+$ifi  exist '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx', TRANSDEMAND_T;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx' TRANSDEMAND_T(YYY,RRR,SSS,TTT)=0;
 
 

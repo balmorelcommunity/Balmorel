@@ -26,67 +26,9 @@ LOOP (UC_TECH_TYPE,
 * No UC in secondary combination technologies (redundant and could lead to errors):
 $ifi %COMBTECH%==yes    IGUC(IGCOMB2)=NO;
 
-$ONTEXT
-$ifi not %MINSTARTUPTIME%==yes $goto MINSTARTUPTIME_END
-SET IGUCUT(GGG,SSS,TTT,SSS,TTT) "Internal set to assign for each GGG, SSS(first) and TTT(first), the timesteps in SSS(second) and TTT(second) linked to the minimum on time" ;
-
-*IGUCUT CALCULATION
-LOOP(ISALIAS,
-   LOOP(ITALIAS,
-      LOOP(IGUC$GDATA(IGUC,'GDUCUTMIN'),
-         ICOUNT_LEFT=GDATA(IGUC,'GDUCUTMIN');
-         ISCOUNT=0;
-         ITPOS=ORD(ITALIAS);
-         WHILE((ICOUNT_LEFT GT 0) AND ((ORD(ISALIAS)-ISCOUNT) GT 0) AND (ICOUNT_LEFT/SUM(ITALIAS2$(ORD(ITALIAS2) EQ ITPOS),CHRONOHOUR(ISALIAS--ISCOUNT,ITALIAS2)) GT 0.5),
-            IGUCUT(IGUC,ISALIAS,ITALIAS,ISALIAS-ISCOUNT,ITALIAS2)$(ORD(ITALIAS2) EQ ITPOS)=YES;
-            ICOUNT_LEFT=ICOUNT_LEFT-SUM(ITALIAS2$(ORD(ITALIAS2) EQ ITPOS),CHRONOHOUR(ISALIAS-ISCOUNT,ITALIAS2));
-            IF((ITPOS EQ 1),
-               ITPOS=CARD(T);
-               ISCOUNT=ISCOUNT+1;
-            ELSE
-               ITPOS=ITPOS-1;
-            );
-         );
-      );
-   );
-);
-
-$label  MINSTARTUPTIME_END
-
-
-$ifi not %MINSHUTDOWNTIME%==yes $goto MINSHUTDOWNTIME_END
-
-SET IGUCDT(GGG,SSS,TTT,SSS,TTT) "Internal set to assign for each GGG, SSS(first) and TTT(first), the timesteps in SSS(second) and TTT(second) linked to the minimum off time" ;                                                                                                                                      ;
-
-*IGUCDT CALCULATION
-LOOP(ISALIAS,
-   LOOP(ITALIAS,
-      LOOP(IGUC$GDATA(IGUC,'GDUCDTMIN'),
-         ICOUNT_LEFT=GDATA(IGUC,'GDUCDTMIN');
-         ISCOUNT=0;
-         ITPOS=ORD(ITALIAS);
-         WHILE((ICOUNT_LEFT GT 0) AND ((ORD(ISALIAS)-ISCOUNT) GT 0) AND (ICOUNT_LEFT/SUM(ITALIAS2$(ORD(ITALIAS2) EQ ITPOS),CHRONOHOUR(ISALIAS--ISCOUNT,ITALIAS2)) GT 0.5),
-            IGUCDT(IGUC,ISALIAS,ITALIAS,ISALIAS-ISCOUNT,ITALIAS2)$(ORD(ITALIAS2) EQ ITPOS)=YES;
-            ICOUNT_LEFT=ICOUNT_LEFT-SUM(ITALIAS2$(ORD(ITALIAS2) EQ ITPOS),CHRONOHOUR(ISALIAS-ISCOUNT,ITALIAS2));
-            IF((ITPOS EQ 1),
-               ITPOS=CARD(T);
-               ISCOUNT=ISCOUNT+1;
-            ELSE
-               ITPOS=ITPOS-1;
-            );
-         );
-      );
-   );
-);
-
-$label  MINSHUTDOWNTIME_END
-$OFFTEXT
-
 $ifi not %PLANNED_MAINTENANCE%==yes $goto NO_PLANNED_MAINTENANCE
 SET IGUCUTMAINT(GGG,SSS,SSS) "Internal set to assign for each GGG, SSS(first), the timesteps in SSS(second) linked to the minimum time off due to mainteinance" ;                                                                                                                                      ;
-$ifi %import_results%==yes $ifi %ADDPLANNEDMAINTENANCE%==yes IGUCUTMAINT(G,S,ISALIAS)=0;
-
-$ifi %ADDPLANNEDMAINTENANCE%==yes $goto NO_ADD_PLANNED_MAINTENANCE
+ 
 *IGUCUTMAINT CALCULATION
 LOOP(IGUC$GDATA(IGUC,'GDPLANMAINT'),
 LOOP(ISALIAS,
@@ -99,10 +41,6 @@ LOOP(ISALIAS,
       );
    );
 );
-$label  NO_ADD_PLANNED_MAINTENANCE
-
-SET IUCONMAINT(YYY,AAA,GGG) "Technology with exogenous planned maintenance";
-$ifi %import_results%==yes $ifi %ADDPLANNEDMAINTENANCE%==yes IUCONMAINT(Y,IA,IGUC)$SUM(S,UCONMAINT(Y,IA,IGUC,S))=YES;
 
 $label NO_PLANNED_MAINTENANCE
 
