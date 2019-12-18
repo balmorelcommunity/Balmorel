@@ -1,5 +1,5 @@
 * Latest revision 20180418 (hr)
-* When using VQdebug variables, the only interesting thins if whether the value (the level, .L) os zero or not.
+* When using VQdebug variables, the only interesting thins if whether the value (the level, .L) is zero or not.
 * Therefore reset the marginal value (.M) to zero.
 
 VQEEQ.M(IY411,IR,S,T,IPLUSMINUS) = 0;
@@ -32,4 +32,5 @@ VQUCRAMPU.M(IY411,IA,G,S,T,IPLUSMINUS)=0;
 VQUCRAMPD.M(IY411,IA,G,S,T,IPLUSMINUS)=0;
 VQUCVUCON_EXISTING.M(IY411,IA,G,S,T,IPLUSMINUS)=0;
 VQUCVUCON_EXISTING_STOLOAD.M(IY411,IA,G,S,T,IPLUSMINUS)=0;
+VQBMGH_T.M(IY411,IA,G,S)=0;
 

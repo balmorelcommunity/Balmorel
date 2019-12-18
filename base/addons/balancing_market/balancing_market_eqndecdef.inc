@@ -7,7 +7,9 @@ EQUATION QBMGH_T(YYY,AAA,GGG,SSS)       'Equation forcing heat production in SSS
 QBMGH_T(IY411,IA,IGEH,IS3)$(IAGK_HASORPOT(IY411,IA,IGEH))..
 SUM(T,VGH_T(IY411,IA,IGEH,IS3,T)-GH_T(IY411,IA,IGEH,IS3,T))
 =E=
-0;
+0
+$include "../../base/addons/_hooks/qmbgh_t.inc"
+;
 
 
 $label NO_HEATMARKET
