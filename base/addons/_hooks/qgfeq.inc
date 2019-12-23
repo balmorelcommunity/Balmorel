@@ -12,6 +12,7 @@ $ifi not %BB4%==yes $goto endoffile
 
 $label  beginbb4
 
+$ifi %SEASONALCOP%==yes  $include   "../../base/addons/seasonalCOP/bb4/seasonalCOP_qgfeq.inc"; 
 $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_qgfeq.inc";
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_qgfeq.inc";
 

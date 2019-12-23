@@ -151,6 +151,10 @@ $setglobal HeatTempLift
 $setglobal INDUSTRY yes
 *!option yes
 
+* Include seasonal variation of heat pump's COP. If not activated, heat pumps will have a constant COP during the year.
+$setglobal SEASONALCOP yes
+*!option yes
+
 * Allow to build a complicated offshore grid with hubs in the sea. Requires MIP since technologies are modelled with economies of scale via SOS variables.
 $setglobal OFFSHOREGRID
 *!option yes
