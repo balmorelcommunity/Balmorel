@@ -297,6 +297,10 @@ PARAMETER UCON(YYY,AAA,GGG,SSS,TTT)    'Unit commitment (0,1) on electricity gen
 $ifi  exist '../../base/auxils/timestep_conversion/input/UCON.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/UCON.gdx', UCON;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/UCON.gdx' UCON(YYY,AAA,GGG,SSS,TTT)=0;
 
+PARAMETER UCON_STOLOAD(YYY,AAA,GGG,SSS,TTT)    'Unit commitment (0,1) on electricity generation to be used in future runs';
+$ifi  exist '../../base/auxils/timestep_conversion/input/UCON_STOLOAD.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/UCON_STOLOAD.gdx', UCON_STOLOAD;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/UCON_STOLOAD.gdx' UCON_STOLOAD(YYY,AAA,GGG,SSS,TTT)=0;
+
 PARAMETER IGKRATE(AAA,GGG,SSS,TTT)     "Rating of technology capacities (non-negative, typically less than or equal to 0); default/1/, eps for 0)";
 $ifi  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/IGKRATE.gdx', IGKRATE;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/IGKRATE.gdx' IGKRATE(AAA,GGG,SSS,TTT)=0;
@@ -366,6 +370,7 @@ PARAMETER WATERVAL_NEW(YYY,AAA,SSS_NEW)     "Water value (in input Money) to be 
 PARAMETER GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)  "Minimum annual fuel use by year, season, geography and fuel and (GJ)";
 PARAMETER UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)    'Unit commitment maintenance (0,1) on electricity generation to be used in future runs';
 PARAMETER UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)    'Unit commitment (0,1) on electricity generation to be used in future runs';
+PARAMETER UCON_STOLOAD_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)    'Unit commitment (0,1) on electricity generation to be used in future runs';
 PARAMETER IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)     "Rating of technology capacities (non-negative, typically less than or equal to 0); default/1/, eps for 0)";
 PARAMETER TRANSDEMAND_S_NEW(YYY,CCC,SSS_NEW) "Transport demand per country, year, and season (MWh)";
 
@@ -445,6 +450,7 @@ GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)$(GMAXF(YYY,CCCRRRAAA,FFF) OR SUM(ISSS,GMAX
 GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXFS(YYY,CCCRRRAAA,FFF,SSS)*WEIGHT_S_NEW(SSS_NEW)/WEIGHT_S(SSS));
 UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),UCONMAINT(YYY,AAA,GGG,SSS));
 UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),UCON(YYY,AAA,GGG,SSS,TTT)) ;
+UCON_STOLOAD_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),UCON_STOLOAD(YYY,AAA,GGG,SSS,TTT)) ;
 IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),IGKRATE(AAA,GGG,SSS,TTT)) ;
 TRANSDEMAND_S_NEW(YYY,CCC,SSS_NEW)=SUM((SSS,TTT,TTT_NEW,RRR)$(ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW) AND CCCRRR(CCC,RRR)),TRANSDEMAND_T(YYY,RRR,SSS,TTT)*WEIGHT_S(SSS))/SUM(TTT, WEIGHT_T(TTT));
 
@@ -499,6 +505,7 @@ execute_unload  "../../base/auxils/timestep_conversion/output/WATERVAL.gdx", WAT
 execute_unload  "../../base/auxils/timestep_conversion/output/GMAXFS.gdx", GMAXFS_NEW=GMAXFS;
 execute_unload  "../../base/auxils/timestep_conversion/output/UCONMAINT.gdx", UCONMAINT_NEW=UCONMAINT;
 execute_unload  "../../base/auxils/timestep_conversion/output/UCON.gdx", UCON_NEW=UCON;
+execute_unload  "../../base/auxils/timestep_conversion/output/UCON_STOLOAD.gdx", UCON_STOLOAD_NEW=UCON_STOLOAD;    
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", IGKRATE_NEW=IGKRATE;
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", TRANSDEMAND_S_NEW=TRANSDEMAND_S;
 
