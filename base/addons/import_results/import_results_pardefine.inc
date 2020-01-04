@@ -49,6 +49,7 @@ $ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/HSTOLOADTS.gdx', HSTOLO
 $ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/X_T.gdx', X_T;
 $ifi %ADDENERGYDISPATCH%==yes $ifi %HEATTRANS%==yes execute_load  '../../simex/XH_T.gdx', XH_T;
 $ifi %ADDENERGYDISPATCH%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCON.gdx', UCON;
+$ifi %ADDENERGYDISPATCH%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCON_STOLOAD.gdx', UCON_STOLOAD;   
 
 *Fuel prices from previous optimization
 $ifi %ADDFUELPRICE%==yes execute_load  '../../simex/FUELPRICE_EXC.gdx', FUELPRICE_EXC;
