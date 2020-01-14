@@ -617,6 +617,9 @@ $ifi %bypass%==yes       IGBYPASS(IGBPR)$GDATA(IGBPR,'GDBYPASSC') = YES;
 *The following corrects the economic values in input data to match the relative size of T
 SCALAR IHOURFRAC "Weight of T with respect to 1 hour (if T means 1 hour, then IHOURFRAC is 1, if T means 0.5 hours, IHOURFRAC is 0.5, etc.)";
 IHOURFRAC=8736/(CARD(TTT)*CARD(SSS));
+FDATA(FFF,'FDCO2')=FDATA(FFF,'FDCO2')*IHOURFRAC;
+FDATA(FFF,'FDSO2')=FDATA(FFF,'FDSO2')*IHOURFRAC;
+FDATA(FFF,'FDN2O')=FDATA(FFF,'FDN2O')*IHOURFRAC;
 GDATA(GGG,'GDOMVCOST0')=GDATA(GGG,'GDOMVCOST0')*IHOURFRAC;
 GDATA(GGG,'GDOMVCOSTIN')=GDATA(GGG,'GDOMVCOSTIN')*IHOURFRAC;
 FUELPRICE(YYY,AAA,FFF)=FUELPRICE(YYY,AAA,FFF)*IHOURFRAC;
@@ -1074,7 +1077,7 @@ IHOURSINST(S,T)=IOF8760*WEIGHT_S(S)*WEIGHT_T(T)/(IWEIGHSUMS*IWEIGHSUMT)/IHOURFRA
 
 *Calculation of IHYRST
 $ifi %HYRS_AGG%==hydro_season_agg  IHYRST(S,T)=WEIGHT_S(S)/SUM(ITALIAS, WEIGHT_T(ITALIAS))*IHOURFRAC;
-$ifi %HYRS_AGG%==hydro_year_agg    IHYRST(S,T)=IHOURSINST(S,T);
+$ifi %HYRS_AGG%==hydro_year_agg    IHYRST(S,T)=IHOURSINST(S,T)*IHOURFRAC*8736/IOF8760;
 
 *-------------------------------------------------------------------------------
 * End of: Set the time weights depending on the model
@@ -1774,7 +1777,9 @@ $include "../../base/addons/_hooks/qestovolt.inc"
 ;
 
 * "Inter-seasonal electricty storage dynamic equation (MWh)"
-QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
+QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S)
+$ifi %RollingSeasons%==yes $ifi %import_results%==yes $ifi %ADDESTOVOLTS%==price  AND NOT(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
+)..
     VESTOVOLTS(IY411,IA,IGESTOS,S,T)
   + CHRONOHOUR(S,T)*(VESTOLOADTS(IY411,IA,IGESTOS,S,T) - VGE_T(IY411,IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
   + ((VESTOVOLTS(IY411,IA,IGESTOS,S,T) + CHRONOHOUR(S,T)*(VESTOLOADTS(IY411,IA,IGESTOS,S,T) - VGE_T(IY411,IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
@@ -1799,7 +1804,9 @@ $include "../../base/addons/_hooks/qhstovolt.inc"
 ;
 
 *  "Inter-seasonal heat storage dynamic equation (MWh)"
-QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
+QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S)
+$ifi %RollingSeasons%==yes $ifi %import_results%==yes $ifi %ADDHSTOVOLTS%==price  AND NOT(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
+)..
     VHSTOVOLTS(IY411,IA,IGHSTOS,S,T)
   + CHRONOHOUR(S,T)*(VHSTOLOADTS(IY411,IA,IGHSTOS,S,T) - VGH_T(IY411,IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE'))
   + ((VHSTOVOLTS(IY411,IA,IGHSTOS,S,T) + CHRONOHOUR(S,T)*(VHSTOLOADTS(IY411,IA,IGHSTOS,S,T) - VGH_T(IY411,IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE'))
