@@ -37,19 +37,19 @@ $ifi %ADDHEATTRANSDEV%==yes execute_load  '../../simex/XHKACCUMNET.gdx', XHKACCU
 
 
 *Energy dispatch from previous optimization
-$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/DE_T.gdx', DE_T;
-$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/DH_T.gdx', DH_T;
+*$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/DE_T.gdx', DE_T;
+*$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/DH_T.gdx', DH_T;
 $ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/GE_T.gdx', GE_T;
 $ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/GH_T.gdx', GH_T;
-$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/GF_T.gdx', GF_T;
-$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/ESTOLOADT.gdx', ESTOLOADT;
-$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/ESTOLOADTS.gdx', ESTOLOADTS;
-$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/HSTOLOADT.gdx', HSTOLOADT;
-$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/HSTOLOADTS.gdx', HSTOLOADTS;
-$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/X_T.gdx', X_T;
-$ifi %ADDENERGYDISPATCH%==yes $ifi %HEATTRANS%==yes execute_load  '../../simex/XH_T.gdx', XH_T;
+*$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/GF_T.gdx', GF_T;
+*$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/ESTOLOADT.gdx', ESTOLOADT;
+*$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/ESTOLOADTS.gdx', ESTOLOADTS;
+*$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/HSTOLOADT.gdx', HSTOLOADT;
+*$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/HSTOLOADTS.gdx', HSTOLOADTS;
+*$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/X_T.gdx', X_T;
+*$ifi %ADDENERGYDISPATCH%==yes $ifi %HEATTRANS%==yes execute_load  '../../simex/XH_T.gdx', XH_T;
 $ifi %ADDENERGYDISPATCH%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCON.gdx', UCON;
-$ifi %ADDENERGYDISPATCH%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCON_STOLOAD.gdx', UCON_STOLOAD;   
+$ifi %ADDENERGYDISPATCH%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCON_STOLOAD.gdx', UCON_STOLOAD;
 
 *Fuel prices from previous optimization
 $ifi %ADDFUELPRICE%==yes execute_load  '../../simex/FUELPRICE_EXC.gdx', FUELPRICE_EXC;
