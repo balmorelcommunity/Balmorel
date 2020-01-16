@@ -22,7 +22,7 @@ GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_O
 * They can be used for multiple purposes
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
-ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,EXCESSHEAT,GROUND,HUB_OFF;
+ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,AIR_WTR, EXCESSHEAT_WTR, GROUND_WTR, EXCESSHEAT,GROUND,HUB_OFF;
 
 SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)"
 $if     EXIST '../data/CCCRRRAAA.inc' $INCLUDE         '../data/CCCRRRAAA.inc';
@@ -82,17 +82,19 @@ SCALAR    LIFETIME_XH               "Lifetime of heat transmission lines (years)
 $if     EXIST '../data/HEATTRANS_LIFETIME_XH.inc' $INCLUDE         '../data/HEATTRANS_LIFETIME_XH.inc';
 $if not EXIST '../data/HEATTRANS_LIFETIME_XH.inc' $INCLUDE '../../base/data/HEATTRANS_LIFETIME_XH.inc';
 
-PARAMETER ANNUITYCG(C,G)               "Transforms investment in technologies into annual payment (fraction)";
+PARAMETER ANNUITYCG(CCC,GGG)               "Transforms investment in technologies into annual payment (fraction)";
 
 PARAMETER DEBT_SHARE_G(GGG)              "Share of debt for the investment of each generation technology (fraction)";
-DEBT_SHARE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.8;
+DEBT_SHARE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0;
 
 PARAMETER INTEREST_RATE_G(GGG)           "Interest rate applied to the loan of each generation technology (fraction)";
-INTEREST_RATE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.06;
+INTEREST_RATE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=DISCOUNTRATE;
 
 PARAMETER PAYBACK_TIME_G(GGG)            "Payback time of the loan for generation technologies (years)";
-* Loan repayment assumption: lifetime of the technology if lifetime is higher than 20 years, else 20 years
-PAYBACK_TIME_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=MIN(GDATA(GGG,'GDLIFETIME'),20);
+* Private economic perspective: Loan repayment assumption: lifetime of the technology if lifetime is higher than 20 years, else 20 years
+*PAYBACK_TIME_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=MIN(GDATA(GGG,'GDLIFETIME'),20);
+* Socio economic perspective: loan repayment equals lifetime
+PAYBACK_TIME_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=GDATA(GGG,'GDLIFETIME');
 
 PARAMETER ANNUITYCX(CCC)                 "Transforms investment in transmission lines into annual payment (fraction)";
 
@@ -132,7 +134,7 @@ ANNUITYCG(CCC,GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)= ((1-DEBT_SHARE_G(GGG))*DISCOU
 
 ANNUITYCX(CCC)= ((1-DEBT_SHARE_X)*DISCOUNTRATE + INTEREST_RATE_X * DEBT_SHARE_X* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_X)) / (1 - (1 + INTEREST_RATE_X) ** (-PAYBACK_TIME_X))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_X));
 
-ANNUITYCXH(C)= ((1-DEBT_SHARE_XH)*DISCOUNTRATE + INTEREST_RATE_XH * DEBT_SHARE_XH* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_XH)) / (1 - (1 + INTEREST_RATE_XH) ** (-PAYBACK_TIME_XH))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_XH));
+ANNUITYCXH(CCC)= ((1-DEBT_SHARE_XH)*DISCOUNTRATE + INTEREST_RATE_XH * DEBT_SHARE_XH* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_XH)) / (1 - (1 + INTEREST_RATE_XH) ** (-PAYBACK_TIME_XH))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_XH));
 
 *------------END OF CALCULATIONS-------------
 
@@ -161,9 +163,9 @@ putclose;
 file annuity_transmission_heat /'../../base/auxils/annuity_calculation/HEATTRANS_ANNUITYCXH.inc'/;
 annuity_transmission_heat.nd  = 12;
 put annuity_transmission_heat;
-put '*PARAMETER ANNUITYCXH(C) CALCULATED WITH AUXILS' //
-loop(C,
-          put ANNUITYCXH.tn(C),'=' ANNUITYCXH(C) :0 ';' /
+put '*PARAMETER ANNUITYCXH(CCC) CALCULATED WITH AUXILS' //
+loop(CCC,
+          put ANNUITYCXH.tn(CCC),'=' ANNUITYCXH(CCC) :0 ';' /
 );
 putclose;
 

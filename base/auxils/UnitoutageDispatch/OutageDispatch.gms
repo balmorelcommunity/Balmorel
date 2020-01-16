@@ -122,7 +122,7 @@ BACKUP_ELECTRICITY,BACKUP_HEAT;
 * They can be used for multiple purposes
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
-ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,EXCESSHEAT,GROUND,HUB_OFF;
+ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,AIR_WTR,EXCESSHEAT_WTR, GROUND_WTR,  EXCESSHEAT,GROUND,HUB_OFF;
 * ==============================================================================
 
 
@@ -174,6 +174,11 @@ PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at 
 $if     EXIST '../../simex/GKACCUMNET.gdx' execute_load  '../../simex/GKACCUMNET.gdx', GKACCUMNET;
 $if     EXIST '../../simex/GKACCUMNET.gdx' GKFX(YYY,AAA,GGG)=0;
 $if     EXIST '../../simex/GKACCUMNET.gdx' GKFX(Y,IA,G)=GKACCUMNET(Y,IA,G);
+
+*Import planned maintenance
+PARAMETER UCONMAINT(YYY,AAA,GGG,SSS) "Planned maintenance";
+UCONMAINT(YYY,AAA,GGG,SSS)=0;
+$if     EXIST '../../simex/UCONMAINT.gdx' execute_load  '../../simex/UCONMAINT.gdx', UCONMAINT;
 
 SET AGKN(AAA,GGG);
 $include "%inputdata%/AGKN.inc";
@@ -260,8 +265,8 @@ LOOP(S,
 LOOP(T,
 LOOP(IA,
   LOOP(G$(GKFX(Y,IA,G) AND GDATA(G,'GDFOR')),
-    IGKFXSREMAIN = GKFX(Y,IA,G);
-    IGKFXSAVAIL  = GKFX(Y,IA,G);
+    IGKFXSREMAIN = GKFX(Y,IA,G)-UCONMAINT(Y,IA,G,S);
+    IGKFXSAVAIL  = GKFX(Y,IA,G)-UCONMAINT(Y,IA,G,S);
     WHILE(((IGKFXSREMAIN GT (GDATA(G,'GDUCUNITSIZE')*1.5))),
        IGKFXSREMAIN = IGKFXSREMAIN - GDATA(G,'GDUCUNITSIZE');
        IFAILURE = 0;
