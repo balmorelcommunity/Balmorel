@@ -141,6 +141,9 @@ execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WE
 PARAMETER WEIGHT_T(TTT)                            "Weight (relative length) of each time period"  ;
 execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', WEIGHT_T;
 
+PARAMETER COP_VAR_T(AAA,GGG,SSS,TTT)       "Variation in COP of heat pumps" ;
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', COP_VAR_T;
+
 *---------EV addon-------------------
 PARAMETER EV_BEV_Dumb(YYY,SSS,TTT,RRR);
 execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_BEV_Dumb;
@@ -325,6 +328,7 @@ PARAMETER DE_VAR_T_NEW(RRR,DEUSER,SSS_NEW,TTT_NEW)                    "Variation
 PARAMETER DH_VAR_T_NEW(AAA,DHUSER,SSS_NEW,TTT_NEW)                    "Variation in heat demand"   ;
 PARAMETER WEIGHT_S_NEW(SSS_NEW)                            "Weight (relative length) of each season"    ;
 PARAMETER WEIGHT_T_NEW(TTT_NEW)                            "Weight (relative length) of each time period" ;
+PARAMETER COP_VAR_T_NEW(AAA,GGG,SSS_NEW,TTT_NEW)       "Variation in COP of heat pumps" ;
 PARAMETER GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)  "Minimum annual fuel use by year, season, geography and fuel and (GJ) (INPUT DATA)";
 *---------EV addon-------------------
 PARAMETER EV_BEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
@@ -408,6 +412,7 @@ HYRSDATA_NEW(AAA,HYRSDATASET,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),HYRSDATA(AAA,H
 HYPPROFILS_NEW(AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),HYPPROFILS(AAA,SSS));
 DE_VAR_T_NEW(RRR,DEUSER,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),DE_VAR_T(RRR,DEUSER,SSS,TTT));
 DH_VAR_T_NEW(AAA,DHUSER,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),DH_VAR_T(AAA,DHUSER,SSS,TTT));
+COP_VAR_T_NEW(AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),COP_VAR_T(AAA,GGG,SSS,TTT));
 EV_BEV_Dumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_Dumb(YYY,SSS,TTT,RRR)) ;
 EV_BEV_SOCDumb_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_SOCDumb(YYY,SSS,TTT,RRR)) ;
 EV_BEV_Flex_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_Flex(YYY,SSS,TTT,RRR)) ;
@@ -505,7 +510,7 @@ execute_unload  "../../base/auxils/timestep_conversion/output/WATERVAL.gdx", WAT
 execute_unload  "../../base/auxils/timestep_conversion/output/GMAXFS.gdx", GMAXFS_NEW=GMAXFS;
 execute_unload  "../../base/auxils/timestep_conversion/output/UCONMAINT.gdx", UCONMAINT_NEW=UCONMAINT;
 execute_unload  "../../base/auxils/timestep_conversion/output/UCON.gdx", UCON_NEW=UCON;
-execute_unload  "../../base/auxils/timestep_conversion/output/UCON_STOLOAD.gdx", UCON_STOLOAD_NEW=UCON_STOLOAD;    
+execute_unload  "../../base/auxils/timestep_conversion/output/UCON_STOLOAD.gdx", UCON_STOLOAD_NEW=UCON_STOLOAD;
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", IGKRATE_NEW=IGKRATE;
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", TRANSDEMAND_S_NEW=TRANSDEMAND_S;
 
@@ -607,6 +612,16 @@ put DH_VAR_T_timeseries;
 put '*PARAMETER DH_VAR_T CALCULATED WITH AUXILS' //
 loop((AAA,DHUSER,SSS_NEW,TTT_NEW)$DH_VAR_T_NEW(AAA,DHUSER,SSS_NEW,TTT_NEW),
             put "DH_VAR_T('",AAA.tl :0,"','",DHUSER.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"')=", DH_VAR_T_NEW(AAA,DHUSER,SSS_NEW,TTT_NEW) :0 ';' /
+);
+putclose;
+
+*COP_VAR_T timeseries
+file COP_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/COP_VAR_T.inc'/;
+COP_VAR_T_timeseries.nd  = 6;
+put COP_VAR_T_timeseries;
+put '*PARAMETER COP_VAR_T CALCULATED WITH AUXILS' //
+loop((AAA,GGG,SSS_NEW,TTT_NEW)$COP_VAR_T_NEW(AAA,GGG,SSS_NEW,TTT_NEW),
+            put "COP_VAR_T('",AAA.tl :0,"','",GGG.tl :0,"','",SSS_NEW.tl :0,"','",TTT_NEW.tl :0,"')=", COP_VAR_T_NEW(AAA,GGG,SSS_NEW,TTT_NEW) :0 ';' /
 );
 putclose;
 
