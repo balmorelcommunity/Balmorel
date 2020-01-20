@@ -18,6 +18,7 @@ number_of_seasons = 8;
 sheets=string(sheets);
 
 for j=1:length(sheets)
+
 %Sheet name
 input_sheet_name = sheets(j);
 fprintf('Sheet %s is being processed. \n', input_sheet_name)
@@ -62,6 +63,11 @@ x_f = T_fullYear{:,i};
 x_sel_orig=T_sel_weeks{:,i};
 x_sel_orig_full=T_sel_weeks_full{:,i};
 
+if max(x_f) == min(x_f)
+    T_sel_weeks_scaled{:,i}=x_sel_orig;
+    continue
+end
+
 OBJ_target = paretotails(x_f, 0, 1); % ECDF fit (full)
 u_f = OBJ_target.cdf(x_f);
 
@@ -69,7 +75,10 @@ OBJ_short = paretotails(x_sel_orig, 0, 1); % ECDF fit (original week selection)
 u_sel_orig = OBJ_short.cdf(x_sel_orig);
 
 x_sel_scaled = OBJ_target.icdf(u_sel_orig);
-x_sel_scaled(x_sel_scaled < 0) = 0;
+
+%Additional filter since GAMS does not accept numbers with many decimals
+%x_sel_scaled(x_sel_scaled < 0) = 0;
+x_sel_scaled(x_sel_scaled < 1e-12) = 0;
 
 max_original=max(x_f);
 x_sel_scaled(x_sel_scaled > max_original)=max_original;
@@ -129,5 +138,14 @@ ylabel('Standardized generation');
 
 end
 writetable(T_sel_weeks_scaled,outputfilename);
+
+%Modify headers because Matlab might have converted them
+headers=T_sel_weeks_scaled.Properties.VariableDescriptions;
+headers(cellfun(@isempty,headers))=T_sel_weeks_scaled.Properties.VariableNames(cellfun(@isempty,headers));
+headers=strrep(headers,"'",'');
+headers=strrep(headers,"Original column heading: ",'');
+headers=cellstr(headers);
+writecell(headers,outputfilename,'Range','A1');
+
 clear T_fullYear
 end
