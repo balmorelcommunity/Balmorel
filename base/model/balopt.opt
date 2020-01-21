@@ -151,6 +151,10 @@ $setglobal HeatTempLift
 $setglobal INDUSTRY yes
 *!option yes
 
+* Include individual users data in the optimization. Requires HEATTRANSFER add-on to be activated.
+$setglobal INDIVUSERS yes
+*!option yes
+
 * Include seasonal variation of heat pump's COP. If not activated, heat pumps will have a constant COP during the year.
 $setglobal SEASONALCOP yes
 *!option yes
@@ -441,7 +445,7 @@ $setglobal REVERT_DECOM_EXO_G   yes
 *-------------------- UNIT COMMITMENT -----------------------------------------------------------
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
-$setglobal UnitComm 
+$setglobal UnitComm
 *!option yes
 
 * Adds minimal production-when-on:
