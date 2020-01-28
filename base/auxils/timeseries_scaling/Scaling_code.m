@@ -11,13 +11,14 @@ input_file_name = 'Input\Time_Series.xlsx';
 thinning_value = 3;
 
 %Number of seasons (1 to X)
-number_of_seasons = 8;
+number_of_seasons = 12;
 %----------------------------------------------
 
 [status,sheets,xlFormat] = xlsfinfo(input_file_name);
 sheets=string(sheets);
 
 for j=1:length(sheets)
+
 
 %Sheet name
 input_sheet_name = sheets(j);
@@ -46,9 +47,16 @@ elseif number_of_seasons == 6
 elseif number_of_seasons == 7
     T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S03' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S23' | T_fullYear.SEASON == 'S37' | T_fullYear.SEASON == 'S44' | T_fullYear.SEASON == 'S51', :);
 elseif number_of_seasons == 8
-    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S03' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S22' | T_fullYear.SEASON == 'S29' | T_fullYear.SEASON == 'S35' | T_fullYear.SEASON == 'S42' | T_fullYear.SEASON == 'S48', :);
-elseif number_of_seasons == 13
-    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S01' | T_fullYear.SEASON == 'S05' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S13' | T_fullYear.SEASON == 'S17' | T_fullYear.SEASON == 'S21' | T_fullYear.SEASON == 'S25' | T_fullYear.SEASON == 'S29' | T_fullYear.SEASON == 'S33' | T_fullYear.SEASON == 'S37' | T_fullYear.SEASON == 'S41' | T_fullYear.SEASON == 'S45' | T_fullYear.SEASON == 'S49', :);
+%    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S02' | T_fullYear.SEASON == 'S08' | T_fullYear.SEASON == 'S15' | T_fullYear.SEASON == 'S21' | T_fullYear.SEASON == 'S28' | T_fullYear.SEASON == 'S34' | T_fullYear.SEASON == 'S41' | T_fullYear.SEASON == 'S47', :);
+%    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S03' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S22' | T_fullYear.SEASON == 'S29' | T_fullYear.SEASON == 'S35' | T_fullYear.SEASON == 'S42' | T_fullYear.SEASON == 'S48', :);
+%    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S04' | T_fullYear.SEASON == 'S10' | T_fullYear.SEASON == 'S17' | T_fullYear.SEASON == 'S23' | T_fullYear.SEASON == 'S30' | T_fullYear.SEASON == 'S36' | T_fullYear.SEASON == 'S43' | T_fullYear.SEASON == 'S49', :);
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S05' | T_fullYear.SEASON == 'S11' | T_fullYear.SEASON == 'S18' | T_fullYear.SEASON == 'S24' | T_fullYear.SEASON == 'S31' | T_fullYear.SEASON == 'S37' | T_fullYear.SEASON == 'S44' | T_fullYear.SEASON == 'S50', :);
+elseif number_of_seasons == 12
+%    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S02' | T_fullYear.SEASON == 'S06' | T_fullYear.SEASON == 'S10' | T_fullYear.SEASON == 'S15' | T_fullYear.SEASON == 'S19' | T_fullYear.SEASON == 'S23' | T_fullYear.SEASON == 'S28' | T_fullYear.SEASON == 'S32' | T_fullYear.SEASON == 'S36' | T_fullYear.SEASON == 'S41' | T_fullYear.SEASON == 'S45' | T_fullYear.SEASON == 'S49', :);
+%    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S03' | T_fullYear.SEASON == 'S07' | T_fullYear.SEASON == 'S11' | T_fullYear.SEASON == 'S16' | T_fullYear.SEASON == 'S20' | T_fullYear.SEASON == 'S24' | T_fullYear.SEASON == 'S29' | T_fullYear.SEASON == 'S33' | T_fullYear.SEASON == 'S37' | T_fullYear.SEASON == 'S42' | T_fullYear.SEASON == 'S46' | T_fullYear.SEASON == 'S50', :);
+    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S04' | T_fullYear.SEASON == 'S08' | T_fullYear.SEASON == 'S12' | T_fullYear.SEASON == 'S17' | T_fullYear.SEASON == 'S21' | T_fullYear.SEASON == 'S25' | T_fullYear.SEASON == 'S30' | T_fullYear.SEASON == 'S34' | T_fullYear.SEASON == 'S38' | T_fullYear.SEASON == 'S43' | T_fullYear.SEASON == 'S47' | T_fullYear.SEASON == 'S51', :);
+%    T_sel_weeks = T_fullYear(T_fullYear.SEASON == 'S05' | T_fullYear.SEASON == 'S09' | T_fullYear.SEASON == 'S13' | T_fullYear.SEASON == 'S18' | T_fullYear.SEASON == 'S22' | T_fullYear.SEASON == 'S26' | T_fullYear.SEASON == 'S31' | T_fullYear.SEASON == 'S35' | T_fullYear.SEASON == 'S39' | T_fullYear.SEASON == 'S44' | T_fullYear.SEASON == 'S48' | T_fullYear.SEASON == 'S52', :);
+          
 else
     disp('please choose the number of seasons between 1 to X')
 end
@@ -77,7 +85,7 @@ u_sel_orig = OBJ_short.cdf(x_sel_orig);
 x_sel_scaled = OBJ_target.icdf(u_sel_orig);
 
 %Additional filter since GAMS does not accept numbers with many decimals
-%x_sel_scaled(x_sel_scaled < 0) = 0;
+x_sel_scaled(x_sel_scaled < 0) = 0;
 x_sel_scaled(x_sel_scaled < 1e-12) = 0;
 
 max_original=max(x_f);
