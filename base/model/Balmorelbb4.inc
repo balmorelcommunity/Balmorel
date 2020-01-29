@@ -1292,7 +1292,7 @@ IGMAXFS(Y,CCCRRRAAA,FFF,S) = GMAXFS(Y,CCCRRRAAA,FFF,S);
 * Unload input data to gdx and possibly MDB files.
 * Note that this is a compile time operation, such that only the 'direct' data
 * definitions (and no assignments) are reflected:
-execute_unload '%relpathModel%../output/temp/1INPUT.gdx';
+$ifi %MERGEINPUTDATA%==yes  execute_unload '%relpathModel%../output/temp/1INPUT.gdx';
 
 *------------------------------
 
