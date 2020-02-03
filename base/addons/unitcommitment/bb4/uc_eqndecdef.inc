@@ -208,6 +208,8 @@ $ifi %SEASONALLINKUC%==yes      SUM((ISALIAS,ITALIAS)$((GDATA(IGUC,'GDUCDTMIN')-
 $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC)
          +VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC))) / GDATA(IGUC,'GDUCUNITSIZE')
          -VUCON(IY411,IA,IGUC,S,T)
+*Rounding up assumption when investments and decommissioning are not allowed
+         +(1-0.001)$(NOT(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC))) AND NOT(IGDECOMEXOPOT(IY411,IA,IGUC)))
 $include "../../base/addons/_hooks/qucdt.inc"
 ;
 
