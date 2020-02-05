@@ -200,7 +200,7 @@ $setglobal watertank_loading_rest
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH yes
+$setglobal COMBTECH
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
@@ -235,7 +235,7 @@ $Setglobal FV
 *!option yes
 
 * Includes individual heating
-$setglobal INDHEAT yes
+$setglobal INDHEAT
 *!option yes
 
 SCALAR INDHEAT_GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
@@ -321,7 +321,7 @@ $setglobal bypass yes
 *overall control variable HEATTRANS must be 'yes' if any of the other heat trans controls are.
 
 * Permit heat transmission between areas.
-$setglobal HEATTRANS yes
+$setglobal HEATTRANS
 *!option yes
 
 * Permit heat transmission investments between areas.
@@ -332,12 +332,12 @@ SCALAR XHINVESTSTART 'Year from which endogenous decisions in heat transmission 
 XHINVESTSTART= 2025;
 
 * Permit temperature lift from heat pumps to move energy from low temperature areas to high temperature ones (NOT WORKING, TO BE CHECKED).
-$setglobal HeatTempLift yes
+$setglobal HeatTempLift
 *!option yes
 *-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
 
 * Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
-$setglobal INDUSTRY yes
+$setglobal INDUSTRY
 *!option yes
 
 
@@ -350,15 +350,15 @@ $setglobal DECOM yes
 * Note: If no option for endogenous capacities is activated, endogenous investments will not be decommissioned
 
 * Adds Endogenous capacities will maximum stay in the system as much as their lifetimes:
-$setglobal LIFETIME_DECOM_ENDO_G YES
+$setglobal LIFETIME_DECOM_ENDO_G  yes
 *!option yes
 
 * Adds Endogenous capacities can be decommissioned based on their profitability:
-$setglobal ECONOMIC_DECOM_ENDO_G   yes
+$setglobal ECONOMIC_DECOM_ENDO_G yes
 *!option yes
 
 * Adds Endogenous decommissioned endogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
-$setglobal REVERT_DECOM_ENDO_G   yes
+$setglobal REVERT_DECOM_ENDO_G yes
 *!option yes
 
 *--------END OF ENDOGENOUS CAPACITIES-----
@@ -378,15 +378,15 @@ $setglobal NO_DECOM_EXO_G
 *!option yes
 
 * Adds Exogenous capacities will maximum stay in the system as much as their lifetimes (or as much as political decissions suggest it, for instance), which should be represented in the yearly development of capacities of the input parameter GKFX:
-$setglobal LIFETIME_DECOM_EXO_G  YES
+$setglobal LIFETIME_DECOM_EXO_G yes
 *!option yes
 
 * Adds Exogenous capacities can be decommissioned based on their profitability:
-$setglobal ECONOMIC_DECOM_EXO_G    yes
+$setglobal ECONOMIC_DECOM_EXO_G   yes
 *!option yes
 
 * Adds Endogenous decommissioned exogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
-$setglobal REVERT_DECOM_EXO_G   yes
+$setglobal REVERT_DECOM_EXO_G yes
 *!option yes
 *--------END OF ENDOGENOUS CAPACITIES-----
 *-----------------------End of TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
