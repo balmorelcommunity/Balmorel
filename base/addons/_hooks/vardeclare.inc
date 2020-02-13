@@ -2,12 +2,11 @@
 
 
 $ifi %testbb1234%==yes    $include "../../base/addons/bb1234compare/bb1234_vardeclare.inc";
-$ifi %FLOWBASED%==yes  $include   "../../base/addons/flowbased/flowbased_vardeclare.inc";
 $ifi %HYRSBB123%==quantprice      $include "../../base/addons/hyrsbb123/hyrsbb123variables.inc";
 $ifi %dflexquant%==yes            $include "../../base/addons/demandflexquant/dflexquant_vardeclare.inc";
 
 $ifi %BB4%==yes $goto beginbb4
-
+$ifi %FLOWBASED%==yes  $include   "../../base/addons/flowbased/flowbased_vardeclare.inc";
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_vardeclare.inc";
 
 $ifi not %BB4%==yes $goto endoffile
@@ -30,6 +29,7 @@ $ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattran
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_vardeclare.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_vardeclare.inc";
 $ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_vardeclare.inc";
+$ifi %FlowBased%==yes      $include        "../../base/addons/FlowBased/bb4/flowbased_vardeclare.inc";
 $ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_vardeclare.inc";
 
 $ifi %vqdebug%==yes       $include   "../../base/addons/vqdebug/bb4/vqdebug_declare.inc";

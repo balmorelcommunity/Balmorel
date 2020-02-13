@@ -19,8 +19,9 @@ $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_isetde
 $ifi %EV%==YES    $include   "../../base/addons/EV/bb4/EV_isetdecdef.inc";
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_isetdecdef.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_isetdecdef.inc";
-$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_isetdecdef.inc";  
+$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_isetdecdef.inc";
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_isetdecdef.inc";
+$ifi %FlowBased%==yes      $include        "../../base/addons/FlowBased/bb4/flowbased_isetdecdef.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_isetdecdef.inc";
 $ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_isetdecdef.inc";
 

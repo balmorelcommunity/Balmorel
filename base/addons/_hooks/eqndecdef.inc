@@ -30,6 +30,7 @@ $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTarif
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_eqndecdef.inc";
 $ifi %HEATTRANS%==yes  $include   "../../base/addons/heattrans/bb4/heattrans_eqndecdef.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_eqndecdef.inc";
+$ifi %FlowBased%==yes      $include        "../../base/addons/FlowBased/bb4/flowbased_eqndecdef.inc";
 $ifi %TRANS_RAMP%==yes  $include   "../../base/addons/transmission_ramping/transmission_ramping_eqndecdef.inc";
 $ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_eqndecdef.inc";
 $ifi %BalancingMarket%==yes       $include   "../../base/addons/balancing_market/balancing_market_eqndecdef.inc";

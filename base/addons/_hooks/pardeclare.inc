@@ -6,11 +6,9 @@
 * Example of a generic line for addon integration (replace ADDONNAME for a specific add-on):
 * $ifi %ADDONNAME%==yes    $include "../../base/addons/ADDONNAME/ADDONNAME_pardeclare.inc";
 
-
-$ifi %FlowBased%==yes    $include "../../base/addons/flowbased/flowbased_pardeclare.inc";
-
 $ifi %BB4%==yes $goto beginbb4
 
+$ifi %FlowBased%==yes    $include "../../base/addons/flowbased/flowbased_pardeclare.inc";
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_pardeclare.inc";
 
 $ifi not %BB4%==yes $goto endoffile
@@ -29,6 +27,7 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_pardeclare.inc";
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_pardeclare.inc";
 $ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_pardeclare.inc";
+$ifi %FlowBased%==yes      $include        "../../base/addons/FlowBased/bb4/flowbased_pardeclare.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardeclare.inc";
 $ifi %TRANS_RAMP%==yes  $include   "../../base/addons/transmission_ramping/transmission_ramping_pardeclare.inc";
 $ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_pardeclare.inc";
