@@ -430,6 +430,13 @@ $if     EXIST '../data/DISLOSS_E.inc' $INCLUDE      '../data/DISLOSS_E.inc';
 $if not EXIST '../data/DISLOSS_E.inc' $INCLUDE '../../base/data/DISLOSS_E.inc';
 %semislash%;
 
+PARAMETER DISLOSS_E_AG(AAA,GGG)  "Loss in electricity distribution associated to specific technology in a particular area"   %semislash%
+$if     EXIST '../data/DISLOSS_E_AG.inc' $INCLUDE      '../data/DISLOSS_E_AG.inc';
+$if not EXIST '../data/DISLOSS_E_AG.inc' $INCLUDE '../../base/data/DISLOSS_E_AG.inc';
+%semislash%;
+*------------- Any DISLOSS_E_AG additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/disloss_e_agadditions.inc"
+
 PARAMETER DISLOSS_H(AAA)    "Loss in heat distribution (fraction)"  %semislash%
 $if     EXIST '../data/DISLOSS_H.inc' $INCLUDE      '../data/DISLOSS_H.inc';
 $if not EXIST '../data/DISLOSS_H.inc' $INCLUDE '../../base/data/DISLOSS_H.inc';
