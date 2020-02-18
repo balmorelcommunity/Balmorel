@@ -8,7 +8,7 @@ $ifi %dflexquant%==yes             $include "../../base/addons/demandflexquant/d
 *$ifi not %forcedoutage%==''    $include "../../base/addons/forcedoutage/forcedoutage_par.inc";
 
 $ifi %BB4%==yes $goto beginbb4
-$ifi %FLOWBASED%==yes $include    "../../base/addons/flowbased/flowbased_pardefine.inc";    
+$ifi %FLOWBASED%==yes $include    "../../base/addons/flowbased/flowbased_pardefine.inc";
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/hydrogen_pardefine.inc";
 *This is only tested for BB1 and BB2:
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/combtech_pardefine.inc";
@@ -38,6 +38,7 @@ $ifi %FlowBased%==yes      $include        "../../base/addons/FlowBased/bb4/flow
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardefine.inc";
 $ifi %TRANS_RAMP%==yes  $include   "../../base/addons/transmission_ramping/transmission_ramping_pardefine.inc";
 $ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_pardefine.inc";
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_pardefine.inc";   
 
 
 $label endoffile

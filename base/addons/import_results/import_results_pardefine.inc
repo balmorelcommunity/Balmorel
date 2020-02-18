@@ -63,3 +63,4 @@ $ifi %ADDPLANNEDMAINTENANCE%==yes $ifi %UnitComm%==yes execute_load  '../../sime
 
 *Import transport seasonal demand
 $ifi %ADDSEASONALTRANSPORTDEMAND%==yes $ifi %transport%==yes execute_load  '../../simex/TRANSDEMAND_S.gdx', TRANSDEMAND_S;
+$ifi %ADDSEASONALTRANSPORTDEMAND%==yes $ifi %transport%==yes execute_load  '../../simex/TRANSDEMAND_T_MAX.gdx', TRANSDEMAND_T_MAX;

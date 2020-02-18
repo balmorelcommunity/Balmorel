@@ -752,7 +752,7 @@ $if     EXIST '../data/WEIGHT_T.inc' $INCLUDE         '../data/WEIGHT_T.inc';
 $if not EXIST '../data/WEIGHT_T.inc' $INCLUDE '../../base/data/WEIGHT_T.inc';
 %semislash%;
 
-PARAMETER CHRONOHOUR(S,T) 'Meaning/size of each time step in each season (1 means 1 hour)'  %semislash%
+PARAMETER CHRONOHOUR(SSS,TTT) 'Meaning/size of each time step in each season (1 means 1 hour)'  %semislash%
 $if     EXIST '../data/CHRONOHOUR.inc' $INCLUDE         '../data/CHRONOHOUR.inc';
 $if not EXIST '../data/CHRONOHOUR.inc' $INCLUDE '../../base/data/CHRONOHOUR.inc';
 %semislash%;

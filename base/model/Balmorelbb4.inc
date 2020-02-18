@@ -363,7 +363,7 @@ PARAMETER M_POLNA(YYY,MPOLSET)                     "Emission policy data; defaul
 * Time series on (SSS,TTT):
 PARAMETER WEIGHT_S(SSS)                            "Weight (relative length) of each season";
 PARAMETER WEIGHT_T(TTT)                            "Weight (relative length) of each time period";
-PARAMETER CHRONOHOUR(S,T)                          "Meaning/size of each time step in each season (1 means 1 hour)";
+PARAMETER CHRONOHOUR(SSS,TTT)                          "Meaning/size of each time step in each season (1 means 1 hour)";
 
 $ifi %GKRATE_DOL%==AAA_GGG_SSS     PARAMETER GKRATE(AAA,GGG,SSS)      "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT PARAMETER GKRATE(AAA,GGG,SSS,TTT)  "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
@@ -759,6 +759,7 @@ SET IGTECH_GROUP(GGG,TECH_GROUP) "Relation between technology and tech group";
 SET IGDEUSER(G,DEUSER) "Relation between distributed generation technologies and user group for electricity";
 
 SET IRESE(DEUSER)  "Associate DEUSER with RESE user";
+SET IIND(DEUSER)  "Associate DEUSER with PII user";
 
 * Internal scalars:
 SCALAR ILOOPBREAK     "Scalar used as binary number to break any loop function";
@@ -930,10 +931,11 @@ IGF(G,FFF)=YES$(GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'));
 IGTECH_GROUP(G,TECH_GROUP)=YES$(GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP));
 
 * Specifying the relation between technology type and user group in IGDEUSER:
-IGDEUSER(G,DEUSER) = YES$SUM(TECH_GROUP$(TECHGROUP_DEUSER(TECH_GROUP,DEUSER) EQ 1), IGTECH_GROUP(G,TECH_GROUP));
+*IGDEUSER(G,DEUSER) = YES$SUM(TECH_GROUP$(TECHGROUP_DEUSER(TECH_GROUP,DEUSER) EQ 1), IGTECH_GROUP(G,TECH_GROUP));
 
-*The definition of IRESE should not be here!!!!!
+*The definition of IRESE and IIND should not be here!!!!!
 IRESE('RESE')=YES;
+IIND('PII')=YES;
 
 PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 * Transfer data from data file and insert default 1 as needed (Eps1-convention):
@@ -1331,7 +1333,7 @@ POSITIVE VARIABLE VHSTOVOLTS(Y,AAA,G,S,T)          "Heat storage contents at beg
 POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)            "Accumulated new investments this BB4, at end of (ULTimo) previous (i.e., start of current) year (MW)";
 POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)          "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
 POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)      "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
-POSITIVE VARIABLE VDENET_T(Y,RRR,DEUSER,S,T)     "Load net local generation per user group";
+POSITIVE VARIABLE VDENET_T(Y,RRR,DEUSER,S,T)       "Load net local generation per user group (MW)";
 
 
 *-------------------------------------------------------------------------------
@@ -1361,7 +1363,6 @@ EQUATIONS
    QOBJ                     "Objective function"
    QEEQ(Y,RRR,S,T)          "Electricity generation equals demand (MW)"
    QHEQ(Y,AAA,S,T)          "Heat generation equals demand (MW)"
-   QDENET(Y,RRR,DEUSER,S,T) "Net power load"
    QGFEQ(Y,AAA,G,S,T)       "Calculate fuel consumption (MW)"
 
    QGCBGBPR(Y,AAA,G,S,T)         "CHP generation (back pressure) limited by Cb-line (MW)"
@@ -1480,6 +1481,7 @@ QXKNACCUMNET(Y,IRRRE,IRRRI)       "Accumulated new transmission investments avai
 QXKNACCUMGROSS(Y,IRRRE,IRRRI)     "Accumulated new transmission investments available at beginning of next year (MW)"
 QXK_UP(Y,IRRRE,IRRRI,S,T)         "Capacity constraint on electricity transmission (MW)"
 QXINVSYMMETRY(Y,IRRRE,IRRRI)      "Transmission investments are set symetric(MW)"
+QDENET(Y,RRR,DEUSER,S,T) "Net power load"
 
 
 *-------------------------------------------------------------------------------
@@ -1617,12 +1619,17 @@ QDENET(IY411,IR,DEUSER,IS3,T)$(IDE_SUMST(IR,DEUSER) GT 0)..
          VDENET_T(IY411,IR,DEUSER,IS3,T)
          =G=
                               ((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))
-                               - SUM((G,IA)$(RRRAAA(IR,IA) AND IGDEUSER(G,DEUSER) AND IAGK_HASORPOT(IY411,IA,G)), VGE_T(IY411,IA,G,IS3,T))
 $ifi %DemandResponse%==yes  + SUM((IA,DR_TECH)$(IADR(IY411,IA,DR_TECH) AND RRRAAA(IR,IA) AND DR_TECH_USER(DR_TECH,DEUSER)),  VDR_UP(IY411,IA,DR_TECH,IS3,T) - VDR_DOWN(IY411,IA,DR_TECH,IS3,T))
-$ifi %EV%==yes              + (VEV_VNETCHARGE_BEV(IY411,IR,IS3,T) + VEV_VNETCHARGE_PHEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_BEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_PHEV(IY411,IR,IS3,T))$IRESE(DEUSER)
+$ifi %EV%==yes               + (VEV_VG2V_BEV(IY411,IR,IS3,T) + VEV_VG2V_PHEV(IY411,IR,IS3,T) - VEV_VV2G_BEV(IY411,IR,IS3,T) - VEV_VV2G_PHEV(IY411,IR,IS3,T))$IRESE(DEUSER)
+$ifi %INDUSTRY%==yes          + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)), SUM(IGETOH$IAGK_HASORPOT(IY411,IA,IGETOH), VGE_T(IY411,IA,IGETOH,IS3,T)))$IIND(DEUSER)
+$ifi %INDUSTRY%==yes          + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)),SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),VESTOLOADT(IY411,IA,IGESTO,IS3,T)))$IIND(DEUSER)
+$ifi %INDUSTRY%==yes          + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)),SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),VESTOLOADTS(IY411,IA,IGESTOS,IS3,T)))$IIND(DEUSER)
+$ifi %INDUSTRY%==yes          - SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)), SUM(IGE$(IAGK_HASORPOT(IY411,IA,IGE) AND IGNOTETOH(IGE)),VGE_T(IY411,IA,IGE,IS3,T)))$IIND(DEUSER)
+$ifi %INDIVUSERS%==yes        + SUM(IA$(RRRAAA(IR,IA) AND INDIVUSERS_AAA(IA)), SUM(IGETOH$IAGK_HASORPOT(IY411,IA,IGETOH), VGE_T(IY411,IA,IGETOH,IS3,T)))$IRESE(DEUSER)
+$ifi %INDIVUSERS%==yes        + SUM(IA$(RRRAAA(IR,IA) AND INDIVUSERS_AAA(IA)),SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),VESTOLOADT(IY411,IA,IGESTO,IS3,T)))$IRESE(DEUSER)
+$ifi %INDIVUSERS%==yes        + SUM(IA$(RRRAAA(IR,IA) AND INDIVUSERS_AAA(IA)),SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),VESTOLOADTS(IY411,IA,IGESTOS,IS3,T)))$IRESE(DEUSER)
+$ifi %INDIVUSERS%==yes        - SUM(IA$(RRRAAA(IR,IA) AND INDIVUSERS_AAA(IA)), SUM(IGE$(IAGK_HASORPOT(IY411,IA,IGE) AND IGNOTETOH(IGE)),VGE_T(IY411,IA,IGE,IS3,T)))$IIND(DEUSER)
 ;
-
-
 
 * Fuel consumption rate.
 QGFEQ(IY411,IA,G,IS3,T)$IAGK_HASORPOT(IY411,IA,G) ..
@@ -2570,7 +2577,7 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
 *--- Balance equations ---------------------------------------------------------
                                 QEEQ
 $ifi not %BalancingMarket%==yes $ifi not %NOHEATMARKET%==yes   QHEQ
-                                QDENET
+$ifi %NETDEMAND%==yes           QDENET
                                 QGFEQ
 *--- Feasible generation region ------------------------------------------------
                                 QGCBGBPR
@@ -2900,9 +2907,9 @@ $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes execute_unload  "../../sime
 
 *Transport demand
 $ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes TRANSDEMAND_S(Y,C,S)=SUM((T,IR)$CCCRRR(C,IR),VTRANSDEMAND_T.L(Y,IR,S,T))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
-$ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes TRANSDEMAND_T(Y,IR,S,T)=VTRANSDEMAND_T.L(Y,IR,S,T);
+$ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes TRANSDEMAND_T_MAX(Y,IR)=VTRANSDEMAND_T_MAX.L(Y,IR);
 $ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes execute_unload  "../../simex/TRANSDEMAND_S.gdx", TRANSDEMAND_S;
-$ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes execute_unload  "../../simex/TRANSDEMAND_T.gdx", TRANSDEMAND_T;
+$ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes execute_unload  "../../simex/TRANSDEMAND_T_MAX.gdx", TRANSDEMAND_T_MAX;
 
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN

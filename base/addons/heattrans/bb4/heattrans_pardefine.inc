@@ -29,13 +29,15 @@ $if not EXIST "../data/HEATTRANS_XHMAXK.inc" $INCLUDE "../../base/data/HEATTRANS
 *------------- Any XHMAXK additions for other addon to be placed here: ----------------
 $include "../../base/addons/_hooks/xhmaxkadditions.inc"
 
-
 PARAMETER ANNUITYCXH(CCC) "Transforms investment in heat transmission lines into annual payment (fraction). Possibly different meaning in BB4"%semislash%
 $if     EXIST "../data/HEATTRANS_ANNUITYCXH.inc" $INCLUDE         "../data/HEATTRANS_ANNUITYCXH.inc";
 $if not EXIST "../data/HEATTRANS_ANNUITYCXH.inc" $INCLUDE "../../base/data/HEATTRANS_ANNUITYCXH.inc";
 %semislash%  ;
 
-
+PARAMETER XHKRATE(IAAAE,IAAAI,SSS,TTT)    "Heat Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)" %semislash%
+$if     EXIST "../data/HEATTRANS_XHKRATE.inc" $INCLUDE         "../data/HEATTRANS_XHKRATE.inc";
+$if not EXIST "../data/HEATTRANS_XHKRATE.inc" $INCLUDE "../../base/data/HEATTRANS_XHKRATE.inc";
+%semislash%;
 
 PARAMETER XHCOST(IAAAE,IAAAI)  "Heat transmission cost between areas (calculated from exported quantity) (Money/MWh)" %semislash%
 $if     EXIST "../data/HEATTRANS_XHCOST.inc" $INCLUDE         "../data/HEATTRANS_XHCOST.inc";

@@ -4,3 +4,8 @@ $onmulti
 $if     EXIST '../data/INDIVUSERS_AAA.inc' $INCLUDE         '../data/INDIVUSERS_AAA.inc';
 $if not EXIST '../data/INDIVUSERS_AAA.inc' $INCLUDE '../../base/data/INDIVUSERS_AAA.inc';
 $offmulti
+
+$onmulti
+$if     EXIST '../data/INDIVUSERS_INDIVUSERS_AAA.inc' $INCLUDE         '../data/INDIVUSERS_INDIVUSERS_AAA.inc';
+$if not EXIST '../data/INDIVUSERS_INDIVUSERS_AAA.inc' $INCLUDE '../../base/data/INDIVUSERS_INDIVUSERS_AAA.inc';
+$offmulti

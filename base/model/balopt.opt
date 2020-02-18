@@ -100,6 +100,12 @@ ROLLINGSEASONSNUMBER= 1;
 
 *-------- END: Seasonal rolling horizon  ---------
 
+*--------   QDENET  ---------
+* Introduces the calculation of the net demand of different users (e.g. households, industry, etc). Relevant for taxes, grid tariffs, demand response, etc.
+$setglobal NETDEMAND
+*!option yes
+*-------- END: QDENET  ---------
+
 *-----------------------------------------------------------------
 *---- Investments ------------------------------------------------
 
@@ -163,6 +169,10 @@ $setglobal SEASONALCOP yes
 $setglobal OFFSHOREGRID
 *!option yes
 
+* Allow Carbon Capture Storage (CCS) technologies.
+$setglobal CCS yes
+*!option yes
+
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
 $setglobal WNDSHUTDOWN
 *!option yes
@@ -178,7 +188,7 @@ $setglobal EV  YES
 *!option
 
 * Adds DUMB charging:
-$setglobal DUMB yes
+$setglobal DUMB
 *!option
 
 * Adds smart charging. Only smart charging, without V2G!:
@@ -186,7 +196,7 @@ $setglobal SMART
 *!option
 
 * Adds V2G charging:
-$setglobal V2G
+$setglobal V2G   YES
 *!option
 
 * Adds V2G charging:
@@ -199,6 +209,16 @@ $setglobal DEGCYCLE
 
 * Adds calendar degradation charging:
 $setglobal DEGCAL
+*!option
+
+* EV timeseries will be averaged (relevant if less than all time steps in TTT are used).
+* NOTE: It currently only works if T are equally distanced from each other and if the first T chosen is equal to the first element int TTT). If this is not desired, one can replace the timeseries with new averaged-with-another-procedude timeseries
+* NOTE: It might lead to infeasibilities though
+$setglobal EV_PROFILE_AVG
+*!option yes
+
+*Adds EV infeasibility variables (added here on purpose, since if not all TTT are used it is very likely to run into small infeasibilities)
+$setglobal EV_infeas  yes
 *!option
 *------------------------------END: EV ADDON-------------------------------------------------
 
@@ -294,7 +314,7 @@ $Setglobal LIMITSFORFUELS
 $setglobal DFLEXQUANT
 *!option yes
 
-* Allow demand response
+* Allow demand response (requires NETDEMAND)
 $setglobal DEMANDRESPONSE
 *!option yes
 
@@ -310,11 +330,11 @@ $Setglobal FV
 $setglobal POLICIES
 *!option yes
 
-* Grid tariffs on electricity use
+* Grid tariffs on electricity use (requires NETDEMAND)
 $setglobal GRIDTARIFFS
 *!option yes
 
-* Taxes addon
+* Taxes addon (requires NETDEMAND)
 $setglobal TAXES
 *!option yes
 
@@ -695,7 +715,7 @@ $setglobal INPUTDATAGDX2MDB
 * close all tables in it before executing Balmorel in order to ensure updating of the links.
 
 * Merge input data with the output into the gdx file %CASEID%.gdx
-$setglobal MERGEINPUTDATA yes
+$setglobal MERGEINPUTDATA
 *!option yes
 
 
@@ -771,13 +791,13 @@ $setglobal PRINTSEPARATOR ';'
 * The value specified by $Setglobal SAVEPOINTVALUE will be used for savepoint.
 * To be used with subsequent handling of output.
 *
-$setglobal SAVEPOINTVALUE 1
+$setglobal SAVEPOINTVALUE 0
 *!option 0
 *!option 1   !mustif  %MERGESAVEPOINTRESULTS%==yes  !mustif  %MERGEDSAVEPOINTRESULTS2GDX%==yes   !mustif  %MERGEDSAVEPOINTRESULTS2XLS%==yes   !mustif not %MERGECASE%==none  !mustif not %DIFFCASE%==none
 *!option 2   !text Note: nothing implemented nor tested, so do not use it.
 
 * Use the $setglobal MERGESAVEPOINTRESULTS to choose whether to merge annual/seasonal results or not:
-$setglobal MERGESAVEPOINTRESULTS   YES
+$setglobal MERGESAVEPOINTRESULTS
 *!option yes  !onlyif  %SAVEPOINTVALUE%==1
 * Note: make sure that it is possible to make the new merged gdx file,
 * e.g. make sure that the file *.gdx is not open in another application (like GAMD IDE).

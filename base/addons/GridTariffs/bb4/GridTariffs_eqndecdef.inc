@@ -1,4 +1,5 @@
 EQUATIONS
+
 QGETOH_CAP1(YYY,AAA,SSS,TTT) 'endogenous limit to electricity consumption under demand charge winter, summer and "2"'
 QGETOH_CAP2(YYY,AAA,SSS,TTT) 'endogenous limit to electricity consumption under demand charge TOU'
 QGETOH_CAPY(YYY,AAA,SSS,TTT) 'endogenous limit to electricity consumption under demand charge yearly'

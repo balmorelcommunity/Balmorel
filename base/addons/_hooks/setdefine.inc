@@ -35,9 +35,11 @@ $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_setdef
 
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_setdefine.inc";
 
-$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_setdefine.inc";  
+$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_setdefine.inc";
 
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_setdefine.inc";
+
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_setdefine.inc";
 
 
 $label endoffile

@@ -12,6 +12,8 @@ PARAMETER XHCOST(IAAAE,IAAAI)  "Heat transmission cost between areas (calculated
 
 PARAMETER XHLOSS(IAAAE,IAAAI)  "Heat transmission loss between areas (calculated from exported quantity) (share)";
 
+PARAMETER XHKRATE(IAAAE,IAAAI,SSS,TTT)    "Heat Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)" ;
+
 PARAMETER ANNUITYCXH(CCC) "Transforms investment in heat transmission lines into annual payment (fraction). Possibly different meaning in BB4";
 
 PARAMETER XHMAXK(YYY,IAAAE,IAAAI)  "Max heat transmission capacity between two areas (MW)";

@@ -7,8 +7,9 @@
 PARAMETER IYHASANNUITYXH(Y,Y)           "Binary parameter to establish whether the annuity of an investment of a heat transmission line investment made in Y (first index) should be paid in the time period Y (second index) (0,1)";
 SET IXHK_HASORPOT(Y,IAAAE,IAAAI)  "Heat transmission lines with existing or potentially invested capacity current year";
 SET IXHKN(Y,IAAAE,IAAAI) 'Pair of areas that may get new heat transmission capacity, yearly dependent';
+PARAMETER IXHKRATE(IAAAE,IAAAI,S,T)     "Heat Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
 
-
+IXHKRATE(IAE,IAI,S,T) = XHKRATE(IAE,IAI,S,T);
 IXHK_HASORPOT(Y,IAE,IAI) = YES$XHKFX(Y,IAE,IAI);
 IXHKN(Y,IAE,IAI)=NO;
 

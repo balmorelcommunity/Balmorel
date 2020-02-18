@@ -13,7 +13,7 @@ QXHKMAX(Y,IAAAE,IAAAI)               "Maximum heat transmission capacity between
 QXHK_UP(IY411,IAE,IAI,IS3,T)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXHKN(Y,IAE,IAI))..
    (  XHKFX(IY411,IAE,IAI)
       + VXHKNACCUMNET(IY411,IAE,IAI)
-    )
+    )*(1$(NOT IXHKRATE(IAE,IAI,IS3,T))+IXHKRATE(IAE,IAI,IS3,T))
      =G=  VXH_T(IY411,IAE,IAI,IS3,T)
 ;
 

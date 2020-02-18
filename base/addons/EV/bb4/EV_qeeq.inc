@@ -1,49 +1,11 @@
+              
+                  +( 
+                                + VEV_VG2V_BEV(IY411,IR,IS3,T)$(IY411.val>2019)
+                                + VEV_VG2V_PHEV(IY411,IR,IS3,T)$(IY411.val>2019)
 
 
-
-$ifi not %DUMB%==yes $goto DUMB_END
-+(
-+VEV_VNETCHARGE_BEV(IY411,IR,IS3,T)
-+VEV_VNETCHARGE_PHEV(IY411,IR,IS3,T)
-)/(1-DISLOSS_E(IR))
-
-$label  DUMB_END
-
-$ifi not %SMART%==yes $goto SMART_END
-+(
-+VEV_VNETCHARGE_BEV(IY411,IR,IS3,T)
-+VEV_VNETCHARGE_PHEV(IY411,IR,IS3,T)
--VEV_VNETDISCHARGE_BEV(IY411,IR,IS3,T)
-)/(1-DISLOSS_E(IR))
-
-
-$label  SMART_END
-
-$ifi not %V2G%==yes $goto V2G_END
-+(
-+VEV_VNETCHARGE_BEV(IY411,IR,IS3,T)
-+VEV_VNETCHARGE_PHEV(IY411,IR,IS3,T)
--VEV_VNETDISCHARGE_BEV(IY411,IR,IS3,T)
-)/(1-DISLOSS_E(IR))
-
-
-$label  V2G_END
-
-
-
-$ifi not %STEPCHARGSCHEME%==yes $goto STEPCHARGSCHEME_END
-
-
-+(
-       +(EV_BEV_Dumb(IY411,IS3,T,IR)*(1/EV_PEFF(IY411)) + EV_PHEV_Dumb(IY411,IS3,T,IR)*(1/EV_PEFF(IY411)))$cs('dumb',IY411)
-
-       +(+VEV_VNETCHARGE_BEV(IY411,IR,IS3,T)
-         +VEV_VNETCHARGE_PHEV(IY411,IR,IS3,T)
-         -VEV_VNETDISCHARGE_BEV(IY411,IR,IS3,T))$cs('smart',IY411)
-
-       +(+VEV_VNETCHARGE_BEV(IY411,IR,IS3,T)
-         +VEV_VNETCHARGE_PHEV(IY411,IR,IS3,T)
-         -VEV_VNETDISCHARGE_BEV(IY411,IR,IS3,T))$cs('v2g',IY411)
-)/(1-DISLOSS_E(IR)) 
-
-$label  STEPCHARGSCHEME_END
+$ifi %V2G%==yes                 - VEV_VV2G_BEV(IY411,IR,IS3,T)$(IY411.val>2019)
+$ifi %V2G%==yes                 - VEV_VV2G_PHEV(IY411,IR,IS3,T)$(IY411.val>2019)
+$ifi %STEPCHARGSCHEME%==yes     - VEV_VV2G_BEV(IY411,IR,IS3,T)$((IY411.val>2019) AND cs('v2g',IY411))
+$ifi %STEPCHARGSCHEME%==yes     - VEV_VV2G_PHEV(IY411,IR,IS3,T)$((IY411.val>2019) AND cs('v2g',IY411))
+                   )/(1-DISLOSS_E(IR)) 
