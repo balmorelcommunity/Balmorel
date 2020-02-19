@@ -64,6 +64,9 @@ $setglobal TECHALT
 *!option _noBioImport+PtX  *noBioImport+PtX alternative: No import of biomasses, but PtX demand included
 *!option _cheapGasHP_COP250*cheapGasHP_COP250 alternative: Allow to install GNR_HP_NGAS_GE_COP-250
 *!option _cheapBiomass     *cheapBiomass alternative: reduce biomass cost
+*!option _costbiogas_lo    *lower cost of biogas alternative: reduce biogas cost by 20%
+*!option _costbiogas_up    *upper cost of biogas alternative: increase biogas cost by 20%
+
 
 *===============================================================================
 *===============================================================================
@@ -486,7 +489,7 @@ $setglobal bb4weighty shareYYY
 *-------------------------------------------------------------------------------
 * OptiFlow model.
 *-------------------------------------------------------------------------------
-$setglobal OPTIFLOW yes
+$setglobal OPTIFLOW
 *!option yes
 * Addon APKNdisc: discrete size investments in PROC.
 $setglobal APKNdisc
