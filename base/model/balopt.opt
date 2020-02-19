@@ -666,7 +666,11 @@ $setglobal ADDPLANNEDMAINTENANCE
 *--------------------TRANSPORT DEMAND-----------------------------------------------------------
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
 *Import seasonal electricity demand from the transport sector
-$setglobal ADDSEASONALTRANSPORTDEMAND
+$setglobal ADDSEASONALTRANSPORTDEMAND   
+*!option yes
+
+*Import peak electricity demand from the transport sector
+$setglobal ADDPEAKTRANSPORTDEMAND   
 *!option yes
 *--------------------END OF TRANSPORT DEMAND-----------------------------------------------------------
 
