@@ -352,7 +352,18 @@ EL_DEMAND_YCRST(Y,C,IR,S,T,'EXOGENOUS','MWh')*DISLOSS_E(IR)/(1-DISLOSS_E(IR))
 * INTERSEASONAL ELECTRICITY STORAGE
 +SUM(IA$RRRAAA(IR,IA),SUM(IGESTOS$IAGK_HASORPOT(Y,IA,IGESTOS),VESTOLOADT.L(Y,IA,IGESTOS,S,T)*DISLOSS_E_AG(IA,IGESTOS)/(1-DISLOSS_E_AG(IA,IGESTOS))))
 * EVs
-$ifi %EV%==yes +EL_DEMAND_YCRST(Y,C,IR,S,T,'ENDO_EV','MWh')*DISLOSS_E(IR)/(1-DISLOSS_E(IR))
+$ifi not %EV%==yes $goto NO_EV2
+                               +(
+                                + VEV_VG2V_BEV.L(Y,IR,S,T)
+                                + VEV_VG2V_PHEV.L(Y,IR,S,T)
+                                )*EV_DISTLOSSLOAD(IR)/(1-EV_DISTLOSSLOAD(IR))
+                                +(
+$ifi %V2G%==yes                 - VEV_VV2G_BEV.L(Y,IR,S,T)
+$ifi %V2G%==yes                 - VEV_VV2G_PHEV.L(Y,IR,S,T)
+$ifi %STEPCHARGSCHEME%==yes     - VEV_VV2G_BEV.L(Y,IR,S,T)$(cs('v2g',IY411))
+$ifi %STEPCHARGSCHEME%==yes     - VEV_VV2G_PHEV.L(Y,IR,S,T)$(cs('v2g',IY411))
+                                )*EV_DISTLOSSUNLOAD(IR)/(1-EV_DISTLOSSUNLOAD(IR))
+$label NO_EV2
 *CCS
 $ifi %CCS%==yes +SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND RRRAAA(IR,IA) AND CCS_G(G)),VGF_T.L(Y,IA,G,S,T) * IM_CO2(G)*IOF0001 * IOF3P6 * CCS_CO2CAPTEFF_G(G)* CCS_DECO2COMP_G(G)*DISLOSS_E_AG(IA,G)/(1-DISLOSS_E_AG(IA,G)))
 *PRODUCTION SIDE
