@@ -1,3 +1,8 @@
+PARAMETER INDHEAT_GKFX(YYY,INDHEAT_AAA,INDHEAT_GGG,INDHEAT_GROUP) 'Installed capacities' %semislash%
+$if     EXIST '../data/INDHEAT_GKFX.inc' $INCLUDE         '../data/INDHEAT_GKFX.inc';
+$if not EXIST '../data/INDHEAT_GKFX.inc' $INCLUDE '../../base/data/INDHEAT_GKFX.inc';
+%semislash%
+
 PARAMETERS
          INDHEAT_IDH_SUMST(INDHEAT_AAA,INDHEAT_DHUSER) 'Annual amount of nominal heat demand (MWh)'
          INDHEAT_ISOLHSUMST(INDHEAT_AAA) 'Annual amount of solar generated heat relative to ISOLHSUMST and (S,T) (MWh)'
