@@ -798,6 +798,9 @@ IGDECOMEXOPOT(Y,IA,G)=0;
 $ifi not %OFFSHOREGRID%==yes IGKN_ES(G)=0;
 $ifi not %OFFSHOREGRID%==yes IXKN_ES(IRRRE,IRRRI)=0;
 
+*Initializing the sets IHYDROGEN in case the add-on hydrogen is not activated
+$ifi not %HYDROGEN%==yes IHYDROGEN(G)=0;
+
 PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y";
 * Set the relative weight of the individual years in Y.
 * Two ideas implemented here. Used according to option bb4weighty.
@@ -2899,6 +2902,7 @@ FUELPRICE_EXC(Y,IA,STEPWISEPRICE_FFF)$SUM(C$ICA(C,IA),ISTEPWISEPRICE_F(Y,C,STEPW
     )
 ;
 $label NO_STEPWISEPRICE
+$ifi %HYDROGEN%==yes $ifi not %import_results%==yes $ifi not %ADDFUELPRICE%==yes FUELPRICE_EXC(Y,IA,'BIOMETHANE')$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=QBIOMETHANE_EQ.M(Y)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y))/IOF3P6;
 execute_unload  "../../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
 
 *Planned maintenaince
@@ -2911,6 +2915,11 @@ $ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSP
 $ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes execute_unload  "../../simex/TRANSDEMAND_S.gdx", TRANSDEMAND_S;
 $ifi %TRANSPORT%==yes $ifi not %import_results%==yes $ifi not %ADDSEASONALTRANSPORTDEMAND%==yes execute_unload  "../../simex/TRANSDEMAND_T_MAX.gdx", TRANSDEMAND_T_MAX;
 
+*Hydrogen
+$ifi %HYDROGEN%==yes   H2STOVOLTS(Y,IA,IHYDROGEN_GH2STO,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO)=VHYDROGEN_STOVOL_T.L(Y,IA,IHYDROGEN_GH2STO,S,T);
+$ifi %HYDROGEN%==yes   H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO)=QHYDROGEN_STOVOL.M(Y,IA,IHYDROGEN_GH2STO,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
+$ifi %HYDROGEN%==yes   execute_unload  "../../simex/H2STOVOLTS.gdx", H2STOVOLTS;
+$ifi %HYDROGEN%==yes   execute_unload  "../../simex/H2STOVOLTSVAL.gdx", H2STOVOLTSVAL;
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
 *------------------------------------------------------------------------------

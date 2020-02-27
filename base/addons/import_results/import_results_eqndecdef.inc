@@ -33,6 +33,15 @@ QHSTOVOLTSIMPORT(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IHST
 ;
 $label label_no_interseasonal_heat_storage_content
 
+$ifi not %HYDROGEN%==yes $ifi not %ADDH2STOVOLTS%==cont    $goto label_no_interseasonal_hydrogen_storage_content
+EQUATION    QH2STOVOLTSIMPORT(Y,AAA,G,S,T)   'Inter-seasonal hydrogen storage content at the beginning of each season fixed to results in previous runs (MWh)' ;
+QH2STOVOLTSIMPORT(IY411,IA,IHYDROGEN_GH2STO,S,T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2STO) AND IH2STOVOLTS(IY411,IA,IHYDROGEN_GH2STO) AND (ORD(T) EQ 1) AND (IS3(S) OR IS3(S--1)))..
+   VHYDROGEN_STOVOL_T(IY411,IA,IHYDROGEN_GH2STO,S,T)   - H2STOVOLTS(IY411,IA,IHYDROGEN_GH2STO,S,T)
+=E=
+    0
+;
+$label label_no_interseasonal_hydrogen_storage_content
+
 $ifi not %ADDESTOVOLT%==cont    $goto label_no_interseasonal_electricity_storage_content
 EQUATION    QESTOVOLTIMPORT(Y,AAA,G,S,T)   'Inter-seasonal Electricity storage content at the beginning of each season fixed to results in previous runs (MWh)' ;
 QESTOVOLTIMPORT(IY411,IA,IGESTO,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTO) AND IS3(S) AND IESTOVOLT(IY411,IA,IGESTO) AND (ORD(T) EQ 1))..

@@ -312,6 +312,13 @@ PARAMETER TRANSDEMAND_T(YYY,RRR,SSS,TTT) "Transport demand per country, year, an
 $ifi  exist '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx', TRANSDEMAND_T;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx' TRANSDEMAND_T(YYY,RRR,SSS,TTT)=0;
 
+PARAMETER H2STOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal hydrogen storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
+$ifi  exist '../../base/auxils/timestep_conversion/input/H2STOVOLTS.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/H2STOVOLTS.gdx', H2STOVOLTS;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/H2STOVOLTS.gdx' H2STOVOLTS(YYY,AAA,GGG,SSS,TTT)=0;
+
+PARAMETER H2STOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Heat storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
+$ifi  exist '../../base/auxils/timestep_conversion/input/H2STOVOLTSVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/H2STOVOLTSVAL.gdx', H2STOVOLTSVAL;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/H2STOVOLTSVAL.gdx' H2STOVOLTSVAL(YYY,AAA,GGG,SSS,TTT)=0;
 
 *REST OF HYDRO PARAMETERS.........
 
@@ -377,6 +384,9 @@ PARAMETER UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)    'Unit commitment (0,1) on ele
 PARAMETER UCON_STOLOAD_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)    'Unit commitment (0,1) on electricity generation to be used in future runs';
 PARAMETER IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)     "Rating of technology capacities (non-negative, typically less than or equal to 0); default/1/, eps for 0)";
 PARAMETER TRANSDEMAND_S_NEW(YYY,CCC,SSS_NEW) "Transport demand per country, year, and season (MWh)";
+PARAMETER H2STOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal hydrogen storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
+PARAMETER H2STOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal hydrogen storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
+
 
 *----------END OF INPUT DATA--------------------
 
@@ -458,6 +468,9 @@ UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_
 UCON_STOLOAD_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),UCON_STOLOAD(YYY,AAA,GGG,SSS,TTT)) ;
 IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),IGKRATE(AAA,GGG,SSS,TTT)) ;
 TRANSDEMAND_S_NEW(YYY,CCC,SSS_NEW)=SUM((SSS,TTT,TTT_NEW,RRR)$(ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW) AND CCCRRR(CCC,RRR)),TRANSDEMAND_T(YYY,RRR,SSS,TTT)*WEIGHT_S(SSS))/SUM(TTT, WEIGHT_T(TTT));
+H2STOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),H2STOVOLTS(YYY,AAA,GGG,SSS,TTT));
+H2STOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),H2STOVOLTSVAL(YYY,AAA,GGG,SSS,TTT)) ;
+
 
 *------------END OF CALCULATIONS-------------
 
@@ -513,6 +526,8 @@ execute_unload  "../../base/auxils/timestep_conversion/output/UCON.gdx", UCON_NE
 execute_unload  "../../base/auxils/timestep_conversion/output/UCON_STOLOAD.gdx", UCON_STOLOAD_NEW=UCON_STOLOAD;
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", IGKRATE_NEW=IGKRATE;
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", TRANSDEMAND_S_NEW=TRANSDEMAND_S;
+execute_unload  "../../base/auxils/timestep_conversion/output/H2STOVOLTS.gdx", H2STOVOLTS_NEW=H2STOVOLTS;
+execute_unload  "../../base/auxils/timestep_conversion/output/H2STOVOLTSVAL.gdx", H2STOVOLTSVAL_NEW=H2STOVOLTSVAL;
 
 *$ONTEXT
 *WND_VAR_T timeseries

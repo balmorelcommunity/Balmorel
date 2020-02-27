@@ -34,5 +34,12 @@ $ifi not %ADDHSTOVOLT%==price    $goto label_no_intraseasonal_heat_storage_price
                                          )
 $label label_no_intraseasonal_heat_storage_price
 
+$ifi not %HYDROGEN%==yes $ifi not %ADDH2STOVOLTS%==price    $goto label_no_interseasonal_hydrogen_storage_price
+                                   +SUM((S,T,IA,IHYDROGEN_GH2STO)$(IS3(S) AND IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO)),
+                                                 IHOURSINST(S,T)*H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)*(VHYDROGEN_GH2_T(Y,IA,IHYDROGEN_GH2STO,S,T)/GDATA(IHYDROGEN_GH2STO,'GDFE')-VHYDROGEN_STOLOADT(Y,IA,IHYDROGEN_GH2STO,S,T))
+                                   )
+$label label_no_interseasonal_hydrogen_storage_price
+
+
 
 

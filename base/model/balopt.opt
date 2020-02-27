@@ -301,7 +301,7 @@ $setglobal COMBTECH yes
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN
+$Setglobal HYDROGEN yes
 *!option yes
 
 * Use stepwise linear fuel prices
@@ -601,13 +601,13 @@ $setglobal HYRSBB123 none
 *Import inter-seasonal electricity storage data from previous runs
 $Setglobal ADDESTOVOLTS none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
-*!option price         !Text "Import electricity storage contents at beginning of time segment (ESTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with ESTOVOLTSVAL.gdx from previous runs. "
+*!option price         !Text "Import electricity storage contents at beginning of time segment (ESTOVOLTS.gdx) for the first element in set T and S, and puts a price to use with ESTOVOLTSVAL.gdx from previous runs. "
 *!option none          !Text "Do not not use this addon"
 
 *Import inter-seasonal heat storage data from previous runs
 $Setglobal ADDHSTOVOLTS  none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
-*!option price         !Text "Import Heat storage contents at beginning of time segment (HSTOVOLTS.gdx) for the first element in set T and S, and penalizes deviating from them with HSTOVOLTSVAL.gdx from previous runs."
+*!option price         !Text "Import Heat storage contents at beginning of time segment (HSTOVOLTS.gdx) for the first element in set T and S, and puts a price to use with HSTOVOLTSVAL.gdx from previous runs."
 *!option none          !Text "Do not not use this addon"
 
 *Import intra-seasonal electricity storage data from previous runs
@@ -621,6 +621,15 @@ $Setglobal ADDHSTOVOLT  none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
 *!option price         !Text "(to be finished) Import Heat storage contents at beginning of time segment (HSTOVOLT.gdx) for the first element in set T and S,  and puts a price to generation (HSTOVOLTVAL) from previous runs"
 *!option none          !Text "Do not not use this addon"
+
+*Import inter-seasonal hydrogen storage data from previous runs  (requires HYDROGEN addon)
+$Setglobal ADDH2STOVOLTS  none
+*!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
+*!option price         !Text "Import Heat storage contents at beginning of time segment (H2STOVOLTS.gdx) for the first element in set T and S, and puts a price to use with H2STOVOLTSVAL.gdx from previous runs."
+*!option none          !Text "Do not not use this addon"
+
+
+
 *--------------------END OF INTERSEASONAL STORAGE-----------------------------------------------------------
 
 *--------------------INVESTMENTS AND DECOMMISSIONING-----------------------------------------------------------
@@ -631,7 +640,7 @@ $setglobal ADDTECHDEV
 *!option yes
 
 *Add expensive to operate backup power and heat generation technology. It often occurs that the investment optimization underestimates the need for power.
-$setglobal ADDBACKUPGEN  yes
+$setglobal ADDBACKUPGEN
 *!option yes
 
 *Import transmission development from previous runs

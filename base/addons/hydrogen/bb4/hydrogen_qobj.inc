@@ -29,8 +29,6 @@ revenue sale of hydrogen to the transport sector
 *
 $offtext
 
-+ PENALTYQ*(SUM((IR,IS3,T),(VHYDROGEN_QH2EQ(Y,IR,IS3,T,'IMINUS')+VHYDROGEN_QH2EQ(Y,IR,IS3,T,'IPLUS'))))
-
 * Cost of fuel consumption during the year for steam reforming plants:
 
     + SUM((IAGK_HASORPOT(Y,IA,IHYDROGEN_GCH4TOH2),FFF)$(GDATA(IHYDROGEN_GCH4TOH2,'GDFUEL') EQ FDATA(FFF,'FDNB')),
@@ -45,3 +43,13 @@ $offtext
 * Variable O&M costs of the H2 storage is missing - not defined in GDATA and
 * hence not included here. Fixed O&M and investment costs are included in
 * Balmorel.gms
+
+
+* Variable Operation and maintainance cost of hydrogen storage:
+
+   + SUM(IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO), GOMVCOSTO(IA,IHYDROGEN_GH2STO) * SUM((IS3,T), IHOURSINST(IS3,T)*VHYDROGEN_GH2_T(Y,IA,IHYDROGEN_GH2STO,IS3,T)))
+
+* Variable Operation and maintainance cost of methanation-DAC:
+
+   + SUM(IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2TOBIOMETH), GOMVCOSTO(IA,IHYDROGEN_GH2TOBIOMETH) * SUM((IS3,T), IHOURSINST(IS3,T)*VGBIOMETH_T(Y,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)))
+

@@ -40,7 +40,8 @@ $ifi %equation%==qucrampd         - VQUCRAMPD(IY411,IA,IGUC,S,T,'IPLUS') + VQUCR
 $ifi %equation%==qucvucon_existing  - VQUCVUCON_EXISTING(IY411,IA,IGUC,IS3,T,'IPLUS') + VQUCVUCON_EXISTING(IY411,IA,IGUC,IS3,T,'IMINUS')
 $ifi %equation%==qucvucon_existing_stoload  - VQUCVUCON_EXISTING_STOLOAD(IY411,IA,IGUC,IS3,T,'IPLUS') + VQUCVUCON_EXISTING_STOLOAD(IY411,IA,IGUC,IS3,T,'IMINUS')
 $ifi %equation%==qmbgh_t           - VQBMGH_T(IY411,IA,IGEH,IS3,'IPLUS') + VQBMGH_T(IY411,IA,IGEH,IS3,'IMINUS')
-
+$ifi %equation%==qhydrogen_eq_area        - VHYDROGEN_QH2EQ(IY411,IA,IS3,T,'IMINUS') + VHYDROGEN_QH2EQ(IY411,IA,IS3,T,'IPLUS')
+$ifi %equation%==qhydrogen_eq             - VHYDROGEN_QH2EQ(IY411,IR,IS3,T,'IMINUS') + VHYDROGEN_QH2EQ(IY411,IR,IS3,T,'IPLUS')
 
 $ifi not %equation%==qobj  $goto endoffile
 
@@ -114,6 +115,8 @@ $ifi %UnitComm%==yes  $ifi %PLANNED_MAINTENANCE%==yes ), (VQUCVUCON_EXISTING_STO
 
 $ifi %BalancingMarket%==yes $ifi %NOHEATMARKET%==yes   +SUM((IA,IGEH,IS3)$IAGK_HASORPOT(Y,IA,IGEH), (VQBMGH_T(Y,IA,IGEH,IS3,'IMINUS')+VQBMGH_T(Y,IA,IGEH,IS3,'IPLUS')))
 
+$ifi %HYDROGEN%==yes    + SUM((IR,IS3,T),(VHYDROGEN_QH2EQ(Y,IR,IS3,T,'IMINUS')+VHYDROGEN_QH2EQ(Y,IR,IS3,T,'IPLUS')))
+$ifi %HYDROGEN%==yes    + SUM((IA,IS3,T)$HYDROGEN_DH2(Y,IA),(VHYDROGEN_QH2EQ(Y,IA,IS3,T,'IMINUS')+VHYDROGEN_QH2EQ(Y,IA,IS3,T,'IPLUS')))
            )
 * -- Objective function End ----------------------------------------------------
 

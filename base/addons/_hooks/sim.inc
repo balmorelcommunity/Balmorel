@@ -24,5 +24,5 @@ $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_sim.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_sim.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_sim.inc";
 $ifi %BalancingMarket%==yes       $include   "../../base/addons/balancing_market/balancing_market_sim.inc";
-
+$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_sim.inc";
 $label endoffile

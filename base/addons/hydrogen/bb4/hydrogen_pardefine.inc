@@ -30,4 +30,10 @@ $if not EXIST '../data/HYDROGEN_FUELPRICE.inc' $INCLUDE '../../base/data/HYDROGE
 
 $if     EXIST '../data/HYDROGEN_GKFX.inc' $INCLUDE         '../data/HYDROGEN_GKFX.inc';
 $if not EXIST '../data/HYDROGEN_GKFX.inc' $INCLUDE '../../base/data/HYDROGEN_GKFX.inc';
+
+$if     EXIST '../data/HYDROGEN_DAC_DE.inc' $INCLUDE         '../data/HYDROGEN_DAC_DE.inc';
+$if not EXIST '../data/HYDROGEN_DAC_DE.inc' $INCLUDE '../../base/data/HYDROGEN_DAC_DE.inc';
+
+$if     EXIST '../data/HYDROGEN_DAC_DH.inc' $INCLUDE         '../data/HYDROGEN_DAC_DH.inc';
+$if not EXIST '../data/HYDROGEN_DAC_DH.inc' $INCLUDE '../../base/data/HYDROGEN_DAC_DH.inc';
 $offmulti
