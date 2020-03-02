@@ -613,6 +613,7 @@ $label  heat_storage_loading_lim
 
 $ifi not %bypass%==yes   IGBYPASS(G) = NO;
 $ifi %bypass%==yes       IGBYPASS(IGBPR)$GDATA(IGBPR,'GDBYPASSC') = YES;
+$ifi %bypass%==yes       IGBYPASS(IGEXT)$GDATA(IGEXT,'GDBYPASSC') = YES;
 
 *The following corrects the economic values in input data to match the relative size of T
 SCALAR IHOURFRAC "Weight of T with respect to 1 hour (if T means 1 hour, then IHOURFRAC is 1, if T means 0.5 hours, IHOURFRAC is 0.5, etc.)";
@@ -1373,6 +1374,9 @@ EQUATIONS
    QGCBGBPRBYPASS2(Y,AAA,G,S,T)  "CHP generation (back pressure) with bypass limited by BYPC-line (MW)"
    QGCBGEXT(Y,AAA,G,S,T)         "CHP generation (extraction) limited by Cb-line (MW)"
    QGCVGEXT(Y,AAA,G,S,T)         "CHP generation (extraction) limited by Cv-line (MW)"
+   QGCVGEXTBYPASS1(Y,AAA,G,S,T)  "CHP generation (extraction) with bypass limited by Cp-line (MW)"
+   QGFEQEXTBYPASS1(Y,AAA,G,S,T)  "Lower bound 1 for fuel consumption of CHP extraction units with bypass (MW)"
+   QGFEQEXTBYPASS2(Y,AAA,G,S,T)  "Lower bound 2 for fuel consumption of CHP extraction units with bypass (MW)"
    QGGETOH(Y,AAA,G,S,T)          "Electric heat generation (MW)"
 
    QHYRSSEQ(Y,AAA,S)        "Hydropower with reservoir seasonal energy constraint (MWh)"
@@ -1635,7 +1639,7 @@ $ifi %INDIVUSERS%==yes        - SUM(IA$(RRRAAA(IR,IA) AND INDIVUSERS_AAA(IA)), S
 ;
 
 * Fuel consumption rate.
-QGFEQ(IY411,IA,G,IS3,T)$IAGK_HASORPOT(IY411,IA,G) ..
+QGFEQ(IY411,IA,G,IS3,T)$(IAGK_HASORPOT(IY411,IA,G) AND (NOT (IGBYPASS(G) AND IGEXT(G))))..
      VGF_T(IY411,IA,G,IS3,T)
   =E=
    ( (VGE_T(IY411,IA,G,IS3,T)/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$(IGNOTETOH(G) AND IGE(G))
@@ -1672,7 +1676,7 @@ $include "../../base/addons/_hooks/qgcbgbprbypass2.inc"
 * Extraction units:
 
 * "CHP generation (extraction) limited by Cb-line (MW)"
-QGCBGEXT(IAGK_HASORPOT(IY411,IA,IGEXT),IS3,T) ..
+QGCBGEXT(IAGK_HASORPOT(IY411,IA,IGEXT),IS3,T)$(NOT IGBYPASS(IGEXT)) ..
    VGE_T(IY411,IA,IGEXT,IS3,T) =G= VGH_T(IY411,IA,IGEXT,IS3,T) * GDATA(IGEXT,"GDCB");
 
 
@@ -1695,6 +1699,44 @@ $ifi %COMBTECH%==yes  * Add secondary generation if combination technologies are
 $ifi %COMBTECH%==yes  + SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGE_T(IY411,IA,IGCOMB2,IS3,T))$IGCOMB1(IGEXT)  !!TODO
 
 $include "../../base/addons/_hooks/qgcvgext.inc"
+;
+
+
+QGCVGEXTBYPASS1(IAGK_HASORPOT(IY411,IA,IGEXT),IS3,T)$(IGBYPASS(IGEXT) AND
+$ifi not %COMBTECH%==yes  1) ..
+$ifi     %COMBTECH%==yes  (NOT IGCOMB2(IGEXT))) ..
+* This will have a value if not a combination technology
+     (GKFX(IY411,IA,IGEXT)$IAGKFX(IY411,IA,IGEXT)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGEXT)$IGDECOMEXOPOT(IY411,IA,IGEXT)
+      + VGKNACCUMNET(IY411,IA,IGEXT)$(IAGK_HASORPOT(IY411,IA,IGEXT) AND IAGKN(IA,IGEXT))
+     )*(1$(NOT IGKRATE(IA,IGEXT,IS3,T)) + IGKRATE(IA,IGEXT,IS3,T))/(GDATA(IGEXT,'GDCB')+GDATA(IGEXT,'GDCV'))*(GDATA(IGEXT,'GDCB')/GDATA(IGEXT,'GDBYPASSC')+1)
+         - VGE_T(IY411,IA,IGEXT,IS3,T)/GDATA(IGEXT,'GDBYPASSC')
+
+$ifi %COMBTECH%==yes  * This will have a value in case of a combination technology. !!TODO
+$ifi %COMBTECH%==yes    - SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGE_T(IY411,IA,IGCOMB2,IS3,T)/GDATA(IGEXT,'GDBYPASSC'))$IGCOMB1(IGEXT)   !!TODO
+    =G=
+   VGH_T(IY411,IA,IGEXT,IS3,T)
+$ifi %COMBTECH%==yes  * Add secondary generation if combination technologies are used     !!TODO
+$ifi %COMBTECH%==yes  + SUM(IGCOMB2$GGCOMB(IGEXT,IGCOMB2), VGH_T(IY411,IA,IGCOMB2,IS3,T))$IGCOMB1(IGEXT)  !!TODO
+
+$include "../../base/addons/_hooks/qgcvgextbypass1.inc"
+;
+
+* Fuel consumption rate.
+QGFEQEXTBYPASS1(IY411,IA,IGEXT,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGEXT) AND IGBYPASS(IGEXT)) ..
+     VGF_T(IY411,IA,IGEXT,IS3,T)
+  =G=
+    (VGH_T(IY411,IA,IGEXT,IS3,T)*GDATA(IGEXT,'GDCV')+VGE_T(IY411,IA,IGEXT,IS3,T))/(GDATA(IGEXT,'GDFE')*GDATA(IGEXT,'GDBYPASSC')*(1$(NOT GEFFRATE(IA,IGEXT))+GEFFRATE(IA,IGEXT)))
+
+$include "../../base/addons/_hooks/qgfeqextbypass1.inc"
+;
+
+QGFEQEXTBYPASS2(IY411,IA,IGEXT,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGEXT) AND IGBYPASS(IGEXT)) ..
+     VGF_T(IY411,IA,IGEXT,IS3,T)
+  =G=
+    (VGH_T(IY411,IA,IGEXT,IS3,T)+VGE_T(IY411,IA,IGEXT,IS3,T))/(GDATA(IGEXT,'GDFE')*(1$(NOT GEFFRATE(IA,IGEXT))+GEFFRATE(IA,IGEXT)))*(GDATA(IGEXT,'GDCB')+GDATA(IGEXT,'GDCV'))/(1+GDATA(IGEXT,'GDCB'))
+
+$include "../../base/addons/_hooks/qgfeqextbypass2.inc"
 ;
 
 
@@ -2341,7 +2383,9 @@ QXINVSYMMETRY(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
 * "Limit on annual CO2-emission by year and country (kg/MW)"
 QLIMCO2(IY411,C)$(M_POL(IY411,'LIM_CO2',C) AND (M_POL(IY411,'LIM_CO2',C) LT INF))..
       SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
-      =L= M_POL(IY411,'LIM_CO2',C);
+      =L= M_POL(IY411,'LIM_CO2',C)
+$include "../../base/addons/_hooks/qlimco2.inc"
+;
 
 * "Limit on annual SO2 emission by year and country (kg/MW)"
 QLIMSO2(IY411,C)$(M_POL(IY411,'LIM_SO2',C) AND (M_POL(IY411,'LIM_SO2',C) LT INF))..
@@ -2358,7 +2402,9 @@ QLIMCO2NA(IY411)$(M_POLNA(IY411,'LIM_CO2') AND (M_POLNA(IY411,'LIM_CO2') LT INF)
       SUM(C,
          SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
          )
-      =L= M_POLNA(IY411,'LIM_CO2');
+      =L= M_POLNA(IY411,'LIM_CO2')
+$include "../../base/addons/_hooks/qlimco2na.inc"
+;
 
 * "Maximal investment by country and fuel during one simulated year (MW)"
 QMAXINVESTCF(IY411,C,FFF)$(FMAXINVEST(C,FFF) AND (FMAXINVEST(C,FFF) LT INF)) ..
@@ -2588,6 +2634,9 @@ $ifi %bypass%==yes              QGCBGBPRBYPASS1
 $ifi %bypass%==yes              QGCBGBPRBYPASS2
                                 QGCBGEXT
                                 QGCVGEXT
+$ifi %bypass%==yes              QGCVGEXTBYPASS1
+$ifi %bypass%==yes              QGFEQEXTBYPASS1
+$ifi %bypass%==yes              QGFEQEXTBYPASS2
                                 QGGETOH
 
 *--- Hydro reservior restrictions ----------------------------------------------

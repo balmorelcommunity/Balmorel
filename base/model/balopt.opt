@@ -407,7 +407,7 @@ $setglobal stointers
 *! option  none       Let no storage technologies be inter-seasonal (i.e., let all be intra-seasonal)
 
 
-* Bypass of 'turbine' (electricity production) on backpressure units.
+* Bypass of 'turbine' (electricity production) on CHP units.
 $setglobal bypass yes
 *!option yes
 
