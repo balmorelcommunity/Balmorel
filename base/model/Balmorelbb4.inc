@@ -682,6 +682,8 @@ $ifi %SYSTEMCOST%==yes   $if not exist 'BASELOADSERVICE.inc' $INCLUDE '../../bas
 * PARAMETER XHINVCOST(IAAAE,IAAAI) "Investment cost in new heat transmission cap"
 * PARAMETER XHCOST(IAAAE,IAAAI)    "Heat transmission cost between countries"
 * PARAMETER XHLOSS(IAAAE,IAAAI)    "Heat transmission loss between regions"
+PARAMETER XHKFX_DH(YYY,AAA) "Exogenous heat transmission capacity for individual users connected to district heating";
+XHKFX_DH(Y,IA)$(NOT(INDUSTRY_AAA(IA)) AND NOT(INDIVUSERS_AAA(IA)) AND SUM(DHUSER,DH(Y,IA,DHUSER)))=SMAX((SSS,TTT),SUM(DHUSER,DH(Y,IA,DHUSER) / SUM((ISSSALIAS,ITTTALIAS), DH_VAR_T(IA,DHUSER,ISSSALIAS,ITTTALIAS)) * DH_VAR_T(IA,DHUSER,SSS,TTT))/(1-DISLOSS_H(IA)));
 
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFDATALISTING%
