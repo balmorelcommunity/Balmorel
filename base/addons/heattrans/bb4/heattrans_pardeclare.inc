@@ -29,3 +29,6 @@ $ontext
 PARAMETER XHTEMPLIFT(IAAAE,IAAAI) "Temperature lift supplied by heat pump used for lifting temperature for heat transmitted from low to high temperature Area (share)";
 PARAMETER XHTEMPLIFT(IAAAE,IAAAI,GGG) "Temperature lift for lifting temperature for heat transmitted from low to high temperature Area supplied by heat pump used (share)";
 $offtext
+
+
+PARAMETER XHKFX_DH(YYY,IAAAE,IAAAI) "Exogenous heat transmission capacity for individual users connected to district heating (MW) (parameter calculated for output processing only, NOT USED IN OPTIMIZATIONS)";

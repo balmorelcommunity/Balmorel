@@ -70,5 +70,8 @@ $if not EXIST "../data/HEATTRANS_XHTEMPLIFT.inc" $INCLUDE "../../base/data/HEATT
 $offtext
 
 
-
+PARAMETER XHKFX_DH(YYY,IAAAE,IAAAI) "Exogenous heat transmission capacity for individual users connected to district heating (MW) (parameter calculated for output processing only, NOT USED IN OPTIMIZATIONS)" %semislash%
+$if     EXIST "../data/HEATTRANS_XHKFX_DH.inc" $INCLUDE         "../data/HEATTRANS_XHKFX_DH.inc";
+$if not EXIST "../data/HEATTRANS_XHKFX_DH.inc" $INCLUDE "../../base/data/HEATTRANS_XHKFX_DH.inc";
+%semislash%;
 

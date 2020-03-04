@@ -615,6 +615,21 @@ $ifi not %bypass%==yes   IGBYPASS(G) = NO;
 $ifi %bypass%==yes       IGBYPASS(IGBPR)$GDATA(IGBPR,'GDBYPASSC') = YES;
 $ifi %bypass%==yes       IGBYPASS(IGEXT)$GDATA(IGEXT,'GDBYPASSC') = YES;
 
+*-------------------------------------------------------------------------------
+*----- Any internal sets assignments for addon to be placed here: --------------
+*-------------------------------------------------------------------------------
+* NOTE: When making new generation technology types. Some add-ons may already
+* be using values of GDATA(G,'GDTYPE'). Check addons referenced here to maximize
+* consistency and avoid conflicts. It is encouraged to avoid using the '-' set
+* operator and instead use the '+' operator for compound assignments.
+
+$include "../../base/addons/_hooks/isetdecdef.inc"
+
+
+*-------------------------------------------------------------------------------
+*----- End: Any internal sets assignments for addon to be placed here ----------
+*-------------------------------------------------------------------------------
+
 *The following corrects the economic values in input data to match the relative size of T
 SCALAR IHOURFRAC "Weight of T with respect to 1 hour (if T means 1 hour, then IHOURFRAC is 1, if T means 0.5 hours, IHOURFRAC is 0.5, etc.)";
 IHOURFRAC=8736/(CARD(TTT)*CARD(SSS));
@@ -635,23 +650,10 @@ $ifi %import_results%==yes  $ifi not %ADDESTOVOLTS%==none   ESTOVOLTSVAL(Y,IA,IG
 $ifi %import_results%==yes  $ifi not %ADDHSTOVOLTS%==none   HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)=HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)*IHOURFRAC;
 $ifi %import_results%==yes  $ifi not %ADDESTOVOLT%==none    ESTOVOLTVAL(Y,IA,IGESTO,S,T)=ESTOVOLTVAL(Y,IA,IGESTO,S,T)*IHOURFRAC;
 $ifi %import_results%==yes  $ifi not %ADDHSTOVOLT%==none    HSTOVOLTVAL(Y,IA,IGHSTO,S,T)=HSTOVOLTVAL(Y,IA,IGHSTO,S,T)*IHOURFRAC;
+$ifi %import_results%==yes  $ifi not %ADDH2STOVOLTS%==none  $ifi %HYDROGEN%==yes H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)=H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)*IHOURFRAC;
 
 *MISSING: Grid_tariffs, taxes, demandresponse!!!!!!
 
-*-------------------------------------------------------------------------------
-*----- Any internal sets assignments for addon to be placed here: --------------
-*-------------------------------------------------------------------------------
-* NOTE: When making new generation technology types. Some add-ons may already
-* be using values of GDATA(G,'GDTYPE'). Check addons referenced here to maximize
-* consistency and avoid conflicts. It is encouraged to avoid using the '-' set
-* operator and instead use the '+' operator for compound assignments.
-
-$include "../../base/addons/_hooks/isetdecdef.inc"
-
-
-*-------------------------------------------------------------------------------
-*----- End: Any internal sets assignments for addon to be placed here ----------
-*-------------------------------------------------------------------------------
 
 *-------------------------------------------------------------------------------
 *---- Investments: --------------------------------------------------------------
@@ -682,8 +684,6 @@ $ifi %SYSTEMCOST%==yes   $if not exist 'BASELOADSERVICE.inc' $INCLUDE '../../bas
 * PARAMETER XHINVCOST(IAAAE,IAAAI) "Investment cost in new heat transmission cap"
 * PARAMETER XHCOST(IAAAE,IAAAI)    "Heat transmission cost between countries"
 * PARAMETER XHLOSS(IAAAE,IAAAI)    "Heat transmission loss between regions"
-PARAMETER XHKFX_DH(YYY,AAA) "Exogenous heat transmission capacity for individual users connected to district heating";
-XHKFX_DH(Y,IA)$(NOT(INDUSTRY_AAA(IA)) AND NOT(INDIVUSERS_AAA(IA)) AND SUM(DHUSER,DH(Y,IA,DHUSER)))=SMAX((SSS,TTT),SUM(DHUSER,DH(Y,IA,DHUSER) / SUM((ISSSALIAS,ITTTALIAS), DH_VAR_T(IA,DHUSER,ISSSALIAS,ITTTALIAS)) * DH_VAR_T(IA,DHUSER,SSS,TTT))/(1-DISLOSS_H(IA)));
 
 * Printing of data to the list file controlled by %ONOFFDATALISTING% and %ONOFFCODELISTING%:
 %ONOFFDATALISTING%
