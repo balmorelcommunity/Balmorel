@@ -570,6 +570,8 @@ $ifi %SOLHFLH_DOL%==AAA_GGG   PARAMETER SOLHFLH(AAA,GGG)    "Full load hours for
 $if     EXIST '../data/SOLHFLH.inc' $INCLUDE      '../data/SOLHFLH.inc';
 $if not EXIST '../data/SOLHFLH.inc' $INCLUDE '../../base/data/SOLHFLH.inc';
 %semislash%;
+*------------- Any SOLHFLH additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/solhflhadditions.inc"
 
 $ifi %GWAVE_DOL%==AAA          PARAMETER WAVEFLH(AAA)        "Full load hours for wave power (hours)"  %semislash%
 $ifi %GWAVE_DOL%==AAA_GGG      PARAMETER WAVEFLH(AAA,GGG)    "Full load hours for wave power (hours)"  %semislash%
@@ -805,6 +807,8 @@ PARAMETER SOLH_VAR_T(AAA,SSS,TTT)                  "Variation of the solarH gene
 $if     EXIST '../data/SOLH_VAR_T.inc' $INCLUDE      '../data/SOLH_VAR_T.inc';
 $if not EXIST '../data/SOLH_VAR_T.inc' $INCLUDE '../../base/data/SOLH_VAR_T.inc';
 %semislash%;
+*------------- Any SOLH_VAR_T additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/solh_var_tadditions.inc"
 
 PARAMETER WAVE_VAR_T(AAA,SSS,TTT)                  "Variation of the solarH generation"   %semislash%
 $if     EXIST '../data/WAVE_VAR_T.inc' $INCLUDE      '../data/WAVE_VAR_T.inc';
