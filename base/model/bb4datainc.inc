@@ -118,9 +118,9 @@ $if not EXIST '../data/FDATASET.inc' $INCLUDE '../../base/data/FDATASET.inc';
 %semislash%;
 
 PARAMETER FDATA(FFF,FDATASET)    "Fuel specific values" %semislash%
-*$if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
-$if     EXIST '../data/FDATA%TECHALT%.inc' $INCLUDE '../data/FDATA%TECHALT%.inc';
-$if not EXIST '../data/FDATA%TECHALT%.inc' $INCLUDE '../data/FDATA.inc';
+$if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
+*$if     EXIST '../data/FDATA%TECHALT%.inc' $INCLUDE '../data/FDATA%TECHALT%.inc';
+*$if not EXIST '../data/FDATA%TECHALT%.inc' $INCLUDE '../data/FDATA.inc';
 $if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
 %semislash%;
 
@@ -177,8 +177,9 @@ $ifi %HEATTRANS%==yes ALIAS (IA,IAE,IAI);
 *-------------------------------------------------------------------------------
 
 PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics" %semislash%
-$if     EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../data/GDATA%TECHALT%.inc';
-$if not EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../data/GDATA.inc';
+$if     EXIST '../data/GDATA.inc'          $INCLUDE '../data/GDATA.inc';
+*$if     EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../data/GDATA%TECHALT%.inc';
+*$if not EXIST '../data/GDATA%TECHALT%.inc' $INCLUDE '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc'          $INCLUDE '../../base/data/GDATA.inc';
 
 
@@ -228,9 +229,9 @@ $if not EXIST '../data/MPOLSET.inc' $INCLUDE '../../base/data/MPOLSET.inc';
 
 $onmulti
 SET AGKN(AAA,GGG)   "Areas for possible location of new technologies"   %semislash%
-*$if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
-$if     EXIST '../data/AGKN%TECHALT%.inc' $INCLUDE '../data/AGKN%TECHALT%.inc';
-$if not EXIST '../data/AGKN%TECHALT%.inc' $INCLUDE '../data/AGKN.inc';
+$if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
+*$if     EXIST '../data/AGKN%TECHALT%.inc' $INCLUDE '../data/AGKN%TECHALT%.inc';
+*$if not EXIST '../data/AGKN%TECHALT%.inc' $INCLUDE '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
 $offmulti
@@ -397,9 +398,9 @@ $ifi %DHFPCALIB%==yes %semislash%;
 
 
 PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of existing generation technologies (MW)" %semislash%
-*$if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
-$if     EXIST '../data/GKFX%TECHALT%.inc' $INCLUDE '../data/GKFX%TECHALT%.inc';
-$if not EXIST '../data/GKFX%TECHALT%.inc' $INCLUDE '../data/GKFX.inc';
+$if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
+*$if     EXIST '../data/GKFX%TECHALT%.inc' $INCLUDE '../data/GKFX%TECHALT%.inc';
+*$if not EXIST '../data/GKFX%TECHALT%.inc' $INCLUDE '../data/GKFX.inc';
 $if not EXIST '../data/GKFX.inc' $INCLUDE '../../base/data/GKFX.inc';
 %semislash%;
 
@@ -503,16 +504,17 @@ $if not EXIST '../data/FGEMAX.inc' $INCLUDE '../../base/data/FGEMAX.inc';
 
 $ifi %GMINF_DOL%==CCCRRRAAA_FFF      PARAMETER GMINF(CCCRRRAAA,FFF)             'Minimum fuel use (GJ) per year' %semislash%
 $ifi %GMINF_DOL%==YYY_CCCRRRAAA_FFF  PARAMETER GMINF(YYY,CCCRRRAAA,FFF)         'Minimum fuel use (GJ) per year' %semislash%
-$if     EXIST '../data/GMINF%TECHALT%.inc' $INCLUDE '../data/GMINF%TECHALT%.inc';
-$if not EXIST '../data/GMINF%TECHALT%.inc' $INCLUDE '../data/GMINF.inc';
-*$if     EXIST '../data/GMINF.inc' $INCLUDE      '../data/GMINF.inc';
+*$if     EXIST '../data/GMINF%TECHALT%.inc' $INCLUDE '../data/GMINF%TECHALT%.inc';
+*$if not EXIST '../data/GMINF%TECHALT%.inc' $INCLUDE '../data/GMINF.inc';
+$if     EXIST '../data/GMINF.inc' $INCLUDE      '../data/GMINF.inc';
 $if not EXIST '../data/GMINF.inc' $INCLUDE '../../base/data/GMINF.inc';
 %semislash%;
 
 $ifi %GMAXF_DOL%==CCCRRRAAA_FFF      PARAMETER GMAXF(CCCRRRAAA,FFF)             'Maximum fuel use (GJ) per year' %semislash%
 $ifi %GMAXF_DOL%==YYY_CCCRRRAAA_FFF  PARAMETER GMAXF(YYY,CCCRRRAAA,FFF)         'Maximum fuel use (GJ) per year' %semislash%
-$if     EXIST '../data/GMAXF%TECHALT%.inc' $INCLUDE '../data/GMAXF%TECHALT%.inc';
-$if not EXIST '../data/GMAXF%TECHALT%.inc' $INCLUDE '../data/GMAXF.inc';
+$if     EXIST '../data/GMAXF.inc' $INCLUDE      '../data/GMAXF.inc';
+*$if     EXIST '../data/GMAXF%TECHALT%.inc' $INCLUDE '../data/GMAXF%TECHALT%.inc';
+*$if not EXIST '../data/GMAXF%TECHALT%.inc' $INCLUDE '../data/GMAXF.inc';
 $if not EXIST '../data/GMAXF.inc'          $INCLUDE '../../base/data/GMAXF.inc';
 %semislash%;
 
@@ -693,8 +695,9 @@ $if not EXIST '../data/XLOSS.inc' $INCLUDE '../../base/data/XLOSS.inc';
 $ifi %XKRATE_DOL%==IRRRE_IRRRI          PARAMETER XKRATE(IRRRE,IRRRI)         "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS      PARAMETER XKRATE(IRRRE,IRRRI,SSS)     "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT  PARAMETER XKRATE(IRRRE,IRRRI,SSS,TTT) "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
-$if     EXIST '../data/XKRATE%TECHALT%.inc' $INCLUDE '../data/XKRATE%TECHALT%.inc';
-$if not EXIST '../data/XKRATE%TECHALT%.inc' $INCLUDE '../data/XKRATE.inc';
+$if     EXIST '../data/XKRATE.inc'          $INCLUDE '../data/XKRATE.inc';
+*$if     EXIST '../data/XKRATE%TECHALT%.inc' $INCLUDE '../data/XKRATE%TECHALT%.inc';
+*$if not EXIST '../data/XKRATE%TECHALT%.inc' $INCLUDE '../data/XKRATE.inc';
 $if not EXIST '../data/XKRATE.inc'          $INCLUDE '../../base/data/XKRATE.inc';
 %semislash%;
 
@@ -770,9 +773,9 @@ $if not EXIST '../data/GKRATE.inc' $INCLUDE '../../base/data/GKRATE.inc';
 %semislash%;
 
 PARAMETER DE_VAR_T(RRR,DEUSER,SSS,TTT)                    "Variation in electricity demand"   %semislash%
-*$if     EXIST '../data/DE_VAR_T.inc' $INCLUDE      '../data/DE_VAR_T.inc';
-$if     EXIST '../data/DE_VAR_T%TECHALT%.inc' $INCLUDE '../data/DE_VAR_T%TECHALT%.inc';
-$if not EXIST '../data/DE_VAR_T%TECHALT%.inc' $INCLUDE '../data/DE_VAR_T.inc';
+$if     EXIST '../data/DE_VAR_T.inc' $INCLUDE      '../data/DE_VAR_T.inc';
+*$if     EXIST '../data/DE_VAR_T%TECHALT%.inc' $INCLUDE '../data/DE_VAR_T%TECHALT%.inc';
+*$if not EXIST '../data/DE_VAR_T%TECHALT%.inc' $INCLUDE '../data/DE_VAR_T.inc';
 $if not EXIST '../data/DE_VAR_T.inc' $INCLUDE '../../base/data/DE_VAR_T.inc';
 %semislash%;
 
