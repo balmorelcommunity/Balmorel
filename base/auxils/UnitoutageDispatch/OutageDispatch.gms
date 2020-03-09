@@ -139,12 +139,23 @@ ACRONYM HYDROGEN_GH2STO, H2_STORAGE, HYDROGEN_GETOH2, HYDROGEN_GEHTOH2, HYDROGEN
 $offlisting
 * I do not know if all this is to be used, nor if more is to be taken
 $include "%inputdata%/CCCRRRAAA.inc";
+$include   "../../base/addons/offshoregrid/bb4/offshoregrid_cccrrraaaadditions.inc";
+$include   "../../base/addons/industry/bb4/industry_cccrrraaaadditions.inc";
+$include   "../../base/addons/indivusers/bb4/indivusers_cccrrraaaadditions.inc";
 $include "%inputdata%/CCC.inc";
 $include "%inputdata%/C.inc";
 $include "%inputdata%/RRR.inc";
+$include   "../../base/addons/offshoregrid/bb4/offshoregrid_rrradditions.inc";
 $include "%inputdata%/AAA.inc";
+$include   "../../base/addons/offshoregrid/bb4/offshoregrid_aaaadditions.inc";
+$include   "../../base/addons/industry/bb4/industry_aaaadditions.inc";
+$include   "../../base/addons/indivusers/bb4/indivusers_aaaadditions.inc";
 $include "%inputdata%/CCCRRR.inc";
+$include   "../../base/addons/offshoregrid/bb4/offshoregrid_cccrrradditions.inc";
 $include "%inputdata%/RRRAAA.inc";
+$include   "../../base/addons/offshoregrid/bb4/offshoregrid_rrraaaadditions.inc";
+$include   "../../base/addons/industry/bb4/industry_rrraaaadditions.inc";
+$include   "../../base/addons/indivusers/bb4/indivusers_rrraaaadditions.inc";
 
 ALIAS (RRR,IRRRE,IRRRI);
 SET IR(RRR)            'Regions in the simulation';
@@ -165,13 +176,26 @@ $include "%inputdata%/YYY.inc";
 $include "%inputdata%/Y.inc";
 
 $include "%inputdata%/GGG.inc";
+$include   "../../base/addons/combtech/bb4/combtech_gggadditions.inc";
+$include   "../../base/addons/industry/bb4/industry_gggadditions.inc";
+$include   "../../base/addons/indivusers/bb4/indivusers_gggadditions.inc";
+$include   "../../base/addons/hydrogen/bb4/hydrogen_gggadditions.inc";
 $include "%inputdata%/G.inc";
+$include   "../../base/addons/combtech/bb4/combtech_gadditions.inc";
+$include   "../../base/addons/industry/bb4/industry_gadditions.inc";
+$include   "../../base/addons/indivusers/bb4/indivusers_gadditions.inc";
+$include   "../../base/addons/hydrogen/bb4/hydrogen_gadditions.inc";
 $include "%inputdata%/FFF.inc";
+$include   "../../base/addons/combtech/bb4/combtech_fffadditions.inc";
 $include "%inputdata%/FDATASET.inc";
 $include "%inputdata%/FDATA.inc";
 $include "%inputdata%/GDATASET.inc";
 $include "%inputdata%/GDATA.inc";
+$include   "../../base/addons/combtech/bb4/combtech_gdataadditions.inc";
+$include   "../../base/addons/hydrogen/bb4/hydrogen_gdataadditions.inc";
 $include "%inputdata%/GKFX.inc";
+$include   "../../base/addons/industry/bb4/industry_gkfxadditions.inc";
+$include   "../../base/addons/indivusers/bb4/indivusers_gkfxadditions.inc";
 
 *Adding optimized investment and decommissioning in generation
 PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
@@ -186,6 +210,11 @@ $if     EXIST '../../simex/UCONMAINT.gdx' execute_load  '../../simex/UCONMAINT.g
 
 SET AGKN(AAA,GGG);
 $include "%inputdata%/AGKN.inc";
+$include   "../../base/addons/industry/bb4/industry_agknadditions.inc";
+$include   "../../base/addons/indivusers/bb4/indivusers_agknadditions.inc";
+$include   "../../base/addons/offshoregrid/bb4/offshoregrid_agknadditions.inc";
+$include   "../../base/addons/CCS/bb4/CCS_agknadditions.inc";
+PARAMETER GKRATE(AAA,GGG,SSS);
 $include "%inputdata%/GKRATE.inc";
 
 

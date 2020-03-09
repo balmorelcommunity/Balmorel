@@ -53,6 +53,7 @@ SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)" ;
 $INCLUDE         '../data/CCCRRRAAA.inc';
 $include   "../../base/addons/offshoregrid/bb4/offshoregrid_cccrrraaaadditions.inc";
 $include   "../../base/addons/industry/bb4/industry_cccrrraaaadditions.inc";
+$include   "../../base/addons/indivusers/bb4/indivusers_cccrrraaaadditions.inc";
 
 SET RRR(CCCRRRAAA)       "All regions" ;
 $INCLUDE         '../data/RRR.inc';
@@ -64,6 +65,7 @@ SET AAA(CCCRRRAAA)       "All areas";
 $INCLUDE         '../data/AAA.inc';
 $include   "../../base/addons/offshoregrid/bb4/offshoregrid_aaaadditions.inc";
 $include   "../../base/addons/industry/bb4/industry_aaaadditions.inc";
+$include   "../../base/addons/indivusers/bb4/indivusers_aaaadditions.inc";
 
 ALIAS(AAA,IAAA);
 
@@ -631,7 +633,7 @@ loop((AAA,DHUSER,SSS_NEW,TTT_NEW)$DH_VAR_T_NEW(AAA,DHUSER,SSS_NEW,TTT_NEW),
 putclose;
 
 *COP_VAR_T timeseries
-file COP_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/COP_VAR_T.inc'/;
+file COP_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/SEASONALCOP_COP_VAR_T.inc'/;
 COP_VAR_T_timeseries.nd  = 6;
 put COP_VAR_T_timeseries;
 put '*PARAMETER COP_VAR_T CALCULATED WITH AUXILS' //
