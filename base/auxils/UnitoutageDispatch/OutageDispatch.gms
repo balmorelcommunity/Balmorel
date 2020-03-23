@@ -285,6 +285,8 @@ SCALAR IFAILURE "Indicates whether unit fails or not (1/0)" ;
 PARAMETER IGKRATE(AAA,GGG,SSS,TTT) "";
 PARAMETER IGKRATE2(AAA,GGG,SSS,TTT) "";
 
+SCALAR RATIO_LIM "Maximum ratio installed capacity and size of units defined to limit the iterations" /1000/;
+
 * GKRATE and IGKRATE: be very careful to handle that default value is 1, and this that is to be represented by 0!  IGKRATE(IA,G,S,T) can be VERY large!
 * Check:
 ISCALAR1 = CARD(GKRATE);
@@ -298,8 +300,12 @@ LOOP(S,
 LOOP(T,
 LOOP(IA,
   LOOP(G$(GKFX(Y,IA,G) AND GDATA(G,'GDFOR')),
-    IGKFXSREMAIN = GKFX(Y,IA,G)-UCONMAINT(Y,IA,G,S);
-    IGKFXSAVAIL  = GKFX(Y,IA,G)-UCONMAINT(Y,IA,G,S);
+    IF(GKFX(Y,IA,G)/GDATA(G,'GDUCUNITSIZE') GE RATIO_LIM,
+    IGKRATE2(IA,G,S,T)=1-GDATA(G,'GDFOR');
+    );
+    IF(GKFX(Y,IA,G)/GDATA(G,'GDUCUNITSIZE') LT RATIO_LIM,
+    IGKFXSREMAIN = GKFX(Y,IA,G)-UCONMAINT(Y,IA,G,S)*GDATA(G,'GDUCUNITSIZE');
+    IGKFXSAVAIL  = GKFX(Y,IA,G)-UCONMAINT(Y,IA,G,S)*GDATA(G,'GDUCUNITSIZE');
     WHILE(((IGKFXSREMAIN GT (GDATA(G,'GDUCUNITSIZE')*1.5))),
        IGKFXSREMAIN = IGKFXSREMAIN - GDATA(G,'GDUCUNITSIZE');
        IFAILURE = 0;
@@ -308,6 +314,7 @@ LOOP(IA,
     IGKRATE(IA,G,S,T) = (IGKRATE(IA,G,S,T) + 1$(NOT IGKRATE(IA,G,S,T)))*(IGKFXSAVAIL/GKFX(Y,IA,G));
     IGKRATE(IA,G,S,T)$(IGKRATE(IA,G,S,T) EQ 1) = 0;
     IGKRATE2(IA,G,S,T)=IGKRATE(IA,G,S,T);
+    );
 
 );
 );
