@@ -1467,6 +1467,7 @@ QWNDDISPATCH(Y,AAA,G,S,T)         "Wind power can not be dispatched (MW)"
 QSOLEDISPATCH(Y,AAA,G,S,T)        "Solar electricity generation can not be dispatched (MW)"
 QSOLHDISPATCH(Y,AAA,G,S,T)        "Solar heat generation can not be dispatched (MW)"
 QWAVEDISPATCH(Y,AAA,G,S,T)        "Wave electricity generation can not be dispatched (MW)"
+QNUCLEARDISPATCH(Y,AAA,G,S,T)     "Nuclear generation can not be too flexible (MW)"
 QXKN(Y,IRRRE,IRRRI)               "New transmission investment  - NOT IMPLEMENTED PRESENTLYT (MW)"
 QXKNACCUMNET(Y,IRRRE,IRRRI)       "Accumulated new transmission investments available at beginning of next year (MW)"
 QXKNACCUMGROSS(Y,IRRRE,IRRRI)     "Accumulated new transmission investments available at beginning of next year (MW)"
@@ -2551,6 +2552,16 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGWAVE)$IGDECOMEXOPOT(IY411,IA,IG
                           )* WAVE_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGWAVE,IS3,T)) + IGKRATE(IA,IGWAVE,IS3,T))) / IWAVESUMST(IA)
 ;
 
+* Nuclear power with limited flexibility, including the newly invested ones
+QNUCLEARDISPATCH(IY411,IA,G,IS3,T)$(IGF(G,'NUCLEAR') AND IAGK_HASORPOT(IY411,IA,G))..
+         VGE_T(IY411,IA,G,IS3,T)
+         =G=
+         (GKFX(IY411,IA,G)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,G)$IGDECOMEXOPOT(IY411,IA,G)
+     + VGKNACCUMNET(IY411,IA,G)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G))
+                          )* (1$(NOT IGKRATE(IA,G,IS3,T)) + IGKRATE(IA,G,IS3,T))*0.7
+;
+
 *-------------------------------------------------------------------------------
 *----- Any equations for addon to be placed here: ------------------------------
 *-------------------------------------------------------------------------------
@@ -2679,6 +2690,7 @@ $ifi not %TechInvest%==yes $ifi not %DECOM%==yes  $goto NO_TECH_INVESTMENTS_NO_D
                                  QSOLEDISPATCH
                                  QSOLHDISPATCH
                                  QWAVEDISPATCH
+                                 QNUCLEARDISPATCH
 *--- Potential capacity restrictions per technology group ------------------------------------------------
                                  QKTECHGROUPC
                                  QKTECHGROUPR

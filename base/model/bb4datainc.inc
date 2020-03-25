@@ -991,6 +991,13 @@ AGKN(IA,G)$((NOT ICA('DENMARK',IA)) AND (GDATA(G,'GDFUEL') = STRAW)) = NO;
 * Investment into coal is only allowed in Poland
 AGKN(IA,G)$((GDATA(G,'GDFUEL') EQ COAL) AND NOT ICA('POLAND',IA)) = NO;
 
+* Investment in nucleawr allowed in the following countries
+AGKN('FinA','GNR_ST_NUCL_ADVANCE')=YES;
+AGKN('LT_A','GNR_ST_NUCL_ADVANCE')=YES;
+AGKN('PL_A','GNR_ST_NUCL_ADVANCE')=YES;
+AGKN('FR_A','GNR_ST_NUCL_ADVANCE')=YES;
+AGKN('UK_A','GNR_ST_NUCL_ADVANCE')=YES;
+
 $ifi not %BBMODE%==HYDRO $goto LABEL_BBMODEINVESTEND
 AGKN(IA,GGG) = NO;
 
