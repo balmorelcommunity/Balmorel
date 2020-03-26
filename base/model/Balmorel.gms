@@ -3269,17 +3269,17 @@ $ifi not %system.filesys%==UNIX $goto endofUNIXoutput
 *Please use only forward slash / instead of backslash \ in this section until the label
 
 $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/temp/*.gdx"';
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%.gdx"';
 
 $ifi %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/%CASEID%%SCNAME%%TECHALT%.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'gdxmerge "../output/%CASEID%.gdx"';
 $ifi %MERGECASE%==NONE
-$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.gdx"'
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./merged.gdx ./"%relpathoutput%%CASEID%-results.gdx"'
 
 $ifi %MERGECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.gdx"';
+$ifi %MERGEDSAVEPOINTRESULTS2MDB%==yes execute '=gdx2access ./"%relpathoutput%%CASEID%-results.gdx"';
 $ifi %MERGECASE%==NONE
-$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.gdx" -o ./"%relpathoutput%%CASEID%%SCNAME%%TECHALT%-results.db"';
+$ifi %MERGEDSAVEPOINTRESULTS2SQLITE%==yes execute '=gdx2sqlite -i ./"%relpathoutput%%CASEID%-results.gdx" -o ./"%relpathoutput%%CASEID%-results.db"';
 
 
 *--- Results collection and comparison for differents cases --------------------
@@ -3303,12 +3303,8 @@ $ifi %MERGESAVEPOINTRESULTS%==yes  execute 'mv ./diffile.gdx ./"%relpathoutput%%
 $label endofUNIXoutput
 
 *--- Main results calculation -----------------------------------------------
-*$ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY.inc';
-$ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY_FG.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY_FG.inc';
+$ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY.inc';
 *--- End of Main results calculation ---------------------------------------
-
-*----optiflow output file
-$ifi %Optiflow%==yes $include '../output/Optiflow_OutputFile.inc';
 
 
 *----- End of file:------------------------------------------------------------
