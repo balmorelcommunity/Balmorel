@@ -1,9 +1,11 @@
+* File annotation_scaling.txt
+* Hans 20191022
 * File for doing scaling - needed because GAMS cannot currently use annotation and scaling at the same time.
 * Change the coefficient multiplied onto the objective function QOBJ (defined in Balmorel.gms):
 *SCALAR IOF1_      'Multiplier 1 (used with QOBJ and derivation of marginal values)'   /1/;!! special, possibly to disappear in future versions
 IOF1_ = 1e-2;
 
-* Scaling of equation QGMAXCF, QGEQCF, QGEQRF, QGMAXRF, applied in file BALMORELbb4.inc. There are more eqns wher it should be used, will be made later, if positive experience.
+* Scaling of equation QGMAXCF, QGEQCF, QGEQRF, QGMAXRF, applied in file BALMORELbb4.inc. There are more eqns where it should be used, will be made later, if positive experience.
 SCALAR QFUELLIM_SCALE ""   /4/; !! 4 is appromimately  IOF3P6 = 3.6
 $ifi %limitST%==yes    QFUELLIM_SCALE = 4*(52/3)*56;
 
