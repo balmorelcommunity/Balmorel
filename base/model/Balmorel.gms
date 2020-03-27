@@ -113,9 +113,9 @@ $ifi not dexist "../output/temp"         execute 'mkdir -p "../output/temp"';
 *-------------------------------------------------------------------------------
 
 
-* New, Hans 20191021
+* New, Hans 20191021, included unconditionally 2020327
 * Do some manual scaling according to this file:
-$ifi %ANNOTATION%==yes $include annotation_scaling.txt
+$include annotation_scaling.txt
 
 
 *-------------------------------------------------------------------------------
