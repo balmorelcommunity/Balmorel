@@ -141,6 +141,7 @@ SET IS33(S,S)  "Mapping of S (first index) to the following S (second index)";
 * Duplication of sets for describing electricity exchange between regions:
 ALIAS (RRR,IRRRE,IRRRI);
 ALIAS (IR,IRE,IRI);
+ALIAS (IA,IAE,IAI); 
 * Duplication of sets for fuel.
 ALIAS (FFF,IFFFALIAS);
 ALIAS (FFF,IFFFALIAS2);
@@ -2954,6 +2955,9 @@ FUELPRICE_EXC(Y,IA,STEPWISEPRICE_FFF)$SUM(C$ICA(C,IA),ISTEPWISEPRICE_F(Y,C,STEPW
 ;
 $label NO_STEPWISEPRICE
 $ifi %HYDROGEN%==yes $ifi not %import_results%==yes $ifi not %ADDFUELPRICE%==yes FUELPRICE_EXC(Y,IA,'BIOMETHANE')$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=QBIOMETHANE_EQ.M(Y)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y))/IOF3P6;
+$ifi %HYDROGEN%==yes $ifi     %import_results%==yes $ifi not %ADDFUELPRICE%==yes FUELPRICE_EXC(Y,IA,'BIOMETHANE')$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=QBIOMETHANE_EQ.M(Y)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y))/IOF3P6;
+*Setting biomethane price to INF if there is no capacity in biomethane generation units
+$ifi %HYDROGEN%==yes FUELPRICE_EXC(Y,IA,'BIOMETHANE')$(NOT SUM((IAI,IHYDROGEN_GH2TOBIOMETH)$IAGK_HASORPOT(Y,IAI,IHYDROGEN_GH2TOBIOMETH),GKACCUMNET(Y,IAI,IHYDROGEN_GH2TOBIOMETH)))=INF;
 execute_unload  "../../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
 
 *Planned maintenaince
