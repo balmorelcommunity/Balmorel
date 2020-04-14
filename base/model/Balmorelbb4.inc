@@ -950,7 +950,7 @@ PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close
 $ifi %GKRATE_DOL%==AAA_GGG_SSS     $ifi not %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT $ifi not %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T) = GKRATE(IA,G,S,T);
 $ifi %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T)=0;
-$ifi %IGKRATE_STOCHASTIC%==yes   execute_load "../../simex/IGKRATE.gdx";
+$ifi %IGKRATE_STOCHASTIC%==yes   execute_load "../../simex/IGKRATE.gdx", IGKRATE;
 
 * The following parameters contain information about CO2 and SO2 emission
 * from technology G based on the fuel used and its emission data:
