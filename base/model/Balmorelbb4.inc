@@ -139,6 +139,7 @@ SET IS33(S,S)  "Mapping of S (first index) to the following S (second index)";
 *-------------------------------------------------------------------------------
 
 * Duplication of sets for describing electricity exchange between regions:
+ALIAS (C,IC);
 ALIAS (RRR,IRRRE,IRRRI);
 ALIAS (IR,IRE,IRI);
 ALIAS (IA,IAE,IAI);
@@ -1295,7 +1296,7 @@ PARAMETER IGEQF(YYY,CCCRRRAAA,FFF)          "Exact annual (any year) fuel use by
 $ifi %GEQF_DOL%==CCCRRRAAA_FFF              IGEQF(Y,CCCRRRAAA,FFF) = GEQF(CCCRRRAAA,FFF);
 $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF          IGEQF(Y,CCCRRRAAA,FFF) = GEQF(Y,CCCRRRAAA,FFF);
 
-PARAMETER IGMAXFS(Y,CCCRRRAAA,FFF,S)         "Maximum annual fuel use by year, season, geography and fuel and (GJ)";
+PARAMETER IGMAXFS(Y,CCCRRRAAA,FFF,SSS)         "Maximum annual fuel use by year, season, geography and fuel and (GJ)";
 IGMAXFS(Y,CCCRRRAAA,FFF,S) = GMAXFS(Y,CCCRRRAAA,FFF,S);
 
 * Unload input data to gdx and possibly MDB files.
@@ -2167,7 +2168,7 @@ $include "../../base/addons/_hooks/qgeqaf.inc"
 
 
 * "Maximum fuel use by year, season, country and fuel (GJ)"
-QGMAXCFS(IY411,C,FFF,IS3)$IGMAXFS(IY411,C,FFF,IS3)..
+QGMAXCFS(IY411,C,FFF,IS3)$SUM((IC,SSS), IGMAXFS(IY411,IC,FFF,SSS))..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM(T, WEIGHT_S(IS3)/IWEIGHSUMT * VGF_T(IY411,IA,G,IS3,T)))
     =L= IGMAXFS(IY411,C,FFF,IS3);
 
