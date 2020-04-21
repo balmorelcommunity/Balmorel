@@ -1,4 +1,4 @@
-This tool allows to calculate stochastic outage of available installed units based on Monte Carlo simulations. 
+This tool allows to calculate stochastic outage of available installed units based on Monte Carlo simulations. It is assumed that outages only last for 1 time step. 
 
 The tool uses as key input:
 - Installed capacity per area (GKFX or GKACCUMNET)
