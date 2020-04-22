@@ -1,4 +1,4 @@
-# Balmorel for 4.0
+# Balmorel for Heat 4.0
 
 ## What is Balmorel?
 
