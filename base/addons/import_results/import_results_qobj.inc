@@ -42,8 +42,8 @@ $ifi not %ADDH2STOVOLTS%==price    $goto label_no_interseasonal_hydrogen_storage
                                    )
 $label label_no_interseasonal_hydrogen_storage_price
 $ifi not %ADDFUELPRICE%==yes   $goto label_no_biomethaneprice
-                                   -SUM((S,T,IA,IHYDROGEN_GH2TOBIOMETH,FFF)$(IS3(S) AND IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2TOBIOMETH) AND IGF(IHYDROGEN_GH2TOBIOMETH,FFF)),
-                                        FUELPRICE(Y,IA,FFF) * IOF3P6 *IHOURSINST(S,T) * VGBIOMETH_T(Y,IA,IHYDROGEN_GH2TOBIOMETH,S,T)
+                                   -SUM((S,T,IA,IHYDROGEN_GH2TOBIOMETH)$(IS3(S) AND IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2TOBIOMETH)),
+                                        FUELPRICE(Y,IA,'BIOMETHANE') * IOF3P6 *IHOURSINST(S,T) * VGBIOMETH_T(Y,IA,IHYDROGEN_GH2TOBIOMETH,S,T)
                                    )
 $label label_no_biomethaneprice
 $label label_no_hydrogen
