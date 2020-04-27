@@ -186,7 +186,7 @@ $setglobal watertank_loading_rest
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH
+$setglobal COMBTECH yes
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
