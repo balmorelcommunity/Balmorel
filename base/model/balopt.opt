@@ -189,27 +189,31 @@ $setglobal EV  YES
 
 * Adds DUMB charging:
 $setglobal DUMB
-*!option
+*!option yes
 
 * Adds smart charging. Only smart charging, without V2G!:
 $setglobal SMART
-*!option
+*!option yes
 
 * Adds V2G charging:
 $setglobal V2G   YES
-*!option
+*!option  yes
 
-* Adds V2G charging:
+* Restricts PHEV vehicles from doing V2G (only relevant if V2G is activated):
+$setglobal NO_PHEV_V2G   
+*!option  yes
+
+* Adds step charging scheme:
 $setglobal STEPCHARGSCHEME
-*!option
+*!option yes
 
 * Adds cycle degradation charging:
 $setglobal DEGCYCLE
-*!option
+*!option  yes
 
 * Adds calendar degradation charging:
 $setglobal DEGCAL
-*!option
+*!option yes
 
 * EV timeseries will be averaged (relevant if less than all time steps in TTT are used).
 * NOTE: It currently only works if T are equally distanced from each other and if the first T chosen is equal to the first element int TTT). If this is not desired, one can replace the timeseries with new averaged-with-another-procedude timeseries

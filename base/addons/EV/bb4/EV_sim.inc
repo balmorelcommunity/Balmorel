@@ -40,5 +40,8 @@ VEV_VSOC_PHEV.LO(IY411,IR,S,T) = EV_PHEV_Min(IY411,S,T,IR);
 $ifi %STEPCHARGSCHEME%==yes  VEV_VSOC_BEV.UP(IY411,IR,S,T)$cs('dumb',IY411) = 0  ;
 $ifi %STEPCHARGSCHEME%==yes  VEV_VSOC_PHEV.UP(IY411,IR,S,T)$cs('dumb',IY411)  = 0 ;
 
+*Restricting
+$ifi %V2G%==yes $ifi %NO_PHEV_V2G%==yes  VEV_VV2G_PHEV.FX(IY411,IR,S,T)=0;
+
 $label limits_dumb_end
 
