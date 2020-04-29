@@ -69,3 +69,8 @@ PARAMETER INDHEAT_CARDGROUP(INDHEAT_GROUP) 'Cardinality of groups of technologie
 $if     EXIST '../data/INDHEAT_CARDGROUP.inc' $INCLUDE         '../data/INDHEAT_CARDGROUP.inc';
 $if not EXIST '../data/INDHEAT_CARDGROUP.inc' $INCLUDE '../../base/data/INDHEAT_CARDGROUP.inc';
 %semislash%
+
+PARAMETER INDHEAT_FACTORINVCOST(YYY,INDHEAT_GGG,INDHEAT_GROUP) 'Factor to multiply investment cost with for specific heating groups (default 1)' %semislash%
+$if     EXIST '../data/INDHEAT_FACTORINVCOST.inc' $INCLUDE         '../data/INDHEAT_FACTORINVCOST.inc';
+$if not EXIST '../data/INDHEAT_FACTORINVCOST.inc' $INCLUDE '../../base/data/INDHEAT_FACTORINVCOST.inc';
+%semislash%
