@@ -105,7 +105,7 @@ ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GH
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
 ACRONYMS STEAMTURBINE_SUBCRITICAL, STEAMTURBINE_SUPERCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILER, COMBINEDCYCLE, EXCESS_HEAT, ELECTRICITY_BATTERY, GEOTHERMAL,
-GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_ONSHORE, WINDTURBINE_OFFSHORE;
+GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARPV_RESIDENTIAL, SOLARPV_COMMERCIAL, SOLARHEATING,WINDTURBINE_ONSHORE, WINDTURBINE_OFFSHORE;
 
 *ACRONYMS for subtech groups
 * They can be used for multiple purposes
@@ -275,6 +275,11 @@ PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of exogenously given generation technol
 *-------------------------------------------------------------------------------
 *---- End: Annually specified generation capacities ----------------------------
 *-------------------------------------------------------------------------------
+
+*SBTM Solar behind the meter
+SET IAGK_NOINVEST(Y,AAA,G) "technologies not invested in in current year";
+
+
 
 *-------------------------------------------------------------------------------
 *---- Geographically specific values: -----------------------------------------
@@ -710,6 +715,14 @@ $ifi %timeaggr%==yes  $include '../../base/addons/timeaggregation/timeaggr.inc';
 * The following relates technology and fuel:
 SET IGF(GGG,FFF)   "Relation between technology type and fuel type";
 
+*SBTM solar behing the meter
+* The following relates technology and tech group:
+SET IGTECH_GROUP(GGG,TECH_GROUP) "Relation between technology and tech group";
+*SBTM solar behing the meter
+* The following relates technology and user group:
+SET IGDEUSER(G,DEUSER) "Relation between distributed generation technologies and user group for electricity";
+
+
 * Internal scalars:
 SCALAR ILOOPBREAK     "Scalar used as binary number to break any loop function";
 SCALAR IFIRSTYEARNEXTBB4 "First year in the next Balbase4 model";
@@ -869,6 +882,25 @@ GDATA(IGSOLH,'GDCV') = 1;
 * Specifying the relation between technology type and fuel type in IGF:
 
 IGF(G,FFF)=YES$(GDATA(G,'GDFUEL') EQ FDATA(FFF,'FDACRONYM'));
+
+
+GDATA('GNR_PV_SUN_SS-6-KW_Y-2020','GDTECHGROUP') = TECH_GROUP_VALUE('SOLARPV_RESIDENTIAL') ;
+GDATA('GNR_PV_SUN_SS-6-KW_Y-2030','GDTECHGROUP') = TECH_GROUP_VALUE('SOLARPV_RESIDENTIAL') ;
+GDATA('GNR_PV_SUN_SS-6-KW_Y-2040','GDTECHGROUP') = TECH_GROUP_VALUE('SOLARPV_RESIDENTIAL') ;
+GDATA('GNR_PV_SUN_SS-6-KW_Y-2050','GDTECHGROUP') = TECH_GROUP_VALUE('SOLARPV_RESIDENTIAL') ;
+GDATA('GNR_PV_SUN_MS-100-KW_Y-2020','GDTECHGROUP') = TECH_GROUP_VALUE('SOLARPV_COMMERCIAL') ;
+GDATA('GNR_PV_SUN_MS-100-KW_Y-2030','GDTECHGROUP') = TECH_GROUP_VALUE('SOLARPV_COMMERCIAL') ;
+GDATA('GNR_PV_SUN_MS-100-KW_Y-2040','GDTECHGROUP') = TECH_GROUP_VALUE('SOLARPV_COMMERCIAL') ;
+GDATA('GNR_PV_SUN_MS-100-KW_Y-2050','GDTECHGROUP') = TECH_GROUP_VALUE('SOLARPV_COMMERCIAL') ;
+
+
+*SBTM solar behing the meter
+* Specifying the relation between technology type and tech group in IGTECH_GROUP:
+IGTECH_GROUP(G,TECH_GROUP)=YES$(GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE(TECH_GROUP));
+
+* Specifying the relation between technology type and user group in IGDEUSER:
+IGDEUSER(G,DEUSER) = YES$SUM(TECH_GROUP$(TECHGROUP_DEUSER(TECH_GROUP,DEUSER) EQ 1), IGTECH_GROUP(G,TECH_GROUP));
+
 
 PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 * Transfer data from data file and insert default 1 as needed (Eps1-convention):
@@ -1272,6 +1304,8 @@ POSITIVE VARIABLE VGKNACCUMNET(Y,AAA,G)            "Accumulated new investments 
 POSITIVE VARIABLE VGKNACCUMGROSS(Y,AAA,G)          "Accumulated new investments this BB4, at end of previous (i.e., available at start of current) year (MW)";
 POSITIVE VARIABLE VXKNACCUMNET(Y,IRRRE,IRRRI)      "Accumulated new transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)";
 
+*SBTM solar behing the meter
+POSITIVE VARIABLE VDENET_T(Y,RRR,DEUSER,S,T)     "Load net local generation per user group";
 *-------------------------------------------------------------------------------
 *----- Any variables, and possibly equations, for addon to be placed here: -----
 
@@ -1397,6 +1431,8 @@ EQUATIONS
    QMAXINVESTGROWTHCG(Y,C,G)"Maximum model generated capacity increase from one year to the next (MW)"
    QMAXINVESTNAF(Y,FFF)     "Maximal investment by aggerated countries and fuel during one simulated year (MW)"
 
+*SBTM solar behing the meter
+   QDENET(Y,RRR,DEUSER,S,T) "net load"
 
 *Balbase4: ---------------------------------------------------------------------
 QGKNACCUMNET(Y,AAA,G)             "Accumulated new investments minus decommissioning of previous investments due to lifetime expiration available at beginning of next year (MW)"
@@ -1556,6 +1592,18 @@ QHEQ(IY411,IA,IS3,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))) ..
 
 $include "../../base/addons/_hooks/qheq.inc"
 ;
+
+*SBTM solar behing the meter
+QDENET(IY411,IR,DEUSER,IS3,T)$(IDE_SUMST(IR,DEUSER) GT 0)..
+         VDENET_T(IY411,IR,DEUSER,IS3,T)
+         =G=
+                              ((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))
+                               - SUM((G,IA)$(RRRAAA(IR,IA) AND IGDEUSER(G,DEUSER) AND IAGK_HASORPOT(IY411,IA,G)), VGE_T(IY411,IA,G,IS3,T))
+$ifi %DemandResponse%==yes  + SUM((IA,DR_TECH)$(IADR(IY411,IA,DR_TECH) AND RRRAAA(IR,IA) AND DR_TECH_USER(DR_TECH,DEUSER)),  VDR_UP(IY411,IA,DR_TECH,IS3,T) - VDR_DOWN(IY411,IA,DR_TECH,IS3,T))
+$ifi %EV%==yes              + (VEV_VNETCHARGE_BEV(IY411,IR,IS3,T) + VEV_VNETCHARGE_PHEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_BEV(IY411,IR,IS3,T) - VEV_VNETDISCHARGE_PHEV(IY411,IR,IS3,T))$IRESE(DEUSER)
+
+;
+
 
 
 * Fuel consumption rate.
@@ -2444,6 +2492,11 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGSOLH)$IGDECOMEXOPOT(IY411,IA,IG
                             ) * SOLH_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGSOLH,IS3,T)) + IGKRATE(IA,IGSOLH,IS3,T)))/ ISOLHSUMST(IA)
 ;
 
+
+
+
+
+
 * Wave technology
 QWAVEDISPATCH(IY411,IA,IGWAVE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWAVE) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWAVE)) OR IGDECOMEXOPOT(IY411,IA,IGWAVE)) AND IWAVESUMST(IA))..
          VGE_T(IY411,IA,IGWAVE,IS3,T)
@@ -2494,6 +2547,8 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
                                 QEEQ
                                 QHEQ
                                 QGFEQ
+                                QDENET
+*SBTM solar behing the meter
 *--- Feasible generation region ------------------------------------------------
                                 QGCBGBPR
 $ifi %bypass%==yes              QGCBGBPRBYPASS1
