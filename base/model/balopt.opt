@@ -282,6 +282,10 @@ $setglobal CH4inCO2lim yes
 SCALAR CO2EQUIVALENT_FOR_CH4 'The CO2 equivalent for CH4' ;
 CO2EQUIVALENT_FOR_CH4=28;
 
+* Allow Carbon Capture Storage (CCS) technologies.
+$setglobal CCS
+*!option yes
+
 *
 $setglobal POLICIES
 *!option yes

@@ -36,5 +36,6 @@ $ifi %vqdebug%==yes   $setglobal equation qobj
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
 
 $ifi %OPTIFLOW%==yes   $include   "../../base/addons/optiflow/bb4/optiflow_qobj.inc";
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_qobj.inc";
 
 $label endoffile
