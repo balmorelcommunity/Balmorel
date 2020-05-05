@@ -23,6 +23,6 @@ $ifi %vqdebug%==yes   $setglobal equation qeeq
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
 
 $ifi %OPTIFLOW%==yes   $include   "../../base/addons/optiflow/bb4/optiflow_qeeq.inc";
-
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_qeeq.inc";
 
 $label endoffile
