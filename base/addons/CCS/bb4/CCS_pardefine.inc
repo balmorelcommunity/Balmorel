@@ -14,3 +14,8 @@ $onmulti
 $if     EXIST '../data/CCS_CCS_TRANSPORTCOST.inc' $INCLUDE         '../data/CCS_CCS_TRANSPORTCOST.inc';
 $if not EXIST '../data/CCS_CCS_TRANSPORTCOST.inc' $INCLUDE '../../base/data/CCS_CCS_TRANSPORTCOST.inc';
 $offmulti
+
+$onmulti
+$if     EXIST '../data/CCS_CCS_CO2CAPTVAL_G.inc' $INCLUDE         '../data/CCS_CCS_CO2CAPTVAL_G.inc';
+$if not EXIST '../data/CCS_CCS_CO2CAPTVAL_G.inc' $INCLUDE '../../base/data/CCS_CCS_CO2CAPTVAL_G.inc';
+$offmulti
