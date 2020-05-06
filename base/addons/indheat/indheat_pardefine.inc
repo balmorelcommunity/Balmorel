@@ -15,17 +15,29 @@ $if not EXIST '../data/INDHEAT_GINSTALL%TECHALT%.inc' $INCLUDE '../../base/data/
 $if not EXIST '../data/INDHEAT_GINSTALL.inc' $INCLUDE '../../base/data/INDHEAT_GINSTALL.inc';
 %semislash%
 
+PARAMETER INDHEAT_GDATA(INDHEAT_GGG,GDATASET) 'Technology characteristics' %semislash%
+$if     EXIST '../data/INDHEAT_GDATA%TECHALT%.inc' $INCLUDE         '../data/INDHEAT_GDATA%TECHALT%.inc';
+$if not EXIST '../data/INDHEAT_GDATA%TECHALT%.inc' $INCLUDE         '../data/INDHEAT_GDATA.inc';
+$if not EXIST '../data/INDHEAT_GDATA.inc' $INCLUDE '../../base/data/INDHEAT_GDATA.inc';
+%semislash%
+
+*Internal sets needed for data assignment:
+Sets
+INDHEAT_IGHSTO(INDHEAT_G)
+INDHEAT_IGROUPSTO(INDHEAT_GROUP)
+;
+INDHEAT_IGHSTO(INDHEAT_G) = YES$(INDHEAT_GDATA(INDHEAT_G,'GDTYPE') EQ GHSTO);
+INDHEAT_IGROUPSTO(INDHEAT_GROUP) = YES$(SUM(INDHEAT_IGHSTO,INDHEAT_GINGROUP(INDHEAT_IGHSTO,INDHEAT_GROUP)));
+
+PARAMETER INDHEAT_STOFACTOR(INDHEAT_GROUP)        'Division factor for GKFX/VGKN on  size of storage'%semislash%
+$if     EXIST '../data/INDHEAT_STOFACTOR.inc' $INCLUDE         '../data/INDHEAT_STOFACTOR.inc';
+$if not EXIST '../data/INDHEAT_STOFACTOR.inc' $INCLUDE '../../base/data/INDHEAT_STOFACTOR.inc';
+
 PARAMETER INDHEAT_GKFX(YYY,INDHEAT_AAA,INDHEAT_GGG,INDHEAT_GROUP) 'Installed capacities' %semislash%
 *$if     EXIST '../data/INDHEAT_GKFX.inc' $INCLUDE         '../data/INDHEAT_GKFX.inc';
 $if     EXIST '../data/INDHEAT_GKFX%TECHALT%.inc' $INCLUDE '../data/INDHEAT_GKFX%TECHALT%.inc';
 $if not EXIST '../data/INDHEAT_GKFX%TECHALT%.inc' $INCLUDE '../../base/data/INDHEAT_GKFX.inc';
 $if not EXIST '../data/INDHEAT_GKFX.inc' $INCLUDE '../../base/data/INDHEAT_GKFX.inc';
-%semislash%
-
-PARAMETER INDHEAT_GDATA(INDHEAT_GGG,GDATASET) 'Technology characteristics' %semislash%
-$if     EXIST '../data/INDHEAT_GDATA%TECHALT%.inc' $INCLUDE         '../data/INDHEAT_GDATA%TECHALT%.inc';
-$if not EXIST '../data/INDHEAT_GDATA%TECHALT%.inc' $INCLUDE         '../data/INDHEAT_GDATA.inc';
-$if not EXIST '../data/INDHEAT_GDATA.inc' $INCLUDE '../../base/data/INDHEAT_GDATA.inc';
 %semislash%
 
 PARAMETER INDHEAT_ANNUITYCG(CCC,INDHEAT_GGG) 'Transforms investment to annual payment (fraction)' %semislash%
@@ -74,3 +86,16 @@ PARAMETER INDHEAT_FACTORINVCOST(YYY,INDHEAT_GGG,INDHEAT_GROUP) 'Factor to multip
 $if     EXIST '../data/INDHEAT_FACTORINVCOST.inc' $INCLUDE         '../data/INDHEAT_FACTORINVCOST.inc';
 $if not EXIST '../data/INDHEAT_FACTORINVCOST.inc' $INCLUDE '../../base/data/INDHEAT_FACTORINVCOST.inc';
 %semislash%
+
+PARAMETER INDHEAT_FACTOROMFCOST(YYY,INDHEAT_GGG,INDHEAT_GROUP) 'Factor to multiply fixed O&M cost with for specific heating groups (default 1)' %semislash%
+$if     EXIST '../data/INDHEAT_FACTOROMFCOST.inc' $INCLUDE         '../data/INDHEAT_FACTOROMFCOST.inc';
+$if not EXIST '../data/INDHEAT_FACTOROMFCOST.inc' $INCLUDE '../../base/data/INDHEAT_FACTOROMFCOST.inc';
+%semislash%
+
+PARAMETER INDHEAT_RETROFITFACTOR(INDHEAT_GGG)        'Percentage of investment cost paid when retrofitting' %semislash%
+$if     EXIST '../data/INDHEAT_RETROFITFACTOR.inc' $INCLUDE         '../data/INDHEAT_RETROFITFACTOR.inc';
+$if not EXIST '../data/INDHEAT_RETROFITFACTOR.inc' $INCLUDE '../../base/data/INDHEAT_RETROFITFACTOR.inc';
+
+PARAMETER INDHEAT_MAXDEMAND(YYY,INDHEAT_AAA,INDHEAT_GROUP)       'Max demand that can be served by a group (MWh)' %semislash%
+$if     EXIST '../data/INDHEAT_MAXDEMAND.inc' $INCLUDE         '../data/INDHEAT_MAXDEMAND.inc';
+$if not EXIST '../data/INDHEAT_MAXDEMAND.inc' $INCLUDE '../../base/data/INDHEAT_MAXDEMAND.inc';
