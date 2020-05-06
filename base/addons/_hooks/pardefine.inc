@@ -33,8 +33,8 @@ $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTarif
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_pardefine.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardefine.inc";
 $ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_pardefine.inc";
-
 $ifi %OPTIFLOW%==yes  $include   "../../base/addons/optiflow/bb4/optiflow_pardefine.inc";
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_pardefine.inc";
 
 $label endoffile
 

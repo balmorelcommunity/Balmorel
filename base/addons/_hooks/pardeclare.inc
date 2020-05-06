@@ -26,5 +26,6 @@ $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_pardec
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_pardeclare.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardeclare.inc";
 $ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_pardeclare.inc";
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_pardeclare.inc";
 
 $label endoffile
