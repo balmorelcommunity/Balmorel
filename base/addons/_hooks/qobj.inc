@@ -38,4 +38,6 @@ $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equation
 $ifi %OPTIFLOW%==yes   $include   "../../base/addons/optiflow/bb4/optiflow_qobj.inc";
 $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_qobj.inc";
 
+$ifi %SOCIOECTAR%==yes      $include        "../../base/addons/sociotariff/bb4/Sociotariff_qobj.inc";
+
 $label endoffile

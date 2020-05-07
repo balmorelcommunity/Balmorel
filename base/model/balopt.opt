@@ -318,6 +318,11 @@ $setglobal P2HGTREDU
 
 $label noregulation
 
+* Subsidies addon
+$setglobal SOCIOECTAR
+*!option yes
+
+
 *
 $setglobal SYSTEMCOST
 *!option yes
