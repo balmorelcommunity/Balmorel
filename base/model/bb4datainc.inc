@@ -651,7 +651,7 @@ $if not EXIST '../data/GKF_LO.inc' $INCLUDE '../../base/data/GKF_LO.inc';
 PARAMETER DE(YYY,RRR,DEUSER)    "Annual electricity consumption (MWh)" %semislash%
 *$if     EXIST '../data/DE%SCNAME%.inc' $INCLUDE         '../data/DE%SCNAME%.inc';
 $if     EXIST '../data/DE%SCNAME%%TECHALT%.inc' $INCLUDE         '../data/DE%SCNAME%%TECHALT%.inc';
-$if not EXIST '../data/DE%SCNAME%%TECHALT%.inc' $INCLUDE '../../base/data/DE%SCNAME%.inc';
+$if not EXIST '../data/DE%SCNAME%%TECHALT%.inc' $INCLUDE '../data/DE%SCNAME%.inc';
 *$if not EXIST '../data/DE.inc'         $INCLUDE '../../base/data/DE.inc';
 %semislash%;
 
