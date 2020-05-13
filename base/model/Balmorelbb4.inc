@@ -804,6 +804,7 @@ $ifi not %OFFSHOREGRID%==yes IGKN_ES(G)=0;
 $ifi not %OFFSHOREGRID%==yes IXKN_ES(IRRRE,IRRRI)=0;
 
 *Initializing the sets IHYDROGEN in case the add-on hydrogen is not activated
+$ifi not %HYDROGEN%==yes SET IHYDROGEN(GGG);
 $ifi not %HYDROGEN%==yes IHYDROGEN(G)=0;
 
 PARAMETER IWEIGHTY(Y)                  "Relative weight of the individual years in Y";
