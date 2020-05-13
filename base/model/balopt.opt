@@ -319,7 +319,7 @@ $setglobal P2HGTREDU
 $label noregulation
 
 * Subsidies addon
-$setglobal SOCIOECTAR
+$setglobal SOCIOECTAR yes
 *!option yes
 
 
