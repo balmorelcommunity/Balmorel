@@ -32,6 +32,7 @@ $setglobal SCNAME _M
 *!option _ES *Early Sprint
 
 $setglobal TECHALT
+
 *!option _DEcentral_lo-20  *REdecentral alternative: Decrease investment costs for solar/wind technology by 20%, (Example:INVEST COST*0,8)
 *!option _DEcentral_lo-40  *REdecentral alternative: Decrease investment costs for solar/wind technology by 40%
 *!option _DEcentral_lo-60  *REdecentral alternative: Decrease investment costs for solar/wind technology by 60%
@@ -281,24 +282,46 @@ $setglobal CH4inCO2lim yes
 SCALAR CO2EQUIVALENT_FOR_CH4 'The CO2 equivalent for CH4' ;
 CO2EQUIVALENT_FOR_CH4=28;
 
+* Allow Carbon Capture Storage (CCS) technologies.
+$setglobal CCS yes
+*!option yes
+
 *
 $setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use
+* ADD details regarding the different regulation tech alternatives
 $ifi not %TECHALT%=="_includeReg" $goto noregulation
-$setglobal GRIDTARIFFS yes
+$setglobal GRIDTARIFFS
 *!option yes
 
 * Taxes addon
-$setglobal TAXES yes
+$setglobal TAXES
 *!option yes
 
 * Subsidies addon
-$setglobal SUBSIDIES yes
+$setglobal SUBSIDIES
+*!option yes
+
+* Subsidies addon
+$setglobal CarbonPrice
+*!option yes
+
+* Subsidies addon
+$setglobal BiomassTaxSens
+*!option yes
+
+* Subsidies addon
+$setglobal P2HGTREDU
 *!option yes
 
 $label noregulation
+
+* Subsidies addon
+$setglobal SOCIOECTAR yes
+*!option yes
+
 
 *
 $setglobal SYSTEMCOST
@@ -373,7 +396,6 @@ $setglobal HeatTempLift yes
 * Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
 $setglobal INDUSTRY yes
 *!option yes
-
 
 *-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
 * overall control variable DECOM must be 'yes' if any of the other decommissioning controls are.
@@ -698,7 +720,7 @@ $Setglobal limitedresults
 $setglobal PRINTFILES
 *!option yes
 
-$setglobal OUTPUT_SUMMARY   yes
+$setglobal OUTPUT_SUMMARY  yes
 *!option yes
 
 * PRINTSEPARATOR is a single character used for separating columns in printfiles,

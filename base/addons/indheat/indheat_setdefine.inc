@@ -51,7 +51,7 @@ $if not EXIST '../data/INDHEAT_G.inc' $INCLUDE '../../base/data/INDHEAT_G.inc';
 %semislash%
 
 SET
-INDHEAT_GTODHUSER(INDHEAT_G,INDHEAT_DHUSER) 'Individual heating technologies combined with user group'%semislash%
+INDHEAT_GTODHUSER(INDHEAT_GGG,INDHEAT_DHUSER) 'Individual heating technologies combined with user group'%semislash%
 $if     EXIST '../data/INDHEAT_GTODHUSER.inc' $INCLUDE         '../data/INDHEAT_GTODHUSER.inc';
 $if not EXIST '../data/INDHEAT_GTODHUSER.inc' $INCLUDE '../../base/data/INDHEAT_GTODHUSER.inc';
 %semislash%

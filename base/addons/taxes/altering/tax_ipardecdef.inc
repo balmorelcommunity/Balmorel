@@ -1,5 +1,3 @@
-*** Note: The data is included in ipardecdef because data input also include calculations based on previously defined input and internal sets
-
 PARAMETER TAX_F_EL(YYY,CCC,GGG) %semislash%
 $if     EXIST '../data/TAX_F_EL.inc' $INCLUDE         '../data/TAX_F_EL.inc';
 $if not EXIST '../data/TAX_F_EL.inc' $INCLUDE '../../base/data/TAX_F_EL.inc';
@@ -27,6 +25,4 @@ $if not EXIST '../data/TAX_DE.inc' $INCLUDE '../../base/data/TAX_DE.inc';
 PARAMETER TAX_DH(CCC,DHUSER) %semislash%
 $if     EXIST '../data/TAX_DH.inc' $INCLUDE         '../data/TAX_DH.inc';
 $if not EXIST '../data/TAX_DH.inc' $INCLUDE '../../base/data/TAX_DH.inc';
-
-PARAMETER TAX_GETOH(YYY,CCC) ;
 
