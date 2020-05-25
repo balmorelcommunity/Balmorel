@@ -62,7 +62,7 @@ $if     EXIST '../data/INDHEAT_MINPERCENTREL.inc' $INCLUDE         '../data/INDH
 $if not EXIST '../data/INDHEAT_MINPERCENTREL.inc' $INCLUDE '../../base/data/INDHEAT_MINPERCENTREL.inc';
 %semislash%
 
-PARAMETER INDHEAT_COP(INDHEAT_AAA,INDHEAT_GGG,SSS,TTT)  'COP of heat pump technologies' %semislash%
+PARAMETER INDHEAT_COP(INDHEAT_AAA,INDHEAT_GGG,INDHEAT_GROUP,SSS,TTT)  'COP of heat pump technologies' %semislash%
 $if     EXIST '../data/INDHEAT_COP.inc' $INCLUDE         '../data/INDHEAT_COP.inc';
 $if not EXIST '../data/INDHEAT_COP.inc' $INCLUDE '../../base/data/INDHEAT_COP.inc';
 %semislash%
