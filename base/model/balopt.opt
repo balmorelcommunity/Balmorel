@@ -67,6 +67,8 @@ $setglobal TECHALT
 *!option _cheapBiomass     *cheapBiomass alternative: reduce biomass cost
 *!option _costbiogas_lo    *lower cost of biogas alternative: reduce biogas cost by 20%
 *!option _costbiogas_up    *upper cost of biogas alternative: increase biogas cost by 20%
+*!option _nonWilling       *willingness to shift reduced to 23.9%
+*!option _willing          *willingness to shift increased to 75%
 
 
 *===============================================================================
