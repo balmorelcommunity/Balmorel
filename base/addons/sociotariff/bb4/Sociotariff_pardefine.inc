@@ -3,7 +3,7 @@ $if     EXIST '../data/SOCIOTARIFF_ALL.inc' $INCLUDE         '../data/SOCIOTARIF
 $if not EXIST '../data/SOCIOTARIFF_ALL.inc' $INCLUDE '../../base/data/SOCIOTARIFF_ALL.inc';
 %semislash%
 
-$ifi not %indheAT%==yes $goto endINDHEAT
+$ifi not %INDHEAT%==yes $goto endINDHEAT
 PARAMETER SOCIOTARIFF_INDHEAT(YYY,CCC,FFF) 'Socio-economic grid tariffs for INDHEAT' %semislash%
 $if     EXIST '../data/SOCIOTARIFF_INDHEAT.inc' $INCLUDE         '../data/SOCIOTARIFF_INDHEAT.inc';
 $if not EXIST '../data/SOCIOTARIFF_INDHEAT.inc' $INCLUDE '../../base/data/SOCIOTARIFF_INDHEAT.inc';
