@@ -62,6 +62,15 @@ $if     EXIST '../data/INDHEAT_MINPERCENTREL.inc' $INCLUDE         '../data/INDH
 $if not EXIST '../data/INDHEAT_MINPERCENTREL.inc' $INCLUDE '../../base/data/INDHEAT_MINPERCENTREL.inc';
 %semislash%
 
+PARAMETER INDHEAT_MAXPERCENT(YYY,INDHEAT_AAA,INDHEAT_GROUP)       'Max percent that can be served by a group (%)' %semislash%
+$if     EXIST '../data/INDHEAT_MAXPERCENT.inc' $INCLUDE         '../data/INDHEAT_MAXPERCENT.inc';
+$if not EXIST '../data/INDHEAT_MAXPERCENT.inc' $INCLUDE '../../base/data/INDHEAT_MAXPERCENT.inc';
+
+PARAMETER INDHEAT_MAXPERCENTREL(YYY,INDHEAT_AAA,INDHEAT_SUMGROUP) 'Maximum percentage assumed to be fixed to a specific summed group' %semislash%
+$if     EXIST '../data/INDHEAT_MINPERCENTREL.inc' $INCLUDE         '../data/INDHEAT_MAXPERCENTREL.inc';
+$if not EXIST '../data/INDHEAT_MINPERCENTREL.inc' $INCLUDE '../../base/data/INDHEAT_MAXPERCENTREL.inc';
+%semislash%
+
 PARAMETER INDHEAT_COP(INDHEAT_AAA,INDHEAT_GGG,INDHEAT_GROUP,SSS,TTT)  'COP of heat pump technologies' %semislash%
 $if     EXIST '../data/INDHEAT_COP.inc' $INCLUDE         '../data/INDHEAT_COP.inc';
 $if not EXIST '../data/INDHEAT_COP.inc' $INCLUDE '../../base/data/INDHEAT_COP.inc';
@@ -96,6 +105,3 @@ PARAMETER INDHEAT_RETROFITFACTOR(INDHEAT_GGG)        'Percentage of investment c
 $if     EXIST '../data/INDHEAT_RETROFITFACTOR.inc' $INCLUDE         '../data/INDHEAT_RETROFITFACTOR.inc';
 $if not EXIST '../data/INDHEAT_RETROFITFACTOR.inc' $INCLUDE '../../base/data/INDHEAT_RETROFITFACTOR.inc';
 
-PARAMETER INDHEAT_MAXDEMAND(YYY,INDHEAT_AAA,INDHEAT_GROUP)       'Max demand that can be served by a group (MWh)' %semislash%
-$if     EXIST '../data/INDHEAT_MAXDEMAND.inc' $INCLUDE         '../data/INDHEAT_MAXDEMAND.inc';
-$if not EXIST '../data/INDHEAT_MAXDEMAND.inc' $INCLUDE '../../base/data/INDHEAT_MAXDEMAND.inc';
