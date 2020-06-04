@@ -46,7 +46,8 @@
 
 
 
-
+$ontext
+*Moved to Sociotariff_qobj instead 
 * Gridtariff on natgas and biong consumption for heat production
     + SUM((C,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(GDATA(G,'GDFUEL') EQ FDATA('NATGAS','FDACRONYM')),
          IHOURSINST(IS3,T) * 4.95 * GDATA(G,'GDCV') * VGH_T(Y,IA,G,IS3,T)/ (GDATA(G,'GDFE') * (1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G)))))
@@ -102,6 +103,6 @@ $LABEL label_P2HGTREDU_END
 
 
 $LABEL label_GridTariffs_qobj_indheAT_END
-
+$offtext
 
 

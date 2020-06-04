@@ -42,8 +42,8 @@ $ifi %DFLEXQUANT%==yes        + SUM(DHF_U3,VDHF_T(Y,IA,DHUSER,IS3,T,DHF_U3) ) - 
 
 
 
-* Gridtariff on natgas and biong consumption for heat production
-    + SUM((C,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(GDATA(G,'GDFUEL') EQ FDATA('BIONG','FDACRONYM')),
+* Tax on biong consumption for heat production  in DH and Industry
+    + SUM((C,IS3,T), SUM(IAGK_HASORPOT(Y,IA,G)$(ICA(C,IA) AND GDATA(G,'GDFUEL') EQ FDATA('BIONG','FDACRONYM')),
          IHOURSINST(IS3,T) * 32.15 * GDATA(G,'GDCV') * VGH_T(Y,IA,G,IS3,T)/ (GDATA(G,'GDFE') * (1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G)))))
 
 
