@@ -54,7 +54,8 @@ $if not EXIST '../data/INDHEAT_AGKN.inc' $INCLUDE '../../base/data/INDHEAT_AGKN.
 %semislash%
 
 PARAMETER INDHEAT_MINPERCENT(YYY,INDHEAT_AAA,INDHEAT_GROUP) 'Minimum percentage assumed to be fixed to a specific group' %semislash%
-$if     EXIST '../data/INDHEAT_MINPERCENT.inc' $INCLUDE         '../data/INDHEAT_MINPERCENT.inc';
+$if     EXIST '../data/INDHEAT_MINPERCENT%TECHALT%.inc' $INCLUDE         '../data/INDHEAT_MINPERCENT%TECHALT%.inc';
+$if not EXIST '../data/INDHEAT_MINPERCENT%TECHALT%.inc' $INCLUDE '../data/INDHEAT_MINPERCENT.inc';
 $if not EXIST '../data/INDHEAT_MINPERCENT.inc' $INCLUDE '../../base/data/INDHEAT_MINPERCENT.inc';
 %semislash%
 
