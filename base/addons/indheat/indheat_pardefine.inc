@@ -3,16 +3,17 @@ $if     EXIST '../data/INDHEAT_DH_VAR_T.inc' $INCLUDE         '../data/INDHEAT_D
 $if not EXIST '../data/INDHEAT_DH_VAR_T.inc' $INCLUDE '../../base/data/INDHEAT_DH_VAR_T.inc';
 %semislash%
 
-PARAMETER INDHEAT_DH(YYY,INDHEAT_AAA,INDHEAT_DHUSER) 'BRUTTO nominal annual individual heat consumption' %semislash%
-$if     EXIST '../data/INDHEAT_DH.inc' $INCLUDE         '../data/INDHEAT_DH.inc';
-$if not EXIST '../data/INDHEAT_DH.inc' $INCLUDE '../../base/data/INDHEAT_DH.inc';
-%semislash%
-
 PARAMETER INDHEAT_GINSTALL(YYY,INDHEAT_AAA,INDHEAT_GGG,INDHEAT_GROUP) 'Initial installed capacities percentage' %semislash%
 *$if     EXIST '../data/INDHEAT_GINSTALL.inc' $INCLUDE         '../data/INDHEAT_GINSTALL.inc';
 $if     EXIST '../data/INDHEAT_GINSTALL%TECHALT%.inc' $INCLUDE '../data/INDHEAT_GINSTALL%TECHALT%.inc';
 $if not EXIST '../data/INDHEAT_GINSTALL%TECHALT%.inc' $INCLUDE '../data/INDHEAT_GINSTALL.inc';
 $if not EXIST '../data/INDHEAT_GINSTALL.inc' $INCLUDE '../../base/data/INDHEAT_GINSTALL.inc';
+%semislash%
+
+PARAMETER INDHEAT_DH(YYY,INDHEAT_AAA,INDHEAT_DHUSER) 'BRUTTO nominal annual individual heat consumption' %semislash%
+$if     EXIST '../data/INDHEAT_DH%TECHALT%.inc' $INCLUDE '../data/INDHEAT_DH%TECHALT%.inc';
+$if not EXIST '../data/INDHEAT_DH%TECHALT%.inc' $INCLUDE         '../data/INDHEAT_DH.inc';
+$if not EXIST '../data/INDHEAT_DH.inc' $INCLUDE '../../base/data/INDHEAT_DH.inc';
 %semislash%
 
 PARAMETER INDHEAT_GDATA(INDHEAT_GGG,GDATASET) 'Technology characteristics' %semislash%
