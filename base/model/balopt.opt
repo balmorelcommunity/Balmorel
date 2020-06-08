@@ -31,7 +31,7 @@ $setglobal SCNAME _M
 *!option _M  *Marathon
 *!option _ES *Early Sprint
 
-$setglobal TECHALT
+$setglobal TECHALT 
 
 *!option _DEcentral_lo-20  *REdecentral alternative: Decrease investment costs for solar/wind technology by 20%, (Example:INVEST COST*0,8)
 *!option _DEcentral_lo-40  *REdecentral alternative: Decrease investment costs for solar/wind technology by 40%
@@ -71,6 +71,7 @@ $setglobal TECHALT
 *!option _willing          *willingness to shift increased to 75%
 *!option _nogasIndheat     *No gas in Individual Heating
 *!option _lessELtransm_0.5_NONGAS *lessEltransm and NONGAS alternative: Forbid new transmission lines and reduce the availability to 50 %
+*!option _decouplingCost   *Considering decoupling costs for NG technologies
 
 
 *===============================================================================
