@@ -31,7 +31,7 @@ $setglobal SCNAME _M
 *!option _M  *Marathon
 *!option _ES *Early Sprint
 
-$setglobal TECHALT _selfSufficiency
+$setglobal TECHALT
 
 *!option _DEcentral_lo-20  *REdecentral alternative: Decrease investment costs for solar/wind technology by 20%, (Example:INVEST COST*0,8)
 *!option _DEcentral_lo-40  *REdecentral alternative: Decrease investment costs for solar/wind technology by 40%
