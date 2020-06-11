@@ -1,3 +1,8 @@
+% When applying this method, mind to reference the following paper which describes the methodology: 
+% J.  Gea-Bermúdez et al.  Optimal  generation  and  transmission  development  of  the  north  sea  region:  
+% Impact of  grid  architecture  and  planning  horizon,  Energy  191  (2020)  
+% https://doi.org/10.1016/j.energy.2019.116512
+
 clear all;
 clc;
 close all;
