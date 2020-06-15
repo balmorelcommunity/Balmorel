@@ -144,6 +144,11 @@ $if     EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE      '../data/TECH_GROUP_V
 $if not EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/TECH_GROUP_VALUE.inc';
 %semislash%;
 
+PARAMETER TECHGROUP_DEUSER(TECH_GROUP,DEUSER) "assignment of tech groups into user groups for electricity"   %semislash%
+$if     EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE      '../data/TECHGROUP_DEUSER.inc';
+$if not EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE '../../base/data/TECHGROUP_DEUSER.inc';
+%semislash%;
+
 SET SUBTECH_GROUP     "SubTechnology Groups" %semislash%
 $if     EXIST '../data/SUBTECH_GROUP.inc' $INCLUDE      '../data/SUBTECH_GROUP.inc';
 $if not EXIST '../data/SUBTECH_GROUP.inc' $INCLUDE '../../base/data/SUBTECH_GROUP.inc';
@@ -650,7 +655,7 @@ $if not EXIST '../data/GKF_LO.inc' $INCLUDE '../../base/data/GKF_LO.inc';
 PARAMETER DE(YYY,RRR,DEUSER)    "Annual electricity consumption (MWh)" %semislash%
 *$if     EXIST '../data/DE%SCNAME%.inc' $INCLUDE         '../data/DE%SCNAME%.inc';
 $if     EXIST '../data/DE%SCNAME%%TECHALT%.inc' $INCLUDE         '../data/DE%SCNAME%%TECHALT%.inc';
-$if not EXIST '../data/DE%SCNAME%%TECHALT%.inc' $INCLUDE '../../base/data/DE%SCNAME%.inc';
+$if not EXIST '../data/DE%SCNAME%%TECHALT%.inc' $INCLUDE '../data/DE%SCNAME%.inc';
 *$if not EXIST '../data/DE.inc'         $INCLUDE '../../base/data/DE.inc';
 %semislash%;
 
@@ -885,5 +890,26 @@ $if not EXIST '../data/PENALTYQ.inc' $INCLUDE '../../base/data/PENALTYQ.inc';
 *-------------------------------------------------------------------------------
 $include "../../base/addons/_hooks/pardeclare.inc"
 $include "../../base/addons/_hooks/pardefine.inc"
+
+*changes made by philipp, testing biomass prices
+$ontext
+
+*AGKN(IA,G)$(((GDATA(G,'GDTECHGROUP') = WINDTURBINE_ONSHORE) OR (GDATA(G,'GDTECHGROUP') = WINDTURBINE_OFFSHORE_NEARSHORE)) AND (ICA('NORWAY',IA) OR ICA('DENMARK',IA) OR ICA('SWEDEN',IA) OR ICA('FINLAND',IA) OR ICA('ESTONIA',IA) OR ICA('LATVIA',IA) OR ICA('LITHUANIA',IA))) = NO;
+
+*$offtext
+** Higer Woodchips prices
+FUELPRICE('2030',IA,'WOODCHIPS') = 8.292520198;
+FUELPRICE('2040',IA,'WOODCHIPS') = 10.13943185;
+FUELPRICE('2050',IA,'WOODCHIPS') = 10.70013031;
+
+** no investments into straw except for Denmark where the limit is also set a little higher.
+AGKN(IA,G)$((NOT ICA('DENMARK',IA)) AND (GDATA(G,'GDFUEL') = STRAW)) = NO;
+GMAXF(Y,'DENMARK','STRAW') = 20000000;
+
+$offtext
+
+*limiting thermal storage capacities (philipp)
+TECHGROUPKPOT(IA,'PIT')$(SUM(G$(GDATA(G,'GDTECHGROUP') EQ TECH_GROUP_VALUE('PIT')), AGKN(IA,G)) AND SUM((Y,DHUSER), DH(Y,IA,DHUSER))) =  SUM(DHUSER, DH('2020',IA,DHUSER)) * 0.0075;
+
 
 

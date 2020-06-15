@@ -39,4 +39,6 @@ $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTarif
 
 $ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_setdefine.inc";
 
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_setdefine.inc";
+
 $label endoffile
