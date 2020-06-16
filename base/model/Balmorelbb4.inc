@@ -1434,7 +1434,7 @@ EQUATIONS
 *SBTM solar behing the meter
    QDENET(Y,RRR,DEUSER,S,T) "net load"
 
-$ifi %TECHALT%=="_selfSufficiency"   QSELFSUFFICIENCY(Y,C)             "Ensuring net import and export are balanced in a country"
+$ifi %SELFSUFFICIENCY%==yes   QSELFSUFFICIENCY(Y,C)             "Ensuring net import and export are balanced in a country"
 
 *Balbase4: ---------------------------------------------------------------------
 QGKNACCUMNET(Y,AAA,G)             "Accumulated new investments minus decommissioning of previous investments due to lifetime expiration available at beginning of next year (MW)"
@@ -2290,14 +2290,14 @@ QXINVSYMMETRY(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
    VXKN(IY411,IRE,IRI)
 ;
 
-$ifi not %TECHALT%=="_selfSufficiency" $goto endSelfSufficiencyEQ
+$ifi not %SELFSUFFICIENCY%==yes $goto endSelfSufficiencyEQ
 * "Ensuring net import and export are balanced in a country"
-QSELFSUFFICIENCY(IY411,C)..
-   SUM((IRE,IR,IS3,T)$(CCCRRR(C,IR) AND NOT CCCRRR(C,IRE) AND IXK_HASORPOT(IY411,IRE,IR)),
+QSELFSUFFICIENCY(IY411,'DENMARK')..
+   SUM((IRE,IR,IS3,T)$(CCCRRR('DENMARK',IR) AND NOT CCCRRR('DENMARK',IRE) AND IXK_HASORPOT(IY411,IRE,IR)),
          VX_T(IY411,IRE,IR,IS3,T)*(1-XLOSS(IRE,IR))
          )
          =e=
-   SUM((IR,IRI,IS3,T)$(CCCRRR(C,IR) AND NOT CCCRRR(C,IRI) AND IXK_HASORPOT(IY411,IR,IRI)),
+   SUM((IR,IRI,IS3,T)$(CCCRRR('DENMARK',IR) AND NOT CCCRRR('DENMARK',IRI) AND IXK_HASORPOT(IY411,IR,IRI)),
          VX_T(IY411,IR,IRI,IS3,T)
          )
 ;
@@ -2591,7 +2591,7 @@ $ifi %heatsto_loading_rest%==yes QHSTOLOADTS
 $ifi %TransInvest%==yes         QXKNACCUMNET
 $ifi %TransInvest%==yes         QXINVSYMMETRY
 $ifi %TransInvest%==yes         QXK_UP
-$ifi %TECHALT%=="_selfSufficiency"   QSELFSUFFICIENCY
+$ifi %SELFSUFFICIENCY%==yes     QSELFSUFFICIENCY
 
 *--- Electricity generation restrictions by fuel -------------------------------
                                 QGMINFUELC

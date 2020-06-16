@@ -72,7 +72,6 @@ $setglobal TECHALT
 *!option _nogasIndheat     *No gas in Individual Heating
 *!option _lessELtransm_0.5_NONGAS *lessEltransm and NONGAS alternative: Forbid new transmission lines and reduce the availability to 50 %
 *!option _decouplingCost   *Considering decoupling costs for NG technologies
-*!option _selfSufficiency  *Ensuring that the countries have a balanced import/export of electricity
 
 
 *===============================================================================
@@ -230,6 +229,10 @@ $setglobal watertank_loading_rest
 
 *----END: Heat storage loading restrictions
 *-----------------------------------------------
+*----- SELFSUFFICENCY----------
+*Ensuring that DENMARK has a balanced import/export of electricity
+$setglobal SELFSUFFICIENCY
+*!option yes
 
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of add-on modules to include.
