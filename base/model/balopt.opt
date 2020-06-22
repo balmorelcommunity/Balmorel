@@ -72,6 +72,7 @@ $setglobal TECHALT
 *!option _nogasIndheat     *No gas in Individual Heating
 *!option _lessELtransm_0.5_NONGAS *lessEltransm and NONGAS alternative: Forbid new transmission lines and reduce the availability to 50 %
 *!option _decouplingCost   *Considering decoupling costs for NG technologies
+*!option _highCostHybrid   *Using the high fixed O&M cost for hybrid heat pumps
 
 
 *===============================================================================
