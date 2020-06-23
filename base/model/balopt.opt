@@ -70,7 +70,7 @@ $setglobal TECHALT
 *!option _nonWilling       *willingness to shift reduced to 23.9%
 *!option _willing          *willingness to shift increased to 75%
 *!option _nogasIndheat     *No gas in Individual Heating
-*!option _lessELtransm_0.5_NONGAS *lessEltransm and NONGAS alternative: Forbid new transmission lines and reduce the availability to 50 %
+*!option _NONGAS           *NONGAS alternative: No natural gas nor bionatural in any sector
 *!option _decouplingCost   *Considering decoupling costs for NG technologies
 *!option _highCostHybrid   *Using the high fixed O&M cost for hybrid heat pumps
 
