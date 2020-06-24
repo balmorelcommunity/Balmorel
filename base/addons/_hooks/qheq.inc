@@ -16,6 +16,8 @@ $ifi not %bb4%==yes $goto endoffile
 $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_qheq.inc";
 $ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_qheq.inc";
 
+$ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_qheq.inc";
+
 $ifi %vqdebug%==yes   $setglobal equation qheq
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
 

@@ -278,6 +278,9 @@ $Setglobal FV
 * Includes individual heating
 $setglobal INDHEAT yes
 *!option yes
+* Includes Expansion to INDHEAT - only if INDHEAT is on
+$setglobal DHEXPANSION yes
+*!option yes
 
 SCALAR INDHEAT_GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
 INDHEAT_GINVESTSTART= 2020;
