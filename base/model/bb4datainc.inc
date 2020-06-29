@@ -840,11 +840,12 @@ $if     EXIST '../data/TEMP_VAR_T.inc' $INCLUDE      '../data/TEMP_VAR_T.inc';
 $if not EXIST '../data/TEMP_VAR_T.inc' $INCLUDE '../../base/data/TEMP_VAR_T.inc';
 %semislash%;
 
-
-PARAMETER DH_COP(AAA,GGG,SSS,TTT)  'COP of DH heat pump technologies' %semislash%
+*$ontext
+PARAMETER DH_COP(AAA,GGG,YYY,SSS,TTT)  'COP of DH heat pump technologies' %semislash%
 $if     EXIST '../data/DH_COP.inc' $INCLUDE         '../data/DH_COP.inc';
 $if not EXIST '../data/DH_COP.inc' $INCLUDE '../../base/data/DH_COP.inc';
 %semislash%
+*$offtext
 
 $ifi %bb3%==yes WEIGHT_T(T)=1;
 
