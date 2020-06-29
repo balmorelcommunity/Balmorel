@@ -199,6 +199,8 @@ $offtext
 $include "../../base/addons/_hooks/gdataadditions.inc"
 
 
+
+
 * ------------------------------------------------------------------------------
 %ONOFFCODELISTING%
 
@@ -265,6 +267,8 @@ $if not EXIST '../data/T.inc' $INCLUDE '../../base/data/T.inc';
 
 TREV(T,T+(card(T)-2*ord(T)+1)) = YES;
 TREV2(T,T+(card(T)-2*ord(T)+1)) = YES;
+
+
 
 PARAMETER YVALUE(YYY)   "Numerical value of the years labels"  %semislash%
 $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
@@ -836,6 +840,11 @@ $if     EXIST '../data/TEMP_VAR_T.inc' $INCLUDE      '../data/TEMP_VAR_T.inc';
 $if not EXIST '../data/TEMP_VAR_T.inc' $INCLUDE '../../base/data/TEMP_VAR_T.inc';
 %semislash%;
 
+
+PARAMETER DH_COP(AAA,GGG,SSS,TTT)  'COP of DH heat pump technologies' %semislash%
+$if     EXIST '../data/DH_COP.inc' $INCLUDE         '../data/DH_COP.inc';
+$if not EXIST '../data/DH_COP.inc' $INCLUDE '../../base/data/DH_COP.inc';
+%semislash%
 
 $ifi %bb3%==yes WEIGHT_T(T)=1;
 
