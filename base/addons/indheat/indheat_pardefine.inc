@@ -108,13 +108,11 @@ $if     EXIST '../data/INDHEAT_RETROFITFACTOR.inc' $INCLUDE         '../data/IND
 $if not EXIST '../data/INDHEAT_RETROFITFACTOR.inc' $INCLUDE '../../base/data/INDHEAT_RETROFITFACTOR.inc';
 
 $ifi not %DHEXPANSION%==yes $goto endDHexpansion
-PARAMETER INDHEAT_DHPOT(YYY,AAA,INDHEAT_AAA)         'Potential for DH expansion (MW)' %semislash%
+PARAMETER INDHEAT_DHPOT(YYY,AAA,INDHEAT_AAA,INDHEAT_DHEXPAREA)         'Potential for DH expansion (MW)' %semislash%
 $if     EXIST '../data/INDHEAT_DHPOT.inc' $INCLUDE         '../data/INDHEAT_DHPOT.inc';
 $if not EXIST '../data/INDHEAT_DHPOT.inc' $INCLUDE '../../base/data/INDHEAT_DHPOT.inc';
 
-PARAMETER INDHEAT_DHCOST(YYY,AAA,INDHEAT_AAA)         'Cost of DH expansion (Money/MWh)' %semislash%
+PARAMETER INDHEAT_DHCOST(YYY,AAA,INDHEAT_AAA,INDHEAT_DHEXPAREA)         'Cost of DH expansion (Money/MWh)' %semislash%
 $if     EXIST '../data/INDHEAT_DHCOST.inc' $INCLUDE         '../data/INDHEAT_DHCOST.inc';
 $if not EXIST '../data/INDHEAT_DHCOST.inc' $INCLUDE '../../base/data/INDHEAT_DHCOST.inc';
-
-
 $label endDHexpansion

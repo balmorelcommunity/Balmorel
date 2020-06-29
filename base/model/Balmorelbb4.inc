@@ -98,7 +98,7 @@ ALIAS(CCCRRRAAA,CCCRRRAAAALIAS);
 * They correspond in a one-to-one way with the internal sets IGCND, IGBRP etc. below.
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
-ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GHYRR, GWND, GSOLE, GSOLH, GWAVE;
+ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GHYRR, GWND, GSOLE, GSOLH, GWAVE, GDHEXP;
 
 *ACRONYMS for tech groups
 * They can be used for multiple purposes

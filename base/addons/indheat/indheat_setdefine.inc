@@ -81,3 +81,11 @@ $if     EXIST '../data/INDHEAT_GGCOMB.inc' $INCLUDE         '../data/INDHEAT_GGC
 $if not EXIST '../data/INDHEAT_GGCOMB.inc' $INCLUDE '../../base/data/INDHEAT_GGCOMB.inc';
 %semislash%
 $label endcombtech
+
+$ifi not %DHEXPANSION%==yes $goto endDHEXPANSION
+SET
+INDHEAT_DHEXPAREA 'Classification of areas with possibility to expand with DH (inside/nearby DH)' %semislash%
+$if     EXIST '../data/INDHEAT_DHEXPAREA.inc' $INCLUDE         '../data/INDHEAT_DHEXPAREA.inc';
+$if not EXIST '../data/INDHEAT_DHEXPAREA.inc' $INCLUDE '../../base/data/INDHEAT_DHEXPAREA.inc';
+%semislash%
+$label endDHEXPANSION
