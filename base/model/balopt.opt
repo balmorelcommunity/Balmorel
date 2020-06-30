@@ -194,6 +194,10 @@ $setglobal watertank_loading_rest
 
 *----END: Heat storage loading restrictions
 *-----------------------------------------------
+*----- SELFSUFFICENCY----------
+*Ensuring that DENMARK has a balanced import/export of electricity
+$setglobal SELFSUFFICIENCY
+*!option yes
 
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of add-on modules to include.
