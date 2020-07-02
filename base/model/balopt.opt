@@ -27,9 +27,10 @@ $setglobal vqdebug
 *===============================================================================
 
 $setglobal SCNAME _M
-*!option _LS *Late Sprint
-*!option _M  *Marathon
-*!option _ES *Early Sprint
+*!option _M  *CO2 cap scenario equal to the Marathon scenario in Futuregas
+*!option _BAU *No cap on CO2 - the rest is equal to the Marathon scenario
+*!option _CS *Climate scenario
+*!option _HS *Heat savings scenario
 
 $setglobal TECHALT
 
@@ -243,11 +244,18 @@ $setglobal X3V
 $Setglobal FV
 *!option yes
 
+* This variable includes addon for heat savings
+$Setglobal HEATSAVINGS
+*!option yes
+
 * Includes individual heating
 $setglobal INDHEAT yes
 *!option yes
 * Includes Expansion to INDHEAT - only if INDHEAT is on
 $setglobal DHEXPANSION yes
+*!option yes
+* Includes savings to INDHEAT - only if INDHEAT and HEATSAVINGS is on
+$setglobal INDHEATSAV
 *!option yes
 
 SCALAR INDHEAT_GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
