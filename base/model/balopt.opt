@@ -34,8 +34,8 @@ $setglobal SCNAME _M
 
 $setglobal TECHALT 
 
-*!option _cheapHP_lo       *cheapHP alterantive: Decrease investment costs for NGAS heat pumps by uncertainty ranges in technology catalogue
-*!option _cheapHP_up       *cheapHP alterantive: Increase investment costs for NGAS heat pumps by uncertainty ranges in technology catalogue
+*!option _cheapNGASHP_lo       *cheapHP alterantive: Decrease investment costs for NGAS heat pumps by uncertainty ranges in technology catalogue
+*!option _cheapNGASHP_up       *cheapHP alterantive: Increase investment costs for NGAS heat pumps by uncertainty ranges in technology catalogue
 *!option _lessELtransm_0.5 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 50 %
 *!option _w-DH_COP         *With seasonal COP in DH in DK
 *!option _wout-DH_COP      *Without seasonal COP in DH in DK
