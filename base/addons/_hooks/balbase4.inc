@@ -18,8 +18,8 @@ $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTarif
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_balbase4.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_balbase4.inc";
 $ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_balbase4.inc";
+$ifi %HEATSAVINGS%==yes         $include         "../../base/addons/heatsavings/heatsavings_balbase4.inc";
 $ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_balbase4.inc";
 $ifi %OPTIFLOW%==yes         $include         "../../base/addons/optiflow/bb4/optiflow_balbase4.inc";
-
 
 $label endoffile

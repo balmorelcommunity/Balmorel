@@ -24,6 +24,7 @@ $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_pardef
 $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_pardefine.inc";
 $ifi %INDUSTRY%==yes      $include        "../../base/addons/industry/industry_pardefine.inc";
 $ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_pardefine.inc";
+$ifi %HEATSAVINGS%==yes         $include         "../../base/addons/heatsavings/heatsavings_pardefine.inc";
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_pardefine.inc";
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/stepwiseprice/stepwiseprice_pardefine.inc";
 $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/limitsforfuels_pardefine.inc";

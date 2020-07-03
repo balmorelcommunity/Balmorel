@@ -34,11 +34,7 @@ $setglobal SCNAME _M
 
 $setglobal TECHALT
 
-*!option _cheapHP_lo       *cheapHP alterantive: Decrease investment costs for heat pumps by uncertainty ranges in technology catalogue
-*!option _cheapHP_up       *cheapHP alterantive: Increase investment costs for heat pumps by uncertainty ranges in technology catalogue
-*!option _lessELtransm_0.5 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 50 %
-
-
+*!option _lowCostHeatSV *Reducing the heat savings cost to 50%
 
 *===============================================================================
 *===============================================================================
@@ -245,7 +241,7 @@ $Setglobal FV
 *!option yes
 
 * This variable includes addon for heat savings
-$Setglobal HEATSAVINGS
+$Setglobal HEATSAVINGS  yes
 *!option yes
 
 * Includes individual heating
