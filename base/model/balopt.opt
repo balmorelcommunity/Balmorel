@@ -35,6 +35,7 @@ $setglobal SCNAME _M
 $setglobal TECHALT
 
 *!option _lowCostHeatSV *Reducing the heat savings cost to 50%
+*!option _lowCostExpansion *Reducing the DH expansion cost to 50% 
 
 *===============================================================================
 *===============================================================================
