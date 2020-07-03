@@ -718,8 +718,8 @@ $if not EXIST '../data/XMAXINV.inc' $INCLUDE '../../base/data/XMAXINV.inc';
 *-------------------------------------------------------------------------------
 
 PARAMETER FUELPRICE(YYY,AAA,FFF)                   "Fuel prices (Money/GJ)"   %semislash%
-$if     EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE '../data/FUELPRICE%SCNAME%.inc';
-$if not EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
+$if     EXIST '../data/FUELPRICE%SCNAME%%TECHALT%.inc' $INCLUDE '../data/FUELPRICE%SCNAME%%TECHALT%.inc';
+$if not EXIST '../data/FUELPRICE%SCNAME%%TECHALT%.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
 *$if not EXIST '../data/FUELPRICE.inc'         $INCLUDE '../../base/data/FUELPRICE.inc';
 %semislash%;
 
@@ -840,10 +840,12 @@ $if     EXIST '../data/TEMP_VAR_T.inc' $INCLUDE      '../data/TEMP_VAR_T.inc';
 $if not EXIST '../data/TEMP_VAR_T.inc' $INCLUDE '../../base/data/TEMP_VAR_T.inc';
 %semislash%;
 
+$ifi NOT %TECHALT%== _w-DH_COP $goto NOSCOP
 PARAMETER DH_COP(AAA,GGG,YYY,SSS,TTT)  'COP of DH heat pump technologies' %semislash%
 $if     EXIST '../data/DH_COP.inc' $INCLUDE         '../data/DH_COP.inc';
 $if not EXIST '../data/DH_COP.inc' $INCLUDE '../../base/data/DH_COP.inc';
 %semislash%
+$label NOSCOP
 
 $ifi %bb3%==yes WEIGHT_T(T)=1;
 
