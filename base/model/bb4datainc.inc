@@ -718,8 +718,8 @@ $if not EXIST '../data/XMAXINV.inc' $INCLUDE '../../base/data/XMAXINV.inc';
 *-------------------------------------------------------------------------------
 
 PARAMETER FUELPRICE(YYY,AAA,FFF)                   "Fuel prices (Money/GJ)"   %semislash%
-$if     EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE '../data/FUELPRICE%SCNAME%.inc';
-$if not EXIST '../data/FUELPRICE%SCNAME%.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
+$if     EXIST '../data/FUELPRICE%SCNAME%%TECHALT%.inc' $INCLUDE '../data/FUELPRICE%SCNAME%%TECHALT%.inc';
+$if not EXIST '../data/FUELPRICE%SCNAME%%TECHALT%.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
 *$if not EXIST '../data/FUELPRICE.inc'         $INCLUDE '../../base/data/FUELPRICE.inc';
 %semislash%;
 
