@@ -32,12 +32,16 @@ $setglobal SCNAME _M
 *!option _CS *Climate scenario
 *!option _HS *Heat savings scenario
 
-$setglobal TECHALT
+$setglobal TECHALT _w-DH_COP
 
-*!option _cheapHP_lo       *cheapHP alterantive: Decrease investment costs for heat pumps by uncertainty ranges in technology catalogue
-*!option _cheapHP_up       *cheapHP alterantive: Increase investment costs for heat pumps by uncertainty ranges in technology catalogue
+*!option _cheapHP_lo       *cheapHP alterantive: Decrease investment costs for NGAS heat pumps by uncertainty ranges in technology catalogue
+*!option _cheapHP_up       *cheapHP alterantive: Increase investment costs for NGAS heat pumps by uncertainty ranges in technology catalogue
 *!option _lessELtransm_0.5 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 50 %
-
+*!option _w-DH_COP         *With seasonal COP in DH in DK
+*!option _wout-DH_COP      *Without seasonal COP in DH in DK
+*!option _noBioImport      *No import of biomass to Denmark (No import of Woodpellets)
+*!option _HighNGasPrice_20up     *Increase the Ngas price by 20%
+*!option _HighNGasPrice_50up     *Increase the Ngas price by 50%   
 
 
 *===============================================================================
@@ -252,7 +256,7 @@ $Setglobal HEATSAVINGS
 $setglobal INDHEAT yes
 *!option yes
 * Includes Expansion to INDHEAT - only if INDHEAT is on
-$setglobal DHEXPANSION yes
+$setglobal DHEXPANSION
 *!option yes
 * Includes savings to INDHEAT - only if INDHEAT and HEATSAVINGS is on
 $setglobal INDHEATSAV
