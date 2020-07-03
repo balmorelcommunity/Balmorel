@@ -29,6 +29,7 @@ $ifi %SUBSIDIES%==yes  $include   "../../base/addons/subsidies/subsidies_qobj.in
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_qobj.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_qobj.inc";
 $ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_qobj.inc";
+$ifi %HEATSAVINGS%==yes         $include         "../../base/addons/heatsavings/heatsavings_qobj.inc";
 $ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_qobj.inc";
 
 

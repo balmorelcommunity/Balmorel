@@ -23,7 +23,8 @@ $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_sim.in
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_sim.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_sim.inc";
 $ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_sim.inc";
-$ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_sim.inc"; 
+$ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_sim.inc";
+$ifi %HEATSAVINGS%==yes         $include         "../../base/addons/heatsavings/heatsavings_sim.inc";
 
 $ifi %OPTIFLOW%==yes  $include   "../../base/addons/optiflow/bb4/optiflow_sim.inc";
 

@@ -26,6 +26,7 @@ $ifi %STEPWISE_RAMPING%==yes  $include "../../base/addons/STEPWISE_RAMPING/stepw
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_eqndecdef.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_eqndecdef.inc";
 $ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_eqndecdef.inc";
+$ifi %HEATSAVINGS%==yes         $include         "../../base/addons/heatsavings/heatsavings_eqndecdef.inc";
 
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_eqndecdef.inc";
 $ifi %HEATTRANS%==yes      $include        "../../base/addons/heattrans/bb4/heattrans_eqndecdef.inc";

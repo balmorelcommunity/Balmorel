@@ -34,6 +34,7 @@ $setglobal SCNAME _M
 
 $setglobal TECHALT _w-DH_COP
 
+<<<<<<< HEAD
 *!option _cheapHP_lo       *cheapHP alterantive: Decrease investment costs for NGAS heat pumps by uncertainty ranges in technology catalogue
 *!option _cheapHP_up       *cheapHP alterantive: Increase investment costs for NGAS heat pumps by uncertainty ranges in technology catalogue
 *!option _lessELtransm_0.5 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 50 %
@@ -43,6 +44,10 @@ $setglobal TECHALT _w-DH_COP
 *!option _HighNGasPrice_20up     *Increase the Ngas price by 20%
 *!option _HighNGasPrice_50up     *Increase the Ngas price by 50%   
 
+=======
+*!option _lowCostHeatSV *Reducing the heat savings cost to 50%
+*!option _lowCostExpansion *Reducing the DH expansion cost to 50% 
+>>>>>>> 1fd56e541bb432f6decbba8300c0a7ea866787a2
 
 *===============================================================================
 *===============================================================================
@@ -249,7 +254,7 @@ $Setglobal FV
 *!option yes
 
 * This variable includes addon for heat savings
-$Setglobal HEATSAVINGS
+$Setglobal HEATSAVINGS  yes
 *!option yes
 
 * Includes individual heating

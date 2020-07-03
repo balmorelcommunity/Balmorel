@@ -38,6 +38,7 @@ $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/ste
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_setdefine.inc";
 
 $ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_setdefine.inc";
+$ifi %HEATSAVINGS%==yes         $include         "../../base/addons/heatsavings/heatsavings_setdefine.inc";
 
 $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_setdefine.inc";
 
