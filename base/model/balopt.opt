@@ -32,7 +32,7 @@ $setglobal SCNAME _M
 *!option _CS *Climate scenario
 *!option _HS *Heat savings scenario
 
-$setglobal TECHALT _w-DH_COP
+$setglobal TECHALT 
 
 <<<<<<< HEAD
 *!option _cheapHP_lo       *cheapHP alterantive: Decrease investment costs for NGAS heat pumps by uncertainty ranges in technology catalogue
