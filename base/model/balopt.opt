@@ -32,18 +32,19 @@ $setglobal SCNAME _M
 *!option _CS *Climate scenario
 *!option _HS *Heat savings scenario
 
-$setglobal TECHALT 
+$setglobal TECHALT
 
 *!option _cheapNGASHP_lo       *cheapHP alterantive: Decrease investment costs for NGAS heat pumps by uncertainty ranges in technology catalogue
 *!option _cheapNGASHP_up       *cheapHP alterantive: Increase investment costs for NGAS heat pumps by uncertainty ranges in technology catalogue
 *!option _lessELtransm_0.5 *lessEltransm alternative: Forbid new transmission lines and reduce the availability to 50 %
-*!option _w-DH_COP         *With seasonal COP in DH in DK
 *!option _wout-DH_COP      *Without seasonal COP in DH in DK
 *!option _noBioImport      *No import of biomass to Denmark (No import of Woodpellets)
 *!option _HighNGasPrice_20up     *Increase the Ngas price by 20%
-*!option _HighNGasPrice_50up     *Increase the Ngas price by 50%   
+*!option _HighNGasPrice_50up     *Increase the Ngas price by 50%
 *!option _lowCostHeatSV *Reducing the heat savings cost to 50%
-*!option _lowCostExpansion *Reducing the DH expansion cost to 50% 
+*!option _highCostHeatSV *Increasing the heat savings cost to 150%
+*!option _lowCostExpansion *Reducing the DH expansion cost to 50%
+*!option _highCostExpansion *Increasing the DH expansion cost to 150%
 
 
 *===============================================================================
@@ -251,17 +252,17 @@ $Setglobal FV
 *!option yes
 
 * This variable includes addon for heat savings
-$Setglobal HEATSAVINGS  yes
+$Setglobal HEATSAVINGS yes
 *!option yes
 
 * Includes individual heating
 $setglobal INDHEAT yes
 *!option yes
 * Includes Expansion to INDHEAT - only if INDHEAT is on
-$setglobal DHEXPANSION
+$setglobal DHEXPANSION yes
 *!option yes
 * Includes savings to INDHEAT - only if INDHEAT and HEATSAVINGS is on
-$setglobal INDHEATSAV
+$setglobal INDHEATSAV yes
 *!option yes
 
 SCALAR INDHEAT_GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
@@ -283,7 +284,6 @@ $setglobal POLICIES
 
 * Grid tariffs on electricity use
 * ADD details regarding the different regulation tech alternatives
-$ifi not %TECHALT%=="_includeReg" $goto noregulation
 $setglobal GRIDTARIFFS
 *!option yes
 
@@ -306,8 +306,6 @@ $setglobal BiomassTaxSens
 * Subsidies addon
 $setglobal P2HGTREDU
 *!option yes
-
-$label noregulation
 
 * Subsidies addon
 $setglobal SOCIOECTAR yes

@@ -6,7 +6,10 @@ POSITIVE VARIABLE HEATSV_VHSPERCENT(YYY,AAA,HEATSV_STEPS) 'Percentage of heat de
 
 $ifi not %INDHEATSAV%==yes $goto endINDHEAT
 POSITIVE VARIABLE HEATSV_VINDHEATHS(YYY,INDHEAT_AAA,HEATSV_STEPS) 'Heat savings in an individual heating area, MW';
-POSITIVE VARIABLE HEATSV_VINDHEATHS(YYY,INDHEAT_AAA,HEATSV_STEPS,SSS,TTT) 'Heat savings in an individual heating area per timestep, MW';
+POSITIVE VARIABLE HEATSV_VINDHEATHS_T(YYY,INDHEAT_AAA,INDHEAT_GROUP,HEATSV_STEPS,SSS,TTT) 'Heat savings in an individual heating area per timestep, MW';
+POSITIVE VARIABLE HEATSV_VINDHEATHSGROUP(YYY,INDHEAT_AAA,INDHEAT_GROUP,HEATSV_STEPS) 'Heat savings in an area and technology group of individual heating, MW';
 POSITIVE VARIABLE HEATSV_VINDHEATHSACCUMNET(YYY,INDHEAT_AAA,HEATSV_STEPS) 'Accumulated heat savings in an area of individual heating, MW';
-POSITIVE VARIABLE HEATSV_VINDHEATHSPERCENT(YYY,INDHEAT_AAA,HEATSV_STEPS) 'Percentage of heat demand covered by heat savings for individual heating, %';
+POSITIVE VARIABLE HEATSV_VINDHEATHSPERCENT(YYY,INDHEAT_AAA,INDHEAT_GROUP,HEATSV_STEPS) 'Percentage of heat demand covered by heat savings for individual heating, %';
 $label endINDHEAT
+
+*HEATSV_VINDHEATHSPERCENT.FX('2020',INDHEAT_IA,'GR_OIL','STEP3')=0.0001;

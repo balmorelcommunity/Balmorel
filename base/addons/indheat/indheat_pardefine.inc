@@ -78,6 +78,11 @@ $if     EXIST '../data/INDHEAT_COP.inc' $INCLUDE         '../data/INDHEAT_COP.in
 $if not EXIST '../data/INDHEAT_COP.inc' $INCLUDE '../../base/data/INDHEAT_COP.inc';
 %semislash%
 
+PARAMETER INDHEAT_COPFACTOR(YYY,RRR,INDHEAT_GGG,SSS) 'Multiplication factor for COP to reflect climate change' %semislash%
+$if     EXIST '../data/INDHEAT_COPFACTOR.inc' $INCLUDE         '../data/INDHEAT_COPFACTOR.inc';
+$if not EXIST '../data/INDHEAT_COPFACTOR.inc' $INCLUDE '../../base/data/INDHEAT_COPFACTOR.inc';
+%semislash%
+
 PARAMETER INDHEAT_SOLH_VAR_T(INDHEAT_AAA,SSS,TTT) 'Variation in solar heating profile' %semislash%
 $if     EXIST '../data/INDHEAT_SOLH_VAR_T.inc' $INCLUDE         '../data/INDHEAT_SOLH_VAR_T.inc';
 $if not EXIST '../data/INDHEAT_SOLH_VAR_T.inc' $INCLUDE '../../base/data/INDHEAT_SOLH_VAR_T.inc';
