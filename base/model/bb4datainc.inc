@@ -598,6 +598,8 @@ PARAMETER ANNUITYCG(CCC,GGG)       "Transforms investment in technologies into a
 $if     EXIST '../data/ANNUITYCG.inc' $INCLUDE         '../data/ANNUITYCG.inc';
 $if not EXIST '../data/ANNUITYCG.inc' $INCLUDE '../../base/data/ANNUITYCG.inc';
 %semislash%;
+*------------- Any ANNUITYCG additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/annuitycgadditions.inc"
 
 PARAMETER ANNUITYCX(CCC)                 "Transforms investment in transmission lines into annual payment (fraction)";       %semislash%
 $if     EXIST '../data/ANNUITYCX.inc' $INCLUDE         '../data/ANNUITYCX.inc';

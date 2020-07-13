@@ -18,19 +18,6 @@ $if not EXIST '../data/HYDROGEN_H2TOF.inc' $INCLUDE '../../base/data/HYDROGEN_H2
 %semislash%
 
 $onmulti
-*AGKN only defined because it needs the GDATA additions to be include beforehand
-$if     EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE         '../data/HYDROGEN_AGKN.inc';
-$if not EXIST '../data/HYDROGEN_AGKN.inc' $INCLUDE '../../base/data/HYDROGEN_AGKN.inc';
-
-$if     EXIST '../data/HYDROGEN_FDATA.inc' $INCLUDE         '../data/HYDROGEN_FDATA.inc';
-$if not EXIST '../data/HYDROGEN_FDATA.inc' $INCLUDE '../../base/data/HYDROGEN_FDATA.inc';
-
-$if     EXIST '../data/HYDROGEN_FUELPRICE.inc' $INCLUDE         '../data/HYDROGEN_FUELPRICE.inc';
-$if not EXIST '../data/HYDROGEN_FUELPRICE.inc' $INCLUDE '../../base/data/HYDROGEN_FUELPRICE.inc';
-
-$if     EXIST '../data/HYDROGEN_GKFX.inc' $INCLUDE         '../data/HYDROGEN_GKFX.inc';
-$if not EXIST '../data/HYDROGEN_GKFX.inc' $INCLUDE '../../base/data/HYDROGEN_GKFX.inc';
-
 $if     EXIST '../data/HYDROGEN_DAC_DE.inc' $INCLUDE         '../data/HYDROGEN_DAC_DE.inc';
 $if not EXIST '../data/HYDROGEN_DAC_DE.inc' $INCLUDE '../../base/data/HYDROGEN_DAC_DE.inc';
 

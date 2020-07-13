@@ -60,7 +60,8 @@ LOOP(IYALIAS,
 );
 
 
-IXHKN(Y,IAE,IAI) = YES$(XHINVCOST(Y,IAE,IAI) AND XHINVCOST(Y,IAE,IAI) LT INF AND (XHINVESTSTART LE YVALUE(Y)));
+IXHKN(Y,IAE,IAI)$(XHINVCOST(Y,IAE,IAI) AND XHINVCOST(Y,IAE,IAI) LT INF AND (XHINVESTSTART LE YVALUE(Y))) = YES;
+IXHK_HASORPOT(Y,IAE,IAI)$(XHINVCOST(Y,IAE,IAI) AND XHINVCOST(Y,IAE,IAI) LT INF AND (XHINVESTSTART LE YVALUE(Y))) = YES;
 
 *This loop makes sure that if you invest in one line in the year Y, you can use this line in the future, even if you do not allow for investments on this line in the future
 LOOP(Y$(ORD(Y) GT 1),

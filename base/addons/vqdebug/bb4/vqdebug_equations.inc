@@ -42,6 +42,8 @@ $ifi %equation%==qucvucon_existing_stoload  - VQUCVUCON_EXISTING_STOLOAD(IY411,I
 $ifi %equation%==qmbgh_t           - VQBMGH_T(IY411,IA,IGEH,IS3,'IPLUS') + VQBMGH_T(IY411,IA,IGEH,IS3,'IMINUS')
 $ifi %equation%==qhydrogen_eq_area        - VHYDROGEN_QH2EQ(IY411,IA,IS3,T,'IMINUS') + VHYDROGEN_QH2EQ(IY411,IA,IS3,T,'IPLUS')
 $ifi %equation%==qhydrogen_eq             - VHYDROGEN_QH2EQ(IY411,IR,IS3,T,'IMINUS') + VHYDROGEN_QH2EQ(IY411,IR,IS3,T,'IPLUS')
+$ifi %equation%==qhydrogen_stovol        + VQHYDROGEN_STOVOL(IY411,IA,IHYDROGEN_GH2STO,S,T,'IMINUS') - VQHYDROGEN_STOVOL(IY411,IA,IHYDROGEN_GH2STO,S,T,'IPLUS')
+
 
 $ifi not %equation%==qobj  $goto endoffile
 
@@ -119,6 +121,7 @@ $ifi %BalancingMarket%==yes $ifi %NOHEATMARKET%==yes   +SUM((IA,IGEH,IS3)$IAGK_H
 
 $ifi %HYDROGEN%==yes    + SUM((IR,IS3,T),(VHYDROGEN_QH2EQ(Y,IR,IS3,T,'IMINUS')+VHYDROGEN_QH2EQ(Y,IR,IS3,T,'IPLUS')))
 $ifi %HYDROGEN%==yes    + SUM((IA,IS3,T)$HYDROGEN_DH2(Y,IA),(VHYDROGEN_QH2EQ(Y,IA,IS3,T,'IMINUS')+VHYDROGEN_QH2EQ(Y,IA,IS3,T,'IPLUS')))
+$ifi %HYDROGEN%==yes    + SUM((IA,IHYDROGEN_GH2STO,IS3,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO),VQHYDROGEN_STOVOL(Y,IA,IHYDROGEN_GH2STO,IS3,T,'IMINUS') + VQHYDROGEN_STOVOL(Y,IA,IHYDROGEN_GH2STO,IS3,T,'IPLUS'))
            )
 * -- Objective function End ----------------------------------------------------
 

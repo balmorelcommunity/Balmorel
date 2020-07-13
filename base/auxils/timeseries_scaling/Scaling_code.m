@@ -6,6 +6,7 @@
 clear all;
 clc;
 close all;
+delete Output\*.xlsx %All excel files in the output are deleted to avoid overwritting issues
 
 %INPUTS
 %----------------------------------------------

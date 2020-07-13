@@ -1,4 +1,4 @@
-* Ancilliary services by Juan Gea Bermúdez 2019.
+* Ancillary services by Juan Gea Bermúdez 2019.
 
 PARAMETER FCRDOWN(YYY,CCCRRRAAA) 'FCR down regulation requirement in each hour (MW)'  %semislash%
 $if     EXIST '../data/ANCILLIARY_SERVICES_FCRDOWN.inc' $INCLUDE         '../data/ANCILLIARY_SERVICES_FCRDOWN.inc';
@@ -75,4 +75,9 @@ $if     EXIST '../data/ANCILLIARY_SERVICES_MIN_TIMEON_AFRR.inc' $INCLUDE        
 $if not EXIST '../data/ANCILLIARY_SERVICES_MIN_TIMEON_AFRR.inc' $INCLUDE '../../base/data/ANCILLIARY_SERVICES_MIN_TIMEON_AFRR.inc';
 %semislash%;
 
-
+$ifi NOT %ANC_SERV_VRE%==yes $goto NO_ANC_SERV_VRE
+PARAMETER VRE_CERT_AS(YYY,GGG) 'Certainty/probability associated to the provision of ancilary services from VRE (0-1, 0 means no certainty, 1 means full certainty)'   %semislash%
+$if     EXIST '../data/ANCILLIARY_SERVICES_VRE_CERT_AS.inc' $INCLUDE         '../data/ANCILLIARY_SERVICES_VRE_CERT_AS.inc';
+$if not EXIST '../data/ANCILLIARY_SERVICES_VRE_CERT_AS.inc' $INCLUDE '../../base/data/ANCILLIARY_SERVICES_VRE_CERT_AS.inc';
+%semislash%;
+$label NO_ANC_SERV_VRE

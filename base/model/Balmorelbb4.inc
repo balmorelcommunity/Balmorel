@@ -1111,8 +1111,8 @@ $INCLUDE '../../base/addons/_hooks/ipardecdef.inc';
 
 * ----------------- Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT ----------------------------------
 
-IAGKFX(Y,IA,G) = YES$GKFX(Y,IA,G);
-IAGK_HASORPOT(Y,IA,G) = YES$GKFX(Y,IA,G);
+IAGKFX(Y,IA,G)$GKFX(Y,IA,G) = YES;
+IAGK_HASORPOT(Y,IA,G)$GKFX(Y,IA,G) = YES;
 
 IAGKN(IA,G)=NO;
 IAGKNY(Y,IA,G)=NO;
@@ -1170,12 +1170,13 @@ $ifi %COMBTECH%==yes IAGK_HASORPOT(Y,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(Y,IA
 * Transmision investments is subject to control by the option TransInvest,
 * therefore set a default and update if investments are intended.
 
-IXK_HASORPOT(Y,IRE,IRI) = YES$XKFX(Y,IRE,IRI);
+IXK_HASORPOT(Y,IRE,IRI)$XKFX(Y,IRE,IRI) = YES;
 IXKN(Y,IRE,IRI)=NO;
 
 $ifi not %TransInvest%==yes $goto Transmission_investments_end
 
-IXKN(Y,IRE,IRI) = YES$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF) AND (XINVESTSTART LE YVALUE(Y)));
+IXKN(Y,IRE,IRI)$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF) AND (XINVESTSTART LE YVALUE(Y))) = YES;
+IXK_HASORPOT(Y,IRE,IRI)$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF) AND (XINVESTSTART LE YVALUE(Y)))=YES;
 
 *This loop makes sure that if you invest in one line in the year Y, you can use this line in the future, even if you do not allow for investments on this line in the future
 LOOP(Y$(ORD(Y) GT 1),

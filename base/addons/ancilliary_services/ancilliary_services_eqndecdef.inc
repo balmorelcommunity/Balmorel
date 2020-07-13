@@ -1,31 +1,31 @@
-* Ancilliary services by Juan Gea Bermúdez 2019.
+* Ancillary services by Juan Gea Bermúdez 2019.
 
 EQUATION QASFCRUPR "Ancilliary service: frequency containment reserves for up regulation per region";
-EQUATION QASAFRRUPR "Ancilliary service: automatic frequency restoration reserves for up regulation per region";
-EQUATION QASMFRRUPR "Ancilliary service: manual frequency restoration reserves for up regulation per region";
-EQUATION QASMRRUPR "Ancilliary service: manual replacement reserves for up regulation per region";
+EQUATION QASAFRRUPR "Ancillary service: automatic frequency restoration reserves for up regulation per region";
+EQUATION QASMFRRUPR "Ancillary service: manual frequency restoration reserves for up regulation per region";
+EQUATION QASMRRUPR "Ancillary service: manual replacement reserves for up regulation per region";
 
-EQUATION QASFCRDOWNR "Ancilliary service: frequency containment reserves for down regulation per region";
-EQUATION QASAFRRDOWNR "Ancilliary service: automatic frequency restoration reserves for down regulation per region";
-EQUATION QASMFRRDOWNR "Ancilliary service: manual frequency restoration reserves for down regulation per region";
-EQUATION QASMRRDOWNR "Ancilliary service: manual replacement reserves for down regulation per region";
+EQUATION QASFCRDOWNR "Ancillary service: frequency containment reserves for down regulation per region";
+EQUATION QASAFRRDOWNR "Ancillary service: automatic frequency restoration reserves for down regulation per region";
+EQUATION QASMFRRDOWNR "Ancillary service: manual frequency restoration reserves for down regulation per region";
+EQUATION QASMRRDOWNR "Ancillary service: manual replacement reserves for down regulation per region";
 
-EQUATION QASFCRUPC "Ancilliary service: frequency containment reserves for up regulation per country";
-EQUATION QASAFRRUPC "Ancilliary service: automatic frequency restoration reserves for up regulation per country";
-EQUATION QASMFRRUPC "Ancilliary service: manual frequency restoration reserves for up regulation per country";
-EQUATION QASMRRUPC "Ancilliary service: manual replacement reserves for up regulation per country";
+EQUATION QASFCRUPC "Ancillary service: frequency containment reserves for up regulation per country";
+EQUATION QASAFRRUPC "Ancillary service: automatic frequency restoration reserves for up regulation per country";
+EQUATION QASMFRRUPC "Ancillary service: manual frequency restoration reserves for up regulation per country";
+EQUATION QASMRRUPC "Ancillary service: manual replacement reserves for up regulation per country";
 
-EQUATION QASFCRDOWNC "Ancilliary service: frequency containment reserves for down regulation per country";
-EQUATION QASAFRRDOWNC "Ancilliary service: automatic frequency restoration reserves for down regulation per country";
-EQUATION QASMFRRDOWNC "Ancilliary service: manual frequency restoration reserves for down regulation per country";
-EQUATION QASMRRDOWNC "Ancilliary service: manual replacement reserves for down regulation per country";
+EQUATION QASFCRDOWNC "Ancillary service: frequency containment reserves for down regulation per country";
+EQUATION QASAFRRDOWNC "Ancillary service: automatic frequency restoration reserves for down regulation per country";
+EQUATION QASMFRRDOWNC "Ancillary service: manual frequency restoration reserves for down regulation per country";
+EQUATION QASMRRDOWNC "Ancillary service: manual replacement reserves for down regulation per country";
 
-EQUATION QASSTOONUP     "Ancilliary services: up regulation limits for IGESTO and IGESTOS that are online (MW)";
-EQUATION QASSTOONDOWN   "Ancilliary services: down regulation limits for IGESTO and IGESTOS that are online(MW)";
-EQUATION QASESTOONENERGYUP   "Ancilliary services: minimum energy requirement for up regulation of online IGESTO units (MWh)";
-EQUATION QASESTOONENERGYDOWN "Ancilliary services: minimum energy requirement for down regulation of online IGESTO units (MWh)";
-EQUATION QASESTOSONENERGYUP   "Ancilliary services: minimum energy requirement for up regulation of online IGESTOS units (MWh)";
-EQUATION QASESTOSONENERGYDOWN "Ancilliary services: minimum energy requirement for down regulation of online IGESTOS units (MWh)";
+EQUATION QASSTOONUP     "Ancillary services: up regulation limits for IGESTO and IGESTOS that are online (MW)";
+EQUATION QASSTOONDOWN   "Ancillary services: down regulation limits for IGESTO and IGESTOS that are online(MW)";
+EQUATION QASESTOONENERGYUP   "Ancillary services: minimum energy requirement for up regulation of online IGESTO units (MWh)";
+EQUATION QASESTOONENERGYDOWN "Ancillary services: minimum energy requirement for down regulation of online IGESTO units (MWh)";
+EQUATION QASESTOSONENERGYUP   "Ancillary services: minimum energy requirement for up regulation of online IGESTOS units (MWh)";
+EQUATION QASESTOSONENERGYDOWN "Ancillary services: minimum energy requirement for down regulation of online IGESTOS units (MWh)";
 
 QASFCRUPR(IY411,IR,IS3,T)$FCRUP(IY411,IR)..
         SUM((IASFCRUP,IA)$(IAGK_HASORPOT(IY411,IA,IASFCRUP) AND RRRAAA(IR,IA)),VASFCRUP(IY411,IA,IASFCRUP,IS3,T))
@@ -220,3 +220,97 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC
 ;
 
 
+$ifi NOT %ANC_SERV_VRE%==yes $goto NO_ANC_SERV_VRE
+EQUATION QASWNDUP(Y,AAA,G,S,T)  "Ancillary services: up regulation limits wind technology units (MW)";
+EQUATION QASSOLEUP(Y,AAA,G,S,T) "Ancillary services: up regulation limits solar PV technology units (MW)";
+EQUATION QASHYRRUP(Y,AAA,G,S,T) "Ancillary services: up regulation limits hydro run of river technology units (MW)";
+EQUATION QASWAVEUP(Y,AAA,G,S,T) "Ancillary services: up regulation limits wave technology units (MW)";
+
+EQUATION QASWNDDOWN(Y,AAA,G,S,T)  "Ancillary services: down regulation limits wind technology units (MW)";
+EQUATION QASSOLEDOWN(Y,AAA,G,S,T) "Ancillary services: down regulation limits solar PV technology units (MW)";
+EQUATION QASHYRRDOWN(Y,AAA,G,S,T) "Ancillary services: down regulation limits hydro run of river technology units (MW)";
+EQUATION QASWAVEDOWN(Y,AAA,G,S,T) "Ancillary services: down regulation limits wave technology units (MW)";
+
+
+
+QASHYRRUP(IY411,IA,IGHYRR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHYRR) AND (IASFCRUP(IGHYRR) OR IASAFRRUP(IGHYRR)) AND IWTRRRSUM(IA) AND VRE_CERT_AS(IY411,IGHYRR))..
+
+          VGE_T(IY411,IA,IGHYRR,IS3,T)
+         + (VASFCRUP(IY411,IA,IGHYRR,IS3,T)$IASFCRUP(IGHYRR)+VASAFRRUP(IY411,IA,IGHYRR,IS3,T)$IASAFRRUP(IGHYRR))/VRE_CERT_AS(IY411,IGHYRR)
+           =L=
+         (WTRRRFLH(IA) * (
+           GKFX(IY411,IA,IGHYRR)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRR)$IGDECOMEXOPOT(IY411,IA,IGHYRR)
+        +  VGKNACCUMNET(IY411,IA,IGHYRR)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHYRR))
+                          ) * WTRRRVAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGHYRR,IS3,T)) + IGKRATE(IA,IGHYRR,IS3,T))) / IWTRRRSUM(IA)
+;
+
+QASHYRRDOWN(IY411,IA,IGHYRR,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHYRR) AND (IASFCRDOWN(IGHYRR) OR IASAFRRDOWN(IGHYRR)) AND IWTRRRSUM(IA) AND VRE_CERT_AS(IY411,IGHYRR))..
+         (VASFCRDOWN(IY411,IA,IGHYRR,IS3,T)$IASFCRDOWN(IGHYRR)+VASAFRRDOWN(IY411,IA,IGHYRR,IS3,T)$IASAFRRDOWN(IGHYRR))/VRE_CERT_AS(IY411,IGHYRR)
+           =L=
+         VGE_T(IY411,IA,IGHYRR,IS3,T)
+;
+
+
+
+QASWNDUP(IY411,IA,IGWND,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWND) AND (IASFCRUP(IGWND) OR IASAFRRUP(IGWND)) AND IWND_SUMST(IA) AND VRE_CERT_AS(IY411,IGWND))..
+         VGE_T(IY411,IA,IGWND,IS3,T)
+         + (VASFCRUP(IY411,IA,IGWND,IS3,T)$IASFCRUP(IGWND)+VASAFRRUP(IY411,IA,IGWND,IS3,T)$IASAFRRUP(IGWND))/VRE_CERT_AS(IY411,IGWND)
+           =L=
+$ifi %WNDFLH_DOL%==AAA         (WNDFLH(IA) * (
+$ifi %WNDFLH_DOL%==AAA_GGG     (WNDFLH(IA,IGWND) * (
+            GKFX(IY411,IA,IGWND)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGWND)$IGDECOMEXOPOT(IY411,IA,IGWND)
+         + VGKNACCUMNET(IY411,IA,IGWND)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWND))
+                 )  * WND_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGWND,IS3,T)) + IGKRATE(IA,IGWND,IS3,T))) / IWND_SUMST(IA)
+;
+
+QASWNDDOWN(IY411,IA,IGWND,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWND) AND (IASFCRDOWN(IGWND) OR IASAFRRDOWN(IGWND)) AND IWND_SUMST(IA) AND VRE_CERT_AS(IY411,IGWND))..
+        (VASFCRDOWN(IY411,IA,IGWND,IS3,T)$IASFCRDOWN(IGWND)+VASAFRRDOWN(IY411,IA,IGWND,IS3,T)$IASAFRRDOWN(IGWND))/VRE_CERT_AS(IY411,IGWND)
+         =L=
+         VGE_T(IY411,IA,IGWND,IS3,T)
+;
+
+
+QASSOLEUP(IY411,IA,IGSOLE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLE) AND (IASFCRUP(IGSOLE) OR IASAFRRUP(IGSOLE)) AND ISOLESUMST(IA) AND VRE_CERT_AS(IY411,IGSOLE))..
+
+       VGE_T(IY411,IA,IGSOLE,IS3,T)
++ (VASFCRUP(IY411,IA,IGSOLE,IS3,T)$IASFCRUP(IGSOLE)+VASAFRRUP(IY411,IA,IGSOLE,IS3,T)$IASAFRRUP(IGSOLE))/VRE_CERT_AS(IY411,IGSOLE)
+                 =L=
+$ifi %SOLEFLH_DOL%==AAA       (SOLEFLH(IA) * (
+$ifi %SOLEFLH_DOL%==AAA_GGG   (SOLEFLH(IA,IGSOLE) * (
+            GKFX(IY411,IA,IGSOLE)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGSOLE)$IGDECOMEXOPOT(IY411,IA,IGSOLE)
+         + VGKNACCUMNET(IY411,IA,IGSOLE)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGSOLE))
+                 )  * SOLE_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGSOLE,IS3,T)) + IGKRATE(IA,IGSOLE,IS3,T))) / ISOLESUMST(IA)
+;
+
+QASSOLEDOWN(IY411,IA,IGSOLE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGSOLE) AND (IASFCRDOWN(IGSOLE) OR IASAFRRUP(IGSOLE)) AND ISOLESUMST(IA) AND VRE_CERT_AS(IY411,IGSOLE))..
+        (VASFCRDOWN(IY411,IA,IGSOLE,IS3,T)$IASFCRDOWN(IGSOLE)+VASAFRRDOWN(IY411,IA,IGSOLE,IS3,T)$IASAFRRDOWN(IGSOLE))/VRE_CERT_AS(IY411,IGSOLE)
+         =L=
+         VGE_T(IY411,IA,IGSOLE,IS3,T)
+;
+
+
+
+QASWAVEUP(IY411,IA,IGWAVE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWAVE) AND (IASFCRUP(IGWAVE) OR IASAFRRUP(IGWAVE)) AND IWAVESUMST(IA) AND VRE_CERT_AS(IY411,IGWAVE))..
+         VGE_T(IY411,IA,IGWAVE,IS3,T)
+    + (VASFCRUP(IY411,IA,IGWAVE,IS3,T)$IASFCRUP(IGWAVE)+VASAFRRUP(IY411,IA,IGWAVE,IS3,T)$IASAFRRUP(IGWAVE))/VRE_CERT_AS(IY411,IGWAVE)
+                   =L=
+$ifi %GWAVE_DOL%==AAA       (WAVEFLH(IA) * (
+$ifi %GWAVE_DOL%==AAA_GGG   (WAVEFLH(IA,IGWAVE) * (
+
+         GKFX(IY411,IA,IGWAVE)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGWAVE)$IGDECOMEXOPOT(IY411,IA,IGWAVE)
+     + VGKNACCUMNET(IY411,IA,IGWAVE)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGWAVE))
+                          )* WAVE_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGWAVE,IS3,T)) + IGKRATE(IA,IGWAVE,IS3,T))) / IWAVESUMST(IA)
+;
+
+QASWAVEDOWN(IY411,IA,IGWAVE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGWAVE) AND (IASFCRDOWN(IGWAVE) OR IASAFRRDOWN(IGWAVE)) AND IWAVESUMST(IA) AND VRE_CERT_AS(IY411,IGWAVE))..
+
+     (VASFCRDOWN(IY411,IA,IGWAVE,IS3,T)$IASFCRDOWN(IGWAVE)+VASAFRRDOWN(IY411,IA,IGWAVE,IS3,T)$IASAFRRDOWN(IGWAVE))/VRE_CERT_AS(IY411,IGWAVE)
+                   =L=
+           VGE_T(IY411,IA,IGWAVE,IS3,T)
+;
+
+$label NO_ANC_SERV_VRE

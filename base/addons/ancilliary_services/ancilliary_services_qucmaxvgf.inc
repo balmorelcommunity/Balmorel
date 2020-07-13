@@ -1,4 +1,4 @@
-* Ancilliary services by Juan Gea Bermúdez 2019.
+* Ancillary services by Juan Gea Bermúdez 2019.
 
 +(
    (

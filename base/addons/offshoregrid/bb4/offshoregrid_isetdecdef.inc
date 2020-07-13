@@ -3,7 +3,11 @@
 SET IGKN_ES(GGG)         "Technologies lines whose cost depends on economy of scale";
 SET IXKN_ES(IRRRE,IRRRI) "Transmission lines whose cost depends on economy of scale";
 
-IXKN_ES(IRRRE,IRRRI)$SUM(XES,XKN_ES(IRRRE,IRRRI,XES))=YES;
 
 IGKN_ES(GGG)$SUM(XES,GKN_ES(GGG,XES))=YES;
+IXKN_ES(IRRRE,IRRRI)$SUM(XES,XKN_ES(IRRRE,IRRRI,XES))=YES;
+
+$ifi not %TechInvest%==yes   IGKN_ES(GGG)=NO;
+$ifi not %TransInvest%==yes  IXKN_ES(IRRRE,IRRRI)=NO;
+
 
