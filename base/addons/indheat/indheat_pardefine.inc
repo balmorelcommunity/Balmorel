@@ -19,7 +19,7 @@ $if     EXIST '../data/INDHEAT_GINSTALL.inc' $INCLUDE         '../data/INDHEAT_G
 $if not EXIST '../data/INDHEAT_GINSTALL.inc' $INCLUDE '../../base/data/INDHEAT_GINSTALL.inc';
 %semislash%
 
-*INDHEAT_GKFX is mainly defined by INDHEAT_GINSTALL and INDHEAT_DH_VAR_T. It is moved to indheat_ipardecdef.inc in case of time aggregation.  
+*INDHEAT_GKFX is mainly defined by INDHEAT_GINSTALL and INDHEAT_DH_VAR_T. It is moved to indheat_ipardecdef.inc in case of time aggregation.
 *PARAMETER INDHEAT_GKFX(YYY,INDHEAT_AAA,INDHEAT_GGG,INDHEAT_GROUP) 'Installed capacities' %semislash%
 *$if     EXIST '../data/INDHEAT_GKFX.inc' $INCLUDE         '../data/INDHEAT_GKFX.inc';
 *$if not EXIST '../data/INDHEAT_GKFX.inc' $INCLUDE '../../base/data/INDHEAT_GKFX.inc';
@@ -70,12 +70,12 @@ $if     EXIST '../data/INDHEAT_CARDGROUP.inc' $INCLUDE         '../data/INDHEAT_
 $if not EXIST '../data/INDHEAT_CARDGROUP.inc' $INCLUDE '../../base/data/INDHEAT_CARDGROUP.inc';
 %semislash%
 
-PARAMETER INDHEAT_M_POL(YYY,MPOLSET,SECTOR,CCC) 'Emission policy for individual heating' %semislash%
+PARAMETER INDHEAT_M_POL(YYY,MPOLSET,CCC) 'Emission policy for individual heating' %semislash%
 $if     EXIST '../data/INDHEAT_M_POL.inc' $INCLUDE         '../data/INDHEAT_M_POL.inc';
 $if not EXIST '../data/INDHEAT_M_POL.inc' $INCLUDE '../../base/data/INDHEAT_M_POL.inc';
 %semislash%
 
-PARAMETER INDHEAT_M_POLNA(YYY,MPOLSET,SECTOR) 'Emission policy for individual heating' %semislash%
+PARAMETER INDHEAT_M_POLNA(YYY,MPOLSET) 'Emission policy for individual heating' %semislash%
 $if     EXIST '../data/INDHEAT_M_POLNA.inc' $INCLUDE         '../data/INDHEAT_M_POLNA.inc';
 $if not EXIST '../data/INDHEAT_M_POLNA.inc' $INCLUDE '../../base/data/INDHEAT_M_POLNA.inc';
 %semislash%

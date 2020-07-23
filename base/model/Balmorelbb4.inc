@@ -715,7 +715,9 @@ GINVCOST(IA,G)$((NOT GINVCOST(IA,G)) AND (SUM(Y,GKFX(Y,IA,G)) OR AGKN(IA,G))) = 
 *-------------------------------------------------------------------------------
 
 * Time aggregation:
-$ifi %timeaggr%==yes  $include '../../base/addons/timeaggregation/timeaggr.inc';
+$ifi %timeaggr%==yes  $include "../../base/addons/TimeAggregation/timeaggr.inc";
+* Include internal sets affected by S and T in addons:
+$include "../../base/addons/_hooks/isetdecdef_st.inc"
 
 * The following relates technology and fuel:
 SET IGF(GGG,FFF)   "Relation between technology type and fuel type";
@@ -1102,7 +1104,7 @@ IAGK_HASORPOT(Y,IA,G)$IAGKNY(Y,IA,G) = YES;
 LOOP(Y$(ORD(Y) NE CARD(Y)),
    LOOP(IA,
       LOOP(G$IAGKNY(Y,IA,G),
-         LOOP(IYALIAS2$(ORD(IYALIAS2) GT ORD(Y)),
+         LOOP(IYALIAS2$((ORD(IYALIAS2) GT ORD(Y)) AND ((YVALUE(Y)+GDATA(G,'GDLIFETIME')) GT (YVALUE(IYALIAS2)))),
             IAGK_HASORPOT(IYALIAS2,IA,G)= IAGK_HASORPOT(IYALIAS2,IA,G)+IAGKNY(Y,IA,G);
        );
     );
@@ -1290,6 +1292,13 @@ PARAMETER ISIMWEIGHT(YMODEL) "Weighting of the individual years in a BB4 model. 
 PARAMETER IORD_IY(YMODEL)    "The ord of the years Y over which the present Balbase4 model is formulated (used only in BB4overview.inc).";
 ** End BB4 group
 
+* For storage modification in QESTOVOLTS and QHSTOVOLTS, calculate the number of weeks repeated by each S, taken from timeaggr addon.
+* Assume all have equal WEIGHT_S(S). Otherwise need new parameter SSIZE(S).
+PARAMETER PS2SSS(S,SSS) "Mapping/weighting of SSS to S - Sequence of Card(S) from SSS maps to each S",
+          COUNTELEMENTS(S) "";
+PS2SSS(S,SSS)=Max(0,1-Min(1,Max(0,ORD(SSS)-(CARD(SSS)/CARD(S))*ORD(S)))-Min(1,max(0,1-(ord(SSS)-(CARD(SSS)/CARD(S))*(ORD(S)-1)))));
+COUNTELEMENTS(S) = Sum(SSS, PS2SSS(S,SSS));
+
 *-------------------------------------------------------------------------------
 *  Declaration of internal parameters for holding values of dual variables:
 *-------------------------------------------------------------------------------
@@ -1375,6 +1384,8 @@ $ifi %VGF%==Y QGFEQ(Y,AAA,G)       "Calculate fuel consumption, existing units (
    QESTOLOADTLIM(Y,AAA,G,S,T) "Intra-seasonal Upper limit to electricity storage loading (MW)"
    QHSTOVOLTLIM(Y,AAA,G,S,T)  "Intra-seasonal Heat storage capacity limit (MWh)"
    QESTOVOLTLIM(Y,AAA,G,S,T)  "Intra-seasonal Electricity storage capacity limit (MWh)"
+   QESTOVGHSLIM(Y,AAA,G,S)    "Intra-seasonal Electricity storage weekly loading more than output (MWh)"
+   QHSTOVGHSLIM(Y,AAA,G,S)    "Intra-seasonal Heat storage weekly loading more than output (MWh)"
    QHSTOVGHTLIM(Y,AAA,G,S,T)"Intra-seasonal Heat storage output limit (MW)"
    QESTOVGETLIM(Y,AAA,G,S,T)"Intra-seasonal Electricity storage output limit (MW)"
    QHSTOLOADTS(Y,AAA,G,S,T)    "Inter-seasonal Heat storage loading less than heat production from allowed technologies (MW)"
@@ -1384,6 +1395,8 @@ $ifi %VGF%==Y QGFEQ(Y,AAA,G)       "Calculate fuel consumption, existing units (
    QESTOVOLTLIMS(Y,AAA,G,S,T)  "Inter-seasonal Electricity storage capacity limit (MWh)"
    QHSTOVGHTLIMS(Y,AAA,G,S,T)"Inter-seasonal Heat storage output limit (MW)"
    QESTOVGETLIMS(Y,AAA,G,S,T)"Inter-seasonal Electricity storage output limit (MW)"
+   QHSTOSVGHYLIM(Y,AAA,G)     "Inter-seasonal Heat storage annual loading more than output (MWh)"
+   QESTOSVGHYLIM(Y,AAA,G)     "Inter-seasonal Electricity storage annual loading more than output (MWh)"
 
    QKEFUELC(Y,C,FFF)        "Maximum electricty capacity by year, country and fuel (MW)"
    QKEFUELR(Y,RRR,FFF)      "Maximum electricty capacity by year, region and fuel (MW)"
@@ -1770,7 +1783,7 @@ $include "../../base/addons/_hooks/qhymaxg.inc"
 * "Electricty storage dynamic equation (MWh)"
 QESTOVOLT(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO))..
     VESTOVOLT(IY411,IA,IGESTO,IS3,T++1) =E= VESTOVOLT(IY411,IA,IGESTO,IS3,T)
-  + WEIGHT_T(T)*CHRONOHOUR(IS3,T)*
+  + CHRONOHOUR(IS3,T)*
     (VESTOLOADT(IY411,IA,IGESTO,IS3,T)
   - SUM(IAGK_HASORPOT(IY411,IA,IGESTO), VGE_T(IY411,IA,IGESTO,IS3,T)/GDATA(IGESTO,'GDFE'))
   )
@@ -1780,10 +1793,13 @@ $include "../../base/addons/_hooks/qestovolt.inc"
 * "Inter-seasonal electricty storage dynamic equation (MWh)"
 QESTOVOLTS(IY411,IA,IGESTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGESTOS) AND IS3(S))..
     VESTOVOLTS(IY411,IA,IGESTOS,S,T)
-  + WEIGHT_S(S)*(1/168)*CHRONOHOUR(S,T)*
-  (VESTOLOADTS(IY411,IA,IGESTOS,S,T)
-  - SUM(IAGK_HASORPOT(IY411,IA,IGESTOS), VGE_T(IY411,IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
-  )
+  + CHRONOHOUR(S,T)*(VESTOLOADTS(IY411,IA,IGESTOS,S,T) - VGE_T(IY411,IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
+  + ((VESTOVOLTS(IY411,IA,IGESTOS,S,T) + CHRONOHOUR(S,T)*(VESTOLOADTS(IY411,IA,IGESTOS,S,T) - VGE_T(IY411,IA,IGESTOS,S,T)/GDATA(IGESTOS,'GDFE'))
+   - SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S,ITALIAS))
+    )*(COUNTELEMENTS(S)-1))$(ORD(T) EQ CARD(T))
+
+*$ifi NOT %timeaggr%==yes   + WEIGHT_S(S)*(1/168)*CHRONOHOUR(S,T)*
+*$ifi %timeaggr%==yes   + COUNTELEMENTS(S)/ISUMWEIGHT*CHRONOHOUR(S,T)*
     =E=
 VESTOVOLTS(IY411,IA,IGESTOS,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
 
@@ -1793,7 +1809,7 @@ $include "../../base/addons/_hooks/qestovolts.inc"
 * "Heat storage dynamic equation (MWh)"
 QHSTOVOLT(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO))..
     VHSTOVOLT(IY411,IA,IGHSTO,IS3,T)
-  + WEIGHT_T(T)*CHRONOHOUR(IS3,T)*
+  + CHRONOHOUR(IS3,T)*
   (VHSTOLOADT(IY411,IA,IGHSTO,IS3,T)
   - SUM(IAGK_HASORPOT(IY411,IA,IGHSTO), VGH_T(IY411,IA,IGHSTO,IS3,T)/GDATA(IGHSTO,'GDFE')) )
     =E= VHSTOVOLT(IY411,IA,IGHSTO,IS3,T++1)
@@ -1803,16 +1819,46 @@ $include "../../base/addons/_hooks/qhstovolt.inc"
 *  "Inter-seasonal heat storage dynamic equation (MWh)"
 QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
     VHSTOVOLTS(IY411,IA,IGHSTOS,S,T)
-  + WEIGHT_S(S)*(1/168)*CHRONOHOUR(S,T)*
-  (VHSTOLOADTS(IY411,IA,IGHSTOS,S,T)
-  - SUM(IAGK_HASORPOT(IY411,IA,IGHSTOS), VGH_T(IY411,IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE'))
-  )
+  + CHRONOHOUR(S,T)  *(VHSTOLOADTS(IY411,IA,IGHSTOS,S,T) - VGH_T(IY411,IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE'))
+  + ((VHSTOVOLTS(IY411,IA,IGHSTOS,S,T) + CHRONOHOUR(S,T)*(VHSTOLOADTS(IY411,IA,IGHSTOS,S,T) - VGH_T(IY411,IA,IGHSTOS,S,T)/GDATA(IGHSTOS,'GDFE'))
+   - SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S,ITALIAS))
+    )*(COUNTELEMENTS(S)-1))$(ORD(T) EQ CARD(T))
+*$ifi NOT %timeaggr%==yes   + WEIGHT_S(S)*(1/168)*CHRONOHOUR(S,T)*
+*$ifi %timeaggr%==yes   + COUNTELEMENTS(S)/ISUMWEIGHT*CHRONOHOUR(S,T)*
     =E=
 VHSTOVOLTS(IY411,IA,IGHSTOS,S,T+1)+SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS)$(ORD(T) EQ CARD(T)))
 
 $include "../../base/addons/_hooks/qhstovolts.inc"
 ;
 
+
+* "Inter-seasonal Electric storage annualy loading more than output (MWh)"
+QESTOSVGHYLIM(IY411,IA,IGESTOS)$IAGK_HASORPOT(IY411,IA,IGESTOS)..
+   SUM((S,T),VESTOLOADTS(IY411,IA,IGESTOS,S,T)*IHOURSINST(S,T))
+         =G=
+   SUM((S,T),VGE_T(IY411,IA,IGESTOS,S,T)*IHOURSINST(S,T))
+;
+
+* "Inter-seasonal Heat storage annualy loading more than output (MWh)"
+QHSTOSVGHYLIM(IY411,IA,IGHSTOS)$IAGK_HASORPOT(IY411,IA,IGHSTOS)..
+   SUM((S,T),VHSTOLOADTS(IY411,IA,IGHSTOS,S,T)*IHOURSINST(S,T))
+         =G=
+   SUM((S,T),VGH_T(IY411,IA,IGHSTOS,S,T)*IHOURSINST(S,T))
+;
+
+* "Intra-seasonal Electric storage weekly loading more than output (MWh)"
+QESTOVGHSLIM(IY411,IA,IGESTO,IS3)$IAGK_HASORPOT(IY411,IA,IGESTO)..
+   SUM(T,VESTOLOADT(IY411,IA,IGESTO,IS3,T)*WEIGHT_T(T))
+         =G=
+   SUM(T,VGE_T(IY411,IA,IGESTO,IS3,T)*WEIGHT_T(T))
+;
+
+* "Intra-seasonal Heat storage weekly loading more than output (MWh)"
+QHSTOVGHSLIM(IY411,IA,IGHSTO,IS3)$IAGK_HASORPOT(IY411,IA,IGHSTO)..
+   SUM(T,VHSTOLOADT(IY411,IA,IGHSTO,IS3,T)*WEIGHT_T(T))
+         =G=
+   SUM(T,VGH_T(IY411,IA,IGHSTO,IS3,T)*WEIGHT_T(T))
+;
 
 * "Intra-seasonal Heat storage loading less than heat production from allowed technologies (MW)"
 QHSTOLOADT(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO))..
@@ -2617,6 +2663,8 @@ $ifi not %HYRSBB123%==quant     QHYRSMAXVOL
                                 QESTOVOLTS
                                 QHSTOVOLT
                                 QHSTOVOLTS
+                                QESTOSVGHYLIM
+                                QHSTOSVGHYLIM
 
 $ifi %heatsto_loading_rest%==yes QHSTOLOADT
 $ifi %heatsto_loading_rest%==yes QHSTOLOADTS
@@ -2676,6 +2724,9 @@ $ifi not %TechInvest%==yes $ifi not %DECOM%==yes  $goto NO_TECH_INVESTMENTS_NO_D
                                  QESTOVGETLIMS
                                  QHSTOVGHTLIM
                                  QHSTOVGHTLIMS
+                                 QESTOVGHSLIM
+                                 QHSTOVGHSLIM
+
 *--- Capacity constraints on generation (MW) -----------------------------------
 *                                QGKNACCUMGROSS   NOT RELEVANT
                                  QGKNACCUMNET

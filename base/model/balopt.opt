@@ -104,7 +104,7 @@ $SETGLOBAL SCENARIO4
 *!option yes
 
 * This option alters scenario 3 and 4 so that the tax and tariff change does not apply to residential and service sector
-$SETGLOBAL SCENARIO34_ALT    yes
+$SETGLOBAL SCENARIO34_ALT
 
 * Strategy to limit long term heat storage: limit with higher price assumption or limit capacity potential
 $SETGLOBAL HEATSTORE_LIM_PRICE      yes
@@ -151,13 +151,13 @@ GINVESTSTART= 2020;
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest
+$setglobal TransInvest     YES
 $ifi %Scenario2%==YES  $setglobal TransInvest    YES
 $ifi %Scenario4%==YES  $setglobal TransInvest    YES
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
-XINVESTSTART= 2030;
+XINVESTSTART= 2040;
 
 *---- End: Transmission investments options----
 
@@ -235,7 +235,7 @@ $setglobal watertank_loading_rest
 * however, it has not been checked. Please take contact if problems.
 
 * Includes individual heating !!Might not work with combtech and hydrogen yet.
-$setglobal INDHEAT
+$setglobal INDHEAT       yes
 *!option yes
 * Choose geographic coverage, denmark only or EU
 $setglobal INDHEAT_GEO   INDHEAT_EU
@@ -254,14 +254,14 @@ $Setglobal HYDROGEN
 *!option yes
 
 * Use stepwise linear fuel prices
-$Setglobal STEPWISEPRICE
+$Setglobal STEPWISEPRICE     yes
 
 * Use stepwise linear potentials for installed capacity (currently for wind power)
 $Setglobal STEPWISEKPOT
 $ifi %BBMODE%==INVEST $Setglobal STEPWISEKPOT   yes
 
 * Set a common maximum for fuels.
-$Setglobal LIMITSFORFUELS
+$Setglobal LIMITSFORFUELS  yes
 *!option yes
 
 * Allow demand elasticity
@@ -269,7 +269,7 @@ $setglobal DFLEXQUANT
 *!option yes
 
 * Allow demand response
-$setglobal DEMANDRESPONSE  yes
+$setglobal DEMANDRESPONSE     yes
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
@@ -632,7 +632,7 @@ $setglobal ADDTRANSDEV  yes
 *--------------------------------------------
 
 * Options timeaggr control automatic aggregation of time segments (to be tested!!).
-$setglobal timeaggr
+$setglobal timeaggr   
 *$ifi %BBMODE%==INVEST $setglobal timeaggr yes
 *$ifi %BBMODE%==HYDRO $setglobal timeaggr yes
 *!option yes
@@ -709,7 +709,7 @@ $Setglobal limitedresults
 $setglobal PRINTFILES
 *!option yes
 
-$setglobal OUTPUT_SUMMARY   yes
+$setglobal OUTPUT_SUMMARY     yes
 *!option yes
 
 * PRINTSEPARATOR is a single character used for separating columns in printfiles,

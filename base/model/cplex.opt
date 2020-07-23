@@ -3,4 +3,8 @@
 LPmethod  4
 advind 0
 threads -1
-barcolnz 100
+*barcolnz 100
+
+*NUMERICALEMPHASIS 1
+*scaind 1
+*barobjrng 1e+30 !!Use when solution says unbounded under strong decarbonization with many restrictions.

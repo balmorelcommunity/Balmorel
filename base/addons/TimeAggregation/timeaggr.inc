@@ -414,6 +414,8 @@ WEIGHT_T(TTT)$(not T(TTT))=0;
 * Set relative time weights of S identical
 WEIGHT_S(S)=168*card(SSS)/card(S);
 WEIGHT_S(SSS)$(not S(SSS))=0;
+* Change size of hour in each season.
+CHRONOHOUR(S,T) = SUM(HOURS24,T2HOURS24(T,HOURS24));
 
 PS2SSS(S,SSS)=Max(0,1-Min(1,Max(0,ORD(SSS)-(CARD(SSS)/CARD(S))*ORD(S)))-Min(1,max(0,1-(ord(SSS)-(CARD(SSS)/CARD(S))*(ORD(S)-1)))));
 
@@ -478,17 +480,17 @@ $ifi %HYDROGEN%==yes HYDROGEN_DH2_VAR_T(RRR,SSS,TTT)$(not IR(RRR)) = 0;
 ISUMWEIGHT = SUM(T,WEIGHT_T(T));
 
 
-$batinclude '../../base/addons/timeaggregation/aggr_1_s_t_demands.inc' DE_VAR_T IR DEUSER
-$batinclude '../../base/addons/timeaggregation/aggr_1_s_t_demands.inc' DH_VAR_T IA DHUSER
-$ifi %HYDROGEN%==yes  $batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' HYDROGEN_DH2_VAR_T IR
-$batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' X3FX_VAR_T IR
+$batinclude "../../base/addons/TimeAggregation/aggr_1_s_t_demands.inc" DE_VAR_T IR DEUSER
+$batinclude "../../base/addons/TimeAggregation/aggr_1_s_t_demands.inc" DH_VAR_T IA DHUSER
+$ifi %HYDROGEN%==yes  $batinclude "../../base/addons/TimeAggregation/aggr_1_s_t.inc" HYDROGEN_DH2_VAR_T IR
+$batinclude "../../base/addons/TimeAggregation/aggr_1_s_t.inc" X3FX_VAR_T IR
 
-* $batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' WND_VAR_T IA
-*$batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' SOLE_VAR_T IA
-*$batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' SOLH_VAR_T IA
-$batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' WAVE_VAR_T IA
-*$batinclude '../../base/addons/timeaggregation/aggr_1_s_t.inc' WTRRRVAR_T IA
-$batinclude '../../base/addons/timeaggregation/aggr_2_s_t.inc' WND_VAR_T IA
+* $batinclude "../../base/addons/TimeAggregation/aggr_1_s_t.inc" WND_VAR_T IA
+*$batinclude "../../base/addons/TimeAggregation/aggr_1_s_t.inc" SOLE_VAR_T IA
+*$batinclude "../../base/addons/TimeAggregation/aggr_1_s_t.inc" SOLH_VAR_T IA
+$batinclude "../../base/addons/TimeAggregation/aggr_1_s_t.inc" WAVE_VAR_T IA
+*$batinclude "../../base/addons/TimeAggregation/aggr_1_s_t.inc" WTRRRVAR_T IA
+$batinclude "../../base/addons/TimeAggregation/aggr_2_s_t.inc" WND_VAR_T IA
 
 TEMP_VAR_T(IR,S,T) = Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), TEMP_VAR_T(IR,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
 
@@ -500,6 +502,9 @@ WTRRRVAR_T(IA,S,T) = Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), WTRRRVA
 *DEF_STEPS(IR,S,T,DF_QP,DEF)= Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT) ,DEF_STEPS(IR,SSS,TTT,DF_QP,DEF))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S) ;
 *DHF_STEPS(IA,S,T,DF_QP,DHF)= Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT) ,DHF_STEPS(IA,SSS,TTT,DF_QP,DHF))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S) ;
 
+
+GMAXFS(Y,CCCRRRAAA,FFF,S)   = Sum(SSS, PS2SSS(S,SSS)*GMAXFS(Y,CCCRRRAAA,FFF,SSS) )/COUNTELEMENTS(S);
+GMINF_S(Y,IA,FFF,S) = Sum(SSS, PS2SSS(S,SSS)*GMINF_S(Y,IA,FFF,S) )/COUNTELEMENTS(S);
 
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT GKRATE(IA,G,S,T) = Sum(SSS, PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), GKRATE(IA,G,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
 $ifi %GKRATE_DOL%==AAA_GGG_SSS     GKRATE(IA,G,S)   = Sum(SSS, PS2SSS(S,SSS)*GKRATE(IA,G,SSS))/COUNTELEMENTS(S);
@@ -516,6 +521,15 @@ HYRSDATA(IA,'HYRSMINVOL',S) = Sum(SSS,  PS2SSS(S,SSS)*HYRSDATA(IA,'HYRSMINVOL',S
 
 $ifi %X3V%==yes X3VPEX(Y,IR,X3VPLACE,X3VSTEP,S,T)= Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), X3VPEX(Y,IR,X3VPLACE,X3VSTEP,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
 $ifi %X3V%==yes X3VPIM(Y,IR,X3VPLACE,X3VSTEP,S,T)= Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), X3VPIM(Y,IR,X3VPLACE,X3VSTEP,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
+
+$ifi not  %GRIDTARIFFS%==yes    $goto nogridtariffstimeaggr
+*assign seasons to months
+SSSTTTMMM(S,T) =FLOOR(Sum(SSS,  PS2SSS(S,SSS)*SUM(TTT$IT2TTT(SSS,T,TTT), SSSTTTMMM(SSS,TTT)))/WEIGHT_T(T)$WEIGHT_T(T)/COUNTELEMENTS(S));
+SSSTTTMMM(SSS,TTT)$(NOT T(TTT) OR NOT S(SSS))          = 0;
+GRTIME_T(CCC,GRDATASET,T)$TINDAY(T,'MONDAY') = 1$SUM((TTT,SSS)$(IT2TTT(SSS,T,TTT) AND ORD(TTT) LE 120), GRTIME_T(CCC,GRDATASET,TTT))  ;
+GRTIME_T(CCC,GRDATASET,T)$TINDAY(T,'SUNDAY') = 1$SUM((TTT,SSS)$(IT2TTT(SSS,T,TTT) AND ORD(TTT) GE 121), GRTIME_T(CCC,GRDATASET,TTT)) ;
+GRTIME_T(CCC,GRDATASET,TTT)$(NOT T(TTT) )          = 0;
+$label nogridtariffstimeaggr
 
 * Following doesnt have any functionality, but gives 'ex post' consistent parameters.
 *DEF_STEPS(IR,SSS,TTT,DF_QP,DEF)$(NOT T(TTT))          = 0;
@@ -537,7 +551,7 @@ $ifi %GKRATE_DOL%==AAA_GGG_SSS      GKRATE(IA,G,SSS)$(NOT S(SSS))        = 0;
 
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS_TTT XKRATE(IRRRE,IRRRI,SSS,TTT)$(NOT S(SSS))    = 0;
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS     XKRATE(IRRRE,IRRRI,SSS)$(NOT S(SSS))        = 0;
-execute_unload 'gkrate.gdx' gkrate;
+execute_unload 'gkrate.gdx', gkrate;
 HYPPROFILS(IA,SSS)$(NOT S(SSS))       = 0;
 WTRRSVAR_S(IA,SSS)$(NOT S(SSS))       = 0;
 HYRSDATA(IA,'HYRSMAXVOL',SSS)$(NOT S(SSS)) =0;
@@ -552,7 +566,7 @@ $ifi %DEMANDRESPONSE%==yes IDR_RATE(IA,DR_TECH,SSS,TTT)$(NOT T(TTT) OR NOT S(SSS
 $ifi not %INDHEAT%==yes    $goto noindheattimeaggr
 INDHEAT_DH_VAR_T(INDHEAT_AAA,INDHEAT_DHUSER,SSS,TTT)$(not INDHEAT_IA(INDHEAT_AAA)) = 0;
 INDHEAT_SOLH_VAR_T(INDHEAT_AAA,SSS,TTT)$(not INDHEAT_IA(INDHEAT_AAA)) = 0;
-*$batinclude '../../base/addons/timeaggregation/aggr_1_s_t_demands.inc' INDHEAT_DH_VAR_T INDHEAT_IA INDHEAT_DHUSER
+*$batinclude "../../base/addons/TimeAggregation/aggr_1_s_t_demands.inc" INDHEAT_DH_VAR_T INDHEAT_IA INDHEAT_DHUSER
 INDHEAT_DH_VAR_T(INDHEAT_IA,INDHEAT_DHUSER,S,T) = Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), INDHEAT_DH_VAR_T(INDHEAT_IA,INDHEAT_DHUSER,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
 INDHEAT_SOLH_VAR_T(INDHEAT_IA,S,T) = Sum(SSS,  PS2SSS(S,SSS)*(SUM(TTT$IT2TTT(SSS,T,TTT), INDHEAT_SOLH_VAR_T(INDHEAT_IA,SSS,TTT))/WEIGHT_T(T))$WEIGHT_T(T))/COUNTELEMENTS(S);
 INDHEAT_SOLH_VAR_T(INDHEAT_IA,S,T)$(INDHEAT_SOLH_VAR_T(INDHEAT_IA,S,T) LE 0) =0;
