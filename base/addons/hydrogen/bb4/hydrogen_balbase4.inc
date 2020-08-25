@@ -10,6 +10,6 @@
    QHYDROGEN_STOVOL
    QHYDROGEN_GCH4KT
    QHYDROGENGKE_UP_ADD
-$ifi not %import_results%==yes $ifi not %ADDFUELPRICE%==yes   QBIOMETHANE_EQ
-$ifi     %import_results%==yes $ifi not %ADDFUELPRICE%==yes   QBIOMETHANE_EQ  
+   QBIOMETHANE_EQ
+   QBIOMETHANE_STOVOLTS
    QGKBIOMETHANE_UP

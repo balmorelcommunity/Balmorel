@@ -29,6 +29,8 @@ $ifi not %ADDESTOVOLT%==none  execute_load  '../../simex/ESTOVOLTVAL.gdx', ESTOV
 $ifi not %ADDHSTOVOLT%==none  execute_load  '../../simex/HSTOVOLTVAL.gdx', HSTOVOLTVAL;
 $ifi %HYDROGEN%==yes $ifi not %ADDH2STOVOLTS%==none  execute_load  '../../simex/H2STOVOLTS.gdx', H2STOVOLTS;
 $ifi %HYDROGEN%==yes $ifi not %ADDH2STOVOLTS%==none  execute_load  '../../simex/H2STOVOLTSVAL.gdx', H2STOVOLTSVAL;
+$ifi %HYDROGEN%==yes $ifi not %ADDBIOMETHSTOVOLTS%==none  execute_load  '../../simex/BIOMETHSTOVOLTS.gdx', BIOMETHSTOVOLTS;
+$ifi %HYDROGEN%==yes $ifi not %ADDBIOMETHSTOVOLTS%==none  execute_load  '../../simex/BIOMETHSTOVOLTSVAL.gdx', BIOMETHSTOVOLTSVAL;
 
 
 

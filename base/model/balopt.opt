@@ -371,6 +371,10 @@ $setglobal MRR
 * Allow VRE to provide for reserves
 $setglobal ANC_SERV_VRE  YES
 *!option yes
+
+*Include down regulation reserves. For simplification, down regulation of spinning reserves can be disactivated, since they are generally less expensive than up regulation.
+$setglobal DOWN_REGULATION_INCLUDED
+*!option yes
 *-----------------------END: ANCILLIARY SERVICES----------------------------------------------------------------------------------------------------
 *
 $setglobal SYSTEMCOST
@@ -633,7 +637,13 @@ $Setglobal ADDHSTOVOLT  none
 *Import inter-seasonal hydrogen storage data from previous runs  (requires HYDROGEN addon)
 $Setglobal ADDH2STOVOLTS  none
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
-*!option price         !Text "Import Heat storage contents at beginning of time segment (H2STOVOLTS.gdx) for the first element in set T and S, and puts a price to use with H2STOVOLTSVAL.gdx from previous runs."
+*!option price         !Text "Import hydrogen storage contents at beginning of time segment (H2STOVOLTS.gdx) for the first element in set T and S, and puts a price to use with H2STOVOLTSVAL.gdx from previous runs."
+*!option none          !Text "Do not not use this addon"
+
+*Import inter-seasonal biomethane storage data from previous runs  (requires HYDROGEN addon)
+$Setglobal ADDBIOMETHSTOVOLTS  none
+*!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
+*!option price         !Text "Import biomethane storage contents at beginning of time segment (BIOMETHSTOVOLTS.gdx) for the first element in set T and S, and puts a price to use with BIOMETHSTOVOLTSVAL.gdx from previous runs."
 *!option none          !Text "Do not not use this addon"
 
 

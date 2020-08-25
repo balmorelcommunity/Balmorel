@@ -653,8 +653,9 @@ $ifi %import_results%==yes  $ifi not %ADDHSTOVOLTS%==none   HSTOVOLTSVAL(Y,IA,IG
 $ifi %import_results%==yes  $ifi not %ADDESTOVOLT%==none    ESTOVOLTVAL(Y,IA,IGESTO,S,T)=ESTOVOLTVAL(Y,IA,IGESTO,S,T)*IHOURFRAC;
 $ifi %import_results%==yes  $ifi not %ADDHSTOVOLT%==none    HSTOVOLTVAL(Y,IA,IGHSTO,S,T)=HSTOVOLTVAL(Y,IA,IGHSTO,S,T)*IHOURFRAC;
 $ifi %import_results%==yes  $ifi not %ADDH2STOVOLTS%==none  $ifi %HYDROGEN%==yes H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)=H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)*IHOURFRAC;
+$ifi %import_results%==yes  $ifi not %ADDBIOMETHSTOVOLTS%==none  $ifi %HYDROGEN%==yes BIOMETHSTOVOLTSVAL(Y,S,T)=BIOMETHSTOVOLTSVAL(Y,S,T)*IHOURFRAC;
 
-*MISSING: Grid_tariffs, taxes, demandresponse!!!!!!
+*MISSING?: Grid_tariffs, taxes, demandresponse, CCS !!!!!!
 
 
 *-------------------------------------------------------------------------------
@@ -1779,8 +1780,10 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IG
 
        VHYRS_S(IY411,IA,S++1)$(CARD(S) NE ORD(S))
 $ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                            +VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
-$ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi not %HYRSBB123%==price    +VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
-$ifi     %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %HYRSBB123%==cont     +SUM(SSS$(ICOUNTSSS(S) EQ ICOUNTSSS(SSS)),VHYRS_SL(IY411,IA,SSS++1))$(CARD(S) EQ ORD(S))
+$ifi %import_results%==yes $ifi     %HYRSBB123%==none                                    +VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
+$ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %HYRSBB123%==price    +VHYRS_S(IY411,IA,S++1)$(CARD(S) EQ ORD(S))
+$ifi %import_results%==yes $ifi     %HYRSBB123%==cont                                    +SUM(SSS$(ICOUNTSSS(S) EQ ICOUNTSSS(SSS)),VHYRS_SL(IY411,IA,SSS++1))$(CARD(S) EQ ORD(S))
+
 $include "../../base/addons/_hooks/qhyrsseq.inc"
 ;
 
@@ -1827,13 +1830,13 @@ $include "../../base/addons/_hooks/qhymaxg.inc"
 
 * "Electricty storage dynamic equation (MWh)"
 QESTOVOLT(IY411,IA,IGESTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGESTO))..
-    VESTOVOLT(IY411,IA,IGESTO,IS3,T++1)
-=E= VESTOVOLT(IY411,IA,IGESTO,IS3,T)
+       VESTOVOLT(IY411,IA,IGESTO,IS3,T)
   + CHRONOHOUR(IS3,T)*
     (VESTOLOADT(IY411,IA,IGESTO,IS3,T)
   - SUM(IAGK_HASORPOT(IY411,IA,IGESTO), VGE_T(IY411,IA,IGESTO,IS3,T)/GDATA(IGESTO,'GDFE'))
-  )
-
+    )
+=E=
+        VESTOVOLT(IY411,IA,IGESTO,IS3,T++1)
 $include "../../base/addons/_hooks/qestovolt.inc"
 ;
 
@@ -1849,8 +1852,9 @@ $ifi %RollingSeasons%==yes $ifi %import_results%==yes $ifi %ADDESTOVOLTS%==price
     =E=
        VESTOVOLTS(IY411,IA,IGESTOS,S,T+1) +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(T) EQ ORD(T) AND NOT(CARD(S) EQ ORD(S)))
 $ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                             +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
-$ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi not %ADDESTOVOLTS%==price  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
-$ifi     %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %ADDESTOVOLTS%==cont   +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),ESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
+$ifi %import_results%==yes $ifi     %ADDESTOVOLTS%==none                                  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
+$ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %ADDESTOVOLTS%==price  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
+$ifi %import_results%==yes $ifi     %ADDESTOVOLTS%==cont                                  +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),ESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $include "../../base/addons/_hooks/qestovolts.inc"
 ;
 
@@ -1876,9 +1880,9 @@ $ifi %RollingSeasons%==yes $ifi %import_results%==yes $ifi %ADDHSTOVOLTS%==price
     =E=
        VHSTOVOLTS(IY411,IA,IGHSTOS,S,T+1) +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(T) EQ ORD(T) AND NOT(CARD(S) EQ ORD(S)))
 $ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                             +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
-$ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi not %ADDHSTOVOLTS%==price  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
-$ifi     %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %ADDHSTOVOLTS%==cont   +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),HSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
-
+$ifi %import_results%==yes $ifi     %ADDHSTOVOLTS%==none                                  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
+$ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %ADDHSTOVOLTS%==price  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
+$ifi %import_results%==yes $ifi     %ADDHSTOVOLTS%==cont                                  +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),HSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $include "../../base/addons/_hooks/qhstovolts.inc"
 ;
 
@@ -2841,6 +2845,11 @@ $ifi not exist 'Balmorelbb4.sim'  $include '../../base/model/Balmorelbb4.sim';
 
 *-------------------------------------------------------------------------------
 
+*--- Main results calculation -----------------------------------------------
+$ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY.inc';
+*--- End of Main results calculation ---------------------------------------
+
+
 $ifi not %export_results%==yes $goto result_export
 *------------------------------------------------------------------------------
 *                GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
@@ -2888,46 +2897,46 @@ ESTOVOLTS(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=VESTOVOLTS.L(Y,IA,IGESTO
 HSTOVOLTS(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=VHSTOVOLTS.L(Y,IA,IGHSTOS,S,T);
 ESTOVOLT(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=VESTOVOLT.L(Y,IA,IGESTO,S,T);
 HSTOVOLT(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=VHSTOVOLT.L(Y,IA,IGHSTO,S,T);
-ESTOLOADT(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=VESTOLOADT.L(Y,IA,IGESTO,S,T);
-ESTOLOADTS(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=VESTOLOADTS.L(Y,IA,IGESTOS,S,T);
-HSTOLOADT(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=VHSTOLOADT.L(Y,IA,IGHSTO,S,T);
-HSTOLOADTS(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=VHSTOLOADTS.L(Y,IA,IGHSTOS,S,T);
-ESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
-HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
-ESTOVOLTVAL(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=QESTOVOLT.M(Y,IA,IGESTO,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
-HSTOVOLTVAL(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=QHSTOVOLT.M(Y,IA,IGHSTO,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
+*ESTOLOADT(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=VESTOLOADT.L(Y,IA,IGESTO,S,T);
+*ESTOLOADTS(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=VESTOLOADTS.L(Y,IA,IGESTOS,S,T);
+*HSTOLOADT(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=VHSTOLOADT.L(Y,IA,IGHSTO,S,T);
+*HSTOLOADTS(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=VHSTOLOADTS.L(Y,IA,IGHSTOS,S,T);
+ESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
+HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
+ESTOVOLTVAL(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=QESTOVOLT.M(Y,IA,IGESTO,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
+HSTOVOLTVAL(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=QHSTOVOLT.M(Y,IA,IGHSTO,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
 
 execute_unload  "../../simex/ESTOVOLTS.gdx", ESTOVOLTS;
 execute_unload  "../../simex/HSTOVOLTS.gdx", HSTOVOLTS;
 execute_unload  "../../simex/ESTOVOLT.gdx", ESTOVOLT;
 execute_unload  "../../simex/HSTOVOLT.gdx", HSTOVOLT;
-execute_unload  "../../simex/ESTOLOADT.gdx", ESTOLOADT;
-execute_unload  "../../simex/ESTOLOADTS.gdx", ESTOLOADTS;
-execute_unload  "../../simex/HSTOLOADT.gdx", HSTOLOADT;
-execute_unload  "../../simex/HSTOLOADTS.gdx", HSTOLOADTS;
+*execute_unload  "../../simex/ESTOLOADT.gdx", ESTOLOADT;
+*execute_unload  "../../simex/ESTOLOADTS.gdx", ESTOLOADTS;
+*execute_unload  "../../simex/HSTOLOADT.gdx", HSTOLOADT;
+*execute_unload  "../../simex/HSTOLOADTS.gdx", HSTOLOADTS;
 execute_unload  "../../simex/ESTOVOLTSVAL.gdx", ESTOVOLTSVAL;
 execute_unload  "../../simex/HSTOVOLTSVAL.gdx", HSTOVOLTSVAL;
 execute_unload  "../../simex/ESTOVOLTVAL.gdx", ESTOVOLTVAL;
 execute_unload  "../../simex/HSTOVOLTVAL.gdx", HSTOVOLTVAL;
 
 *Energy dispatch to be used in future runs by addon "import_results"
-DE_T(Y,IR,S,T)= SUM(DEUSER, ((DE(Y,IR,DEUSER) * DE_VAR_T(IR,DEUSER,S,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0))/(1-DISLOSS_E(IR));
-DH_T(Y,IA,S,T)=SUM(DHUSER, ((DH(Y,IA,DHUSER) * DH_VAR_T(IA,DHUSER,S,T)) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0))/(1-DISLOSS_H(IA));
+*DE_T(Y,IR,S,T)= SUM(DEUSER, ((DE(Y,IR,DEUSER) * DE_VAR_T(IR,DEUSER,S,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0))/(1-DISLOSS_E(IR));
+*DH_T(Y,IA,S,T)=SUM(DHUSER, ((DH(Y,IA,DHUSER) * DH_VAR_T(IA,DHUSER,S,T)) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0))/(1-DISLOSS_H(IA));
 GE_T(Y,IA,IGE,S,T)$IAGK_HASORPOT(Y,IA,IGE)=VGE_T.L(Y,IA,IGE,S,T);
 GH_T(Y,IA,IGH,S,T)$IAGK_HASORPOT(Y,IA,IGH)=VGH_T.L(Y,IA,IGH,S,T);
-GF_T(Y,IA,G,S,T)$IAGK_HASORPOT(Y,IA,G)=VGF_T.L(Y,IA,G,S,T);
-X_T(Y,IRE,IRI,S,T)$IXK_HASORPOT(Y,IRE,IRI)=VX_T.L(Y,IRE,IRI,S,T);
-$ifi %HEATTRANS%==yes XH_T(Y,IAE,IAI,S,T)$IXHK_HASORPOT(Y,IAE,IAI)=VXH_T.L(Y,IAE,IAI,S,T);
+*GF_T(Y,IA,G,S,T)$IAGK_HASORPOT(Y,IA,G)=VGF_T.L(Y,IA,G,S,T);
+*X_T(Y,IRE,IRI,S,T)$IXK_HASORPOT(Y,IRE,IRI)=VX_T.L(Y,IRE,IRI,S,T);
+*$ifi %HEATTRANS%==yes XH_T(Y,IAE,IAI,S,T)$IXHK_HASORPOT(Y,IAE,IAI)=VXH_T.L(Y,IAE,IAI,S,T);
 $ifi %UnitComm%==yes  UCON(Y,IA,IGUC,S,T)=VUCON.L(Y,IA,IGUC,S,T);
 $ifi %UnitComm%==yes  UCON_STOLOAD(Y,IA,IGUC,S,T)=VUCON_STOLOAD.L(Y,IA,IGUC,S,T);
 
-execute_unload  "../../simex/DE_T.gdx", DE_T;
-execute_unload  "../../simex/DH_T.gdx", DH_T;
+*execute_unload  "../../simex/DE_T.gdx", DE_T;
+*execute_unload  "../../simex/DH_T.gdx", DH_T;
 execute_unload  "../../simex/GE_T.gdx", GE_T;
 execute_unload  "../../simex/GH_T.gdx", GH_T;
-execute_unload  "../../simex/GF_T.gdx", GF_T;
-execute_unload  "../../simex/X_T.gdx", X_T;
-$ifi %HEATTRANS%==yes execute_unload  "../../simex/XH_T.gdx", XH_T;
+*execute_unload  "../../simex/GF_T.gdx", GF_T;
+*execute_unload  "../../simex/X_T.gdx", X_T;
+*$ifi %HEATTRANS%==yes execute_unload  "../../simex/XH_T.gdx", XH_T;
 $ifi %UnitComm%==yes  execute_unload  "../../simex/UCON.gdx", UCON;
 $ifi %UnitComm%==yes  execute_unload  "../../simex/UCON_STOLOAD.gdx", UCON_STOLOAD;
 
@@ -2959,10 +2968,6 @@ FUELPRICE_EXC(Y,IA,STEPWISEPRICE_FFF)$SUM(C$ICA(C,IA),ISTEPWISEPRICE_F(Y,C,STEPW
     )
 ;
 $label NO_STEPWISEPRICE
-$ifi %HYDROGEN%==yes $ifi not %import_results%==yes $ifi not %ADDFUELPRICE%==yes FUELPRICE_EXC(Y,IA,'BIOMETHANE')$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=QBIOMETHANE_EQ.M(Y)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y))/IOF3P6;
-$ifi %HYDROGEN%==yes $ifi     %import_results%==yes $ifi not %ADDFUELPRICE%==yes FUELPRICE_EXC(Y,IA,'BIOMETHANE')$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=QBIOMETHANE_EQ.M(Y)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y))/IOF3P6;
-*Setting biomethane price to INF if there is no capacity in biomethane generation units
-$ifi %HYDROGEN%==yes FUELPRICE_EXC(Y,IA,'BIOMETHANE')$(NOT SUM((IAI,IHYDROGEN_GH2TOBIOMETH)$IAGK_HASORPOT(Y,IAI,IHYDROGEN_GH2TOBIOMETH),GKACCUMNET(Y,IAI,IHYDROGEN_GH2TOBIOMETH)))=1000000;
 execute_unload  "../../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
 
 *Planned maintenaince
@@ -2977,9 +2982,14 @@ $ifi %TRANSPORT%==yes $ifi not %import_results%==yes  execute_unload  "../../sim
 
 *Hydrogen
 $ifi %HYDROGEN%==yes   H2STOVOLTS(Y,IA,IHYDROGEN_GH2STO,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO)=VHYDROGEN_STOVOL_T.L(Y,IA,IHYDROGEN_GH2STO,S,T);
-$ifi %HYDROGEN%==yes   H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO)=QHYDROGEN_STOVOL.M(Y,IA,IHYDROGEN_GH2STO,S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T));
+$ifi %HYDROGEN%==yes   H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO)=QHYDROGEN_STOVOL.M(Y,IA,IHYDROGEN_GH2STO,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
 $ifi %HYDROGEN%==yes   execute_unload  "../../simex/H2STOVOLTS.gdx", H2STOVOLTS;
 $ifi %HYDROGEN%==yes   execute_unload  "../../simex/H2STOVOLTSVAL.gdx", H2STOVOLTSVAL;
+
+$ifi %HYDROGEN%==yes   BIOMETHSTOVOLTS(Y,S,T)$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=VBIOMETHSTOVOLTS.L(Y,S,T);
+$ifi %HYDROGEN%==yes   BIOMETHSTOVOLTSVAL(Y,S,T)$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=QBIOMETHANE_STOVOLTS.M(Y,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
+$ifi %HYDROGEN%==yes   execute_unload  "../../simex/BIOMETHSTOVOLTS.gdx", BIOMETHSTOVOLTS;
+$ifi %HYDROGEN%==yes   execute_unload  "../../simex/BIOMETHSTOVOLTSVAL.gdx", BIOMETHSTOVOLTSVAL;
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
 *------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
-* Equations for addon hyrsbb123 used in Balbase3 model definition
-* Latest revision 20170419 (hr)
+* Equations for addon import results used in seasonal rolling horizon model definition
+* Latest revision 20200720 (jgb)
 
 
 $ifi %HYRSBB123%==cont  QWATERVOLINI
@@ -10,5 +10,6 @@ $ifi %ADDESTOVOLT%==cont  QESTOVOLTIMPORT
 $ifi %ADDHSTOVOLT%==cont  QHSTOVOLTIMPORT
 
 $ifi %HYDROGEN%==yes $ifi %ADDH2STOVOLTS%==cont QH2STOVOLTSIMPORT
+$ifi %HYDROGEN%==yes $ifi %ADDBIOMETHSTOVOLTS%==cont QBIOMETHSTOVOLTSIMPORT
 
 

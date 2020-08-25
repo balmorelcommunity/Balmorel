@@ -6,7 +6,7 @@ QEV_PHEV_CHARGEBALANCE(Y,RRR,S,T)                           *'G2V inflexible cha
 ;
 
 ** BEV Battery balance
-QEV_BEV_SOCBALANCE(IY411,IR,IS3,T)$(IY411.val>2019)..
+QEV_BEV_SOCBALANCE(IY411,IR,IS3,T)$(IHASBEV(IR) AND IY411.val>2019)..
                              VEV_VSOC_BEV(IY411,IR,IS3,T)
                              =E=
 $ifi %STEPCHARGSCHEME%==yes  (
@@ -19,7 +19,7 @@ $ifi %EV_infeas%==yes     +VQEV_BEV_SOCBALANCE(IY411,IR,IS3,T,'IMINUS') -VQEV_BE
 
 
 * total charging of BEV activity must be lower than ...
-QEV_BEV_CHARGEBALANCE(IY411,IR,IS3,T)$((IY411.val>2019)
+QEV_BEV_CHARGEBALANCE(IY411,IR,IS3,T)$(IHASBEV(IR) AND IY411.val>2019
 $ifi %STEPCHARGSCHEME%==yes AND cs('v2g',IY411)
 )..
          EV_BEV_Avail(IY411,IS3,T,IR) * EV_BEV_CHARGERCAP(IY411) / EV_PEFF(IY411)
@@ -29,7 +29,7 @@ $ifi %STEPCHARGSCHEME%==yes AND cs('v2g',IY411)
 
 
 ** PHEV Battery balance
-QEV_PHEV_SOCBALANCE(IY411,IR,IS3,T)$(IY411.val>2019)..
+QEV_PHEV_SOCBALANCE(IY411,IR,IS3,T)$(IHASPHEV(IR) AND IY411.val>2019)..
                              VEV_VSOC_PHEV(IY411,IR,IS3,T)
                              =E=
 $ifi %STEPCHARGSCHEME%==yes  (
@@ -44,7 +44,7 @@ $ifi %EV_infeas%==yes     +VQEV_PHEV_SOCBALANCE(IY411,IR,IS3,T,'IMINUS') -VQEV_P
 
 *Only V2G:
 * total charging of BEV activity must be lower than ...
-QEV_PHEV_CHARGEBALANCE(IY411,IR,IS3,T)$((IY411.val>2019)
+QEV_PHEV_CHARGEBALANCE(IY411,IR,IS3,T)$(IHASPHEV(IR) AND IY411.val>2019
 $ifi %STEPCHARGSCHEME%==yes AND cs('v2g',IY411)
 )..
          EV_PHEV_Avail(IY411,IS3,T,IR) * EV_PHEV_CHARGERCAP(IY411) / EV_PEFF(IY411)

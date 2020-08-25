@@ -8,4 +8,7 @@ DAC_DH(GGG)          'Heat demand needed to produce biomethane through DAC (Mwth
 
 H2STOVOLTS(Y,AAA,GGG,SSS,TTT)          'Hydrogen storage content to be used in future runs (MWh)'
 H2STOVOLTSVAL(Y,AAA,GGG,SSS,TTT)       'Hydrogen storage value to be used in future runs (MWh)'
+
+BIOMETHSTOVOLTS(Y,SSS,TTT)          'Biomethane storage content to be used in future runs (MWh)'
+BIOMETHSTOVOLTSVAL(Y,SSS,TTT)       'Biomethane storage value to be used in future runs (MWh)'
 ;

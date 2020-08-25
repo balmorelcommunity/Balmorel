@@ -1,4 +1,4 @@
-* CODE TO CALCULATE CONVERT THE TIMESTEP USED - JUAN GEA BERMUDEZ
+* CODE TO CONVERT THE TIMESTEP USED - JUAN GEA BERMUDEZ
 * Important note: make sure the full year data is used, otherwise there will be errors in some files
 
 *---------- DATA DEFINITION--------------------
@@ -318,9 +318,17 @@ PARAMETER H2STOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal hydrogen storage conte
 $ifi  exist '../../base/auxils/timestep_conversion/input/H2STOVOLTS.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/H2STOVOLTS.gdx', H2STOVOLTS;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/H2STOVOLTS.gdx' H2STOVOLTS(YYY,AAA,GGG,SSS,TTT)=0;
 
-PARAMETER H2STOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Heat storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
+PARAMETER H2STOVOLTSVAL(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal hydrogen storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
 $ifi  exist '../../base/auxils/timestep_conversion/input/H2STOVOLTSVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/H2STOVOLTSVAL.gdx', H2STOVOLTSVAL;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/H2STOVOLTSVAL.gdx' H2STOVOLTSVAL(YYY,AAA,GGG,SSS,TTT)=0;
+
+PARAMETER BIOMETHSTOVOLTS(YYY,SSS,TTT) "Inter-seasonal biomethane storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
+$ifi  exist '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTS.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTS.gdx', BIOMETHSTOVOLTS;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTS.gdx' BIOMETHSTOVOLTS(YYY,SSS,TTT)=0;
+
+PARAMETER BIOMETHSTOVOLTSVAL(YYY,SSS,TTT) "Inter-seasonal biomethane storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
+$ifi  exist '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx', BIOMETHSTOVOLTSVAL;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx' BIOMETHSTOVOLTSVAL(YYY,SSS,TTT)=0;
 
 *REST OF HYDRO PARAMETERS.........
 
@@ -388,7 +396,8 @@ PARAMETER IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)     "Rating of technology capacit
 PARAMETER TRANSDEMAND_S_NEW(YYY,CCC,SSS_NEW) "Transport demand per country, year, and season (MWh)";
 PARAMETER H2STOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal hydrogen storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER H2STOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal hydrogen storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
-
+PARAMETER BIOMETHSTOVOLTS_NEW(YYY,SSS_NEW,TTT_NEW) "Inter-seasonal biomethane storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
+PARAMETER BIOMETHSTOVOLTSVAL_NEW(YYY,SSS_NEW,TTT_NEW) "Inter-seasonal biomethane storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
 
 *----------END OF INPUT DATA--------------------
 
@@ -472,6 +481,8 @@ IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_N
 TRANSDEMAND_S_NEW(YYY,CCC,SSS_NEW)=SUM((SSS,TTT,TTT_NEW,RRR)$(ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW) AND CCCRRR(CCC,RRR)),TRANSDEMAND_T(YYY,RRR,SSS,TTT)*WEIGHT_S(SSS))/SUM(TTT, WEIGHT_T(TTT));
 H2STOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),H2STOVOLTS(YYY,AAA,GGG,SSS,TTT));
 H2STOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),H2STOVOLTSVAL(YYY,AAA,GGG,SSS,TTT)) ;
+BIOMETHSTOVOLTS_NEW(YYY,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),BIOMETHSTOVOLTS(YYY,SSS,TTT));
+BIOMETHSTOVOLTSVAL_NEW(YYY,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),BIOMETHSTOVOLTSVAL(YYY,SSS,TTT)) ;
 
 
 *------------END OF CALCULATIONS-------------
@@ -530,6 +541,8 @@ execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", IGKR
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", TRANSDEMAND_S_NEW=TRANSDEMAND_S;
 execute_unload  "../../base/auxils/timestep_conversion/output/H2STOVOLTS.gdx", H2STOVOLTS_NEW=H2STOVOLTS;
 execute_unload  "../../base/auxils/timestep_conversion/output/H2STOVOLTSVAL.gdx", H2STOVOLTSVAL_NEW=H2STOVOLTSVAL;
+execute_unload  "../../base/auxils/timestep_conversion/output/BIOMETHSTOVOLTS.gdx", BIOMETHSTOVOLTS_NEW=BIOMETHSTOVOLTS;
+execute_unload  "../../base/auxils/timestep_conversion/output/BIOMETHSTOVOLTSVAL.gdx", BIOMETHSTOVOLTSVAL_NEW=BIOMETHSTOVOLTSVAL;
 
 *$ONTEXT
 *WND_VAR_T timeseries
