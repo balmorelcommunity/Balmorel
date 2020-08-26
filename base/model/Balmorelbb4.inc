@@ -1270,6 +1270,7 @@ $ifi %SEASONALCOP%==yes COP_VAR_T(AAA,GGG,SSS,TTT)$((NOT IA(AAA)) OR (NOT G(GGG)
 *DHF_STEPS(IA,S,T,DF_QP,DHF)$((NOT DHF_D1(DHF) AND (NOT DHF_D2(DHF)) AND (NOT DHF_D3(DHF)) AND (NOT DHF_U1(DHF)) AND (NOT DHF_U2(DHF)) AND (NOT DHF_U3(DHF)))) = 0;
 
 GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS))) = 0;
+FUELPRICE(YYY,AAA,FFF)$(NOT(Y(YYY)))=0;
 
 * Discounting
 * One, implicitly given in ANNUITY, represent the companies' perception of financing costs, alternatives, expectations to profit, etc.
