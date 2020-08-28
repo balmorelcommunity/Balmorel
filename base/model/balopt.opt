@@ -165,8 +165,8 @@ $setglobal INDIVUSERS yes
 $setglobal SEASONALCOP yes
 *!option yes
 
-* Allow to build a complicated offshore grid with hubs in the sea. Requires MIP since technologies are modelled with economies of scale via SOS variables.
-$setglobal OFFSHOREGRID
+* Allow to build a complicated offshore grid with hubs in the sea. Requires MIP to work as intended since technologies are modelled with economies of scale via SOS variables. If RMIP is used, it will become a linear problem.
+$setglobal OFFSHOREGRID  yes
 *!option yes
 
 * Allow Carbon Capture Storage (CCS) technologies.
