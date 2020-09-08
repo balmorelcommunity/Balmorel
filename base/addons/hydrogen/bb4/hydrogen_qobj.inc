@@ -40,11 +40,6 @@ $offtext
     + SUM(C, SUM(IAGK_HASORPOT(Y,IA,IHYDROGEN_GCH4TOH2)$ICA(C,IA), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(IHYDROGEN_GCH4TOH2)*IOF0001) *
       IOF3P6 *VHYDROGEN_GH2_T(Y,IA,IHYDROGEN_GCH4TOH2,IS3,T) /(GDATA(IHYDROGEN_GCH4TOH2,'GDFE') ) ) * (M_POL(Y,"TAX_CO2",C))))
 
-* Variable O&M costs of the H2 storage is missing - not defined in GDATA and
-* hence not included here. Fixed O&M and investment costs are included in
-* Balmorel.gms
-
-
 * Variable Operation and maintainance cost of hydrogen storage:
 
    + SUM(IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO), GOMVCOSTO(IA,IHYDROGEN_GH2STO) * SUM((IS3,T), IHOURSINST(IS3,T)*VHYDROGEN_GH2_T(Y,IA,IHYDROGEN_GH2STO,IS3,T)))
@@ -53,3 +48,6 @@ $offtext
 
    + SUM(IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2TOBIOMETH), GOMVCOSTO(IA,IHYDROGEN_GH2TOBIOMETH) * SUM((IS3,T), IHOURSINST(IS3,T)*VGBIOMETH_T(Y,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)))
 
+
+* Fixed O&M and investment costs are included in
+* Balmorel.gms
