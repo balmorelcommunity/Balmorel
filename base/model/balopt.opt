@@ -92,7 +92,7 @@ $setglobal testbb1234
 *-------- Seasonal rolling horizon  ---------
 * Optimize seasons with a rolling horizon approach instead of all together.
 *NOTE: This option is supposed to be combined with the option "import_results", which must contain information for all S and at least the first element in T
-$setglobal RollingSeasons
+$setglobal RollingSeasons yes
 *!option yes
 
 SCALAR ROLLINGSEASONSNUMBER 'Number of seasons to be optimized at a time in each rolling season optimization';
@@ -225,10 +225,14 @@ $setglobal EV_PROFILE_AVG  yes
 *Note: The value of the parameter PENALTQ should be in line with the cost assumptions in the model to obtain meaninful results
 $setglobal EV_infeas  yes
 *!option
+
+* Models EV as inter-seasonal storage (if it is not activated, then EVs are model as intra-seasonal storage):
+$setglobal EV_INTERSEASONAL
+*!option yes
 *------------------------------END: EV ADDON-------------------------------------------------
 
 * Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
-$setglobal TRANSPORT
+$setglobal TRANSPORT yes
 *!option yes
 
 *-----------------------------------------------------------
@@ -495,7 +499,7 @@ $setglobal STEPWISE_RAMPING_UC  ramp_const
 *!option ramp_const_cost !Text "With ramping constraints and ramping costs"
 *!option ramp_const  !Text "With ramping constraints but without ramping costs"
 *!option no_ramping  !Text "Neither ramping constraints nor ramping costs"
-* Adds planned maintenance of the generation technologies
+* Adds optimisation of planned maintenance of the generation and storage technologies
 $setglobal PLANNED_MAINTENANCE
 *!option yes
 
@@ -587,7 +591,7 @@ $Setglobal export_results YES
 * Overall control to import results so they can be used in future runs:
 *NOTE: In order for results to work fine, the set S used in the runs should be contained in the import results.
 *NOTE: In order for results to work fine, the first element in set T of the import results should match the one used in the current run.
-$Setglobal import_results
+$Setglobal import_results   YES
 *!option yes
 
 *------------ IMPORT OPTIONS ----------------
@@ -601,7 +605,7 @@ $setglobal ADDENERGYDISPATCH
 
 * ------------------HYDRO---------------------------------
 * For this model run it is possible to use values found from previuos solutions to specify use of hydro power
-$setglobal HYRSBB123 none
+$setglobal HYRSBB123 cont
 *!option quant         !Text "Use seasonal quantities of hydro generation (from HYRSG.gdx??) in this run ('primal decomposition')(not implemented in BB4)"
 *!option price         !Text "Use seasonal prices for hydro generation (from WATERVAL.gdx) in this run ('dual decomposition')"
 *!option quantprice    !Text "Use seasonal quantities and prices for hydro generation (from HYRSG.gdx?? and WATERVAL.gdx) in in this run (not implemented in BB4)"
@@ -611,13 +615,13 @@ $setglobal HYRSBB123 none
 
 *--------------------INTERSEASONAL STORAGE-----------------------------------------------------------
 *Import inter-seasonal electricity storage data from previous runs
-$Setglobal ADDESTOVOLTS none
+$Setglobal ADDESTOVOLTS cont
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
 *!option price         !Text "Import electricity storage contents at beginning of time segment (ESTOVOLTS.gdx) for the first element in set T and S, and puts a price to use with ESTOVOLTSVAL.gdx from previous runs. "
 *!option none          !Text "Do not not use this addon"
 
 *Import inter-seasonal heat storage data from previous runs
-$Setglobal ADDHSTOVOLTS  none
+$Setglobal ADDHSTOVOLTS  cont
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
 *!option price         !Text "Import Heat storage contents at beginning of time segment (HSTOVOLTS.gdx) for the first element in set T and S, and puts a price to use with HSTOVOLTSVAL.gdx from previous runs."
 *!option none          !Text "Do not not use this addon"
@@ -635,15 +639,20 @@ $Setglobal ADDHSTOVOLT  none
 *!option none          !Text "Do not not use this addon"
 
 *Import inter-seasonal hydrogen storage data from previous runs  (requires HYDROGEN addon)
-$Setglobal ADDH2STOVOLTS  none
+$Setglobal ADDH2STOVOLTS  cont
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
 *!option price         !Text "Import hydrogen storage contents at beginning of time segment (H2STOVOLTS.gdx) for the first element in set T and S, and puts a price to use with H2STOVOLTSVAL.gdx from previous runs."
 *!option none          !Text "Do not not use this addon"
 
 *Import inter-seasonal biomethane storage data from previous runs  (requires HYDROGEN addon)
-$Setglobal ADDBIOMETHSTOVOLTS  none
+$Setglobal ADDBIOMETHSTOVOLTS  cont
 *!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
 *!option price         !Text "Import biomethane storage contents at beginning of time segment (BIOMETHSTOVOLTS.gdx) for the first element in set T and S, and puts a price to use with BIOMETHSTOVOLTSVAL.gdx from previous runs."
+*!option none          !Text "Do not not use this addon"
+
+*Import EV state of charge from previous runs  (requires EV addon and currently only works if EV_INTERSEASONAL is on too)
+$Setglobal ADDEVSTOS  cont
+*!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition')"
 *!option none          !Text "Do not not use this addon"
 
 
@@ -686,7 +695,7 @@ $setglobal ADDMAXFUELUSES
 
 *--------------------PLANNED MAINTENANCE-----------------------------------------------------------
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
-*Import planned maintenance from previous runs (investments and/or decomissioning must not be allowed if this option is activated)
+*Import optimized planned maintenance from previous runs (investments and/or decomissioning must not be allowed if this option is activated)
 $setglobal ADDPLANNEDMAINTENANCE
 *!option yes
 *--------------------END OF PLANNED MAINTENANCE-----------------------------------------------------------

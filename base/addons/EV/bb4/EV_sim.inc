@@ -43,5 +43,13 @@ $ifi %STEPCHARGSCHEME%==yes  VEV_VSOC_PHEV.UP(IY411,IR,S,T)$(cs('dumb',IY411) AN
 *Restricting V2G from PHEV
 $ifi %V2G%==yes $ifi %NO_PHEV_V2G%==yes  VEV_VV2G_PHEV.FX(IY411,IR,S,T)$IHASPHEV(IR)=0;
 
+
+
+
+*Fixing storage level for EV from previous runs:
+$ifi %import_results%==yes $ifi %EV%==yes $ifi %ADDEVSTOS%==cont  VEV_VSOC_BEV.FX(IY411,IR,S,T)$(ORD(T) EQ CARD(T))=EV_VSOC_BEV(IY411,IR,S,T);
+$ifi %import_results%==yes $ifi %EV%==yes $ifi %ADDEVSTOS%==cont  VEV_VSOC_PHEV.FX(IY411,IR,S,T)$(ORD(T) EQ CARD(T))=EV_VSOC_PHEV(IY411,IR,S,T);
+
+
 $label limits_dumb_end
 

@@ -31,7 +31,8 @@ $ifi %HYDROGEN%==yes $ifi not %ADDH2STOVOLTS%==none  execute_load  '../../simex/
 $ifi %HYDROGEN%==yes $ifi not %ADDH2STOVOLTS%==none  execute_load  '../../simex/H2STOVOLTSVAL.gdx', H2STOVOLTSVAL;
 $ifi %HYDROGEN%==yes $ifi not %ADDBIOMETHSTOVOLTS%==none  execute_load  '../../simex/BIOMETHSTOVOLTS.gdx', BIOMETHSTOVOLTS;
 $ifi %HYDROGEN%==yes $ifi not %ADDBIOMETHSTOVOLTS%==none  execute_load  '../../simex/BIOMETHSTOVOLTSVAL.gdx', BIOMETHSTOVOLTSVAL;
-
+$ifi %EV%==yes $ifi not %ADDEVSTOS%==none   execute_load  '../../simex/EV_VSOC_BEV.gdx', EV_VSOC_BEV;
+$ifi %EV%==yes $ifi not %ADDEVSTOS%==none   execute_load  '../../simex/EV_VSOC_PHEV.gdx', EV_VSOC_PHEV;
 
 
 *Investments with/without decommissioning of endogenous capacity

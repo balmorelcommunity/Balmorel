@@ -8,6 +8,8 @@ QTRANSPEAKDEMAND(IY411,IR,IS3,T)$SUM(C,TRANSDEMAND_Y(IY411,C))..
 VTRANSDEMAND_T_MAX(IY411,IR)
 =G=
 VTRANSDEMAND_T(IY411,IR,IS3,T)
+
+$include "../../base/addons/_hooks/qtranspeakdemand.inc"
 ;
 
 

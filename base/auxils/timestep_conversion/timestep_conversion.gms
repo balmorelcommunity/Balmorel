@@ -97,6 +97,9 @@ $INCLUDE         '../data/FFF.inc';
 SET YYY                "All years" ;
 $INCLUDE         '../data/YYY.inc';
 
+SET Y                "Years in the run" ;
+$INCLUDE         '../data/Y.inc';
+
 SET HYRSDATASET  "Characteristics of hydro reservoirs" ;
 $INCLUDE         '../data/HYRSDATASET.inc';
 
@@ -194,6 +197,14 @@ execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV
 
 PARAMETER EV_PHEV_Min(YYY,SSS,TTT,RRR);
 execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', EV_PHEV_Min;
+
+PARAMETER EV_VSOC_BEV(YYY,RRR,SSS,TTT)        'State of charge of the BEV vehicle fleet to be used in future runs';
+$ifi  exist '../../base/auxils/timestep_conversion/input/EV_VSOC_BEV.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/EV_VSOC_BEV.gdx', EV_VSOC_BEV;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/EV_VSOC_BEV.gdx' EV_VSOC_BEV(YYY,RRR,SSS,TTT)=0;
+
+PARAMETER  EV_VSOC_PHEV(YYY,RRR,SSS,TTT)       'State of charge of the PHEV vehicle fleet to be used in future runs';
+$ifi  exist '../../base/auxils/timestep_conversion/input/EV_VSOC_PHEV.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/EV_VSOC_PHEV.gdx', EV_VSOC_PHEV;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/EV_VSOC_PHEV.gdx' EV_VSOC_PHEV(YYY,RRR,SSS,TTT) =0;
 
 *Missing remaining timeseries
 *---------End: EV addon-------------
@@ -330,6 +341,8 @@ PARAMETER BIOMETHSTOVOLTSVAL(YYY,SSS,TTT) "Inter-seasonal biomethane storage con
 $ifi  exist '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx', BIOMETHSTOVOLTSVAL;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx' BIOMETHSTOVOLTSVAL(YYY,SSS,TTT)=0;
 
+
+
 *REST OF HYDRO PARAMETERS.........
 
 *New timeseries
@@ -364,6 +377,8 @@ PARAMETER EV_PHEV_SOCFlex_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
 PARAMETER EV_PHEV_Avail_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
 PARAMETER EV_PHEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
 PARAMETER EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
+PARAMETER EV_VSOC_BEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW);
+PARAMETER EV_VSOC_PHEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW);
 *Missing remaining timeseries
 *---------End: EV addon-------------
 PARAMETER ESTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
@@ -450,6 +465,8 @@ EV_PHEV_SOCFlex_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_N
 EV_PHEV_Avail_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Avail(YYY,SSS,TTT,RRR)) ;
 EV_PHEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Max(YYY,SSS,TTT,RRR)) ;
 EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Min(YYY,SSS,TTT,RRR)) ;
+EV_VSOC_BEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_VSOC_BEV(YYY,RRR,SSS,TTT)) ;
+EV_VSOC_PHEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_VSOC_PHEV(YYY,RRR,SSS,TTT)) ;
 ESTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOVOLTS(YYY,AAA,GGG,SSS,TTT)) ;
 HSTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HSTOVOLTS(YYY,AAA,GGG,SSS,TTT));
 ESTOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT));
@@ -538,11 +555,13 @@ execute_unload  "../../base/auxils/timestep_conversion/output/UCONMAINT.gdx", UC
 execute_unload  "../../base/auxils/timestep_conversion/output/UCON.gdx", UCON_NEW=UCON;
 execute_unload  "../../base/auxils/timestep_conversion/output/UCON_STOLOAD.gdx", UCON_STOLOAD_NEW=UCON_STOLOAD;
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", IGKRATE_NEW=IGKRATE;
-execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", TRANSDEMAND_S_NEW=TRANSDEMAND_S;
+execute_unload  "../../base/auxils/timestep_conversion/output/TRANSDEMAND_S.gdx", TRANSDEMAND_S_NEW=TRANSDEMAND_S;
 execute_unload  "../../base/auxils/timestep_conversion/output/H2STOVOLTS.gdx", H2STOVOLTS_NEW=H2STOVOLTS;
 execute_unload  "../../base/auxils/timestep_conversion/output/H2STOVOLTSVAL.gdx", H2STOVOLTSVAL_NEW=H2STOVOLTSVAL;
 execute_unload  "../../base/auxils/timestep_conversion/output/BIOMETHSTOVOLTS.gdx", BIOMETHSTOVOLTS_NEW=BIOMETHSTOVOLTS;
 execute_unload  "../../base/auxils/timestep_conversion/output/BIOMETHSTOVOLTSVAL.gdx", BIOMETHSTOVOLTSVAL_NEW=BIOMETHSTOVOLTSVAL;
+execute_unload  "../../base/auxils/timestep_conversion/output/EV_VSOC_BEV.gdx", EV_VSOC_BEV_NEW=EV_VSOC_BEV;
+execute_unload  "../../base/auxils/timestep_conversion/output/EV_VSOC_PHEV.gdx", EV_VSOC_PHEV_NEW=EV_VSOC_PHEV;
 
 *$ONTEXT
 *WND_VAR_T timeseries

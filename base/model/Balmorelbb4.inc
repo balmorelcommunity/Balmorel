@@ -1855,7 +1855,8 @@ $ifi %RollingSeasons%==yes $ifi %import_results%==yes $ifi %ADDESTOVOLTS%==price
 $ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                             +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi %import_results%==yes $ifi     %ADDESTOVOLTS%==none                                  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %ADDESTOVOLTS%==price  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
-$ifi %import_results%==yes $ifi     %ADDESTOVOLTS%==cont                                  +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),ESTOVOLTS(IY411,IA,IGESTOS,S++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
+$ifi %import_results%==yes $ifi     %ADDESTOVOLTS%==cont                                  +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),ESTOVOLTS(IY411,IA,IGESTOS,SSS++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
+
 $include "../../base/addons/_hooks/qestovolts.inc"
 ;
 
@@ -1883,7 +1884,8 @@ $ifi %RollingSeasons%==yes $ifi %import_results%==yes $ifi %ADDHSTOVOLTS%==price
 $ifi not %RollingSeasons%==yes $ifi not %import_results%==yes                             +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi %import_results%==yes $ifi     %ADDHSTOVOLTS%==none                                  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
 $ifi not %RollingSeasons%==yes $ifi %import_results%==yes $ifi     %ADDHSTOVOLTS%==price  +SUM(ITALIAS$(ORD(ITALIAS) EQ 1),VHSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
-$ifi %import_results%==yes $ifi     %ADDHSTOVOLTS%==cont                                  +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),HSTOVOLTS(IY411,IA,IGHSTOS,S++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
+$ifi %import_results%==yes $ifi     %ADDHSTOVOLTS%==cont                                  +SUM(SSS$(ICOUNTSSSTTT(S,T) EQ ICOUNTSSSTTT(SSS,T)),SUM(ITALIAS$(ORD(ITALIAS) EQ 1),HSTOVOLTS(IY411,IA,IGHSTOS,SSS++1,ITALIAS)))$(CARD(S) EQ ORD(S) AND ORD(T) EQ CARD(T))
+
 $include "../../base/addons/_hooks/qhstovolts.inc"
 ;
 
@@ -2988,6 +2990,11 @@ $ifi %HYDROGEN%==yes   BIOMETHSTOVOLTS(Y,S,T)$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,
 $ifi %HYDROGEN%==yes   BIOMETHSTOVOLTSVAL(Y,S,T)$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=QBIOMETHANE_STOVOLTS.M(Y,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
 $ifi %HYDROGEN%==yes   execute_unload  "../../simex/BIOMETHSTOVOLTS.gdx", BIOMETHSTOVOLTS;
 $ifi %HYDROGEN%==yes   execute_unload  "../../simex/BIOMETHSTOVOLTSVAL.gdx", BIOMETHSTOVOLTSVAL;
+
+$ifi %EV%==yes   EV_VSOC_BEV(Y,IR,S,T)$IHASBEV(IR)=VEV_VSOC_BEV.L(Y,IR,S,T);
+$ifi %EV%==yes   EV_VSOC_PHEV(Y,IR,S,T)$IHASPHEV(IR)=VEV_VSOC_PHEV.L(Y,IR,S,T);
+$ifi %EV%==yes   execute_unload  "../../simex/EV_VSOC_BEV.gdx", EV_VSOC_BEV;
+$ifi %EV%==yes   execute_unload  "../../simex/EV_VSOC_PHEV.gdx", EV_VSOC_PHEV;
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
 *------------------------------------------------------------------------------
