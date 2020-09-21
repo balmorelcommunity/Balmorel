@@ -2975,10 +2975,10 @@ $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S)=VUCO
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes execute_unload  "../../simex/UCONMAINT.gdx", UCONMAINT;
 
 *Transport demand
-$ifi %TRANSPORT%==yes                                 TRANSDEMAND_S(Y,C,S)=SUM((T,IR)$CCCRRR(C,IR),VTRANSDEMAND_T.L(Y,IR,S,T))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
-$ifi %TRANSPORT%==yes $ifi not %import_results%==yes  TRANSDEMAND_T_MAX(Y,IR)=VTRANSDEMAND_T_MAX.L(Y,IR);
-$ifi %TRANSPORT%==yes                                 execute_unload  "../../simex/TRANSDEMAND_S.gdx", TRANSDEMAND_S;
-$ifi %TRANSPORT%==yes $ifi not %import_results%==yes  execute_unload  "../../simex/TRANSDEMAND_T_MAX.gdx", TRANSDEMAND_T_MAX;
+$ifi %TRANSPORT%==yes   TRANSDEMAND_S(Y,C,S)=SUM((T,IR)$CCCRRR(C,IR),VTRANSDEMAND_T.L(Y,IR,S,T))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
+$ifi %TRANSPORT%==yes   TRANSDEMAND_T_MAX(Y,IR)=VTRANSDEMAND_T_MAX.L(Y,IR);
+$ifi %TRANSPORT%==yes   execute_unload  "../../simex/TRANSDEMAND_S.gdx", TRANSDEMAND_S;
+$ifi %TRANSPORT%==yes   execute_unload  "../../simex/TRANSDEMAND_T_MAX.gdx", TRANSDEMAND_T_MAX;
 
 *Hydrogen
 $ifi %HYDROGEN%==yes   H2STOVOLTS(Y,IA,IHYDROGEN_GH2STO,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO)=VHYDROGEN_STOVOL_T.L(Y,IA,IHYDROGEN_GH2STO,S,T);
