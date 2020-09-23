@@ -2863,6 +2863,7 @@ HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(
 VHYRS_SL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = VHYRS_S.L(Y,IA,S);
 WATERVAL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS))= QHYRSSEQ.M(Y,IA,S)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y))
 $ifi %RollingSeasons%==yes    /(CARD(ISALIAS)/ROLLINGSEASONSNUMBER)
+$ifi %import_results%==yes $ifi %HYRSBB123%==price  +WATERVAL(Y,IA,S)
 ;
 VHYRS_STL(Y,IA,S,T)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = VHYRS_S.L(Y,IA,S)
        +  IHYINF_S(IA,S) * ( SUM(IGHYRS, GKFX(Y,IA,IGHYRS)$IAGKFX(Y,IA,IGHYRS)
@@ -2874,6 +2875,12 @@ execute_unload  "../../simex/HYRSG.gdx", HYRSG;
 execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
 execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
 execute_unload  "../../simex/VHYRS_STL.gdx", VHYRS_STL;
+
+*Reducing size of export files once they have been exported
+HYRSG(Y,IA,S)=0;
+VHYRS_SL(Y,IA,S)=0;
+WATERVAL(Y,IA,S)=0;
+VHYRS_STL(Y,IA,S,T)=0;
 
 * For runs with investments and/or decommissionning save the following, to be used in future runs by addon "import_results":
 XKACCUMNET(Y,IRE,IRI)$IXK_HASORPOT(Y,IRE,IRI)=XKFX(Y,IRE,IRI)
@@ -2895,6 +2902,11 @@ execute_unload  "../../simex/XKACCUMNET.gdx", XKACCUMNET;
 execute_unload  "../../simex/GKACCUMNET.gdx", GKACCUMNET;
 $ifi %HEATTRANS%==yes  execute_unload  "../../simex/XHKACCUMNET.gdx", XHKACCUMNET;
 
+*Reducing size of export files once they have been exported
+XKACCUMNET(Y,IRE,IRI)=0;
+GKACCUMNET(Y,IA,G)=0;
+$ifi %HEATTRANS%==yes XHKACCUMNET(Y,IAE,IAI)=0;
+
 * For runs with storage save the following, to be used in future runs by addon "import_results":
 ESTOVOLTS(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=VESTOVOLTS.L(Y,IA,IGESTOS,S,T);
 HSTOVOLTS(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=VHSTOVOLTS.L(Y,IA,IGHSTOS,S,T);
@@ -2904,10 +2916,18 @@ HSTOVOLT(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=VHSTOVOLT.L(Y,IA,IGHSTO,S,T
 *ESTOLOADTS(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=VESTOLOADTS.L(Y,IA,IGESTOS,S,T);
 *HSTOLOADT(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=VHSTOLOADT.L(Y,IA,IGHSTO,S,T);
 *HSTOLOADTS(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=VHSTOLOADTS.L(Y,IA,IGHSTOS,S,T);
-ESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
-HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
-ESTOVOLTVAL(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=QESTOVOLT.M(Y,IA,IGESTO,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
-HSTOVOLTVAL(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=QHSTOVOLT.M(Y,IA,IGHSTO,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
+ESTOVOLTSVAL(Y,IA,IGESTOS,S,T)$IAGK_HASORPOT(Y,IA,IGESTOS)=QESTOVOLTS.M(Y,IA,IGESTOS,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)))
+$ifi %import_results%==yes $ifi %ADDESTOVOLTS%==price + ESTOVOLTSVAL(Y,IA,IGESTOS,S,T)
+;
+HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)$IAGK_HASORPOT(Y,IA,IGHSTOS)=QHSTOVOLTS.M(Y,IA,IGHSTOS,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)))
+$ifi %import_results%==yes $ifi %ADDHSTOVOLTS%==price + HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)
+;
+ESTOVOLTVAL(Y,IA,IGESTO,S,T)$IAGK_HASORPOT(Y,IA,IGESTO)=QESTOVOLT.M(Y,IA,IGESTO,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)))
+$ifi %import_results%==yes $ifi %ADDESTOVOLT%==price + ESTOVOLTVAL(Y,IA,IGESTO,S,T)
+;
+HSTOVOLTVAL(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=QHSTOVOLT.M(Y,IA,IGHSTO,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)))
+$ifi %import_results%==yes $ifi %ADDHSTOVOLT%==price + HSTOVOLTVAL(Y,IA,IGHSTOS,S,T)
+;
 
 execute_unload  "../../simex/ESTOVOLTS.gdx", ESTOVOLTS;
 execute_unload  "../../simex/HSTOVOLTS.gdx", HSTOVOLTS;
@@ -2921,6 +2941,21 @@ execute_unload  "../../simex/ESTOVOLTSVAL.gdx", ESTOVOLTSVAL;
 execute_unload  "../../simex/HSTOVOLTSVAL.gdx", HSTOVOLTSVAL;
 execute_unload  "../../simex/ESTOVOLTVAL.gdx", ESTOVOLTVAL;
 execute_unload  "../../simex/HSTOVOLTVAL.gdx", HSTOVOLTVAL;
+
+*Reducing size of export files once they have been exported
+ESTOVOLTS(Y,IA,G,S,T)=0;
+HSTOVOLTS(Y,IA,G,S,T)=0;
+ESTOVOLT(Y,IA,G,S,T)=0;
+HSTOVOLT(Y,IA,G,S,T)=0;
+*ESTOLOADT(Y,IA,G,S,T)=0;
+*HSTOLOADT(Y,IA,G,S,T)=0;
+*ESTOLOADTS(Y,IA,G,S,T)=0;
+*HSTOLOADTS(Y,IA,G,S,T)=0;
+ESTOVOLTSVAL(Y,IA,G,S,T)=0;
+HSTOVOLTSVAL(Y,IA,G,S,T)=0;
+ESTOVOLTVAL(Y,IA,G,S,T)=0;
+HSTOVOLTVAL(Y,IA,G,S,T)=0;
+
 
 *Energy dispatch to be used in future runs by addon "import_results"
 *DE_T(Y,IR,S,T)= SUM(DEUSER, ((DE(Y,IR,DEUSER) * DE_VAR_T(IR,DEUSER,S,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0))/(1-DISLOSS_E(IR));
@@ -2943,6 +2978,10 @@ execute_unload  "../../simex/GH_T.gdx", GH_T;
 $ifi %UnitComm%==yes  execute_unload  "../../simex/UCON.gdx", UCON;
 $ifi %UnitComm%==yes  execute_unload  "../../simex/UCON_STOLOAD.gdx", UCON_STOLOAD;
 
+*Reducing size of export files once they have been exported
+GE_T(Y,IA,G,S,T)=0;
+GH_T(Y,IA,G,S,T)=0;
+
 *Fuel use in T to be used in auxils folder "timestep conversion"
 F_T(Y,C,FFF,S,T)$(GMAXF(Y,C,FFF) OR SUM(ISALIAS,GMAXFS(Y,C,FFF,ISALIAS))
 $ifi %STEPWISEPRICE%==yes OR STEPWISEPRICE_FFF(FFF)
@@ -2951,13 +2990,16 @@ F_T(Y,IR,FFF,S,T)$(GMAXF(Y,IR,FFF) OR SUM(ISALIAS,GMAXFS(Y,IR,FFF,ISALIAS)))=IOF
 F_T(Y,IA,FFF,S,T)$(GMAXF(Y,IA,FFF) OR SUM(ISALIAS,GMAXFS(Y,IA,FFF,ISALIAS)))=IOF3P6*SUM(IAGK_HASORPOT(Y,IA,G)$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T));
 execute_unload  "../../simex/F_T.gdx", F_T;
 
+*Reducing size of export files once they have been exported
+F_T(Y,C,FFF,S,T)=0;
+
 *Fuel use in S to be used in future runs by addon "import_results"
 GMAXFS(Y,C,FFF,S)$(GMAXF(Y,C,FFF)
 $ifi %STEPWISEPRICE%==yes OR STEPWISEPRICE_FFF(FFF)
 )=IOF3P6*SUM(IA$ICA(C,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
 GMAXFS(Y,IR,FFF,S)$GMAXF(Y,IR,FFF)=IOF3P6*SUM(IA$RRRAAA(IR,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
 GMAXFS(Y,IA,FFF,S)$GMAXF(Y,IA,FFF)=IOF3P6*SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
-$ifi %STEPWISEPRICE%==yes  execute_unload  "../../simex/GMAXFS.gdx", GMAXFS;
+execute_unload  "../../simex/GMAXFS.gdx", GMAXFS;
 
 *Fuel price to be used in future runs by addon "import_results"
 FUELPRICE_EXC(Y,IA,FFF)=FUELPRICE(Y,IA,FFF);
@@ -2970,9 +3012,15 @@ QSTEPWISEPRICE_GFTOSTEP.M(Y,C,STEPWISEPRICE_FFF)/IOF3P6/(IDISCOUNTFACTOR(Y)*IWEI
 $label NO_STEPWISEPRICE
 execute_unload  "../../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
 
+*Reducing size of export files once they have been exported
+FUELPRICE_EXC(Y,IA,FFF)=0;
+
 *Planned maintenaince
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S)=VUCONMAINT.L(Y,IA,IGUC,S);
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes execute_unload  "../../simex/UCONMAINT.gdx", UCONMAINT;
+
+*Reducing size of export files once they have been exported
+$ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S)=0;
 
 *Transport demand
 $ifi %TRANSPORT%==yes   TRANSDEMAND_S(Y,C,S)=SUM((T,IR)$CCCRRR(C,IR),VTRANSDEMAND_T.L(Y,IR,S,T))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
@@ -2980,21 +3028,42 @@ $ifi %TRANSPORT%==yes   TRANSDEMAND_T_MAX(Y,IR)=VTRANSDEMAND_T_MAX.L(Y,IR);
 $ifi %TRANSPORT%==yes   execute_unload  "../../simex/TRANSDEMAND_S.gdx", TRANSDEMAND_S;
 $ifi %TRANSPORT%==yes   execute_unload  "../../simex/TRANSDEMAND_T_MAX.gdx", TRANSDEMAND_T_MAX;
 
+*Reducing size of export files once they have been exported
+$ifi %TRANSPORT%==yes   TRANSDEMAND_S(Y,C,S)=0;
+$ifi %TRANSPORT%==yes   TRANSDEMAND_T_MAX(Y,IR)=0;
+
 *Hydrogen
 $ifi %HYDROGEN%==yes   H2STOVOLTS(Y,IA,IHYDROGEN_GH2STO,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO)=VHYDROGEN_STOVOL_T.L(Y,IA,IHYDROGEN_GH2STO,S,T);
-$ifi %HYDROGEN%==yes   H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO)=QHYDROGEN_STOVOL.M(Y,IA,IHYDROGEN_GH2STO,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
+$ifi %HYDROGEN%==yes   H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO)=QHYDROGEN_STOVOL.M(Y,IA,IHYDROGEN_GH2STO,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)))
+$ifi %HYDROGEN%==yes   $ifi %import_results%==yes $ifi %ADDH2STOVOLTS%==price + H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)
+$ifi %HYDROGEN%==yes   ;
 $ifi %HYDROGEN%==yes   execute_unload  "../../simex/H2STOVOLTS.gdx", H2STOVOLTS;
 $ifi %HYDROGEN%==yes   execute_unload  "../../simex/H2STOVOLTSVAL.gdx", H2STOVOLTSVAL;
 
+*Reducing size of export files once they have been exported
+$ifi %HYDROGEN%==yes   H2STOVOLTS(Y,IA,G,S,T)=0;
+$ifi %HYDROGEN%==yes   H2STOVOLTSVAL(Y,IA,G,S,T)=0;
+
 $ifi %HYDROGEN%==yes   BIOMETHSTOVOLTS(Y,S,T)$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=VBIOMETHSTOVOLTS.L(Y,S,T);
-$ifi %HYDROGEN%==yes   BIOMETHSTOVOLTSVAL(Y,S,T)$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=QBIOMETHANE_STOVOLTS.M(Y,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)));
+$ifi %HYDROGEN%==yes   BIOMETHSTOVOLTSVAL(Y,S,T)$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=QBIOMETHANE_STOVOLTS.M(Y,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)))
+$ifi %HYDROGEN%==yes   $ifi %import_results%==yes $ifi %ADDBIOMETHSTOVOLTS%==price + BIOMETHSTOVOLTSVAL(Y,S,T)
+$ifi %HYDROGEN%==yes   ;
 $ifi %HYDROGEN%==yes   execute_unload  "../../simex/BIOMETHSTOVOLTS.gdx", BIOMETHSTOVOLTS;
 $ifi %HYDROGEN%==yes   execute_unload  "../../simex/BIOMETHSTOVOLTSVAL.gdx", BIOMETHSTOVOLTSVAL;
+
+*Reducing size of export files once they have been exported
+$ifi %HYDROGEN%==yes   BIOMETHSTOVOLTS(Y,S,T)=0;
+$ifi %HYDROGEN%==yes   BIOMETHSTOVOLTSVAL(Y,S,T)=0;
+
 
 $ifi %EV%==yes   EV_VSOC_BEV(Y,IR,S,T)$IHASBEV(IR)=VEV_VSOC_BEV.L(Y,IR,S,T);
 $ifi %EV%==yes   EV_VSOC_PHEV(Y,IR,S,T)$IHASPHEV(IR)=VEV_VSOC_PHEV.L(Y,IR,S,T);
 $ifi %EV%==yes   execute_unload  "../../simex/EV_VSOC_BEV.gdx", EV_VSOC_BEV;
 $ifi %EV%==yes   execute_unload  "../../simex/EV_VSOC_PHEV.gdx", EV_VSOC_PHEV;
+
+*Reducing size of export files once they have been exported
+$ifi %EV%==yes   EV_VSOC_BEV(Y,IR,S,T)=0;
+$ifi %EV%==yes   EV_VSOC_PHEV(Y,IR,S,T)=0;
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
 *------------------------------------------------------------------------------
