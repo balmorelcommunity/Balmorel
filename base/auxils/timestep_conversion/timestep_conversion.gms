@@ -206,6 +206,14 @@ PARAMETER  EV_VSOC_PHEV(YYY,RRR,SSS,TTT)       'State of charge of the PHEV vehi
 $ifi  exist '../../base/auxils/timestep_conversion/input/EV_VSOC_PHEV.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/EV_VSOC_PHEV.gdx', EV_VSOC_PHEV;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/EV_VSOC_PHEV.gdx' EV_VSOC_PHEV(YYY,RRR,SSS,TTT) =0;
 
+PARAMETER EV_BEV_NETCHARGING(YYY,RRR,SSS,TTT)        'Net charging of BEV vehicle fleet to be used in future runs';
+$ifi  exist '../../base/auxils/timestep_conversion/input/EV_BEV_NETCHARGING.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/EV_BEV_NETCHARGING.gdx', EV_BEV_NETCHARGING;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/EV_BEV_NETCHARGING.gdx' EV_BEV_NETCHARGING(YYY,RRR,SSS,TTT)=0;
+
+PARAMETER EV_PHEV_NETCHARGING(YYY,RRR,SSS,TTT)        'Net charging of PHEV vehicle fleet to be used in future runs';
+$ifi  exist '../../base/auxils/timestep_conversion/input/EV_PHEV_NETCHARGING.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/EV_PHEV_NETCHARGING.gdx', EV_PHEV_NETCHARGING;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/EV_PHEV_NETCHARGING.gdx' EV_PHEV_NETCHARGING(YYY,RRR,SSS,TTT) =0;
+
 *Missing remaining timeseries
 *---------End: EV addon-------------
 
@@ -379,6 +387,8 @@ PARAMETER EV_PHEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
 PARAMETER EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR);
 PARAMETER EV_VSOC_BEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW);
 PARAMETER EV_VSOC_PHEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW);
+PARAMETER EV_BEV_NETCHARGING_NEW(YYY,RRR,SSS_NEW,TTT_NEW);
+PARAMETER EV_PHEV_NETCHARGING_NEW(YYY,RRR,SSS_NEW,TTT_NEW);
 *Missing remaining timeseries
 *---------End: EV addon-------------
 PARAMETER ESTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
@@ -467,6 +477,8 @@ EV_PHEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,T
 EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Min(YYY,SSS,TTT,RRR)) ;
 EV_VSOC_BEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_VSOC_BEV(YYY,RRR,SSS,TTT)) ;
 EV_VSOC_PHEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_VSOC_PHEV(YYY,RRR,SSS,TTT)) ;
+EV_BEV_NETCHARGING_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_NETCHARGING(YYY,RRR,SSS,TTT)*WEIGHT_T_NEW(TTT_NEW)/WEIGHT_T(TTT)) ;
+EV_PHEV_NETCHARGING_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_NETCHARGING(YYY,RRR,SSS,TTT)*WEIGHT_T_NEW(TTT_NEW)/WEIGHT_T(TTT)) ;
 ESTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOVOLTS(YYY,AAA,GGG,SSS,TTT)) ;
 HSTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HSTOVOLTS(YYY,AAA,GGG,SSS,TTT));
 ESTOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOVOLTSVAL(YYY,AAA,GGG,SSS,TTT));
@@ -562,8 +574,10 @@ execute_unload  "../../base/auxils/timestep_conversion/output/BIOMETHSTOVOLTS.gd
 execute_unload  "../../base/auxils/timestep_conversion/output/BIOMETHSTOVOLTSVAL.gdx", BIOMETHSTOVOLTSVAL_NEW=BIOMETHSTOVOLTSVAL;
 execute_unload  "../../base/auxils/timestep_conversion/output/EV_VSOC_BEV.gdx", EV_VSOC_BEV_NEW=EV_VSOC_BEV;
 execute_unload  "../../base/auxils/timestep_conversion/output/EV_VSOC_PHEV.gdx", EV_VSOC_PHEV_NEW=EV_VSOC_PHEV;
+execute_unload  "../../base/auxils/timestep_conversion/output/EV_BEV_NETCHARGING.gdx", EV_BEV_NETCHARGING_NEW=EV_BEV_NETCHARGING;
+execute_unload  "../../base/auxils/timestep_conversion/output/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHARGING_NEW=EV_PHEV_NETCHARGING;
 
-*$ONTEXT
+$ONTEXT
 *WND_VAR_T timeseries
 file WND_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/WND_VAR_T.inc'/;
 WND_VAR_T_timeseries.nd  = 6;
@@ -872,6 +886,6 @@ loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
 putclose;
 
 
-*$OFFTEXT
+$OFFTEXT
 *------------END OF OUTPUT GENERATION-------------
 

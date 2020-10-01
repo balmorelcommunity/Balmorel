@@ -3,10 +3,6 @@
 $ifi %DUMB%==yes    VEV_VG2V_BEV.FX(IY411,IR,S,T)$IHASBEV(IR) = (EV_BEV_Dumb(IY411,S,T,IR) / EV_PEFF(IY411))$(IY411.val>2019) +0   ;
 $ifi %DUMB%==yes    VEV_VG2V_PHEV.FX(IY411,IR,S,T)$IHASPHEV(IR) = (EV_PHEV_Dumb(IY411,S,T,IR) / EV_PEFF(IY411))$(IY411.val>2019) +0  ;
 
-* if not V2G, this variable is set to zero
-VEV_VV2G_BEV.FX(IY411,IR,S,T)$IHASBEV(IR)  = 0;
-VEV_VV2G_PHEV.FX(IY411,IR,S,T)$IHASPHEV(IR) = 0;
-
 *That's it for dumb charging
 $ifi %DUMB%==yes  $goto limits_dumb_end
 
@@ -21,6 +17,8 @@ VEV_VG2V_BEV.LO(IY411,IR,S,T)$IHASBEV(IR) =  (EV_BEV_Inflex(IY411,S,T,IR) / EV_P
 VEV_VG2V_PHEV.LO(IY411,IR,S,T)$IHASPHEV(IR) = (EV_PHEV_Inflex(IY411,S,T,IR) / EV_PEFF(IY411))$(IY411.val>2019) + 0 ;
 
 * V2G discharge capacities:
+$ifi not %V2G%==yes VEV_VV2G_BEV.FX(IY411,IR,S,T)$IHASBEV(IR)  = 0;
+$ifi not %V2G%==yes VEV_VV2G_PHEV.FX(IY411,IR,S,T)$IHASPHEV(IR) = 0;
 $ifi %V2G%==yes     VEV_VV2G_BEV.UP(IY411,IR,S,T)$IHASBEV(IR) = (EV_BEV_Avail(IY411,S,T,IR) * EV_BEV_CHARGERCAP(IY411))$(IY411.val>2019) + 0 ;       !! Should it be PHEV charger cap?? or was that a bug?
 $ifi %V2G%==yes     VEV_VV2G_PHEV.UP(IY411,IR,S,T)$IHASPHEV(IR) = (EV_PHEV_Avail(IY411,S,T,IR) * EV_PHEV_CHARGERCAP(IY411))$(IY411.val>2019) + 0 ;
 
@@ -49,6 +47,8 @@ $ifi %V2G%==yes $ifi %NO_PHEV_V2G%==yes  VEV_VV2G_PHEV.FX(IY411,IR,S,T)$IHASPHEV
 *Fixing storage level for EV from previous runs:
 $ifi %import_results%==yes $ifi %EV%==yes $ifi %ADDEVSTOS%==cont  VEV_VSOC_BEV.FX(IY411,IR,S,T)$(ORD(T) EQ CARD(T))=EV_VSOC_BEV(IY411,IR,S,T);
 $ifi %import_results%==yes $ifi %EV%==yes $ifi %ADDEVSTOS%==cont  VEV_VSOC_PHEV.FX(IY411,IR,S,T)$(ORD(T) EQ CARD(T))=EV_VSOC_PHEV(IY411,IR,S,T);
+$ifi %import_results%==yes $ifi %EV%==yes $ifi %ADDEVSTOS%==netcharging  VEV_VSOC_BEV.FX(IY411,IR,S,T)$(ORD(T) EQ CARD(T))=EV_VSOC_BEV(IY411,IR,S,T);
+$ifi %import_results%==yes $ifi %EV%==yes $ifi %ADDEVSTOS%==netcharging  VEV_VSOC_PHEV.FX(IY411,IR,S,T)$(ORD(T) EQ CARD(T))=EV_VSOC_PHEV(IY411,IR,S,T);
 
 
 $label limits_dumb_end

@@ -5,6 +5,8 @@ $ifi %ADDPEAKTRANSPORTDEMAND%==yes PARAMETER TRANSDEMAND_T_MAX(Y,RRR)   'Maximum
 
 $ifi %EV%==yes PARAMETER   EV_VSOC_BEV(YYY,RRR,SSS,TTT)        'State of charge of the BEV vehicle fleet to be used in future runs';
 $ifi %EV%==yes PARAMETER   EV_VSOC_PHEV(YYY,RRR,SSS,TTT)       'State of charge of the PHEV vehicle fleet to be used in future runs';
+$ifi %EV%==yes PARAMETER   EV_BEV_NETCHARGING(YYY,RRR,SSS,TTT)        'Net charging of BEV vehicle fleet to be used in future runs';
+$ifi %EV%==yes PARAMETER   EV_PHEV_NETCHARGING(YYY,RRR,SSS,TTT)      'Net charging of PHEV vehicle fleet to be used in future runs';
 
 
 
