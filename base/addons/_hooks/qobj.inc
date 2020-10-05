@@ -14,7 +14,7 @@ $ifi not %BB4%==yes $goto endoffile
 $label  beginbb4
 
 $ifi not %bb4%==yes $goto endoffile
-$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_qobj.inc";    
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_qobj.inc";
 
 $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_qobj.inc";
 $ifi %UnitComm%==yes   $include   "../../base/addons/unitcommitment/bb4/uc_qobj.inc";
@@ -29,7 +29,8 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_qobj.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_qobj.inc";
 $ifi %SCENARIO3OR4%==YES  $include        "../../base/addons/scenario3_4/scen34_qobj.inc";
-
+$ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_qobj.inc";
+$ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_qobj.inc";
 
 $ifi %vqdebug%==yes   $setglobal equation qobj
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";

@@ -46,7 +46,7 @@ $setglobal CASEID  BASE  !!%PyLinkScen%
 
 *!option !fixedvalue
 
-$SETGLOBAL BBMODE invest
+$SETGLOBAL BBMODE hydro
 *!option INVEST
 *!option HYDRO
 *!option BB3
@@ -144,7 +144,7 @@ $ifi %BBMODE%==BB3 $setglobal TechInvest
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
-GINVESTSTART= 2020;
+GINVESTSTART= 2016;
 
 *---- End: Generation investments options----
 
@@ -258,7 +258,7 @@ $setglobal DFLEXQUANT
 *!option yes
 
 * Allow demand response
-$setglobal DEMANDRESPONSE  yes
+$setglobal DEMANDRESPONSE
 *!option yes
 
 * Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
@@ -337,9 +337,14 @@ $setglobal stointers
 
 
 * Bypass of 'turbine' (electricity production) on backpressure units.
-$setglobal bypass yes
+$setglobal bypass
 *!option yes
 
+
+* Cascading hydropower
+$setglobal hydrocas
+$setglobal hydrocas_FLH     yes
+*!option yes
 
 *-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
 * overall control variable DECOM must be 'yes' if any of the other decommissioning controls are.
@@ -399,7 +404,7 @@ $setglobal UnitComm
 *!option yes
 
 * Adds minimal production-when-on:
-$setglobal MINFUELCONS YES
+$setglobal MINFUELCONS yes
 *!option yes
 * Adds respecting minimum off time of the capacities:
 $setglobal MINSTARTUPTIME  yes
@@ -415,7 +420,7 @@ $setglobal STEPWISE_RAMPING_UC  ramp_const
 
 * Seasonal link is on for all UC options activated. This means that past seasons will influence future seasons.
 * This option increases computanional time but assures continuity in the fuel consumption profile.
-$setglobal SEASONALLINKUC yes
+$setglobal SEASONALLINKUC
 *!option yes
 
 * The production interval is segmented into a number of disjunct pieces, each with its own costs: NOT IMPLEMENTED
@@ -434,7 +439,7 @@ $setglobal STEPWISE_RAMPING
 
 * Seasonal ramping link is on. This means that the fuel consumption of the last element ot the set T of the set S will be linked to the first element of the set T of the set S+1.
 * This option increases computanional time but assures continuity in the fuel consumption profile.
-$setglobal SEASONALLINKRAMPING  YES
+$setglobal SEASONALLINKRAMPING
 *!option yes
 
 *----------------END OF STEPWISE RAMPING (LINEAR VERSION)----------------------------------------------------------
@@ -443,7 +448,7 @@ $setglobal SEASONALLINKRAMPING  YES
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV  yes
+$setglobal EV
 *!option
 
 * Adds DUMB charging:
@@ -509,7 +514,7 @@ $ifi     %bb4%==yes $setglobal modelname BALBASE4
 
 *-------------------------------------------------------------------------------
 * Including the power flow constraints for the European, Scandinavian and Baltic AC-Subnetworks
-$setglobal FBEU yes
+$setglobal FBEU
 *!option
 
 
@@ -605,12 +610,12 @@ $ifi %BBMODE%==BB3 $Setglobal ADDHEATSTORCONT yes
 
 *Import generation and storage technology capacity development from previous runs
 $setglobal ADDTECHDEV
-$ifi %BBMODE%==HYDRO $setglobal ADDTECHDEV   yes
+*$ifi %BBMODE%==HYDRO $setglobal ADDTECHDEV   yes
 $ifi %BBMODE%==BB3 $setglobal ADDTECHDEV   yes
 *!option yes
 
 *Import transmission development from previous runs
-$setglobal ADDTRANSDEV  yes
+* $setglobal ADDTRANSDEV  yes
 *!option yes
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -816,10 +821,15 @@ putclose fileMERGEWITHBASEbat;
 
 * The model type has implications for the solver type.
 * Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Progtramming).
-$setglobal SOLVEMIP
+$setglobal SOLVETYPE LP
+*!option LP      "Linear Programming"
+*!option RMIP    "Relaxed Mixed Integer Programming"
+*!option MIP     "Mixed Integer Programming"
+
 *!option yes
 *!mustif %AGKNDISC%==yes
 *!mustif %UnitComm%==yes
+
 
 
 

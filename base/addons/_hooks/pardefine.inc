@@ -34,6 +34,8 @@ $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardefine.inc";
 $ifi %AREA_AGGREGATION%==yes      $include        "../../base/addons/area_aggregation/aa_pardefine.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_pardefine.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_pardefine.inc";
+$ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_pardefine.inc";
+$ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_pardefine_FLH.inc";
 
 $ifi %SCENARIO3OR4%==YES $include        "../../base/addons/scenario3_4/scen34_pardefine.inc";
 $label endoffile

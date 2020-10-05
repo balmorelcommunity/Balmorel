@@ -18,7 +18,8 @@ $ifi %dflextime%==yes    $include "../../base/addons/demandflextime/dflextime_qe
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_qeeq.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_qeeq.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_qeeq.inc";
-
+$ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_qeeq.inc";
+$ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_qeeq.inc";
 
 $ifi %vqdebug%==yes   $setglobal equation qeeq
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";

@@ -704,6 +704,7 @@ $if not EXIST '../data/FUELPRICE.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
 %semislash%;
 
 
+
 *-------------------------------------------------------------------------------
 *---- Emission policy data: ---------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -895,29 +896,38 @@ GKFX(Y,IA,G)$((ICA('FRANCE',IA) OR ICA('BELGIUM',IA) OR ICA('NETHERLANDS',IA) OR
 GKFX(Y,IA,G)$((ICA('FRANCE',IA) OR ICA('BELGIUM',IA) OR ICA('NETHERLANDS',IA) OR ICA('UNITED_KINGDOM',IA))) = GKFX_EUR(IA,G,Y);
 
 * replacing installed capacity for Germany. First copy existing HOB and ETOH capacities
-GKFX_EUR('DE4-N_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-N_A',G,Y);
-GKFX_EUR('DE4-S_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-S_A',G,Y);
-GKFX_EUR('DE4-E_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-E_A',G,Y);
-GKFX_EUR('DE4-W_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-W_A',G,Y);
+*GKFX_EUR('DE4-N_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-N_A',G,Y);
+*GKFX_EUR('DE4-S_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-S_A',G,Y);
+*GKFX_EUR('DE4-E_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-E_A',G,Y);
+*GKFX_EUR('DE4-W_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-W_A',G,Y);
 
 * Then replace capacity for CND, BPR and EXT
 GKFX(Y,IA,G)$(ICA('GERMANY',IA) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GBPR) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH))) = 0;
 GKFX(Y,IA,G)$(ICA('GERMANY',IA) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GBPR) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH))) = GKFX_EUR(IA,G,Y);
 
 * Germany has now designated areas for DH. Copy DH demand for German areas and then delete old values
-DH(YYY,'DE4-N_DH',DHUSER) = DH(YYY,'DE4-N_A',DHUSER);    DH(YYY,'DE4-N_A',DHUSER) = 0;
-DH(YYY,'DE4-S_DH',DHUSER) = DH(YYY,'DE4-S_A',DHUSER);    DH(YYY,'DE4-S_A',DHUSER) = 0;
-DH(YYY,'DE4-E_DH',DHUSER) = DH(YYY,'DE4-E_A',DHUSER);    DH(YYY,'DE4-E_A',DHUSER) = 0;
-DH(YYY,'DE4-W_DH',DHUSER) = DH(YYY,'DE4-W_A',DHUSER);    DH(YYY,'DE4-W_A',DHUSER) = 0;
+*DH(YYY,'DE4-N_DH',DHUSER) = DH(YYY,'DE4-N_A',DHUSER);    DH(YYY,'DE4-N_A',DHUSER) = 0;
+*DH(YYY,'DE4-S_DH',DHUSER) = DH(YYY,'DE4-S_A',DHUSER);    DH(YYY,'DE4-S_A',DHUSER) = 0;
+*DH(YYY,'DE4-E_DH',DHUSER) = DH(YYY,'DE4-E_A',DHUSER);    DH(YYY,'DE4-E_A',DHUSER) = 0;
+*DH(YYY,'DE4-W_DH',DHUSER) = DH(YYY,'DE4-W_A',DHUSER);    DH(YYY,'DE4-W_A',DHUSER) = 0;
 
 *Copy DH demand profile for Germany
-DH_VAR_T('DE4-N_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-N_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-N_A',DHUSER,SSS,TTT) = 0;
-DH_VAR_T('DE4-S_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-S_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-S_A',DHUSER,SSS,TTT) = 0;
-DH_VAR_T('DE4-E_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-E_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-E_A',DHUSER,SSS,TTT) = 0;
-DH_VAR_T('DE4-W_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-W_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-W_A',DHUSER,SSS,TTT) = 0;
+*DH_VAR_T('DE4-N_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-N_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-N_A',DHUSER,SSS,TTT) = 0;
+*DH_VAR_T('DE4-S_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-S_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-S_A',DHUSER,SSS,TTT) = 0;
+*DH_VAR_T('DE4-E_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-E_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-E_A',DHUSER,SSS,TTT) = 0;
+*DH_VAR_T('DE4-W_DH',DHUSER,SSS,TTT) = DH_VAR_T('DE4-W_A',DHUSER,SSS,TTT);   DH_VAR_T('DE4-W_A',DHUSER,SSS,TTT) = 0;
+
+DH(YYY,'DE4-N_A',DHUSER) = 0;
+DH(YYY,'DE4-S_A',DHUSER) = 0;
+DH(YYY,'DE4-E_A',DHUSER) = 0;
+DH(YYY,'DE4-W_A',DHUSER) = 0;
+DH_VAR_T('DE4-N_A',DHUSER,SSS,TTT) = 0;
+DH_VAR_T('DE4-S_A',DHUSER,SSS,TTT) = 0;
+DH_VAR_T('DE4-E_A',DHUSER,SSS,TTT) = 0;
+DH_VAR_T('DE4-W_A',DHUSER,SSS,TTT) = 0;
 
 * Copy DH demand for France, Belgium, Netherlands and UK
-DH(YYY,IA,DHUSER)$((ICA('FRANCE',IA) OR ICA('BELGIUM',IA) OR ICA('NETHERLANDS',IA) OR ICA('UNITED_KINGDOM',IA)))  = DH2(DHUSER,IA,YYY);
+DH(YYY,IA,DHUSER)$((ICA('GERMANY',IA) OR ICA('FRANCE',IA) OR ICA('BELGIUM',IA) OR ICA('NETHERLANDS',IA) OR ICA('UNITED_KINGDOM',IA)))  = DH2(DHUSER,IA,YYY);
 
 * New wind, solar and hydropower profiles for France
 WND_VAR_T('FR_A',SSS,TTT)= WND_VAR_T2(SSS,TTT,'FR_A')    ;
@@ -937,11 +947,11 @@ GDATA('AGG-DE4-N_RES_WTR_PMP','GDTYPE') = GESTO;
 GDATA('AGG-DE4-S_RES_WTR_PMP','GDTYPE') = GESTO;
 GDATA('AGG-DE4-W_RES_WTR_PMP','GDTYPE') = GESTO;
 
-* And reduce the efficiency down from 1 to 0.8
-GDATA('AGG-DE4-E_RES_WTR_PMP','GDFE') = 0.8;
-GDATA('AGG-DE4-N_RES_WTR_PMP','GDFE') = 0.8;
-GDATA('AGG-DE4-S_RES_WTR_PMP','GDFE') = 0.8;
-GDATA('AGG-DE4-W_RES_WTR_PMP','GDFE') = 0.8;
+* And reduce the efficiency down from 1 to 0.76
+GDATA('AGG-DE4-E_RES_WTR_PMP','GDFE') = 0.76;
+GDATA('AGG-DE4-N_RES_WTR_PMP','GDFE') = 0.76;
+GDATA('AGG-DE4-S_RES_WTR_PMP','GDFE') = 0.76;
+GDATA('AGG-DE4-W_RES_WTR_PMP','GDFE') = 0.76;
 
 *GDATA('AGG-DE4-E_RES_WTR_PMP','GDSTOHLOAD') = 10;
 
@@ -951,6 +961,10 @@ GDATA('AGG-DE4-W_RES_WTR_PMP','GDFE') = 0.8;
 PARAMETER GMINF_S(YYY,AAA,FFF,SSS) 'Minimum fuel use (GJ) per season'  ;
 GMINF_S(Y,IA,FFF,S)$ICA('GERMANY',IA) = GMINF(Y,IA,FFF)/CARD(S);
 
+DISLOSS_E('FR') = .0739;
+DISLOSS_E('BE') = .0417;
+GKRATE('FR_A','GNR_RES_WTR_NOPMP_MC-01',SSS) = .7 ;
+
 
 * Introducing fuel factor - defined in balmorelbb4.inc
 * (Gustav 29.08.19 this is a concept we can use to get rid of VGF on hourly level also in UC and Combtech addon)
@@ -959,6 +973,9 @@ PARAMETER IGFH_FACTOR(YYY,AAA,GGG) 'Fuel consumption per generated MW electricit
 
 
 * Set a default level for GKFX for all EXT, BPR, CND, HOB and ETOH technologies. (to 0.9)
+GKRATE(IA,G,SSS)$((GDATA(G,'GDFUEL') EQ COAL) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GBPR)) AND((SUM(Y, GKFX(Y,IA,G)) > 0) OR AGKN(IA,G))) =   GKRATE('DE4-E_A','GNR_ST_COAL_BP_E-35',SSS);
+GKRATE(IA,G,SSS)$((GDATA(G,'GDFUEL') EQ LIGNITE) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GBPR)) AND ((SUM(Y, GKFX(Y,IA,G)) > 0) OR AGKN(IA,G))) =   GKRATE('DE4-E_A','GNR_ST_LIGN_BP_E-28',SSS);
+GKRATE(IA,G,SSS)$((GDATA(G,'GDFUEL') EQ NATGAS) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GBPR)) AND ((SUM(Y, GKFX(Y,IA,G)) > 0) OR AGKN(IA,G))) =   GKRATE('DE4-E_A','GNR_CC_NGAS_BP_E-53',SSS);
 GKRATE(IA,G,SSS)$(SUM(SSSALIAS, GKRATE(IA,G,SSSALIAS) = 0) AND (SUM(Y, GKFX(Y,IA,G)) OR AGKN(IA,G)) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GBPR) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH))) = .95;
 
 * Refurbishment of Coal to wood pellets is included as an investment option. A limit to VGKN implemented in Balmorelbb4.sim
@@ -995,7 +1012,7 @@ AGKN(IA,G)$((NOT ICA('DENMARK',IA)) AND (GDATA(G,'GDFUEL') = STRAW)) = NO;
 AGKN(IA,G)$((GDATA(G,'GDFUEL') EQ COAL) AND NOT ICA('POLAND',IA)) = NO;
 
 $ifi not %BBMODE%==HYDRO $goto LABEL_BBMODEINVESTEND
-AGKN(IA,GGG) = NO;
+AGKN(IA,GGG)$(NOT (GDATA(GGG,'GDFUEL') EQ BIOGAS)) = NO;
 
 AGKN(IA,'GNR_GT_NGAS_CND_E-42_LS-40-MW_Y-2020')$(INVDATA(IA,'COND')) = YES;
 AGKN(IA,'GNR_GT_NGAS_CND_E-43_LS-40-MW_Y-2030')$(INVDATA(IA,'COND')) = YES;
@@ -1005,11 +1022,14 @@ AGKN(IA,'GNR_BO_BIOIL_E-114_Y-2030')$(INVDATA(IA,'LDH') OR INVDATA(IA,'MDH') OR 
 AGKN(IA,'GNR_BO_BIOIL_E-114_Y-2050')$(INVDATA(IA,'LDH') OR INVDATA(IA,'MDH') OR INVDATA(IA,'SDH') OR INVDATA(IA,'IND')) = YES;
 AGKN(IA,'GNR_ES_ELEC_BAT-LITHIO-PEAK_E-86_Y-30-39')$(INVDATA(IA,'COND')) = YES;
 AGKN(IA,'GNR_ES_ELEC_BAT-LITHIO-GRID_E-86_Y-30-39')$(INVDATA(IA,'COND')) = YES;
+
+GKFX(Y,IA,'GNR_BO_LIGHTOIL_E-67')$((Y.VAL < 2020) AND (INVDATA(IA,'LDH') OR  INVDATA(IA,'MDH') OR  INVDATA(IA,'SDH') OR  INVDATA(IA,'IND'))) = 10000;
+
 $LABEL LABEL_BBMODEINVESTEND
 
 ** Back up capacity of heat only boilers is entered in import_results_ipardecdef.inc
 
-$ontext
+*$ontext
 TABLE GKFX2(YYY,AAA,GGG)
                     GNR_WT_WIND_ONS  GNR_WT_WIND_OFF
 2030.NO1_A1         639.631884574279
@@ -1064,6 +1084,71 @@ FUELPRICE('2030',AAA,'NATGAS') = 21.4/3.6;
 FUELPRICE('2030',AAA,'COAL') = 9.2/3.6;
 M_POL('2020','TAX_CO2',C) = 25.8;
 M_POL('2030','TAX_CO2',C) = 25.8;
-$offtext
+*$offtext
+
+GMINF_S(YYY,IA,'BIOGAS',SSS) = 0;
+GMINF(YYY,IA,'BIOGAS') = 0;
+
+*fuel prices from http://kohlenstatistik.de/
+FUELPRICE('2012',AAA,'NATGAS') = 8.97;
+FUELPRICE('2013',AAA,'NATGAS') = 8.53;
+FUELPRICE('2014',AAA,'NATGAS') = 7.20;
+FUELPRICE('2015',AAA,'NATGAS') = 6.31;
+FUELPRICE('2016',AAA,'NATGAS') = 6.84;
+FUELPRICE('2017',AAA,'NATGAS') = 5.15;
+FUELPRICE('2018',AAA,'NATGAS') = 5.97;
+FUELPRICE('2019',AAA,'NATGAS') = 4.95;
+FUELPRICE('2016',AAA,'COAL') = 2.2884;
+FUELPRICE('2017',AAA,'COAL') = 3.13298;
+FUELPRICE('2018',AAA,'COAL') = 3.2582;
 
 
+
+* creating extra unavailability for some power plants (calibration measure)
+GKRATE(IA,G,SSS)$((GDATA(G,'GDFUEL') EQ COAL) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GBPR)) AND((SUM(Y, GKFX(Y,IA,G)) > 0) OR AGKN(IA,G)))  =   GKRATE(IA,G,SSS) - 0.05;
+GKRATE(IA,G,SSS)$((GDATA(G,'GDFUEL') EQ LIGNITE) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GBPR)) AND((SUM(Y, GKFX(Y,IA,G)) > 0) OR AGKN(IA,G)))  =   GKRATE(IA,G,SSS) - 0.05;
+GKRATE(IA,G,SSS)$((GDATA(G,'GDFUEL') EQ COAL) AND ((GDATA(G,'GDTYPE') EQ GCND) OR (GDATA(G,'GDTYPE') EQ GEXT) OR (GDATA(G,'GDTYPE') EQ GBPR)) AND((SUM(Y, GKFX(Y,IA,G)) > 0) OR AGKN(IA,G)))  =   GKRATE(IA,G,SSS) - 0.05;
+
+* additional hard coal cost because of transport           https://www.researchgate.net/profile/Philipp_Hauser/publication/333566417_Electricity_Heat_and_Gas_Sector_Data_for_Modeling_the_German_System/links/5cf4eecea6fdcc8475002cd5/Electricity-Heat-and-Gas-Sector-Data-for-Modeling-the-German-System.pdf
+FUELPRICE(YYY,AAA,'COAL')$RRRAAA('DE4-S',AAA) = FUELPRICE(YYY,AAA,'COAL')+0.41;
+FUELPRICE(YYY,AAA,'COAL')$RRRAAA('DE4-W',AAA) = FUELPRICE(YYY,AAA,'COAL')+0.27;
+FUELPRICE(YYY,AAA,'COAL')$RRRAAA('DE4-E',AAA) = FUELPRICE(YYY,AAA,'COAL')+0.14;
+FUELPRICE(YYY,AAA,'COAL')$RRRAAA('DE4-N',AAA) = FUELPRICE(YYY,AAA,'COAL')+0.07;
+FUELPRICE(YYY,AAA,'COAL')$RRRAAA('NL',AAA) = FUELPRICE(YYY,AAA,'COAL')+0.07;
+FUELPRICE(YYY,AAA,'COAL')$RRRAAA('FR',AAA) = FUELPRICE(YYY,AAA,'COAL')+0.27;
+FUELPRICE(YYY,AAA,'COAL')$RRRAAA('PL',AAA) = FUELPRICE(YYY,AAA,'COAL')+0.27;
+FUELPRICE(YYY,AAA,'COAL')$RRRAAA('UK',AAA) = FUELPRICE(YYY,AAA,'COAL')+0.14;
+
+
+*https://www.researchgate.net/profile/Philipp_Hauser/publication/333566417_Electricity_Heat_and_Gas_Sector_Data_for_Modeling_the_German_System/links/5cf4eecea6fdcc8475002cd5/Electricity-Heat-and-Gas-Sector-Data-for-Modeling-the-German-System.pdf
+FUELPRICE(YYY,AAA,'LIGNITE')= 3.1 / 3.6;
+FUELPRICE(YYY,AAA,'BIOOIL')= 100 / 3.6;
+
+GMAXFS(Y,IR,'MUNIWASTE',S)$(CCCRRR('GERMANY',IR) AND (Y.VAL < 2025)) = 0;
+GMAXFS(Y,'UK','MUNIWASTE',S)$(Y.VAL < 2025) = 0;
+GMAXFS(Y,'NL','MUNIWASTE',S)$(Y.VAL < 2025) = 0;
+GMAXFS(Y,'BE','MUNIWASTE',S)$(Y.VAL < 2025) = 0;
+GMAXFS(Y,'FR','MUNIWASTE',S)$(Y.VAL < 2025) = 0;
+
+GMAXF(Y,'GERMANY','BIOGAS')$(Y.VAL < 2025) = 0;
+
+
+GDATA('GNR_IND-ST_WOODCHI_BP_E-71','GDFUEL') = WOODWASTE;
+
+** CALIBRATION:
+$ONTEXT
+TABLE XKRATE2(IRRRE,IRRRI,SSS)
+                 S01         S02         S03         S04         S05         S06         S07         S08         S09         S10         S11         S12         S13         S14         S15         S16         S17         S18         S19         S20         S21         S22         S23         S24         S25         S26         S27         S28         S29         S30         S31         S32         S33         S34         S35         S36         S37         S38         S39         S40         S41         S42         S43         S44         S45         S46         S47         S48         S49         S50         S51         S52
+DK1.DE4-N        0.49        0.56        0.48        0.68        0.64        0.76        0.49        0.4         0.78        0.24        0.67        0.7         0.5         0.82        0.37        0.69        0.44        0.44        0.76        0.84        0.73        0.68        0.67        0.73        0.85        0.79        0.17        0.11        0.1         0.14        0.31        0.29        0.44        0.39        0.42        0.42        0.38        0.39        0.3         0.43        0.78        0.75        0.87        0.53        0.43        0.54        0.36        0.56        0.54        0.54        0.5         0.36
+SE4.DE4-N        0.99        0.98        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.98        0.99        0.99        0.99        0.99        0.96        0.98        0.99        0.99        0.96        0.73        0.99        0.99        0.99        0.99        0.99        0.97        0.99        0.99        0.99        0.96        0.91        0.11        0.01        0.01        0.01        0.01        0.01        0.43        0.99        0.88        0.97        0.36        0.55        0.14        0.01        0.01        0.01        0.14        0.98        0.95        0.99
+NO2.NL           0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.86        0.99        0.99        0.99        0.99        0.92        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.76        0.01        0.79        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.99        0.98        0.99        0.99        0.99
+NO2.DK1          0.93        0.95        0.95        0.95        0.95        0.95        0.95        0.95        0.95        0.78        0.95        0.95        0.95        0.95        0.82        0.82        0.74        0.77        0.95        0.95        0.95        0.95        0.71        0.71        0.45        0.95        0.95        0.93        0.83        0.89        0.95        0.95        0.95        0.95        0.95        0.82        0.04        0.03        0.92        0.69        0.77        0.95        0.93        0.95        0.9         0.95        0.89        0.95        0.77        0.91        0.95        0.95
+SE3.FIN          0.92        0.99        0.99        0.99        0.95        0.94        0.86        0.42        0.42        0.42        0.4         0.42        0.42        0.42        0.42        0.42        0.71        0.98        0.99        0.92        0.9         0.92        0.85        0.99        0.99        0.99        0.99        0.95        0.99        0.99        0.99        0.99        0.99        0.51        0.62        0.62        0.62        0.62        0.62        0.62        0.62        0.62        0.62        0.61        0.62        0.62        0.62        0.62        0.62        0.62        0.62        0.62
+;
+XKRATE2('NO2','DE4-N',SSS) = 0.001;
+XKRATE2('DK1','NL',SSS) = 0.001;
+XKRATE2('SE4','LT',SSS) = 0.001;
+
+
+XKRATE(IRE,IRI,S)$XKRATE2(IRE,IRI,S) =  XKRATE2(IRE,IRI,S);
+$OFFTEXT

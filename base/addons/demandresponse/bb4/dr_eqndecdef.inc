@@ -73,7 +73,7 @@ QDR_STORE_DOWN2(IY411,IA,DR_TECH_SHIFT,IS3,T)$(IADR(IY411,IA,DR_TECH_SHIFT) AND 
 
 
 QDRKN_ACCUMNET(IY411,IA,DR_TECH)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IADR(IY411,IA,DR_TECH)) AND DR_DATA(DR_TECH,'DRINVCOST'))..
-  VDRKN_ACCUMNET(IY411,IA,DR_TECH)  !! End of this year's VXKNACCUMNET (available at beginning of next year)'
+  VDRKN_ACCUMNET(IY411,IA,DR_TECH)               !! End of this years VXKNACCUMNET (available at beginning of next year)
      =E=
   SUM(IY402$IY411PREVY(IY411,IY402), VDRKN_ACCUMNET(IY402,IA,DR_TECH)$SUM(Y$(YVALUE(Y) LT YVALUE(IY411)),IADR(Y,IA,DR_TECH))) + VDRKN(IY411,IA,DR_TECH)$IADR(IY411,IA,DR_TECH)  !! VDRKN_VACCUMNET available at end of previous(i.e., start of this) year PLUS investment during this year
 

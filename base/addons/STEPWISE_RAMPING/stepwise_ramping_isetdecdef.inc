@@ -5,7 +5,7 @@ SET IGUC(G) "Unit commitment: the set of units participating in unit commitment"
 
 * Exogenously given UC technologies
 IGUC(G)$(GDATA(G,'GDUC') EQ 1)=YES;
-
+IGUC(G)$(SUM(IA,GKFX('2020',IA,G)) < 100)=NO;   
 
 * Automatic UC technology definition
 LOOP (UC_TECH_TYPE,

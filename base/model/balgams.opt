@@ -111,6 +111,7 @@ $ONEMPTY
 * E.g., for using IPOPT for LP problems specify option LP=IPOPT
 
 option LP = CPLEX
+option RMIP = CPLEX
 option MIP= CPLEX
 
 *-------------------------------------------------------------------------------
