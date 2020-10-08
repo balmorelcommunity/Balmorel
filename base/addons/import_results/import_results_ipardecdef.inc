@@ -19,6 +19,7 @@ $ifi %EV%==yes $ifi %ADDEVSTOS%==none  EV_PHEV_NETCHARGING(Y,IR,S,T)=0;
 $ifi %HYRSBB123%==none  VHYRS_SL(Y,IA,S)=0;
 $ifi %ADDFUELPRICE%==yes FUELPRICE(Y,IA,FFF)=FUELPRICE_EXC(Y,IA,FFF);
 $ifi not %UnitComm%==yes UCON(Y,IA,G,S,T)=0;
+$ifi not %UnitComm%==yes UCON_STOLOAD(Y,IA,G,S,T)=0;
 
 *Correction of hydro levels to respect limits (it can happen since the hydro balance equation only respects hydro limits in S)
 $ifi not %HYRSBB123%==none VHYRS_SL(Y,IA,S)$(SUM(ISALIAS,VHYRS_SL(Y,IA,ISALIAS)) AND NOT(VHYRS_SL(Y,IA,S)))=EPS;
