@@ -331,12 +331,12 @@ $setglobal DEMANDRESPONSE
 $setglobal X3V
 *!option yes
 
-* This variable includes addon for distric heating
+* This variable includes addon for distric heating (BB1, BB2, BB3)
 $Setglobal FV
 *!option yes
 
-*
-$setglobal POLICIES
+*Policies (BB1, BB2, BB3)
+$setglobal POLICIES  
 *!option yes
 
 * Grid tariffs on electricity use (requires NETDEMAND)
