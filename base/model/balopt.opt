@@ -138,11 +138,11 @@ XINVESTSTART= 2025;
 *overall control variable HEATTRANS must be 'yes' if any of the other heat trans controls are.
 
 * Permit heat transmission between areas.
-$setglobal HEATTRANS yes
+$setglobal HEATTRANS
 *!option yes
 
 * Permit heat transmission investments between areas.
-$setglobal HeatTransInvest yes
+$setglobal HeatTransInvest
 *!option yes
 
 SCALAR XHINVESTSTART 'Year from which endogenous decisions in heat transmission capacities are allowed' ;
@@ -154,23 +154,23 @@ $setglobal HeatTempLift
 *-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
 
 * Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
-$setglobal INDUSTRY yes
+$setglobal INDUSTRY
 *!option yes
 
 * Include individual users data in the optimization. Requires HEATTRANSFER add-on to be activated.
-$setglobal INDIVUSERS yes
+$setglobal INDIVUSERS
 *!option yes
 
 * Include seasonal variation of heat pump's COP. If not activated, heat pumps will have a constant COP during the year.
-$setglobal SEASONALCOP yes
+$setglobal SEASONALCOP
 *!option yes
 
 * Allow to build a complicated offshore grid with hubs in the sea. Requires MIP to work as intended since technologies are modelled with economies of scale via SOS variables. If RMIP is used, it will become a linear problem.
-$setglobal OFFSHOREGRID  yes
+$setglobal OFFSHOREGRID
 *!option yes
 
 * Allow Carbon Capture Storage (CCS) technologies.
-$setglobal CCS yes
+$setglobal CCS
 *!option yes
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
@@ -184,7 +184,7 @@ $setglobal VRESHUTDOWN   yes
 *------------------------------EV ADDON-------------------------------------------------
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV  YES
+$setglobal EV
 *!option
 
 * Adds DUMB charging:
@@ -232,7 +232,7 @@ $setglobal EV_INTERSEASONAL
 *------------------------------END: EV ADDON-------------------------------------------------
 
 * Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
-$setglobal TRANSPORT yes
+$setglobal TRANSPORT
 *!option yes
 
 *-----------------------------------------------------------
@@ -305,15 +305,15 @@ $setglobal NOHEATMARKET
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH yes
+$setglobal COMBTECH
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN yes
+$Setglobal HYDROGEN
 *!option yes
 
 * Use stepwise linear fuel prices
-$Setglobal STEPWISEPRICE   yes
+$Setglobal STEPWISEPRICE
 
 * Set a common maximum for fuels.
 $Setglobal LIMITSFORFUELS
@@ -336,7 +336,7 @@ $Setglobal FV
 *!option yes
 
 *Policies (BB1, BB2, BB3)
-$setglobal POLICIES  
+$setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use (requires NETDEMAND)
@@ -430,7 +430,7 @@ $setglobal bypass yes
 
 *-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
 * overall control variable DECOM must be 'yes' if any of the other decommissioning controls are.
-$setglobal DECOM yes
+$setglobal DECOM 
 *!option yes
 
 *-------ENDOGENOUS CAPACITIES----------
