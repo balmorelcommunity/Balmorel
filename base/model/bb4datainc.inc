@@ -139,6 +139,11 @@ $if     EXIST '../data/TECH_GROUP.inc' $INCLUDE      '../data/TECH_GROUP.inc';
 $if not EXIST '../data/TECH_GROUP.inc' $INCLUDE '../../base/data/TECH_GROUP.inc';
 %semislash%;
 
+SET SECTOR     "residential, tertiary, industry in individual heating" %semislash%
+$if     EXIST '../data/SECTOR.inc' $INCLUDE      '../data/SECTOR.inc';
+$if not EXIST '../data/SECTOR.inc' $INCLUDE '../../base/data/SECTOR.inc';
+%semislash%;
+
 PARAMETER TECH_GROUP_VALUE(TECH_GROUP)         "Technology Groups value" %semislash%
 $if     EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE      '../data/TECH_GROUP_VALUE.inc';
 $if not EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/TECH_GROUP_VALUE.inc';
@@ -157,11 +162,6 @@ $if not EXIST '../data/SUBTECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/SUBTEC
 PARAMETER TECHGROUP_DEUSER(TECH_GROUP,DEUSER) "assignment of tech groups into user groups for electricity"   %semislash%
 $if     EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE      '../data/TECHGROUP_DEUSER.inc';
 $if not EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE '../../base/data/TECHGROUP_DEUSER.inc';
-%semislash%;
-
-PARAMETER TECHGROUP_DHUSER(TECH_GROUP,DHUSER) "assignment of tech groups into user groups for heat"   %semislash%
-$if     EXIST '../data/TECHGROUP_DHUSER.inc' $INCLUDE      '../data/TECHGROUP_DHUSER.inc';
-$if not EXIST '../data/TECHGROUP_DHUSER.inc' $INCLUDE '../../base/data/TECHGROUP_DHUSER.inc';
 %semislash%;
 
 SET G(GGG)    "Generation technologies in the simulation"  %semislash%
@@ -236,6 +236,7 @@ $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
 $offmulti
+$include "../../base/addons/_hooks/agknadditions.inc"
 
 SET Y(YYY)    "Years in the simulation"   %semislash%
 $if     EXIST '../data/Y.inc' $INCLUDE      '../data/Y.inc';
@@ -524,6 +525,16 @@ $if     EXIST '../data/GMAXFS.inc' $INCLUDE      '../data/GMAXFS.inc';
 $if not EXIST '../data/GMAXFS.inc' $INCLUDE '../../base/data/GMAXFS.inc';
 %semislash%;
 
+PARAMETER GMINAT(AAA,GGG)        "Minimum level generation to capacity ratio (share of installed capacity)" %semislash%
+$if     EXIST '../data/GMINAT.inc' $INCLUDE      '../data/GMINAT.inc';
+$if not EXIST '../data/GMINAT.inc' $INCLUDE '../../base/data/GMINAT.inc';
+%semislash%;
+
+PARAMETER GEQAT(AAA,GGG)         "Fixed level generation to capacity ratio (share of installed capacity)" %semislash%
+$if     EXIST '../data/GEQAT.inc' $INCLUDE      '../data/GEQAT.inc';
+$if not EXIST '../data/GEQAT.inc' $INCLUDE '../../base/data/GEQAT.inc';
+%semislash%;
+
 * Maximum capacity at new technologies. Presently not implemented.
 *PARAMETER GKNMAX(YYY,AAA,GGG)   "Maximum capacity at new technologies (MW)"  %semislash%
 *$if     EXIST '../data/GKNMAX.inc' $INCLUDE      '../data/GKNMAX.inc';
@@ -658,8 +669,6 @@ $if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
 *-------------------------------------------------------------------------------
 *---- Transmission data: ------------------------------------------------------
 *-------------------------------------------------------------------------------
-$ifi %LoadInvestData%==yes execute_load  '../../simex/TRANSINVEST_%CASEID%.gdx', XKACC;
-$ifi %LoadInvestData%==yes XKFX(Y,IRE,IRI)= XKFX(Y,IRE,IRI)+XKACC(Y,IRE,IRI);
 
 PARAMETER XINVCOST(YYY,IRRRE,IRRRI)  "Investment cost in new transmission capacity, default: INF or 0: no investment, EPS or positive: possible with stated cost (Money/MW)"    %semislash%
 $if     EXIST '../data/XINVCOST.inc' $INCLUDE         '../data/XINVCOST.inc';
@@ -670,6 +679,7 @@ PARAMETER XKFX(YYY,IRRRE,IRRRI)  "Capacity of exogenously given transmission cap
 $if     EXIST '../data/XKFX.inc' $INCLUDE         '../data/XKFX.inc';
 $if not EXIST '../data/XKFX.inc' $INCLUDE '../../base/data/XKFX.inc';
 %semislash%;
+
 
 PARAMETER XCOST(IRRRE,IRRRI)      "Transmission cost between regions (Money/MWh)"   %semislash%
 $if     EXIST '../data/XCOST.inc' $INCLUDE         '../data/XCOST.inc';
@@ -704,7 +714,6 @@ $if not EXIST '../data/FUELPRICE.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
 %semislash%;
 
 
-
 *-------------------------------------------------------------------------------
 *---- Emission policy data: ---------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -714,11 +723,11 @@ $if     EXIST '../data/M_POL.inc' $INCLUDE         '../data/M_POL.inc';
 $if not EXIST '../data/M_POL.inc' $INCLUDE '../../base/data/M_POL.inc';
 %semislash%;
 
-/*
+
 PARAMETER M_POLNA(YYY,MPOLSET)    "Emission policy data"   %semislash%
 $if     EXIST '../data/M_POLNA.inc' $INCLUDE         '../data/M_POLNA.inc';
 $if not EXIST '../data/M_POLNA.inc' $INCLUDE '../../base/data/M_POLNA.inc';
-%semislash%;  */    M_POLNA(YYY,MPOLSET)=0;
+%semislash%;
 
 *-------------------------------------------------------------------------------
 *---- Seasonal and daily variations: ------------------------------------------
@@ -802,6 +811,11 @@ $if     EXIST '../data/HYPPROFILS.inc' $INCLUDE      '../data/HYPPROFILS.inc';
 $if not EXIST '../data/HYPPROFILS.inc' $INCLUDE '../../base/data/HYPPROFILS.inc';
 %semislash%;
 
+PARAMETER TEMP_VAR_T(RRR,SSS,TTT)                      "Temperature profiles"   %semislash%
+$if     EXIST '../data/TEMP_VAR_T.inc' $INCLUDE      '../data/TEMP_VAR_T.inc';
+$if not EXIST '../data/TEMP_VAR_T.inc' $INCLUDE '../../base/data/TEMP_VAR_T.inc';
+%semislash%;
+
 
 $ifi %bb3%==yes WEIGHT_T(T)=1;
 
@@ -858,7 +872,7 @@ $include "../../base/addons/_hooks/pardefine.inc"
 *Flex4Res
 *$ontext
 GMINF(Y,'estonia','NATGAS')$(Y.VAL GE 2030) = 0 ;
-M_POL('2050','LIM_CO2',C) = EPS   ;
+*M_POL('2050','LIM_CO2',C) = EPS   ;
 GMAXF('2020','SWEDEN','Coal')=EPS;
 GMAXF('2030','SWEDEN','Coal')=EPS;
 GMAXF('2040','SWEDEN','Coal')=EPS;
@@ -895,6 +909,7 @@ $offmulti
 GKFX(Y,IA,G)$((ICA('FRANCE',IA) OR ICA('BELGIUM',IA) OR ICA('NETHERLANDS',IA) OR ICA('UNITED_KINGDOM',IA))) = 0;
 GKFX(Y,IA,G)$((ICA('FRANCE',IA) OR ICA('BELGIUM',IA) OR ICA('NETHERLANDS',IA) OR ICA('UNITED_KINGDOM',IA))) = GKFX_EUR(IA,G,Y);
 
+
 * replacing installed capacity for Germany. First copy existing HOB and ETOH capacities
 *GKFX_EUR('DE4-N_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-N_A',G,Y);
 *GKFX_EUR('DE4-S_DH',G,Y)$((GDATA(G,'GDTYPE') EQ GHOB) OR (GDATA(G,'GDTYPE') EQ GETOH)) = GKFX1('DE4-S_A',G,Y);
@@ -929,17 +944,12 @@ DH_VAR_T('DE4-W_A',DHUSER,SSS,TTT) = 0;
 * Copy DH demand for France, Belgium, Netherlands and UK
 DH(YYY,IA,DHUSER)$((ICA('GERMANY',IA) OR ICA('FRANCE',IA) OR ICA('BELGIUM',IA) OR ICA('NETHERLANDS',IA) OR ICA('UNITED_KINGDOM',IA)))  = DH2(DHUSER,IA,YYY);
 
-* New wind, solar and hydropower profiles for France
-WND_VAR_T('FR_A',SSS,TTT)= WND_VAR_T2(SSS,TTT,'FR_A')    ;
-WND_VAR_T('FR_Offshore',SSS,TTT)= WND_VAR_T('BE_Offshore',SSS,TTT)   ;
-SOLE_VAR_T('FR_A',SSS,TTT)= SOLE_VAR_T2(SSS,TTT,'FR_A')    ;
+* New wind, solar and hydropower profiles for France      !!Wind and solar profiles are integrated to WND_VAT_T.inc and SOLE_VAR_T.inc
+*WND_VAR_T('FR_A',SSS,TTT)= WND_VAR_T2(SSS,TTT,'FR_A')    ;
+*WND_VAR_T('FR_Offshore',SSS,TTT)= WND_VAR_T('BE_Offshore',SSS,TTT)   ;
+*SOLE_VAR_T('FR_A',SSS,TTT)= SOLE_VAR_T2(SSS,TTT,'FR_A')    ;
 WTRRRVAR_T('FR_A',SSS,TTT) = WTRRRVAR_S1('FR_A',SSS);
 
-** remove investment options for DH areas currently not in use
-AGKN('UK_DH',G) = NO;
-AGKN('FR_DH',G) = NO;
-AGKN('NL_DH',G) = NO;
-AGKN('BE_DH',G) = NO;
 
 *Redefine some German storage technologies as short term energy storage
 GDATA('AGG-DE4-E_RES_WTR_PMP','GDTYPE') = GESTO;
@@ -965,7 +975,6 @@ DISLOSS_E('FR') = .0739;
 DISLOSS_E('BE') = .0417;
 GKRATE('FR_A','GNR_RES_WTR_NOPMP_MC-01',SSS) = .7 ;
 
-
 * Introducing fuel factor - defined in balmorelbb4.inc
 * (Gustav 29.08.19 this is a concept we can use to get rid of VGF on hourly level also in UC and Combtech addon)
 PARAMETER IGFE_FACTOR(YYY,AAA,GGG) 'Fuel consumption per generated MW electricity';
@@ -990,9 +999,6 @@ AGKN(IA,G)$SUM(Y,GMAXINVEST(Y,IA,G)) = YES;
 ** (Gustav 29.08.19) we have to assess how good such assumption is and perhaps find some source to back it up)
 SCALAR SELF_CONSUMPTION_RATE /0.5/;
 
-*TEST: setting idv heat demand to zero
-DH(YYY,IA,DHUSER)$(INVDATA(IA,'INDIVHEAT') EQ 1) = 0;
-
 * Necessary if running EV module with more years:  ( but more changes are needed)
 *EV_PEFF(Y) = EV_PEFF('2020');
 
@@ -1010,6 +1016,13 @@ AGKN(IA,G)$((NOT ICA('DENMARK',IA)) AND (GDATA(G,'GDFUEL') = STRAW)) = NO;
 
 * Investment into coal is only allowed in Poland
 AGKN(IA,G)$((GDATA(G,'GDFUEL') EQ COAL) AND NOT ICA('POLAND',IA)) = NO;
+
+* Investment in nucleawr allowed in the following countries
+AGKN('FinA','GNR_ST_NUCL_ADVANCE')=YES;
+AGKN('LT_A','GNR_ST_NUCL_ADVANCE')=YES;
+AGKN('PL_A','GNR_ST_NUCL_ADVANCE')=YES;
+AGKN('FR_A','GNR_ST_NUCL_ADVANCE')=YES;
+AGKN('UK_A','GNR_ST_NUCL_ADVANCE')=YES;
 
 $ifi not %BBMODE%==HYDRO $goto LABEL_BBMODEINVESTEND
 AGKN(IA,GGG)$(NOT (GDATA(GGG,'GDFUEL') EQ BIOGAS)) = NO;
@@ -1029,9 +1042,10 @@ $LABEL LABEL_BBMODEINVESTEND
 
 ** Back up capacity of heat only boilers is entered in import_results_ipardecdef.inc
 
-*$ontext
+$ontext
 TABLE GKFX2(YYY,AAA,GGG)
                     GNR_WT_WIND_ONS  GNR_WT_WIND_OFF
+
 2030.NO1_A1         639.631884574279
 2030.NO2_A1         2678.15334877093
 2030.NO3_A1         1867.62744923406
@@ -1070,20 +1084,20 @@ GKFX(YYY,AAA,GGG)$(GKFX2(YYY,AAA,GGG) >0) = GKFX2(YYY,AAA,GGG) ;
 GKFX('2025',IA,'GNR_WT_WIND_ONS') = GKFX('2020',IA,'GNR_WT_WIND_ONS') + 0.5 * (GKFX('2030',IA,'GNR_WT_WIND_ONS') -  GKFX('2020',IA,'GNR_WT_WIND_ONS'))   ;
 GKFX('2025',IA,'GNR_WT_WIND_OFF') = GKFX('2020',IA,'GNR_WT_WIND_OFF') + 0.33 * (GKFX('2030',IA,'GNR_WT_WIND_OFF') -  GKFX('2020',IA,'GNR_WT_WIND_OFF')) ;
 
+AGKN(IA,G)$(GDATA(G,'GDTYPE') = GWND) = NO;
+$offtext
 
 DE('2030',IR,DEUSER)$(CCCRRR('NORWAY',IR))  =  DE('2030',IR,DEUSER) * 1.131894583;
 DE('2030',IR,DEUSER)$(CCCRRR('DENMARK',IR))  =  DE('2030',IR,DEUSER) * 1.131894583;
 DE('2030',IR,DEUSER)$(CCCRRR('SWEDEN',IR))  =  DE('2030',IR,DEUSER) * 1.038280736;
 DE('2030',IR,DEUSER)$(CCCRRR('FINLAND',IR))  =  DE('2030',IR,DEUSER) * 1.073183226;
 
-AGKN(IA,G)$(GDATA(G,'GDTYPE') = GWND) = NO;
 
 FUELPRICE('2020',AAA,'NATGAS') = 17.8/3.6;
 FUELPRICE('2020',AAA,'COAL') = 8.7/3.6;
 FUELPRICE('2030',AAA,'NATGAS') = 21.4/3.6;
 FUELPRICE('2030',AAA,'COAL') = 9.2/3.6;
-M_POL('2020','TAX_CO2',C) = 25.8;
-M_POL('2030','TAX_CO2',C) = 25.8;
+
 *$offtext
 
 GMINF_S(YYY,IA,'BIOGAS',SSS) = 0;
@@ -1152,3 +1166,5 @@ XKRATE2('SE4','LT',SSS) = 0.001;
 
 XKRATE(IRE,IRI,S)$XKRATE2(IRE,IRI,S) =  XKRATE2(IRE,IRI,S);
 $OFFTEXT
+
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_pardefine.inc";

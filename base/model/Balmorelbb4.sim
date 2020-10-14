@@ -31,6 +31,15 @@ IY411PREVY(Y,Y-1)= YES;
 *-------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 
+$ifi %INDHEAT%==yes  INDHEAT_VGKN.L(Y,INDHEAT_IA,INDHEAT_G,INDHEAT_GROUP)        = 0;
+
+*----COMBTECH----
+
+$ifi %COMBTECH%==yes IAGK_HASORPOT(Y,IA,IGCOMB2)$SUM(IGCOMB1$(IAGK_HASORPOT(Y,IA,IGCOMB1) and GGCOMB(IGCOMB1,IGCOMB2)),1)=yes;
+
+*---END OF COMBTECH
+
+
 *----- End of initialisation for the addons  -----------------------------------
 *-------------------------------------------------------------------------------
 
@@ -239,29 +248,19 @@ $ifi %VRESHUTDOWN%==yes     VGE_T.UP(IY411,IA,IGWAVE,S,T)$(GKFX(IY411,IA,IGWAVE)
 $ifi %GWAVE_DOL%==AAA   ((WAVEFLH(IA) * GKFX(IY411,IA,IGWAVE) * (1$(NOT IGKRATE(IA,IGWAVE,S,T)) + IGKRATE(IA,IGWAVE,S,T)) * WAVE_VAR_T(IA,S,T)) / IWAVESUMST(IA))$IWAVESUMST(IA);
 $ifi %GWAVE_DOL%==AAA_GGG   ((WAVEFLH(IA,IGWAVE) * GKFX(IY411,IA,IGWAVE) * (1$(NOT IGKRATE(IA,IGWAVE,S,T)) + IGKRATE(IA,IGWAVE,S,T)) * WAVE_VAR_T(IA,S,T)) / IWAVESUMST(IA))$IWAVESUMST(IA);
 
-$ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
-$ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
-$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_5.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
+* Complement to equation QGMINAT for the case with no endogenous investments.
+VGE_T.LO(IY411,IA,G,S,T)$(GKFX(IY411,IA,G) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G))))=
+   GKFX(IY411,IA,G)*(1$(NOT IGKRATE(IA,G,S,T)) + IGKRATE(IA,G,S,T))*GMINAT(IA,G);
 
-
-
-*Flex4RES
-* quickfix for nuclear flexibility
-$ifi %GKRATE_DOL%==AAA_GGG_SSS     VGE_T.lo(IY411,IA,G,S,T)$IGF(G,'NUCLEAR')=GKFX(IY411,IA,G)*(1$(NOT IGKRATE(IA,G,S,T)) + IGKRATE(IA,G,S,T))*0.7;
-$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT VGE_T.lo(IY411,IA,G,S,T)$IGF(G,'NUCLEAR')=GKFX(IY411,IA,G)*(1$(NOT IGKRATE(IA,G,S,T)) + IGKRATE(IA,G,S,T))*0.7;
+* Complement to equation QGEQAT for the case with no endogenous investments.
+VGE_T.FX(IY411,IA,G,S,T)$(GKFX(IY411,IA,G) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,G))))=
+   GKFX(IY411,IA,G)*(1$(NOT IGKRATE(IA,G,S,T)) + IGKRATE(IA,G,S,T))*GEQAT(IA,G);
 
 $ifi %TechInvest%==yes VGKN.UP(IY411,IA,G)$GMAXINVEST(IY411,IA,G) = GMAXINVEST(IY411,IA,G);
-VGE_T.FX(IY411,IA,G,S,T)$(GKFX(IY411,IA,G) AND VGFORCEGGG(IA,G) AND (IGF(G,'COAL')  OR IGF(G,'LIGNITE') OR IGF(G,'WOODWASTE') OR IGF(G,'OTHERGAS') OR IGF(G,'MUNIWASTE'))) =  GKFX(IY411,IA,G)*VGFORCEGGG(IA,G) ;
-VGE_T.LO(IY411,IA,G,S,T)$(GKFX(IY411,IA,G) AND VGFORCEGGG(IA,G) AND (IGF(G,'NATGAS') OR IGF(G,'FUELOIL')     )) =  GKFX(IY411,IA,G)*VGFORCEGGG(IA,G) ;
-VGE_T.FX(IY411,IA,G,S,T)$(GKFX(IY411,IA,G) AND VGFORCEGGG(IA,G) AND (IGF(G,'BIOGAS') OR IGF(G,'WOODCHIPS'))) =  GKFX(IY411,IA,G)*VGFORCEGGG(IA,G) ;
-
-VGE_T.LO(IY411,'DE4-W_A','GNR_ST_LIGN_CND_E-43',S,T) = GKFX(IY411,'DE4-W_A','GNR_ST_LIGN_CND_E-43')*(1$(NOT IGKRATE('DE4-W_A','GNR_ST_LIGN_CND_E-43',S,T)) + IGKRATE('DE4-W_A','GNR_ST_LIGN_CND_E-43',S,T)) * .2288;
-VGE_T.LO(IY411,'DE4-W_A','GNR_ST_LIGN_CND_E-42',S,T) = GKFX(IY411,'DE4-W_A','GNR_ST_LIGN_CND_E-42')*(1$(NOT IGKRATE('DE4-W_A','GNR_ST_LIGN_CND_E-42',S,T)) + IGKRATE('DE4-W_A','GNR_ST_LIGN_CND_E-42',S,T)) * .4883;
-VGE_T.LO(IY411,'DE4-E_A','GNR_ST_LIGN_CND_E-43',S,T) = GKFX(IY411,'DE4-E_A','GNR_ST_LIGN_CND_E-43')*(1$(NOT IGKRATE('DE4-E_A','GNR_ST_LIGN_CND_E-43',S,T)) + IGKRATE('DE4-E_A','GNR_ST_LIGN_CND_E-43',S,T)) * .4125;
 
 * Generation on existing plants (except inter and intra seasonal storages) is restricted by the capacity (MW) adjusted by GKDERATE:
 * (For storages and fluctuating sources (wind, etc.) overwritten later.)
-*F4R
+
 
 
 *---- End: Bounds on generation technologies -----------------------------------
@@ -449,10 +448,6 @@ $ifi %BB4%==yes
 $ifi %TransInvest%==yes XKACC(Y,IRE,IRI) = VXKNACCUMNET.L(Y,IRE,IRI);
 $ifi %BB4%==yes
 $ifi %TechInvest%==yes GKVACCDECOM(Y,IA,IGKFIND) = VGKNACCUMNET.L(Y,IA,IGKFIND);
-
-$ifi %STEPWISEKPOT%==YES $ifi %SaveInvestData%==yes execute_unload '../../simex/GENINVEST_%CASEID%.gdx', GKVACCDECOM,VGKNACCUMNET_KPOTSTEP;
-$ifi not %STEPWISEKPOT%==YES $ifi %SaveInvestData%==yes execute_unload '../../simex/GENINVEST_%CASEID%.gdx', GKVACCDECOM;
-$ifi %SaveInvestData%==yes execute_unload '../../simex/TRANSINVEST_%CASEID%.gdx', XKACC;
 
 
 *-------------------------------------------------------------------------------

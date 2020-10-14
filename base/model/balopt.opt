@@ -42,11 +42,11 @@ $setglobal PROJECTID
 * (or Access MDBs) will have the CASEID as filename with the appropriate extension.
 * Note that CASEID MUST be identical to folder name of the diretory holding the case.
 *
-$setglobal CASEID  BASE  !!%PyLinkScen%
+$setglobal CASEID  test  !!%PyLinkScen%
 
 *!option !fixedvalue
 
-$SETGLOBAL BBMODE hydro
+$SETGLOBAL BBMODE INVEST
 *!option INVEST
 *!option HYDRO
 *!option BB3
@@ -87,25 +87,6 @@ $setglobal testbb1234
 
 
 
-* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 1 in Flex4Res
-$SETGLOBAL SCENARIO1  YES
-*!option yes
-
-* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 2 in Flex4Res
-$SETGLOBAL SCENARIO2
-*!option yes
-
-* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
-$SETGLOBAL SCENARIO3
-*!option yes
-
-* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 4 in Flex4Res
-$SETGLOBAL SCENARIO4
-*!option yes
-
-* This option alters scenario 3 and 4 so that the tax and tariff change does not apply to residential and service sector
-$SETGLOBAL SCENARIO34_ALT    yes
-
 * Strategy to limit long term heat storage: limit with higher price assumption or limit capacity potential
 $SETGLOBAL HEATSTORE_LIM_PRICE      yes
 $ifi %INVEST%==YES $SETGLOBAL HEATSTORE_LIM_CAPACITY   yes
@@ -144,16 +125,14 @@ $ifi %BBMODE%==BB3 $setglobal TechInvest
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
-GINVESTSTART= 2016;
+GINVESTSTART= 2020;
 
 *---- End: Generation investments options----
 
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest
-$ifi %Scenario2%==YES  $setglobal TransInvest    YES
-$ifi %Scenario4%==YES  $setglobal TransInvest    YES
+$setglobal TransInvest     yes
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
@@ -164,12 +143,7 @@ XINVESTSTART= 2030;
 *----END: Investments
 *-----------------------
 
-*----BEGIN: Investments transition -------
-*Save generation and transmission investments from model run to hard drive
-$setglobal SaveInvestData
 
-* Load generation and transmission investmets to hard drive
-$setglobal LoadInvestData
 *----BEGIN: Investments transition -------
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
@@ -234,6 +208,17 @@ $setglobal watertank_loading_rest
 * they may or may not be working (at least with an appropriate data set),
 * however, it has not been checked. Please take contact if problems.
 
+* Includes individual heating !!Might not work with combtech and hydrogen yet.
+$setglobal INDHEAT
+*!option yes
+* Choose geographic coverage, denmark only or EU
+$setglobal INDHEAT_GEO   INDHEAT_EU
+*!option INDHEAT_DK
+*!option INDHEAT_EU
+
+SCALAR INDHEAT_GINVESTSTART 'Year from which engoenous decisions in generation capacities are allowed' ;
+INDHEAT_GINVESTSTART= 2020;
+
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
 $setglobal COMBTECH
 *!option yes
@@ -242,11 +227,15 @@ $setglobal COMBTECH
 $Setglobal HYDROGEN
 *!option yes
 
+* Include CCS technologies.
+$Setglobal CCS
+*!option yes
+
 * Use stepwise linear fuel prices
 $Setglobal STEPWISEPRICE
 
 * Use stepwise linear potentials for installed capacity (currently for wind power)
-$Setglobal STEPWISEKPOT
+$Setglobal STEPWISEKPOT   
 $ifi %BBMODE%==INVEST $Setglobal STEPWISEKPOT   yes
 
 * Set a common maximum for fuels.
@@ -274,19 +263,14 @@ $setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use
-$setglobal GRIDTARIFFS yes
-*!option yes
-
-* This variable shall be switched on for Dynamix Grid Tarifs as in Scenario 3 and 4 in Flex4Res
-$ifi %SCENARIO3%==YES  $SETGLOBAL SCENARIO3OR4   yes
-$ifi %SCENARIO4%==YES  $SETGLOBAL SCENARIO3OR4   yes
+$setglobal GRIDTARIFFS
 *!option yes
 
 *Scalar for setting threshold for congestion based grid tariff   /0 to 1/
 SCALAR GR_SCALAR_THRESHOLD /.9/ ;
 
 * Taxes addon
-$setglobal TAXES   yes
+$setglobal TAXES
 *!option yes
 
 *
@@ -324,10 +308,6 @@ $setglobal AGKNDISC
 *!onlyif %solvemip%==yes
 
 
-* Use the flow-based capacity allocation methodology
-$Setglobal FlowBased
-*!option yes
-
 * Set short storages to be inter- or intra-seasonal
 * according to GDSTOINTERS in GDATA (default) or all or none
 $setglobal stointers
@@ -337,13 +317,13 @@ $setglobal stointers
 
 
 * Bypass of 'turbine' (electricity production) on backpressure units.
-$setglobal bypass
+$setglobal bypass yes
 *!option yes
 
 
 * Cascading hydropower
 $setglobal hydrocas
-$setglobal hydrocas_FLH     yes
+$setglobal hydrocas_FLH
 *!option yes
 
 *-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
@@ -404,7 +384,7 @@ $setglobal UnitComm
 *!option yes
 
 * Adds minimal production-when-on:
-$setglobal MINFUELCONS yes
+$setglobal MINFUELCONS YES
 *!option yes
 * Adds respecting minimum off time of the capacities:
 $setglobal MINSTARTUPTIME  yes
@@ -514,7 +494,7 @@ $ifi     %bb4%==yes $setglobal modelname BALBASE4
 
 *-------------------------------------------------------------------------------
 * Including the power flow constraints for the European, Scandinavian and Baltic AC-Subnetworks
-$setglobal FBEU
+$setglobal FBEU yes
 *!option
 
 
@@ -565,7 +545,6 @@ $ifi %BBMODE%==BB3 $Setglobal export_results
 * export investments
 $Setglobal export_invest
 $ifi %BBMODE%==INVEST $Setglobal export_invest yes
-*$ifi %BBMODE%==HYDRO $Setglobal export_invest yes
 *!option yes
 
 *--------------------------------------------
@@ -610,13 +589,16 @@ $ifi %BBMODE%==BB3 $Setglobal ADDHEATSTORCONT yes
 
 *Import generation and storage technology capacity development from previous runs
 $setglobal ADDTECHDEV
-*$ifi %BBMODE%==HYDRO $setglobal ADDTECHDEV   yes
+$ifi %BBMODE%==HYDRO $setglobal ADDTECHDEV   yes
 $ifi %BBMODE%==BB3 $setglobal ADDTECHDEV   yes
 *!option yes
 
 *Import transmission development from previous runs
-* $setglobal ADDTRANSDEV  yes
+$setglobal ADDTRANSDEV
+$ifi %BBMODE%==HYDRO $setglobal ADDTRANSDEV   yes
+$ifi %BBMODE%==BB3 $setglobal ADDTRANSDEV   yes
 *!option yes
+
 *--------------------END OF INVESTMENTS-----------------------------------------------------------
 *-------------------------------------------------------------------------------
 
@@ -825,10 +807,6 @@ $setglobal SOLVETYPE LP
 *!option LP      "Linear Programming"
 *!option RMIP    "Relaxed Mixed Integer Programming"
 *!option MIP     "Mixed Integer Programming"
-
-*!option yes
-*!mustif %AGKNDISC%==yes
-*!mustif %UnitComm%==yes
 
 
 
