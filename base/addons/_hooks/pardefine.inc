@@ -17,8 +17,8 @@ $ifi not %BB4%==yes $goto endoffile
 
 $label  beginbb4
 
-$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_pardefine.inc";
-
+*$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_pardefine.inc";
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_pardefine.inc";
 $ifi %X3V%==yes  $include   "../../base/addons/x3v/bb4/x3v_pardefine.inc";
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_pardefine.inc";
 $ifi %AGKNDISC%==yes  $include   "../../base/addons/AGKNdisc/bb4/agkndisc_pardefine.inc";
@@ -36,6 +36,7 @@ $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowba
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_pardefine.inc";
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_pardefine.inc";
 $ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_pardefine_FLH.inc";
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_pardefine.inc";
 
 $ifi %SCENARIO3OR4%==YES $include        "../../base/addons/scenario3_4/scen34_pardefine.inc";
 $label endoffile

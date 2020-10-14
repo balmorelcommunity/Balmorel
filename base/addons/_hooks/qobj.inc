@@ -32,6 +32,9 @@ $ifi %SCENARIO3OR4%==YES  $include        "../../base/addons/scenario3_4/scen34_
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_qobj.inc";
 $ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_qobj.inc";
 
+$ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_qobj.inc";
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_qobj.inc";
+
 $ifi %vqdebug%==yes   $setglobal equation qobj
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
 

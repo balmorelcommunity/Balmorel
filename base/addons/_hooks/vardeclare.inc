@@ -34,6 +34,8 @@ $ifi %VARIABLE_TRIMMING%==yes $include "../../base/addons/variable_trimming/bb4/
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_vardeclare.inc";
 $ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_vardeclare.inc";    
 
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_vardeclare.inc";
+
 $ifi %vqdebug%==yes       $include   "../../base/addons/vqdebug/bb4/vqdebug_declare.inc";
 
 

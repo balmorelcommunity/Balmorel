@@ -31,5 +31,8 @@ $ifi %UnitComm%==yes  $include   "../../base/addons/unitcommitment/bb4/uc_setdec
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_setdeclare.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_setdeclare.inc";
 
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_setdefine.inc";
+
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_setdeclare.inc";
 
 $label endoffile

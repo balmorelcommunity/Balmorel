@@ -21,6 +21,9 @@ $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowba
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_qeeq.inc";
 $ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_qeeq.inc";
 
+$ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_qeeq.inc";
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_qeeq.inc";
+
 $ifi %vqdebug%==yes   $setglobal equation qeeq
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";
 

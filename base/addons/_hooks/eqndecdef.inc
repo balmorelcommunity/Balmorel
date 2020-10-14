@@ -31,6 +31,8 @@ $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_eqndecdef.inc";
 $ifi not %EV2%==YES $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_eqndecdef.inc";
 $ifi %EV2%==YES  $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_eqndecdef_gus.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_eqndecdef.inc";
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_eqndecdef.inc";
+
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_eqndecdef.inc";
 $ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_eqndecdef_FLH.inc";         
 $label endoffile

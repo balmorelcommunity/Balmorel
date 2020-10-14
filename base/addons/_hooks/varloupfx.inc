@@ -1,6 +1,7 @@
 * Assingments of .lo, .up and .fx for variables used in add-ons
 
 $ifi %dflexquant%==yes          $include "../../base/addons/demandflexquant/dflexquant_varloupfx.inc";
+$ifi %INDHEAT%==yes          $include "../../base/addons/indheat/indheat_varloupfx.inc";
 
 $ontext
 *todo

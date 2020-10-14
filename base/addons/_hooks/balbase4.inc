@@ -19,6 +19,8 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_balbase4.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_balbase4.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_balbase4.inc";
+$ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_balbase4.inc";
+
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_balbase4.inc";
 $ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_balbase4_FLH.inc";        
 $label endoffile
