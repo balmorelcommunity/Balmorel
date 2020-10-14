@@ -139,10 +139,10 @@ $if     EXIST '../data/TECH_GROUP.inc' $INCLUDE      '../data/TECH_GROUP.inc';
 $if not EXIST '../data/TECH_GROUP.inc' $INCLUDE '../../base/data/TECH_GROUP.inc';
 %semislash%;
 
-SET SECTOR     "residential, tertiary, industry in individual heating" %semislash%
-$if     EXIST '../data/SECTOR.inc' $INCLUDE      '../data/SECTOR.inc';
-$if not EXIST '../data/SECTOR.inc' $INCLUDE '../../base/data/SECTOR.inc';
-%semislash%;
+*SET SECTOR     "residential, tertiary, industry in individual heating" %semislash%
+*$if     EXIST '../data/SECTOR.inc' $INCLUDE      '../data/SECTOR.inc';
+*$if not EXIST '../data/SECTOR.inc' $INCLUDE '../../base/data/SECTOR.inc';
+*%semislash%;
 
 PARAMETER TECH_GROUP_VALUE(TECH_GROUP)         "Technology Groups value" %semislash%
 $if     EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE      '../data/TECH_GROUP_VALUE.inc';
@@ -811,10 +811,10 @@ $if     EXIST '../data/HYPPROFILS.inc' $INCLUDE      '../data/HYPPROFILS.inc';
 $if not EXIST '../data/HYPPROFILS.inc' $INCLUDE '../../base/data/HYPPROFILS.inc';
 %semislash%;
 
-PARAMETER TEMP_VAR_T(RRR,SSS,TTT)                      "Temperature profiles"   %semislash%
-$if     EXIST '../data/TEMP_VAR_T.inc' $INCLUDE      '../data/TEMP_VAR_T.inc';
-$if not EXIST '../data/TEMP_VAR_T.inc' $INCLUDE '../../base/data/TEMP_VAR_T.inc';
-%semislash%;
+*PARAMETER TEMP_VAR_T(RRR,SSS,TTT)                      "Temperature profiles"   %semislash%
+*$if     EXIST '../data/TEMP_VAR_T.inc' $INCLUDE      '../data/TEMP_VAR_T.inc';
+*$if not EXIST '../data/TEMP_VAR_T.inc' $INCLUDE '../../base/data/TEMP_VAR_T.inc';
+*%semislash%;
 
 
 $ifi %bb3%==yes WEIGHT_T(T)=1;
@@ -1018,11 +1018,11 @@ AGKN(IA,G)$((NOT ICA('DENMARK',IA)) AND (GDATA(G,'GDFUEL') = STRAW)) = NO;
 AGKN(IA,G)$((GDATA(G,'GDFUEL') EQ COAL) AND NOT ICA('POLAND',IA)) = NO;
 
 * Investment in nucleawr allowed in the following countries
-AGKN('FinA','GNR_ST_NUCL_ADVANCE')=YES;
-AGKN('LT_A','GNR_ST_NUCL_ADVANCE')=YES;
-AGKN('PL_A','GNR_ST_NUCL_ADVANCE')=YES;
-AGKN('FR_A','GNR_ST_NUCL_ADVANCE')=YES;
-AGKN('UK_A','GNR_ST_NUCL_ADVANCE')=YES;
+*AGKN('FinA','GNR_ST_NUCL_ADVANCE')=YES;
+*AGKN('LT_A','GNR_ST_NUCL_ADVANCE')=YES;
+*AGKN('PL_A','GNR_ST_NUCL_ADVANCE')=YES;
+*AGKN('FR_A','GNR_ST_NUCL_ADVANCE')=YES;
+*AGKN('UK_A','GNR_ST_NUCL_ADVANCE')=YES;
 
 $ifi not %BBMODE%==HYDRO $goto LABEL_BBMODEINVESTEND
 AGKN(IA,GGG)$(NOT (GDATA(GGG,'GDFUEL') EQ BIOGAS)) = NO;
