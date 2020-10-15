@@ -298,7 +298,7 @@ $include "../../base/addons/_hooks/sim.inc"
 $include "../../base/addons/_hooks/varloupfx.inc"
 
 IAGK_NOINVEST(IY411,IA,G)$IYFIRST(IY411) = 0;
-*IAGK_HASORPOT(IY411,IA,G)$(SUM(IY402$IY411PREVY(IY411,IY402), IAGK_NOINVEST(IY402,IA,G))) = NO;
+$ifi not %VARIABLE_TRIMMING%==YES IAGK_HASORPOT(IY411,IA,G)$(SUM(IY402$IY411PREVY(IY411,IY402), IAGK_NOINVEST(IY402,IA,G))) = NO;
 
 *-------------------------------------------------------------------------------
 *---- End: Annual updating wrt. options and add-on parameters: -----------------
