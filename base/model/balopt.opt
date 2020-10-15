@@ -17,7 +17,7 @@
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
 * and then, if the solver declares the problem infeasible, use them and resolve.
 * Information of ... in the .log file?
-$setglobal vqdebug 
+$setglobal vqdebug
 *!option yes
 
 
@@ -262,7 +262,7 @@ $setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use
-$setglobal GRIDTARIFFS 
+$setglobal GRIDTARIFFS
 *!option yes
 
 * Taxes addon

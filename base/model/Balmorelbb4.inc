@@ -2886,12 +2886,15 @@ $ifi %STEPWISEKPOT%==YES GKACCUMNET_KPOTSTEP(Y,IA,G,KPOTSTEP)= IGKFX_KPOTSTEP(Y,
 $ifi %STEPWISEKPOT%==YES $ifi %TechInvest%==yes  + VGKNACCUMNET_KPOTSTEP.L(Y,IA,G,KPOTSTEP)
 ;
 
+$ifi %DEMANDRESPONSE%==YES DR_ACCUMNET(Y,IA,DR_TECH) = VDRKN_ACCUMNET.L(Y,IA,DR_TECH);
+
 *Modification of GKFX values in case they are negative or extremely small (sometimes there can be issues with the decimals)
 GKACCUMNET(Y,IA,G)$(GKACCUMNET(Y,IA,G) LT 0)= 0;
 
 $ifi %export_invest%==YES execute_unload  "../../simex/XKACCUMNET.gdx", XKACCUMNET;
 $ifi %export_invest%==YES execute_unload  "../../simex/GKACCUMNET.gdx", GKACCUMNET;
 $ifi %export_invest%==YES $ifi %STEPWISEKPOT%==YES execute_unload '../../simex/VGKNACCUMNET_KPOTSTEP.gdx', GKACCUMNET_KPOTSTEP;
+$ifi %export_invest%==YES $ifi %DEMANDRESPONSE%==YES execute_unload '../../simex/DR_ACCUMNET.gdx', DR_ACCUMNET;
 
 * For runs with interseasonal storages save the following, to be used in future runs by addon "import_results":
 *Initial energy storage volumen at the beginning of each week
