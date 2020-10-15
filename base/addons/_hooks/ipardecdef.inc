@@ -21,11 +21,10 @@ $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_ipardecdef.inc";
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/DECOM/stepwiseprice_ipardecdef.inc";
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_ipardecdef.inc";
 $ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_ipardecdef_FLH.inc";
+$ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_ipardecdef.inc";
+
 $ifi %VARIABLE_TRIMMING%==yes           $include       "../../base/addons/variable_trimming/bb4/vt_ipardecdef.inc";
 
-$ifi %SCENARIO3OR4%==YES  $include        "../../base/addons/scenario3_4/scen34_ipardecdef.inc";
-
-$ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_ipardecdef.inc";
 
 $label endoffile
 

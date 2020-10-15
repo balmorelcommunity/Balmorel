@@ -86,7 +86,6 @@ $setglobal testbb1234
 *!option yes
 
 
-
 * Strategy to limit long term heat storage: limit with higher price assumption or limit capacity potential
 $SETGLOBAL HEATSTORE_LIM_PRICE      yes
 $ifi %INVEST%==YES $SETGLOBAL HEATSTORE_LIM_CAPACITY   yes
@@ -235,7 +234,7 @@ $Setglobal CCS
 $Setglobal STEPWISEPRICE
 
 * Use stepwise linear potentials for installed capacity (currently for wind power)
-$Setglobal STEPWISEKPOT   
+$Setglobal STEPWISEKPOT
 $ifi %BBMODE%==INVEST $Setglobal STEPWISEKPOT   yes
 
 * Set a common maximum for fuels.
@@ -263,14 +262,13 @@ $setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use
-$setglobal GRIDTARIFFS
+$setglobal GRIDTARIFFS  yes
 *!option yes
 
-*Scalar for setting threshold for congestion based grid tariff   /0 to 1/
-SCALAR GR_SCALAR_THRESHOLD /.9/ ;
+$setglobal SCENARIO2 yes
 
 * Taxes addon
-$setglobal TAXES
+$setglobal TAXES    yes
 *!option yes
 
 *

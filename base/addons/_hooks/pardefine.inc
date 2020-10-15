@@ -31,14 +31,15 @@ $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/GridTariffs_p
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_pardefine.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_pardefine.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardefine.inc";
-$ifi %AREA_AGGREGATION%==yes      $include        "../../base/addons/area_aggregation/aa_pardefine.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_pardefine.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_pardefine.inc";
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_pardefine.inc";
 $ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_pardefine_FLH.inc";
 $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_pardefine.inc";
 
-$ifi %SCENARIO3OR4%==YES $include        "../../base/addons/scenario3_4/scen34_pardefine.inc";
+
+$ifi %AREA_AGGREGATION%==yes      $include        "../../base/addons/area_aggregation/aa_pardefine.inc";
+
 $label endoffile
 
 

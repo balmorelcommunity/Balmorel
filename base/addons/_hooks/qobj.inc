@@ -28,7 +28,6 @@ $ifi %TAXES%==yes  $include   "../../base/addons/taxes/tax_qobj.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_qobj.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_qobj.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_qobj.inc";
-$ifi %SCENARIO3OR4%==YES  $include        "../../base/addons/scenario3_4/scen34_qobj.inc";
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_qobj.inc";
 $ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_qobj.inc";
 
