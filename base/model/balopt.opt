@@ -262,7 +262,7 @@ $setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use
-$setglobal GRIDTARIFFS  
+$setglobal GRIDTARIFFS 
 *!option yes
 
 * Taxes addon
@@ -424,7 +424,7 @@ $setglobal SEASONALLINKRAMPING
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV
+$setglobal EV      YES
 *!option
 
 * Adds DUMB charging:
@@ -875,8 +875,6 @@ $setglobal GWAVE_DOL AAA
 *-------------------------------------------------------------------------------
 $setglobal VGF Y
 * Y or ST
-
-$setglobal EV2 yes
 
 *-------------------------------------------------------------------------------
 * End of Balopt.opt
