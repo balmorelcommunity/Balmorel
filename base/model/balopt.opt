@@ -262,7 +262,7 @@ $setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use
-$setglobal GRIDTARIFFS
+$setglobal GRIDTARIFFS 
 *!option yes
 
 * Taxes addon
@@ -875,8 +875,6 @@ $setglobal GWAVE_DOL AAA
 *-------------------------------------------------------------------------------
 $setglobal VGF Y
 * Y or ST
-
-$setglobal EV2 yes
 
 *-------------------------------------------------------------------------------
 * End of Balopt.opt
