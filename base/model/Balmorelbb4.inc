@@ -108,7 +108,7 @@ ACRONYMS STEAMTURBINE_SUBCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILE
 GASTURBINE, HEATPUMP, HEATPUMP_AIR, HEATPUMP_EXCESSHEAT, HEATPUMP_GROUND, PIT, WATERTANK, SOLARPV, SOLARPV_RESIDENTIAL, SOLARPV_COMMERCIAL, SOLARHEATING, WINDTURBINE_OFFSHORE, WINDTURBINE_ONSHORE;
 
 * TEMPORARY:
-ACRONYMS WINDTURBINE_OFFSHORE_FAR, WINDTURBINE_OFFSHORE_NEARSHORE; 
+ACRONYMS WINDTURBINE_OFFSHORE_FAR, WINDTURBINE_OFFSHORE_NEARSHORE;
 
 *ACRONYMS for subtech groups
 * They can be used for multiple purposes
@@ -2710,7 +2710,7 @@ $ifi %TransInvest%==yes         QXK_UP
                                 QGMAXAFS
                                 QGMINAT
                                 QGEQAT
-                                QMINAF_S
+                                QGMINAF_S
 *                                QGMINAF TODO
 *                                QGMAXAF TODO
 *                                QGEQAF  TODO
