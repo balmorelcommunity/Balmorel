@@ -262,13 +262,11 @@ $setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use
-$setglobal GRIDTARIFFS  yes
+$setglobal GRIDTARIFFS  
 *!option yes
 
-$setglobal SCENARIO2 yes
-
 * Taxes addon
-$setglobal TAXES    yes
+$setglobal TAXES
 *!option yes
 
 *
