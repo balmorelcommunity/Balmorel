@@ -235,7 +235,7 @@ $Setglobal STEPWISEPRICE
 
 * Use stepwise linear potentials for installed capacity (currently for wind power)
 $Setglobal STEPWISEKPOT
-$ifi %BBMODE%==INVEST $Setglobal STEPWISEKPOT   yes
+*$ifi %BBMODE%==INVEST $Setglobal STEPWISEKPOT   yes
 
 * Set a common maximum for fuels.
 $Setglobal LIMITSFORFUELS
@@ -490,7 +490,7 @@ $ifi     %bb4%==yes $setglobal modelname BALBASE4
 
 *-------------------------------------------------------------------------------
 * Including the power flow constraints for the European, Scandinavian and Baltic AC-Subnetworks
-$setglobal FBEU yes
+$setglobal FBEU 
 *!option
 
 

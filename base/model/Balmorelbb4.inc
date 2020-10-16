@@ -369,7 +369,7 @@ PARAMETER M_POLNA(YYY,MPOLSET)                     "Emission policy data; defaul
 * Time series on (SSS,TTT):
 PARAMETER WEIGHT_S(SSS)                            "Weight (relative length) of each season";
 PARAMETER WEIGHT_T(TTT)                            "Weight (relative length) of each time period";
-PARAMETER CHRONOHOUR(S,T)                          "Meaning/size of each time step in each season (1 means 1 hour)";
+PARAMETER CHRONOHOUR(SSS,TTT)                          "Meaning/size of each time step in each season (1 means 1 hour)";
 
 $ifi %GKRATE_DOL%==AAA_GGG_SSS     PARAMETER GKRATE(AAA,GGG,SSS)      "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT PARAMETER GKRATE(AAA,GGG,SSS,TTT)  "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)";

@@ -746,7 +746,7 @@ $if     EXIST '../data/WEIGHT_T.inc' $INCLUDE         '../data/WEIGHT_T.inc';
 $if not EXIST '../data/WEIGHT_T.inc' $INCLUDE '../../base/data/WEIGHT_T.inc';
 %semislash%;
 
-PARAMETER CHRONOHOUR(S,T) 'Meaning/size of each time step in each season (1 means 1 hour)'  %semislash%
+PARAMETER CHRONOHOUR(SSS,TTT) 'Meaning/size of each time step in each season (1 means 1 hour)'  %semislash%
 $if     EXIST '../data/CHRONOHOUR.inc' $INCLUDE         '../data/CHRONOHOUR.inc';
 $if not EXIST '../data/CHRONOHOUR.inc' $INCLUDE '../../base/data/CHRONOHOUR.inc';
 %semislash%;
@@ -870,7 +870,7 @@ $include "../../base/addons/_hooks/pardefine.inc"
 *%semislash%;
 
 *Flex4Res
-*$ontext
+$ontext
 GMINF(Y,'estonia','NATGAS')$(Y.VAL GE 2030) = 0 ;
 *M_POL('2050','LIM_CO2',C) = EPS   ;
 GMAXF('2020','SWEDEN','Coal')=EPS;
@@ -966,19 +966,11 @@ GDATA('AGG-DE4-W_RES_WTR_PMP','GDFE') = 0.76;
 *GDATA('AGG-DE4-E_RES_WTR_PMP','GDSTOHLOAD') = 10;
 
 
-* minimum fuel limit on seasonal level for German Biogas
-* (Gustav 29.08.19 this is for testing, assures a seasonal profile for use of biogas, but biogas plants operates VERY flexible over the day)
-PARAMETER GMINF_S(YYY,AAA,FFF,SSS) 'Minimum fuel use (GJ) per season'  ;
-GMINF_S(Y,IA,FFF,S)$ICA('GERMANY',IA) = GMINF(Y,IA,FFF)/CARD(S);
 
 DISLOSS_E('FR') = .0739;
 DISLOSS_E('BE') = .0417;
 GKRATE('FR_A','GNR_RES_WTR_NOPMP_MC-01',SSS) = .7 ;
 
-* Introducing fuel factor - defined in balmorelbb4.inc
-* (Gustav 29.08.19 this is a concept we can use to get rid of VGF on hourly level also in UC and Combtech addon)
-PARAMETER IGFE_FACTOR(YYY,AAA,GGG) 'Fuel consumption per generated MW electricity';
-PARAMETER IGFH_FACTOR(YYY,AAA,GGG) 'Fuel consumption per generated MW electricity';
 
 
 * Set a default level for GKFX for all EXT, BPR, CND, HOB and ETOH technologies. (to 0.9)
@@ -997,9 +989,7 @@ GMAXINVEST(Y,IA,G) = SUM(YYY$Y_YYY(Y,YYY), GMAXINVEST1(IA,G,YYY));
 ** add the new investment option to AGKN
 AGKN(IA,G)$SUM(Y,GMAXINVEST(Y,IA,G)) = YES;
 
-* assumption on how much of solar generation that can be used on site (and hence get indirect subsidy)
-** (Gustav 29.08.19) we have to assess how good such assumption is and perhaps find some source to back it up)
-SCALAR SELF_CONSUMPTION_RATE /0.5/;
+
 
 * Necessary if running EV module with more years:  ( but more changes are needed)
 *EV_PEFF(Y) = EV_PEFF('2020');
@@ -1043,7 +1033,7 @@ GKFX(Y,IA,'GNR_BO_LIGHTOIL_E-67')$((Y.VAL < 2020) AND (INVDATA(IA,'LDH') OR  INV
 $LABEL LABEL_BBMODEINVESTEND
 
 ** Back up capacity of heat only boilers is entered in import_results_ipardecdef.inc
-
+$OFFTEXT
 $ontext
 TABLE GKFX2(YYY,AAA,GGG)
                     GNR_WT_WIND_ONS  GNR_WT_WIND_OFF
@@ -1088,7 +1078,7 @@ GKFX('2025',IA,'GNR_WT_WIND_OFF') = GKFX('2020',IA,'GNR_WT_WIND_OFF') + 0.33 * (
 
 AGKN(IA,G)$(GDATA(G,'GDTYPE') = GWND) = NO;
 $offtext
-
+$oNtext
 DE('2030',IR,DEUSER)$(CCCRRR('NORWAY',IR))  =  DE('2030',IR,DEUSER) * 1.131894583;
 DE('2030',IR,DEUSER)$(CCCRRR('DENMARK',IR))  =  DE('2030',IR,DEUSER) * 1.131894583;
 DE('2030',IR,DEUSER)$(CCCRRR('SWEDEN',IR))  =  DE('2030',IR,DEUSER) * 1.038280736;
@@ -1150,7 +1140,7 @@ GMAXF(Y,'GERMANY','BIOGAS')$(Y.VAL < 2025) = 0;
 
 
 GDATA('GNR_IND-ST_WOODCHI_BP_E-71','GDFUEL') = WOODWASTE;
-
+$offtext
 ** CALIBRATION:
 $ONTEXT
 TABLE XKRATE2(IRRRE,IRRRI,SSS)
@@ -1169,4 +1159,25 @@ XKRATE2('SE4','LT',SSS) = 0.001;
 XKRATE(IRE,IRI,S)$XKRATE2(IRE,IRI,S) =  XKRATE2(IRE,IRI,S);
 $OFFTEXT
 
+option clear=XCOST
+;
+
 $ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_pardefine.inc";
+
+* Introducing fuel factor - defined in balmorelbb4.inc
+* (Gustav 29.08.19 this is a concept we can use to get rid of VGF on hourly level also in UC and Combtech addon)
+PARAMETER IGFE_FACTOR(YYY,AAA,GGG) 'Fuel consumption per generated MW electricity';
+PARAMETER IGFH_FACTOR(YYY,AAA,GGG) 'Fuel consumption per generated MW electricity';
+
+* assumption on how much of solar generation that can be used on site (and hence get indirect subsidy)
+** (Gustav 29.08.19) we have to assess how good such assumption is and perhaps find some source to back it up)
+SCALAR SELF_CONSUMPTION_RATE /0.5/;
+
+* minimum fuel limit on seasonal level for German Biogas
+* (Gustav 29.08.19 this is for testing, assures a seasonal profile for use of biogas, but biogas plants operates VERY flexible over the day)
+TABLE GMINF_S(YYY,AAA,FFF,SSS) 'Minimum fuel use (GJ) per season'
+;
+
+TABLE GMAXINVEST(YYY,AAA,G)
+;
+
