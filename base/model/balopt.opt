@@ -235,7 +235,7 @@ $Setglobal STEPWISEPRICE
 
 * Use stepwise linear potentials for installed capacity (currently for wind power)
 $Setglobal STEPWISEKPOT
-$ifi %BBMODE%==INVEST $Setglobal STEPWISEKPOT   yes
+$ifi %BBMODE%==INVEST $Setglobal STEPWISEKPOT 
 
 * Set a common maximum for fuels.
 $Setglobal LIMITSFORFUELS
@@ -459,7 +459,7 @@ $ifi %BBMODE%==INVEST $setglobal VARIABLE_TRIMMING   YES
 
 
 * Tool that aggregates areas in preprocessing
-$setglobal AREA_AGGREGATION YES
+$setglobal AREA_AGGREGATION   YES
 *!option yes
 
 
