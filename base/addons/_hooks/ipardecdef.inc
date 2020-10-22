@@ -25,7 +25,6 @@ $ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_ipar
 
 $ifi %VARIABLE_TRIMMING%==yes           $include       "../../base/addons/variable_trimming/bb4/vt_ipardecdef.inc";
 
-
 $label endoffile
 
 
