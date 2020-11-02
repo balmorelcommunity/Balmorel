@@ -100,21 +100,8 @@ ALIAS(CCCRRRAAA,CCCRRRAAAALIAS);
 * New technology types may be added only if also code specifying their properties are added.
 ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GHYRR, GWND, GSOLE, GSOLH, GWAVE;
 
-*ACRONYMS for tech groups
-* They can be used for multiple purposes
-* They should generally not be changed.
-* New technology types may be added only if also code specifying their properties are added.
-ACRONYMS STEAMTURBINE_SUBCRITICAL, STEAMTURBINE_SUPERCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILER, COMBINEDCYCLE, EXCESS_HEAT, ELECTRICITY_BATTERY, GEOTHERMAL,
-GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_ONSHORE, WINDTURBINE_OFFSHORE,
-BACKUP_ELECTRICITY,BACKUP_HEAT;
-
-*ACRONYMS for subtech groups
-* They can be used for multiple purposes
-* They should generally not be changed.
-* New technology types may be added only if also code specifying their properties are added.
-ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,AIR_AIR,AIR_WTR, EXCESSHEAT_WTR, GROUND_WTR, EXCESSHEAT,GROUND,HUB_OFF;
-
 * ACRONYMS for user defined fuels will be given as part of file FFF.inc
+* ACRONYMS for other purposes are defined in ACRONYMS.inc
 
 *-------------------------------------------------------------------------------
 *----- Definitions of SETS and ACRONYMS that are given in the $included files:
@@ -392,11 +379,6 @@ PARAMETER VHYRS_STL(YYY,AAA,SSS,TTT)  "Hourly hydro storage level (MWh)";
 PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
 PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
 
-*Unit Commitemnt data
-PARAMETER UCON(YYY,AAA,GGG,SSS,TTT)     "Unit commitment (0,1) on electricity generation to be used in future runs";
-PARAMETER UCON_STOLOAD(YYY,AAA,GGG,SSS,TTT)     "Unit commitment (0,1) on storage loading to be used in future runs";
-PARAMETER UCONMAINT(YYY,AAA,GGG,SSS)    "Unit commitment maintenance (0,1) on electricity generation to be used in future runs";
-
 * Data for handling storage
 PARAMETER ESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER HSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
@@ -568,35 +550,6 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
    IGE(G)=IGEE(G)+IGEH(G);
    IGH(G)=IGHH(G)+IGEH(G);
 
-$ifi not %heatsto_loading_rest%==yes $goto heat_storage_loading_lim
-*Definition of ILINKSTO
-ILINKSTO(IGHSTOALL,IGH)=YES;
-
-$ifi not %heatsto2heasto_rest%==yes $goto heat_storage_to_heat_storage
-*Storage are forbidden to load other storages
-LOOP(IGHSTOALL,
-         LOOP(IGH$(IGHSTOALL(IGH)),
-                 ILINKSTO(IGHSTOALL,IGH)=NO;
-         );
-
-);
-$label  heat_storage_to_heat_storage
-
-$ifi not %watertank_loading_rest%==yes $goto watertank_loading_lim
-*Water tank loading technology restriction
-
-IGHNOWT(G) =  IGSOLH(G);
-
-LOOP(IWATERTANK,
-         LOOP(IGHNOWT,
-                     ILINKSTO(IWATERTANK,IGHNOWT)=NO;
-         );
-
-);
-$label  watertank_loading_lim
-
-$label  heat_storage_loading_lim
-
 *-----------------------
 
    IGDISPATCH(G)    =   IGCND(G)
@@ -631,32 +584,6 @@ $include "../../base/addons/_hooks/isetdecdef.inc"
 *-------------------------------------------------------------------------------
 *----- End: Any internal sets assignments for addon to be placed here ----------
 *-------------------------------------------------------------------------------
-
-*The following corrects the economic values in input data to match the relative size of T
-SCALAR IHOURFRAC "Weight of T with respect to 1 hour (if T means 1 hour, then IHOURFRAC is 1, if T means 0.5 hours, IHOURFRAC is 0.5, etc.)";
-IHOURFRAC=8736/(CARD(TTT)*CARD(SSS));
-FDATA(FFF,'FDCO2')=FDATA(FFF,'FDCO2')*IHOURFRAC;
-FDATA(FFF,'FDSO2')=FDATA(FFF,'FDSO2')*IHOURFRAC;
-FDATA(FFF,'FDN2O')=FDATA(FFF,'FDN2O')*IHOURFRAC;
-GDATA(GGG,'GDOMVCOST0')=GDATA(GGG,'GDOMVCOST0')*IHOURFRAC;
-GDATA(GGG,'GDOMVCOSTIN')=GDATA(GGG,'GDOMVCOSTIN')*IHOURFRAC;
-FUELPRICE(YYY,AAA,FFF)=FUELPRICE(YYY,AAA,FFF)*IHOURFRAC;
-HYPPROFILS(AAA,SSS)=HYPPROFILS(AAA,SSS)*IHOURFRAC;
-XCOST(IRRRE,IRRRI)=XCOST(IRRRE,IRRRI)*IHOURFRAC;
-$ifi %HEATTRANS%==yes     XHCOST(IAAAE,IAAAI)=XHCOST(IAAAE,IAAAI)*IHOURFRAC;
-$ifi %STEPWISEPRICE%==yes STEPWISEPRICE_FUELPRICE_STEP(YYY,CCC,STEPWISEPRICE_L,STEPWISEPRICE_FFF)=STEPWISEPRICE_FUELPRICE_STEP(YYY,CCC,STEPWISEPRICE_L,STEPWISEPRICE_FFF)*IHOURFRAC;
-$ifi %X3V%==yes  IX3VPIM_Y(YYY,RRR,X3VPLACE,X3VSTEP,SSS,TT)=IX3VPIM_Y(YYY,RRR,X3VPLACE,X3VSTEP,SSS,TT)*IHOURFRAC;
-$ifi %X3V%==yes  IX3VPEX_Y(YYY,RRR,X3VPLACE,X3VSTEP,SSS,TT)=(YYY,RRR,X3VPLACE,X3VSTEP,SSS,TT)*IHOURFRAC;
-$ifi %import_results%==yes  $ifi not %HYRSBB123%==none      WATERVAL(Y,IA,S)=WATERVAL(Y,IA,S)*IHOURFRAC;
-$ifi %import_results%==yes  $ifi not %ADDESTOVOLTS%==none   ESTOVOLTSVAL(Y,IA,IGESTOS,S,T)=ESTOVOLTSVAL(Y,IA,IGESTOS,S,T)*IHOURFRAC;
-$ifi %import_results%==yes  $ifi not %ADDHSTOVOLTS%==none   HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)=HSTOVOLTSVAL(Y,IA,IGHSTOS,S,T)*IHOURFRAC;
-$ifi %import_results%==yes  $ifi not %ADDESTOVOLT%==none    ESTOVOLTVAL(Y,IA,IGESTO,S,T)=ESTOVOLTVAL(Y,IA,IGESTO,S,T)*IHOURFRAC;
-$ifi %import_results%==yes  $ifi not %ADDHSTOVOLT%==none    HSTOVOLTVAL(Y,IA,IGHSTO,S,T)=HSTOVOLTVAL(Y,IA,IGHSTO,S,T)*IHOURFRAC;
-$ifi %import_results%==yes  $ifi not %ADDH2STOVOLTS%==none  $ifi %HYDROGEN%==yes H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)=H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)*IHOURFRAC;
-$ifi %import_results%==yes  $ifi not %ADDBIOMETHSTOVOLTS%==none  $ifi %HYDROGEN%==yes BIOMETHSTOVOLTSVAL(Y,S,T)=BIOMETHSTOVOLTSVAL(Y,S,T)*IHOURFRAC;
-
-*MISSING?: Grid_tariffs, taxes, demandresponse, CCS !!!!!!
-
 
 *-------------------------------------------------------------------------------
 *---- Investments: --------------------------------------------------------------
@@ -797,6 +724,10 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 *------------------------------------------------------------------------------
 * Internal parameters and settings:
 *------------------------------------------------------------------------------
+*The following corrects the economic values in input data (defined in money/MWh) to match the relative size of T in the objective function, in case the size of T does not correspond to 1 hour
+SCALAR IHOURFRAC "Weight of T with respect to 1 hour (if T means 1 hour, then IHOURFRAC is 1, if T means 0.5 hours, IHOURFRAC is 0.5, etc.)";
+IHOURFRAC=8736/(CARD(TTT)*CARD(SSS));
+
 *Initializing the set IGDECOMEXOPOT in case the add-on DECOM is not activated
 IGDECOMEXOPOT(Y,IA,G)=0;
 
@@ -1397,14 +1328,12 @@ EQUATIONS
    QHSTOVOLT(Y,AAA,G,S,T)     "Intra-seasonal heat storage dynamic equation (MWh)"
    QHSTOVOLTS(Y,AAA,G,S,T)    "Inter-seasonal heat storage dynamic equation (MWh)"
 
-   QHSTOLOADT(Y,AAA,G,S,T)    "Intra-seasonal Heat storage loading less than heat production from allowed technologies (MW)"
    QHSTOLOADTLIM(Y,AAA,G,S,T) "Intra-seasonal Upper limit to heat storage loading (MW)"
    QESTOLOADTLIM(Y,AAA,G,S,T) "Intra-seasonal Upper limit to electricity storage loading (MW)"
    QHSTOVOLTLIM(Y,AAA,G,S,T)  "Intra-seasonal Heat storage capacity limit (MWh)"
    QESTOVOLTLIM(Y,AAA,G,S,T)  "Intra-seasonal Electricity storage capacity limit (MWh)"
    QHSTOVGHTLIM(Y,AAA,G,S,T)"Intra-seasonal Heat storage output limit (MW)"
    QESTOVGETLIM(Y,AAA,G,S,T)"Intra-seasonal Electricity storage output limit (MW)"
-   QHSTOLOADTS(Y,AAA,G,S,T)    "Inter-seasonal Heat storage loading less than heat production from allowed technologies (MW)"
    QHSTOLOADTLIMS(Y,AAA,G,S,T) "Inter-seasonal Upper limit to heat storage loading (MW)"
    QESTOLOADTLIMS(Y,AAA,G,S,T) "Inter-seasonal Upper limit to electricity storage loading (MW)"
    QHSTOVOLTLIMS(Y,AAA,G,S,T)  "Inter-seasonal Heat storage capacity limit (MWh)"
@@ -1523,30 +1452,30 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 * Cost of fuel consumption during the year:
      SUM((IAGK_HASORPOT(Y,IA,G),FFF)$(IGF(G,FFF)),
-                 FUELPRICE(Y,IA,FFF) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(Y,IA,G,IS3,T)))
+                 FUELPRICE(Y,IA,FFF)*IHOURFRAC * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(Y,IA,G,IS3,T)))
 
 
 * Operation and maintainance cost:
 
-   + SUM(IAGK_HASORPOT(Y,IA,IGKE), GOMVCOSTO(IA,IGKE) * SUM((IS3,T), IHOURSINST(IS3,T)*VGE_T(Y,IA,IGKE,IS3,T)))
+   + SUM(IAGK_HASORPOT(Y,IA,IGKE), GOMVCOSTO(IA,IGKE)*IHOURFRAC * SUM((IS3,T), IHOURSINST(IS3,T)*VGE_T(Y,IA,IGKE,IS3,T)))
 
-   + SUM(IAGK_HASORPOT(Y,IA,IGKH), GOMVCOSTO(IA,IGKH) * SUM((IS3,T), IHOURSINST(IS3,T)*GDATA(IGKH,'GDCV')*(VGH_T(Y,IA,IGKH,IS3,T))))
+   + SUM(IAGK_HASORPOT(Y,IA,IGKH), GOMVCOSTO(IA,IGKH)*IHOURFRAC * SUM((IS3,T), IHOURSINST(IS3,T)*GDATA(IGKH,'GDCV')*(VGH_T(Y,IA,IGKH,IS3,T))))
 
-   + SUM(IAGK_HASORPOT(Y,IA,G), GOMVCOSTIN(IA,G) * SUM((IS3,T), IHOURSINST(IS3,T)*VGF_T(Y,IA,G,IS3,T)))
+   + SUM(IAGK_HASORPOT(Y,IA,G), GOMVCOSTIN(IA,G)*IHOURFRAC * SUM((IS3,T), IHOURSINST(IS3,T)*VGF_T(Y,IA,G,IS3,T)))
 
     + IOF1000*(SUM((IA,G)$IAGK_HASORPOT(Y,IA,G),(VGKNACCUMNET(Y,IA,G)$(IAGK_HASORPOT(Y,IA,G) AND IAGKN(IA,G)) + GKFX(Y,IA,G)$IAGKFX(Y,IA,G))*GOMFCOST(IA,G)))
 
 
 *  Hydro with storage seasonal price profile:
 
-   + SUM((IA,IGHYRS)$IAGK_HASORPOT(Y,IA,IGHYRS), SUM((IS3,T), HYPPROFILS(IA,IS3)* IHOURSINST(IS3,T)
+   + SUM((IA,IGHYRS)$IAGK_HASORPOT(Y,IA,IGHYRS), SUM((IS3,T), HYPPROFILS(IA,IS3)*IHOURFRAC* IHOURSINST(IS3,T)
      * VGE_T(Y,IA,IGHYRS,IS3,T)))
 
 
 * Transmission cost:
 
    + SUM((IRE,IRI)$IXK_HASORPOT(Y,IRE,IRI),
-       SUM((IS3,T), IHOURSINST(IS3,T) * (VX_T(Y,IRE,IRI,IS3,T) * XCOST(IRE,IRI))))
+       SUM((IS3,T), IHOURSINST(IS3,T) * (VX_T(Y,IRE,IRI,IS3,T) * XCOST(IRE,IRI)*IHOURFRAC)))
 
 
 * Investment costs, new generation and storage capacity:
@@ -1573,11 +1502,11 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 * Emission taxes
 
-    + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G)*IOF0001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_CO2",C)))
+    + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G)*IHOURFRAC*IOF0001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_CO2",C)))
 
-    + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_SO2(G)*IOF0001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_SO2",C)))
+    + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_SO2(G)*IHOURFRAC*IOF0001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_SO2",C)))
 
-    + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (GDATA(G,'GDNOX')*IOF0000001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_NOX",C)))
+    + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (GDATA(G,'GDNOX')*IHOURFRAC*IOF0000001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_NOX",C)))
 
 
 * Add-on objective function contributions
@@ -1870,22 +1799,6 @@ QHSTOVOLTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
 
 $include "../../base/addons/_hooks/qhstovolts.inc"
 ;
-
-
-* "Intra-seasonal Heat storage loading less than heat production from allowed technologies (MW)"
-QHSTOLOADT(IY411,IA,IGHSTO,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGHSTO))..
-   SUM(IGH$(IAGK_HASORPOT(IY411,IA,IGH) AND ILINKSTO(IGHSTO,IGH)), VGH_T(IY411,IA,IGH,IS3,T))
-         =G=
-   VHSTOLOADT(IY411,IA,IGHSTO,IS3,T)
-;
-
-* "Inter-seasonal Heat storage loading less than heat production from allowed technologies (MW)"
-QHSTOLOADTS(IY411,IA,IGHSTOS,S,T)$(IAGK_HASORPOT(IY411,IA,IGHSTOS) AND IS3(S))..
-   SUM(IGH$(IAGK_HASORPOT(IY411,IA,IGH) AND ILINKSTO(IGHSTOS,IGH)), VGH_T(IY411,IA,IGH,S,T))
-         =G=
-   VHSTOLOADTS(IY411,IA,IGHSTOS,S,T)
-;
-
 
 * "Upper limit to heat storage loading (MW)"
 QHSTOLOADTLIM(IY411,IA,IGHSTO,IS3,T)$((SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTO)) OR IGDECOMEXOPOT(IY411,IA,IGHSTO)) AND IAGK_HASORPOT(IY411,IA,IGHSTO))..
@@ -2621,7 +2534,9 @@ MODEL BALBASE4  "Balmorel model with endogeneous investments"
                                 QOBJ
 *--- Balance equations ---------------------------------------------------------
                                 QEEQ
-$ifi not %BalancingMarket%==yes $ifi not %NOHEATMARKET%==yes   QHEQ
+$ifi %BalancingMarket%==yes $ifi %NOHEATMARKET%==yes $goto NO_HEATMARKET
+                                QHEQ
+$label NO_HEATMARKET
 $ifi %NETDEMAND%==yes           QDENET
                                 QGFEQ
 *--- Feasible generation region ------------------------------------------------
@@ -2647,9 +2562,6 @@ $ifi %bypass%==yes              QGFEQEXTBYPASS2
                                 QESTOVOLTS
                                 QHSTOVOLT
                                 QHSTOVOLTS
-
-$ifi %heatsto_loading_rest%==yes QHSTOLOADT
-$ifi %heatsto_loading_rest%==yes QHSTOLOADTS
 
 *--- Transmission capacity (listed in QXKE_UP) -----------------------------------------------------
 
@@ -3058,6 +2970,13 @@ $ifi %EV%==yes   EV_VSOC_BEV(Y,IR,S,T)=0;
 $ifi %EV%==yes   EV_VSOC_PHEV(Y,IR,S,T)=0;
 $ifi %EV%==yes   EV_BEV_NETCHARGING(Y,IR,S,T)=0;
 $ifi %EV%==yes   EV_PHEV_NETCHARGING(Y,IR,S,T)=0;
+
+$ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes INDIVUSERS_GROUPSHARE(Y,IR,INDIVUSERS_GROUP)=VINDIVUSERS_GROUPSHARE.L(Y,IR,INDIVUSERS_GROUP);
+$ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes execute_unload  "../../simex/INDIVUSERS_GROUPSHARE.gdx", INDIVUSERS_GROUPSHARE;
+
+*Reducing size of export files once they have been exported
+$ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes INDIVUSERS_GROUPSHARE(Y,IR,INDIVUSERS_GROUP)=0;
+
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
 *------------------------------------------------------------------------------

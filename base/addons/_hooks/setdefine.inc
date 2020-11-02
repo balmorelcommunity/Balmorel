@@ -41,5 +41,7 @@ $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTarif
 
 $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_setdefine.inc";
 
+$ifi %INDIVUSERS%==yes       $include   "../../base/addons/indivusers/bb4/indivusers_setdefine.inc";
+
 
 $label endoffile

@@ -1,5 +1,3 @@
-* Hans: søg "/*"
-
 * File bb4datainc.inc for including data for Balmorel, model BB4.
 
 * Data for any ID is held in a separate file, and $included here.
@@ -22,7 +20,10 @@
 %ONOFFDATALISTING%
 
 
-* TESTING: (indsætter datainc1 her, plus lidt kode) ----------------------------
+*Other acronyms
+$if     EXIST '../data/ACRONYMS.inc' $INCLUDE         '../data/ACRONYMS.inc';
+$if not EXIST '../data/ACRONYMS.inc' $INCLUDE '../../base/data/ACRONYMS.inc';
+
 * Geography
 
 SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)" %semislash%
@@ -243,7 +244,7 @@ $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
 $offmulti
-*------------- Any XINVCOST additions for addon to be placed here: ----------------
+*------------- Any AGKN additions for addon to be placed here: ----------------
 $include "../../base/addons/_hooks/agknadditions.inc"
 
 SET Y(YYY)    "Years in the simulation"   %semislash%
@@ -466,6 +467,8 @@ PARAMETER SUBTECHGROUPKPOT(CCCRRRAAA,TECH_GROUP,SUBTECH_GROUP)    "Subtechnology
 $if     EXIST '../data/SUBTECHGROUPKPOT.inc' $INCLUDE      '../data/SUBTECHGROUPKPOT.inc';
 $if not EXIST '../data/SUBTECHGROUPKPOT.inc' $INCLUDE '../../base/data/SUBTECHGROUPKPOT.inc';
 %semislash%;
+*------------- Any SUBTECHGROUPKPOT additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/subtechgroupkpotadditions.inc"
 
 /* Todo
 PARAMETER FKMIN(YYY,CCCRRRAAA,FFF)    "Capacity restricted by geography (MW)"   %semislash%
@@ -557,6 +560,8 @@ $ifi %WNDFLH_DOL%==AAA_GGG           PARAMETER WNDFLH(AAA,GGG)     "Full load ho
 $if     EXIST '../data/WNDFLH.inc' $INCLUDE      '../data/WNDFLH.inc';
 $if not EXIST '../data/WNDFLH.inc' $INCLUDE '../../base/data/WNDFLH.inc';
 %semislash%;
+*------------- Any WNDFLH additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/wndflhadditions.inc"
 
 $ifi %SOLEFLH_DOL%==AAA              PARAMETER SOLEFLH(AAA)        "Full load hours for solar power (hours)"  %semislash%
 $ifi %SOLEFLH_DOL%==AAA_GGG          PARAMETER SOLEFLH(AAA,GGG)    "Full load hours for solar power (hours)"  %semislash%
@@ -693,11 +698,15 @@ PARAMETER XCOST(IRRRE,IRRRI)      "Transmission cost between regions (Money/MWh)
 $if     EXIST '../data/XCOST.inc' $INCLUDE         '../data/XCOST.inc';
 $if not EXIST '../data/XCOST.inc' $INCLUDE '../../base/data/XCOST.inc';
 %semislash%;
+*------------- Any XCOST additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/xcostadditions.inc"
 
 PARAMETER XLOSS(IRRRE,IRRRI)      "Transmission loss between regions (fraction)"  %semislash%
 $if     EXIST '../data/XLOSS.inc' $INCLUDE         '../data/XLOSS.inc';
 $if not EXIST '../data/XLOSS.inc' $INCLUDE '../../base/data/XLOSS.inc';
 %semislash%;
+*------------- Any XLOSS additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/xlossadditions.inc"
 
 $ifi %XKRATE_DOL%==IRRRE_IRRRI          PARAMETER XKRATE(IRRRE,IRRRI)         "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS      PARAMETER XKRATE(IRRRE,IRRRI,SSS)     "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
@@ -799,6 +808,8 @@ PARAMETER WND_VAR_T(AAA,SSS,TTT)                   "Variation of the wind genera
 $if     EXIST '../data/WND_VAR_T.inc' $INCLUDE      '../data/WND_VAR_T.inc';
 $if not EXIST '../data/WND_VAR_T.inc' $INCLUDE '../../base/data/WND_VAR_T.inc';
 %semislash%;
+*------------- Any WND_VAR_T additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/wnd_var_tadditions.inc"
 
 PARAMETER SOLE_VAR_T(AAA,SSS,TTT)                  "Variation of the solarE generation"   %semislash%
 $if     EXIST '../data/SOLE_VAR_T.inc' $INCLUDE      '../data/SOLE_VAR_T.inc';

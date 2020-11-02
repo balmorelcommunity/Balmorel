@@ -32,5 +32,6 @@ $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardeclare.inc";
 $ifi %TRANS_RAMP%==yes  $include   "../../base/addons/transmission_ramping/transmission_ramping_pardeclare.inc";
 $ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_pardeclare.inc";
 $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_pardeclare.inc";
+$ifi %INDIVUSERS%==yes       $include   "../../base/addons/indivusers/bb4/indivusers_pardeclare.inc";
 
 $label endoffile

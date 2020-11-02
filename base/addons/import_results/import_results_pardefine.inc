@@ -71,3 +71,6 @@ $ifi %ADDPLANNEDMAINTENANCE%==yes $ifi %UnitComm%==yes execute_load  '../../sime
 *Import transport seasonal demand
 $ifi %ADDSEASONALTRANSPORTDEMAND%==yes $ifi %transport%==yes execute_load  '../../simex/TRANSDEMAND_S.gdx', TRANSDEMAND_S;
 $ifi %ADDPEAKTRANSPORTDEMAND%==yes $ifi %transport%==yes execute_load  '../../simex/TRANSDEMAND_T_MAX.gdx', TRANSDEMAND_T_MAX;
+
+*Import Share of heat demand in an individual user group
+$ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes $ifi %ADDGROUP_DEMAND_SHIFT%==yes  execute_load  '../../simex/INDIVUSERS_GROUPSHARE.gdx', INDIVUSERS_GROUPSHARE;
