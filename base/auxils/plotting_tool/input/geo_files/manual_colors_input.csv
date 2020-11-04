@@ -1,0 +1,12 @@
+Value,Color,Hatch,Textcolor
+WIND-ON,lightgreen,||,black
+WIND-OFF,lightblue,,black
+SHORTTERM-STO,violet,,black
+LONGTERM-STO,darkblue,||,white
+HYDRO-ROR,blue,,white
+FUEL-TO-HEAT,grey,,white
+FUEL-TO-ELECT,darkgrey,||,white
+ELECT-TO-HEAT,red,,white
+CHP,green,,white
+SOLAR-PV,yellow,,black
+SOLAR-HEAT,orange,||,black
