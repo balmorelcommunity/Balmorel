@@ -2740,12 +2740,15 @@ $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes execute_unload  "../../sime
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S)=0;
 
 *Transport demand
+$ifi %TRANSPORT%==yes   TRANSDEMAND_T(Y,IR,S,T)=VTRANSDEMAND_T.L(Y,IR,S,T);
 $ifi %TRANSPORT%==yes   TRANSDEMAND_S(Y,C,S)=SUM((T,IR)$CCCRRR(C,IR),VTRANSDEMAND_T.L(Y,IR,S,T))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
 $ifi %TRANSPORT%==yes   TRANSDEMAND_T_MAX(Y,IR)=VTRANSDEMAND_T_MAX.L(Y,IR);
+$ifi %TRANSPORT%==yes   execute_unload  "../../simex/TRANSDEMAND_T.gdx", TRANSDEMAND_T;
 $ifi %TRANSPORT%==yes   execute_unload  "../../simex/TRANSDEMAND_S.gdx", TRANSDEMAND_S;
 $ifi %TRANSPORT%==yes   execute_unload  "../../simex/TRANSDEMAND_T_MAX.gdx", TRANSDEMAND_T_MAX;
 
 *Reducing size of export files once they have been exported
+$ifi %TRANSPORT%==yes   TRANSDEMAND_T(Y,IR,S,T)=0;
 $ifi %TRANSPORT%==yes   TRANSDEMAND_S(Y,C,S)=0;
 $ifi %TRANSPORT%==yes   TRANSDEMAND_T_MAX(Y,IR)=0;
 

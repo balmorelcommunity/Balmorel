@@ -50,4 +50,17 @@ SUM(C,TRANSDEMAND_S(IY411,C,IS3))
 
 $label $NO_SEASONALTRANSPORTDEMAND
 
+$ifi not %import_results%==yes $goto $NO_TERMTRANSPORTDEMAND
+$ifi     %import_results%==yes $ifi not %ADDTERMTRANSPORTDEMAND%==yes  $goto $NO_TERMTRANSPORTDEMAND
+
+EQUATION  QTRANSDEMAND_T(Y,RRR,S,T)    'Transport demand per term has to be met (MWh)';
+
+QTRANSDEMAND_T(IY411,IR,IS3,T)..
+VTRANSDEMAND_T(IY411,IR,IS3,T)
+=E=
+TRANSDEMAND_T(IY411,IR,IS3,T)
+;
+
+$label $NO_TERMTRANSPORTDEMAND
+
 
