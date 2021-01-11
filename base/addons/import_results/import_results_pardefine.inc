@@ -31,7 +31,10 @@ $ifi %HYDROGEN%==yes $ifi not %ADDH2STOVOLTS%==none  execute_load  '../../simex/
 $ifi %HYDROGEN%==yes $ifi not %ADDH2STOVOLTS%==none  execute_load  '../../simex/H2STOVOLTSVAL.gdx', H2STOVOLTSVAL;
 $ifi %HYDROGEN%==yes $ifi not %ADDBIOMETHSTOVOLTS%==none  execute_load  '../../simex/BIOMETHSTOVOLTS.gdx', BIOMETHSTOVOLTS;
 $ifi %HYDROGEN%==yes $ifi not %ADDBIOMETHSTOVOLTS%==none  execute_load  '../../simex/BIOMETHSTOVOLTSVAL.gdx', BIOMETHSTOVOLTSVAL;
-
+$ifi %EV%==yes $ifi not %ADDEVSTOS%==none   execute_load  '../../simex/EV_VSOC_BEV.gdx', EV_VSOC_BEV;
+$ifi %EV%==yes $ifi not %ADDEVSTOS%==none   execute_load  '../../simex/EV_VSOC_PHEV.gdx', EV_VSOC_PHEV;
+$ifi %EV%==yes $ifi not %ADDEVSTOS%==none   execute_load  '../../simex/EV_BEV_NETCHARGING.gdx', EV_BEV_NETCHARGING;
+$ifi %EV%==yes $ifi not %ADDEVSTOS%==none   execute_load  '../../simex/EV_PHEV_NETCHARGING.gdx', EV_PHEV_NETCHARGING;
 
 
 *Investments with/without decommissioning of endogenous capacity
@@ -65,6 +68,10 @@ $ifi %ADDMAXFUELUSES%==yes execute_load  '../../simex/GMAXFS.gdx', GMAXFS;
 *Import planned maintenance
 $ifi %ADDPLANNEDMAINTENANCE%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCONMAINT.gdx', UCONMAINT;
 
-*Import transport seasonal demand
+*Import transport demand
+$ifi %ADDTERMTRANSPORTDEMAND%==yes $ifi %transport%==yes execute_load  '../../simex/TRANSDEMAND_T.gdx', TRANSDEMAND_T;
 $ifi %ADDSEASONALTRANSPORTDEMAND%==yes $ifi %transport%==yes execute_load  '../../simex/TRANSDEMAND_S.gdx', TRANSDEMAND_S;
 $ifi %ADDPEAKTRANSPORTDEMAND%==yes $ifi %transport%==yes execute_load  '../../simex/TRANSDEMAND_T_MAX.gdx', TRANSDEMAND_T_MAX;
+
+*Import Share of heat demand in an individual user group
+$ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes $ifi %ADDGROUP_DEMAND_SHIFT%==yes  execute_load  '../../simex/INDIVUSERS_GROUPSHARE.gdx', INDIVUSERS_GROUPSHARE;

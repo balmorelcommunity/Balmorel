@@ -34,5 +34,6 @@ $ifi %FlowBased%==yes      $include        "../../base/addons/FlowBased/bb4/flow
 $ifi %TRANS_RAMP%==yes  $include   "../../base/addons/transmission_ramping/transmission_ramping_eqndecdef.inc";
 $ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_eqndecdef.inc";
 $ifi %BalancingMarket%==yes       $include   "../../base/addons/balancing_market/balancing_market_eqndecdef.inc";
+$ifi %INDIVUSERS%==yes       $include   "../../base/addons/indivusers/bb4/indivusers_eqndecdef.inc";
 
 $label endoffile

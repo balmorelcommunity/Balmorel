@@ -22,9 +22,7 @@ IS3(S)   = YES;
 VGKN.L(Y,IA,G)        = 0;
 VXKN.l(Y,IR,IRI)      = 0;
 
-*IFIRSTYEARNEXTBB4 = SUM(Y$(ORD(Y) EQ 1), YVALUE(Y)); !! todo not in use
 IY411PREVY(Y,Y-1)= YES;
-
 
 *-------------------------------------------------------------------------------
 * INITIALISATIONS FOR addons:
@@ -50,7 +48,6 @@ ISIMWEIGHT(YMODEL) = SUM(IYMODEL4$((1 LT ORD(IYMODEL4)) AND (ORD(IYMODEL4) <= OR
 * Initialize total capacity variables to start values.
 *-------------------------------------------------------------------------------
 
-
 *------------------------------------------------------------------------------------------------------------------------------------------------------------
 *------------------------------------------------------------------------------------------------------------------------------------------------------------
 *------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -58,14 +55,11 @@ ISIMWEIGHT(YMODEL) = SUM(IYMODEL4$((1 LT ORD(IYMODEL4)) AND (ORD(IYMODEL4) <= OR
 *------------------------------------------------------------------------------------------------------------------------------------------------------------
 *------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-*LOOP(IYALIAS$(((CARD(IYALIAS)-ORD(IYALIAS) GE (SUM(YMODEL$(ORD(YMODEL) GT 1), YMODELDELTA(YMODEL)))) AND (YVALUE(IYALIAS) GE IFIRSTYEARNEXTBB4)) ), Hans 20150516: replace by next. If OK, IFIRSTYEARNEXTBB4 may be deleted, it is then not in use.    todo
 LOOP(IYALIAS$(CARD(IYALIAS)-ORD(IYALIAS) GE (SUM(YMODEL$(ORD(YMODEL) GT 1), YMODELDELTA(YMODEL)))),
-
 
 *------------------------------------------------------------------------------
 * INITIALISATIONS FOR THE UPDATING PART FOR EACH MODEL BALBASE4:
 *------------------------------------------------------------------------------
-
 
 * -----------------------------------------------------------------------------
 * Calculate IORD_IY, and subsets of Y:  TODO: IORD_IY is used only here for assigning the IY4's. Might therefore be eliminated by making some other code.
@@ -84,7 +78,6 @@ LOOP(YMODEL,
    IORD_IY(YMODEL) = ORD(IYALIAS44);
 ));
 
-
 IY411(Y) = NO;
 LOOP((YMODEL, Y)$(IORD_IY(YMODEL) = ORD(Y)),IY411(Y)=yes;);
 IY410(Y) = NO;
@@ -96,24 +89,6 @@ LOOP(IY411$(CARD(IY411FIRST) = 0),  IY411FIRST(IY411)=yes;);
 
 ISCALAR1 = 1;
 LOOP(IY411$(ISCALAR1 EQ 1), ISCALAR2 = YVALUE(IY411); ISCALAR1 = 0;);
-*LOOP(IY402$(YVALUE(IY402) EQ ISCALAR2), IFIRSTYEARNEXTBB4 = ISCALAR2 + SUM(YMODEL$(ORD(YMODEL) EQ 1), YMODELDELTA(YMODEL)););   todo
-
-
-$ontext
-* IY4GREMAINYWEIGHT(Y,G)  "Discounted weight of future annuity payments on an investment relative to the first year in present BB4 model (~)":
-* TODO: missing that some G will reach lifetime inside iy411, cf. IY4GREMAINY above, TODO
-IY4GINVCOSTWEIGHT(IY411,IGKFIND) = SUM(Y$(IY411(Y) AND (YVALUE(Y) GE YVALUE(IY411))), IDISCOUNTFACTOR(Y));!! Hans 20150205; TODO: missing that some G will reach lifetime inside iy411, cf. IY4GREMAINY above, TODO
-LOOP(IY411FIRST,IY4GINVCOSTWEIGHT(IY411,IGKFIND) = IY4GINVCOSTWEIGHT(IY411,IGKFIND)/IDISCOUNTFACTOR(IY411FIRST));  !! NB: Relative to IY411FIRST, not first Y.
-
-IY4GINVCOSTWEIGHT(Y,IGKFIND)$(NOT(IY411(Y))) = 0;
-
-IY4XINVCOSTWEIGHT(IY411) = SUM(Y$(IY411(Y) AND (YVALUE(Y) GE YVALUE(IY411))), IDISCOUNTFACTOR(Y));
-LOOP(IY411FIRST,IY4XINVCOSTWEIGHT(IY411) = IY4XINVCOSTWEIGHT(IY411)/IDISCOUNTFACTOR(IY411FIRST));  !! NB: Relative to IY411FIRST, not first Y.
-
-LOOP(IY411FIRST,IY4GINVCOSTWEIGHT(IY411,IGKFIND) = 1);
-LOOP(IY411FIRST,IY4XINVCOSTWEIGHT(IY411) = 1);
-$offtext
-
 
 *-------------------------------------------------------------------------------
 * START SIMULATION FOR CURRENT MODEL BB4
@@ -173,7 +148,6 @@ VESTOVOLTS.UP(IY411,IA,IGESTOS,S,T)$(GKFX(IY411,IA,IGESTOS) AND (NOT SUM(Y$(YVAL
 VHSTOVOLTS.UP(IY411,IA,IGHSTOS,S,T)$(GKFX(IY411,IA,IGHSTOS) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGHSTOS))) AND (NOT (IGDECOMEXOPOT(IY411,IA,IGHSTOS)))) =
  GKFX(IY411,IA,IGHSTOS);
 
-
 $ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
 $ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
 $ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_2.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
@@ -181,7 +155,6 @@ $ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_2.gdx" IBB1234_VG
 $ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
 $ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
 $ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_3.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
-* test slut
 
 * Existing windpower, hydro-run-of-river, solarpower, solarheat and wavepower can not be dispatched.
 * Complement to equation QWNDDISPATCH for the case with no endogenous IGWND investments.
@@ -215,7 +188,6 @@ $ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_5.gdx" IBB1234_VG
 
 
 
-
 *---- End: Bounds on generation technologies -----------------------------------
 
 *---- Bounds on transmission: --------------------------------------------------
@@ -232,7 +204,6 @@ IX3FX_T(IY411,IR,S,T) = ((X3FX(IY411,IR) * X3FX_VAR_T(IR,S,T)) / IX3FXSUMST(IR))
 
 * Electricity transmission between regions within countries and between
 * countries may be excluded by the following statement:
-
 * VX_T.FX(IY411,IRE,IRI,S,T)=0;
 
 * Electricity transmission between countries may be excluded
@@ -259,7 +230,6 @@ $include "../../base/addons/_hooks/varloupfx.inc"
 * End: Set bounds on variables current simulation year
 *-------------------------------------------------------------------------------
 
-
 *------------------------------------------------------------------------------
 $ifi %RollingSeasons%==yes * Loop through all the seasons:
 $ifi %RollingSeasons%==yes IHOURSINST(SSS,TTT)=0;
@@ -273,7 +243,6 @@ $ifi %RollingSeasons%==yes * Redefinition of IHOURSINT for the current set of se
 $ifi %RollingSeasons%==yes IWEIGHSUMS=SUM(IS3, WEIGHT_S(IS3));
 $ifi %RollingSeasons%==yes IHOURSINST(IS3,T)=IOF8760*WEIGHT_S(IS3)*WEIGHT_T(T)/(IWEIGHSUMS*SUM(ITALIAS, WEIGHT_T(ITALIAS)))/IHOURFRAC;
 
-
 *-------------------------------------------------------------------------------
 * SOLVE
 *-------------------------------------------------------------------------------
@@ -284,14 +253,11 @@ OPTION Savepoint=1;
 
 $ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
 
-
 $ifi %SOLVETYPE%==LP   SOLVE BALBASE4 USING LP   MINIMIZING VOBJ;
 $ifi %SOLVETYPE%==RMIP SOLVE BALBASE4 USING RMIP MINIMIZING VOBJ;
 $ifi %SOLVETYPE%==MIP  SOLVE BALBASE4 USING MIP  MINIMIZING VOBJ;
 
-
 $ifi %RollingSeasons%==yes * Fixing relevant variables from previous optimization
-
 $ifi %RollingSeasons%==yes   VHYRS_S.FX(IY411,IA,IS3LOOPSET+1)$(NOT(ORD(IS3LOOPSET) EQ CARD(IS3LOOPSET)) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1))=  VHYRS_S.L(IY411,IA,IS3LOOPSET+1);
 $ifi %RollingSeasons%==yes   VESTOVOLTS.FX(IY411,IA,IGESTOS,IS3LOOPSET+1,T)$(NOT(ORD(IS3LOOPSET) EQ CARD(IS3LOOPSET)) AND ORD(T) EQ 1 AND IAGK_HASORPOT(IY411,IA,IGESTOS))= VESTOVOLTS.L(IY411,IA,IGESTOS,IS3LOOPSET+1,T);
 $ifi %RollingSeasons%==yes   VHSTOVOLTS.FX(IY411,IA,IGHSTOS,IS3LOOPSET+1,T)$(NOT(ORD(IS3LOOPSET) EQ CARD(IS3LOOPSET)) AND ORD(T) EQ 1 AND IAGK_HASORPOT(IY411,IA,IGHSTOS))= VHSTOVOLTS.L(IY411,IA,IGHSTOS,IS3LOOPSET+1,T);
@@ -307,7 +273,7 @@ $include "../../base/addons/_hooks/solveend.inc"
 * End: SOLVE
 *-------------------------------------------------------------------------------
 
-$ifi %bb4%==yes $INCLUDE '../../base/logerror/logerinc/balbase4.mss';
+$INCLUDE '../../base/logerror/logerinc/balbase4.mss';
 
 
 * ------------------------------------------------------------------------------
@@ -342,7 +308,6 @@ $label endofUNIXmove
 *-------------------------------------------------------------------------------
 
 * Certain checks may be made on the output:
-*$INCLUDE '../../base/logerror/logerinc/error4-BB4.inc';
 $INCLUDE '../../base/addons/BB4/errorBB4.inc';
 
 
@@ -367,7 +332,6 @@ $ifi %printfiles%==yes $if errorfree $include "../../base/output/printout/printi
 *(IMPORTANT!: The following code only works if the years are optimized consecutively. For example, this two-year mode optimization would not provide coherent results: [2020,2040] and [2030;2050]
 $ifi %TechInvest%==yes         LOOP(Y$(YVALUE(Y) LE YVALUE(IYALIAS)),VGKN.FX(Y,IA,G)$IAGKNY(Y,IA,G)= VGKN.L(Y,IA,G););
 $ifi %TechInvest%==yes         VGKNACCUMNET.FX(IY411FIRST,IA,G)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IAGKNY(Y,IA,G)) = VGKNACCUMNET.L(IY411FIRST,IA,G);
-*$ifi %TechInvest%==yes        VGKNACCUMGROSS.FX(IY411FIRST,IA,G)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IAGKNY(Y,IA,G)) = VGKNACCUMGROSS.L(IY411FIRST,IA,G);
 $ifi %TransInvest%==yes        VXKN.FX(IY411FIRST,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXKN(Y,IRE,IRI))= VXKN.L(IY411FIRST,IRE,IRI);
 $ifi %TransInvest%==yes        VXKNACCUMNET.FX(IY411FIRST,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXKN(Y,IRE,IRI))= VXKNACCUMNET.L(IY411FIRST,IRE,IRI);
 

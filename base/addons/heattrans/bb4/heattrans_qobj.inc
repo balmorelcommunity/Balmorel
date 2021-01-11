@@ -3,7 +3,7 @@
 
 * Heat transmission cost:
 + SUM((IAE,IAI)$IXHK_HASORPOT(Y,IAE,IAI),
-        SUM((IS3,T), IHOURSINST(IS3,T) * (VXH_T(Y,IAE,IAI,IS3,T) * XHCOST(IAE,IAI))))
+        SUM((IS3,T), IHOURFRAC*IHOURSINST(IS3,T) * (VXH_T(Y,IAE,IAI,IS3,T) * XHCOST(IAE,IAI))))
 
 * Investment costs, new heat transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):

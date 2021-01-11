@@ -138,11 +138,11 @@ XINVESTSTART= 2025;
 *overall control variable HEATTRANS must be 'yes' if any of the other heat trans controls are.
 
 * Permit heat transmission between areas.
-$setglobal HEATTRANS yes
+$setglobal HEATTRANS
 *!option yes
 
 * Permit heat transmission investments between areas.
-$setglobal HeatTransInvest yes
+$setglobal HeatTransInvest
 *!option yes
 
 SCALAR XHINVESTSTART 'Year from which endogenous decisions in heat transmission capacities are allowed' ;
@@ -154,23 +154,31 @@ $setglobal HeatTempLift
 *-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
 
 * Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
-$setglobal INDUSTRY yes
+$setglobal INDUSTRY
 *!option yes
+
+*--------------------INDIVIDUAL USERS--------------------------------------------------------------
+* overall control variable INDIVUSERS must be 'yes' if any of the other INDIVUSERS controls are:
 
 * Include individual users data in the optimization. Requires HEATTRANSFER add-on to be activated.
-$setglobal INDIVUSERS yes
+$setglobal INDIVUSERS
 *!option yes
 
+* Include the possibility to shift exogenous heat demand between technology groups.
+$setglobal GROUP_DEMAND_SHIFT
+*!option yes
+*-----------------END: INDIVIDUAL USERS--------------------------------------------------------------
+
 * Include seasonal variation of heat pump's COP. If not activated, heat pumps will have a constant COP during the year.
-$setglobal SEASONALCOP yes
+$setglobal SEASONALCOP
 *!option yes
 
 * Allow to build a complicated offshore grid with hubs in the sea. Requires MIP to work as intended since technologies are modelled with economies of scale via SOS variables. If RMIP is used, it will become a linear problem.
-$setglobal OFFSHOREGRID  yes
+$setglobal OFFSHOREGRID
 *!option yes
 
 * Allow Carbon Capture Storage (CCS) technologies.
-$setglobal CCS yes
+$setglobal CCS
 *!option yes
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
@@ -184,7 +192,7 @@ $setglobal VRESHUTDOWN   yes
 *------------------------------EV ADDON-------------------------------------------------
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV  YES
+$setglobal EV
 *!option
 
 * Adds DUMB charging:
@@ -225,11 +233,23 @@ $setglobal EV_PROFILE_AVG  yes
 *Note: The value of the parameter PENALTQ should be in line with the cost assumptions in the model to obtain meaninful results
 $setglobal EV_infeas  yes
 *!option
+
+* Models EV as inter-seasonal storage (if it is not activated, then EVs are model as intra-seasonal storage):
+$setglobal EV_INTERSEASONAL
+*!option yes
 *------------------------------END: EV ADDON-------------------------------------------------
 
+*------------------------------TRANSPORT ADDON-------------------------------------------------
+* overall control variable TRANSPORT must be 'yes' if any of the other TRANSPORT controls are:
 * Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
 $setglobal TRANSPORT
 *!option yes
+
+* Defines the commodity used to model synthetic fuel generation.
+$setglobal TRANSPORT_SYNTHFUEL_COMMODITY    ELECTRICITY
+*!option ELECTRICITY    !Text "The demand for synthetic fuel generation is modelled as electricity demand"
+*!option HYDROGEN       !Text "The demand for synthetic fuel generation is modelled as hydrogen demand (requires hydrogen addon to be activated)"
+*------------------------------END:TRANSPORT ADDON-------------------------------------------------
 
 *-----------------------------------------------------------
 *---------------HYDRO RESERVOIRS OPTIONS--------------------
@@ -261,32 +281,13 @@ $setglobal IGKRATE_STOCHASTIC
 *---- end: IGKRATE calculation ------
 *-------------------------------------------------
 
-*-------------------------------------------------
-*---- Heat storage loading restrictions ------
-*overall control variable heatsto_loading_rest must be 'yes' if any of the other heat storage loading restriction controls are:
-
-$setglobal heatsto_loading_rest
-*!option yes
-
-*Heat storages are forbidden to load other heat storages (if option "yes", heat storages will not be allowed to load other heat storages)
-$setglobal heatsto2heasto_rest
-*!option yes
-
-*Water tanks loading is restricted with the set IGHNOWT (if option "yes", technologies included in this set will not be allowed to load water tanks)
-$setglobal watertank_loading_rest
-*!option yes
-
-
-*----END: Heat storage loading restrictions
-*-----------------------------------------------
-
 *-------- Balancing market ---------
 * Peform the balancing market optimization
 *Note: it is meant to be combined with Unit Commitment, ancilliary services and import_results add-ons
 $setglobal BalancingMarket
 *!option yes
 
-*Restrict heat market by restricting relevant heat generation variables from previous runs and not including heat balance
+*Restricts heat market from participating in the balancing market by restricting relevant heat generation variables from previous runs and not including the heat balance equation
 $setglobal NOHEATMARKET
 *!option yes
 *-------- END: Balancing market  ---------
@@ -301,15 +302,15 @@ $setglobal NOHEATMARKET
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH yes
+$setglobal COMBTECH
 *!option yes
 
 * Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN yes
+$Setglobal HYDROGEN
 *!option yes
 
 * Use stepwise linear fuel prices
-$Setglobal STEPWISEPRICE   yes
+$Setglobal STEPWISEPRICE
 
 * Set a common maximum for fuels.
 $Setglobal LIMITSFORFUELS
@@ -327,11 +328,11 @@ $setglobal DEMANDRESPONSE
 $setglobal X3V
 *!option yes
 
-* This variable includes addon for distric heating
+* This variable includes addon for distric heating (BB1, BB2, BB3)
 $Setglobal FV
 *!option yes
 
-*
+*Policies (BB1, BB2, BB3)
 $setglobal POLICIES
 *!option yes
 
@@ -495,7 +496,7 @@ $setglobal STEPWISE_RAMPING_UC  ramp_const
 *!option ramp_const_cost !Text "With ramping constraints and ramping costs"
 *!option ramp_const  !Text "With ramping constraints but without ramping costs"
 *!option no_ramping  !Text "Neither ramping constraints nor ramping costs"
-* Adds planned maintenance of the generation technologies
+* Adds optimisation of planned maintenance of the generation and storage technologies
 $setglobal PLANNED_MAINTENANCE
 *!option yes
 
@@ -578,7 +579,7 @@ $label endofMSNTrelpaths
 * e.g. one model output serving as input to another model.
 
 * Overall control to export results so they can be used in future runs :
-$Setglobal export_results YES
+$Setglobal export_results yes
 *!option yes
 
 *--------------------------------------------
@@ -646,6 +647,12 @@ $Setglobal ADDBIOMETHSTOVOLTS  none
 *!option price         !Text "Import biomethane storage contents at beginning of time segment (BIOMETHSTOVOLTS.gdx) for the first element in set T and S, and puts a price to use with BIOMETHSTOVOLTSVAL.gdx from previous runs."
 *!option none          !Text "Do not not use this addon"
 
+*Import EV state of charge from previous runs  (requires EV addon)
+$Setglobal ADDEVSTOS  none
+*!option cont          !Text "Use seasonal content from previous runs in this run ('primal decomposition') (only works if EV_INTERSEASONAL is activated)"
+*!option netcharging   !Text "Use seasonal net charging of EV in this run ('primal decomposition') (only works if EV_INTERSEASONAL is NOT activated)"
+*!option none          !Text "Do not not use this addon"
+
 
 
 *--------------------END OF INTERSEASONAL STORAGE-----------------------------------------------------------
@@ -686,21 +693,32 @@ $setglobal ADDMAXFUELUSES
 
 *--------------------PLANNED MAINTENANCE-----------------------------------------------------------
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
-*Import planned maintenance from previous runs (investments and/or decomissioning must not be allowed if this option is activated)
+*Import optimized planned maintenance from previous runs (investments and/or decomissioning must not be allowed if this option is activated)
 $setglobal ADDPLANNEDMAINTENANCE
 *!option yes
 *--------------------END OF PLANNED MAINTENANCE-----------------------------------------------------------
 
 *--------------------TRANSPORT DEMAND-----------------------------------------------------------
 *NOTE: The set Y should be the same in the optimization should be the same as the one in the import results.
-*Import seasonal electricity demand from the transport sector
+*Import demand per term (T) from the transport sector
+$setglobal ADDTERMTRANSPORTDEMAND
+*!option yes
+
+*Import seasonal demand from the transport sector
 $setglobal ADDSEASONALTRANSPORTDEMAND
 *!option yes
 
-*Import peak electricity demand from the transport sector
+*Import peak demand from the transport sector
 $setglobal ADDPEAKTRANSPORTDEMAND
 *!option yes
 *--------------------END OF TRANSPORT DEMAND-----------------------------------------------------------
+
+*--------------------INDIVIDUAL USERS-----------------------------------------------------------
+*Import Share of heat demand in an individual user group. Requires GROUP_DEMAND_SHIFT to be activated
+$setglobal ADDGROUP_DEMAND_SHIFT
+*!option yes
+*--------------------END OF INDIVIDUAL USERS-----------------------------------------------------------
+
 
 *------------- END OF IMPORT OPTIONS ----------------
 *--------------------------------------------

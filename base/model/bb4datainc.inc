@@ -1,5 +1,3 @@
-* Hans: søg "/*"
-
 * File bb4datainc.inc for including data for Balmorel, model BB4.
 
 * Data for any ID is held in a separate file, and $included here.
@@ -22,7 +20,10 @@
 %ONOFFDATALISTING%
 
 
-* TESTING: (indsætter datainc1 her, plus lidt kode) ----------------------------
+*Other acronyms
+$if     EXIST '../data/ACRONYMS.inc' $INCLUDE         '../data/ACRONYMS.inc';
+$if not EXIST '../data/ACRONYMS.inc' $INCLUDE '../../base/data/ACRONYMS.inc';
+
 * Geography
 
 SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)" %semislash%
@@ -109,6 +110,16 @@ $if not EXIST '../data/SSS.inc' $INCLUDE '../../base/data/SSS.inc';
 SET TTT                "All time periods" %semislash%
 $if     EXIST '../data/TTT.inc' $INCLUDE      '../data/TTT.inc';
 $if not EXIST '../data/TTT.inc' $INCLUDE '../../base/data/TTT.inc';
+%semislash%;
+
+SET GROUP                "Groups included in the model (e.g. sectors)" %semislash%
+$if     EXIST '../data/GROUP.inc' $INCLUDE      '../data/GROUP.inc';
+$if not EXIST '../data/GROUP.inc' $INCLUDE '../../base/data/GROUP.inc';
+%semislash%;
+
+SET GROUP_AAA             "Areas assigned to groups" %semislash%
+$if     EXIST '../data/GROUP_AAA.inc' $INCLUDE      '../data/GROUP_AAA.inc';
+$if not EXIST '../data/GROUP_AAA.inc' $INCLUDE '../../base/data/GROUP_AAA.inc';
 %semislash%;
 
 SET DEUSER             "Electricity demand user groups. Set must include element RESE for holding demand not included in any other user group"  %semislash%
@@ -232,9 +243,9 @@ $if     EXIST '../data/DF_QP.inc' $INCLUDE      '../data/DF_QP.inc';
 $if not EXIST '../data/DF_QP.inc' $INCLUDE '../../base/data/DF_QP.inc';
 %semislash%;
 
-SET MPOLSET  "Emission and other policy data"   %semislash%
-$if     EXIST '../data/MPOLSET.inc' $INCLUDE      '../data/MPOLSET.inc';
-$if not EXIST '../data/MPOLSET.inc' $INCLUDE '../../base/data/MPOLSET.inc';
+SET EMIPOLSET  "Emission and other policy data"   %semislash%
+$if     EXIST '../data/EMIPOLSET.inc' $INCLUDE      '../data/EMIPOLSET.inc';
+$if not EXIST '../data/EMIPOLSET.inc' $INCLUDE '../../base/data/EMIPOLSET.inc';
 %semislash%;
 
 $onmulti
@@ -243,7 +254,7 @@ $if     EXIST '../data/AGKN.inc' $INCLUDE         '../data/AGKN.inc';
 $if not EXIST '../data/AGKN.inc' $INCLUDE '../../base/data/AGKN.inc';
 %semislash%;
 $offmulti
-*------------- Any XINVCOST additions for addon to be placed here: ----------------
+*------------- Any AGKN additions for addon to be placed here: ----------------
 $include "../../base/addons/_hooks/agknadditions.inc"
 
 SET Y(YYY)    "Years in the simulation"   %semislash%
@@ -270,11 +281,6 @@ $if     EXIST '../data/YVALUE.inc' $INCLUDE      '../data/YVALUE.inc';
 $if not EXIST '../data/YVALUE.inc' $INCLUDE '../../base/data/YVALUE.inc';
 %semislash%;
 
-*SET DAYTYPE       "Types of days within the week, typically workdays/weekend" %semislash%
-*$if     EXIST '../data/DAYTYPE.inc' $INCLUDE         '../data/DAYTYPE.inc';
-*$if not EXIST '../data/DAYTYPE.inc' $INCLUDE '../../base/data/DAYTYPE.inc';
-*%semislash%
-
 SET TWORKDAY(TTT)   "Time segments, T, in workdays"  %semislash%
 $if     EXIST '../data/TWORKDAY.inc' $INCLUDE         '../data/TWORKDAY.inc';
 $if not EXIST '../data/TWORKDAY.inc' $INCLUDE '../../base/data/TWORKDAY.inc';
@@ -284,17 +290,6 @@ SET TWEEKEND(TTT)   "Time segments, T, in weekends"   %semislash%
 $if     EXIST '../data/TWEEKEND.inc' $INCLUDE         '../data/TWEEKEND.inc';
 $if not EXIST '../data/TWEEKEND.inc' $INCLUDE '../../base/data/TWEEKEND.inc';
 %semislash%
-                                      /* todos
-SET ECONSET         "Set for econ"  %semislash%
-$if     EXIST '../data/ECONSET.inc' $INCLUDE         '../data/ECONSET.inc';
-$if not EXIST '../data/ECONSET.inc' $INCLUDE '../../base/data/ECONSET.inc';
-%semislash%
-
-SET ECONSETCATEGORY "Set for econ"  %semislash%
-$if     EXIST '../data/ECONSETCATEGORY.inc' $INCLUDE         '../data/ECONSETCATEGORY.inc';
-$if not EXIST '../data/ECONSETCATEGORY.inc' $INCLUDE '../../base/data/ECONSETCATEGORY.inc';
-%semislash%                            */
-
 
 *-------------------------------------------------------------------------------
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
@@ -398,8 +393,6 @@ $ifi %DHFPCALIB%==yes %semislash%;
 *--- End: Any declarations and definitions of sets, aliases and acronyms for addon
 *-------------------------------------------------------------------------------
 
-
-
 PARAMETER GKFX(YYY,AAA,GGG)    "Capacity of existing generation technologies (MW except for storages, where it is MWh)" %semislash%
 $if     EXIST '../data/GKFX.inc' $INCLUDE      '../data/GKFX.inc';
 $if not EXIST '../data/GKFX.inc' $INCLUDE '../../base/data/GKFX.inc';
@@ -413,17 +406,10 @@ $if     EXIST '../data/FMAXINVEST.inc' $INCLUDE      '../data/FMAXINVEST.inc';
 $if not EXIST '../data/FMAXINVEST.inc' $INCLUDE '../../base/data/FMAXINVEST.inc';
 %semislash%;
 
-/*  todo
 PARAMETER FMAXINVESTNA(YYY,FFF)   "Maximum investment (MW) by fuel type for each year simulated(aggregated countries)"    %semislash%
 $if     EXIST '../data/FMAXINVESTNA.inc' $INCLUDE      '../data/FMAXINVESTNA.inc';
 $if not EXIST '../data/FMAXINVESTNA.inc' $INCLUDE '../../base/data/FMAXINVESTNA.inc';
-%semislash%;   */   FMAXINVESTNA(YYY,FFF) = 0;
-
-/*  todo
-PARAMETER GROWTHCAPCG(C,GGG)    "Maximum model generated capacity increase (MW) from one year to the next"   %semislash%
-$if     EXIST '../data/GROWTHCAPCG.inc' $INCLUDE         '../data/GROWTHCAPCG.inc';
-$if not EXIST '../data/GROWTHCAPCG.inc' $INCLUDE '../../base/data/GROWTHCAPCG.inc';
-%semislash%;   */   GROWTHCAPCG(C,GGG)  = INF;
+%semislash%;
 
 PARAMETER DISLOSS_E(RRR)    "Loss in electricity distribution (fraction)"   %semislash%
 $if     EXIST '../data/DISLOSS_E.inc' $INCLUDE      '../data/DISLOSS_E.inc';
@@ -452,7 +438,7 @@ $if     EXIST '../data/DISCOST_H.inc' $INCLUDE      '../data/DISCOST_H.inc';
 $if not EXIST '../data/DISCOST_H.inc' $INCLUDE '../../base/data/DISCOST_H.inc';
 %semislash%;
 
-PARAMETER FKPOT(CCCRRRAAA,FFF)    "Fuel potential restricted by geography (MW)"   %semislash%
+PARAMETER FKPOT(CCCRRRAAA,FFF)    "Fuel potential restriction by geography (default 0 implies irrelevant, EPS implies no potential) (MW)"   %semislash%
 $if     EXIST '../data/FKPOT.inc' $INCLUDE      '../data/FKPOT.inc';
 $if not EXIST '../data/FKPOT.inc' $INCLUDE '../../base/data/FKPOT.inc';
 %semislash%;
@@ -466,66 +452,67 @@ PARAMETER SUBTECHGROUPKPOT(CCCRRRAAA,TECH_GROUP,SUBTECH_GROUP)    "Subtechnology
 $if     EXIST '../data/SUBTECHGROUPKPOT.inc' $INCLUDE      '../data/SUBTECHGROUPKPOT.inc';
 $if not EXIST '../data/SUBTECHGROUPKPOT.inc' $INCLUDE '../../base/data/SUBTECHGROUPKPOT.inc';
 %semislash%;
+*------------- Any SUBTECHGROUPKPOT additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/subtechgroupkpotadditions.inc"
 
-/* Todo
-PARAMETER FKMIN(YYY,CCCRRRAAA,FFF)    "Capacity restricted by geography (MW)"   %semislash%
+
+PARAMETER FKMIN(YYY,CCCRRRAAA,FFF)    "Minimum fuel capacity restricted by geography (MW)"   %semislash%
 $if     EXIST '../data/FKMIN.inc' $INCLUDE      '../data/FKMIN.inc';
 $if not EXIST '../data/FKMIN.inc' $INCLUDE '../../base/data/FKMIN.inc';
-%semislash%;  */     FKMIN(YYY,CCCRRRAAA,FFF)=0;
+%semislash%;      
 
-/*
-PARAMETER FKMAX(YYY,CCCRRRAAA,FFF)    "Capacity by geography (MW)"   %semislash%
+
+PARAMETER FKMAX(YYY,CCCRRRAAA,FFF)    "Maximum fuel capacity restricted by geography (MW)"   %semislash%
 $if     EXIST '../data/FKMAX.inc' $INCLUDE      '../data/FKMAX.inc';
-$if not EXIST '../data/FKPOT.inc' $INCLUDE '../../base/data/FKMAX.inc';
-%semislash%;*/   FKMAX(YYY,CCCRRRAAA,FFF)=0;
+$if not EXIST '../data/FKMAX.inc' $INCLUDE '../../base/data/FKMAX.inc';
+%semislash%;
 
-/*
-PARAMETER FKEQ(YYY,CCCRRRAAA,FFF)    "Capacity by geography (MW)"   %semislash%
+
+PARAMETER FKEQ(YYY,CCCRRRAAA,FFF)    "Exact fuel capacity restricted by geography (MW)"   %semislash%
 $if     EXIST '../data/FKEQ.inc' $INCLUDE      '../data/FKEQ.inc';
 $if not EXIST '../data/FKEQ.inc' $INCLUDE '../../base/data/FKEQ.inc';
-%semislash%; */    FKEQ(YYY,CCCRRRAAA,FFF)=0;
+%semislash%;
 
-/*
-PARAMETER FKMINNA(YYY,FFF)    "Capacity restricted by geography (MW)"   %semislash%
+
+PARAMETER FKMINNA(YYY,FFF)    "Minimum capacity by year and fuel (aggregated countries)(MW)"   %semislash%
 $if     EXIST '../data/FKMINNA.inc' $INCLUDE      '../data/FKMINNA.inc';
 $if not EXIST '../data/FKMINNA.inc' $INCLUDE '../../base/data/FKMINNA.inc';
-%semislash%; */ FKMINNA(YYY,FFF)=0;
+%semislash%;
 
-/*PARAMETER FKMAXNA(YYY,FFF)    "Capacity restricted by geography (MW)"   %semislash%
+PARAMETER FKMAXNA(YYY,FFF)    "Maximum capacity by year and fuel (aggregated countries)(MW)"   %semislash%
 $if     EXIST '../data/FKMAXNA.inc' $INCLUDE      '../data/FKMAXNA.inc';
-$if not EXIST '../data/FKPOT.inc' $INCLUDE '../../base/data/FKMAXNA.inc';
-%semislash%;*/ FKMAXNA(YYY,FFF) =0;
+$if not EXIST '../data/FKMAXNA.inc' $INCLUDE '../../base/data/FKMAXNA.inc';
+%semislash%;
 
-/*
-PARAMETER FKEQNA(YYY,FFF)    "Capacity restricted by geography (MW)"   %semislash%
+PARAMETER FKEQNA(YYY,FFF)    "Exact capacity by year and fuel (aggregated countries)(MW)"   %semislash%
 $if     EXIST '../data/FKEQNA.inc' $INCLUDE      '../data/FKEQNA.inc';
 $if not EXIST '../data/FKEQNA.inc' $INCLUDE '../../base/data/FKEQNA.inc';
-%semislash%; */  FKEQNA(YYY,FFF)=0;
+%semislash%;
 
-PARAMETER FGEMIN(CCCRRRAAA,FFF)    "Minimum electricity generation by fuel (MWh)"  %semislash%
+PARAMETER FGEMIN(CCCRRRAAA,FFF)    "Minimum electricity generation by fuel (default 0 implies irrelevant, EPS implies no potential)  (MWh)"  %semislash%
 $if     EXIST '../data/FGEMIN.inc' $INCLUDE      '../data/FGEMIN.inc';
 $if not EXIST '../data/FGEMIN.inc' $INCLUDE '../../base/data/FGEMIN.inc';
 %semislash%;
 
-PARAMETER FGEMAX(CCCRRRAAA,FFF)     "Maximum electricity generation by fuel (MWh)"   %semislash%
+PARAMETER FGEMAX(CCCRRRAAA,FFF)     "Maximum electricity generation by fuel (default 0 implies irrelevant, EPS implies no potential)  (MWh)"   %semislash%
 $if     EXIST '../data/FGEMAX.inc' $INCLUDE      '../data/FGEMAX.inc';
 $if not EXIST '../data/FGEMAX.inc' $INCLUDE '../../base/data/FGEMAX.inc';
 %semislash%;
 
-$ifi %GMINF_DOL%==CCCRRRAAA_FFF      PARAMETER GMINF(CCCRRRAAA,FFF)             'Minimum fuel use (GJ) per year' %semislash%
-$ifi %GMINF_DOL%==YYY_CCCRRRAAA_FFF  PARAMETER GMINF(YYY,CCCRRRAAA,FFF)         'Minimum fuel use (GJ) per year' %semislash%
+$ifi %GMINF_DOL%==CCCRRRAAA_FFF      PARAMETER GMINF(CCCRRRAAA,FFF)             'Minimum annual (any year) fuel use by geography and fuel and (default 0 implies irrelevant, EPS implies no potential) (GJ)' %semislash%
+$ifi %GMINF_DOL%==YYY_CCCRRRAAA_FFF  PARAMETER GMINF(YYY,CCCRRRAAA,FFF)         'Minimum annual fuel use by year, geography and fuel and (default 0 implies irrelevant, EPS implies no potential) (GJ)' %semislash%
 $if     EXIST '../data/GMINF.inc' $INCLUDE      '../data/GMINF.inc';
 $if not EXIST '../data/GMINF.inc' $INCLUDE '../../base/data/GMINF.inc';
 %semislash%;
 
-$ifi %GMAXF_DOL%==CCCRRRAAA_FFF      PARAMETER GMAXF(CCCRRRAAA,FFF)             'Maximum fuel use (GJ) per year' %semislash%
+$ifi %GMAXF_DOL%==CCCRRRAAA_FFF      PARAMETER GMAXF(CCCRRRAAA,FFF)             'Maximum annual (any year) fuel use by geography and fuel and (default 0 implies irrelevant, EPS implies no potential) (GJ)' %semislash%
 $ifi %GMAXF_DOL%==YYY_CCCRRRAAA_FFF  PARAMETER GMAXF(YYY,CCCRRRAAA,FFF)         'Maximum fuel use (GJ) per year' %semislash%
 $if     EXIST '../data/GMAXF.inc' $INCLUDE      '../data/GMAXF.inc';
 $if not EXIST '../data/GMAXF.inc' $INCLUDE '../../base/data/GMAXF.inc';
 %semislash%;
 
-$ifi %GEQF_DOL%==CCCRRRAAA_FFF       PARAMETER GEQF(CCCRRRAAA,FFF)              'Required fuel use (GJ) per year' %semislash%
-$ifi %GEQF_DOL%== YYY_CCCRRRAAA_FFF  PARAMETER GEQF(YYY,CCCRRRAAA,FFF)          'Required fuel use (GJ) per year' %semislash%
+$ifi %GEQF_DOL%==CCCRRRAAA_FFF       PARAMETER GEQF(CCCRRRAAA,FFF)              'Exact annual (any year) fuel use by geography and fuel (default 0 implies irrelevant, EPS implies no potential) (GJ)' %semislash%
+$ifi %GEQF_DOL%== YYY_CCCRRRAAA_FFF  PARAMETER GEQF(YYY,CCCRRRAAA,FFF)          'Exact annual fuel use by year, geography and fuel and (GJ)' %semislash%
 $if     EXIST '../data/GEQF.inc' $INCLUDE      '../data/GEQF.inc';
 $if not EXIST '../data/GEQF.inc' $INCLUDE '../../base/data/GEQF.inc';
 %semislash%;
@@ -534,13 +521,6 @@ PARAMETER GMAXFS(YYY,CCCRRRAAA,FFF,SSS)         'Maximum fuel use (GJ) per year 
 $if     EXIST '../data/GMAXFS.inc' $INCLUDE      '../data/GMAXFS.inc';
 $if not EXIST '../data/GMAXFS.inc' $INCLUDE '../../base/data/GMAXFS.inc';
 %semislash%;
-
-* Maximum capacity at new technologies. Presently not implemented.
-*PARAMETER GKNMAX(YYY,AAA,GGG)   "Maximum capacity at new technologies (MW)"  %semislash%
-*$if     EXIST '../data/GKNMAX.inc' $INCLUDE      '../data/GKNMAX.inc';
-*$if not EXIST '../data/GKNMAX.inc' $INCLUDE '../../base/data/GKNMAX.inc';
-*%semislash%;
-
 
 PARAMETER WTRRSFLH(AAA)    "Full load hours for hydro reservoir plants (hours)"  %semislash%
 $if     EXIST '../data/WTRRSFLH.inc' $INCLUDE      '../data/WTRRSFLH.inc';
@@ -557,6 +537,8 @@ $ifi %WNDFLH_DOL%==AAA_GGG           PARAMETER WNDFLH(AAA,GGG)     "Full load ho
 $if     EXIST '../data/WNDFLH.inc' $INCLUDE      '../data/WNDFLH.inc';
 $if not EXIST '../data/WNDFLH.inc' $INCLUDE '../../base/data/WNDFLH.inc';
 %semislash%;
+*------------- Any WNDFLH additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/wndflhadditions.inc"
 
 $ifi %SOLEFLH_DOL%==AAA              PARAMETER SOLEFLH(AAA)        "Full load hours for solar power (hours)"  %semislash%
 $ifi %SOLEFLH_DOL%==AAA_GGG          PARAMETER SOLEFLH(AAA,GGG)    "Full load hours for solar power (hours)"  %semislash%
@@ -606,22 +588,22 @@ $if     EXIST '../data/ANNUITYCX.inc' $INCLUDE         '../data/ANNUITYCX.inc';
 $if not EXIST '../data/ANNUITYCX.inc' $INCLUDE '../../base/data/ANNUITYCX.inc';
 %semislash%;
 
-PARAMETER GINVCOST(AAA,GGG)    "Investment cost for new technology (MMoney/MW)"  %semislash%
+PARAMETER GINVCOST(AAA,GGG)    "Investment cost for new technology (overwriting default value GDATA(G,'GDINVCOST0') if non-zero or EPS in data file) (MMoney/MW)"  %semislash%
 $if     EXIST '../data/GINVCOST.inc' $INCLUDE         '../data/GINVCOST.inc';
 $if not EXIST '../data/GINVCOST.inc' $INCLUDE '../../base/data/GINVCOST.inc';
 %semislash%;
 
-PARAMETER GOMVCOSTO(AAA,GGG)    "Variable operating and maintenance costs relative to the output(Money/MWh)"  %semislash%
+PARAMETER GOMVCOSTO(AAA,GGG)    "Variable operating and maintenance costs relative to the output (overwriting default value GDATA(G,'GDOMVCOST0') if non-zero or EPS in data file) (Money/MWh)"  %semislash%
 $if     EXIST '../data/GOMVCOSTO.inc' $INCLUDE         '../data/GOMVCOSTO.inc';
 $if not EXIST '../data/GOMVCOSTO.inc' $INCLUDE '../../base/data/GOMVCOSTO.inc';
 %semislash%;
 
-PARAMETER GOMVCOSTIN(AAA,GGG)    "Variable operating and maintenance costs relative to the input(Money/MWh)"  %semislash%
+PARAMETER GOMVCOSTIN(AAA,GGG)    "Variable operating and maintenance costs relative to the input (overwriting default value GDATA(G,'GDOMVCOSTIN') if non-zero or EPS in data file) (Money/MWh)"  %semislash%
 $if     EXIST '../data/GOMVCOSTIN.inc' $INCLUDE         '../data/GOMVCOSTIN.inc';
 $if not EXIST '../data/GOMVCOSTIN.inc' $INCLUDE '../../base/data/GOMVCOSTIN.inc';
 %semislash%;
 
-PARAMETER GOMFCOST(AAA,GGG)    "Annual fixed operating costs (kMoney/MW)"  %semislash%
+PARAMETER GOMFCOST(AAA,GGG)    "Annual fixed operating costs (overwriting default value GDATA(G,'GOMFCOST0') if non-zero or EPS in data file) (kMoney/MW)"  %semislash%
 $if     EXIST '../data/GOMFCOST.inc' $INCLUDE         '../data/GOMFCOST.inc';
 $if not EXIST '../data/GOMFCOST.inc' $INCLUDE '../../base/data/GOMFCOST.inc';
 %semislash%;
@@ -672,8 +654,6 @@ $if not EXIST '../data/DH.inc' $INCLUDE '../../base/data/DH.inc';
 *------------- Any DH additions for addon to be placed here: ----------------
 $include "../../base/addons/_hooks/dhadditions.inc"
 
-
-
 *-------------------------------------------------------------------------------
 *---- Transmission data: ------------------------------------------------------
 *-------------------------------------------------------------------------------
@@ -693,11 +673,15 @@ PARAMETER XCOST(IRRRE,IRRRI)      "Transmission cost between regions (Money/MWh)
 $if     EXIST '../data/XCOST.inc' $INCLUDE         '../data/XCOST.inc';
 $if not EXIST '../data/XCOST.inc' $INCLUDE '../../base/data/XCOST.inc';
 %semislash%;
+*------------- Any XCOST additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/xcostadditions.inc"
 
 PARAMETER XLOSS(IRRRE,IRRRI)      "Transmission loss between regions (fraction)"  %semislash%
 $if     EXIST '../data/XLOSS.inc' $INCLUDE         '../data/XLOSS.inc';
 $if not EXIST '../data/XLOSS.inc' $INCLUDE '../../base/data/XLOSS.inc';
 %semislash%;
+*------------- Any XLOSS additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/xlossadditions.inc"
 
 $ifi %XKRATE_DOL%==IRRRE_IRRRI          PARAMETER XKRATE(IRRRE,IRRRI)         "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
 $ifi %XKRATE_DOL%==IRRRE_IRRRI_SSS      PARAMETER XKRATE(IRRRE,IRRRI,SSS)     "Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
@@ -711,7 +695,6 @@ $if     EXIST '../data/XMAXINV.inc' $INCLUDE         '../data/XMAXINV.inc';
 $if not EXIST '../data/XMAXINV.inc' $INCLUDE '../../base/data/XMAXINV.inc';
 %semislash%;
 
-
 *-------------------------------------------------------------------------------
 * Annually specified fuel prices: ---------------------------------------------
 *-------------------------------------------------------------------------------
@@ -723,28 +706,23 @@ $if not EXIST '../data/FUELPRICE.inc' $INCLUDE '../../base/data/FUELPRICE.inc';
 *------------- Any FUELPRICE additions for addon to be placed here: ----------------
 $include "../../base/addons/_hooks/fuelpriceadditions.inc"
 
-
 *-------------------------------------------------------------------------------
 *---- Emission policy data: ---------------------------------------------------
 *-------------------------------------------------------------------------------
 
-PARAMETER M_POL(YYY,MPOLSET,CCC)    "Emission policy data"   %semislash%
-$if     EXIST '../data/M_POL.inc' $INCLUDE         '../data/M_POL.inc';
-$if not EXIST '../data/M_POL.inc' $INCLUDE '../../base/data/M_POL.inc';
+PARAMETER EMI_POL(YYY,CCCRRRAAA,GROUP,EMIPOLSET)    "Emission policy data per geography and group"   %semislash%
+$if     EXIST '../data/EMI_POL.inc' $INCLUDE         '../data/EMI_POL.inc';
+$if not EXIST '../data/EMI_POL.inc' $INCLUDE '../../base/data/EMI_POL.inc';
 %semislash%;
 
-/*
-PARAMETER M_POLNA(YYY,MPOLSET)    "Emission policy data"   %semislash%
-$if     EXIST '../data/M_POLNA.inc' $INCLUDE         '../data/M_POLNA.inc';
-$if not EXIST '../data/M_POLNA.inc' $INCLUDE '../../base/data/M_POLNA.inc';
-%semislash%;  */    M_POLNA(YYY,MPOLSET)=0;
+PARAMETER EMI_POLNA(YYY,GROUP,EMIPOLSET)    "Emission policy data per group; default for the 'LIM_' entries: 0 implies irrelevant, EPS implies no emission permitted (aggregated countries)"   %semislash%
+$if     EXIST '../data/EMI_POLNA.inc' $INCLUDE         '../data/EMI_POLNA.inc';
+$if not EXIST '../data/EMI_POLNA.inc' $INCLUDE '../../base/data/EMI_POLNA.inc';
+%semislash%;
 
 *-------------------------------------------------------------------------------
 *---- Seasonal and daily variations: ------------------------------------------
 *-------------------------------------------------------------------------------
-
-
-* DISSE FILER INDHOLDER NaSTEN ALLESAMMEN KODE, CONDITIONALS, ETC! Skal revideres!
 
 PARAMETER WEIGHT_S(SSS)                            "Weight (relative length) of each season"    %semislash%
 $if     EXIST '../data/WEIGHT_S.inc' $INCLUDE      '../data/WEIGHT_S.inc';
@@ -766,7 +744,8 @@ $if     EXIST '../data/SSIZE.inc' $INCLUDE         '../data/SSIZE.inc';
 $if not EXIST '../data/SSIZE.inc' $INCLUDE '../../base/data/SSIZE.inc';
 %semislash%;
 
-PARAMETER GKRATE(AAA,GGG,SSS)                       "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)" %semislash%
+$ifi %GKRATE_DOL%==AAA_GGG_SSS     PARAMETER GKRATE(AAA,GGG,SSS)                       "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)" %semislash%
+$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT PARAMETER GKRATE(AAA,GGG,SSS,TTT)                       "Capacity rating (non-negative, typically close to 1; default/1/, use eps for 0)" %semislash%
 $if     EXIST '../data/GKRATE.inc' $INCLUDE         '../data/GKRATE.inc';
 $if not EXIST '../data/GKRATE.inc' $INCLUDE '../../base/data/GKRATE.inc';
 %semislash%;
@@ -799,6 +778,8 @@ PARAMETER WND_VAR_T(AAA,SSS,TTT)                   "Variation of the wind genera
 $if     EXIST '../data/WND_VAR_T.inc' $INCLUDE      '../data/WND_VAR_T.inc';
 $if not EXIST '../data/WND_VAR_T.inc' $INCLUDE '../../base/data/WND_VAR_T.inc';
 %semislash%;
+*------------- Any WND_VAR_T additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/wnd_var_tadditions.inc"
 
 PARAMETER SOLE_VAR_T(AAA,SSS,TTT)                  "Variation of the solarE generation"   %semislash%
 $if     EXIST '../data/SOLE_VAR_T.inc' $INCLUDE      '../data/SOLE_VAR_T.inc';
@@ -832,25 +813,12 @@ $if     EXIST '../data/HYPPROFILS.inc' $INCLUDE      '../data/HYPPROFILS.inc';
 $if not EXIST '../data/HYPPROFILS.inc' $INCLUDE '../../base/data/HYPPROFILS.inc';
 %semislash%;
 
-
-$ifi %bb3%==yes WEIGHT_T(T)=1;
-
-
-$ifi %YIELDREQUIREMENT%==yes  PARAMETER YIELDREQ(GGG)  "Differentiates yield requirements for different technologies"   %semislash%
-$ifi %YIELDREQUIREMENT%==yes  $if     EXIST '../data/YIELDREQ.inc' $INCLUDE      '../data/YIELDREQ.inc';
-$ifi %YIELDREQUIREMENT%==yes  $if not EXIST '../data/YIELDREQ.inc' $INCLUDE '../../base/data/YIELDREQ.inc';
-$ifi %YIELDREQUIREMENT%==yes  %semislash%;
-
-
-$ifi not %BB4%==yes $goto label_BB4_1
-$ifi %BB4%==yes SET YMODEL "YMODEL is a set used to derive the years from Y in each Balbase4 model";
-$ifi %BB4%==yes PARAMETER YMODELDELTA(YMODEL) "The number of years between two consequtive years in a BB4 model";
+SET YMODEL "YMODEL is a set used to derive the years from Y in each Balbase4 model";
+PARAMETER YMODELDELTA(YMODEL) "The number of years between two consequtive years in a BB4 model";
 $if     EXIST '../data/YMODEL.inc' $INCLUDE         '../data/YMODEL.inc';
 $if not EXIST '../data/YMODEL.inc' $INCLUDE '../../base/data/YMODEL.inc';
 $if     EXIST '../data/YMODELDELTA.inc' $INCLUDE         '../data/YMODELDELTA.inc';
 $if not EXIST '../data/YMODELDELTA.inc' $INCLUDE '../../base/data/YMODELDELTA.inc';
-$label label_BB4_1
-
 
 *-------------------------------------------------------------------------------
 *---- Miscellaneous ------------------------------------------------------------
@@ -867,7 +835,7 @@ $if     EXIST '../data/OMONEY.inc' $INCLUDE         '../data/OMONEY.inc';
 $if not EXIST '../data/OMONEY.inc' $INCLUDE '../../base/data/OMONEY.inc';
 
 
-SCALAR PENALTYQ  "Penalty on violation of equation"  %semislash%
+SCALAR PENALTYQ  "Penalty on violation of equation (non-negative)"  %semislash%
 $if     EXIST '../data/PENALTYQ.inc' $INCLUDE         '../data/PENALTYQ.inc';
 $if not EXIST '../data/PENALTYQ.inc' $INCLUDE '../../base/data/PENALTYQ.inc';
 %semislash%;
