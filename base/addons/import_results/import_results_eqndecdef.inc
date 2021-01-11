@@ -132,6 +132,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGHYRS)$IGDECOMEXOPOT(IY411,IA,IG
 
 $ifi   not  %HYRSBB123%==none   +(-VHYRS_S(IY411,IA,S++1)+SUM(SSS$(ICOUNTSSS(S) EQ ICOUNTSSS(SSS)),VHYRS_S(IY411,IA,SSS++1)))$(CARD(S) EQ ORD(S))
 
+$include "../../base/addons/_hooks/qhyrsseqcurt.inc"
 ;
 
 
