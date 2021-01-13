@@ -1,8 +1,8 @@
 User's guide for the Transmission_Map tool (Transmission_Map.ipynb). 
 
 The Transmission_Map tool is a tool to create maps with the symbolic representation of trade between regions. 
-The initial intention of the tool was to visualize electricity trade, but theoretically any trade can be displayed. 
-The tool can show the trade capacity, as well as the instantaneous trade flows and level of congestion on trade lines between regions. 
+The initial intention of the tool was to visualize electricity trade, but any trade can be displayed. 
+The tool can show the trade capacity, as well as the instantaneous trade flows and level of congestion on lines between regions. 
 
 ********************************************************************************************************************
 
@@ -12,6 +12,7 @@ To do:
 
 2. Insert/update the following files in the 'input' path:
 	2.1 non-Geo files
+    NB: the required files depend on the option you want to display. For example, if only 'Capacity' is displayed, files b) and d) are not required. 
 	a) .\input\results\{market}: CapacityPowerTransmission_{scenario}_{year}_{subset}.csv
 		--> required columns: Y, C, IRRRE, IRRRI, VARIABLE_CATEGORY, UNITS, Val	
 			--> indicating year, country, exporting region, importing region, Exogenous/Endogenous/Decommissioning, units, value
@@ -61,9 +62,10 @@ NB: all file names can be changed in cell 1.3. Column names can be changed too i
 	a) calibrate 'market', 'SCENARIO', 'YEAR' and 'SUBSET' with the file names of step 2.1.  
 	b) 'year': which year needs to be displayed
 	c) 'LINES': choose to display either i) the line capacities, ii) single-coloured electricity flows at a certain timestep or iii) electricity flows with a different colour at congested lines.
-	d) 'exo_end' (only if'LINES'= 'Capacity' or 'LINES'='CongestionFlow'): display endogenous, exogenous or total capacity. 
-	e) 'S' (only if'LINES'= Flow' or 'LINES'='CongestionFlow': Season to be displayed
-	f) 'T' (only if'LINES'= Flow' or 'LINES'='CongestionFlow': Timestep to be displayed
+	d) 'exo_end' (only if'LINES'== 'Capacity' or 'LINES'=='CongestionFlow'): display endogenous, exogenous or total capacity. 
+	e) 'S' (only if'LINES'== Flow' or 'LINES'=='CongestionFlow': Season to be displayed
+	f) 'T' (only if'LINES'== Flow' or 'LINES'=='CongestionFlow': Timestep to be displayed
+    g) set 'hubs' options. 
 	g) Visual options (colours, fonts, etc.)
 
 5. Run the code. The result is an html that can be found in .\output\Transmission_Map\{subset}\{market}\...html
@@ -74,11 +76,12 @@ NB: all file names can be changed in cell 1.3. Column names can be changed too i
 ********************************************************************************************************************
 
 
-# Authors
-- Martijn Backer (for questions: marback@dtu.dk)
+# Author
+- Martijn Backer (marback@dtu.dk)
 
 # Acknowledgements
 - Juan Gea Bermudez
+- Matti Koivisto
 ********************************************************************************************************************
 
 		 
