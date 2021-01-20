@@ -1,4 +1,4 @@
-*Individual users addon
+*Individual users addon 
 
 
 $ifi not %GROUP_DEMAND_SHIFT%==yes $goto NO_GROUP_DEMAND_SHIFT
