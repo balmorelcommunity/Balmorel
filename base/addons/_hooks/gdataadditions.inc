@@ -15,3 +15,4 @@ $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_gdataa
 
 $label endoffile
 
+$ifi %INDIVUSERS%==yes  $ifi %GROUP_DEMAND_SHIFT%==yes  $include   "../../base/addons/indivusers/bb4/indivusers_gdataadditions.inc";

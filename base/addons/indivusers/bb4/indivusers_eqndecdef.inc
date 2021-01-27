@@ -1,6 +1,7 @@
-*Individual users addon
+*Individual users addon 
 
 
+$ifi not %GROUP_DEMAND_SHIFT%==yes $goto NO_GROUP_DEMAND_SHIFT
 EQUATIONS
 QINDIVUSERS_DH(Y,RRR,DHUSER)                          "Individual users: all annual heat per heat user demand must be covered (MWh)"
 QINDIVUSERS_GROUP_MIN(Y,RRR,DHUSER,INDIVUSERS_GROUP)  "Individual users: minimum demand per heat user that needs to be satisfied by a group (MWh)"
@@ -24,11 +25,7 @@ VINDIVUSERS_GROUPSHARE(IY411,IR,DHUSER,INDIVUSERS_GROUP)
      =L=
 INDIVUSERS_MAXSHARE_DH(IY411,IR,DHUSER,INDIVUSERS_GROUP)
 ;
-
-
-
-
-
+$label NO_GROUP_DEMAND_SHIFT 
 
 
 
