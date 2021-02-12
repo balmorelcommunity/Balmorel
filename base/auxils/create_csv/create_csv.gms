@@ -22,11 +22,11 @@ $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/ProductionHourly_
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/ProductionYearly_%scenario_name%.csv symb=PRO_YCRAGF format=csv
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/FuelConsumptionHourly_%scenario_name%.csv symb=F_CONS_YCRAST format=csv
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/FuelConsumptionYearly_%scenario_name%.csv symb=F_CONS_YCRA format=csv
-$call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/CapacityPowerTransmission_%scenario_name%.csv symb=X_CAP_YCR format=csv
+$call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/CapacityElectricityTransmission_%scenario_name%.csv symb=X_CAP_YCR format=csv
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/FlowElectricityHourly_%scenario_name%.csv symb=X_FLOW_YCRST format=csv
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/FlowElectricityYearly_%scenario_name%.csv symb=X_FLOW_YCR format=csv
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/EconomyGeneration_%scenario_name%.csv symb=ECO_G_YCRAG format=csv
-$call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/EconomyPowerTransmission_%scenario_name%.csv symb=ECO_X_YCR format=csv
+$call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/EconomyElectricityTransmission_%scenario_name%.csv symb=ECO_X_YCR format=csv
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/ObjectiveFunction_%scenario_name%.csv symb=OBJ_YCR format=csv
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/PriceElectricityYearly_%scenario_name%.csv symb=EL_PRICE_YCR format=csv
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/PriceElectricityHourly_%scenario_name%.csv symb=EL_PRICE_YCRST format=csv
