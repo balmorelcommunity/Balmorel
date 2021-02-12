@@ -4,7 +4,7 @@ The Transmission_Map tool is a tool to create maps with the symbolic representat
 The initial intention of the tool was to visualize electricity trade, but any trade (e.g. H2, heat, other) can be displayed. 
 The tool can show the trade capacity, as well as the instantaneous trade flows and level of congestion on lines between regions. 
 
-********************************************************************************************************************
+*********************************************************************************************************************
 
 
 To do: 
