@@ -69,7 +69,7 @@ NB: all file names can be changed in cell 1.3. Column names can be changed too i
     g) set 'hubs' options. 
 	g) Visual options (colours, fonts, etc.)
 
-5. Run the code. The result is an html that can be found in .\output\Transmission_Map\{commodity}\{lines}\{scenario}\{market}\...html
+5. Run the code. The result is an html that can be found in .\output\Transmission_Map\{lines}\{scenario}\{market}\...html
 
 ********************************************************************************************************************	
 
