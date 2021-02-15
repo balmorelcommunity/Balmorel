@@ -308,7 +308,7 @@ $setglobal COMBTECH
 *-----------------HYDROGEN ADDON---------------------------------------
 * overall control variable HYDROGEN must be 'yes' if any of the other HYDROGEN controls are:
 * Set demands for hydrogen consumption and enable hydrogen technologies (some options require COMBTECH to be activated too).
-$Setglobal HYDROGEN  YES
+$Setglobal HYDROGEN  
 *!option yes
 
 * Allows investments in hydrogen transport
