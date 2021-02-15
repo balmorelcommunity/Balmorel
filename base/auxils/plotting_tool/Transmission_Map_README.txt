@@ -1,7 +1,7 @@
 User's guide for the Transmission_Map tool (Transmission_Map.ipynb). 
 
 The Transmission_Map tool is a tool to create maps with the symbolic representation of trade between regions. 
-The initial intention of the tool was to visualize electricity trade, but any trade (e.g. H2, heat, other) can be displayed. 
+The initial intention of the tool was to visualize electricity trade, but any inter-regional trade (e.g. H2) can be displayed. 
 The tool can show the trade capacity, as well as the instantaneous trade flows and level of congestion on lines between regions. 
 
 *********************************************************************************************************************
@@ -14,22 +14,22 @@ To do:
 	2.1 non-Geo files
     	NB: the required files depend on the option you want to display. For example, if only 'Capacity' is displayed, files b) and d) are not required. 
 	a) .\input\results\{market}: Capacity{commodity}Transmission_{scenario}_{year}_{subset}.csv
-		--> required columns: Y, C, IRRRE, IRRRI, VARIABLE_CATEGORY, UNITS, Value	
+		--> required columns: Y, C, IRRRE, IRRRI, VARIABLE_CATEGORY, UNITS, Val
 			--> indicating year, country, exporting region, importing region, Exogenous/Endogenous/Decommissioning, units, value
 	b) .\input\results\{market}: Flow{commodity}Hourly_{scenario}_{year}_{subset}.csv
 		--> required columns: Y, C, IRRRE, IRRRI, SSS, TTT, UNITS, Val	
 			--> indicating  year, country, exporting region, importing region, season, timestep, units, value
 	
 	if hubs are to be displayed (i.e. 'hub_display' == True):
-		c) .\input\results\{market}: Capacity{commodity}Generation_{scenario}_{year}_{subset}.csv
+		c) .\input\results\{market}: CapacityGeneration_{scenario}_{year}_{subset}.csv
 			--> required columns: Y, C, RRR, G, UNITS, Val	
 				--> indicating year, country, region, generator, units and value
-		d) .\input\results\{market}: Production{commodity}Hourly_{scenario}_{year}_{subset}.csv
+		d) .\input\results\{market}: ProductionHourly_{scenario}_{year}_{subset}.csv
 			--> required columns: Y, C, RRR, G, SSS, TTT, UNITS, Val	
 				--> indicating year, country, region, generator, season, timestep, units and value
 	with:
 	--> market: the market of the run (e.g. 'DayAhead', 'Balancing', 'Investment', 'FullYear')
-	--> commodity: commodity to be displayed, e.g. 'Electricity', 'H2', 'Heat', 'Coffee'
+	--> commodity: commodity to be displayed, e.g. 'Electricity', 'H2', 'Coffee'
 	--> scenario: the scenario of the run
 	--> year: the year (or years, or 'all') of the run
 	--> subset: subset (e.g. 'full')
