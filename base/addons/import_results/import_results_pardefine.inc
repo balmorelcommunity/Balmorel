@@ -41,6 +41,7 @@ $ifi %EV%==yes $ifi not %ADDEVSTOS%==none   execute_load  '../../simex/EV_PHEV_N
 $ifi %ADDTECHDEV%==yes      execute_load  '../../simex/GKACCUMNET.gdx', GKACCUMNET;
 $ifi %ADDTRANSDEV%==yes     execute_load  '../../simex/XKACCUMNET.gdx', XKACCUMNET;
 $ifi %ADDHEATTRANSDEV%==yes execute_load  '../../simex/XHKACCUMNET.gdx', XHKACCUMNET;
+$ifi %ADDH2TRANSDEV%==yes execute_load  '../../simex/XH2KACCUMNET.gdx', XH2KACCUMNET;      
 
 
 *Energy dispatch from previous optimization

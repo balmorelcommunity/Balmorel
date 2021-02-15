@@ -24,7 +24,7 @@ GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_O
 * New technology types may be added only if also code specifying their properties are added.
 ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,AIR_AIR,AIR_WTR, EXCESSHEAT_WTR, GROUND_WTR, EXCESSHEAT,GROUND,HUB_OFF;
 *Hydrogen add-on
-ACRONYMS HYDROGEN_GH2STO, H2_STORAGE, HYDROGEN_GETOH2, HYDROGEN_GEHTOH2, HYDROGEN_GCH4TOH2, HYDROGEN_GH2FUEL, HYDROGEN_GH2TOEH,HYDROGEN_GH2TOE, HYDROGEN_GH2TOBIOMETH, FUELCELL, BIOMETHDAC, HYDROGEN, BIOMETHANE, ELECTROLYZER;
+ACRONYMS HYDROGEN_GH2STO, H2_STORAGE, HYDROGEN_GETOH2, HYDROGEN_GETOHH2,HYDROGEN_GEHTOH2, HYDROGEN_GCH4TOH2, HYDROGEN_GH2FUEL, HYDROGEN_GH2TOEH,HYDROGEN_GH2TOE, HYDROGEN_GH2TOBIOMETH, FUELCELL, BIOMETHDAC, HYDROGEN, BIOMETHANE, ELECTROLYZER;
 
 SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)"
 $if     EXIST '../data/CCCRRRAAA.inc' $INCLUDE         '../data/CCCRRRAAA.inc';
@@ -93,6 +93,10 @@ SCALAR    LIFETIME_XH               "Lifetime of heat transmission lines (years)
 $if     EXIST '../data/HEATTRANS_LIFETIME_XH.inc' $INCLUDE         '../data/HEATTRANS_LIFETIME_XH.inc';
 $if not EXIST '../data/HEATTRANS_LIFETIME_XH.inc' $INCLUDE '../../base/data/HEATTRANS_LIFETIME_XH.inc';
 
+SCALAR    LIFETIME_XH2               "Lifetime of H2 transmission lines (years)";
+$if     EXIST '../data/HYDROGEN_LIFETIME_XH2.inc' $INCLUDE         '../data/HYDROGEN_LIFETIME_XH2.inc';
+$if not EXIST '../data/HYDROGEN_LIFETIME_XH2.inc' $INCLUDE '../../base/data/HYDROGEN_LIFETIME_XH2.inc';
+
 PARAMETER ANNUITYCG(CCC,GGG)               "Transforms investment in technologies into annual payment (fraction)";
 
 PARAMETER DEBT_SHARE_G(GGG)              "Share of debt for the investment of each generation technology (fraction)";
@@ -135,6 +139,21 @@ SCALAR    PAYBACK_TIME_XH               "Payback time of the loan for heat trans
 *Assumption: payback time equals lifetime
 PAYBACK_TIME_XH = LIFETIME_XH;
 
+PARAMETER ANNUITYCXH2(CCC)  "Transforms investment in H2 transmission lines into annual payment (fraction). Possibly different meaning in BB4";
+
+SCALAR DEBT_SHARE_XH2                    "Share of debt for the investment of H2 transmission lines (fraction)";
+*Assumption: share of debt equal to 0
+DEBT_SHARE_XH2=0;
+
+SCALAR    INTEREST_RATE_XH2              "Interest rate applied to the loan of H2 transmission lines";
+*Assumption: interest rate equals socio economic discount rate
+INTEREST_RATE_XH2 = DISCOUNTRATE;
+
+SCALAR    PAYBACK_TIME_XH2               "Payback time of the loan for H2 transmission lines (years)";
+*Assumption: payback time equals lifetime
+PAYBACK_TIME_XH2 = LIFETIME_XH2;
+
+
 *----------END OF INPUT DATA--------------------
 
 
@@ -146,6 +165,8 @@ ANNUITYCG(CCC,GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)= ((1-DEBT_SHARE_G(GGG))*DISCOU
 ANNUITYCX(CCC)= ((1-DEBT_SHARE_X)*DISCOUNTRATE + INTEREST_RATE_X * DEBT_SHARE_X* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_X)) / (1 - (1 + INTEREST_RATE_X) ** (-PAYBACK_TIME_X))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_X));
 
 ANNUITYCXH(CCC)= ((1-DEBT_SHARE_XH)*DISCOUNTRATE + INTEREST_RATE_XH * DEBT_SHARE_XH* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_XH)) / (1 - (1 + INTEREST_RATE_XH) ** (-PAYBACK_TIME_XH))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_XH));
+
+ANNUITYCXH2(CCC)= ((1-DEBT_SHARE_XH2)*DISCOUNTRATE + INTEREST_RATE_XH2 * DEBT_SHARE_XH2* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_XH2)) / (1 - (1 + INTEREST_RATE_XH2) ** (-PAYBACK_TIME_XH2))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_XH2));
 
 *------------END OF CALCULATIONS-------------
 
@@ -177,6 +198,15 @@ put annuity_transmission_heat;
 put '*PARAMETER ANNUITYCXH(CCC) CALCULATED WITH AUXILS' //
 loop(CCC,
           put ANNUITYCXH.tn(CCC),'=' ANNUITYCXH(CCC) :0 ';' /
+);
+putclose;
+
+file annuity_transmission_hydrogen /'../../base/auxils/annuity_calculation/HYDROGEN_ANNUITYCXH2.inc'/;
+annuity_transmission_hydrogen.nd  = 12;
+put annuity_transmission_hydrogen;
+put '*PARAMETER ANNUITYCXH2(CCC) CALCULATED WITH AUXILS' //
+loop(CCC,
+          put ANNUITYCXH2.tn(CCC),'=' ANNUITYCXH2(CCC) :0 ';' /
 );
 putclose;
 

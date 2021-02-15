@@ -45,5 +45,9 @@ $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/CapacityHeatTrans
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/FlowHeatHourly_%scenario_name%.csv symb=XH_FLOW_YCAST format=csv
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/FlowHeatYearly_%scenario_name%.csv symb=XH_FLOW_YCA format=csv
 $call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/EconomyHeatTransmission_%scenario_name%.csv symb=ECO_XH_YCRA format=csv
+$call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/CapacityH2Transmission_%scenario_name%.csv symb=XH2_CAP_YCR format=csv
+$call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/FlowH2Hourly_%scenario_name%.csv symb=XH2_FLOW_YCRST format=csv
+$call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/FlowH2Yearly_%scenario_name%.csv symb=XH2_FLOW_YCR format=csv
+$call gdxdump %inputdata%/%input_name%.gdx output=%outputdata%/EconomyH2Transmission_%scenario_name%.csv symb=ECO_XH2_YCR format=csv
 
 

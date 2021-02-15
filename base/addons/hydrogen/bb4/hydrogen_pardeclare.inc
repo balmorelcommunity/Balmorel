@@ -12,3 +12,30 @@ H2STOVOLTSVAL(Y,AAA,GGG,SSS,TTT)       'Hydrogen storage value to be used in fut
 BIOMETHSTOVOLTS(Y,SSS,TTT)          'Biomethane storage content to be used in future runs (MWh)'
 BIOMETHSTOVOLTSVAL(Y,SSS,TTT)       'Biomethane storage value to be used in future runs (MWh)'
 ;
+
+
+* Transmission capacity (MW) between regions IRE (exporting) and  IRI (importing)
+* at the beginning of current simulation year:
+PARAMETER XH2KFX(YYY,IRRRE,IRRRI) "H2 transmission capacity between regions at beginning of year (MW)";
+
+PARAMETER XH2INVCOST(YYY,IRRRE,IRRRI)  "Investment cost in new H2 transmission capacity (Money/MW)";
+* Observe: if INF is entered in XH2INVCOST, this means that no tranmission capacity can be established between the two associated regions.
+
+PARAMETER XH2INVCOST_NGTOH2(YYY,IRRRE,IRRRI)  "Investment cost in conversion of natural grids to  H2 transmission capacity (Money/MW)";
+* Observe: if INF is entered in XH2INVCOST_NGTOH2, this means that no tranmission capacity can be established between the two associated regions.
+
+PARAMETER XH2COST(IRRRE,IRRRI)  "H2 transmission cost between regions (calculated from exported quantity) (Money/MWh)" ;
+
+PARAMETER XH2LOSS(IRRRE,IRRRI)  "H2 transmission loss between regions (calculated from exported quantity) (share)";
+
+PARAMETER XH2KRATE(IRRRE,IRRRI,SSS,TTT)    "H2 Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)" ;
+
+PARAMETER ANNUITYCXH2(CCC) "Transforms investment in H2 transmission lines into annual payment (fraction). Possibly different meaning in BB4";
+
+PARAMETER XH2MAXK_NGTOH2(YYY,IRRRE,IRRRI)  "Max H2 transmission capacity between two regions of potential conversion of natural grids to H2 grids (MW)";
+
+SCALAR    LIFETIME_XH2                   "Lifetime of H2 transmission lines (years)";
+
+PARAMETER  XH2KACCUMNET(YYY,IRRRE,IRRRI) "Resulting H2 transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
+PARAMETER  XH2_T(Y,IRRRE,IRRRI,S,T)      "H2 export from region IRRRE to IRRRI to be transferred to future runs (MW)  to be transferred to future runs";
+

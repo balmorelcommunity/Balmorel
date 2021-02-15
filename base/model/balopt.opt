@@ -246,7 +246,7 @@ $setglobal TRANSPORT
 *!option yes
 
 * Defines the commodity used to model synthetic fuel generation.
-$setglobal TRANSPORT_SYNTHFUEL_COMMODITY    ELECTRICITY
+$setglobal TRANSPORT_SYNTHFUEL_COMMODITY    HYDROGEN
 *!option ELECTRICITY    !Text "The demand for synthetic fuel generation is modelled as electricity demand"
 *!option HYDROGEN       !Text "The demand for synthetic fuel generation is modelled as hydrogen demand (requires hydrogen addon to be activated)"
 *------------------------------END:TRANSPORT ADDON-------------------------------------------------
@@ -305,9 +305,20 @@ $setglobal NOHEATMARKET
 $setglobal COMBTECH
 *!option yes
 
-* Set demands for hydrogen consumption and enable hydrogen technologies.
-$Setglobal HYDROGEN
+*-----------------HYDROGEN ADDON---------------------------------------
+* overall control variable HYDROGEN must be 'yes' if any of the other HYDROGEN controls are:
+* Set demands for hydrogen consumption and enable hydrogen technologies (some options require COMBTECH to be activated too).
+$Setglobal HYDROGEN  YES
 *!option yes
+
+* Allows investments in hydrogen transport
+$Setglobal H2TransInvest YES
+*!option yes
+
+SCALAR XH2INVESTSTART 'Year from which endogenous decisions in H2 transmission capacities are allowed' ;
+XH2INVESTSTART= 2025;
+
+*-----------------END: HYDROGEN ADDON---------------------------------------
 
 * Use stepwise linear fuel prices
 $Setglobal STEPWISEPRICE
@@ -674,6 +685,10 @@ $setglobal ADDTRANSDEV
 
 *Import heat transmission development from previous runs
 $setglobal ADDHEATTRANSDEV
+*!option yes
+
+*Import H2 transmission development from previous runs
+$setglobal ADDH2TRANSDEV
 *!option yes
 *--------------------END OF INVESTMENTS AND DECOMMISSIONING-----------------------------------------------------------
 

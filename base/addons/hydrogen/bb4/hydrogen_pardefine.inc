@@ -23,4 +23,33 @@ $if not EXIST '../data/HYDROGEN_DAC_DE.inc' $INCLUDE '../../base/data/HYDROGEN_D
 
 $if     EXIST '../data/HYDROGEN_DAC_DH.inc' $INCLUDE         '../data/HYDROGEN_DAC_DH.inc';
 $if not EXIST '../data/HYDROGEN_DAC_DH.inc' $INCLUDE '../../base/data/HYDROGEN_DAC_DH.inc';
+
+$if     EXIST '../data/HYDROGEN_XH2KFX.inc' $INCLUDE         '../data/HYDROGEN_XH2KFX.inc';
+$if not EXIST '../data/HYDROGEN_XH2KFX.inc' $INCLUDE '../../base/data/HYDROGEN_XH2KFX.inc';
+
+$if     EXIST '../data/HYDROGEN_XH2INVCOST.inc' $INCLUDE         '../data/HYDROGEN_XH2INVCOST.inc';
+$if not EXIST '../data/HYDROGEN_XH2INVCOST.inc' $INCLUDE '../../base/data/HYDROGEN_XH2INVCOST.inc';
+
+$if     EXIST '../data/HYDROGEN_XH2INVCOST_NGTOH2.inc' $INCLUDE         '../data/HYDROGEN_XH2INVCOST_NGTOH2.inc';
+$if not EXIST '../data/HYDROGEN_XH2INVCOST_NGTOH2.inc' $INCLUDE '../../base/data/HYDROGEN_XH2INVCOST_NGTOH2.inc';
+
+$if     EXIST '../data/HYDROGEN_XH2COST.inc' $INCLUDE         '../data/HYDROGEN_XH2COST.inc';
+$if not EXIST '../data/HYDROGEN_XH2COST.inc' $INCLUDE '../../base/data/HYDROGEN_XH2COST.inc';
+
+$if     EXIST '../data/HYDROGEN_XH2LOSS.inc' $INCLUDE         '../data/HYDROGEN_XH2LOSS.inc';
+$if not EXIST '../data/HYDROGEN_XH2LOSS.inc' $INCLUDE '../../base/data/HYDROGEN_XH2LOSS.inc';
+
+$if     EXIST '../data/HYDROGEN_XH2KRATE.inc' $INCLUDE         '../data/HYDROGEN_XH2KRATE.inc';
+$if not EXIST '../data/HYDROGEN_XH2KRATE.inc' $INCLUDE '../../base/data/HYDROGEN_XH2KRATE.inc';
+
+$if     EXIST '../data/HYDROGEN_ANNUITYCXH2.inc' $INCLUDE         '../data/HYDROGEN_ANNUITYCXH2.inc';
+$if not EXIST '../data/HYDROGEN_ANNUITYCXH2.inc' $INCLUDE '../../base/data/HYDROGEN_ANNUITYCXH2.inc';
+
+$if     EXIST '../data/HYDROGEN_XH2MAXK_NGTOH2.inc' $INCLUDE         '../data/HYDROGEN_XH2MAXK_NGTOH2.inc';
+$if not EXIST '../data/HYDROGEN_XH2MAXK_NGTOH2.inc' $INCLUDE '../../base/data/HYDROGEN_XH2MAXK_NGTOH2.inc';
+
+$if     EXIST '../data/HYDROGEN_LIFETIME_XH2.inc' $INCLUDE         '../data/HYDROGEN_LIFETIME_XH2.inc';
+$if not EXIST '../data/HYDROGEN_LIFETIME_XH2.inc' $INCLUDE '../../base/data/HYDROGEN_LIFETIME_XH2.inc';
 $offmulti
+
+

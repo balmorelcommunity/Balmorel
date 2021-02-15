@@ -333,9 +333,9 @@ PARAMETER TRANSDEMAND_T(YYY,RRR,SSS,TTT) 'Transport demand per region, year, sea
 $ifi  exist '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx', TRANSDEMAND_T;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/TRANSDEMAND_T.gdx' TRANSDEMAND_T(YYY,RRR,SSS,TTT)=0;
 
-PARAMETER TRANSDEMAND_S(YYY,CCC,SSS) 'Transport demand per country, year, and season (MWh)  to be used in future runs';
+PARAMETER TRANSDEMAND_S(YYY,RRR,SSS) 'Transport demand per region, year, and season (MWh)  to be used in future runs';
 $ifi  exist '../../base/auxils/timestep_conversion/input/TRANSDEMAND_S.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/TRANSDEMAND_S.gdx', TRANSDEMAND_S;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/TRANSDEMAND_S.gdx' TRANSDEMAND_S(YYY,CCC,SSS)=0;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/TRANSDEMAND_S.gdx' TRANSDEMAND_S(YYY,RRR,SSS)=0;
 
 PARAMETER H2STOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal hydrogen storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 $ifi  exist '../../base/auxils/timestep_conversion/input/H2STOVOLTS.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/H2STOVOLTS.gdx', H2STOVOLTS;
@@ -423,7 +423,7 @@ PARAMETER UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)    'Unit commitment (0,1) on ele
 PARAMETER UCON_STOLOAD_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)    'Unit commitment (0,1) on electricity generation to be used in future runs';
 PARAMETER IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)     "Rating of technology capacities (non-negative, typically less than or equal to 0); default/1/, eps for 0)";
 PARAMETER TRANSDEMAND_T_NEW(YYY,RRR,SSS_NEW,TTT_NEW) 'Transport demand per region, year, season and term (MWh)  to be used in future runs';
-PARAMETER TRANSDEMAND_S_NEW(YYY,CCC,SSS_NEW) "Transport demand per country, year, and season (MWh)";
+PARAMETER TRANSDEMAND_S_NEW(YYY,RRR,SSS_NEW) "Transport demand per region, year, and season (MWh)";
 PARAMETER H2STOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal hydrogen storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER H2STOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal hydrogen storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
 PARAMETER BIOMETHSTOVOLTS_NEW(YYY,SSS_NEW,TTT_NEW) "Inter-seasonal biomethane storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
@@ -513,7 +513,7 @@ UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_
 UCON_STOLOAD_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),UCON_STOLOAD(YYY,AAA,GGG,SSS,TTT)) ;
 IGKRATE_NEW(AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),IGKRATE(AAA,GGG,SSS,TTT)) ;
 TRANSDEMAND_T_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),TRANSDEMAND_T(YYY,RRR,SSS,TTT)) ;
-TRANSDEMAND_S_NEW(YYY,CCC,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),TRANSDEMAND_S(YYY,CCC,SSS)*WEIGHT_S_NEW(SSS_NEW)/WEIGHT_S(SSS));
+TRANSDEMAND_S_NEW(YYY,RRR,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),TRANSDEMAND_S(YYY,RRR,SSS)*WEIGHT_S_NEW(SSS_NEW)/WEIGHT_S(SSS));
 H2STOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),H2STOVOLTS(YYY,AAA,GGG,SSS,TTT));
 H2STOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),H2STOVOLTSVAL(YYY,AAA,GGG,SSS,TTT)) ;
 BIOMETHSTOVOLTS_NEW(YYY,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),BIOMETHSTOVOLTS(YYY,SSS,TTT));
@@ -573,7 +573,7 @@ execute_unload  "../../base/auxils/timestep_conversion/output/UCONMAINT.gdx", UC
 execute_unload  "../../base/auxils/timestep_conversion/output/UCON.gdx", UCON_NEW=UCON;
 execute_unload  "../../base/auxils/timestep_conversion/output/UCON_STOLOAD.gdx", UCON_STOLOAD_NEW=UCON_STOLOAD;
 execute_unload  "../../base/auxils/timestep_conversion/output/IGKRATE.gdx", IGKRATE_NEW=IGKRATE;
-execute_unload  "../../base/auxils/timestep_conversion/output/TRANSDEMAND_T.gdx", TRANSDEMAND_T_NEW=TRANSDEMAND_T; 
+execute_unload  "../../base/auxils/timestep_conversion/output/TRANSDEMAND_T.gdx", TRANSDEMAND_T_NEW=TRANSDEMAND_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/TRANSDEMAND_S.gdx", TRANSDEMAND_S_NEW=TRANSDEMAND_S;
 execute_unload  "../../base/auxils/timestep_conversion/output/H2STOVOLTS.gdx", H2STOVOLTS_NEW=H2STOVOLTS;
 execute_unload  "../../base/auxils/timestep_conversion/output/H2STOVOLTSVAL.gdx", H2STOVOLTSVAL_NEW=H2STOVOLTSVAL;
