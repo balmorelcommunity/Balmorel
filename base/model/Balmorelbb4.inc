@@ -1425,7 +1425,7 @@ $ifi  %HEATTRANS%==yes OR SUM(IAE,IXHK_HASORPOT(IY411,IAE,IA)) OR SUM(IAI,IXHK_H
 $include "../../base/addons/_hooks/qheq.inc"
 ;
 
-QDENET(IY411,IR,DEUSER,IS3,T)$(IDE_SUMST(IR,DEUSER) GT 0)..
+QDENET(IY411,IR,DEUSER,IS3,T)..
          VDENET_T(IY411,IR,DEUSER,IS3,T)
          =G=
                               ((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))
