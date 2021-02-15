@@ -13,6 +13,9 @@ BIOMETHSTOVOLTS(Y,SSS,TTT)          'Biomethane storage content to be used in fu
 BIOMETHSTOVOLTSVAL(Y,SSS,TTT)       'Biomethane storage value to be used in future runs (MWh)'
 ;
 
+*IHYDROGEN_DH2_REGION_SUMST and IHYDROGEN_DH2_AREA_SUMST  are put here for convenience.
+PARAMETER IHYDROGEN_DH2_REGION_SUMST(RRR)            'Variation profile of H2 demand per region';
+PARAMETER IHYDROGEN_DH2_AREA_SUMST(AAA)              'Variation profile of H2 demand per region';
 
 * Transmission capacity (MW) between regions IRE (exporting) and  IRI (importing)
 * at the beginning of current simulation year:
