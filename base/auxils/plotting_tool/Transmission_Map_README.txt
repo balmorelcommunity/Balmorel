@@ -12,27 +12,36 @@ To do:
 
 2. Insert/update the following files in the 'input' path:
 	2.1 non-Geo files
-    	NB: the required files depend on the option you want to display. For example, if only 'Capacity' is displayed, files b) and d) are not required. 
-	a) .\input\results\{market}: Capacity{commodity}Transmission_{scenario}_{year}_{subset}.csv
-		--> required columns: Y, C, IRRRE, IRRRI, VARIABLE_CATEGORY, UNITS, Val
-			--> indicating year, country, exporting region, importing region, Exogenous/Endogenous/Decommissioning, units, value
-	b) .\input\results\{market}: Flow{commodity}Hourly_{scenario}_{year}_{subset}.csv
-		--> required columns: Y, C, IRRRE, IRRRI, SSS, TTT, UNITS, Val	
-			--> indicating  year, country, exporting region, importing region, season, timestep, units, value
+	There are two options of uploading files: using CSV files or GDX files. 
+
+		2.1.1 GDX files: set filetype_input to 'gdx' in cell 1.1
+		a) .\input\results\{market}\MainResults_{scenario}_{year}_{subset}.gdx
+		If hubs are required:
+		b) .\input\geo_files\hub_technologies.csv
+			--> a csv with the names of all hub technologies
+
+		2.1.2 CSV files: set filetype_input to 'csv' in cell 1.1
+    		NB: the required files depend on the option you want to display. For example, if only 'Capacity' is displayed, files b) and d) are not required. 
+		a) .\input\results\{market}: Capacity{commodity}Transmission_{scenario}_{year}_{subset}.csv
+			--> required columns: Y, C, IRRRE, IRRRI, VARIABLE_CATEGORY, UNITS, Val
+				--> indicating year, country, exporting region, importing region, Exogenous/Endogenous/Decommissioning, units, value
+		b) .\input\results\{market}: Flow{commodity}Hourly_{scenario}_{year}_{subset}.csv
+			--> required columns: Y, C, IRRRE, IRRRI, SSS, TTT, UNITS, Val	
+				--> indicating  year, country, exporting region, importing region, season, timestep, units, value
 	
-	if hubs are to be displayed (i.e. 'hub_display' == True):
-		c) .\input\results\{market}: CapacityGeneration_{scenario}_{year}_{subset}.csv
-			--> required columns: Y, C, RRR, G, UNITS, Val	
-				--> indicating year, country, region, generator, units and value
-		d) .\input\results\{market}: ProductionHourly_{scenario}_{year}_{subset}.csv
-			--> required columns: Y, C, RRR, G, SSS, TTT, UNITS, Val	
-				--> indicating year, country, region, generator, season, timestep, units and value
-	with:
-	--> market: the market of the run (e.g. 'DayAhead', 'Balancing', 'Investment', 'FullYear')
-	--> commodity: commodity to be displayed, e.g. 'Electricity', 'H2', 'Coffee'
-	--> scenario: the scenario of the run
-	--> year: the year (or years, or 'all') of the run
-	--> subset: subset (e.g. 'full')
+		if hubs are to be displayed (i.e. 'hub_display' == True):
+			c) .\input\results\{market}: CapacityGeneration_{scenario}_{year}_{subset}.csv
+				--> required columns: Y, C, RRR, G, UNITS, Val	
+					--> indicating year, country, region, generator, units and value
+			d) .\input\results\{market}: ProductionHourly_{scenario}_{year}_{subset}.csv
+				--> required columns: Y, C, RRR, G, SSS, TTT, UNITS, Val	
+					--> indicating year, country, region, generator, season, timestep, units and value
+		with:
+		--> {market}: the market of the run (e.g. 'DayAhead', 'Balancing', 'Investment', 'FullYear')
+		--> {commodity}: commodity to be displayed, e.g. 'Electricity', 'H2', 'Coffee'
+		--> {scenario}: the scenario of the run
+		--> {year}: the year (or years, or 'all') of the run
+		--> {subset}: subset (e.g. 'full')
 	
 	2.2 Geo files
 	a) .\input\geo_files\geojson_files\ and .\input\geo_files\shapefiles\
