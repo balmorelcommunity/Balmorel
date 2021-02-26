@@ -8,6 +8,11 @@ $if     EXIST '../data/HYDROGEN_DH2_VAR_T.inc' $INCLUDE         '../data/HYDROGE
 $if not EXIST '../data/HYDROGEN_DH2_VAR_T.inc' $INCLUDE '../../base/data/HYDROGEN_DH2_VAR_T.inc';
 %semislash%;
 
+PARAMETER DISLOSS_H2(CCCRRRAAA) 'Distribution loss H2'  %semislash%
+$if     EXIST '../data/HYDROGEN_DISLOSS_H2.inc' $INCLUDE         '../data/HYDROGEN_DISLOSS_H2.inc';
+$if not EXIST '../data/HYDROGEN_DISLOSS_H2.inc' $INCLUDE '../../base/data/HYDROGEN_DISLOSS_H2.inc';
+%semislash%;
+
 PARAMETER HYDROGEN_STOVOL_START(Y,AAA,G,SSS)    'Start level of hydrogen storage';
 * Include start filling level of hydrogen storage obtained from yearly simulation
 $ifi %bb3%==yes execute_load '../../simex/HYDROGEN_STOVOL_START.gdx', HYDROGEN_STOVOL_START;

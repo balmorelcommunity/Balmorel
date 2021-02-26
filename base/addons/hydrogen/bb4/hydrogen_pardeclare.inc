@@ -17,6 +17,8 @@ BIOMETHSTOVOLTSVAL(Y,SSS,TTT)       'Biomethane storage value to be used in futu
 PARAMETER IHYDROGEN_DH2_REGION_SUMST(RRR)            'Variation profile of H2 demand per region';
 PARAMETER IHYDROGEN_DH2_AREA_SUMST(AAA)              'Variation profile of H2 demand per region';
 
+PARAMETER DISLOSS_H2(CCCRRRAAA)            'Distribution loss H2';   
+
 * Transmission capacity (MW) between regions IRE (exporting) and  IRI (importing)
 * at the beginning of current simulation year:
 PARAMETER XH2KFX(YYY,IRRRE,IRRRI) "H2 transmission capacity between regions at beginning of year (MW)";
