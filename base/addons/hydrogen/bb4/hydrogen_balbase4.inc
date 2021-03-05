@@ -22,3 +22,6 @@ $ifi %H2TransInvest%==yes  QXH2KNACCUMNET_NGTOH2
 $ifi %H2TransInvest%==yes  QXH2INVSYMMETRY
 $ifi %H2TransInvest%==yes  QXH2INVSYMMETRY_NGTOH2
 $ifi %H2TransInvest%==yes  QXH2KMAX_NGTOH2
+$ifi %H2TransInvest%==yes  QVXH2KN_ES
+$ifi %H2TransInvest%==yes  QXH2LAMBDA_ES
+

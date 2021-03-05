@@ -57,4 +57,10 @@ $if     EXIST '../data/HYDROGEN_LIFETIME_XH2.inc' $INCLUDE         '../data/HYDR
 $if not EXIST '../data/HYDROGEN_LIFETIME_XH2.inc' $INCLUDE '../../base/data/HYDROGEN_LIFETIME_XH2.inc';
 $offmulti
 
+$if     EXIST '../data/HYDROGEN_XH2INVCOST_ES.inc' $INCLUDE         '../data/HYDROGEN_XH2INVCOST_ES.inc';
+$if not EXIST '../data/HYDROGEN_XH2INVCOST_ES.inc' $INCLUDE '../../base/data/HYDROGEN_XH2INVCOST_ES.inc';
+
+$if     EXIST '../data/HYDROGEN_XH2KN_ES.inc' $INCLUDE         '../data/HYDROGEN_XH2KN_ES.inc';
+$if not EXIST '../data/HYDROGEN_XH2KN_ES.inc' $INCLUDE '../../base/data/HYDROGEN_XH2KN_ES.inc';
+
 

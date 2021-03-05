@@ -17,7 +17,7 @@ BIOMETHSTOVOLTSVAL(Y,SSS,TTT)       'Biomethane storage value to be used in futu
 PARAMETER IHYDROGEN_DH2_REGION_SUMST(RRR)            'Variation profile of H2 demand per region';
 PARAMETER IHYDROGEN_DH2_AREA_SUMST(AAA)              'Variation profile of H2 demand per region';
 
-PARAMETER DISLOSS_H2(CCCRRRAAA)            'Distribution loss H2';   
+PARAMETER DISLOSS_H2(CCCRRRAAA)            'Distribution loss H2';
 
 * Transmission capacity (MW) between regions IRE (exporting) and  IRI (importing)
 * at the beginning of current simulation year:
@@ -44,3 +44,5 @@ SCALAR    LIFETIME_XH2                   "Lifetime of H2 transmission lines (yea
 PARAMETER  XH2KACCUMNET(YYY,IRRRE,IRRRI) "Resulting H2 transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
 PARAMETER  XH2_T(Y,IRRRE,IRRRI,S,T)      "H2 export from region IRRRE to IRRRI to be transferred to future runs (MW)  to be transferred to future runs";
 
+PARAMETER XH2INVCOST_ES(YYY,IRRRE,IRRRI,XES) 'Investment cost in H2 transmission lines at the beginning of each XES (money/XKN_ES )';
+PARAMETER XH2KN_ES(IRRRE,IRRRI,XES) 'Installed capacity in H2 transmission lines at the beginning of each XES (MW)';

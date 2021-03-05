@@ -14,3 +14,6 @@ POSITIVE VARIABLES
 
 
 ;
+
+SOS2 VARIABLE VXH2LAMBDA(Y,IRRRE,IRRRI,XES) 'SOS2 Variable for modelling economy of scale';
+

@@ -186,6 +186,9 @@ QXH2KNACCUMNET_NGTOH2(Y,IRRRE,IRRRI)  "NOT FINISHED, TODO, Accumulated new inves
 QXH2INVSYMMETRY(Y,IRRRE,IRRRI)        "H2 Transmission investments are set symetric(MW)"
 QXH2INVSYMMETRY_NGTOH2(Y,IRRRE,IRRRI) "Conversion of existing natural gas pipe to H2 Transmission investments are set symetric(MW)"
 QXH2KMAX_NGTOH2(Y,IRRRE,IRRRI)        "Maximum conversion of existing natural gas pipe to H2 transmission capacity between regions"
+*Equations for modelling economy of scale
+QVXH2KN_ES(YYY,IRRRE,IRRRI)  "Equation to ensure the proper H2 capacity when using SOS2 variables"
+QXH2LAMBDA_ES(YYY,IRRRE,IRRRI) "Equation to ensure all the Lambda variables are equal to 1 for the same H2 transmission line"
 ;
 
 *"H2 transmission capacity constraint (MW)"
@@ -234,3 +237,9 @@ QXH2KMAX_NGTOH2(IY411,IRE,IRI)$XH2MAXK_NGTOH2(IY411,IRE,IRI)..
     VXH2KNACCUMNET_NGTOH2(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IRE,IRI))
 ;
 
+
+QVXH2KN_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
+   VXH2KN(IY411,IRE,IRI) =E= SUM(XES,VXH2LAMBDA(IY411,IRE,IRI,XES)*XH2KN_ES(IRE,IRI,XES));
+
+QXH2LAMBDA_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
+  SUM(XES,VXH2LAMBDA(IY411,IRE,IRI,XES)) =E= 1;
