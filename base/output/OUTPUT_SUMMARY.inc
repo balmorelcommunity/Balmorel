@@ -666,6 +666,7 @@ H_DEMAND_YCRA(Y,C,IR,IA,'ENDO_BIOMETHANE','TWh')$(CCCRRR(C,IR) AND RRRAAA(IR,IA)
 ;
 * ----------- END OF HEAT DEMAND --------------
 
+$ifi not %HYDROGEN%==yes $goto NO_HYDROGEN_DEMAND30
 * ------------- H2 DEMAND --------------
 
 *HOURLY
@@ -736,6 +737,7 @@ H2_DEMAND_YCR(Y,C,IR,'ENDO_BIOMETHANE','TWh')$CCCRRR(C,IR)=
 ;
 
 * ----------- END OF H2 DEMAND --------------
+$label NO_HYDROGEN_DEMAND30 
 
 * -------------------- END OF ENERGY DEMAND -----------------------
 
