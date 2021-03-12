@@ -1047,8 +1047,8 @@ $INCLUDE '../../base/addons/_hooks/initassign.inc';
 
 * ----------------- Assign IAGKFX, IAGKN, IAGKNY, IAGK_HASORPOT ----------------------------------
 
-IAGKFX(Y,IA,G) = YES$GKFX(Y,IA,G);
-IAGK_HASORPOT(Y,IA,G) = YES$GKFX(Y,IA,G);
+IAGKFX(Y,IA,G)$GKFX(Y,IA,G) = YES;
+IAGK_HASORPOT(Y,IA,G)$GKFX(Y,IA,G) = YES;
 
 IAGKN(IA,G)=NO;
 IAGKNY(Y,IA,G)=NO;
@@ -1110,7 +1110,7 @@ IXKN(Y,IRE,IRI)=NO;
 
 $ifi not %TransInvest%==yes $goto Transmission_investments_end
 
-IXKN(Y,IRE,IRI) = YES$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF) AND (XINVESTSTART LE YVALUE(Y)));
+IXKN(Y,IRE,IRI)$(XINVCOST(Y,IRE,IRI) AND (XINVCOST(Y,IRE,IRI) LT INF) AND (XINVESTSTART LE YVALUE(Y))) = YES;
 
 *This loop makes sure that if you invest in one line in the year Y, you can use this line in the future, even if you do not allow for investments on this line in the future
 LOOP(Y$(ORD(Y) GT 1),
@@ -1692,7 +1692,9 @@ QGGETOH(IAGK_HASORPOT(IY411,IA,IGETOH),IS3,T) ..
 
 * TODO eventually: linking between years in BB4
 * "Hydropower with reservoir seasonal energy constraint (MWh)"
-QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) AND IS3(S))..
+QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) AND IS3(S)
+$ifi %hydrocas_FLH%==yes AND NOT SUM(IGHYRS, IAGK_HYDRCAS(IA,IGHYRS))
+)..
       VHYRS_S(IY411,IA,S)
        +  IHYINF_S(IA,S) * (
       SUM(IGHYRS,
@@ -1709,7 +1711,9 @@ $include "../../base/addons/_hooks/qhyrsseq.inc"
 ;
 
 * "Hydropower reservoir - minimum level (MWh)"
-QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND (IS3(S) OR IS3(S-1)))..
+QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND (IS3(S) OR IS3(S-1))
+$ifi %hydrocas_FLH%==yes AND NOT SUM(IGHYRS, IAGK_HYDRCAS(IA,IGHYRS))
+)..
      VHYRS_S(IY411,IA,S)  =G=  HYRSDATA(IA,"HYRSMINVOL",S)*
        SUM(IGHYRS,   HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
@@ -1720,7 +1724,9 @@ $include "../../base/addons/_hooks/qhyrsminvol.inc"
 ;
 
 * "Hydropower reservoir - maximum level (MWh)"
-QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND (IS3(S) OR IS3(S-1)))..
+QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND (IS3(S) OR IS3(S-1))
+$ifi %hydrocas_FLH%==yes AND NOT SUM(IGHYRS, IAGK_HYDRCAS(IA,IGHYRS))
+)..
        HYRSDATA(IA,"HYRSMAXVOL",S) *
        SUM(IGHYRS,  HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
@@ -1734,7 +1740,9 @@ $include "../../base/addons/_hooks/qhyrsmaxvol.inc"
 
 
 * "Regulated and unregulated hydropower production lower than capacity (MW)"
-QHYMAXG(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS))..
+QHYMAXG(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)
+$ifi %hydrocas_FLH%==yes *IAGK_HYDRCAS(IA,IGHYRS)
+)..
       SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),VGE_T(IY411,IA,IGHYRS,IS3,T))
       =L=
       SUM(IGHYRS,
@@ -2100,7 +2108,7 @@ QGMAXCFS(IY411,C,FFF,IS3)$IGMAXFS(IY411,C,FFF,IS3)..
 
 * "Maximum fuel use by year, season, region and fuel (GJ)"
 QGMAXRFS(IY411,IR,FFF,IS3)$IGMAXFS(IY411,IR,FFF,IS3)..
-    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM(T, WEIGHT_S(IS3)/IWEIGHSUMT * (  VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * CARD(TTT)/CARD(T) * SUM(T,  (  VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))  !!   WEIGHT_S(IS3)/IWEIGHSUMT 
     =L= IGMAXFS(IY411,IR,FFF,IS3);
 
 * "Maximum fuel use by year, season, area and fuel (GJ)"
@@ -2688,17 +2696,19 @@ $ifi not %TechInvest%==yes $ifi not %DECOM%==yes  $goto NO_TECH_INVESTMENTS_NO_D
                                  QWAVEDISPATCH
 
 *--- Potential capacity restrictions per technology group ------------------------------------------------
-                                 QKTECHGROUPC
-                                 QKTECHGROUPR
-                                 QKTECHGROUPA
+$ifi %BBMODE%==INVEST            QKTECHGROUPC
+$ifi %BBMODE%==INVEST            QKTECHGROUPR
+$ifi %BBMODE%==INVEST            QKTECHGROUPA
 *--- Potential capacity restrictions per subtechnology group ------------------------------------------------
-                                 QKSUBTECHGROUPC
-                                 QKSUBTECHGROUPR
-                                 QKSUBTECHGROUPA
+$ifi %BBMODE%==INVEST            QKSUBTECHGROUPC
+$ifi %BBMODE%==INVEST            QKSUBTECHGROUPR
+$ifi %BBMODE%==INVEST            QKSUBTECHGROUPA
 *--- Fuel potential restrictions ------------------------------------------------
                                  QKEFUELC
                                  QKEFUELR
                                  QKEFUELA
+                                 QGEQAF
+                                 QGMAXAF
 *--- Fuel capacity restrictions per year ------------------------------------------------
                                  QKMINFC
                                  QKMAXFC
@@ -2709,9 +2719,9 @@ $ifi not %TechInvest%==yes $ifi not %DECOM%==yes  $goto NO_TECH_INVESTMENTS_NO_D
                                  QKMINFNA
                                  QKMAXFNA
                                  QKEQFNA
-*                                QKMINFA  TODO
-*                                QKMAXFA  TODO
-*                                QKEQFA   TODO
+*                                 QKMINFA
+*                                 QKMAXFA
+*                                 QKEQFA
 *--- Investment restrictions----------------------------------------------------
                                  QMAXINVESTNAF
 

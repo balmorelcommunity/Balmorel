@@ -59,6 +59,17 @@ $ifi %BBMODE%==BB3  $Setglobal USEOPTIONFILE 6
 *===============================================================================
 *===============================================================================
 
+
+* Cascading hydropower
+$setglobal hydrocas
+$setglobal hydrocas_FLH    yes
+$ifi %BBMODE%==INVEST   $setglobal hydrocas_FLH
+*!option yes
+$setglobal hydroyear    NORMAL
+*!option normal
+*!option wet
+*!option dry
+
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of model.
 * If $Setglobal bb1 yes, the usual (S,T) time segments and no endogenous investment are chosen.
@@ -124,18 +135,18 @@ $ifi %BBMODE%==BB3 $setglobal TechInvest
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
-GINVESTSTART= 2020;
+GINVESTSTART= 2021;
 
 *---- End: Generation investments options----
 
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest     yes
+$setglobal TransInvest    YES
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
-XINVESTSTART= 2030;
+XINVESTSTART= 2035;
 
 *---- End: Transmission investments options----
 
@@ -162,7 +173,8 @@ $setglobal HYRS_AGG hydro_year_agg
 *!option hydro_season_agg     !Text "The storage level of hydro reservoirs (QHYRSSEQ) will be scaled so the Seasons included in the optimization represent a  seasonal behaviour"
 
 * Relax seasonal limits for hydropower storages when running the model with less than 26 seasons (in HYRSDATA.inc)
-$setglobal RELAX_HYDROSTORAGE yes
+$setglobal RELAX_HYDROSTORAGE
+$ifi not %BBMODE%==invest $setglobal RELAX_HYDROSTORAGE yes
 *$ifi not %BBMODE%==BB3 $setglobal RELAX_HYDROSTORAGE yes
 *!option yes
 *---------------END: HYDRO RESERVOIRS OPTIONS--------------
@@ -262,11 +274,11 @@ $setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use
-$setglobal GRIDTARIFFS
+$setglobal GRIDTARIFFS   yes
 *!option yes
 
 * Taxes addon
-$setglobal TAXES
+$setglobal TAXES   
 *!option yes
 
 *
@@ -317,10 +329,6 @@ $setglobal bypass yes
 *!option yes
 
 
-* Cascading hydropower
-$setglobal hydrocas
-$setglobal hydrocas_FLH
-*!option yes
 
 *-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
 * overall control variable DECOM must be 'yes' if any of the other decommissioning controls are.
@@ -424,15 +432,15 @@ $setglobal SEASONALLINKRAMPING
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV
+$setglobal EV  YES
 *!option
 
 * Adds DUMB charging:
-$setglobal DUMB
+$setglobal DUMB    YES
 *!option
 
 * Adds smart charging. Only smart charging, without V2G!:
-$setglobal SMART   yes
+$setglobal SMART
 *!option
 
 * Adds V2G charging:
@@ -509,7 +517,7 @@ $setglobal relpathoutput "../output/"
 *!fixedvalue
 $setglobal relpathInputdata2GDX "../output/inputout/"
 *!fixedvalue
-$setglobal relpathtemp "../output/temp/"
+$setglobal relpathtemp "../output/temp_%CASEID%/"
 *!fixedvalue
 $label endofUNIXrelpaths
 
@@ -605,7 +613,7 @@ $ifi %BBMODE%==BB3 $setglobal ADDTRANSDEV   yes
 
 * Options timeaggr control automatic aggregation of time segments (to be tested!!).
 $setglobal timeaggr
-*$ifi %BBMODE%==INVEST $setglobal timeaggr yes
+$ifi %BBMODE%==INVEST $setglobal timeaggr yes
 *$ifi %BBMODE%==HYDRO $setglobal timeaggr yes
 *!option yes
 
@@ -703,7 +711,7 @@ $setglobal PRINTSEPARATOR ';'
 *
 * The following closely linked controls are used:
 * SAVEPOINTVALUE, cf. above
-* MERGESAVEPOINTRESULTS yes
+* MERGESAVEPOINTRESULTS YES
 * MERGEDSAVEPOINTRESULTS2MDB
 * MERGEDSAVEPOINTRESULTS2SQLITE
 * MERGEDSAVEPOINTRESULTS2XLS: presently not working, we are waiting for GAMS version 22.7, which has better support for this.
@@ -727,7 +735,7 @@ $setglobal SAVEPOINTVALUE 1
 *!option 2   !text Note: nothing implemented nor tested, so do not use it.
 
 * Use the $setglobal MERGESAVEPOINTRESULTS to choose whether to merge annual/seasonal results or not:
-$setglobal MERGESAVEPOINTRESULTS   YES
+$setglobal MERGESAVEPOINTRESULTS
 *!option yes  !onlyif  %SAVEPOINTVALUE%==1
 * Note: make sure that it is possible to make the new merged gdx file,
 * e.g. make sure that the file *.gdx is not open in another application (like GAMD IDE).

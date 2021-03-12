@@ -85,7 +85,7 @@ ERRCOUNT2=ERRCOUNT2+1;
 * in either TABLE XCOST or in TABLE XLOSS.
 
 ISCALAR1 = ERRCOUNT2;
-LOOP((IRRRE,IRRRI)$((ORD(IRRRE) NE ORD(IRRRI)) ),
+LOOP((IRRRE,IRRRI)$((ORD(IRRRE) NE ORD(IRRRI)) AND SUM(Y, 1$IXKN(Y,IRRRE,IRRRI) + XKFX(Y,IRRRE,IRRRI))  ),
 IF((XCOST(IRRRE,IRRRI) + XLOSS(IRRRE,IRRRI) EQ 0),
 PUT "Both XCOST and XLOSS are zero for region pair (";
 PUT IRRRE.TL:32"," IRRRI.TL:32")."    " (Not really an error - but may be inconvenient due to possible non-unique solutions for transmission.)" /;

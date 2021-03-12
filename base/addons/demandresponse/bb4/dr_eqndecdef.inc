@@ -27,11 +27,13 @@ QDR_STORE_SHIFT(IY411,IA,DR_TECH_SHIFT,IS3,T)$IADR(IY411,IA,DR_TECH_SHIFT)..
 
 * Counting the amount of shedded energy per week
 QDR_SHED_MAXVOL1(IY411,IA,DR_TECH_SHED,IS3)$(IADR(IY411,IA,DR_TECH_SHED) AND NOT DR_TECH_INVEST(DR_TECH_SHED))  ..
-                         SUM(T, IHOURSINST(IS3,T) * VDR_DOWN(IY411,IA,DR_TECH_SHED,IS3,T))
+*                         SUM(T, IHOURSINST(IS3,T) * VDR_DOWN(IY411,IA,DR_TECH_SHED,IS3,T))
+                         SUM(T,  VDR_DOWN(IY411,IA,DR_TECH_SHED,IS3,T)) * CARD(TTT)/CARD(T)
                          =L= IDR_FX(IY411,IA,DR_TECH_SHED)* DR_DATA(DR_TECH_SHED,'DRTOI') * DR_DATA(DR_TECH_SHED,'DRWEEKLYCYCL'); ;
 
 QDR_SHED_MAXVOL2(IY411,IA,DR_TECH_SHED,IS3)$(IADR(IY411,IA,DR_TECH_SHED) AND DR_TECH_INVEST(DR_TECH_SHED))  ..
-                         SUM(T, IHOURSINST(IS3,T) * VDR_DOWN(IY411,IA,DR_TECH_SHED,IS3,T))
+*                         SUM(T, IHOURSINST(IS3,T) * VDR_DOWN(IY411,IA,DR_TECH_SHED,IS3,T))
+                         SUM(T, VDR_DOWN(IY411,IA,DR_TECH_SHED,IS3,T)) * CARD(TTT)/CARD(T)                                                               !! Maximum shedding per S is scaled according to number of T relative to TTT instead of whole year. 
                          =L= VDRKN_ACCUMNET(IY411,IA,DR_TECH_SHED)* DR_DATA(DR_TECH_SHED,'DRTOI') * DR_DATA(DR_TECH_SHED,'DRWEEKLYCYCL'); ;
 
 

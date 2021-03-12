@@ -87,7 +87,7 @@ PARAMETER DEBT_SHARE_G(GGG)              "Share of debt for the investment of ea
 DEBT_SHARE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.8;
 
 PARAMETER INTEREST_RATE_G(GGG)           "Interest rate applied to the loan of each generation technology (fraction)";
-INTEREST_RATE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.06;
+INTEREST_RATE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0.04;
 
 PARAMETER PAYBACK_TIME_G(GGG)            "Payback time of the loan for generation technologies (years)";
 * Loan repayment assumption: lifetime of the technology if lifetime is higher than 20 years, else 20 years
