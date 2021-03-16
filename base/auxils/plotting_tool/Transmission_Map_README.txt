@@ -66,17 +66,19 @@ To do:
 
 NB: all file names can be changed in cell 1.3. Column names can be changed too in the code.  
 
-3. Open 'Transmission_Map.ipynb' in Jupyter Notebook 
+3. Open 'Transmission_Map.ipynb' in Jupyter Notebook / Jupyter Lab
 
 4. Adjust the settings in the first cell of the code
-	a) calibrate 'market', 'COMMODITY', 'SCENARIO', 'YEAR' and 'SUBSET' with the file names of step 2.1.  
-	b) 'year': which year needs to be displayed
-	c) 'LINES': choose to display either i) the line capacities, ii) single-coloured electricity flows at a certain timestep or iii) electricity flows with a different colour at congested lines.
-	d) 'exo_end' (only if'LINES'== 'Capacity' or 'LINES'=='CongestionFlow'): display endogenous, exogenous or total capacity. 
-	e) 'S' (only if'LINES'== Flow' or 'LINES'=='CongestionFlow': Season to be displayed
-	f) 'T' (only if'LINES'== Flow' or 'LINES'=='CongestionFlow': Timestep to be displayed
-    g) set 'hubs' options. 
-	g) Visual options (colours, fonts, etc.)
+	a) choose input mode from: ['csv', 'gdx']. If 'gdx' is chosen, add the directory to GAMS.  
+	b) calibrate 'market', 'SCENARIO', 'YEAR' and 'SUBSET' with the file names of step 2.1.  
+	c) set 'COMMODITY'. Choose from: ['Electricity', 'H2', 'Other']. If 'Other': update the variable/file names in cell 1.4.0. 
+	d) 'year': which year needs to be displayed
+	e) 'LINES': choose to display either i) the line capacities, ii) single-coloured electricity flows at a certain timestep or iii) electricity flows with a different colour at congested lines.
+	f) 'exo_end' (only if'LINES'== 'Capacity' or 'LINES'=='CongestionFlow'): display endogenous, exogenous or total capacity. 
+	g) 'S' (only if'LINES'== Flow' or 'LINES'=='CongestionFlow': Season to be displayed
+	h) 'T' (only if'LINES'== Flow' or 'LINES'=='CongestionFlow': Timestep to be displayed
+    	i) set 'hubs' options. 
+	j) Visual options (colours, fonts, etc.)
 
 5. Run the code. The result is an html that can be found in .\output\Transmission_Map\{lines}\{scenario}\{market}\...html
 
