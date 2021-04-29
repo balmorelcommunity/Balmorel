@@ -840,6 +840,11 @@ $if     EXIST '../data/PENALTYQ.inc' $INCLUDE         '../data/PENALTYQ.inc';
 $if not EXIST '../data/PENALTYQ.inc' $INCLUDE '../../base/data/PENALTYQ.inc';
 %semislash%;
 
+SET XES "Intervals of piecewise linear functions for modelling economy of scale" %semislash%
+$if     EXIST '../data/XES.inc' $INCLUDE         '../data/XES.inc';
+$if not EXIST '../data/XES.inc' $INCLUDE '../../base/data/XES.inc';
+%semislash%;
+
 *-------------------------------------------------------------------------------
 *----- Any declarations and definitions of parameters:
 *-------------------------------------------------------------------------------
