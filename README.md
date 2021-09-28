@@ -19,3 +19,6 @@ Balmorel is a modelling tool that can be used by energy system experts, energy c
 ## How is Balmorel supported and further developed?
 
 The model is developed and distributed under open source ideals. The source code has been provided on its homepage since 2001 and was assigned the [ISC license](https://opensource.org/licenses/ISC) in 2017. Ample documentation is available in the folder [within this repository](base/documentation). Application examples and contact information can be found on the [Balmorel homepage](https://balmorel.com). Presently the model development is mainly project driven, with a users' network around it, supporting the open source development idea.
+
+## This branch
+This branch is created for the submission of the Data Descriptor: Comprehensive dataset for modelling electricity and district heating for thirteen European countries.
