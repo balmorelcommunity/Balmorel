@@ -11,7 +11,7 @@ $label  beginbb4
 
 $ifi %COMBTECH%==yes  $include   "../../base/addons/combtech/bb4/combtech_gdataadditions.inc";
 $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_gdataadditions.inc";
-
+$ifi %DATACENTERS%==yes     $include   "../../base/addons/datacenters/bb4/datacenters_gdataadditions.inc";
 
 $label endoffile
 

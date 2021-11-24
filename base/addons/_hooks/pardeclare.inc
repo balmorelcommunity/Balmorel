@@ -33,5 +33,6 @@ $ifi %TRANS_RAMP%==yes  $include   "../../base/addons/transmission_ramping/trans
 $ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_pardeclare.inc";
 $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_pardeclare.inc";
 $ifi %INDIVUSERS%==yes       $include   "../../base/addons/indivusers/bb4/indivusers_pardeclare.inc";
+$ifi %DATACENTERS%==yes       $include   "../../base/addons/datacenters/bb4/datacenters_pardeclare.inc";
 
 $label endoffile

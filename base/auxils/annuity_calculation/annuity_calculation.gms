@@ -16,7 +16,7 @@ ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GH
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
 ACRONYMS STEAMTURBINE_SUBCRITICAL, STEAMTURBINE_SUPERCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILER, COMBINEDCYCLE, EXCESS_HEAT, ELECTRICITY_BATTERY, GEOTHERMAL,
-GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_ONSHORE, WINDTURBINE_OFFSHORE,BACKUP_ELECTRICITY,BACKUP_HEAT;
+GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_ONSHORE, WINDTURBINE_OFFSHORE,BACKUP_ELECTRICITY,BACKUP_HEAT,DC_ABSCHILLER, DC_ELECCHILLER, DC_COLDSTORAGE, DC_HEATPUMP;
 
 *ACRONYMS for subtech groups
 * They can be used for multiple purposes
@@ -62,6 +62,7 @@ $if not EXIST '../data/GGG.inc' $INCLUDE '../../base/data/GGG.inc';
 $include   "../../base/addons/industry/bb4/industry_gggadditions.inc";
 $include   "../../base/addons/indivusers/bb4/indivusers_gggadditions.inc";
 $include   "../../base/addons/hydrogen/bb4/hydrogen_gggadditions.inc";
+$include   "../../base/addons/datacenters/bb4/datacenters_gggadditions.inc";
 
 SET G(GGG)    "Generation technologies in the simulation"
 $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
@@ -70,6 +71,7 @@ $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 $include   "../../base/addons/industry/bb4/industry_gadditions.inc";
 $include   "../../base/addons/indivusers/bb4/indivusers_gadditions.inc";
 $include   "../../base/addons/hydrogen/bb4/hydrogen_gadditions.inc";
+$include   "../../base/addons/datacenters/bb4/datacenters_gadditions.inc";
 
 SET GDATASET     "Generation technology data"
 $if     EXIST '../data/GDATASET.inc' $INCLUDE      '../data/GDATASET.inc';
@@ -80,6 +82,7 @@ $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 *INCLUDE GDATA FROM OTHER ADDONS
 $include   "../../base/addons/hydrogen/bb4/hydrogen_gdataadditions.inc";
+$include   "../../base/addons/datacenters/bb4/datacenters_gdataadditions.inc";
 
 SCALAR DISCOUNTRATE "Discount rate by country (fraction)"
 $if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.inc';

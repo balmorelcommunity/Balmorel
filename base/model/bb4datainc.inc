@@ -133,6 +133,8 @@ SET DHUSER             "Heat demand user groups. Set must include element RESH f
 $if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DHUSER.inc';
 $if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DHUSER.inc';
 %semislash%;
+*------------- Any DHUSER additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/dhuseradditions.inc"
 
 SET FFF                "Fuels"  %semislash%
 $if     EXIST '../data/FFF.inc' $INCLUDE      '../data/FFF.inc';
@@ -459,7 +461,7 @@ $include "../../base/addons/_hooks/subtechgroupkpotadditions.inc"
 PARAMETER FKMIN(YYY,CCCRRRAAA,FFF)    "Minimum fuel capacity restricted by geography (MW)"   %semislash%
 $if     EXIST '../data/FKMIN.inc' $INCLUDE      '../data/FKMIN.inc';
 $if not EXIST '../data/FKMIN.inc' $INCLUDE '../../base/data/FKMIN.inc';
-%semislash%;      
+%semislash%;
 
 
 PARAMETER FKMAX(YYY,CCCRRRAAA,FFF)    "Maximum fuel capacity restricted by geography (MW)"   %semislash%

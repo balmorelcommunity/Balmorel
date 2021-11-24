@@ -34,7 +34,7 @@
 
 * SETS:
 * Geography related:
-SET CCCRRRAAA         All geographical entities (CCC + RRR + AAA)';
+SET CCCRRRAAA         "All geographical entities (CCC + RRR + AAA)";
 SET CCC(CCCRRRAAA)    "All Countries";
 SET C(CCC)            "Countries in the simulation";
 SET RRR(CCCRRRAAA)    "All regions";
