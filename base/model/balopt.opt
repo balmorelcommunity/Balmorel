@@ -251,7 +251,7 @@ $setglobal TRANSPORT_SYNTHFUEL_COMMODITY    HYDROGEN
 *!option HYDROGEN       !Text "The demand for synthetic fuel generation is modelled as hydrogen demand (requires hydrogen addon to be activated)"
 
 * Defines the possibility for the transport demand of synthetic fuels to be aggregated internationally instead of having to satisfy it regionally.
-$setglobal TRANSPORT_DEMAND_AGGREGATED    yes
+$setglobal TRANSPORT_DEMAND_AGGREGATED    
 
 
 *------------------------------END:TRANSPORT ADDON-------------------------------------------------
