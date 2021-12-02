@@ -287,10 +287,16 @@ $setglobal IGKRATE_STOCHASTIC
 *-------------------------------------------------
 
 *-------- Balancing market ---------
-* Peform the balancing market optimization
-*Note: it is meant to be combined with Unit Commitment, ancilliary services and import_results add-ons
+* overall control variable BalancingMarket must be 'yes' if any of the other BalancingMarket controls are:
+* Peforms the balancing market optimization
+*Note: it is meant to be combined with Unit Commitment and import_results add-ons. It can also be combined with ancilliary services
 $setglobal BalancingMarket
 *!option yes
+
+*Define which units will be allowed to change their commitment status (on/off)
+$setglobal CommitmentStatus  FastUnitsChange
+*!option NoChange         !Text  "The units will not be allowed to change their commitment, which will be taken from previous runs "
+*!option FastUnitsChange  !Text  "The slow units will not be allowed to change their commitment, which will be taken from previous runs "
 
 *Restricts heat market from participating in the balancing market by restricting relevant heat generation variables from previous runs and not including the heat balance equation
 $setglobal NOHEATMARKET
