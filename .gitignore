@@ -17,4 +17,5 @@
 **/output/economic/*.*
 /base/bui/gamsscr/*.*
 
+# don't include data directory
 **/data
