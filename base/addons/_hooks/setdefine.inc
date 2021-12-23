@@ -44,6 +44,5 @@ $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_setdefine.inc";
 $ifi %VARIABLE_TRIMMING%==yes      $include        "../../base/addons/variable_trimming/bb4/vt_setdefine.inc";
 
 $ifi %HYDROCAS%==yes      $include        "../../base/addons/hydrocas/hydrocas_setdefine.inc";
-$ifi %HYDROCAS_FLH%==yes      $include        "../../base/addons/hydrocas/hydrocas_setdefine_FLH.inc";
 
 $label endoffile

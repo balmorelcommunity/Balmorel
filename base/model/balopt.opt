@@ -46,7 +46,9 @@ $setglobal CASEID  test  !!%PyLinkScen%
 
 *!option !fixedvalue
 
-$SETGLOBAL BBMODE INVEST
+
+
+$SETGLOBAL BBMODE HYDRO
 *!option INVEST
 *!option HYDRO
 *!option BB3
@@ -60,15 +62,22 @@ $ifi %BBMODE%==BB3  $Setglobal USEOPTIONFILE 6
 *===============================================================================
 
 
-* Cascading hydropower
-$setglobal hydrocas
-$setglobal hydrocas_FLH    yes
-$ifi %BBMODE%==INVEST   $setglobal hydrocas_FLH
+** hydropower module
+$setglobal hydrocas      yes
+$ifi %BBMODE%==INVEST   $setglobal hydrocas
 *!option yes
-$setglobal hydroyear    NORMAL
-*!option normal
-*!option wet
-*!option dry
+
+* Weather year for hydropower
+$setglobal hydroyear    2013
+*!option 2004-2018 to  add: average
+
+* change reservoir at end of year based on historical values
+$setglobal WY_RESCHANGE YES
+
+* more simple dataset with data per elspot region only
+$setglobal elspot_region
+*!option yes
+
 
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of model.
@@ -174,7 +183,7 @@ $setglobal HYRS_AGG hydro_year_agg
 
 * Relax seasonal limits for hydropower storages when running the model with less than 26 seasons (in HYRSDATA.inc)
 $setglobal RELAX_HYDROSTORAGE
-$ifi not %BBMODE%==invest $setglobal RELAX_HYDROSTORAGE yes
+$ifi  %BBMODE%==invest $setglobal RELAX_HYDROSTORAGE yes
 *$ifi not %BBMODE%==BB3 $setglobal RELAX_HYDROSTORAGE yes
 *!option yes
 *---------------END: HYDRO RESERVOIRS OPTIONS--------------
@@ -278,7 +287,7 @@ $setglobal GRIDTARIFFS   yes
 *!option yes
 
 * Taxes addon
-$setglobal TAXES   
+$setglobal TAXES
 *!option yes
 
 *
@@ -328,6 +337,9 @@ $setglobal stointers
 $setglobal bypass yes
 *!option yes
 
+
+*
+$setglobal MINLOAD   yes
 
 
 *-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
@@ -432,7 +444,7 @@ $setglobal SEASONALLINKRAMPING
 * EV addon:
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV  YES
+$setglobal EV
 *!option
 
 * Adds DUMB charging:
@@ -599,7 +611,7 @@ $ifi %BBMODE%==BB3 $setglobal ADDTECHDEV   yes
 
 *Import transmission development from previous runs
 $setglobal ADDTRANSDEV
-$ifi %BBMODE%==HYDRO $setglobal ADDTRANSDEV   yes
+*$ifi %BBMODE%==HYDRO $setglobal ADDTRANSDEV   yes
 $ifi %BBMODE%==BB3 $setglobal ADDTRANSDEV   yes
 *!option yes
 
@@ -613,7 +625,7 @@ $ifi %BBMODE%==BB3 $setglobal ADDTRANSDEV   yes
 
 * Options timeaggr control automatic aggregation of time segments (to be tested!!).
 $setglobal timeaggr
-$ifi %BBMODE%==INVEST $setglobal timeaggr yes
+$ifi %BBMODE%==INVEST $setglobal timeaggr
 *$ifi %BBMODE%==HYDRO $setglobal timeaggr yes
 *!option yes
 
@@ -881,8 +893,8 @@ $setglobal GWAVE_DOL AAA
 *-------------------------------------------------------------------------------
 * Active options will be reported to log file via file hellolog.inc
 *-------------------------------------------------------------------------------
-$setglobal VGF Y
-* Y or ST
+$setglobal VGF Y2
+* Y, Y2 or ST
 
 *-------------------------------------------------------------------------------
 * End of Balopt.opt

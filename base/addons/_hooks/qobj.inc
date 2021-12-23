@@ -29,10 +29,10 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_qobj.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_qobj.inc";
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_qobj.inc";
-$ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_qobj.inc";
 
 $ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_qobj.inc";
 $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_qobj.inc";
+$ifi %MINLOAD%==yes  $include   "../../base/addons/minload/minload_qobj.inc";
 
 $ifi %vqdebug%==yes   $setglobal equation qobj
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";

@@ -22,5 +22,5 @@ $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_b
 $ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_balbase4.inc";
 
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_balbase4.inc";
-$ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_balbase4_FLH.inc";        
+$ifi %MINLOAD%==YES     $include   "../../base/addons/minload/minload_balbase4.inc";
 $label endoffile

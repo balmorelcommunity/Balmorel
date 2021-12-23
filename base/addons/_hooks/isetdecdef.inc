@@ -26,7 +26,7 @@ $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowba
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_isetdecdef.inc";
 $ifi %EV%==YES    $include   "../../base/addons/EV/bb4/EV_isetdecdef.inc";
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_isetdecdef.inc";
-$ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_isetdecdef.inc";    
+$ifi %MINLOAD%==YES     $include   "../../base/addons/minload/minload_isetdecdef.inc";
 
 $ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_isetdecdef.inc";
 $ifi %VARIABLE_TRIMMING%==yes $include "../../base/addons/variable_trimming/bb4/vt_isetdecdef.inc";

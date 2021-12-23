@@ -20,7 +20,6 @@ $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowba
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_ipardecdef.inc";
 $ifi %STEPWISEPRICE%==yes  $include   "../../base/addons/DECOM/stepwiseprice_ipardecdef.inc";
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_ipardecdef.inc";
-$ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_ipardecdef_FLH.inc";
 $ifi %INDHEAT%==yes      $include        "../../base/addons/indheat/indheat_ipardecdef.inc";
 
 $ifi %VARIABLE_TRIMMING%==yes           $include       "../../base/addons/variable_trimming/bb4/vt_ipardecdef.inc";

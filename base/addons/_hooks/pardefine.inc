@@ -34,8 +34,8 @@ $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_pardefine.inc";
 $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowbased_eu_pardefine.inc";
 $ifi %STEPWISEKPOT%==YES    $include   "../../base/addons/stepwisekpot/steppot_pardefine.inc";
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_pardefine.inc";
-$ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_pardefine_FLH.inc";
 $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_pardefine.inc";
+$ifi %MINLOAD%==yes  $include   "../../base/addons/minload/minload_pardefine.inc";
 
 
 $ifi %AREA_AGGREGATION%==yes      $include        "../../base/addons/area_aggregation/aa_pardefine.inc";

@@ -867,6 +867,30 @@ $if not EXIST '../data/SELF_CONSUMPTION_RATE.inc' $INCLUDE '../../base/data/SELF
 $include "../../base/addons/_hooks/pardeclare.inc"
 $include "../../base/addons/_hooks/pardefine.inc"
 
+*$ontext
+FUELPRICE('2020',AAA,'COAL') = 18/3.6;
+FUELPRICE('2020',AAA,'NATGAS') = 176/3.6;
+M_POL('2020','TAX_CO2',C) = 76;
+
+WNDFLH('DE4-E_A') = WNDFLH('DE4-E_A')* 0.8;
+WNDFLH('DE4-N_A') = WNDFLH('DE4-E_A')* 0.8;
+WNDFLH('DE4-W_A') = WNDFLH('DE4-E_A')* 0.8;
+WNDFLH('DE4-S_A') = WNDFLH('DE4-E_A')* 0.8;
+WNDFLH('UK_A') = WNDFLH('UK_A')* 0.8;
+
+GKRATE('FR_A','GNR_ST_NUCL_CND_E-33',SSS)$(ORD(SSS) < 10) = MIN(GKRATE('FR_A','GNR_ST_NUCL_CND_E-33',SSS),0.83);                                                                                                                                                                                      !! Source: https://tyndp.entsoe.eu/tyndp2018/projects/projects/37
+GKRATE('FR_A','GNR_ST_NUCL_CND_E-33',SSS)$(ORD(SSS) > 40) = MIN(GKRATE('FR_A','GNR_ST_NUCL_CND_E-33',SSS),0.735) ;
+GKRATE('UK_A','GNR_ST_NUCL_CND_E-33',SSS) = MIN(GKRATE('UK_A','GNR_ST_NUCL_CND_E-33',SSS), 0.81);
+
+GDATA('GNR_BO_LIGHTOIL_E-67','GDOMVCOST0') = 300;
+GDATA('GNR_GT_LIGHTOIL_CND_E-24','GDOMVCOST0') = 300;
+GDATA('GNR_ST_FUELOIL_CND_E-33','GDOMVCOST0') = 300;
+GDATA('GNR_GT_LIGHTOIL_CND_E-26','GDOMVCOST0') = 300;
+
+*$offtext
+
+
+** Rounding off some of the parameters
 GDATA(G,'GDOMVCOST0')$GDATA(G,'GDOMVCOST0') = ROUND(GDATA(G,'GDOMVCOST0'),3);
 GDATA(G,'GDOMFCOST0')$GDATA(G,'GDOMFCOST0') = ROUND(GDATA(G,'GDOMFCOST0'),5);
 GDATA(G,'GDINVCOST0')$GDATA(G,'GDINVCOST0') = ROUND(GDATA(G,'GDINVCOST0'),5);
@@ -884,4 +908,8 @@ GDATA(G,'GDFE')$GDATA(G,'GDFE') = ROUND(GDATA(G,'GDFE'),6);
 FUELPRICE(Y,IA,FFF)$FUELPRICE(Y,IA,FFF) = ROUND(FUELPRICE(Y,IA,FFF),6);
 
 $ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_pardefine.inc";
+
+
+
+
 

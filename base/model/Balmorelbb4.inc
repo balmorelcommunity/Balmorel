@@ -1482,7 +1482,7 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
      SUM((IAGK_HASORPOT(Y,IA,G),FFF)$(IGF(G,FFF)),
 $ifi %VGF%==ST               FUELPRICE(Y,IA,FFF) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(Y,IA,G,IS3,T)))
 $ifi %VGF%==Y               FUELPRICE(Y,IA,FFF) * IOF3P6 *  VGF_T(Y,IA,G))
-
+$ifi %VGF%==Y2               FUELPRICE(Y,IA,FFF) * IOF3P6 *  SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(Y,IA,G,IS3,T)*IGFE_FACTOR(Y,IA,G) + VGH_T(Y,IA,G,IS3,T)*IGFH_FACTOR(Y,IA,G))))
 
 * Operation and maintainance cost:
 
@@ -1492,6 +1492,7 @@ $ifi %VGF%==Y               FUELPRICE(Y,IA,FFF) * IOF3P6 *  VGF_T(Y,IA,G))
 
 $ifi %VGF%==ST     + SUM(IAGK_HASORPOT(Y,IA,G), GOMVCOSTIN(IA,G) * SUM((IS3,T), IHOURSINST(IS3,T)*VGF_T(Y,IA,G,IS3,T)))
 $ifi %VGF%==Y      + SUM(IAGK_HASORPOT(Y,IA,G), GOMVCOSTIN(IA,G) * VGF_T(Y,IA,G))
+$ifi %VGF%==Y2      + SUM(IAGK_HASORPOT(Y,IA,G), GOMVCOSTIN(IA,G) * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(Y,IA,G,IS3,T)*IGFE_FACTOR(Y,IA,G) + VGH_T(Y,IA,G,IS3,T)*IGFH_FACTOR(Y,IA,G))))
 
     + IOF1000*(SUM((IA,G)$IAGK_HASORPOT(Y,IA,G),(VGKNACCUMNET(Y,IA,G)$(IAGK_HASORPOT(Y,IA,G) AND IAGKN(IA,G)) + GKFX(Y,IA,G)$IAGKFX(Y,IA,G))*GOMFCOST(IA,G)))
 
@@ -1540,10 +1541,12 @@ $ifi %VGF%==ST     + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SU
 $ifi %VGF%==ST     + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)), SUM((IS3,T), IHOURSINST(IS3,T) * (GDATA(G,'GDNOX')*IOF0000001) * IOF3P6 * VGF_T(Y,IA,G,IS3,T)) * M_POL(Y,"TAX_NOX",C)))
 
 $ifi %VGF%==Y     + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)),(IM_CO2(G)*IOF0001) * IOF3P6 * VGF_T(Y,IA,G) * M_POL(Y,"TAX_CO2",C)))
-
 $ifi %VGF%==Y     + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)),(IM_SO2(G)*IOF0001) * IOF3P6 * VGF_T(Y,IA,G) * M_POL(Y,"TAX_SO2",C)))
-
 $ifi %VGF%==Y     + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)),  (GDATA(G,'GDNOX')*IOF0000001) * IOF3P6 * VGF_T(Y,IA,G) * M_POL(Y,"TAX_NOX",C)))
+
+$ifi %VGF%==Y2     + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)),(IM_CO2(G)*IOF0001) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(Y,IA,G,IS3,T)*IGFE_FACTOR(Y,IA,G) + VGH_T(Y,IA,G,IS3,T)*IGFH_FACTOR(Y,IA,G))) * M_POL(Y,"TAX_CO2",C)))
+$ifi %VGF%==Y2     + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)),(IM_SO2(G)*IOF0001) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(Y,IA,G,IS3,T)*IGFE_FACTOR(Y,IA,G) + VGH_T(Y,IA,G,IS3,T)*IGFH_FACTOR(Y,IA,G))) * M_POL(Y,"TAX_SO2",C)))
+$ifi %VGF%==Y2     + SUM(C, SUM((IA,G)$(ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G)),  (GDATA(G,'GDNOX')*IOF0000001) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(Y,IA,G,IS3,T)*IGFE_FACTOR(Y,IA,G) + VGH_T(Y,IA,G,IS3,T)*IGFH_FACTOR(Y,IA,G)))  * M_POL(Y,"TAX_NOX",C)))
 
 * Add-on objective function contributions
 
@@ -1607,7 +1610,7 @@ $ifi %indheat%==yes  $ifi %indheat_geo%==indheat_eu           SUM((INDHEAT_DHUSE
 $ifi %indheat%==yes  $ifi %indheat_geo%==indheat_eu                INDHEAT_VGH_T(IY411,INDHEAT_IA,INDHEAT_DHUSER,INDHEAT_G,INDHEAT_GROUP,IS3,T)/(INDHEAT_GDATA(INDHEAT_G,'GDFE')$(INDHEAT_IGETOH_NOTHP(INDHEAT_G))+INDHEAT_COP(INDHEAT_IA,INDHEAT_G,IS3,T)$(INDHEAT_IGHP(INDHEAT_G)))) )
          ;
 
-
+$ifi %VGF%==Y2 $GOTO LABEL_VGF_END
 * Fuel consumption rate.
 $ifi %VGF%==ST QGFEQ(IY411,IA,G,IS3,T)$IAGK_HASORPOT(IY411,IA,G) ..
 $ifi %VGF%==ST     VGF_T(IY411,IA,G,IS3,T)
@@ -1625,6 +1628,7 @@ $ifi %VGF%==Y SUM((IS3,T), IHOURSINST(IS3,T) * (
 $include "../../base/addons/_hooks/qgfeq.inc"
 $ifi %VGF%==Y ))
 ;
+$LABEL LABEL_VGF_END ;
 
 *------ Generation technologies" electricity/heat operating area: --------------
 
@@ -1693,7 +1697,7 @@ QGGETOH(IAGK_HASORPOT(IY411,IA,IGETOH),IS3,T) ..
 * TODO eventually: linking between years in BB4
 * "Hydropower with reservoir seasonal energy constraint (MWh)"
 QHYRSSEQ(IY411,IA,S)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)) AND IS3(S)
-$ifi %hydrocas_FLH%==yes AND NOT SUM(IGHYRS, IAGK_HYDRCAS(IA,IGHYRS))
+$ifi %hydrocas%==yes AND NOT SUM(IGHYRS, IAGK_HYDROPOWER(IA,IGHYRS))
 )..
       VHYRS_S(IY411,IA,S)
        +  IHYINF_S(IA,S) * (
@@ -1712,7 +1716,7 @@ $include "../../base/addons/_hooks/qhyrsseq.inc"
 
 * "Hydropower reservoir - minimum level (MWh)"
 QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND (IS3(S) OR IS3(S-1))
-$ifi %hydrocas_FLH%==yes AND NOT SUM(IGHYRS, IAGK_HYDRCAS(IA,IGHYRS))
+$ifi %hydrocas%==yes AND NOT SUM(IGHYRS, IAGK_HYDROPOWER(IA,IGHYRS))
 )..
      VHYRS_S(IY411,IA,S)  =G=  HYRSDATA(IA,"HYRSMINVOL",S)*
        SUM(IGHYRS,   HYRSMAXVOL_G(IA,IGHYRS)*(
@@ -1725,7 +1729,7 @@ $include "../../base/addons/_hooks/qhyrsminvol.inc"
 
 * "Hydropower reservoir - maximum level (MWh)"
 QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND (IS3(S) OR IS3(S-1))
-$ifi %hydrocas_FLH%==yes AND NOT SUM(IGHYRS, IAGK_HYDRCAS(IA,IGHYRS))
+$ifi %hydrocas%==yes AND NOT SUM(IGHYRS, IAGK_HYDROPOWER(IA,IGHYRS))
 )..
        HYRSDATA(IA,"HYRSMAXVOL",S) *
        SUM(IGHYRS,  HYRSMAXVOL_G(IA,IGHYRS)*(
@@ -1740,8 +1744,8 @@ $include "../../base/addons/_hooks/qhyrsmaxvol.inc"
 
 
 * "Regulated and unregulated hydropower production lower than capacity (MW)"
-QHYMAXG(IY411,IA,IS3,T)$SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS)
-$ifi %hydrocas_FLH%==yes *IAGK_HYDRCAS(IA,IGHYRS)
+QHYMAXG(IY411,IA,IS3,T)$(SUM(IGHYRS,IAGK_HASORPOT(IY411,IA,IGHYRS))
+$ifi %hydrocas%==yes AND NOT SUM(IGHYRS, IAGK_HYDROPOWER(IA,IGHYRS))
 )..
       SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),VGE_T(IY411,IA,IGHYRS,IS3,T))
       =L=
@@ -2040,18 +2044,21 @@ QGMAXFUELA(IY411,IA,FFF)$FGEMAX(IA,FFF)..
 QGMINCF(IY411,C,FFF)$IGMINF(IY411,C,FFF)..
 $ifi %VGF%==ST    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =G= IGMINF(IY411,C,FFF);
 
 * "Maximum fuel use by year, country and fuel (GJ)"
 QGMAXCF(IY411,C,FFF)$IGMAXF(IY411,C,FFF)..
 $ifi %VGF%==ST    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =L= IGMAXF(IY411,C,FFF);
 
 * "Exact fuel use by year, country and fuel (GJ)"
 QGEQCF(IY411,C,FFF)$IGEQF(IY411,C,FFF)..
 $ifi %VGF%==ST    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =E= IGEQF(IY411,C,FFF)
 $include "../../base/addons/_hooks/qgeqcf.inc"
 ;
@@ -2060,18 +2067,21 @@ $include "../../base/addons/_hooks/qgeqcf.inc"
 QGMINRF(IY411,IR,FFF)$IGMINF(IY411,IR,FFF)..
 $ifi %VGF%==ST    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =G= IGMINF(IY411,IR,FFF);
 
 * "Maximum fuel use by year, region and fuel constraint (GJ)"
 QGMAXRF(IY411,IR,FFF)$IGMAXF(IY411,IR,FFF)..
 $ifi %VGF%==ST     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =L= IGMAXF(IY411,IR,FFF);
 
 * "Exact fuel use by year, region and fuel (GJ)"
 QGEQRF(IY411,IR,FFF)$IGEQF(IY411,IR,FFF)..
 $ifi %VGF%==ST     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =E= IGEQF(IY411,IR,FFF)
 $include "../../base/addons/_hooks/qgeqrf.inc"
 ;
@@ -2080,18 +2090,21 @@ $include "../../base/addons/_hooks/qgeqrf.inc"
 QGMINAF(IY411,IA,FFF)$IGMINF(IY411,IA,FFF)..
 $ifi %VGF%==ST    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =G= IGMINF(IY411,IA,FFF);
 
 * "Maximum fuel use by year, area and fuel (GJ)"
 QGMAXAF(IY411,IA,FFF)$IGMAXF(IY411,IA,FFF)..
 $ifi %VGF%==ST    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =L= IGMAXF(IY411,IA,FFF);
 
 * "Exact fuel use by year, area and fuel (GJ)"
 QGEQAF(IY411,IA,FFF)$IGEQF(IY411,IA,FFF)..
 $ifi %VGF%==ST    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
     =E= IGEQF(IY411,IA,FFF)
 $include "../../base/addons/_hooks/qgeqaf.inc"
 ;
@@ -2108,7 +2121,7 @@ QGMAXCFS(IY411,C,FFF,IS3)$IGMAXFS(IY411,C,FFF,IS3)..
 
 * "Maximum fuel use by year, season, region and fuel (GJ)"
 QGMAXRFS(IY411,IR,FFF,IS3)$IGMAXFS(IY411,IR,FFF,IS3)..
-    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * CARD(TTT)/CARD(T) * SUM(T,  (  VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))  !!   WEIGHT_S(IS3)/IWEIGHSUMT 
+    SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * CARD(TTT)/CARD(T) * SUM(T,  (  VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))  !!   WEIGHT_S(IS3)/IWEIGHSUMT
     =L= IGMAXFS(IY411,IR,FFF,IS3);
 
 * "Maximum fuel use by year, season, area and fuel (GJ)"
@@ -2324,6 +2337,7 @@ QXINVSYMMETRY(IY411,IRE,IRI)$IXKN(IY411,IRE,IRI)..
 QLIMCO2(IY411,C)$(M_POL(IY411,'LIM_CO2',C) AND (M_POL(IY411,'LIM_CO2',C) LT INF))..
 $ifi %VGF%==ST SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2 SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), (IM_CO2(G) * IOF0001) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
       =L= M_POL(IY411,'LIM_CO2',C)
 $include "../../base/addons/_hooks/qlimco2.inc"
 ;
@@ -2332,12 +2346,14 @@ $include "../../base/addons/_hooks/qlimco2.inc"
 QLIMSO2(IY411,C)$(M_POL(IY411,'LIM_SO2',C) AND (M_POL(IY411,'LIM_SO2',C) LT INF))..
 $ifi %VGF%==ST      SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_SO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y      SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)),(IM_SO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2      SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)),(IM_SO2(G) * IOF0001) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
        =L= M_POL(IY411,'LIM_SO2',C);
 
 * "Limit on annual NOx emission by year and country (kg/MW)"
 QLIMNOX(IY411,C)$(M_POL(IY411,'LIM_NOX',C) AND (M_POL(IY411,'LIM_NOX',C) LT INF))..
 $ifi %VGF%==ST     SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (GDATA(G,'GDNOX') * IOF0000001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y     SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), (GDATA(G,'GDNOX') * IOF0000001) * IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2     SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), (GDATA(G,'GDNOX') * IOF0000001) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
       =L= M_POL(IY411,'LIM_NOX',C);
 
 * "Limit on annual CO2-emission by year (aggregated countries) (kg/MW)"
@@ -2345,6 +2361,7 @@ QLIMCO2NA(IY411)$(M_POLNA(IY411,'LIM_CO2') AND (M_POLNA(IY411,'LIM_CO2') LT INF)
       SUM(C,
 $ifi %VGF%==ST          SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
 $ifi %VGF%==Y          SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G))
+$ifi %VGF%==Y2          SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA)), (IM_CO2(G) * IOF0001) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*(VGE_T(IY411,IA,G,IS3,T)*IGFE_FACTOR(IY411,IA,G) + VGH_T(IY411,IA,G,IS3,T)*IGFH_FACTOR(IY411,IA,G))))
          )
       =L= M_POLNA(IY411,'LIM_CO2')
 $include "../../base/addons/_hooks/qlimco2na.inc"
@@ -2400,7 +2417,7 @@ QGKNACCUMNET(IY411,IA,IGKFIND)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IG
 $include "../../base/addons/_hooks/qgknaccumnet.inc";
 
 *-------------------------------------------------------------------------------
-*---------- Capacity constraint on technologies wiht endogenous investment -----
+*---------- Capacity constraint on technologies with endogenous investment -----
 *-------------------------------------------------------------------------------
 
 * Helpers for development and checking (search also bb4.sim):
@@ -2596,8 +2613,11 @@ MODEL %modelname%  "Balmorel model with endogeneous investments"
 *--- Balance equations ---------------------------------------------------------
                                 QEEQ
                                 QHEQ
-                                QGFEQ
-                                QDENET
+$ifi %VGF%==ST                  QGFEQ
+$ifi %VGF%==Y                   QGFEQ
+$ifi not %GRIDTARIFFS%==YES $ifi %TAXES%==YES  QDENET
+$ifi %GRIDTARIFFS%==YES $ifi not %TAXES%==YES  QDENET
+$ifi %GRIDTARIFFS%==YES $ifi %TAXES%==YES  QDENET
 *--- Feasible generation region ------------------------------------------------
                                 QGCBGBPR
 $ifi %bypass%==yes              QGCBGBPRBYPASS1
@@ -2821,7 +2841,7 @@ WATERVAL(Y,IA,S)  = QHYRSSEQ.M(Y,IA,S);
 execute_unload  "../../simex/HYRSG.gdx", HYRSG;
 execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
 execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
-
+execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
 * For runs with investments and/or decommissionning save the following, to be used in future runs by addon "import_results":
 XKACCUMNET(Y,IRE,IRI)$IXK_HASORPOT(Y,IRE,IRI)=XKFX(Y,IRE,IRI)
 $ifi %TransInvest%==yes +VXKNACCUMNET.L(Y,IRE,IRI)

@@ -33,5 +33,5 @@ $ifi %FBEU%==yes      $include        "../../base/addons/FlowBased_EU/bb4/flowba
 $ifi %INDHEAT%==yes  $include   "../../base/addons/indheat/indheat_eqndecdef.inc";
 
 $ifi %HYDROCAS%==YES     $include   "../../base/addons/hydrocas/hydrocas_eqndecdef.inc";
-$ifi %HYDROCAS_FLH%==YES     $include   "../../base/addons/hydrocas/hydrocas_eqndecdef_FLH.inc";
+$ifi %MINLOAD%==YES     $include   "../../base/addons/minload/minload_eqndecdef.inc";
 $label endoffile
