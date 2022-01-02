@@ -1,7 +1,7 @@
 * Latest revision 20180418 (hr)
 * Coming to here from files for individual equations in folder  base/_addons/_hooks
 
-
+ 
 $ifi %equation%==qeeq             - VQEEQ(IY411,IR,IS3,T,'IMINUS') + VQEEQ(IY411,IR,IS3,T,'IPLUS')
 $ifi %equation%==qheq             + VQHEQ(IY411,IA,IS3,T,'IPLUS') - VQHEQ(IY411,IA,IS3,T,'IMINUS')
 $ifi %equation%==qhyrsseq         + VQHYRSSEQ(IY411,IA,S,'IPLUS') - VQHYRSSEQ(IY411,IA,S,'IMINUS')
