@@ -8,7 +8,7 @@ $label  beginbb4
 
 $ifi not %bb4%==yes $goto endoffile
 
-$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_acronyms.inc";
+$ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_acronymsadditions.inc";
 
 $label endoffile
 

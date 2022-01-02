@@ -125,7 +125,7 @@ BACKUP_ELECTRICITY,BACKUP_HEAT;
 ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,AIR_AIR,AIR_WTR, EXCESSHEAT_WTR, GROUND_WTR, EXCESSHEAT,GROUND,HUB_OFF;
 
 *Hydrogen addon
-ACRONYM HYDROGEN_GH2STO, H2_STORAGE, HYDROGEN_GETOH2,HYDROGEN_GETOHH2,HYDROGEN_GEHTOH2, HYDROGEN_GCH4TOH2, HYDROGEN_GH2FUEL, HYDROGEN_GH2TOE, HYDROGEN_GH2TOEH, HYDROGEN_GH2TOBIOMETH, FUELCELL, BIOMETHDAC, ELECTROLYZER,BIOGAS_H2,THERMGAS_H2,BIOMETHANE,HYDROGEN,STEAMREFORMING;
+ACRONYM HYDROGEN_GH2STO, H2_STORAGE, HYDROGEN_GETOH2,HYDROGEN_GETOHH2,HYDROGEN_GEHTOH2, HYDROGEN_GCH4TOH2, HYDROGEN_GH2FUEL, HYDROGEN_GH2TOE, HYDROGEN_GH2TOEH, HYDROGEN_GH2TOBIOMETH, FUELCELL, BIOMETHDAC, ELECTROLYZER,BIOGAS_H2,THERMGAS_H2,BIOMETHANE,HYDROGEN,STEAMREFORMING,BACKUP_HYDROGEN,BACKUP_BIOMETHANE;
 
 * ==============================================================================
 
@@ -186,6 +186,7 @@ $include   "../../base/addons/industry/bb4/industry_gadditions.inc";
 $include   "../../base/addons/indivusers/bb4/indivusers_gadditions.inc";
 $include   "../../base/addons/hydrogen/bb4/hydrogen_gadditions.inc";
 $include "%inputdata%/FFF.inc";
+$include   "../../base/addons/hydrogen/bb4/hydrogen_fffadditions.inc";
 $include   "../../base/addons/combtech/bb4/combtech_fffadditions.inc";
 $include "%inputdata%/FDATASET.inc";
 $include "%inputdata%/FDATA.inc";
@@ -196,6 +197,7 @@ $include   "../../base/addons/hydrogen/bb4/hydrogen_gdataadditions.inc";
 $include "%inputdata%/GKFX.inc";
 $include   "../../base/addons/industry/bb4/industry_gkfxadditions.inc";
 $include   "../../base/addons/indivusers/bb4/indivusers_gkfxadditions.inc";
+$include   "../../base/addons/hydrogen/bb4/hydrogen_gkfxadditions.inc";
 
 *Adding optimized investment and decommissioning in generation
 PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
@@ -214,6 +216,7 @@ $include   "../../base/addons/industry/bb4/industry_agknadditions.inc";
 $include   "../../base/addons/indivusers/bb4/indivusers_agknadditions.inc";
 $include   "../../base/addons/offshoregrid/bb4/offshoregrid_agknadditions.inc";
 $include   "../../base/addons/CCS/bb4/CCS_agknadditions.inc";
+$include   "../../base/addons/hydrogen/bb4/hydrogen_agknadditions.inc";
 PARAMETER GKRATE(AAA,GGG,SSS);
 $include "%inputdata%/GKRATE.inc";
 

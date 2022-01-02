@@ -11,7 +11,9 @@
 * Further, if you work with BUI, this file will not be $included into Balmorel.gms,
 * instead the file Balopt.bui will be $included. See the description elsewhere.
 
-
+*---- START: VQDEBUG ------------------------------------------------
+*-----------------------------------------------------------------
+* overall control variable vqdebug must be 'yes' if any of the other vqdebug controls are:
 * Debugging hints are available if you include feasiblity-ensuring variables.
 * However, adding more variables will increase calculation time.
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
@@ -20,7 +22,11 @@
 $setglobal vqdebug
 *!option yes
 
-
+*Reduce number of infeasibility variables. By default, infeasibility variables are added to many equations, which is not always required.
+$setglobal reduced_vqdebug
+*!option yes
+*-----------------------------------------------------------------
+*---- END: VQDEBUG ------------------------------------------------
 
 *===============================================================================
 *===============================================================================
@@ -293,10 +299,11 @@ $setglobal IGKRATE_STOCHASTIC
 $setglobal BalancingMarket
 *!option yes
 
-*Define which units will be allowed to change their commitment status (on/off)
+*Define which units will be allowed to change their commitment status (on/off) (requires Unit Commitment addon to be on)
 $setglobal CommitmentStatus  FastUnitsChange
 *!option NoChange         !Text  "The units will not be allowed to change their commitment, which will be taken from previous runs "
 *!option FastUnitsChange  !Text  "The slow units will not be allowed to change their commitment, which will be taken from previous runs "
+*!option None             !Text  "All the units will be allowed to change their commitment with respect to previous runs"
 
 *Restricts heat market from participating in the balancing market by restricting relevant heat generation variables from previous runs and not including the heat balance equation
 $setglobal NOHEATMARKET

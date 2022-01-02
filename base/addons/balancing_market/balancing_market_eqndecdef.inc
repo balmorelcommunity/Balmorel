@@ -13,3 +13,149 @@ $include "../../base/addons/_hooks/qmbgh_t.inc"
 
 
 $label NO_HEATMARKET
+
+EQUATION QVGE_T_DOWN1(YYY,AAA,GGG,SSS,TTT) 'Equation 1 to calculate deviations with respect to the commited electricity dispatch from previous runs';
+QVGE_T_DOWN1(IY411,IA,IGE,IS3,T)$(NOT IGETOH(IGE) AND IAGK_HASORPOT(IY411,IA,IGE) AND GE_T(IY411,IA,IGE,IS3,T))..
+VGE_T(IY411,IA,IGE,IS3,T)
+=G=
+GE_T(IY411,IA,IGE,IS3,T)
+- VGE_T_DOWN(IY411,IA,IGE,IS3,T)
+- VGE_T_DOWN_FORCED(IY411,IA,IGE,IS3,T)$(IGWND(IGE) OR IGSOLE(IGE))
+;
+
+EQUATION QVGE_T_DOWN2(YYY,AAA,GGG,SSS,TTT) 'Equation 2 to calulate deviations with respect to the commited electricity dispatch from previous runs';
+QVGE_T_DOWN2(IY411,IA,IGE,IS3,T)$(NOT IGETOH(IGE) AND IAGK_HASORPOT(IY411,IA,IGE) AND GE_T(IY411,IA,IGE,IS3,T))..
+GE_T(IY411,IA,IGE,IS3,T)
+- VGE_T_DOWN_FORCED(IY411,IA,IGE,IS3,T)$(IGWND(IGE) OR IGSOLE(IGE))
+=G=
+VGE_T_DOWN(IY411,IA,IGE,IS3,T)
+;
+
+EQUATION QVGE_T_DOWN_FORCED(YYY,AAA,GGG,SSS,TTT) 'Equation  to calulate the forced deviations with respect to the commited electricity dispatch from previous runs';
+QVGE_T_DOWN_FORCED(IY411,IA,IGE,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGE) AND GE_T(IY411,IA,IGE,IS3,T) AND (IGWND(IGE) OR IGSOLE(IGE) OR IGHYRR(IGE) OR IGWAVE(IGE)))..
+*Wind forecast error
+-(MIN(0,
+$ifi %WNDFLH_DOL%==AAA         (WNDFLH(IA) * (
+$ifi %WNDFLH_DOL%==AAA_GGG     (WNDFLH(IA,IGE) * (
+            GKFX(IY411,IA,IGE)
+                 )  * WND_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGE,IS3,T)) + IGKRATE(IA,IGE,IS3,T))) / IWND_SUMST(IA)
+- GE_T(IY411,IA,IGE,IS3,T)
+)
+)$IGWND(IGE)
+
+*Solar PV forecast error
+-(MIN(0,
+$ifi %SOLEFLH_DOL%==AAA         (SOLEFLH(IA) * (
+$ifi %SOLEFLH_DOL%==AAA_GGG     (SOLEFLH(IA,IGE) * (
+            GKFX(IY411,IA,IGE)
+                 )  * SOLE_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGE,IS3,T)) + IGKRATE(IA,IGE,IS3,T))) / ISOLESUMST(IA)
+- GE_T(IY411,IA,IGE,IS3,T)
+)
+)$IGSOLE(IGE)
+
+*Hydro run of river forecast error
+-(MIN(0,
+           (WTRRRFLH(IA) * (
+             GKFX(IY411,IA,IGE)
+                 )  * WTRRRVAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGE,IS3,T)) + IGKRATE(IA,IGE,IS3,T))) / IWTRRRSUM(IA)
+- GE_T(IY411,IA,IGE,IS3,T)
+)
+)$IGHYRR(IGE)
+
+*Wave energy forecast error
+-(MIN(0,
+           (WAVEFLH(IA) * (
+             GKFX(IY411,IA,IGE)
+                 )  * WAVE_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGE,IS3,T)) + IGKRATE(IA,IGE,IS3,T))) / IWTRRRSUM(IA)
+- GE_T(IY411,IA,IGE,IS3,T)
+)
+)$IGWAVE(IGE)
+
+=E=
+
+VGE_T_DOWN_FORCED(IY411,IA,IGE,IS3,T)
+;
+
+
+
+
+EQUATION QVGH_T_DOWN1(YYY,AAA,GGG,SSS,TTT) 'Equation 1 to calculate deviations with respect to the commited heat dispatch from previous runs';
+QVGH_T_DOWN1(IY411,IA,IGH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGH)  AND GH_T(IY411,IA,IGH,IS3,T))..
+VGH_T(IY411,IA,IGH,IS3,T)
+=G=
+GH_T(IY411,IA,IGH,IS3,T)
+- VGH_T_DOWN(IY411,IA,IGH,IS3,T)
+-VGH_T_DOWN_FORCED(IY411,IA,IGH,IS3,T)$IGSOLH(IGH)
+;
+
+EQUATION QVGH_T_DOWN2(YYY,AAA,GGG,SSS,TTT) 'Equation 2 to calculate deviations with respect to the commited heat dispatch from previous runs';
+QVGH_T_DOWN2(IY411,IA,IGH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGH)  AND GH_T(IY411,IA,IGH,IS3,T))..
+GH_T(IY411,IA,IGH,IS3,T)
+-VGH_T_DOWN_FORCED(IY411,IA,IGH,IS3,T)$IGSOLH(IGH)
+=G=
+VGH_T_DOWN(IY411,IA,IGH,IS3,T)
+
+;
+
+
+EQUATION QVGH_T_DOWN_FORCED(YYY,AAA,GGG,SSS,TTT) 'Equation  to calulate the forced deviations with respect to the commited heat dispatch from previous runs';
+QVGH_T_DOWN_FORCED(IY411,IA,IGH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IGH) AND GH_T(IY411,IA,IGH,IS3,T) AND IGSOLH(IGH))..
+*Solar heating forecast error
+-MIN(0,
+$ifi %SOLHFLH_DOL%==AAA         (SOLHFLH(IA) * (
+$ifi %SOLHFLH_DOL%==AAA_GGG     (SOLHFLH(IA,IGH) * (
+            GKFX(IY411,IA,IGH)
+                 )  * SOLH_VAR_T(IA,IS3,T) * (1$(NOT IGKRATE(IA,IGH,IS3,T)) + IGKRATE(IA,IGH,IS3,T))) / ISOLHSUMST(IA)
+- GH_T(IY411,IA,IGH,IS3,T)
+)
+=E=
+VGH_T_DOWN_FORCED(IY411,IA,IGH,IS3,T)
+;
+
+
+$ifi not %HYDROGEN%==yes  $goto label_no_hydrogen
+
+*Hydrogen
+EQUATION QVGH2_T_DOWN1(YYY,AAA,GGG,SSS,TTT) 'Equation 1 to calculate deviations with respect to the commited hydrogen dispatch from previous runs';
+QVGH2_T_DOWN1(IY411,IA,G,IS3,T)$(IAGK_HASORPOT(IY411,IA,G) AND IHYDROGEN(G) AND GH2_T(IY411,IA,G,IS3,T))..
+(VGE_T(IY411,IA,G,IS3,T)*GDATA(G,'GDFE'))$(IHYDROGEN_GETOH2(G) OR IHYDROGEN_GETOHH2(G) OR IHYDROGEN_GEHTOH2(G))
+ + (VHYDROGEN_GH2_T(IY411,IA,G,IS3,T))$(IHYDROGEN_GCH4TOH2(G) OR IHYDROGEN_GH2STO(G))
+=G=
+GH2_T(IY411,IA,G,IS3,T)
+- VGH2_T_DOWN(IY411,IA,G,IS3,T)
+;
+
+EQUATION QVGH2_T_DOWN2(YYY,AAA,GGG,SSS,TTT) 'Equation 2 to calculate deviations with respect to the commited hydrogen dispatch from previous runs';
+QVGH2_T_DOWN2(IY411,IA,IHYDROGEN,IS3,T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN) AND GH2_T(IY411,IA,IHYDROGEN,IS3,T))..
+GH2_T(IY411,IA,IHYDROGEN,IS3,T)
+=G=
+VGH2_T_DOWN(IY411,IA,IHYDROGEN,IS3,T)
+;
+
+*Biomethane
+EQUATION QVGBIOMETHANE_T_DOWN1(YYY,AAA,GGG,SSS,TTT) 'Equation 1 to calculate deviations with respect to the commited biomethane dispatch from previous runs';
+QVGBIOMETHANE_T_DOWN1(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2TOBIOMETH) AND GBIOMETHANE_T(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T))..
+VGBIOMETH_T(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)
+=G=
+GBIOMETHANE_T(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)
+- VGBIOMETHANE_T_DOWN(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)
+;
+
+EQUATION QVGBIOMETHANE_T_DOWN2(YYY,AAA,GGG,SSS,TTT) 'Equation 2 to calculate deviations with respect to the commited biomethane dispatch from previous runs';
+QVGBIOMETHANE_T_DOWN2(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2TOBIOMETH) AND GBIOMETHANE_T(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T))..
+GBIOMETHANE_T(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)
+=G=
+VGBIOMETHANE_T_DOWN(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)
+;
+
+
+
+$label label_no_hydrogen
+
+
+
+
+
+
+
+

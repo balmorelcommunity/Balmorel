@@ -1,5 +1,6 @@
 *Balancing market introduced by Juan Gea-Bermudez and Polyneikis Kanellas
 
+$ifi not %UnitComm%==yes $goto No_UnitComm
 
 *Fixing commitment status from energy dispatch run
 $ifi not %CommitmentStatus%==FastUnitsChange $goto No_FastUnitsChange
@@ -17,10 +18,6 @@ $ifi not %SOLVETYPE%==MIP $ifi %UnitComm%==yes VUCON_STOLOAD.FX(IY411,IA,IGUC,IS
 $ifi     %SOLVETYPE%==MIP $ifi %UnitComm%==yes VUCON_STOLOAD.FX(IY411,IA,IGUC,IS3,T)$(GKFX(IY411,IA,IGUC) AND (NOT SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IGUC))) AND (NOT (IGDECOMEXOPOT(IY411,IA,IGUC))) AND (IGESTOALL(IGUC) OR IGHSTOALL(IGUC))) = ROUND(UCON_STOLOAD(IY411,IA,IGUC,IS3,T));
 $label No_NoChange
 
-
-
-
-
-
+$label No_UnitComm
 
 
