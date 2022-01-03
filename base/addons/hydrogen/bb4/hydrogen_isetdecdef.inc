@@ -3,7 +3,7 @@ Set IHYDROGEN_GETOH2(G)           'Technologies consuming electricity to produce
 Set IHYDROGEN_GEHTOH2(G)          'Technologies consuming electricity and heat to produce hydrogen';
 Set IHYDROGEN_GETOHH2(G)          'Technologies consuming electricity to produce heat and hydrogen';
 Set IHYDROGEN_GCH4TOH2(G)         'Steam reforming technologies producing hydrogen from natural gas';
-Set IHYDROGEN_GH2FUEL(G)          'Power plants using hydrogen as fuel';
+Set IHYDROGEN_GH2FUEL(G)          'Power plants using hydrogen as fuel (excluding H2 storage and biomethane technologies)';
 SET IHYDROGEN_GH2TOE(G)           'Technology producing only electricity consuming hydrogen'
 SET IHYDROGEN_GH2TOEH(G)          'Technology producing electricity and consuming hydrogen'
 Set IHYDROGEN_GH2UP(G)            'Fuels needing boost of hydrogen'
@@ -28,7 +28,7 @@ IHYDROGEN_GH2FUEL(G)  = YES$(GDATA(G,'GDFUEL') EQ HYDROGEN AND NOT(GDATA(G,'GDFU
 IGBIOMETHANE(G)  = YES$(GDATA(G,'GDFUEL') EQ BIOMETHANE);
 *Ida This was here before just hydrogen: HYDROGEN_GH2FUEL);
 
-IHYDROGEN_GH2FUEL(G) = IHYDROGEN_GH2FUEL(G) - IHYDROGEN_GH2STO(G);
+IHYDROGEN_GH2FUEL(G) = IHYDROGEN_GH2FUEL(G) - IHYDROGEN_GH2STO(G) - IHYDROGEN_GH2TOBIOMETH(G);
 
 IGDISPATCH(G) = IGDISPATCH(G) + IHYDROGEN_GETOH2(G)+IHYDROGEN_GEHTOH2(G) +IHYDROGEN_GH2STO(G)+IHYDROGEN_GH2TOE(G)+IHYDROGEN_GH2TOEH(G)+IHYDROGEN_GETOHH2(G) +IHYDROGEN_GH2TOBIOMETH(G) +IHYDROGEN_GCH4TOH2(G);
 
