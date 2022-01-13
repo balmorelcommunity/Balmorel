@@ -13,9 +13,7 @@ BIOMETHSTOVOLTS(Y,SSS,TTT)          'Biomethane storage content to be used in fu
 BIOMETHSTOVOLTSVAL(Y,SSS,TTT)       'Biomethane storage value to be used in future runs (MWh)'
 
 GH2_T(YYY,AAA,GGG,SSS,TTT)               'Hydrogen generation (MW)  to be transferred to future runs'
-GH2_T_VAL(YYY,AAA,GGG,SSS,TTT)            'Hydrogen generation value (Money/MWh)  to be transferred to future runs'
 GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT)      'Biomethane generation (MW)  to be transferred to future runs'
-GBIOMETHANE_T_VAL(YYY,AAA,GGG,SSS,TTT)      'Biomethane generation value (Money/MWh)  to be transferred to future runs';
 ;
 
 *IHYDROGEN_DH2_REGION_SUMST and IHYDROGEN_DH2_AREA_SUMST  are put here for convenience.
