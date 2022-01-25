@@ -299,8 +299,13 @@ $setglobal IGKRATE_STOCHASTIC
 $setglobal BalancingMarket
 *!option yes
 
+*Define the purpose of the balancing run.
+$setglobal BALANCINGRUNPURPOSE TSOREDISPATCH
+*!option INTRADAYMARKET   !Text  "The run will simulate INTRADAY markets (NOT FINISHED)"
+*!option TSOREDISPATCH    !Text  "The run will simulate the re-dispatch optimization from the TSO perspective, adding penalties to compensate for forced re-dispatch of the units based on the TSO needs"
+
 *Define which units will be allowed to change their commitment status (on/off) (requires Unit Commitment addon to be on)
-$setglobal CommitmentStatus  FastUnitsChange
+$setglobal CommitmentStatus  NoChange
 *!option NoChange         !Text  "The units will not be allowed to change their commitment, which will be taken from previous runs "
 *!option FastUnitsChange  !Text  "The slow units will not be allowed to change their commitment, which will be taken from previous runs "
 *!option None             !Text  "All the units will be allowed to change their commitment with respect to previous runs"

@@ -288,6 +288,8 @@ PARAMETER  GE_T(YYY,AAA,GGG,SSS,TTT)               "Electricity generation (MW) 
 PARAMETER  GH_T(YYY,AAA,GGG,SSS,TTT)               "Heat generation (MW)  to be transferred to future runs";
 PARAMETER  GF_T(YYY,AAA,GGG,SSS,TTT)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
 PARAMETER  X_T(YYY,IRRRE,IRRRI,SSS,TTT)          "Electricity export from region IRRRE to IRRRI to be transferred to future runs (MW)";
+PARAMETER  ELECTRICITY_PRICE(YYY,RRR,SSS,TTT)         "Electricity price (money/MWh)  to be transferred to future runs";
+PARAMETER  HEAT_PRICE(YYY,AAA,SSS,TTT)                "Heat price (money/MWh)  to be transferred to future runs";
 
 *Fuel use
 PARAMETER F_T(YYY,CCCRRRAAA,FFF,SSS,TTT) "Aggregated fuel use by year, season, T, geography and fuel to b transferred to future runs (GJ)"
@@ -2696,6 +2698,12 @@ $ifi %HYDROGEN%==yes  GBIOMETHANE_T(Y,IA,IHYDROGEN_GH2TOBIOMETH,S,T)$IAGK_HASORP
 *$ifi %HEATTRANS%==yes XH_T(Y,IAE,IAI,S,T)$IXHK_HASORPOT(Y,IAE,IAI)=VXH_T.L(Y,IAE,IAI,S,T);
 $ifi %UnitComm%==yes  UCON(Y,IA,IGUC,S,T)=VUCON.L(Y,IA,IGUC,S,T);
 $ifi %UnitComm%==yes  UCON_STOLOAD(Y,IA,IGUC,S,T)=VUCON_STOLOAD.L(Y,IA,IGUC,S,T);
+ELECTRICITY_PRICE(Y,IR,S,T)=QEEQ.M(Y,IR,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
+HEAT_PRICE(Y,IA,S,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))
+$ifi  %HEATTRANS%==yes OR SUM(IAE,IXHK_HASORPOT(Y,IAE,IA)) OR SUM(IAI,IXHK_HASORPOT(Y,IA,IAI))
+)=QHEQ.M(Y,IA,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
+$ifi %HYDROGEN%==yes  HYDROGEN_PRICE(Y,IR,S,T)=QHYDROGEN_EQ.M(Y,IR,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
+$ifi %HYDROGEN%==yes  BIOMETHANE_PRICE(Y,S,T)=QBIOMETHANE_EQ.M(Y,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
 
 
 *execute_unload  "../../simex/DE_T.gdx", DE_T;
@@ -2709,12 +2717,20 @@ $ifi %HYDROGEN%==yes  execute_unload  "../../simex/GBIOMETHANE_T.gdx", GBIOMETHA
 *$ifi %HEATTRANS%==yes execute_unload  "../../simex/XH_T.gdx", XH_T;
 $ifi %UnitComm%==yes  execute_unload  "../../simex/UCON.gdx", UCON;
 $ifi %UnitComm%==yes  execute_unload  "../../simex/UCON_STOLOAD.gdx", UCON_STOLOAD;
+execute_unload  "../../simex/ELECTRICITY_PRICE.gdx", ELECTRICITY_PRICE;
+execute_unload  "../../simex/HEAT_PRICE.gdx", HEAT_PRICE;
+$ifi %HYDROGEN%==yes execute_unload  "../../simex/HYDROGEN_PRICE.gdx", HYDROGEN_PRICE;
+$ifi %HYDROGEN%==yes execute_unload  "../../simex/BIOMETHANE_PRICE.gdx", BIOMETHANE_PRICE;
 
 *Reducing size of export files once they have been exported
 GE_T(Y,IA,G,S,T)=0;
 GH_T(Y,IA,G,S,T)=0;
 $ifi %HYDROGEN%==yes  GH2_T(Y,IA,G,S,T)=0;
 $ifi %HYDROGEN%==yes  GBIOMETHANE_T(Y,IA,G,S,T)=0;
+ELECTRICITY_PRICE(Y,IR,S,T)=0;
+HEAT_PRICE(Y,IA,S,T)=0;
+$ifi %HYDROGEN%==yes  HYDROGEN_PRICE(Y,IR,S,T)=0;
+$ifi %HYDROGEN%==yes  BIOMETHANE_PRICE(Y,S,T)=0;
 
 *Fuel use in T to be used in auxils folder "timestep conversion"
 F_T(Y,C,FFF,S,T)$(GMAXF(Y,C,FFF) OR SUM(ISALIAS,GMAXFS(Y,C,FFF,ISALIAS))

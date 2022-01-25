@@ -369,6 +369,22 @@ PARAMETER BIOMETHSTOVOLTSVAL(YYY,SSS,TTT) "Inter-seasonal biomethane storage con
 $ifi  exist '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx', BIOMETHSTOVOLTSVAL;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx' BIOMETHSTOVOLTSVAL(YYY,SSS,TTT)=0;
 
+PARAMETER ELECTRICITY_PRICE(YYY,RRR,SSS,TTT) "Electricity price to be transferred to future runs (Money/MWh)";
+$ifi  exist '../../base/auxils/timestep_conversion/input/ELECTRICITY_PRICE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/ELECTRICITY_PRICE.gdx', ELECTRICITY_PRICE;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/ELECTRICITY_PRICE.gdx' ELECTRICITY_PRICE(YYY,RRR,SSS,TTT)=0;
+
+PARAMETER HEAT_PRICE(YYY,AAA,SSS,TTT) "Heat price to be transferred to future runs (Money/MWh)";
+$ifi  exist '../../base/auxils/timestep_conversion/input/HEAT_PRICE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HEAT_PRICE.gdx', HEAT_PRICE;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/HEAT_PRICE.gdx' HEAT_PRICE(YYY,AAA,SSS,TTT)=0;
+
+PARAMETER HYDROGEN_PRICE(YYY,RRR,SSS,TTT) "Hydrogen price to be transferred to future runs (Money/MWh)";
+$ifi  exist '../../base/auxils/timestep_conversion/input/HYDROGEN_PRICE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HYDROGEN_PRICE.gdx', HYDROGEN_PRICE;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/HYDROGEN_PRICE.gdx' HYDROGEN_PRICE(YYY,RRR,SSS,TTT)=0;
+
+PARAMETER BIOMETHANE_PRICE(YYY,SSS,TTT) "Biomethane price to be transferred to future runs (Money/MWh)";
+$ifi  exist '../../base/auxils/timestep_conversion/input/BIOMETHANE_PRICE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/BIOMETHANE_PRICE.gdx', BIOMETHANE_PRICE;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/BIOMETHANE_PRICE.gdx' BIOMETHANE_PRICE(YYY,SSS,TTT)=0;
+
 
 *REST OF HYDRO PARAMETERS.........
 
@@ -445,6 +461,11 @@ PARAMETER H2STOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal hydrogen s
 PARAMETER H2STOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal hydrogen storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
 PARAMETER BIOMETHSTOVOLTS_NEW(YYY,SSS_NEW,TTT_NEW) "Inter-seasonal biomethane storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER BIOMETHSTOVOLTSVAL_NEW(YYY,SSS_NEW,TTT_NEW) "Inter-seasonal biomethane storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
+PARAMETER ELECTRICITY_PRICE_NEW(YYY,RRR,SSS_NEW,TTT_NEW) "Electricity price to be transferred to future runs (Money/MWh)";
+PARAMETER HEAT_PRICE_NEW(YYY,AAA,SSS_NEW,TTT_NEW) "Heat price to be transferred to future runs (Money/MWh)";
+PARAMETER HYDROGEN_PRICE_NEW(YYY,RRR,SSS_NEW,TTT_NEW) "Hydrogen price to be transferred to future runs (Money/MWh)";
+PARAMETER BIOMETHANE_PRICE_NEW(YYY,SSS_NEW,TTT_NEW) "Biomethane price to be transferred to future runs (Money/MWh)";
+
 
 *----------END OF INPUT DATA--------------------
 
@@ -537,6 +558,10 @@ H2STOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NE
 H2STOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),H2STOVOLTSVAL(YYY,AAA,GGG,SSS,TTT)) ;
 BIOMETHSTOVOLTS_NEW(YYY,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),BIOMETHSTOVOLTS(YYY,SSS,TTT));
 BIOMETHSTOVOLTSVAL_NEW(YYY,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),BIOMETHSTOVOLTSVAL(YYY,SSS,TTT)) ;
+ELECTRICITY_PRICE_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ELECTRICITY_PRICE(YYY,RRR,SSS,TTT));
+HEAT_PRICE_NEW(YYY,AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HEAT_PRICE(YYY,AAA,SSS,TTT));
+HYDROGEN_PRICE_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HYDROGEN_PRICE(YYY,RRR,SSS,TTT));
+BIOMETHANE_PRICE_NEW(YYY,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),BIOMETHANE_PRICE(YYY,SSS,TTT)) ;
 
 *------------END OF CALCULATIONS-------------
 
@@ -604,6 +629,10 @@ execute_unload  "../../base/auxils/timestep_conversion/output/EV_VSOC_BEV.gdx", 
 execute_unload  "../../base/auxils/timestep_conversion/output/EV_VSOC_PHEV.gdx", EV_VSOC_PHEV_NEW=EV_VSOC_PHEV;
 execute_unload  "../../base/auxils/timestep_conversion/output/EV_BEV_NETCHARGING.gdx", EV_BEV_NETCHARGING_NEW=EV_BEV_NETCHARGING;
 execute_unload  "../../base/auxils/timestep_conversion/output/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHARGING_NEW=EV_PHEV_NETCHARGING;
+execute_unload  "../../base/auxils/timestep_conversion/output/ELECTRICITY_PRICE.gdx", ELECTRICITY_PRICE_NEW=ELECTRICITY_PRICE;
+execute_unload  "../../base/auxils/timestep_conversion/output/HEAT_PRICE.gdx", HEAT_PRICE_NEW=HEAT_PRICE;
+execute_unload  "../../base/auxils/timestep_conversion/output/HYDROGEN_PRICE.gdx", HYDROGEN_PRICE_NEW=HYDROGEN_PRICE;
+execute_unload  "../../base/auxils/timestep_conversion/output/BIOMETHANE_PRICE.gdx", BIOMETHANE_PRICE_NEW=BIOMETHANE_PRICE;
 
 $ONTEXT
 *WND_VAR_T timeseries

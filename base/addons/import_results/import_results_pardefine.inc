@@ -60,6 +60,10 @@ $ifi %ADDENERGYDISPATCH%==yes $ifi %HYDROGEN%==yes  execute_load '../../simex/GB
 *$ifi %ADDENERGYDISPATCH%==yes $ifi %HEATTRANS%==yes execute_load  '../../simex/XH_T.gdx', XH_T;
 $ifi %ADDENERGYDISPATCH%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCON.gdx', UCON;
 $ifi %ADDENERGYDISPATCH%==yes $ifi %UnitComm%==yes execute_load  '../../simex/UCON_STOLOAD.gdx', UCON_STOLOAD;
+$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/ELECTRICITY_PRICE.gdx', ELECTRICITY_PRICE;
+$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/HEAT_PRICE.gdx', HEAT_PRICE;
+$ifi %ADDENERGYDISPATCH%==yes $ifi %HYDROGEN%==yes  execute_load '../../simex/HYDROGEN_PRICE.gdx', HYDROGEN_PRICE;
+$ifi %ADDENERGYDISPATCH%==yes $ifi %HYDROGEN%==yes  execute_load '../../simex/BIOMETHANE_PRICE.gdx', BIOMETHANE_PRICE;
 
 *Fuel prices from previous optimization
 $ifi %ADDFUELPRICE%==yes execute_load  '../../simex/FUELPRICE_EXC.gdx', FUELPRICE_EXC;
