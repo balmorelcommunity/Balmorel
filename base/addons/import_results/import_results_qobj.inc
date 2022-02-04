@@ -46,30 +46,7 @@ $ifi not %ADDBIOMETHSTOVOLTS%==price    $goto label_no_interseasonal_biomethane_
 $label label_no_interseasonal_biomethane_storage_price
 $label label_no_hydrogen
 
-$ifi not %BalancingMarket%==yes $goto No_BalancingMarket
-$ifi not %BALANCINGRUNPURPOSE%==TSOREDISPATCH $goto NO_TSOREDISPATCH
-*Penalty cost from other markets
-*Electricity market
- + SUM(IAGK_HASORPOT(Y,IA,IGE)$(NOT (IGETOH(IGE))), IHOURFRAC * SUM((IS3,T)$GE_T(Y,IA,IGE,IS3,T),
-         SUM(IR$(RRRAAA(IR,IA)),ELECTRICITY_PRICE(Y,IR,IS3,T))*IHOURSINST(IS3,T)*(1-DISLOSS_E_AG(IA,IGE))*VGE_T_DOWN(Y,IA,IGE,IS3,T)))
 
-*Heat market
- + SUM(IAGK_HASORPOT(Y,IA,IGH), IHOURFRAC * SUM((IS3,T)$GH_T(Y,IA,IGH,IS3,T),
-            HEAT_PRICE(Y,IA,IS3,T)*IHOURSINST(IS3,T)*VGH_T_DOWN(Y,IA,IGH,IS3,T)))
-
-$ifi not %HYDROGEN%==yes  $goto label_no_hydrogen2
-*H2 market
- + SUM(IAGK_HASORPOT(Y,IA,IHYDROGEN), IHOURFRAC * SUM((IS3,T)$GH2_T(Y,IA,IHYDROGEN,IS3,T),
-         SUM(IR$(RRRAAA(IR,IA)),HYDROGEN_PRICE(Y,IR,IS3,T))*IHOURSINST(IS3,T)*VGH2_T_DOWN(Y,IA,IHYDROGEN,IS3,T)))
-
-*Biomethane market
- + SUM(IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2TOBIOMETH), IHOURFRAC * SUM((IS3,T)$GBIOMETHANE_T(Y,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T) ,
-         BIOMETHANE_PRICE(Y,IS3,T)*IHOURSINST(IS3,T)*VGBIOMETHANE_T_DOWN(Y,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)))
-
-$label label_no_hydrogen2
-
-$label No_BalancingMarket
-$label NO_TSOREDISPATCH
 
 
 
