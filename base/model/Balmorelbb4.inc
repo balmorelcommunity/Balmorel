@@ -118,7 +118,9 @@ ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GH
 *--- End: Definitions of SETS and ACRONYMS that are given in the $included files
 *-------------------------------------------------------------------------------
 
-SET IS3(S)     "Balbase3: present season simulated; other models: identical to S";
+SET IS3(S)     "Balbase3: present seasons simulated; other models: identical to S";
+SET IS3_NEXT(S) "Balbase3: present seasons and  next season not simulated; other models: identical to S";
+SET IS3_ONLYNEXT(S) "Balbase3: next season not simulated; other models: identical to S";
 SET IS33(S,S)  "Mapping of S (first index) to the following S (second index)";
 
 *-------------------------------------------------------------------------------
@@ -265,7 +267,7 @@ PARAMETER VHYRS_STL(YYY,AAA,SSS,TTT)  "Hourly hydro storage level (MWh)";
 PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
 PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
 
-* Data for handling storage
+* Data for handling other storage
 PARAMETER ESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER HSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER ESTOVOLT(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
@@ -286,6 +288,8 @@ PARAMETER  GE_T(YYY,AAA,GGG,SSS,TTT)               "Electricity generation (MW) 
 PARAMETER  GH_T(YYY,AAA,GGG,SSS,TTT)               "Heat generation (MW)  to be transferred to future runs";
 PARAMETER  GF_T(YYY,AAA,GGG,SSS,TTT)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
 PARAMETER  X_T(YYY,IRRRE,IRRRI,SSS,TTT)          "Electricity export from region IRRRE to IRRRI to be transferred to future runs (MW)";
+PARAMETER  ELECTRICITY_PRICE(YYY,RRR,SSS,TTT)         "Electricity price (money/MWh)  to be transferred to future runs";
+PARAMETER  HEAT_PRICE(YYY,AAA,SSS,TTT)                "Heat price (money/MWh)  to be transferred to future runs";
 
 *Fuel use
 PARAMETER F_T(YYY,CCCRRRAAA,FFF,SSS,TTT) "Aggregated fuel use by year, season, T, geography and fuel to b transferred to future runs (GJ)"
@@ -1583,7 +1587,7 @@ $include "../../base/addons/_hooks/qhyrsseq.inc"
 ;
 
 * "Hydropower reservoir - minimum level (MWh)"
-QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND (IS3(S) OR IS3(S-1)))..
+QHYRSMINVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMINVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND IS3_NEXT(S))..
      VHYRS_S(IY411,IA,S)  =G=  HYRSDATA(IA,"HYRSMINVOL",S)*
        SUM(IGHYRS,   HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
@@ -1594,7 +1598,7 @@ $include "../../base/addons/_hooks/qhyrsminvol.inc"
 ;
 
 * "Hydropower reservoir - maximum level (MWh)"
-QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND (IS3(S) OR IS3(S-1)))..
+QHYRSMAXVOL(IY411,IA,S)$(HYRSDATA(IA,"HYRSMAXVOL",S) AND SUM(IGHYRS$IAGK_HASORPOT(IY411,IA,IGHYRS),1) AND IS3_NEXT(S))..
        HYRSDATA(IA,"HYRSMAXVOL",S) *
        SUM(IGHYRS,  HYRSMAXVOL_G(IA,IGHYRS)*(
          GKFX(IY411,IA,IGHYRS)$IAGKFX(IY411,IA,IGHYRS)
@@ -2682,30 +2686,51 @@ ESTOVOLTVAL(Y,IA,G,S,T)=0;
 HSTOVOLTVAL(Y,IA,G,S,T)=0;
 
 
-*Energy dispatch to be used in future runs by addon "import_results"
+*Energy and commitment dispatch to be used in future runs by addon "import_results"
 *DE_T(Y,IR,S,T)= SUM(DEUSER, ((DE(Y,IR,DEUSER) * DE_VAR_T(IR,DEUSER,S,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0))/(1-DISLOSS_E(IR));
 *DH_T(Y,IA,S,T)=SUM(DHUSER, ((DH(Y,IA,DHUSER) * DH_VAR_T(IA,DHUSER,S,T)) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0))/(1-DISLOSS_H(IA));
 GE_T(Y,IA,IGE,S,T)$IAGK_HASORPOT(Y,IA,IGE)=VGE_T.L(Y,IA,IGE,S,T);
 GH_T(Y,IA,IGH,S,T)$IAGK_HASORPOT(Y,IA,IGH)=VGH_T.L(Y,IA,IGH,S,T);
+$ifi %HYDROGEN%==yes  GH2_T(Y,IA,G,S,T)$IAGK_HASORPOT(Y,IA,G)=(VGE_T.L(Y,IA,G,S,T)*GDATA(G,'GDFE'))$(IHYDROGEN_GETOH2(G) OR IHYDROGEN_GETOHH2(G) OR IHYDROGEN_GEHTOH2(G)) + (VHYDROGEN_GH2_T.L(Y,IA,G,S,T))$(IHYDROGEN_GCH4TOH2(G) OR IHYDROGEN_GH2STO(G));
+$ifi %HYDROGEN%==yes  GBIOMETHANE_T(Y,IA,IHYDROGEN_GH2TOBIOMETH,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2TOBIOMETH)=VGBIOMETH_T.L(Y,IA,IHYDROGEN_GH2TOBIOMETH,S,T);
 *GF_T(Y,IA,G,S,T)$IAGK_HASORPOT(Y,IA,G)=VGF_T.L(Y,IA,G,S,T);
 *X_T(Y,IRE,IRI,S,T)$IXK_HASORPOT(Y,IRE,IRI)=VX_T.L(Y,IRE,IRI,S,T);
 *$ifi %HEATTRANS%==yes XH_T(Y,IAE,IAI,S,T)$IXHK_HASORPOT(Y,IAE,IAI)=VXH_T.L(Y,IAE,IAI,S,T);
 $ifi %UnitComm%==yes  UCON(Y,IA,IGUC,S,T)=VUCON.L(Y,IA,IGUC,S,T);
 $ifi %UnitComm%==yes  UCON_STOLOAD(Y,IA,IGUC,S,T)=VUCON_STOLOAD.L(Y,IA,IGUC,S,T);
+ELECTRICITY_PRICE(Y,IR,S,T)=QEEQ.M(Y,IR,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
+HEAT_PRICE(Y,IA,S,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))
+$ifi  %HEATTRANS%==yes OR SUM(IAE,IXHK_HASORPOT(Y,IAE,IA)) OR SUM(IAI,IXHK_HASORPOT(Y,IA,IAI))
+)=QHEQ.M(Y,IA,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
+$ifi %HYDROGEN%==yes  HYDROGEN_PRICE(Y,IR,S,T)=QHYDROGEN_EQ.M(Y,IR,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
+$ifi %HYDROGEN%==yes  BIOMETHANE_PRICE(Y,S,T)=QBIOMETHANE_EQ.M(Y,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
+
 
 *execute_unload  "../../simex/DE_T.gdx", DE_T;
 *execute_unload  "../../simex/DH_T.gdx", DH_T;
 execute_unload  "../../simex/GE_T.gdx", GE_T;
 execute_unload  "../../simex/GH_T.gdx", GH_T;
+$ifi %HYDROGEN%==yes  execute_unload  "../../simex/GH2_T.gdx", GH2_T;
+$ifi %HYDROGEN%==yes  execute_unload  "../../simex/GBIOMETHANE_T.gdx", GBIOMETHANE_T;
 *execute_unload  "../../simex/GF_T.gdx", GF_T;
 *execute_unload  "../../simex/X_T.gdx", X_T;
 *$ifi %HEATTRANS%==yes execute_unload  "../../simex/XH_T.gdx", XH_T;
 $ifi %UnitComm%==yes  execute_unload  "../../simex/UCON.gdx", UCON;
 $ifi %UnitComm%==yes  execute_unload  "../../simex/UCON_STOLOAD.gdx", UCON_STOLOAD;
+execute_unload  "../../simex/ELECTRICITY_PRICE.gdx", ELECTRICITY_PRICE;
+execute_unload  "../../simex/HEAT_PRICE.gdx", HEAT_PRICE;
+$ifi %HYDROGEN%==yes execute_unload  "../../simex/HYDROGEN_PRICE.gdx", HYDROGEN_PRICE;
+$ifi %HYDROGEN%==yes execute_unload  "../../simex/BIOMETHANE_PRICE.gdx", BIOMETHANE_PRICE;
 
 *Reducing size of export files once they have been exported
 GE_T(Y,IA,G,S,T)=0;
 GH_T(Y,IA,G,S,T)=0;
+$ifi %HYDROGEN%==yes  GH2_T(Y,IA,G,S,T)=0;
+$ifi %HYDROGEN%==yes  GBIOMETHANE_T(Y,IA,G,S,T)=0;
+ELECTRICITY_PRICE(Y,IR,S,T)=0;
+HEAT_PRICE(Y,IA,S,T)=0;
+$ifi %HYDROGEN%==yes  HYDROGEN_PRICE(Y,IR,S,T)=0;
+$ifi %HYDROGEN%==yes  BIOMETHANE_PRICE(Y,S,T)=0;
 
 *Fuel use in T to be used in auxils folder "timestep conversion"
 F_T(Y,C,FFF,S,T)$(GMAXF(Y,C,FFF) OR SUM(ISALIAS,GMAXFS(Y,C,FFF,ISALIAS))

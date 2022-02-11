@@ -9,6 +9,7 @@ $ifi not %BB4%==yes $goto endoffile
 $label  beginbb4
 
 $ifi %vqdebug%==yes  $include   "../../base/addons/vqdebug/bb4/vqdebug_m2zero.inc";
+$ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_m2zero.inc";
 
 
 $ifi not %bb4%==yes $goto endoffile

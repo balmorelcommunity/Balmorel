@@ -19,6 +19,7 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %FlowBased%==yes      $include        "../../base/addons/FlowBased/bb4/flowbased_ipardecdef.inc";
 $ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_ipardecdef.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_ipardecdef.inc";
+$ifi %BalancingMarket%==yes       $include   "../../base/addons/balancing_market/balancing_market_ipardecdef.inc";
 
 $label endoffile
 

@@ -9,7 +9,7 @@ SCALAR ITPOS;
 * Exogenously given UC technologies
 IGUC(G)$(GDATA(G,'GDUC') EQ 1)=YES;
 
-
+$ontext
 * Automatic UC technology definition
 LOOP (UC_TECH_TYPE,
    LOOP (UC_TECH_GROUP,
@@ -22,13 +22,13 @@ LOOP (UC_TECH_TYPE,
       );
    );
 );
-
+$offtext  
 * No UC in secondary combination technologies (redundant and could lead to errors):
 $ifi %COMBTECH%==yes    IGUC(IGCOMB2)=NO;
 
 $ifi not %PLANNED_MAINTENANCE%==yes $goto NO_PLANNED_MAINTENANCE
 SET IGUCUTMAINT(GGG,SSS,SSS) "Internal set to assign for each GGG, SSS(first), the timesteps in SSS(second) linked to the minimum time off due to mainteinance" ;                                                                                                                                      ;
- 
+
 *IGUCUTMAINT CALCULATION
 LOOP(IGUC$GDATA(IGUC,'GDPLANMAINT'),
 LOOP(ISALIAS,

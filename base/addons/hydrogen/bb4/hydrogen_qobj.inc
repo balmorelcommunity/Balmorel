@@ -29,16 +29,9 @@ revenue sale of hydrogen to the transport sector
 *
 $offtext
 
-* Cost of fuel consumption during the year for steam reforming plants:
+* Variable Operation and maintainance cost of steam reforming:
 
-    + SUM((IAGK_HASORPOT(Y,IA,IHYDROGEN_GCH4TOH2),FFF)$(GDATA(IHYDROGEN_GCH4TOH2,'GDFUEL') EQ FDATA(FFF,'FDNB')),
-                 IHOURFRAC*FUELPRICE(Y,IA,FFF) * IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T) *
-                 VHYDROGEN_GH2_T(Y,IA,IHYDROGEN_GCH4TOH2,IS3,T)/(GDATA(IHYDROGEN_GCH4TOH2,'GDFE'))))
-
-* Cost of CO2 emission during the year for steam reforming plants:
-
-    + SUM((C,GROUP), SUM(IAGK_HASORPOT(Y,IA,IHYDROGEN_GCH4TOH2)$ICA(C,IA), SUM((IS3,T), IHOURSINST(IS3,T) * (IM_CO2(IHYDROGEN_GCH4TOH2)*IHOURFRAC*IOF0001) *
-      IOF3P6 *VHYDROGEN_GH2_T(Y,IA,IHYDROGEN_GCH4TOH2,IS3,T) /(GDATA(IHYDROGEN_GCH4TOH2,'GDFE') ) ) * (EMI_POL(Y,C,GROUP,"TAX_CO2"))))
+   + SUM(IAGK_HASORPOT(Y,IA,IHYDROGEN_GCH4TOH2), IHOURFRAC*GOMVCOSTO(IA,IHYDROGEN_GCH4TOH2) * SUM((IS3,T), IHOURSINST(IS3,T)*VHYDROGEN_GH2_T(Y,IA,IHYDROGEN_GCH4TOH2,IS3,T)))
 
 * Variable Operation and maintainance cost of hydrogen storage:
 

@@ -11,7 +11,9 @@
 * Further, if you work with BUI, this file will not be $included into Balmorel.gms,
 * instead the file Balopt.bui will be $included. See the description elsewhere.
 
-
+*---- START: VQDEBUG ------------------------------------------------
+*-----------------------------------------------------------------
+* overall control variable vqdebug must be 'yes' if any of the other vqdebug controls are:
 * Debugging hints are available if you include feasiblity-ensuring variables.
 * However, adding more variables will increase calculation time.
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
@@ -20,7 +22,11 @@
 $setglobal vqdebug
 *!option yes
 
-
+*Reduce number of infeasibility variables. By default, infeasibility variables are added to many equations, which is not always required.
+$setglobal reduced_vqdebug
+*!option yes
+*-----------------------------------------------------------------
+*---- END: VQDEBUG ------------------------------------------------
 
 *===============================================================================
 *===============================================================================
@@ -203,7 +209,7 @@ $setglobal DUMB
 $setglobal SMART
 *!option yes
 
-* Adds V2G charging:
+* Adds Vehicle-to-Grid possibility:
 $setglobal V2G   YES
 *!option  yes
 
@@ -215,11 +221,11 @@ $setglobal NO_PHEV_V2G  yes
 $setglobal STEPCHARGSCHEME
 *!option yes
 
-* Adds cycle degradation charging:
+* Adds cycle degradation:
 $setglobal DEGCYCLE
 *!option  yes
 
-* Adds calendar degradation charging:
+* Adds calendar degradation:
 $setglobal DEGCAL
 *!option yes
 
@@ -251,7 +257,7 @@ $setglobal TRANSPORT_SYNTHFUEL_COMMODITY    HYDROGEN
 *!option HYDROGEN       !Text "The demand for synthetic fuel generation is modelled as hydrogen demand (requires hydrogen addon to be activated)"
 
 * Defines the possibility for the transport demand of synthetic fuels to be aggregated internationally instead of having to satisfy it regionally.
-$setglobal TRANSPORT_DEMAND_AGGREGATED    yes
+$setglobal TRANSPORT_DEMAND_AGGREGATED
 
 
 *------------------------------END:TRANSPORT ADDON-------------------------------------------------
@@ -271,7 +277,7 @@ $setglobal RELAX_HYDROSTORAGE yes
 
 *-------------------------------------------------
 *---- Timeseries scaling ------
-
+*Allows to modify the time series scaling approach
 $setglobal timeseries_scaling  usedtimesteps_timseries_scaling
 *!option usedtimesteps_timseries_scaling   !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries"
 *!option full_timeseries_scaling           !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries"
@@ -281,16 +287,33 @@ $setglobal timeseries_scaling  usedtimesteps_timseries_scaling
 
 *-------------------------------------------------
 *---- IGKRATE data ------
+*Includes stochastic outages. If activated, IGKRATE will take the values in file IGKRATE.gdx, else it will be built based on GKRATE
 $setglobal IGKRATE_STOCHASTIC
-*!option IGKRATE_STOCHASTIC   !Text  "If activated, IGKRATE will take the values in file IGKRATE.gdx, else it will be built based on GKRATE"
+*!option yes
 *---- end: IGKRATE calculation ------
 *-------------------------------------------------
 
 *-------- Balancing market ---------
-* Peform the balancing market optimization
-*Note: it is meant to be combined with Unit Commitment, ancilliary services and import_results add-ons
+* overall control variable BalancingMarket must be 'yes' if any of the other BalancingMarket controls are:
+* Peforms the balancing market optimization
+*Note: it is meant to be combined with Unit Commitment and import_results add-ons. It can also be combined with ancilliary services
 $setglobal BalancingMarket
 *!option yes
+
+*Define the purpose of the balancing run.
+$setglobal BALANCINGRUNPURPOSE TSOREDISPATCH
+*!option INTRADAYMARKET   !Text  "The run will simulate INTRADAY markets (NOT FINISHED)"
+*!option TSOREDISPATCH    !Text  "The run will simulate the re-dispatch optimization from the TSO perspective, adding penalties to compensate for forced re-dispatch of the units based on the TSO needs"
+
+*If activated the TSO will also compensate generators for the forced down re-dispatch due to forecast errors, ramping limits, etc. (only relevant if BALANCINGRUNPURPOSE=TSOREDISPATCH) (to be finished)
+$setglobal FORCEDDOWNREDISPATCH
+*!option yes
+
+*Define which units will be allowed to change their commitment status (on/off) (requires Unit Commitment addon to be on)
+$setglobal CommitmentStatus  NoChange
+*!option NoChange         !Text  "The units will not be allowed to change their commitment, which will be taken from previous runs "
+*!option FastUnitsChange  !Text  "The slow units will not be allowed to change their commitment, which will be taken from previous runs "
+*!option None             !Text  "All the units will be allowed to change their commitment with respect to previous runs"
 
 *Restricts heat market from participating in the balancing market by restricting relevant heat generation variables from previous runs and not including the heat balance equation
 $setglobal NOHEATMARKET
@@ -313,7 +336,7 @@ $setglobal COMBTECH
 *-----------------HYDROGEN ADDON---------------------------------------
 * overall control variable HYDROGEN must be 'yes' if any of the other HYDROGEN controls are:
 * Set demands for hydrogen consumption and enable hydrogen technologies (some options require COMBTECH to be activated too).
-$Setglobal HYDROGEN  
+$Setglobal HYDROGEN
 *!option yes
 
 * Allows investments in hydrogen transport

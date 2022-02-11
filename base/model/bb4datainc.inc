@@ -23,6 +23,8 @@
 *Other acronyms
 $if     EXIST '../data/ACRONYMS.inc' $INCLUDE         '../data/ACRONYMS.inc';
 $if not EXIST '../data/ACRONYMS.inc' $INCLUDE '../../base/data/ACRONYMS.inc';
+*------------- Any ACRONYMS additions for addon to be placed here: ----------------
+$include "../../base/addons/_hooks/acronymsadditions.inc"
 
 * Geography
 
@@ -203,7 +205,6 @@ $include "../../base/addons/_hooks/gadditions.inc"
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
 *-------------------------------------------------------------------------------
 
-$include "../../base/addons/_hooks/acronyms.inc"
 $include "../../base/addons/_hooks/setdeclare.inc"
 $include "../../base/addons/_hooks/setdefine.inc"
 
