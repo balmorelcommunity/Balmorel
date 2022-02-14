@@ -703,7 +703,7 @@ $Setglobal ADDEVSTOS  none
 $setglobal ADDTECHDEV
 *!option yes
 
-*Add expensive to operate backup power and heat generation technology. It often occurs that the investment optimization underestimates the need for power.
+*Add expensive to operate backup generation technologies (electricity, heat, ...). It often occurs that the investment optimization underestimates the need for power.
 $setglobal ADDBACKUPGEN
 *!option yes
 
