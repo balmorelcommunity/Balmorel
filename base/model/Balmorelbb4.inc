@@ -118,9 +118,9 @@ ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GH
 *--- End: Definitions of SETS and ACRONYMS that are given in the $included files
 *-------------------------------------------------------------------------------
 
-SET IS3(S)     "Balbase3: present seasons simulated; other models: identical to S";
-SET IS3_NEXT(S) "Balbase3: present seasons and  next season not simulated; other models: identical to S";
-SET IS3_ONLYNEXT(S) "Balbase3: next season not simulated; other models: identical to S";
+SET IS3(S)     "Present seasons simulated; if rolling seasons not activated identical to S";
+SET IS3_NEXT(S) "Present seasons and  next season not simulated; if rolling seasons not activated  identical to S";
+SET IS3_ONLYNEXT(S) "Next season not simulated; if rolling seasons not activated identical to S";
 SET IS33(S,S)  "Mapping of S (first index) to the following S (second index)";
 
 *-------------------------------------------------------------------------------
@@ -150,20 +150,6 @@ ALIAS (T,ITALIAS,ITALIAS2,ITALIAS3);
 *-------------------------------------------------------------------------------
 *----- End: Definitions of SETS and ALIASES that are needed for data entry:
 *-------------------------------------------------------------------------------
-
-
-*-------------------------------------------------------------------------------
-* The choice of model made in the balopt.opt fil is checked here,
-* and basic sets concerning time within the year are reconstructed accordingly if needed:
-
-$ifi %bb3%==yes $KILL T
-$ifi %bb3%==yes SET T(TTT)          /T001*T168/;
-$ifi %bb3%==yes $KILL TWORKDAY
-$ifi %bb3%==yes $KILL TWEEKEND
-$ifi %bb3%==yes SET TWORKDAY(TTT)   /T001*T120/;
-$ifi %bb3%==yes SET TWEEKEND(TTT)   /T121*T168/;
-*-------------------------------------------------------------------------------
-
 
 *------------------------------------------------------------------------------
 * End: Declaration of internal sets
