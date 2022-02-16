@@ -115,10 +115,10 @@ SET HYRSDATASET  "Characteristics of hydro reservoirs" ;
 $INCLUDE         '../data/HYRSDATASET.inc';
 
 PARAMETER GMAXF(YYY,CCCRRRAAA,FFF)  "Maximum annual fuel use by year, geography and fuel and (GJ)";
-$INCLUDE         '../data/GMAXF.inc';
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', GMAXF;
 
 PARAMETER GMAXFS(YYY,CCCRRRAAA,FFF,SSS)  "Maximum annual fuel use by year, season, geography and fuel and (GJ)";
-$INCLUDE         '../data/GMAXFS.inc';
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', GMAXFS;
 
 *Original timeseries
 PARAMETER WND_VAR_T(AAA,SSS,TTT)                   "Variation of the wind generation"    ;
