@@ -2,8 +2,8 @@
 * Important note: make sure the full year data is used, otherwise there will be errors in some files
 
 *---------- DATA DEFINITION--------------------
-*Convert input data (.inc files) (by default only simex files will be converted)
-$setglobal input_data_conversion
+*Convert input data (.inc files)
+$setglobal input_data_conversion yes
 *!option yes
 
 *Possible conversion of timesteps
