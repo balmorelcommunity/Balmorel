@@ -842,13 +842,6 @@ loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
 );
 putclose;
 
-
-
-
-
-
-
-
 *EV_PHEV_Dumb timeseries
 file EV_PHEV_Dumb_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_Dumb.inc'/;
 EV_PHEV_Dumb_timeseries.nd  = 4;
@@ -929,6 +922,92 @@ loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
 );
 putclose;
 
+*TTT
+file TTT_timeseries /'../../base/auxils/timestep_conversion/output/TTT.inc'/;
+TTT_timeseries.nd  = 6;
+put TTT_timeseries;
+put '*SET TTT CALCULATED WITH AUXILS' //
+$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET TTT /T01*T24/;'
+$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET TTT /T01/;'
+$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET TTT /T01/;'
+$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET TTT /T01*T12/;'
+putclose;
+
+*SSS
+file SSS_timeseries /'../../base/auxils/timestep_conversion/output/SSS.inc'/;
+SSS_timeseries.nd  = 6;
+put SSS_timeseries;
+put '*SET SSS CALCULATED WITH AUXILS' //
+$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET SSS /S001*S364/;'
+$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET SSS /S0001*S8736/;'
+$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET SSS /S0001*S8736/;'
+$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET SSS /S0001*S8736/;'
+putclose;
+
+*TWORKDAY (DUMMY DATA TO AVOID ERRORS BECAUSE IT IS NOT RELEVANT WHEN USING DIFFERENT TIME STEPS)
+file TWORKDAY_timeseries /'../../base/auxils/timestep_conversion/output/TWORKDAY.inc'/;
+TWORKDAY_timeseries.nd  = 6;
+put TWORKDAY_timeseries;
+put '*SET TWORKDAY CALCULATED WITH AUXILS' //
+$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET TWORKDAY /T01*T24/;'
+$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET TWORKDAY /T01/;'
+$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET TWORKDAY /T01/;'
+$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET TWORKDAY /T01*T10/;'
+putclose;
+
+*TWEEKEND (DUMMY DATA TO AVOID ERRORS BECAUSE IT IS NOT RELEVANT WHEN USING DIFFERENT TIME STEPS)
+file TWEEKEND_timeseries /'../../base/auxils/timestep_conversion/output/TWEEKEND.inc'/;
+TWEEKEND_timeseries.nd  = 6;
+put TWEEKEND_timeseries;
+put '*SET TWEEKEND CALCULATED WITH AUXILS' //
+$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET TWEEKEND //;'
+$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET TWEEKEND //;'
+$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET TWEEKEND //;'
+$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET TWEEKEND //;'
+putclose;
+
+*Other files with empty data because the data is already in another file
+*OFFSHOREGRID_WND_VAR_T timeseries
+file OFFSHOREGRID_WND_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/OFFSHOREGRID_WND_VAR_T.inc'/;
+OFFSHOREGRID_WND_VAR_T_timeseries.nd  = 6;
+put OFFSHOREGRID_WND_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
+
+*INDIVUSERS_COP_VAR_T timeseries
+file INDIVUSERS_COP_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDIVUSERS_COP_VAR_T.inc'/;
+INDIVUSERS_COP_VAR_T_timeseries.nd  = 6;
+put INDIVUSERS_COP_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
+
+*INDUSTRY_COP_VAR_T timeseries
+file INDUSTRY_COP_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDUSTRY_COP_VAR_T.inc'/;
+INDUSTRY_COP_VAR_T_timeseries.nd  = 6;
+put INDUSTRY_COP_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
+
+*INDIVUSERS_DH_VAR_T timeseries
+file INDIVUSERS_DH_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDIVUSERS_DH_VAR_T.inc'/;
+INDIVUSERS_DH_VAR_T_timeseries.nd  = 6;
+put INDIVUSERS_DH_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
+
+*INDUSTRY_DH_VAR_T timeseries
+file INDUSTRY_DH_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDUSTRY_DH_VAR_T.inc'/;
+INDUSTRY_DH_VAR_T_timeseries.nd  = 6;
+put INDUSTRY_DH_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
+
+*INDIVUSERS_DE_VAR_T timeseries
+file INDIVUSERS_DE_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDIVUSERS_DE_VAR_T.inc'/;
+INDIVUSERS_DE_VAR_T_timeseries.nd  = 6;
+put INDIVUSERS_DE_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
 
 $label NO_input_data_conversion2
 *------------END OF OUTPUT GENERATION-------------
