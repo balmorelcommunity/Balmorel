@@ -159,14 +159,14 @@ $setglobal HeatTempLift
 *!option yes
 *-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
 
-* Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
+* Include industry data in the optimization. Requires HEATTRANS add-on to be activated.
 $setglobal INDUSTRY
 *!option yes
 
 *--------------------INDIVIDUAL USERS--------------------------------------------------------------
 * overall control variable INDIVUSERS must be 'yes' if any of the other INDIVUSERS controls are:
 
-* Include individual users data in the optimization. Requires HEATTRANSFER add-on to be activated.
+* Include individual users data in the optimization. Requires HEATTRANS add-on to be activated.
 $setglobal INDIVUSERS
 *!option yes
 
