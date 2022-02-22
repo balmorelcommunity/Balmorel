@@ -1,7 +1,7 @@
 Equations
-   QHYDROGEN_HGEHTOH2(Y,AAA,G,S,T)    'Link heat and electricity demand in hydrogen production of technologies consuming heat and electricity to produce H2'
-   QHYDROGEN_HGETOHH2(Y,AAA,G,S,T)    'Link heat and electricity demand in hydrogen production of technologies consuming electricity to produce H2 and heat'
-   QHYDROGEN_H2TOEH(Y,AAA,G,S,T)      'Link heat and electricity in technologies consuming hydrogen'
+   QHYDROGEN_HGEHTOH2(Y,AAA,G,S,T)    'Link heat and electricity demand of technologies consuming heat and electricity to produce H2'
+   QHYDROGEN_HGETOHH2(Y,AAA,G,S,T)    'Link electricity demand of technologies consuming electricity to produce H2 and heat'
+   QHYDROGEN_H2TOEH(Y,AAA,G,S,T)      'Link heat and electricity in technologies consuming hydrogen and producing heat and electricity'
    QHYDROGEN_GCH4KT_UP(Y,AAA,G,S,T)   'Hydrogen production of steam reforming plants restricted by capacity'
    QHYDROGEN_STOVOL(Y,AAA,G,S,T)      'Dynamic equation hydrogen storage'
    QHYDROGEN_STOMAXCON(Y,AAA,G,S,T)   'Maximum hydrogen storage capacity'
