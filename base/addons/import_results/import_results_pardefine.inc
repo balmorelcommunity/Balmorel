@@ -51,6 +51,8 @@ $ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/GE_T.gdx', GE_T;
 $ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/GH_T.gdx', GH_T;
 $ifi %ADDENERGYDISPATCH%==yes $ifi %HYDROGEN%==yes  execute_load '../../simex/GH2_T.gdx', GH2_T;
 $ifi %ADDENERGYDISPATCH%==yes $ifi %HYDROGEN%==yes  execute_load '../../simex/GBIOMETHANE_T.gdx', GBIOMETHANE_T;
+$ifi %ADDENERGYDISPATCH%==yes $ifi %HYDROGEN%==yes  execute_load '../../simex/GBIOGASMETHANATION_T.gdx', GBIOGASMETHANATION_T;
+$ifi %ADDENERGYDISPATCH%==yes $ifi %HYDROGEN%==yes  execute_load '../../simex/GBIOGASUPGRADING_T.gdx', GBIOGASUPGRADING_T;
 *$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/GF_T.gdx', GF_T;
 *$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/ESTOLOADT.gdx', ESTOLOADT;
 *$ifi %ADDENERGYDISPATCH%==yes execute_load  '../../simex/ESTOLOADTS.gdx', ESTOLOADTS;

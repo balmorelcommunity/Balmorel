@@ -4,6 +4,8 @@ PARAMETER IGE_T_DOWN_FORCED(Y,AAA,G,S,T) 'Down re-dispatch of the commited elect
 PARAMETER IGH_T_DOWN_FORCED(Y,AAA,G,S,T) 'Down re-dispatch of the commited heat dispatch forced with respect to previous runs';
 $ifi %HYDROGEN%==yes   PARAMETER IGH2_T_DOWN_FORCED(Y,AAA,G,S,T) 'Down re-dispatch of the commited H2 dispatch forced with respect to previous runs';
 $ifi %HYDROGEN%==yes   PARAMETER IGBIOMETHANE_T_DOWN_FORCED(Y,AAA,G,S,T) 'Down re-dispatch of the commited biomethane dispatch forced with respect to previous runs';
+$ifi %HYDROGEN%==yes   PARAMETER IGBIOGASUPGRADING_T_DOWN_FORCED(Y,AAA,G,S,T) 'Down re-dispatch of the commited biomethane from biogas upgrading dispatch forced with respect to previous runs';
+$ifi %HYDROGEN%==yes   PARAMETER IGBIOGASMETHANATION_T_DOWN_FORCED(Y,AAA,G,S,T) 'Down re-dispatch of the commited biomethane from biogas methanation dispatch forced with respect to previous runs';
 
 $ifi not %BALANCINGRUNPURPOSE%==TSOREDISPATCH $goto NO_TSOREDISPATCH
 $ifi %FORCEDDOWNREDISPATCH%==yes $goto NO_FORCEDDOWNREDISPATCH
@@ -13,6 +15,8 @@ IGE_T_DOWN_FORCED(Y,IA,G,S,T)=0;
 IGH_T_DOWN_FORCED(Y,IA,G,S,T)=0;
 $ifi %HYDROGEN%==yes IGH2_T_DOWN_FORCED(Y,IA,G,S,T)=0;
 $ifi %HYDROGEN%==yes IGBIOMETHANE_T_DOWN_FORCED(Y,IA,G,S,T)=0;
+$ifi %HYDROGEN%==yes IGBIOGASUPGRADING_T_DOWN_FORCED(Y,IA,G,S,T)=0;
+$ifi %HYDROGEN%==yes IGBIOGASMETHANATION_T_DOWN_FORCED(Y,IA,G,S,T)=0;
 
 
 *----Due to forecast errors----

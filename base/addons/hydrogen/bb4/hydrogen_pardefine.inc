@@ -17,17 +17,21 @@ PARAMETER HYDROGEN_STOVOL_START(Y,AAA,G,SSS)    'Start level of hydrogen storage
 * Include start filling level of hydrogen storage obtained from yearly simulation
 $ifi %bb3%==yes execute_load '../../simex/HYDROGEN_STOVOL_START.gdx', HYDROGEN_STOVOL_START;
 
-PARAMETER HYDROGEN_H2TOF(GGG) 'Hydrogen to fuel factor'  %semislash%
-$if     EXIST '../data/HYDROGEN_H2TOF.inc' $INCLUDE         '../data/HYDROGEN_H2TOF.inc';
-$if not EXIST '../data/HYDROGEN_H2TOF.inc' $INCLUDE '../../base/data/HYDROGEN_H2TOF.inc';
-%semislash%
-
 $onmulti
 $if     EXIST '../data/HYDROGEN_DAC_DE.inc' $INCLUDE         '../data/HYDROGEN_DAC_DE.inc';
 $if not EXIST '../data/HYDROGEN_DAC_DE.inc' $INCLUDE '../../base/data/HYDROGEN_DAC_DE.inc';
 
 $if     EXIST '../data/HYDROGEN_DAC_DH.inc' $INCLUDE         '../data/HYDROGEN_DAC_DH.inc';
 $if not EXIST '../data/HYDROGEN_DAC_DH.inc' $INCLUDE '../../base/data/HYDROGEN_DAC_DH.inc';
+
+$if     EXIST '../data/HYDROGEN_METHANATION_DE.inc' $INCLUDE         '../data/HYDROGEN_METHANATION_DE.inc';
+$if not EXIST '../data/HYDROGEN_METHANATION_DE.inc' $INCLUDE '../../base/data/HYDROGEN_METHANATION_DE.inc';
+
+$if     EXIST '../data/HYDROGEN_METHANATION_DH2.inc' $INCLUDE         '../data/HYDROGEN_METHANATION_DH2.inc';
+$if not EXIST '../data/HYDROGEN_METHANATION_DH2.inc' $INCLUDE '../../base/data/HYDROGEN_METHANATION_DH2.inc';
+
+$if     EXIST '../data/HYDROGEN_BIOGASUPGRADING_DE.inc' $INCLUDE         '../data/HYDROGEN_BIOGASUPGRADING_DE.inc';
+$if not EXIST '../data/HYDROGEN_BIOGASUPGRADING_DE.inc' $INCLUDE '../../base/data/HYDROGEN_BIOGASUPGRADING_DE.inc';
 
 $if     EXIST '../data/HYDROGEN_XH2KFX.inc' $INCLUDE         '../data/HYDROGEN_XH2KFX.inc';
 $if not EXIST '../data/HYDROGEN_XH2KFX.inc' $INCLUDE '../../base/data/HYDROGEN_XH2KFX.inc';

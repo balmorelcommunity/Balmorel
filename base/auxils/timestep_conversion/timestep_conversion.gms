@@ -284,6 +284,14 @@ PARAMETER  GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT)               "Biomethane generati
 $ifi  exist '../../base/auxils/timestep_conversion/input/GBIOMETHANE_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GBIOMETHANE_T.gdx', GBIOMETHANE_T;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/GBIOMETHANE_T.gdx' GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT)=0;
 
+PARAMETER  GBIOGASMETHANATION_T(YYY,AAA,GGG,SSS,TTT)   "Biomethane generation from biogas methanation (MW)  to be transferred to future runs";
+$ifi  exist '../../base/auxils/timestep_conversion/input/GBIOGASMETHANATION_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GBIOGASMETHANATION_T.gdx', GBIOGASMETHANATION_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/GBIOGASMETHANATION_T.gdx' GBIOGASMETHANATION_T(YYY,AAA,GGG,SSS,TTT)=0;
+
+PARAMETER  GBIOGASUPGRADING_T(YYY,AAA,GGG,SSS,TTT)               "Biomethane generation from biogas upgrading (MW)  to be transferred to future runs";
+$ifi  exist '../../base/auxils/timestep_conversion/input/GBIOGASUPGRADING_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GBIOGASUPGRADING_T.gdx', GBIOGASUPGRADING_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/GBIOGASUPGRADING_T.gdx' GBIOGASUPGRADING_T(YYY,AAA,GGG,SSS,TTT)=0;
+
 PARAMETER  GF_T(YYY,AAA,GGG,SSS,TTT)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
 $ifi  exist '../../base/auxils/timestep_conversion/input/GF_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GF_T.gdx', GF_T;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/GF_T.gdx' GF_T(YYY,AAA,GGG,SSS,TTT)=0;
@@ -443,6 +451,8 @@ PARAMETER  GE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "Electricity gene
 PARAMETER  GH_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "Heat generation (MW)  to be transferred to future runs";
 PARAMETER  GH2_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "H2 generation (MW)  to be transferred to future runs";
 PARAMETER  GBIOMETHANE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)       "Biomethane generation (MW)  to be transferred to future runs";
+PARAMETER  GBIOGASMETHANATION_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)       "Biomethane generation from biogas methanation (MW)  to be transferred to future runs";
+PARAMETER  GBIOGASUPGRADING_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)       "Biomethane generation from biogas upgrading (MW)  to be transferred to future runs";
 PARAMETER  GF_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
 PARAMETER ESTOLOADT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Intra-seasonal electricity storage loading to be transferred to future runs (MW)";
 PARAMETER ESTOLOADTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal electricity storage loading to be transferred to future runs (MW)";;
@@ -543,6 +553,8 @@ GE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_
 GH_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GH_T(YYY,AAA,GGG,SSS,TTT))       ;
 GH2_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GH2_T(YYY,AAA,GGG,SSS,TTT))       ;
 GBIOMETHANE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT))       ;
+GBIOGASMETHANATION_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GBIOGASMETHANATION_T(YYY,AAA,GGG,SSS,TTT))       ;
+GBIOGASUPGRADING_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GBIOGASUPGRADING_T(YYY,AAA,GGG,SSS,TTT))       ;
 GF_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GF_T(YYY,AAA,GGG,SSS,TTT))         ;
 ESTOLOADT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOLOADT(YYY,AAA,GGG,SSS,TTT)) ;
 ESTOLOADTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOLOADTS(YYY,AAA,GGG,SSS,TTT)) ;
@@ -583,6 +595,8 @@ execute_unload  "../../base/auxils/timestep_conversion/output/GE_T.gdx", GE_T_NE
 execute_unload  "../../base/auxils/timestep_conversion/output/GH_T.gdx", GH_T_NEW=GH_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/GH2_T.gdx", GH2_T_NEW=GH2_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/GBIOMETHANE_T.gdx", GBIOMETHANE_T_NEW=GBIOMETHANE_T;
+execute_unload  "../../base/auxils/timestep_conversion/output/GBIOGASMETHANATION_T.gdx", GBIOGASMETHANATION_T_NEW=GBIOGASMETHANATION_T;
+execute_unload  "../../base/auxils/timestep_conversion/output/GBIOGASUPGRADING_T.gdx", GBIOGASUPGRADING_T_NEW=GBIOGASUPGRADING_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/GF_T.gdx", GF_T_NEW=GF_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/X_T.gdx", X_T_NEW=X_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/XH_T.gdx", XH_T_NEW=XH_T;
