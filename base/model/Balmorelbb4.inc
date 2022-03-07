@@ -118,9 +118,9 @@ ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GH
 *--- End: Definitions of SETS and ACRONYMS that are given in the $included files
 *-------------------------------------------------------------------------------
 
-SET IS3(S)     "Balbase3: present seasons simulated; other models: identical to S";
-SET IS3_NEXT(S) "Balbase3: present seasons and  next season not simulated; other models: identical to S";
-SET IS3_ONLYNEXT(S) "Balbase3: next season not simulated; other models: identical to S";
+SET IS3(S)     "Present seasons simulated; if rolling seasons not activated identical to S";
+SET IS3_NEXT(S) "Present seasons and  next season not simulated; if rolling seasons not activated  identical to S";
+SET IS3_ONLYNEXT(S) "Next season not simulated; if rolling seasons not activated identical to S";
 SET IS33(S,S)  "Mapping of S (first index) to the following S (second index)";
 
 *-------------------------------------------------------------------------------
@@ -150,20 +150,6 @@ ALIAS (T,ITALIAS,ITALIAS2,ITALIAS3);
 *-------------------------------------------------------------------------------
 *----- End: Definitions of SETS and ALIASES that are needed for data entry:
 *-------------------------------------------------------------------------------
-
-
-*-------------------------------------------------------------------------------
-* The choice of model made in the balopt.opt fil is checked here,
-* and basic sets concerning time within the year are reconstructed accordingly if needed:
-
-$ifi %bb3%==yes $KILL T
-$ifi %bb3%==yes SET T(TTT)          /T001*T168/;
-$ifi %bb3%==yes $KILL TWORKDAY
-$ifi %bb3%==yes $KILL TWEEKEND
-$ifi %bb3%==yes SET TWORKDAY(TTT)   /T001*T120/;
-$ifi %bb3%==yes SET TWEEKEND(TTT)   /T121*T168/;
-*-------------------------------------------------------------------------------
-
 
 *------------------------------------------------------------------------------
 * End: Declaration of internal sets
@@ -1439,12 +1425,12 @@ QDENET(IY411,IR,DEUSER,IS3,T)..
 $ifi %DemandResponse%==yes  + SUM((IA,DR_TECH)$(IADR(IY411,IA,DR_TECH) AND RRRAAA(IR,IA) AND DR_TECH_USER(DR_TECH,DEUSER)),  VDR_UP(IY411,IA,DR_TECH,IS3,T) - VDR_DOWN(IY411,IA,DR_TECH,IS3,T))
 $ifi %EV%==yes               + (VEV_VG2V_BEV(IY411,IR,IS3,T)$IHASBEV(IR) + VEV_VG2V_PHEV(IY411,IR,IS3,T)$IHASPHEV(IR) - VEV_VV2G_BEV(IY411,IR,IS3,T)$IHASBEV(IR) - VEV_VV2G_PHEV(IY411,IR,IS3,T)$IHASPHEV(IR))$IRESE(DEUSER)
 $ifi %INDUSTRY%==yes          + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)), SUM(IGETOH$IAGK_HASORPOT(IY411,IA,IGETOH), VGE_T(IY411,IA,IGETOH,IS3,T)))$IIND(DEUSER)
-$ifi %INDUSTRY%==yes $ifi %HYDROGEN%==yes   + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)), SUM(G$(IAGK_HASORPOT(IY411,IA,G) AND (IHYDROGEN_GEHTOH2(G) OR IHYDROGEN_GETOHH2(G) OR IHYDROGEN_GETOH2(G) OR IHYDROGEN_GH2TOBIOMETH(G))), VGE_T(IY411,IA,G,IS3,T)))$IIND(DEUSER)
+$ifi %INDUSTRY%==yes $ifi %HYDROGEN%==yes   + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)), SUM(G$(IAGK_HASORPOT(IY411,IA,G) AND (IHYDROGEN_GEHTOH2(G) OR IHYDROGEN_GETOHH2(G) OR IHYDROGEN_GETOH2(G))), VGE_T(IY411,IA,G,IS3,T)))$IIND(DEUSER)
 $ifi %INDUSTRY%==yes          + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)),SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),VESTOLOADT(IY411,IA,IGESTO,IS3,T)))$IIND(DEUSER)
 $ifi %INDUSTRY%==yes          + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)),SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),VESTOLOADTS(IY411,IA,IGESTOS,IS3,T)))$IIND(DEUSER)
 $ifi %INDUSTRY%==yes          - SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)), SUM(IGE$(IAGK_HASORPOT(IY411,IA,IGE) AND IGNOTETOH(IGE)),VGE_T(IY411,IA,IGE,IS3,T)))$IIND(DEUSER)
 $ifi %INDIVUSERS%==yes        + SUM(IA$(RRRAAA(IR,IA) AND INDIVUSERS_AAA(IA)), SUM(IGETOH$IAGK_HASORPOT(IY411,IA,IGETOH), VGE_T(IY411,IA,IGETOH,IS3,T)))$IRESE(DEUSER)
-$ifi %INDIVUSERS%==yes $ifi %HYDROGEN%==yes  + SUM(IA$(RRRAAA(IR,IA) AND INDIVUSERS_AAA(IA)), SUM(G$(IAGK_HASORPOT(IY411,IA,G) AND (IHYDROGEN_GEHTOH2(G) OR IHYDROGEN_GETOHH2(G) OR IHYDROGEN_GETOH2(G) OR IHYDROGEN_GH2TOBIOMETH(G))), VGE_T(IY411,IA,G,IS3,T)))$IRESE(DEUSER)
+$ifi %INDIVUSERS%==yes $ifi %HYDROGEN%==yes  + SUM(IA$(RRRAAA(IR,IA) AND INDIVUSERS_AAA(IA)), SUM(G$(IAGK_HASORPOT(IY411,IA,G) AND (IHYDROGEN_GEHTOH2(G) OR IHYDROGEN_GETOHH2(G) OR IHYDROGEN_GETOH2(G))), VGE_T(IY411,IA,G,IS3,T)))$IRESE(DEUSER)
 $ifi %INDIVUSERS%==yes        + SUM(IA$(RRRAAA(IR,IA) AND INDIVUSERS_AAA(IA)),SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),VESTOLOADT(IY411,IA,IGESTO,IS3,T)))$IRESE(DEUSER)
 $ifi %INDIVUSERS%==yes        + SUM(IA$(RRRAAA(IR,IA) AND INDIVUSERS_AAA(IA)),SUM(IGESTOS$IAGK_HASORPOT(IY411,IA,IGESTOS),VESTOLOADTS(IY411,IA,IGESTOS,IS3,T)))$IRESE(DEUSER)
 $ifi %INDIVUSERS%==yes        - SUM(IA$(RRRAAA(IR,IA) AND INDIVUSERS_AAA(IA)), SUM(IGE$(IAGK_HASORPOT(IY411,IA,IGE) AND IGNOTETOH(IGE)),VGE_T(IY411,IA,IGE,IS3,T)))$IRESE(DEUSER)
@@ -2693,6 +2679,8 @@ GE_T(Y,IA,IGE,S,T)$IAGK_HASORPOT(Y,IA,IGE)=VGE_T.L(Y,IA,IGE,S,T);
 GH_T(Y,IA,IGH,S,T)$IAGK_HASORPOT(Y,IA,IGH)=VGH_T.L(Y,IA,IGH,S,T);
 $ifi %HYDROGEN%==yes  GH2_T(Y,IA,G,S,T)$IAGK_HASORPOT(Y,IA,G)=(VGE_T.L(Y,IA,G,S,T)*GDATA(G,'GDFE'))$(IHYDROGEN_GETOH2(G) OR IHYDROGEN_GETOHH2(G) OR IHYDROGEN_GEHTOH2(G)) + (VHYDROGEN_GH2_T.L(Y,IA,G,S,T))$(IHYDROGEN_GCH4TOH2(G) OR IHYDROGEN_GH2STO(G));
 $ifi %HYDROGEN%==yes  GBIOMETHANE_T(Y,IA,IHYDROGEN_GH2TOBIOMETH,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2TOBIOMETH)=VGBIOMETH_T.L(Y,IA,IHYDROGEN_GH2TOBIOMETH,S,T);
+$ifi %HYDROGEN%==yes  GBIOGASMETHANATION_T(Y,IA,IHYDROGEN_GBIOGASMETHANATION,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GBIOGASMETHANATION)=VGBIOGASMETHANATION_T.L(Y,IA,IHYDROGEN_GBIOGASMETHANATION,S,T);
+$ifi %HYDROGEN%==yes  GBIOGASUPGRADING_T(Y,IA,IHYDROGEN_GBIOGASUPGRADING,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GBIOGASUPGRADING)=VGBIOGASUPGRADING_T.L(Y,IA,IHYDROGEN_GBIOGASUPGRADING,S,T);
 *GF_T(Y,IA,G,S,T)$IAGK_HASORPOT(Y,IA,G)=VGF_T.L(Y,IA,G,S,T);
 *X_T(Y,IRE,IRI,S,T)$IXK_HASORPOT(Y,IRE,IRI)=VX_T.L(Y,IRE,IRI,S,T);
 *$ifi %HEATTRANS%==yes XH_T(Y,IAE,IAI,S,T)$IXHK_HASORPOT(Y,IAE,IAI)=VXH_T.L(Y,IAE,IAI,S,T);
@@ -2712,6 +2700,8 @@ execute_unload  "../../simex/GE_T.gdx", GE_T;
 execute_unload  "../../simex/GH_T.gdx", GH_T;
 $ifi %HYDROGEN%==yes  execute_unload  "../../simex/GH2_T.gdx", GH2_T;
 $ifi %HYDROGEN%==yes  execute_unload  "../../simex/GBIOMETHANE_T.gdx", GBIOMETHANE_T;
+$ifi %HYDROGEN%==yes  execute_unload  "../../simex/GBIOGASMETHANATION_T.gdx", GBIOGASMETHANATION_T;
+$ifi %HYDROGEN%==yes  execute_unload  "../../simex/GBIOGASUPGRADING_T.gdx", GBIOGASUPGRADING_T;
 *execute_unload  "../../simex/GF_T.gdx", GF_T;
 *execute_unload  "../../simex/X_T.gdx", X_T;
 *$ifi %HEATTRANS%==yes execute_unload  "../../simex/XH_T.gdx", XH_T;
@@ -2727,6 +2717,8 @@ GE_T(Y,IA,G,S,T)=0;
 GH_T(Y,IA,G,S,T)=0;
 $ifi %HYDROGEN%==yes  GH2_T(Y,IA,G,S,T)=0;
 $ifi %HYDROGEN%==yes  GBIOMETHANE_T(Y,IA,G,S,T)=0;
+$ifi %HYDROGEN%==yes  GBIOGASMETHANATION_T(Y,IA,G,S,T)=0;
+$ifi %HYDROGEN%==yes  GBIOGASUPGRADING_T(Y,IA,G,S,T)=0;
 ELECTRICITY_PRICE(Y,IR,S,T)=0;
 HEAT_PRICE(Y,IA,S,T)=0;
 $ifi %HYDROGEN%==yes  HYDROGEN_PRICE(Y,IR,S,T)=0;

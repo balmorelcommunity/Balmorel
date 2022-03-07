@@ -2,8 +2,11 @@
 * Important note: make sure the full year data is used, otherwise there will be errors in some files
 
 *---------- DATA DEFINITION--------------------
-*Possible conversion of timesteps
+*Convert input data (.inc files)
+$setglobal input_data_conversion yes
+*!option yes
 
+*Possible conversion of timesteps
 $setglobal timestep_conversion WeeksHours_DaysHours
 *!option WeeksHours_DaysHours
 *!option WeeksHours_HoursHours
@@ -112,10 +115,10 @@ SET HYRSDATASET  "Characteristics of hydro reservoirs" ;
 $INCLUDE         '../data/HYRSDATASET.inc';
 
 PARAMETER GMAXF(YYY,CCCRRRAAA,FFF)  "Maximum annual fuel use by year, geography and fuel and (GJ)";
-$INCLUDE         '../data/GMAXF.inc';
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', GMAXF;
 
 PARAMETER GMAXFS(YYY,CCCRRRAAA,FFF,SSS)  "Maximum annual fuel use by year, season, geography and fuel and (GJ)";
-$INCLUDE         '../data/GMAXFS.inc';
+execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', GMAXFS;
 
 *Original timeseries
 PARAMETER WND_VAR_T(AAA,SSS,TTT)                   "Variation of the wind generation"    ;
@@ -281,6 +284,14 @@ PARAMETER  GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT)               "Biomethane generati
 $ifi  exist '../../base/auxils/timestep_conversion/input/GBIOMETHANE_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GBIOMETHANE_T.gdx', GBIOMETHANE_T;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/GBIOMETHANE_T.gdx' GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT)=0;
 
+PARAMETER  GBIOGASMETHANATION_T(YYY,AAA,GGG,SSS,TTT)   "Biomethane generation from biogas methanation (MW)  to be transferred to future runs";
+$ifi  exist '../../base/auxils/timestep_conversion/input/GBIOGASMETHANATION_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GBIOGASMETHANATION_T.gdx', GBIOGASMETHANATION_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/GBIOGASMETHANATION_T.gdx' GBIOGASMETHANATION_T(YYY,AAA,GGG,SSS,TTT)=0;
+
+PARAMETER  GBIOGASUPGRADING_T(YYY,AAA,GGG,SSS,TTT)               "Biomethane generation from biogas upgrading (MW)  to be transferred to future runs";
+$ifi  exist '../../base/auxils/timestep_conversion/input/GBIOGASUPGRADING_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GBIOGASUPGRADING_T.gdx', GBIOGASUPGRADING_T;
+$ifi not  exist '../../base/auxils/timestep_conversion/input/GBIOGASUPGRADING_T.gdx' GBIOGASUPGRADING_T(YYY,AAA,GGG,SSS,TTT)=0;
+
 PARAMETER  GF_T(YYY,AAA,GGG,SSS,TTT)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
 $ifi  exist '../../base/auxils/timestep_conversion/input/GF_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GF_T.gdx', GF_T;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/GF_T.gdx' GF_T(YYY,AAA,GGG,SSS,TTT)=0;
@@ -440,6 +451,8 @@ PARAMETER  GE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "Electricity gene
 PARAMETER  GH_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "Heat generation (MW)  to be transferred to future runs";
 PARAMETER  GH2_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "H2 generation (MW)  to be transferred to future runs";
 PARAMETER  GBIOMETHANE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)       "Biomethane generation (MW)  to be transferred to future runs";
+PARAMETER  GBIOGASMETHANATION_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)       "Biomethane generation from biogas methanation (MW)  to be transferred to future runs";
+PARAMETER  GBIOGASUPGRADING_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)       "Biomethane generation from biogas upgrading (MW)  to be transferred to future runs";
 PARAMETER  GF_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
 PARAMETER ESTOLOADT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Intra-seasonal electricity storage loading to be transferred to future runs (MW)";
 PARAMETER ESTOLOADTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal electricity storage loading to be transferred to future runs (MW)";;
@@ -491,6 +504,7 @@ WEIGHT_S_NEW(SSS_NEW)=1;
 WEIGHT_T_NEW(TTT_NEW)=1/12;
 $label No_DaysHours_Hours5min
 
+$ifi not %input_data_conversion%==yes $goto NO_input_data_conversion1
 WND_VAR_T_NEW(AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),WND_VAR_T(AAA,SSS,TTT));
 SOLE_VAR_T_NEW(AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),SOLE_VAR_T(AAA,SSS,TTT));
 SOLH_VAR_T_NEW(AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),SOLH_VAR_T(AAA,SSS,TTT));
@@ -520,6 +534,9 @@ EV_PHEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,T
 EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Min(YYY,SSS,TTT,RRR)) ;
 EV_VSOC_BEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_VSOC_BEV(YYY,RRR,SSS,TTT)) ;
 EV_VSOC_PHEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_VSOC_PHEV(YYY,RRR,SSS,TTT)) ;
+GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXFS(YYY,CCCRRRAAA,FFF,SSS)*WEIGHT_S_NEW(SSS_NEW)/WEIGHT_S(SSS));
+$label NO_input_data_conversion1
+
 EV_BEV_NETCHARGING_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_NETCHARGING(YYY,RRR,SSS,TTT)*WEIGHT_T_NEW(TTT_NEW)/WEIGHT_T(TTT)) ;
 EV_PHEV_NETCHARGING_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_NETCHARGING(YYY,RRR,SSS,TTT)*WEIGHT_T_NEW(TTT_NEW)/WEIGHT_T(TTT)) ;
 ESTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOVOLTS(YYY,AAA,GGG,SSS,TTT)) ;
@@ -536,6 +553,8 @@ GE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_
 GH_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GH_T(YYY,AAA,GGG,SSS,TTT))       ;
 GH2_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GH2_T(YYY,AAA,GGG,SSS,TTT))       ;
 GBIOMETHANE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT))       ;
+GBIOGASMETHANATION_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GBIOGASMETHANATION_T(YYY,AAA,GGG,SSS,TTT))       ;
+GBIOGASUPGRADING_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GBIOGASUPGRADING_T(YYY,AAA,GGG,SSS,TTT))       ;
 GF_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GF_T(YYY,AAA,GGG,SSS,TTT))         ;
 ESTOLOADT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOLOADT(YYY,AAA,GGG,SSS,TTT)) ;
 ESTOLOADTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOLOADTS(YYY,AAA,GGG,SSS,TTT)) ;
@@ -547,7 +566,6 @@ HYRSG_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),HYRSG(YYY,AAA,SSS));
 VHYRS_SL_NEW(YYY,AAA,SSS_NEW)=SUM(TTT_NEW$(ORD(TTT_NEW) EQ 1), SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),VHYRS_STL(YYY,AAA,SSS,TTT)));
 WATERVAL_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),WATERVAL(YYY,AAA,SSS));
 GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)$(GMAXF(YYY,CCCRRRAAA,FFF) OR SUM(ISSS,GMAXFS(YYY,CCCRRRAAA,FFF,ISSS)))=SUM((SSS,TTT,TTT_NEW)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),F_T(YYY,CCCRRRAAA,FFF,SSS,TTT)*WEIGHT_S(SSS))/SUM(TTT, WEIGHT_T(TTT));
-GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXFS(YYY,CCCRRRAAA,FFF,SSS)*WEIGHT_S_NEW(SSS_NEW)/WEIGHT_S(SSS));
 UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),UCONMAINT(YYY,AAA,GGG,SSS));
 UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),UCON(YYY,AAA,GGG,SSS,TTT)) ;
 UCON_STOLOAD_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),UCON_STOLOAD(YYY,AAA,GGG,SSS,TTT)) ;
@@ -571,31 +589,14 @@ BIOMETHANE_PRICE_NEW(YYY,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,
 
 *------------OUTPUT GENERATION-------------
 
-$ONTEXT
-execute_unload  '../../base/auxils/timestep_conversion/output/converted_timesteps.gdx',
-ST_LINK,S_LINK,
-WND_VAR_T_NEW=WND_VAR_T,
-SOLE_VAR_T_NEW=SOLE_VAR_T,
-SOLH_VAR_T_NEW=SOLH_VAR_T,
-GKRATE_NEW=GKRATE,
-WTRRSVAR_S_NEW=WTRRSVAR_S,
-WTRRRVAR_T_NEW=WTRRRVAR_T,
-HYRSDATA_NEW=HYRSDATA,
-HYPPROFILS_NEW=HYPPROFILS,
-DE_VAR_T_NEW=DE_VAR_T,
-DH_VAR_T_NEW=DH_VAR_T,
-WEIGHT_S_NEW=WEIGHT_S,
-WEIGHT_T_NEW=WEIGHT_T,
-GMAXFS_NEW=GMAXFS
-;
-$OFFTEXT
-
 execute_unload  "../../base/auxils/timestep_conversion/output/DE_T.gdx", DE_T_NEW=DE_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/DH_T.gdx", DH_T_NEW=DH_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/GE_T.gdx", GE_T_NEW=GE_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/GH_T.gdx", GH_T_NEW=GH_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/GH2_T.gdx", GH2_T_NEW=GH2_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/GBIOMETHANE_T.gdx", GBIOMETHANE_T_NEW=GBIOMETHANE_T;
+execute_unload  "../../base/auxils/timestep_conversion/output/GBIOGASMETHANATION_T.gdx", GBIOGASMETHANATION_T_NEW=GBIOGASMETHANATION_T;
+execute_unload  "../../base/auxils/timestep_conversion/output/GBIOGASUPGRADING_T.gdx", GBIOGASUPGRADING_T_NEW=GBIOGASUPGRADING_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/GF_T.gdx", GF_T_NEW=GF_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/X_T.gdx", X_T_NEW=X_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/XH_T.gdx", XH_T_NEW=XH_T;
@@ -634,7 +635,7 @@ execute_unload  "../../base/auxils/timestep_conversion/output/HEAT_PRICE.gdx", H
 execute_unload  "../../base/auxils/timestep_conversion/output/HYDROGEN_PRICE.gdx", HYDROGEN_PRICE_NEW=HYDROGEN_PRICE;
 execute_unload  "../../base/auxils/timestep_conversion/output/BIOMETHANE_PRICE.gdx", BIOMETHANE_PRICE_NEW=BIOMETHANE_PRICE;
 
-$ONTEXT
+$ifi not %input_data_conversion%==yes $goto NO_input_data_conversion2
 *WND_VAR_T timeseries
 file WND_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/WND_VAR_T.inc'/;
 WND_VAR_T_timeseries.nd  = 6;
@@ -855,13 +856,6 @@ loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
 );
 putclose;
 
-
-
-
-
-
-
-
 *EV_PHEV_Dumb timeseries
 file EV_PHEV_Dumb_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_Dumb.inc'/;
 EV_PHEV_Dumb_timeseries.nd  = 4;
@@ -942,7 +936,93 @@ loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
 );
 putclose;
 
+*TTT
+file TTT_timeseries /'../../base/auxils/timestep_conversion/output/TTT.inc'/;
+TTT_timeseries.nd  = 6;
+put TTT_timeseries;
+put '*SET TTT CALCULATED WITH AUXILS' //
+$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET TTT /T01*T24/;'
+$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET TTT /T01/;'
+$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET TTT /T01/;'
+$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET TTT /T01*T12/;'
+putclose;
 
-$OFFTEXT
+*SSS
+file SSS_timeseries /'../../base/auxils/timestep_conversion/output/SSS.inc'/;
+SSS_timeseries.nd  = 6;
+put SSS_timeseries;
+put '*SET SSS CALCULATED WITH AUXILS' //
+$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET SSS /S001*S364/;'
+$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET SSS /S0001*S8736/;'
+$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET SSS /S0001*S8736/;'
+$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET SSS /S0001*S8736/;'
+putclose;
+
+*TWORKDAY (DUMMY DATA TO AVOID ERRORS BECAUSE IT IS NOT RELEVANT WHEN USING DIFFERENT TIME STEPS)
+file TWORKDAY_timeseries /'../../base/auxils/timestep_conversion/output/TWORKDAY.inc'/;
+TWORKDAY_timeseries.nd  = 6;
+put TWORKDAY_timeseries;
+put '*SET TWORKDAY CALCULATED WITH AUXILS' //
+$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET TWORKDAY /T01*T24/;'
+$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET TWORKDAY /T01/;'
+$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET TWORKDAY /T01/;'
+$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET TWORKDAY /T01*T10/;'
+putclose;
+
+*TWEEKEND (DUMMY DATA TO AVOID ERRORS BECAUSE IT IS NOT RELEVANT WHEN USING DIFFERENT TIME STEPS)
+file TWEEKEND_timeseries /'../../base/auxils/timestep_conversion/output/TWEEKEND.inc'/;
+TWEEKEND_timeseries.nd  = 6;
+put TWEEKEND_timeseries;
+put '*SET TWEEKEND CALCULATED WITH AUXILS' //
+$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET TWEEKEND //;'
+$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET TWEEKEND //;'
+$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET TWEEKEND //;'
+$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET TWEEKEND //;'
+putclose;
+
+*Other files with empty data because the data is already in another file
+*OFFSHOREGRID_WND_VAR_T timeseries
+file OFFSHOREGRID_WND_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/OFFSHOREGRID_WND_VAR_T.inc'/;
+OFFSHOREGRID_WND_VAR_T_timeseries.nd  = 6;
+put OFFSHOREGRID_WND_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
+
+*INDIVUSERS_COP_VAR_T timeseries
+file INDIVUSERS_COP_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDIVUSERS_COP_VAR_T.inc'/;
+INDIVUSERS_COP_VAR_T_timeseries.nd  = 6;
+put INDIVUSERS_COP_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
+
+*INDUSTRY_COP_VAR_T timeseries
+file INDUSTRY_COP_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDUSTRY_COP_VAR_T.inc'/;
+INDUSTRY_COP_VAR_T_timeseries.nd  = 6;
+put INDUSTRY_COP_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
+
+*INDIVUSERS_DH_VAR_T timeseries
+file INDIVUSERS_DH_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDIVUSERS_DH_VAR_T.inc'/;
+INDIVUSERS_DH_VAR_T_timeseries.nd  = 6;
+put INDIVUSERS_DH_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
+
+*INDUSTRY_DH_VAR_T timeseries
+file INDUSTRY_DH_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDUSTRY_DH_VAR_T.inc'/;
+INDUSTRY_DH_VAR_T_timeseries.nd  = 6;
+put INDUSTRY_DH_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
+
+*INDIVUSERS_DE_VAR_T timeseries
+file INDIVUSERS_DE_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDIVUSERS_DE_VAR_T.inc'/;
+INDIVUSERS_DE_VAR_T_timeseries.nd  = 6;
+put INDIVUSERS_DE_VAR_T_timeseries;
+put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
+putclose;
+
+$label NO_input_data_conversion2
 *------------END OF OUTPUT GENERATION-------------
 

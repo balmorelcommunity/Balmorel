@@ -159,14 +159,14 @@ $setglobal HeatTempLift
 *!option yes
 *-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
 
-* Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
+* Include industry data in the optimization. Requires HEATTRANS add-on to be activated.
 $setglobal INDUSTRY
 *!option yes
 
 *--------------------INDIVIDUAL USERS--------------------------------------------------------------
 * overall control variable INDIVUSERS must be 'yes' if any of the other INDIVUSERS controls are:
 
-* Include individual users data in the optimization. Requires HEATTRANSFER add-on to be activated.
+* Include individual users data in the optimization. Requires HEATTRANS add-on to be activated.
 $setglobal INDIVUSERS
 *!option yes
 
@@ -303,7 +303,7 @@ $setglobal BalancingMarket
 *Define the purpose of the balancing run.
 $setglobal BALANCINGRUNPURPOSE TSOREDISPATCH
 *!option INTRADAYMARKET   !Text  "The run will simulate INTRADAY markets (NOT FINISHED)"
-*!option TSOREDISPATCH    !Text  "The run will simulate the re-dispatch optimization from the TSO perspective, adding penalties to compensate for forced re-dispatch of the units based on the TSO needs"
+*!option TSOREDISPATCH    !Text  "The run will simulate the re-dispatch optimization from the TSO perspective (congetion management), adding penalties to compensate for forced re-dispatch of the units based on the TSO needs"
 
 *If activated the TSO will also compensate generators for the forced down re-dispatch due to forecast errors, ramping limits, etc. (only relevant if BALANCINGRUNPURPOSE=TSOREDISPATCH) (to be finished)
 $setglobal FORCEDDOWNREDISPATCH
@@ -709,7 +709,7 @@ $Setglobal ADDEVSTOS  none
 $setglobal ADDTECHDEV
 *!option yes
 
-*Add expensive to operate backup power and heat generation technology. It often occurs that the investment optimization underestimates the need for power.
+*Add expensive to operate backup generation technologies (electricity, heat, ...). It often occurs that the investment optimization underestimates the need for power.
 $setglobal ADDBACKUPGEN
 *!option yes
 
