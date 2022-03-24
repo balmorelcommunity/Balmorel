@@ -1,7 +1,7 @@
 * File Balmorel.gms
-$TITLE Balmorel version 3.03 (June 2018; latest 20180614)
+$TITLE Balmorel version 4.03 (March 2022; latest 20220318)
 
-SCALAR IBALVERSN 'This version of Balmorel' /303.20180614/;
+SCALAR IBALVERSN 'This version of Balmorel' /403.20220318/;
 * Efforts have been made to make a good model.
 * However, most probably the model is incomplete and subject to errors.
 * It is distributed with the idea that it will be usefull anyway,

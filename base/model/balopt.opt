@@ -175,13 +175,24 @@ $setglobal GROUP_DEMAND_SHIFT
 *!option yes
 *-----------------END: INDIVIDUAL USERS--------------------------------------------------------------
 
-* Include seasonal variation of heat pump's COP. If not activated, heat pumps will have a constant COP during the year.
+* Include seasonal variation of heat pump's COP. If not activated, heat pumps will have a constant COP during the year. (The current version does not support using heat pumps in addon COMBTECH)
 $setglobal SEASONALCOP
 *!option yes
 
-* Allow to build a complicated offshore grid with hubs in the sea. Requires MIP to work as intended since technologies are modelled with economies of scale via SOS variables. If RMIP is used, it will become a linear problem.
+*------------START OF: OFFSHORE GRIDS--------------------------
+* overall control variable OFFSHOREGRID must be 'yes' if any of the other OFFSHOREGRID controls are:
+* Allow to build a complicated offshore grid with hubs in the sea.
 $setglobal OFFSHOREGRID
 *!option yes
+
+*Adds Economies of Scale in generation elements that are part of offshore grids. It requires to use the MIP solver, so remember to activate it.
+$setglobal OFFSHOREGRID_ES_GEN
+*!option yes
+
+*Adds Economies of Scale in electricity transmission elements that are part of offshore grids. It requires to use the MIP solver, so remember to activate it.
+$setglobal OFFSHOREGRID_ES_ELTRANS
+*!option yes
+*------------END OF: OFFSHORE GRIDS--------------------------
 
 * Allow Carbon Capture Storage (CCS) technologies.
 $setglobal CCS
@@ -217,15 +228,15 @@ $setglobal V2G   YES
 $setglobal NO_PHEV_V2G  yes
 *!option  yes
 
-* Adds step charging scheme:
+* Adds step charging scheme (NOT SURE IT IS WORKING ANY MORE):
 $setglobal STEPCHARGSCHEME
 *!option yes
 
-* Adds cycle degradation:
+* Adds cycle degradation (NOT SURE IT IS WORKING ANY MORE, COSTS SHOULD BE ANNUALIZED):
 $setglobal DEGCYCLE
 *!option  yes
 
-* Adds calendar degradation:
+* Adds calendar degradation (NOT SURE IT IS WORKING ANY MORE, COSTS SHOULD BE ANNUALIZED):
 $setglobal DEGCAL
 *!option yes
 
@@ -346,6 +357,9 @@ $Setglobal H2TransInvest YES
 SCALAR XH2INVESTSTART 'Year from which endogenous decisions in H2 transmission capacities are allowed' ;
 XH2INVESTSTART= 2025;
 
+*Adds Economies of Scale in H2 transmission. It requires to use the MIP solver, so remember to activate it.
+$setglobal ES_H2TRANS
+*!option yes
 *-----------------END: HYDROGEN ADDON---------------------------------------
 
 * Use stepwise linear fuel prices
