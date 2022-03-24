@@ -313,7 +313,7 @@ $setglobal BalancingMarket
 
 *Define the purpose of the balancing run.
 $setglobal BALANCINGRUNPURPOSE TSOREDISPATCH
-*!option INTRADAYMARKET   !Text  "The run will simulate INTRADAY markets (NOT FINISHED)"
+*!option INTRADAYMARKET   !Text  "The run will simulate INTRADAY markets"
 *!option TSOREDISPATCH    !Text  "The run will simulate the re-dispatch optimization from the TSO perspective (congetion management), adding penalties to compensate for forced re-dispatch of the units based on the TSO needs"
 
 *If activated the TSO will also compensate generators for the forced down re-dispatch due to forecast errors, ramping limits, etc. (only relevant if BALANCINGRUNPURPOSE=TSOREDISPATCH) (to be finished)
