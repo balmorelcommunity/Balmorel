@@ -14,9 +14,10 @@ $ifi not %BB4%==yes $goto endoffile
 $label  beginbb4
 
 $ifi not %bb4%==yes $goto endoffile
-$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_qobj.inc";    
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_qobj.inc";
 
 $ifi %HYDROGEN%==yes   $include   "../../base/addons/hydrogen/bb4/hydrogen_qobj.inc";
+$ifi %OFFSHOREGRID%==yes  $include   "../../base/addons/offshoregrid/bb4/offshoregrid_qobj.inc";
 $ifi %UnitComm%==yes   $include   "../../base/addons/unitcommitment/bb4/uc_qobj.inc";
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_qobj.inc";
 $ifi %X3V%==yes $include "../../base/addons/x3v/bb4/x3v_qobj.inc";
@@ -26,7 +27,12 @@ $ifi %LIMITSFORFUELS%==yes  $include   "../../base/addons/limitsforfuels/bb4/lim
 $ifi %GRIDTARIFFS%==yes  $include   "../../base/addons/GridTariffs/bb4/GridTariffs_qobj.inc";
 $ifi %TAXES%==yes  $include   "../../base/addons/taxes/tax_qobj.inc";
 $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_qobj.inc";
+$ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_qobj.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_qobj.inc";
+$ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_qobj.inc";
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_qobj.inc";
+$ifi %BalancingMarket%==yes       $include   "../../base/addons/balancing_market/balancing_market_qobj.inc";
+$ifi %OPTIFLOW%==yes   $include   "../../base/addons/optiflow/bb4/optiflow_qobj.inc";
 
 
 $ifi %vqdebug%==yes   $setglobal equation qobj

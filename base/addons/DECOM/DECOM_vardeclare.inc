@@ -1,4 +1,4 @@
-* Decommissioning introduced by Juan Gea Bermúdez 2018.
+* Decommissioning introduced by Juan Gea BermÃºdez 2018.
 
 * Variables
 
@@ -9,7 +9,7 @@ $ifi not %LIFETIME_DECOM_ENDO_G%==yes $ifi not %ECONOMIC_DECOM_ENDO_G%==yes  $go
 
 POSITIVE VARIABLE VDECOM_ENDO(Y,AAA,G)                "Decommissioned capacity of endogenous technologies(MW)";
 POSITIVE VARIABLE VDECOM_ENDO_ACCUM(Y,AAA,G)          "Accumulated Decommissioned capacity of endogenous technologies(MW)";
-POSITIVE VARIABLE VDECOM_ENDO_BACK(Y,AAA,G)           "Deccommissioned capacity of endogenous technologies brought back to the energy system (MW)";
+$ifi %REVERT_DECOM_ENDO_G%==yes POSITIVE VARIABLE VDECOM_ENDO_BACK(Y,AAA,G)           "Deccommissioned capacity of endogenous technologies brought back to the energy system (MW)";
 
 $label  DECOMMISSIONING_ENDOGENOUS_GENERATION
 

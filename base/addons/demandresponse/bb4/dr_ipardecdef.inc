@@ -1,21 +1,10 @@
-* DR tech is SHED or SHIFT
-DR_TECH_SHIFT(DR_TECH) = YES$(DR_DATA(DR_TECH,'DRTYPE') eq 2);
-DR_TECH_SHED(DR_TECH) = YES$(DR_DATA(DR_TECH,'DRTYPE') eq 1);
-
-
-
 * installed capacity of the load - the internal parameter includes also the adoption rate
 PARAMETER IDR_FX(Y,AAA,DR_TECH);
 IDR_FX(Y,IA,DR_TECH) = DR_FX(Y,IA,DR_TECH)  * DR_ADOPTIONRATE(DR_TECH,Y) ;
 
+PARAMETER ANNUITYDR(DR_TECH) 'Annuity factor for investments in DR technologies';
+ANNUITYDR(DR_TECH)$DR_DATA(DR_TECH,'DRINVCOST') = 1/((1-(1+DR_DATA(DR_TECH,'DRINTERESTRATE'))**(-DR_DATA(DR_TECH,'DRLIFETIME')))/0.06);
 
-* how long it is possible to shift load to later point in time (DR_HHH1) or to an earlier point in time (DR_HHH2)
-alias (T,T_alias);
-set DR_HHH1(DR_TECH,T,T_alias)         'Shifting time matrix - whether a load can be shifted from H to HH';
-set DR_HHH2(DR_TECH,T,T_alias)         'Shifting time matrix - whether a load can be shifted from H to HH';
-
-DR_HHH1(DR_TECH_SHIFT,T,T_alias)  = YES$((ord(T_alias) le ord(T)+ DR_DATA(DR_TECH_SHIFT,'DRSHIFTNEXT')-1)   AND (ord(T_alias) ge ord(T)));
-DR_HHH2(DR_TECH_SHIFT,T,T_alias)  = YES$((ord(T_alias) le ord(T))   AND (ord(T_alias) ge ord(T)- DR_DATA(DR_TECH_SHIFT,'DRSHIFTPREV')+1) );
 
 
 * IDR_RATE - parameter for the usage profiles for demand response technologies

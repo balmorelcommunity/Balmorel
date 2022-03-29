@@ -1,8 +1,8 @@
 * Equations for addon combtech used in Balbase3 model definition
 
-QCOMBFUP
+$ifi NOT %UnitComm%==yes QCOMBFUP
 
-QECOMBGUP
+$ifi NOT %UnitComm%==yes QECOMBGUP
 QECOMBGSHARELO
 QECOMBGSHAREUP
 QECOMBFSHARELO
@@ -10,7 +10,7 @@ QECOMBFSHAREUP
 
 
 
-QHCOMBGUP
+$ifi NOT %UnitComm%==yes QHCOMBGUP
 QHCOMBGSHARELO
 QHCOMBGSHAREUP
 QHCOMBFSHARELO

@@ -22,7 +22,7 @@ så skal dette ikke på én eller anden måde indgå i linierne  2-3?
 
 $offtext
 
-
+*to be checked, not sure this is correct with bypass
 * Add fixed fuel use
 + (GDATA(G,'GDUCUNITSIZE')*VUCON(IY411,IA,G,IS3,T)*GDATA(G,'GDUCF0')/(GDATA(G,'GDFE')*(1$(NOT GEFFRATE(IA,G))+GEFFRATE(IA,G))))$IGUC(G)
 

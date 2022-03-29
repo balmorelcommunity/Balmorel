@@ -110,8 +110,9 @@ $ONEMPTY
 * E.g., for using CBC for LP problems specify option   LP=CBC
 * E.g., for using IPOPT for LP problems specify option LP=IPOPT
 
-option LP = CPLEX
-option MIP= CPLEX
+option LP   = CPLEX
+option RMIP = CPLEX
+option MIP  = CPLEX
 
 *-------------------------------------------------------------------------------
 * From GAMS many basic solver options may be specified, applicable for some or all solvers,
@@ -130,6 +131,9 @@ option optcr = 0.000001
 * Default value is 1000.
 option RESLIM = 1209600
 
+* Set default upper bound on integer variables
+option intVarUp = 0
+
 *-------------------------------------------------------------------------------
 * Solvers may be controlled by solver specific options in a solver option file,
 * in addition to the general options above.
@@ -145,9 +149,10 @@ option RESLIM = 1209600
 * In the following a few option file possibilities are mentioned for use with Cplex,
 * their use assumes that appropriate files exist in the model folder.
 
-$Setglobal USEOPTIONFILE 6
+$Setglobal USEOPTIONFILE 4
 *!option 0   No option file is used. Note that not setting anything will generate an error.
 *!option 1   Use option file SolverName.opt.
+*!option 4   Predefined, don't change. Used with CPLEX it opens cplex.op4 and sets 'LPmethod 4' to run barrior method.
 *!option 6   Predefined, don't change. Used with CPLEX it opens cplex.op6 and sets 'LPmethod 6' to run multiple methods in parallel.
 
 

@@ -1,7 +1,7 @@
 * Option file 6 for CPLEX solver. For possible options, see the GAMS Solver Manual.
 * To use with CPLEX,  set  '$Setglobal USEOPTIONFILE 6' in balgams.opt.
 * Do not change this file, it is predefined.
-* To use other options with CPLEX, make and/or use some other file, see USEOPTIONFILE in balgams.opt. 
+* To use other options with CPLEX, make and/or use some other file, see USEOPTIONFILE in balgams.opt.
 * "LPmethod  6": This concurrent option runs multiple methods in parallel.
 * "Threads  -1": Use all available threads except 1.
 * The first thread uses dual simplex. The second thread uses barrier. The next thread uses primal simplex. Remaining threads are used by the barrier run.

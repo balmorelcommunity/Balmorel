@@ -1,0 +1,16 @@
+This tool allows to calculate stochastic outage of available installed units based on Monte Carlo simulations. It is assumed that outages only last for 1 time step. 
+
+The tool uses as key input:
+- Installed capacity per area (GKFX or GKACCUMNET)
+- Planned maintenance (UCONMAINT) (optional)
+- Unit size (from GDATA)
+- Average annual forced outage rate of available units (from GDATA)
+- Default availability (GKRATE) (For consistency and memory efficiency reasons, it is advised that GKRATE has values of 0 (which in Balmorel means 1))
+
+The output is the IGKRATE.gdx file. This file is meant to be used as input in Balmorel when activating the option IGKRATE_STOCHASTIC
+
+Special considerations:
+
+If the ratio between available units and unit size is larger than parameter RATIO_LIM, then the average  annual forced outage rate is assumed
+If the ration between available units and unit size is smaller than 1, then the unit is defined to be always available.
+ 

@@ -1,0 +1,28 @@
+*Offshore grid add-on. Implemented by Juan Gea Bermudez 2019
+
+* The following expressions are added to the objective function,
+* after IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
+
+* Investment costs, new generation and storage capacity:
+   + IOF1000000*(SUM((IA,G,XES)$(IAGKNY(Y,IA,G) AND IGKN_ES(G)), VGLAMBDA(Y,IA,G,XES)*GINVCOST_ES(G,XES)*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYG(Y,IYALIAS2,G))*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))))
+
+* Investment costs, generation and storage capacity invested in previous years
+   + IOF1000000*(SUM((IYALIAS2,IA,G,XES)$(IAGKNY(IYALIAS2,IA,G) AND (ORD(IYALIAS2) LT ORD(Y)) AND IGKN_ES(G)), VGLAMBDA(IYALIAS2,IA,G,XES)*GINVCOST_ES(G,XES)*IYHASANNUITYG(IYALIAS2,Y,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))))
+
+* Investment costs, new transmission capacity
+
+    + SUM((IRE,IRI,XES)$((IXKN(Y,IRI,IRE) OR IXKN(Y,IRE,IRI)) AND (IXKN_ES(IRE,IRI) OR IXKN_ES(IRI,IRE))),
+     VXLAMBDA(Y,IRE,IRI,XES)*XINVCOST_ES(Y,IRE,IRI,XES)*IOF05*
+     (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYX(IYALIAS2,Y)))
+
+*Investment costs, transmission capacity invested in previous years
+
+    + SUM((IYALIAS2,IRE,IRI,XES)$((IXKN(IYALIAS2,IRI,IRE) OR IXKN(IYALIAS2,IRE,IRI)) AND (IXKN_ES(IRE,IRI) OR IXKN_ES(IRI,IRE)) AND (ORD(IYALIAS2) LT ORD(Y))),
+     VXLAMBDA(IYALIAS2,IRE,IRI,XES)*XINVCOST_ES(IYALIAS2,IRE,IRI,XES)*IOF05*
+     (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*IYHASANNUITYX(IYALIAS2,Y))
+
+
+
+
+
+

@@ -9,7 +9,7 @@ $ifi not %BB4%==yes $goto endoffile
 
 $label  beginbb4
 
-
+$ifi %HEATTRANS%==yes  $include   "../../base/addons/heattrans/bb4/heattrans_error2.inc";
 $ifi %COMBTECH%==yes $include "../../base/addons/combtech/bb4/combtech_error2.inc"
 
 $label endoffile

@@ -1,0 +1,5 @@
+* File heattrans_varassign.inc for addon heattrans.
+* Latest revision 20181014(hr)
+
+$ifi %HeatTransInvest%==yes        VXHKN.FX(IY411FIRST,IAE,IAI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXHKN(Y,IAE,IAI))= VXHKN.L(IY411FIRST,IAE,IAI);
+$ifi %HeatTransInvest%==yes        VXHKNACCUMNET.FX(IY411FIRST,IAE,IAI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXHKN(Y,IAE,IAI))= VXHKNACCUMNET.L(IY411FIRST,IAE,IAI);
