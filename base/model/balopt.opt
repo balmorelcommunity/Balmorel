@@ -60,30 +60,9 @@ $setglobal CASEID BASE
 
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of model.
-* If $Setglobal bb1 yes, the usual (S,T) time segments and no endogenous investment are chosen.
-* If $Setglobal bb2 yes, the usual (S,T) time segments and endogenous investment are chosen.
-* If $Setglobal bb3 yes, the no endogenous investment, forwards simulation is chosen.
 * If $Setglobal bb4 yes, BB4 is chosen.
-* Exactly one of the following Setgbobals must be assigned yes.
-*
-* bb1: use model BALBASE1: optimisation simultaneuosly for all (S,T) in a year, exogenous investments.
-$setglobal bb1
-*!option yes      !notif %BB2%==yes  !notif %BB3%==yes  !notif %BB4%==yes
-* bb2: use model BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
-$setglobal bb2
-*!option yes      !notif %BB1%==yes  !notif %BB3%==yes  !notif %BB4%==yes
-* bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
-$setglobal bb3
-*!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
 $setglobal bb4 yes
-*!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
-
-* During test period for BB4 make comparisons between BB4 and BB1, BB2, BB3.
-* The present implementation is for comparison of models (BB4 and one of BB1/BB2/BB3) with a single year (where results should be identical)
-* Not finished yet, but useful
-$setglobal testbb1234
 *!option yes
-
 
 *===============================================================================
 *===============================================================================
@@ -198,11 +177,7 @@ $setglobal OFFSHOREGRID_ES_ELTRANS
 $setglobal CCS
 *!option yes
 
-* Allow wind turbines to shut down  (BB1,BB2,BB3)
-$setglobal WNDSHUTDOWN
-*!option yes
-
-* Allow curtailment of variable renewable energy generators  (BB4)
+* Allow curtailment of variable renewable energy generators
 $setglobal VRESHUTDOWN   yes
 *!option yes
 
@@ -365,28 +340,20 @@ $setglobal ES_H2TRANS
 * Use stepwise linear fuel prices
 $Setglobal STEPWISEPRICE
 
-* Set a common maximum for fuels.
+* Set a common maximum for fuels. (it should be checked before using it)
 $Setglobal LIMITSFORFUELS
 *!option yes
 
-* Allow demand elasticity
+* Allow demand elasticity (it should be checked before using it)
 $setglobal DFLEXQUANT
 *!option yes
 
-* Allow demand response (requires NETDEMAND)
+* Allow demand response (requires NETDEMAND) (it should be checked before using it)
 $setglobal DEMANDRESPONSE
 *!option yes
 
-* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
+* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (it should be checked before using it)
 $setglobal X3V
-*!option yes
-
-* This variable includes addon for distric heating (BB1, BB2, BB3)
-$Setglobal FV
-*!option yes
-
-*Policies (BB1, BB2, BB3)
-$setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use (requires NETDEMAND)
@@ -430,31 +397,8 @@ $setglobal ANC_SERV_VRE  YES
 $setglobal DOWN_REGULATION_INCLUDED
 *!option yes
 *-----------------------END: ANCILLIARY SERVICES----------------------------------------------------------------------------------------------------
-*
-$setglobal SYSTEMCOST
-*!option yes
 
-* PLANTCLOSURES indicates that technology is decomissioned on the basis of profitability. (OLD CODE, USE "DECOM" ADD-ON INSTEAD)
-* When revenues can no longer cover both variable and fixed operating costs, capacity is decomissioned.
-$setglobal PLANTCLOSURES
-*!option yes
-
-* Differentiate yield requirements for different technologies.
-$setglobal YIELDREQUIREMENT
-*!option yes
-
-* Renewable energy share in electricity generation.
-$setglobal REShareE
-*!option yes
-*!notif %REShareEH%==yes
-*
-* Renewable energy share in heat generation.
-$setglobal REShareEH
-*!option yes
-*!notif %REShareE%==yes
-
-
-* Make investments in technologies only at specified capacities. (TO-DO, TEST IT)
+* Make investments in technologies only at specified capacities. (it should be checked before using it)
 $setglobal AGKNDISC
 *!option yes
 *!onlyif %BB2%==yes
@@ -579,10 +523,15 @@ $setglobal SEASONALLINKRAMPING
 
 *----------------END OF STEPWISE RAMPING (LINEAR VERSION)----------------------------------------------------------
 
+* Options timeaggr control automatic aggregation of time (it should be checked before using it).
+$setglobal timeaggr
+*!option yes
+
+
 *-------------------------------------------------------------------------------
 * OptiFlow model.
 *-------------------------------------------------------------------------------
-$setglobal OPTIFLOW 
+$setglobal OPTIFLOW
 *!option yes
 * Addon APKNdisc: discrete size investments in PROC.
 $setglobal APKNdisc
@@ -619,16 +568,6 @@ $setglobal addUP
 *-------------------------------------------------------------------------------
 *Optiflow end
 *-------------------------------------------------------------------------------
-
-
-
-* Calibrate the price side of electricity demand
-$setglobal DEFPCALIB
-*!option yes
-*
-* Calibrate the price side of heat demand
-$setglobal DHFPCALIB
-*!option yes
 
 * In model Balbase4 (BB4) indicate the strategy for relative weighting of years
 $setglobal bb4weighty shareYYY
@@ -825,9 +764,7 @@ $setglobal ADDGROUP_DEMAND_SHIFT
 *--------------END OF IMPORT OF RESULTS----------------
 *--------------------------------------------
 
-* Options timeaggr control automatic aggregation of time segments (to be tested!!).
-$setglobal timeaggr
-*!option yes
+
 
 
 *===============================================================================
@@ -885,14 +822,7 @@ $setglobal INPUTDATAGDX2XLS
 $setglobal all_endofmodelgdx yes
 *!option yes     !Save the file all_endofmodel.gdx to the model folder
 
-* Print out welfare results
-$Setglobal welfare
-*!option yes
 
-* Allow for limited printout of inputdata and results, as defined by files syminput.inc and symoutput.inc, respectively.
-* Only in effect for BB3
-$Setglobal limitedresults
-*!option yes
 
 
 * Make some output in text format to show some results of an execution.
