@@ -1,0 +1,200 @@
+******Create output file
+
+
+*****************************************************************
+*OptiFlow
+
+$ONTEXT
+
+Parameter RE_GasFuel_AST_Opti(Y,AAA,TECH_GROUP,SSS,TTT) 'RE-gas and fuels production at an area level (GJ)';
+RE_GasFuel_AST_Opti(Y,IA,TECH_GROUP,S,T)=        SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'BioJet_Eff','BIOJETFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BioJet_Eff','BIOJETFLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Bio_SNG_OUT','BIO_SNG_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BIO_SNG_OUT','BIO_SNG_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'BioSyngasBuffer','BIO_SYNGAS_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BioSyngasBuffer','BIO_SYNGAS_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'BIO_TG_GRID_OUT','BIO_TG_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BIO_TG_GRID_OUT','BIO_TG_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Biogas_Grid_SUM','BIOGAS_MANURE_WB_1_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BIOGAS_GRID_SUM','BIOGAS_MANURE_WB_1_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Biogas_Grid_SUM','BIOGAS_MIX_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BIOGAS_GRID_SUM','BIOGAS_MIX_FLOW'))
+*                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'BiogasBuffer','BIOGAS_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BiogasBuffer','BIOGAS_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Hydrogen_Grid_IN','HYDROGEN_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Hydrogen_GRID_IN','HYDROGEN_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'GasBuffer','GASFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'GasBuffer','GASFLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Other_Gas_Proc','OTHER_GAS_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Other_Gas_Proc','OTHER_GAS_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Ethanol_Eff','Ethanol_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Ethanol_Eff','Ethanol_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Biodiesel_Eff','BIODIESELFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Biodiesel_Eff','BIODIESELFLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Methanol_Eff','METHANOLFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Methanol_Eff','METHANOLFLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'BioGasoline_Eff','BIOGASOLINEFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BioGasoline_Eff','BIOGASOLINEFLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'EMethanol_Eff','EMETHANOLFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'EMethanol_Eff','EMETHANOLFLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Ammonia_Eff','AMMONIA_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Ammonia_Eff','AMMONIA_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'EME_Gasoline_Eff','EME_GASOLINE_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'EME_Gasoline_Eff','EME_GASOLINE_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'EME_LPG_Eff','EME_LPG_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'EME_LPG_Eff','EME_LPG_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'E_FT_Diesel_Eff','E_FT_DIESEL_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'E_FT_Diesel_Eff','E_FT_DIESEL_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'EME_Jet_Eff','EME_JET_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'EME_Jet_Eff','EME_JET_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'E_FT_Jet_Eff','E_FT_JET_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'E_FT_Jet_Eff','E_FT_JET_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'HTL_Eff','HTLFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'HTL_Eff','HTLFLOW'))
+;
+
+
+*******************
+
+*RE-fuel
+
+Parameter RE_Fuel_AST_Opti(Y,AAA,TECH_GROUP,SSS,TTT) 'Final RE-fuel production at an area level (GJ)';
+RE_Fuel_AST_Opti(Y,IA,TECH_GROUP,S,T)=           SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'BioJet_Eff','BIOJETFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BioJet_Eff','BIOJETFLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Ethanol_Eff','Ethanol_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Ethanol_Eff','Ethanol_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Biodiesel_Eff','BIODIESELFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Biodiesel_Eff','BIODIESELFLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Methanol_Eff','METHANOLFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Methanol_Eff','METHANOLFLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'BioGasoline_Eff','BIOGASOLINEFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BioGasoline_Eff','BIOGASOLINEFLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'EMethanol_Eff','EMETHANOLFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'EMethanol_Eff','EMETHANOLFLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Ammonia_Eff','AMMONIA_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Ammonia_Eff','AMMONIA_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'EME_Gasoline_Eff','EME_GASOLINE_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'EME_Gasoline_Eff','EME_GASOLINE_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'EME_LPG_Eff','EME_LPG_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'EME_LPG_Eff','EME_LPG_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'E_FT_Diesel_Eff','E_FT_DIESEL_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'E_FT_Diesel_Eff','E_FT_DIESEL_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'EME_Jet_Eff','EME_JET_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'EME_Jet_Eff','EME_JET_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'E_FT_Jet_Eff','E_FT_JET_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'E_FT_Jet_Eff','E_FT_JET_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'HTL_Eff','HTLFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'HTL_Eff','HTLFLOW'))
+*
+*
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Demand','SumDemand',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Demand','SumDemand'))
+;
+
+
+
+Parameter RE_Fuel_AST_Opti_A(Y,AAA,TECH_GROUP) 'Final RE-fuel production at an area level per year (PJ/year)';
+RE_Fuel_AST_Opti_A(Y,IA,TECH_GROUP)=SUM((S,T),RE_Fuel_AST_Opti(Y,IA,TECH_GROUP,S,T)*IHOURSINST(S,T))*IOF0000001;
+
+Parameter RE_Fuel_AST_Opti_C(Y,CCC,TECH_GROUP) 'RE-fuel production at a country level per year (PJ/year)';
+RE_Fuel_AST_Opti_C(Y,C,TECH_GROUP)=SUM(IA$ICA(C,IA),RE_Fuel_AST_Opti_A(Y,IA,TECH_GROUP));
+
+
+*******************
+*RE-gas
+Parameter RE_Gas_AST_Opti(Y,AAA,TECH_GROUP,SSS,TTT) 'RE-gas production at an area level (GJ)';
+RE_Gas_AST_Opti(Y,IA,TECH_GROUP,S,T)=            SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'GasBuffer','GASFLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'GasBuffer','GASFLOW'))
+*                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Biogas_Grid_SUM','BIOGAS_MANURE_WB_1_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BIOGAS_GRID_SUM','BIOGAS_MANURE_WB_1_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Biogas_Grid_SUM','BIOGAS_MIX_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BIOGAS_GRID_SUM','BIOGAS_MIX_FLOW'))
+*                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'BiogasBuffer','BIOGAS_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BiogasBuffer','BIOGAS_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Hydrogen_Grid_IN','HYDROGEN_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Hydrogen_GRID_IN','HYDROGEN_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Bio_SNG_OUT','BIO_SNG_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BIO_SNG_OUT','BIO_SNG_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'BioSyngasBuffer','BIO_SYNGAS_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'BioSyngasBuffer','BIO_SYNGAS_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Other_Gas_Proc','OTHER_GAS_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Other_Gas_Proc','OTHER_GAS_FLOW'))
+
+
+;
+
+
+Parameter RE_Gas_AST_Opti_A(Y,AAA,TECH_GROUP) 'Final RE-Gas production at an area level per year (PJ/year)';
+RE_Gas_AST_Opti_A(Y,IA,TECH_GROUP)=SUM((S,T),RE_Gas_AST_Opti(Y,IA,TECH_GROUP,S,T)*IHOURSINST(S,T))*IOF0000001;
+
+Parameter RE_Gas_AST_Opti_C(Y,CCC,TECH_GROUP) 'RE-gas production at a country level per year (PJ/year)';
+RE_Gas_AST_Opti_C(Y,C,TECH_GROUP)=SUM(IA$ICA(C,IA),RE_Gas_AST_Opti_A(Y,IA,TECH_GROUP));
+
+
+
+*******************
+*Resources used
+
+
+Parameter Resource_use_AST_Opti(Y,AAA,TECH_GROUP,SSS,TTT) 'Resource use for RE-gas and fuel production at an area level (GJ)';
+Resource_use_AST_Opti(Y,IA,TECH_GROUP,S,T)=      SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Wood','WOOD_GEN_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Wood','WOOD_GEN_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Straw','STRAW_GEN_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Straw','STRAW_GEN_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Muni_Waste','MUNI_WASTE_GEN_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Muni_Waste','MUNI_WASTE_GEN_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Wood_Pellets','WOOD_PELLETS_GEN_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Wood_Pellets','WOOD_PELLETS_GEN_FLOW'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'Manure','MANURE_GEN_FLOW',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'Manure','MANURE_GEN_FLOW'))
+*                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'CO2_PH','CO2_SOURCE_FLOW_PH',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'CO2_PH','CO2_SOURCE_FLOW_PH'))
+*                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'CO2_IND','CO2_SOURCE_FLOW_IND',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'CO2_IND','CO2_SOURCE_FLOW_IND'))
+*                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'CO2_DAC','CO2_SOURCE_FLOW_DAC',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'CO2_DAC','CO2_SOURCE_FLOW_DAC'))
+*                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'CO2_Bio','CO2_SOURCE_FLOW_BIO',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'CO2_Bio','CO2_SOURCE_FLOW_BIO'))
+*
+*
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'ResA','ResProA',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'ResA','ResProA'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'ResB','ResProB',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'ResB','ResProB'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'ResC','ResSumC',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'ResC','ResSumC'))
+                                            +SUM(IPROCFROM$PROCTECHTYPE(IPROCFROM,TECH_GROUP),VFLOW.L(Y,IA,IPROCFROM,'ResD','ResProD',S,T)$FLOWFROMTOPROC(Y,IA,IPROCFROM,'ResD','ResProD'))
+
+;
+
+Parameter Resource_use_Opti_A(Y,AAA,TECH_GROUP) 'Resource_use at an area level per year (PJ/year)';
+Resource_use_Opti_A(Y,IA,TECH_GROUP)=SUM((S,T),Resource_use_AST_Opti(Y,IA,TECH_GROUP,S,T)*IHOURSINSTWWT(S,T))*IOF0000001;
+
+Parameter Resource_use_Opti_C(Y,CCC,TECH_GROUP) 'Resource_use at a country level per year (PJ/year)';
+Resource_use_Opti_C(Y,C,TECH_GROUP)=SUM(IA$ICA(C,IA),Resource_use_Opti_A(Y,IA,TECH_GROUP));
+
+
+$OFFTEXT
+
+
+*FLOWS
+Parameter VFLOW_Opti_A(Y,AAA,IPROCFROM,IPROCTO,FLOW)   'FLOWS at an area level per year (PJ/year)';
+VFLOW_Opti_A(Y,IA,IPROCFROM,IPROCTO,FLOW)=   SUM((S,T),VFLOW.L(Y,IA,IPROCFROM,IPROCTO,FLOW,S,T)*IHOURSINST(S,T))*IOF0000001;
+
+
+Parameter VFLOW_Opti_C(Y,CCC,IPROCFROM,IPROCTO,FLOW) 'FLOWS at a country level per year (PJ/year)';
+VFLOW_Opti_C(Y,C,IPROCFROM,IPROCTO,FLOW)=SUM(IA$ICA(C,IA),VFLOW_Opti_A(Y,IA,IPROCFROM,IPROCTO,FLOW));
+
+
+*FLOWS source
+Parameter VFLOWSOURCE_Opti_A(Y,AAA,PROCSOURCE,FLOW)   'Source FLOWS at an area level per year (ton/year)';
+VFLOWSOURCE_Opti_A(Y,IA,PROCSOURCE,FLOW)=   SUM((S,T),VFLOWSOURCE.L(Y,IA,PROCSOURCE,FLOW,S,T)*IHOURSINSTWWT(S,T));
+
+
+Parameter VFLOWSOURCE_Opti_C(Y,CCC,PROCSOURCE,FLOW) 'Source FLOWS at a country level per year (ton/year)';
+VFLOWSOURCE_Opti_C(Y,C,PROCSOURCE,FLOW)=SUM(IA$ICA(C,IA),VFLOWSOURCE_Opti_A(Y,IA,PROCSOURCE,FLOW));
+
+
+*FLOWS Buffer
+Parameter VFLOWBUFFER_Opti_A(Y,AAA,PROCBUFFER,FLOW)   'BUFFER FLOWS at an area level per year (u/year)';
+VFLOWBUFFER_Opti_A(Y,IA,PROCBUFFER,FLOW)=   SUM((S,T),VFLOWBUFFER.L(Y,IA,PROCBUFFER,FLOW,S,T)*IHOURSINST(S,T));
+
+
+Parameter VFLOWBUFFER_Opti_C(Y,CCC,PROCBUFFER,FLOW) 'BUFFER FLOWS at a country level per year (u/year)';
+VFLOWBUFFER_Opti_C(Y,C,PROCBUFFER,FLOW)=SUM(IA$ICA(C,IA),VFLOWBUFFER_Opti_A(Y,IA,PROCBUFFER,FLOW));
+
+
+*FLOWS Storage
+Parameter VFLOWSTORAGE_Opti_A(Y,AAA,PROC,FLOW)   'Storage FLOWS at an area level per year (u/year)';
+VFLOWSTORAGE_Opti_A(Y,IA,PROCSTORAGE,FLOW)=   SUM((S,T),VSTORAGEVOL.L(Y,IA,PROCSTORAGE,FLOW,S,T)*IHOURSINST(S,T));
+
+Parameter VFLOWSTORAGE_Opti_C(Y,CCC,PROC,FLOW)   'Storage FLOWS at an area level per year (u/year)';
+VFLOWSTORAGE_Opti_C(Y,C,PROCSTORAGE,FLOW)=    SUM(IA$ICA(C,IA),VFLOWSTORAGE_Opti_A(Y,IA,PROCSTORAGE,FLOW));
+
+
+
+* RE-fuel prices
+Parameter RE_fuel_Price(Y,C,PROC,FLOW)'RE-fuel price (€ 2015/GJ)';
+RE_fuel_Price(Y,C,PROC,FLOW)=QMINFLOW_C.M(Y,C,PROC,FLOW) / IWEIGHTY(Y);
+
+
+
+*_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+*----Original
+$ontext
+execute_unload "Optiflow_MainResults.gdx" EPrice_RST, HPrice_AST, EDemand_RST, EDemand_R, Edemand_CST, Edemand_C, Hdemand_AST, EPrice_R, EPrice_CST, EPrice_C, HPrice_AS, HPrice_A, HPrice_C, EProduction_RST, ETrade_RST,
+Eproduction_CST, ETrade_CST, EProduction_R, EProduction_C, ETrade_R, ETrade_C, Hproduction_AST, Hproduction_AS, Hproduction_A, Hproduction_CST, Hproduction_CS, Hproduction_C, FuelConsumption_C, FuelConsumption_TOTAL,
+Elec_Capacity,Heat_Capacity,VOBJ,VGKN,VX_T,VXKN,
+VFLOW,VFLOWTRANS,VPROCKAPNEW,Hproduction_AST_Opti,
+*RE_GasFuel_AST_Opti,RE_Fuel_AST_Opti_A,RE_Fuel_AST_Opti_C,RE_Gas_AST_Opti,RE_Gas_AST_Opti_A,RE_Gas_AST_Opti_C,
+*Resource_use_Opti_C,Resource_use_AST_Opti,Resource_use_Opti_A,
+VFLOW_Opti_A,VFLOW_Opti_C,VFLOWSOURCE_Opti_A,VFLOWSOURCE_Opti_C,VFLOWTRANS_Opti_A,VFLOWBUFFER_Opti_C
+RE_fuel_Price
+$offtext
+
+execute_unload "Optiflow_MainResults.gdx" VOBJ,VGKN,VX_T,VXKN,
+VFLOW,VFLOWTRANS,VPROCKAPNEW,
+*RE_GasFuel_AST_Opti,RE_Fuel_AST_Opti_A,RE_Fuel_AST_Opti_C,RE_Gas_AST_Opti,RE_Gas_AST_Opti_A,RE_Gas_AST_Opti_C,
+*Resource_use_Opti_C,Resource_use_AST_Opti,Resource_use_Opti_A,
+VFLOW_Opti_A,VFLOW_Opti_C,VFLOWSOURCE_Opti_A,VFLOWSOURCE_Opti_C,VFLOWBUFFER_Opti_C
+RE_fuel_Price
+*EL_PRICE_YCRST, EL_PRICE_YCR
+*DH_PRICE_YCRAST, DH_PRICE_YCRA
+PRO_YCRAGFST, PRO_YCRAGF
+*Hproduction_AST_Opti, Hproduction_A_Opti
+VFLOWSTORAGE_Opti_A,VFLOWSTORAGE_Opti_C
+*MASON
+
+$ONTEXT
+$if     EXIST '../addons/_hooks/Outputgdx.inc' $INCLUDE      '../addons/_hooks/Outputgdx.inc';
+$if not EXIST '../addons/_hooks/Outputgdx.inc' $INCLUDE '../../base/addons/_hooks/Outputgdx.inc';
+$OFFTEXT
+
+;
+
+
+*End of the output file

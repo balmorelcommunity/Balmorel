@@ -579,6 +579,49 @@ $setglobal SEASONALLINKRAMPING
 
 *----------------END OF STEPWISE RAMPING (LINEAR VERSION)----------------------------------------------------------
 
+*-------------------------------------------------------------------------------
+* OptiFlow model.
+*-------------------------------------------------------------------------------
+$setglobal OPTIFLOW 
+*!option yes
+* Addon APKNdisc: discrete size investments in PROC.
+$setglobal APKNdisc
+*!option yes
+*Investments in Optiflow technologies
+$setglobal inv yes
+*! option yes
+*Model solved as MIP
+$setglobal solveOptiFlowmip
+*! option yes
+
+* Debug possibilities:
+$Setglobal addEPStoL
+*! option yes
+* Not needed if there are no capacity bounds on internal proc
+* It will be needed if there are capacity bounds on some internal proc, therefore add them only in that case (requires some coding, TODO).
+* With such minimal use the infeasibilities will be moved to SOSIBU proc whenever possible.
+$Setglobal useQNODEslack
+*! option
+$Setglobal useSSBslack
+*! option yes
+$Setglobal useShareSlack
+*! option yes
+* Option uniquesol permit to use quadratic terms in QOBJ in order to attain unique solution.
+* Should be used for debug on small systems only.
+$Setglobal uniquesol
+*! option yes
+* Testing ONLY:
+$setglobal singlearea
+*! option yes
+* Testing ONLY:
+$setglobal addUP
+*! option yes
+*-------------------------------------------------------------------------------
+*Optiflow end
+*-------------------------------------------------------------------------------
+
+
+
 * Calibrate the price side of electricity demand
 $setglobal DEFPCALIB
 *!option yes
