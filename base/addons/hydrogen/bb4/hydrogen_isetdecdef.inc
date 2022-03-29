@@ -58,4 +58,4 @@ SET IXH2KN_ES(IRRRE,IRRRI) "H2 Transmission lines whose cost depends on economy 
 IXH2KN_ES(IRRRE,IRRRI)$SUM(XES,XH2KN_ES(IRRRE,IRRRI,XES))=YES;
 
 $ifi not %H2TransInvest%==yes  IXH2KN_ES(IRRRE,IRRRI)=NO;
-$ifi not %SOLVETYPE%==MIP  IXH2KN_ES(IRRRE,IRRRI)=NO;
+$ifi not %ES_H2TRANS%==yes  IXH2KN_ES(IRRRE,IRRRI)=NO;

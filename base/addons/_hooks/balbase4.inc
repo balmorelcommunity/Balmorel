@@ -25,5 +25,6 @@ $ifi %ANC_SERV%==yes            $include   "../../base/addons/ancilliary_service
 $ifi %BalancingMarket%==yes     $include   "../../base/addons/balancing_market/balancing_market_balbase4.inc";
 $ifi %INDIVUSERS%==yes          $include   "../../base/addons/indivusers/bb4/indivusers_balbase4.inc";
 $ifi %DATACENTERS%==yes         $include   "../../base/addons/datacenters/bb4/datacenters_balbase4.inc";
+$ifi %OPTIFLOW%==yes         $include         "../../base/addons/optiflow/bb4/optiflow_balbase4.inc";
 
 $label endoffile

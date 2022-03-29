@@ -1,0 +1,11 @@
+Add buffer equations for the following Balmorel equations - SOftlinking of OptiFlow and Balmorel
+
+QGMINCF
+QGMAXCF
+QGEQCF
+QGMINRF
+QGMAXRF
+QGEQRF
+QGMINAF
+QGMAXAF
+QGEQAF

@@ -25,8 +25,10 @@ $ifi %FlowBased%==yes           $include   "../../base/addons/FlowBased/bb4/flow
 $ifi %DECOM%==yes               $include   "../../base/addons/DECOM/DECOM_isetdecdef.inc";
 $ifi %ANC_SERV%==yes            $include   "../../base/addons/ancilliary_services/ancilliary_services_isetdecdef.inc";
 $ifi %DATACENTERS%==yes         $include   "../../base/addons/datacenters/bb4/datacenters_isetdecdef.inc";
+$ifi %OPTIFLOW%==yes  $include   "../../base/addons/optiflow/bb4/optiflow_isetdecdef.inc";
 
-$ifi %import_results%==yes      $include   "../../base/addons/import_results/import_results_isetdecdef.inc";
+*IMPORT RESULTS SHOULD BE THE LAST ONE
+$ifi %import_results%==yes  $include   "../../base/addons/import_results/import_results_isetdecdef.inc";
 
 
 $label endoffile
