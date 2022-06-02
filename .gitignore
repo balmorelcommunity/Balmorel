@@ -17,5 +17,8 @@
 **/output/economic/*.*
 /base/bui/gamsscr/*.*
 
-# don't include data directory
+# exclude any data subdirectory
 **/data
+
+# exclude any vscode configuration
+.vscode

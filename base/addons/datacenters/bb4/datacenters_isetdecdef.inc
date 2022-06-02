@@ -1,12 +1,17 @@
-SET IDC_GSUBGROUP_ABSCHILLER(G)         'Absorption chiller technologies in datacenters';
-SET IDC_GSUBGROUP_ELECCHILLER(G)        'Electric chiller technologies in datacenters';
-SET IDC_GSUBGROUP_COLDSTORAGE(G)        'Cooling storage technologies in datacenters';
-SET IDC_GCHILLER(G)                     'Chiller technologies in datacenters';
-SET IDC_GHEATPUMP(G)                    'Heat pump technologies for waste-heat recovery in datacenters';
+SET IDC_ABSCHILLER(G)       'Datacenter absorption chiller technologies';
+SET IDC_ELECCHILLER(G)      'Datacenter electric chiller technologies';
+SET IDC_HEATPUMP(G)         'Datacenter heat pump technologies';
+SET IDC_FREECOOLING(G)      'Datacenter free-cooling technologies';
+SET IDC_COLDSTORAGE(G)      'Datacenter cold-storage technologies';
 
-* Based on 'GDSUBTECHGROUP'
-IDC_GSUBGROUP_ABSCHILLER(G)     = YES$(GDATA(G,'GDSUBTECHGROUP') EQ DC_ABSCHILLER);
-IDC_GSUBGROUP_ELECCHILLER(G)    = YES$(GDATA(G,'GDSUBTECHGROUP') EQ DC_ELECCHILLER);
-IDC_GSUBGROUP_COLDSTORAGE(G)    = YES$(GDATA(G,'GDSUBTECHGROUP') EQ DC_COLDSTORAGE);
-IDC_GCHILLER(G)                 = YES$(IDC_GSUBGROUP_ABSCHILLER(G) OR IDC_GSUBGROUP_ELECCHILLER(G));
-IDC_GHEATPUMP(G)                = YES$(GDATA(G,'GDSUBTECHGROUP') EQ DC_HEATPUMP);
+SET IDC_GCHILLER(G)         'All chiller technologies in datacenters';
+
+
+IDC_ABSCHILLER(G)   = YES$(GDATA(G,'GDSUBTECHGROUP') EQ DC_ABSCHILLER);
+IDC_ELECCHILLER(G)  = YES$(GDATA(G,'GDSUBTECHGROUP') EQ DC_ELECCHILLER);
+IDC_HEATPUMP(G)     = YES$(GDATA(G,'GDSUBTECHGROUP') EQ DC_HEATPUMP);
+IDC_FREECOOLING(G)  = YES$(GDATA(G,'GDSUBTECHGROUP') EQ DC_FREECOOLING);
+IDC_COLDSTORAGE(G)  = YES$(GDATA(G,'GDSUBTECHGROUP') EQ DC_COLDSTORAGE);
+
+* ALL DATA CENTER CHILLER TECHNOLOGIES
+IDC_GCHILLER(G)     = YES$(IDC_ABSCHILLER(G) OR IDC_ELECCHILLER(G) OR IDC_HEATPUMP(G));
