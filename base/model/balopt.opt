@@ -338,7 +338,7 @@ $setglobal ES_H2TRANS
 *-----------------END: HYDROGEN ADDON---------------------------------------
 
 *-------------------- DATACENTERS ADDON --------------------
-*Adds datacenters in higher detail. Requires HEATTRANSFER add-on to be activated.
+*Adds datacenters in higher detail. Requires HEATTRANSFER add-on to be activated, and it is compatible with SEASONALCOP add-on.
 $Setglobal DATACENTERS YES
 
 *--------------- END: DATACENTERS ADDON --------------------
