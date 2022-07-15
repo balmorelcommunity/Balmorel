@@ -5,6 +5,7 @@ SET IDC_FREECOOLING(G)      'Datacenter free-cooling technologies';
 SET IDC_COLDSTORAGE(G)      'Datacenter cold-storage technologies';
 
 SET IDC_GCHILLER(G)         'All chiller technologies in datacenters';
+SET IDC_GDC(G)              'All datacenter technologies';
 
 
 IDC_ABSCHILLER(G)   = YES$(GDATA(G,'GDSUBTECHGROUP') EQ DC_ABSCHILLER);
@@ -15,3 +16,5 @@ IDC_COLDSTORAGE(G)  = YES$(GDATA(G,'GDSUBTECHGROUP') EQ DC_COLDSTORAGE);
 
 * ALL DATA CENTER CHILLER TECHNOLOGIES
 IDC_GCHILLER(G)     = YES$(IDC_ABSCHILLER(G) OR IDC_ELECCHILLER(G) OR IDC_HEATPUMP(G));
+* ALL DATA CENTER TECHNOLOGIES
+IDC_GDC(G)          = YES$(IDC_GCHILLER(G) OR IDC_FREECOOLING(G) OR IDC_COLDSTORAGE(G));
