@@ -264,7 +264,7 @@ $setglobal RELAX_HYDROSTORAGE yes
 *-------------------------------------------------
 *---- Timeseries scaling ------
 *Allows to modify the time series scaling approach
-$setglobal timeseries_scaling  full_timeseries_scaling
+$setglobal timeseries_scaling  usedtimesteps_timseries_scaling
 *!option usedtimesteps_timseries_scaling   !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries"
 *!option full_timeseries_scaling           !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries"
 
