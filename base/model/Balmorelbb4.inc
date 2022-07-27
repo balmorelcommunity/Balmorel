@@ -33,7 +33,7 @@
 * Geography related:
 SET CCCRRRAAA         All geographical entities (CCC + RRR + AAA)';
 SET CCC(CCCRRRAAA)    "All Countries";
-SET C(CCC)            "Countries in the simulation";
+SET CC(CCC)            "Countries in the simulation";
 SET RRR(CCCRRRAAA)    "All regions";
 SET AAA(CCCRRRAAA)    "All areas";
 SET CCCRRR(CCC,RRR)   "Regions in countries";
@@ -1301,7 +1301,7 @@ EQUATIONS
 QOBJ ..
 
    VOBJ =E=
-
+   -
 SUM(Y$IY411(Y),
 * Objective equation of years and with weighting of years that are in Y but not in YYY
 IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (

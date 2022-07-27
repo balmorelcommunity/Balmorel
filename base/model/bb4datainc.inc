@@ -125,8 +125,8 @@ $if not EXIST '../data/GROUP_AAA.inc' $INCLUDE '../../base/data/GROUP_AAA.inc';
 %semislash%;
 
 SET DEUSER             "Electricity demand user groups. Set must include element RESE for holding demand not included in any other user group"  %semislash%
-$if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DEUSER.inc';
-$if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DEUSER.inc';
+*$if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DEUSER.inc';
+*$if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DEUSER.inc';
 %semislash%;
 *------------- Any DEUSER additions for addon to be placed here: ----------------
 $include "../../base/addons/_hooks/deuseradditions.inc"
