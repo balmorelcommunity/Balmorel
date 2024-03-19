@@ -1,12 +1,11 @@
-# Balmorel
-
-## Spatial Aggregation Study
+# Spatial Aggregation Study
 This branch is used for analysing the effect of various spatial resolutions in Denmark - from Nordpool bidding zones, through NUTS2-3 and to a municipality resolution.
 
 The pre-processing of data is performed through the balmorel-preprocessing tool in https://github.com/Mathias157/balmorel-preprocessing
 
 The required data to run the scenarios here will be uploaded in April.
 
+# Balmorel
 ## What is Balmorel?
 
 Balmorel is a partial equilibrium model for analysing the electricity and combined heat and power sectors in an international perspective. It is highly versatile and may be applied for long range planning as well as shorter time operational analysis. Balmorel is implemented as a mainly linear programming optimisation problem.
