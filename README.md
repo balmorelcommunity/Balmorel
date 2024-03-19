@@ -2,7 +2,9 @@
 
 ## Spatial Aggregation Study
 This branch is used for analysing the effect of various spatial resolutions in Denmark - from Nordpool bidding zones, through NUTS2-3 and to a municipality resolution.
-The pre-processing of data is performed through the balmorel-preprocessing tool in https://github.com/Mathias157/balmorel-preprocessing 
+
+The pre-processing of data is performed through the balmorel-preprocessing tool in https://github.com/Mathias157/balmorel-preprocessing
+
 The required data to run the scenarios here will be uploaded in April.
 
 ## What is Balmorel?
