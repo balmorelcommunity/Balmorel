@@ -26,6 +26,13 @@ ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_O
 *Hydrogen add-on
 ACRONYM HYDROGEN_GH2STO,H2_STORAGE, HYDROGEN_GETOH2, HYDROGEN_GETOHH2, HYDROGEN_GEHTOH2, HYDROGEN_GCH4TOH2, HYDROGEN_GH2FUEL, HYDROGEN_GH2TOE, HYDROGEN_GH2TOEH, HYDROGEN_GH2TOBIOMETH,FUELCELL, BIOMETHDAC, ELECTROLYZER,STEAMREFORMING, BACKUP_HYDROGEN,BACKUP_BIOMETHANE,HYDROGEN_GBIOGASMETHANATION,HYDROGEN_GBIOGASUPGRADING,BIOGASUPGRADING,BIOGASMETHANATION;
 
+* EDIT 260722: Mathias Berg Rosendal
+* Include balopt, so only activated addons are calculated
+$ifi     exist 'balopt.opt'  $include                  'balopt.opt';
+$ifi not exist 'balopt.opt'  $include '../../base/model/balopt.opt';
+
+
+
 SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)"
 $if     EXIST '../data/CCCRRRAAA.inc' $INCLUDE         '../data/CCCRRRAAA.inc';
 $if not EXIST '../data/CCCRRRAAA.inc' $INCLUDE '../../base/data/CCCRRRAAA.inc';
@@ -42,7 +49,7 @@ SET FFF                "Fuels"
 $if     EXIST '../data/FFF.inc' $INCLUDE      '../data/FFF.inc';
 $if not EXIST '../data/FFF.inc' $INCLUDE '../../base/data/FFF.inc';
 *INCLUDE FFF FROM OTHER ADDONS
-$include   "../../base/addons/hydrogen/bb4/hydrogen_fffadditions.inc";
+$if %HYDROGEN% == yes $include   "../../base/addons/hydrogen/bb4/hydrogen_fffadditions.inc";
 
 SET FDATASET           "Characteristics of fuels "
 $if     EXIST '../data/FDATASET.inc' $INCLUDE      '../data/FDATASET.inc';
@@ -52,23 +59,23 @@ PARAMETER FDATA(FFF,FDATASET)    "Fuel specific values"
 $if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
 $if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
 *INCLUDE FDATA FROM OTHER ADDONS
-$include   "../../base/addons/hydrogen/bb4/hydrogen_fdataadditions.inc";
+$if %HYDROGEN% == yes $include   "../../base/addons/hydrogen/bb4/hydrogen_fdataadditions.inc";
 
 SET GGG          "All generation technologies"
 $if     EXIST '../data/GGG.inc' $INCLUDE      '../data/GGG.inc';
 $if not EXIST '../data/GGG.inc' $INCLUDE '../../base/data/GGG.inc';
 *INCLUDE GGG FROM OTHER ADDONS
-$include   "../../base/addons/industry/bb4/industry_gggadditions.inc";
-$include   "../../base/addons/indivusers/bb4/indivusers_gggadditions.inc";
-$include   "../../base/addons/hydrogen/bb4/hydrogen_gggadditions.inc";
+$if %INDUSTRY% == yes $include   "../../base/addons/industry/bb4/industry_gggadditions.inc";
+$if %INDIVUSERS% == yes $include   "../../base/addons/indivusers/bb4/indivusers_gggadditions.inc";
+$if %HYDROGEN% == yes $include   "../../base/addons/hydrogen/bb4/hydrogen_gggadditions.inc";
 
 SET G(GGG)    "Generation technologies in the simulation"
 $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
 $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 *INCLUDE G FROM OTHER ADDONS
-$include   "../../base/addons/industry/bb4/industry_gadditions.inc";
-$include   "../../base/addons/indivusers/bb4/indivusers_gadditions.inc";
-$include   "../../base/addons/hydrogen/bb4/hydrogen_gadditions.inc";
+$if %INDUSTRY% == yes $include   "../../base/addons/industry/bb4/industry_gadditions.inc";
+$if %INDIVUSERS% == yes $include   "../../base/addons/indivusers/bb4/indivusers_gadditions.inc";
+$if %HYDROGEN% == yes $include   "../../base/addons/hydrogen/bb4/hydrogen_gadditions.inc";
 
 SET GDATASET     "Generation technology data"
 $if     EXIST '../data/GDATASET.inc' $INCLUDE      '../data/GDATASET.inc';
@@ -78,7 +85,7 @@ PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics"
 $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 *INCLUDE GDATA FROM OTHER ADDONS
-$include   "../../base/addons/hydrogen/bb4/hydrogen_gdataadditions.inc";
+$if %HYDROGEN% == yes $include   "../../base/addons/hydrogen/bb4/hydrogen_gdataadditions.inc";
 
 SCALAR DISCOUNTRATE "Discount rate by country (fraction)"
 $if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.inc';

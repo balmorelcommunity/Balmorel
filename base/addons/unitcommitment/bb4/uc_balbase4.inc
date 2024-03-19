@@ -1,4 +1,4 @@
-* UC Translated to BB4 by Juan Gea Bermúdez 2018.
+* UC Translated to BB4 by Juan Gea Bermï¿½dez 2018.
 
 * Additional equations in model definition:
 

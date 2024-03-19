@@ -1,0 +1,27 @@
+--- Job Tests.gms Start 10/25/22 11:58:55 39.3.0 55b56f9b WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\39\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input C:\Users\mathi\OneDrive\Dokumenter\GitHub\Balmorel\base\auxils\spatial_aggregation\Tests.gms
+    PageSize 0
+    ScrDir C:\Users\mathi\OneDrive\Dokumenter\GitHub\Balmorel\base\auxils\spatial_aggregation\225a\
+    SysDir C:\GAMS\39\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: Course License                                 G220801|0002AO-GEN
+          Technical University of Denmark, Management Engineering   DCE1794
+          C:\Users\mathi\OneDrive\Dokumenter\GAMS\gamslice.txt
+          License Admin: Thomas Stidsen, thst@man.dtu.dk                   
+          Course license for use within the course and related course work
+Processor information: 1 socket(s), 4 core(s), and 8 thread(s) available
+GAMS 39.3.0   Copyright (C) 1987-2022 GAMS Development. All rights reserved
+--- Starting compilation
+--- Tests.gms(3) 2 Mb 1 Error
+*** Error   1 in C:\Users\mathi\OneDrive\Dokumenter\GitHub\Balmorel\base\auxils\spatial_aggregation\Tests.gms
+    Real number expected
+--- Tests.gms(4) 2 Mb 1 Error
+*** Status: Compilation error(s)
+--- Job Tests.gms Stop 10/25/22 11:58:55 elapsed 0:00:00.031

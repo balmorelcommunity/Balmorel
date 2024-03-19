@@ -1,0 +1,388 @@
+
+--- Job Balmorel.gms Start 03/18/24 14:47:57 41.5.0 2a5a4ddc WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\41\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input C:\Users\mberos\ElementsOutside1D\AggregationTests\Balmorel\base\model\Balmorel.gms
+    PageSize 0
+    ScrDir C:\Users\mberos\ElementsOutside1D\AggregationTests\Balmorel\base\model\225b\
+    SysDir C:\GAMS\41\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: Course License                                 G240103|0002AO-GEN
+          Technical University of Denmark, Management Engineering   DCE2557
+          C:\Users\mberos\OneDrive - Danmarks Tekniske Universitet\Dokumenter\GAMS\gamslice.txt
+          License Admin: Thomas Stidsen, thst@man.dtu.dk                   
+          Course license for use within the course and related course work
+Processor information: 1 socket(s), 4 core(s), and 8 thread(s) available
+GAMS 41.5.0   Copyright (C) 1987-2023 GAMS Development. All rights reserved
+--- Starting compilation
+--- Balmorel.gms(41) 2 Mb
+--- . balgams.opt(161) 2 Mb
+--- Balmorel.gms(48) 2 Mb
+--- . balopt.opt(1030) 2 Mb
+--- Balmorel.gms(99) 2 Mb
+--- . error1.inc(44) 2 Mb
+--- .. hellolog.inc(88) 2 Mb
+--- ... heattrans_hellolog.inc(30) 2 Mb
+--- .. hellolog.inc(120) 2 Mb
+--- . error1.inc(56) 2 Mb
+--- Balmorel.gms(120) 2 Mb
+--- . Balmorelbb4.inc(301) 2 Mb
+--- .. bb4datainc.inc(24) 2 Mb
+--- ... ACRONYMS.inc(16) 2 Mb
+--- .. bb4datainc.inc(30) 2 Mb
+--- ... CCCRRRAAA.inc(1819) 3 Mb
+--- .. bb4datainc.inc(34) 3 Mb
+--- ... cccrrraaaadditions.inc(9) 3 Mb
+--- .. bb4datainc.inc(37) 3 Mb
+--- ... CCC.inc(22) 3 Mb
+--- .. bb4datainc.inc(41) 3 Mb
+--- ... cccadditions.inc(8) 3 Mb
+--- .. bb4datainc.inc(44) 3 Mb
+--- ... RRR.inc(155) 3 Mb
+--- .. bb4datainc.inc(48) 3 Mb
+--- ... rrradditions.inc(8) 3 Mb
+--- .. bb4datainc.inc(51) 3 Mb
+--- ... AAA.inc(1639) 3 Mb
+--- .. bb4datainc.inc(55) 3 Mb
+--- ... aaaadditions.inc(9) 3 Mb
+--- .. bb4datainc.inc(58) 3 Mb
+--- ... CCCRRR.inc(123) 3 Mb
+--- .. bb4datainc.inc(62) 3 Mb
+--- ... cccrrradditions.inc(8) 3 Mb
+--- .. bb4datainc.inc(65) 3 Mb
+--- ... RRRAAA.inc(1070) 3 Mb
+--- .. bb4datainc.inc(69) 3 Mb
+--- ... rrraaaadditions.inc(9) 3 Mb
+--- .. bb4datainc.inc(72) 3 Mb
+--- ... C.inc(24) 3 Mb
+--- .. bb4datainc.inc(75) 3 Mb
+--- ... cadditions.inc(8) 3 Mb
+--- .. bb4datainc.inc(101) 3 Mb
+--- ... YYY.inc(2) 3 Mb
+--- .. bb4datainc.inc(106) 3 Mb
+--- ... SSS.inc(4) 3 Mb
+--- .. bb4datainc.inc(111) 3 Mb
+--- ... TTT.inc(4) 3 Mb
+--- .. bb4datainc.inc(116) 3 Mb
+--- ... GROUP.inc(7) 3 Mb
+--- .. bb4datainc.inc(121) 3 Mb
+--- ... GROUP_AAA.inc(8) 3 Mb
+--- .. bb4datainc.inc(126) 3 Mb
+--- ... DEUSER.inc(10) 3 Mb
+--- .. bb4datainc.inc(130) 3 Mb
+--- ... deuseradditions.inc(12) 3 Mb
+--- .. bb4datainc.inc(133) 3 Mb
+--- ... DHUSER.inc(14) 3 Mb
+--- .. bb4datainc.inc(138) 3 Mb
+--- ... FFF.inc(112) 3 Mb
+--- .. bb4datainc.inc(142) 3 Mb
+--- ... fffadditions.inc(4) 3 Mb
+--- .. bb4datainc.inc(145) 3 Mb
+--- ... FDATASET.inc(9) 3 Mb
+--- .. bb4datainc.inc(150) 3 Mb
+--- ... FDATA.inc(56) 3 Mb
+--- .. bb4datainc.inc(154) 3 Mb
+--- ... fdataadditions.inc(3) 3 Mb
+--- .. bb4datainc.inc(157) 3 Mb
+--- ... GGG.inc(1292) 3 Mb
+--- .. bb4datainc.inc(161) 3 Mb
+--- ... gggadditions.inc(9) 3 Mb
+--- .. bb4datainc.inc(164) 3 Mb
+--- ... GDATASET.inc(63) 3 Mb
+--- .. bb4datainc.inc(169) 3 Mb
+--- ... TECH_GROUP.inc(27) 3 Mb
+--- .. bb4datainc.inc(174) 3 Mb
+--- ... TECH_GROUP_VALUE.inc(25) 3 Mb
+--- .. bb4datainc.inc(179) 3 Mb
+--- ... TECHGROUP_DEUSER.inc(5) 3 Mb
+--- .. bb4datainc.inc(184) 3 Mb
+--- ... SUBTECH_GROUP.inc(25) 3 Mb
+--- .. bb4datainc.inc(189) 3 Mb
+--- ... SUBTECH_GROUP_VALUE.inc(25) 3 Mb
+--- .. bb4datainc.inc(194) 3 Mb
+--- ... G.inc(1280) 3 Mb
+--- .. bb4datainc.inc(198) 3 Mb
+--- ... gadditions.inc(9) 3 Mb
+--- .. bb4datainc.inc(204) 3 Mb
+--- ... acronyms.inc(15) 3 Mb
+--- .. bb4datainc.inc(205) 3 Mb
+--- ... setdeclare.inc(17) 3 Mb
+--- .... heattrans_setdeclare.inc(17) 3 Mb
+--- ... setdeclare.inc(33) 3 Mb
+--- .. bb4datainc.inc(206) 3 Mb
+--- ... setdefine.inc(47) 3 Mb
+--- .. bb4datainc.inc(213) 3 Mb
+--- ... GDATA.inc(1279) 5 Mb
+--- .. bb4datainc.inc(217) 5 Mb
+--- ... gdataadditions.inc(18) 5 Mb
+--- .. bb4datainc.inc(232) 5 Mb
+--- ... HYRSMAXVOL_G.inc(867) 5 Mb
+--- .. bb4datainc.inc(237) 5 Mb
+--- ... HYRSDATASET.inc(8) 5 Mb
+--- .. bb4datainc.inc(242) 5 Mb
+--- ... DF_QP.inc(5) 5 Mb
+--- .. bb4datainc.inc(247) 5 Mb
+--- ... EMIPOLSET.inc(9) 5 Mb
+--- .. bb4datainc.inc(253) 5 Mb
+--- ... AGKN.inc(2851) 5 Mb
+--- .. bb4datainc.inc(258) 5 Mb
+--- ... agknadditions.inc(14) 5 Mb
+--- .. bb4datainc.inc(261) 5 Mb
+--- ... Y.inc(11) 5 Mb
+--- .. bb4datainc.inc(270) 5 Mb
+--- ... S.inc(5) 5 Mb
+--- .. bb4datainc.inc(275) 5 Mb
+--- ... T.inc(9) 5 Mb
+--- .. bb4datainc.inc(280) 5 Mb
+--- ... YVALUE.inc(12) 5 Mb
+--- .. bb4datainc.inc(285) 5 Mb
+--- ... TWORKDAY.inc(1) 5 Mb
+--- .. bb4datainc.inc(290) 5 Mb
+--- ... TWEEKEND.inc(1) 5 Mb
+--- .. bb4datainc.inc(397) 5 Mb
+--- ... GKFX.inc(58) 5 Mb
+--- .. bb4datainc.inc(401) 5 Mb
+--- ... gkfxadditions.inc(14) 5 Mb
+--- .. bb4datainc.inc(405) 5 Mb
+--- ... FMAXINVEST.inc(2) 5 Mb
+--- .. bb4datainc.inc(410) 5 Mb
+--- ... FMAXINVESTNA.inc(2) 5 Mb
+--- .. bb4datainc.inc(415) 5 Mb
+--- ... DISLOSS_E.inc(6) 5 Mb
+--- .. bb4datainc.inc(420) 5 Mb
+--- ... DISLOSS_E_AG.inc(57) 5 Mb
+--- .. bb4datainc.inc(424) 5 Mb
+--- ... disloss_e_agadditions.inc(17) 5 Mb
+--- .. bb4datainc.inc(427) 5 Mb
+--- ... DISLOSS_H.inc(3) 5 Mb
+--- .. bb4datainc.inc(432) 5 Mb
+--- ... DISCOST_E.inc(5) 5 Mb
+--- .. bb4datainc.inc(437) 5 Mb
+--- ... DISCOST_H.inc(65) 5 Mb
+--- .. bb4datainc.inc(442) 5 Mb
+--- ... FKPOT.inc(67) 5 Mb
+--- .. bb4datainc.inc(447) 5 Mb
+--- ... TECHGROUPKPOT.inc(56) 5 Mb
+--- .. bb4datainc.inc(452) 5 Mb
+--- ... SUBTECHGROUPKPOT.inc(9) 5 Mb
+--- .. bb4datainc.inc(456) 5 Mb
+--- ... subtechgroupkpotadditions.inc(15) 5 Mb
+--- .. bb4datainc.inc(460) 5 Mb
+--- ... FKMIN.inc(4) 5 Mb
+--- .. bb4datainc.inc(466) 5 Mb
+--- ... FKMAX.inc(4) 5 Mb
+--- .. bb4datainc.inc(472) 5 Mb
+--- ... FKEQ.inc(4) 5 Mb
+--- .. bb4datainc.inc(478) 5 Mb
+--- ... FKMINNA.inc(4) 5 Mb
+--- .. bb4datainc.inc(483) 5 Mb
+--- ... FKMAXNA.inc(4) 5 Mb
+--- .. bb4datainc.inc(488) 5 Mb
+--- ... FKEQNA.inc(4) 5 Mb
+--- .. bb4datainc.inc(493) 5 Mb
+--- ... FGEMIN.inc(5) 5 Mb
+--- .. bb4datainc.inc(498) 5 Mb
+--- ... FGEMAX.inc(4) 5 Mb
+--- .. bb4datainc.inc(504) 5 Mb
+--- ... GMINF.inc(5) 5 Mb
+--- .. bb4datainc.inc(510) 5 Mb
+--- ... GMAXF.inc(179) 5 Mb
+--- .. bb4datainc.inc(516) 5 Mb
+--- ... GEQF.inc(45) 5 Mb
+--- .. bb4datainc.inc(521) 5 Mb
+--- ... GMAXFS.inc(40) 5 Mb
+--- .. bb4datainc.inc(526) 5 Mb
+--- ... WTRRSFLH.inc(31) 5 Mb
+--- .. bb4datainc.inc(531) 5 Mb
+--- ... WTRRRFLH.inc(38) 5 Mb
+--- .. bb4datainc.inc(537) 5 Mb
+--- ... WNDFLH.inc(851) 5 Mb
+--- .. bb4datainc.inc(541) 5 Mb 1 Error
+*** Error 282 in C:\Users\mberos\ElementsOutside1D\AggregationTests\Balmorel\base\model\bb4datainc.inc
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- .. bb4datainc.inc(545) 5 Mb
+--- ... wndflhadditions.inc(15) 5 Mb
+--- .. bb4datainc.inc(549) 5 Mb
+--- ... SOLEFLH.inc(475) 5 Mb
+--- .. bb4datainc.inc(552) 5 Mb
+--- ... SOLEFLH2.inc(6) 5 Mb
+--- .. bb4datainc.inc(560) 5 Mb
+--- ... SOLHFLH.inc(6) 5 Mb
+--- .. bb4datainc.inc(564) 5 Mb
+--- ... solhflhadditions.inc(13) 5 Mb
+--- .. bb4datainc.inc(568) 5 Mb
+--- ... WAVEFLH.inc(37) 5 Mb
+--- .. bb4datainc.inc(573) 5 Mb
+--- ... HYRSDATA.inc(63) 5 Mb
+--- .. bb4datainc.inc(578) 5 Mb
+--- ... DISCOUNTRATE.inc(2) 5 Mb
+--- .. bb4datainc.inc(583) 5 Mb
+--- ... LIFETIME_X.inc(2) 5 Mb
+--- .. bb4datainc.inc(588) 5 Mb
+--- ... ANNUITYCG.inc(10965) 5 Mb
+--- .. bb4datainc.inc(592) 5 Mb
+--- ... annuitycgadditions.inc(3) 5 Mb
+--- .. bb4datainc.inc(595) 5 Mb
+--- ... ANNUITYCX.inc(21) 5 Mb
+--- .. bb4datainc.inc(600) 5 Mb
+--- ... GINVCOST.inc(3) 5 Mb
+--- .. bb4datainc.inc(605) 5 Mb
+--- ... GOMVCOSTO.inc(6) 5 Mb
+--- .. bb4datainc.inc(610) 5 Mb
+--- ... GOMVCOSTIN.inc(6) 5 Mb
+--- .. bb4datainc.inc(615) 5 Mb
+--- ... GOMFCOST.inc(10) 5 Mb
+--- .. bb4datainc.inc(620) 5 Mb
+--- ... GEFFRATE.inc(5) 5 Mb
+--- .. bb4datainc.inc(625) 5 Mb
+--- ... DEFP_BASE.inc(25) 5 Mb
+--- .. bb4datainc.inc(630) 5 Mb
+--- ... DHFP_BASE.inc(70) 5 Mb
+--- .. bb4datainc.inc(635) 5 Mb
+--- ... GKF_LO.inc(4) 5 Mb
+--- .. bb4datainc.inc(648) 5 Mb
+--- ... DE.inc(8) 5 Mb
+--- .. bb4datainc.inc(652) 5 Mb
+--- ... deadditions.inc(17) 5 Mb
+--- .. bb4datainc.inc(659) 5 Mb
+--- ... DH.inc(200) 5 Mb
+--- .. bb4datainc.inc(663) 5 Mb
+--- ... dhadditions.inc(13) 5 Mb
+--- .. bb4datainc.inc(669) 5 Mb
+--- ... XINVCOST.inc(7) 5 Mb
+--- .. bb4datainc.inc(673) 5 Mb
+--- ... xinvcostadditions.inc(10) 5 Mb
+--- .. bb4datainc.inc(676) 5 Mb
+--- ... XKFX.inc(177) 5 Mb
+--- .. bb4datainc.inc(681) 5 Mb
+--- ... XCOST.inc(6) 5 Mb
+--- .. bb4datainc.inc(685) 5 Mb
+--- ... xcostadditions.inc(10) 5 Mb
+--- .. bb4datainc.inc(688) 5 Mb
+--- ... XLOSS.inc(6) 5 Mb
+--- .. bb4datainc.inc(692) 5 Mb
+--- ... xlossadditions.inc(10) 5 Mb
+--- .. bb4datainc.inc(697) 5 Mb
+--- ... XKRATE.inc(11) 5 Mb
+--- .. bb4datainc.inc(702) 5 Mb
+--- ... XMAXINV.inc(55) 5 Mb
+--- .. bb4datainc.inc(711) 5 Mb
+--- ... FUELPRICE.inc(117) 5 Mb
+--- .. bb4datainc.inc(715) 5 Mb
+--- ... fuelpriceadditions.inc(2) 5 Mb
+--- .. bb4datainc.inc(722) 5 Mb
+--- ... EMI_POL.inc(52) 5 Mb
+--- .. bb4datainc.inc(727) 5 Mb
+--- ... EMI_POLNA.inc(7) 5 Mb
+--- .. bb4datainc.inc(736) 5 Mb
+--- ... WEIGHT_S.inc(7) 5 Mb
+--- .. bb4datainc.inc(741) 5 Mb
+--- ... WEIGHT_T.inc(8) 5 Mb
+--- .. bb4datainc.inc(746) 5 Mb
+--- ... CHRONOHOUR.inc(4) 5 Mb
+--- .. bb4datainc.inc(751) 5 Mb
+--- ... SSIZE.inc(3) 5 Mb
+--- .. bb4datainc.inc(757) 5 Mb
+--- ... GKRATE.inc(91) 5 Mb
+--- .. bb4datainc.inc(762) 5 Mb
+--- ... DE_VAR_T.inc(8742) 5 Mb
+--- .. bb4datainc.inc(766) 5 Mb
+--- ... de_var_tadditions.inc(13) 5 Mb
+--- .. bb4datainc.inc(769) 5 Mb
+--- ... DH_VAR_T.inc(17515) 5 Mb
+--- .. bb4datainc.inc(773) 5 Mb
+--- ... dh_var_tadditions.inc(13) 5 Mb
+--- .. bb4datainc.inc(776) 5 Mb
+--- ... WTRRSVAR_S.inc(62) 5 Mb
+--- .. bb4datainc.inc(781) 5 Mb
+--- ... WTRRRVAR_T.inc(75) 5 Mb
+--- .. bb4datainc.inc(786) 5 Mb
+--- ... WND_VAR_T.inc(8742) 5 Mb
+--- .... WND_VAR_T2.inc(9024) 5 Mb
+--- ... WND_VAR_T.inc(8746) 5 Mb 2 Errors
+*** Error 282 in C:\Users\mberos\ElementsOutside1D\AggregationTests\Balmorel\base\data\WND_VAR_T.inc
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- ... WND_VAR_T.inc(9027) 5 Mb
+--- .. bb4datainc.inc(791) 5 Mb
+--- ... wnd_var_tadditions.inc(15) 5 Mb
+--- .. bb4datainc.inc(794) 5 Mb
+--- ... SOLE_VAR_T.inc(8747) 5 Mb
+--- .. bb4datainc.inc(797) 5 Mb
+--- ... SOLE_VAR_T2.inc(8741) 5 Mb
+--- .. bb4datainc.inc(803) 5 Mb
+--- ... SOLH_VAR_T.inc(8741) 5 Mb
+--- .. bb4datainc.inc(807) 5 Mb
+--- ... solh_var_tadditions.inc(13) 5 Mb
+--- .. bb4datainc.inc(810) 5 Mb
+--- ... WAVE_VAR_T.inc(3) 5 Mb
+--- .. bb4datainc.inc(815) 5 Mb
+--- ... X3FX.inc(32) 5 Mb
+--- .. bb4datainc.inc(820) 5 Mb
+--- ... X3FX_VAR_T.inc(8763) 5 Mb
+--- .. bb4datainc.inc(825) 5 Mb
+--- ... HYPPROFILS.inc(20) 5 Mb
+--- .. bb4datainc.inc(831) 5 Mb
+--- ... YMODEL.inc(10) 5 Mb
+--- .. bb4datainc.inc(833) 5 Mb
+--- ... YMODELDELTA.inc(11) 5 Mb
+--- .. bb4datainc.inc(847) 5 Mb
+--- ... OMONEY.inc(3) 5 Mb
+--- .. bb4datainc.inc(852) 5 Mb
+--- ... PENALTYQ.inc(5) 5 Mb
+--- .. bb4datainc.inc(857) 5 Mb
+--- ... XES.inc(4) 5 Mb
+--- .. bb4datainc.inc(864) 5 Mb
+--- ... pardeclare.inc(29) 5 Mb
+--- .... heattrans_pardeclare.inc(34) 5 Mb
+--- ... pardeclare.inc(31) 5 Mb
+--- .... DECOM_pardeclare.inc(2) 5 Mb
+--- ... pardeclare.inc(37) 5 Mb
+--- .. bb4datainc.inc(865) 5 Mb
+--- ... pardefine.inc(36) 5 Mb
+--- .... heattrans_pardefine.inc(6) 5 Mb
+--- ..... HEATTRANS_XHKFX.inc(2) 5 Mb
+--- .... heattrans_pardefine.inc(10) 5 Mb
+--- ..... xhfxadditions.inc(12) 5 Mb
+--- .... heattrans_pardefine.inc(14) 5 Mb
+--- ..... HEATTRANS_XHINVCOST.inc(2) 5 Mb
+--- .... heattrans_pardefine.inc(18) 5 Mb
+--- ..... xhinvcostadditions.inc(8) 5 Mb
+--- .... heattrans_pardefine.inc(21) 5 Mb
+--- ..... HEATTRANS_LIFETIME_XH.inc(2) 5 Mb
+--- .... heattrans_pardefine.inc(26) 5 Mb
+--- ..... HEATTRANS_XHMAXK.inc(2) 5 Mb
+--- .... heattrans_pardefine.inc(30) 5 Mb
+--- ..... xhmaxkadditions.inc(12) 5 Mb
+--- .... heattrans_pardefine.inc(33) 5 Mb
+--- ..... HEATTRANS_ANNUITYCXH.inc(21) 5 Mb
+--- .... heattrans_pardefine.inc(38) 5 Mb
+--- ..... HEATTRANS_XHKRATE.inc(5) 5 Mb
+--- .... heattrans_pardefine.inc(43) 5 Mb
+--- ..... HEATTRANS_XHCOST.inc(5) 5 Mb
+--- .... heattrans_pardefine.inc(47) 5 Mb
+--- ..... xhcostadditions.inc(13) 5 Mb
+--- .... heattrans_pardefine.inc(50) 5 Mb
+--- ..... HEATTRANS_XHLOSS.inc(5) 5 Mb
+--- .... heattrans_pardefine.inc(54) 5 Mb
+--- ..... xhlossadditions.inc(9) 5 Mb
+--- .... heattrans_pardefine.inc(74) 5 Mb
+--- ..... HEATTRANS_XHKFX_DH.inc(64) 5 Mb
+--- .... heattrans_pardefine.inc(77) 5 Mb
+--- ... pardefine.inc(38) 5 Mb
+--- .... DECOM_pardefine.inc(3) 5 Mb
+--- ... pardefine.inc(49) 5 Mb
+--- .. bb4datainc.inc(867) 5 Mb
+***
+*** Abort "Balmorel processing aborted after inclusion of file bb4datainc.inc due to data errors";
+***
+*** Error 343 in C:\Users\mberos\ElementsOutside1D\AggregationTests\Balmorel\base\model\Balmorelbb4.inc
+--- Balmorel.gms(120) 5 Mb 3 Errors
+*** Status: Compilation error(s)
+--- Job Balmorel.gms Stop 03/18/24 14:48:00 elapsed 0:00:03.334

@@ -1,0 +1,26 @@
+GAMS 39.3.0  55b56f9b Jul 7, 2022           WEX-WEI x86 64bit/MS Windows - 10/25/22 11:59:11 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  PARAMETER K
+   2  /
+   3  5
+   4  /;
+
+
+COMPILATION TIME     =        0.000 SECONDS      2 MB  39.3.0 55b56f9b WEX-WEI
+
+
+EXECUTION TIME       =        0.000 SECONDS      2 MB  39.3.0 55b56f9b WEX-WEI
+
+
+USER: Course License                                 G220801|0002AO-GEN
+      Technical University of Denmark, Management Engineering   DCE1794
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\mathi\OneDrive\Dokumenter\GitHub\Balmorel\base\auxils\spatial_aggregation\Tests.gms
+Output     C:\Users\mathi\OneDrive\Dokumenter\GitHub\Balmorel\base\auxils\spatial_aggregation\Tests.lst
