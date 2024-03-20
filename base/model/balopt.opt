@@ -31,7 +31,7 @@ $setglobal vqdebug
 * PROJECTID is the identification of the Project.
 * Convenient, and additioanally needed if results shall be compared among projects.
 *
-$setglobal PROJECTID 
+$setglobal PROJECTID %scenario_name%
 *!option !fixedvalue
 *
 *
@@ -154,7 +154,7 @@ $setglobal HeatTempLift
 *-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
 
 * Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
-$setglobal INDUSTRY 
+$setglobal INDUSTRY yes
 *!option yes
 
 *--------------------INDIVIDUAL USERS--------------------------------------------------------------
@@ -242,7 +242,7 @@ $setglobal EV_INTERSEASONAL
 *------------------------------TRANSPORT ADDON-------------------------------------------------
 * overall control variable TRANSPORT must be 'yes' if any of the other TRANSPORT controls are:
 * Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
-$setglobal TRANSPORT 
+$setglobal TRANSPORT yes
 *!option yes
 
 * Defines the commodity used to model synthetic fuel generation.
@@ -251,7 +251,7 @@ $setglobal TRANSPORT_SYNTHFUEL_COMMODITY    HYDROGEN
 *!option HYDROGEN       !Text "The demand for synthetic fuel generation is modelled as hydrogen demand (requires hydrogen addon to be activated)"
 
 * Defines the possibility for the transport demand of synthetic fuels to be aggregated internationally instead of having to satisfy it regionally.
-$setglobal TRANSPORT_DEMAND_AGGREGATED    
+$setglobal TRANSPORT_DEMAND_AGGREGATED  yes 
 
 
 *------------------------------END:TRANSPORT ADDON-------------------------------------------------
@@ -319,7 +319,7 @@ $setglobal COMBTECH
 *-----------------HYDROGEN ADDON---------------------------------------
 * overall control variable HYDROGEN must be 'yes' if any of the other HYDROGEN controls are:
 * Set demands for hydrogen consumption and enable hydrogen technologies (some options require COMBTECH to be activated too).
-$Setglobal HYDROGEN 
+$Setglobal HYDROGEN yes
 *!option yes
 
 * Allows investments in hydrogen transport
