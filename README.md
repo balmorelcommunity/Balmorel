@@ -16,6 +16,12 @@ See "Activities" and "Publications" sections in the menu for description of ongo
 
 Balmorel is a modelling tool that can be used by energy system experts, energy companies, authorities, transmission system operators, researchers and others for the analyses of future developments of a regional energy sector.
 
+### Demo with Trial License
+A small demo, optimising 8 hours in a summer week of the Italian power system is provided and can be run with a GAMS trial license (< 2000 rows and 2000 columns)
+https://www.gams.com/trygams/academic_trial/
+
+Remember to download data (.inc files) from https://github.com/balmorelcommunity/Balmorel_data and put them in base/data
+
 ## How is Balmorel supported and further developed?
 
 The model is developed and distributed under open source ideals. The source code has been provided on its homepage since 2001 and was assigned the [ISC license](https://opensource.org/licenses/ISC) in 2017. Ample documentation is available in the folder [within this repository](base/documentation). Application examples and contact information can be found on the [Balmorel homepage](https://balmorel.com). Presently the model development is mainly project driven, with a users' network around it, supporting the open source development idea.
