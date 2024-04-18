@@ -21,6 +21,7 @@ A small demo, optimising 8 hours in a summer week of the Italian power system is
 https://www.gams.com/trygams/academic_trial/
 
 Remember to download data (.inc files) from https://github.com/balmorelcommunity/Balmorel_data and put them in base/data
+Run Balmorel.gms in balmorel_demo and analyse the outputs all_endofmodel.gdx and MainResults.gdx
 
 ## How is Balmorel supported and further developed?
 
