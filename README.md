@@ -1,9 +1,8 @@
 # Spatial Aggregation Study
-This branch is used for analysing the effect of various spatial resolutions in Denmark - from Nordpool bidding zones, through NUTS2-3 and to a municipality resolution.
+This branch is used for analysing the effect of various spatial resolutions in Denmark - from Nordpool bidding zones, through NUTS2-3 and to a municipality resolution. An application is illustrated in the conference poster below.
 
-The pre-processing of data is performed through the balmorel-preprocessing tool in https://github.com/Mathias157/balmorel-preprocessing
-
-The required data to run the scenarios here will be uploaded in April.
+The pre-processing of data is performed through the balmorel-preprocessing tool ("Raw Data Processing" folder) in https://github.com/Mathias157/balmorel-preprocessing. A Zenodo repository is also provided here.
+![Application example](https://github.com/Mathias157/balmorel-preprocessing/blob/master/Raw%20Data%20Processing/Conference%20Poster%20for%20Analysis%20of%20Spatial%20Resolutions%20for%20Modelling%20Sector-Coupled%20Energy%20Systems.png)
 
 # Balmorel
 ## What is Balmorel?
