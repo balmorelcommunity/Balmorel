@@ -1,5 +1,7 @@
 # Balmorel
 
+A scenario that's possible to run with an academic trial license of GAMS can be found in the balmorel-demo branch.
+
 ## What is Balmorel?
 
 Balmorel is a partial equilibrium model for analysing the electricity and combined heat and power sectors in an international perspective. It is highly versatile and may be applied for long range planning as well as shorter time operational analysis. Balmorel is implemented as a mainly linear programming optimisation problem.
@@ -15,13 +17,6 @@ See "Activities" and "Publications" sections in the menu for description of ongo
 ## Who can use Balmorel?
 
 Balmorel is a modelling tool that can be used by energy system experts, energy companies, authorities, transmission system operators, researchers and others for the analyses of future developments of a regional energy sector.
-
-### Demo with Trial License
-A small demo, optimising 8 hours in a summer week of the Italian power system is provided and can be run with a GAMS trial license (< 2000 rows and 2000 columns)
-https://www.gams.com/trygams/academic_trial/
-
-Remember to download data (.inc files) from https://github.com/balmorelcommunity/Balmorel_data and put them in base/data
-Run Balmorel.gms in balmorel_demo and analyse the outputs all_endofmodel.gdx and MainResults.gdx
 
 ## How is Balmorel supported and further developed?
 
