@@ -13,6 +13,7 @@
 **/*.dat
 **/*.cmd
 **/data/*.inc
+!balmorel_demo/data/*.inc
 **/model/Balmorel.l*
 **/output/economic/*.*
 /base/bui/gamsscr/*.*
