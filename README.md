@@ -1,4 +1,9 @@
-# Balmorel
+# Balmorel Demo with Trial License
+balmorel_demo is a scenario that's possible to run with a GAMS trial license (< 2000 rows and 2000 columns). 
+It optimises 8 hours in a summer week of the Italian power system. 
+A free academic GAMS license can be downloaded here: https://www.gams.com/trygams/academic_trial/
+
+Remember, still, to download data (.inc files) from the master branch in https://github.com/balmorelcommunity/Balmorel_data and put them in base/data
 
 ## What is Balmorel?
 
@@ -16,11 +21,6 @@ See "Activities" and "Publications" sections in the menu for description of ongo
 
 Balmorel is a modelling tool that can be used by energy system experts, energy companies, authorities, transmission system operators, researchers and others for the analyses of future developments of a regional energy sector.
 
-### Demo with Trial License
-A small demo, optimising 8 hours in a summer week of the Italian power system is provided and can be run with a GAMS trial license (< 2000 rows and 2000 columns)
-https://www.gams.com/trygams/academic_trial/
-
-Remember to download data (.inc files) from https://github.com/balmorelcommunity/Balmorel_data and put them in base/data
 
 ## How is Balmorel supported and further developed?
 
