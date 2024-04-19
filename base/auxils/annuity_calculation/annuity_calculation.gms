@@ -24,15 +24,17 @@ GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_O
 * New technology types may be added only if also code specifying their properties are added.
 ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,AIR_AIR,AIR_WTR, EXCESSHEAT_WTR, GROUND_WTR, EXCESSHEAT,GROUND,HUB_OFF;
 *Hydrogen add-on
-ACRONYM HYDROGEN_GH2STO,H2_STORAGE, HYDROGEN_GETOH2, HYDROGEN_GETOHH2, HYDROGEN_GEHTOH2, HYDROGEN_GCH4TOH2, HYDROGEN_GH2FUEL, HYDROGEN_GH2TOE, HYDROGEN_GH2TOEH, HYDROGEN_GH2TOBIOMETH,FUELCELL, BIOMETHDAC, ELECTROLYZER,STEAMREFORMING, BACKUP_HYDROGEN,BACKUP_BIOMETHANE,HYDROGEN_GBIOGASMETHANATION,HYDROGEN_GBIOGASUPGRADING,BIOGASUPGRADING,BIOGASMETHANATION;
+ACRONYMS HYDROGEN_GH2STO, H2_STORAGE, HYDROGEN_GETOH2, HYDROGEN_GETOHH2,HYDROGEN_GEHTOH2, HYDROGEN_GCH4TOH2, HYDROGEN_GH2FUEL, HYDROGEN_GH2TOEH,HYDROGEN_GH2TOE, HYDROGEN_GH2TOBIOMETH, FUELCELL, BIOMETHDAC, HYDROGEN, BIOMETHANE, ELECTROLYZER,STEAMREFORMING;
 
 SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)"
 $if     EXIST '../data/CCCRRRAAA.inc' $INCLUDE         '../data/CCCRRRAAA.inc';
 $if not EXIST '../data/CCCRRRAAA.inc' $INCLUDE '../../base/data/CCCRRRAAA.inc';
 
+
 SET CCC(CCCRRRAAA)       "All Countries"
 $if     EXIST '../data/CCC.inc' $INCLUDE         '../data/CCC.inc';
 $if not EXIST '../data/CCC.inc' $INCLUDE '../../base/data/CCC.inc';
+
 
 SET C(CCC)    "Countries in the simulation"
 $if     EXIST '../data/C.inc' $INCLUDE         '../data/C.inc';
@@ -41,18 +43,17 @@ $if not EXIST '../data/C.inc' $INCLUDE '../../base/data/C.inc';
 SET FFF                "Fuels"
 $if     EXIST '../data/FFF.inc' $INCLUDE      '../data/FFF.inc';
 $if not EXIST '../data/FFF.inc' $INCLUDE '../../base/data/FFF.inc';
-*INCLUDE FFF FROM OTHER ADDONS
-$include   "../../base/addons/hydrogen/bb4/hydrogen_fffadditions.inc";
+
 
 SET FDATASET           "Characteristics of fuels "
 $if     EXIST '../data/FDATASET.inc' $INCLUDE      '../data/FDATASET.inc';
 $if not EXIST '../data/FDATASET.inc' $INCLUDE '../../base/data/FDATASET.inc';
 
+
 PARAMETER FDATA(FFF,FDATASET)    "Fuel specific values"
 $if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';
 $if not EXIST '../data/FDATA.inc' $INCLUDE '../../base/data/FDATA.inc';
-*INCLUDE FDATA FROM OTHER ADDONS
-$include   "../../base/addons/hydrogen/bb4/hydrogen_fdataadditions.inc";
+
 
 SET GGG          "All generation technologies"
 $if     EXIST '../data/GGG.inc' $INCLUDE      '../data/GGG.inc';

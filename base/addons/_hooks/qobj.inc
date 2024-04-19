@@ -30,9 +30,7 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_qobj.inc";
 $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_qobj.inc";
 $ifi %EV%==yes      $include        "../../base/addons/EV/bb4/EV_qobj.inc";
-$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_qobj.inc";
-$ifi %BalancingMarket%==yes       $include   "../../base/addons/balancing_market/balancing_market_qobj.inc";
-$ifi %OPTIFLOW%==yes   $include   "../../base/addons/optiflow/bb4/optiflow_qobj.inc";
+$ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_qobj.inc";   
 
 
 $ifi %vqdebug%==yes   $setglobal equation qobj

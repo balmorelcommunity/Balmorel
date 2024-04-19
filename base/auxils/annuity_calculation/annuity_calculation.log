@@ -1,0 +1,248 @@
+--- Job annuity_calculation.gms Start 06/03/22 11:45:14 36.2.0 r433180e WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\36\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input "C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms"
+    PageSize 0
+    ScrDir "C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\225a\"
+    SysDir C:\GAMS\36\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+Licensee: Course License                                 G220104|0002AO-GEN
+          Technical University of Denmark, Management Engineering   DCE1794
+          C:\Users\iokoun\Documents\GAMS\gamslice.txt
+          License Admin: Thomas Stidsen, thst@man.dtu.dk                   
+          Course license for use within the course and related course work
+Processor information: 1 socket(s), 4 core(s), and 8 thread(s) available
+GAMS 36.2.0   Copyright (C) 1987-2021 GAMS Development. All rights reserved
+--- Starting compilation
+--- annuity_calculation.gms(31) 2 Mb 1 Error
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(36) 2 Mb 2 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(41) 2 Mb 3 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(45) 2 Mb 4 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(50) 2 Mb 5 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(55) 2 Mb 6 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(60) 2 Mb 7 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(62) 2 Mb 8 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(63) 2 Mb 9 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(64) 2 Mb 10 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(68) 2 Mb 11 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(70) 2 Mb 12 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(71) 2 Mb 13 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(72) 2 Mb 14 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(76) 2 Mb 15 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(80) 2 Mb 16 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(82) 2 Mb 17 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(86) 2 Mb 18 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(90) 2 Mb 19 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(94) 2 Mb 20 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(98) 2 Mb 21 Errors
+*** Error 282 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Unable to open include file
+       Hint: Does the filename need to be quoted?
+--- annuity_calculation.gms(103) 3 Mb 26 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 141 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Symbol declared but no values have been assigned. Check for missing
+       data definition, assignment, data loading or implicit assignment
+       via a solve statement.
+       A wild shot: You may have spurious commas in the explanatory
+       text of a declaration. Check symbol reference list.
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 116 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Label is unknown
+*** Error 353 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    The domain for this index position is unknown and the element
+       cannot be checked at this point. Missing data statement.
+--- annuity_calculation.gms(106) 3 Mb 30 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 353 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    The domain for this index position is unknown and the element
+       cannot be checked at this point. Missing data statement.
+*** Error 141 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Symbol declared but no values have been assigned. Check for missing
+       data definition, assignment, data loading or implicit assignment
+       via a solve statement.
+       A wild shot: You may have spurious commas in the explanatory
+       text of a declaration. Check symbol reference list.
+--- annuity_calculation.gms(112) 3 Mb 36 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 353 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    The domain for this index position is unknown and the element
+       cannot be checked at this point. Missing data statement.
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 116 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Label is unknown
+*** Error 353 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    The domain for this index position is unknown and the element
+       cannot be checked at this point. Missing data statement.
+--- annuity_calculation.gms(126) 3 Mb 37 Errors
+*** Error 141 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Symbol declared but no values have been assigned. Check for missing
+       data definition, assignment, data loading or implicit assignment
+       via a solve statement.
+       A wild shot: You may have spurious commas in the explanatory
+       text of a declaration. Check symbol reference list.
+--- annuity_calculation.gms(140) 3 Mb 38 Errors
+*** Error 141 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Symbol declared but no values have been assigned. Check for missing
+       data definition, assignment, data loading or implicit assignment
+       via a solve statement.
+       A wild shot: You may have spurious commas in the explanatory
+       text of a declaration. Check symbol reference list.
+--- annuity_calculation.gms(154) 3 Mb 39 Errors
+*** Error 141 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Symbol declared but no values have been assigned. Check for missing
+       data definition, assignment, data loading or implicit assignment
+       via a solve statement.
+       A wild shot: You may have spurious commas in the explanatory
+       text of a declaration. Check symbol reference list.
+--- annuity_calculation.gms(163) 3 Mb 52 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 353 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    The domain for this index position is unknown and the element
+       cannot be checked at this point. Missing data statement.
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 300 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Remaining errors not printed for this line
+--- annuity_calculation.gms(165) 3 Mb 53 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+--- annuity_calculation.gms(167) 3 Mb 54 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+--- annuity_calculation.gms(169) 3 Mb 55 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+--- annuity_calculation.gms(181) 3 Mb 59 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 353 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    The domain for this index position is unknown and the element
+       cannot be checked at this point. Missing data statement.
+--- annuity_calculation.gms(182) 3 Mb 63 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+--- annuity_calculation.gms(190) 3 Mb 64 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+--- annuity_calculation.gms(191) 3 Mb 66 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+--- annuity_calculation.gms(199) 3 Mb 67 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+--- annuity_calculation.gms(200) 3 Mb 69 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+--- annuity_calculation.gms(208) 3 Mb 70 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+--- annuity_calculation.gms(209) 3 Mb 72 Errors
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+*** Error 352 in C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+    Set has not been initialized
+--- annuity_calculation.gms(214) 3 Mb 72 Errors
+*** Status: Compilation error(s)
+--- Job annuity_calculation.gms Stop 06/03/22 11:45:14 elapsed 0:00:00.031

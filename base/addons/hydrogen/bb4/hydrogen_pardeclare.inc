@@ -1,26 +1,19 @@
 PARAMETERS
 HYDROGEN_DH2          (YYY,CCCRRRAAA)              'Yearly demand for hydrogen from the transport sector'
+*IK add
+HYDROGEN_DH2_SYN      (YYY,CCCRRRAAA)              'Yearly demand for hydrogen but synthetic fuels'
+
 HYDROGEN_DH2_VAR_T    (CCCRRRAAA,SSS,TTT)          'Variation profile of H2 demand per region'
 HYDROGEN_STOVOL_START (Y,AAA,G,SSS)                'Start level of hydrogen storage'
+HYDROGEN_H2TOF        (GGG)             'Factor for need of hydrogen for fuel production'
 DAC_DE(GGG)          'Power demand needed to produce biomethane through DAC (Mwe/MWth biomethane)'
 DAC_DH(GGG)          'Heat demand needed to produce biomethane through DAC (Mwth/MWth biomethane)'
-METHANATION_DE(GGG)   'Electricity demand needed to produce biomethane through biogas methanation (MW/MWth biomethane)'
-METHANATION_DH2(GGG) 'H2 demand needed to produce biomethane through biogas methanation (MWth/MWth biomethane)'
-BIOGASUPGRADING_DE(GGG) 'Electricity demand needed to produce biomethane through biogas upgrading (MW/MWth biomethane)'
 
 H2STOVOLTS(Y,AAA,GGG,SSS,TTT)          'Hydrogen storage content to be used in future runs (MWh)'
 H2STOVOLTSVAL(Y,AAA,GGG,SSS,TTT)       'Hydrogen storage value to be used in future runs (MWh)'
 
 BIOMETHSTOVOLTS(Y,SSS,TTT)          'Biomethane storage content to be used in future runs (MWh)'
 BIOMETHSTOVOLTSVAL(Y,SSS,TTT)       'Biomethane storage value to be used in future runs (MWh)'
-
-GH2_T(YYY,AAA,GGG,SSS,TTT)               'Hydrogen generation (MW)  to be transferred to future runs'
-GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT)      'Synthetic natural gas generation (MW)  to be transferred to future runs'
-GBIOGASMETHANATION_T(YYY,AAA,GGG,SSS,TTT)      'Biomethane generation (MW) from biogas methanation  to be transferred to future runs'
-GBIOGASUPGRADING_T(YYY,AAA,GGG,SSS,TTT)      'Biomethane generation (MW)from biogas upgrading  to be transferred to future runs'
-
-HYDROGEN_PRICE(YYY,RRR,SSS,TTT)                'Hydrogen price (money/MWh)  to be transferred to future runs'
-BIOMETHANE_PRICE(YYY,SSS,TTT)            'Biomethane price (money/MWh)  to be transferred to future runs'
 ;
 
 *IHYDROGEN_DH2_REGION_SUMST and IHYDROGEN_DH2_AREA_SUMST  are put here for convenience.

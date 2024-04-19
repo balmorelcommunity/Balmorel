@@ -2,9 +2,7 @@ POSITIVE VARIABLES
    VHYDROGEN_GH2_T(Y,AAA,GGG,S,T)        'Hydrogen production - existing plants (MWh)'
    VHYDROGEN_STOVOL_T(Y,AAA,G,SSS,T)     'Energy content of hydrogen storage in the beginning of time step T'
    VHYDROGEN_STOLOADT(Y,AAA,GGG,S,T)     'Loading of hydrogen storage'
-   VGBIOMETH_T(Y,AAA,GGG,S,T)            'Synthetic natural gas producction (MWh)'
-   VGBIOGASUPGRADING_T(Y,AAA,GGG,S,T)    'Biomethane producction from biogas upgrading (CO2 removal) (MWh)'
-   VGBIOGASMETHANATION_T(Y,AAA,GGG,S,T)  'Biomethane producction from biogas methanation (h2+biogas) (MWh)'
+   VGBIOMETH_T(Y,AAA,GGG,S,T)            'Biomethane producction (MWh)'
    VBIOMETHSTOVOLTS(Y,SSS,T)             'Energy content of biomethane storage in the beginning of time step T'
    VBIOMETH_STOLOADT(Y,S,T)              'Loading of biomethane storage'
    VBIOMETH_STOUNLOADT(Y,S,T)            'Unloading of biomethane storage'
@@ -16,6 +14,13 @@ POSITIVE VARIABLES
 
 
 ;
+
+*Demand shift IK
+Positive variable 
+VGE_T_SYNFUEL_ST(Y,RRR,S,T) 'Hourly hydrogen for synthetic fuel'
+VGE_T_SYNFUEL(Y,RRR) 'Total hydrogen for synthetic fuel'
+VSYN_FUEL_SHIFT(Y,RRR) 'how much to shift from one area to area'
+; 
 
 SOS2 VARIABLE VXH2LAMBDA(Y,IRRRE,IRRRI,XES) 'SOS2 Variable for modelling economy of scale';
 

@@ -14,8 +14,8 @@ LOOP(S,
 $ifi not %STEPWISE_RAMPING_UC%==ramp_const_cost $goto STEPWISERAMPING_END
 
 ** RAMPING CHARACTERISTICS OF THE TECHNOLOGIES TO BE USED
-PARAMETER IRAMPING_G_COSTS_UP(G,RAMPING_RATE) 'Ramping up costs for each technology (money/MW)';
-PARAMETER IRAMPING_G_COSTS_DOWN(G,RAMPING_RATE) 'Ramping down costs for each technology (money/MW)';
+PARAMETER IRAMPING_G_COSTS_UP(G,RAMPING_RATE) 'Ramping up costs for each technology (money/MWh)';
+PARAMETER IRAMPING_G_COSTS_DOWN(G,RAMPING_RATE) 'Ramping down costs for each technology (money/MWh)';
 PARAMETER IRAMPING_G_CAPABILITY_UP(G,RAMPING_RATE) 'Ramping up capability for each technology for each ramping rate mode (% Capacity)';
 PARAMETER IRAMPING_G_CAPABILITY_DOWN(G,RAMPING_RATE) 'Ramping down capability for each technology for each ramping rate mode (% Capacity)';
 

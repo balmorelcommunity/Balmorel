@@ -2,11 +2,8 @@
 * Important note: make sure the full year data is used, otherwise there will be errors in some files
 
 *---------- DATA DEFINITION--------------------
-*Convert input data (.inc files)
-$setglobal input_data_conversion yes
-*!option yes
-
 *Possible conversion of timesteps
+
 $setglobal timestep_conversion WeeksHours_DaysHours
 *!option WeeksHours_DaysHours
 *!option WeeksHours_HoursHours
@@ -83,27 +80,19 @@ $if not EXIST '../data/C.inc' $INCLUDE '../../base/data/C.inc';
 SET CCCRRR(CCC,RRR)      "Regions in countries";
 $if     EXIST '../data/CCCRRR.inc' $INCLUDE      '../data/CCCRRR.inc';
 $if not EXIST '../data/CCCRRR.inc' $INCLUDE '../../base/data/CCCRRR.inc';
-$include   "../../base/addons/offshoregrid/bb4/offshoregrid_cccrrradditions.inc";
 ;
 
 SET DEUSER             "Electricity demand user groups. Set must include element RESE for holding demand not included in any other user group" ;
 $INCLUDE         '../data/DEUSER.inc';
-$include   "../../base/addons/transport/bb4/transport_deuseradditions.inc";
 
 SET DHUSER             "Heat demand user groups. Set must include element RESH for holding demand not included in any other user group"  ;
 $INCLUDE         '../data/DHUSER.inc';
 
 SET GGG          "All generation technologies"   ;
 $INCLUDE         '../data/GGG.inc';
-$include   "../../base/addons/combtech/bb4/combtech_gggadditions.inc";
-$include   "../../base/addons/industry/bb4/industry_gggadditions.inc";
-$include   "../../base/addons/indivusers/bb4/indivusers_gggadditions.inc";
-$include   "../../base/addons/hydrogen/bb4/hydrogen_gggadditions.inc";
 
 SET FFF       "All fuels"
 $INCLUDE         '../data/FFF.inc';
-$include   "../../base/addons/hydrogen/bb4/hydrogen_fffadditions.inc";
-$include   "../../base/addons/combtech/bb4/combtech_fffadditions.inc";
 
 SET YYY                "All years" ;
 $INCLUDE         '../data/YYY.inc';
@@ -115,10 +104,10 @@ SET HYRSDATASET  "Characteristics of hydro reservoirs" ;
 $INCLUDE         '../data/HYRSDATASET.inc';
 
 PARAMETER GMAXF(YYY,CCCRRRAAA,FFF)  "Maximum annual fuel use by year, geography and fuel and (GJ)";
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', GMAXF;
+$INCLUDE         '../data/GMAXF.inc';
 
 PARAMETER GMAXFS(YYY,CCCRRRAAA,FFF,SSS)  "Maximum annual fuel use by year, season, geography and fuel and (GJ)";
-execute_load  '../../base/auxils/timestep_conversion/input/INPUTDATAOUT.gdx', GMAXFS;
+$INCLUDE         '../data/GMAXFS.inc';
 
 *Original timeseries
 PARAMETER WND_VAR_T(AAA,SSS,TTT)                   "Variation of the wind generation"    ;
@@ -276,22 +265,6 @@ PARAMETER  GH_T(YYY,AAA,GGG,SSS,TTT)               "Heat generation (MW)  to be 
 $ifi  exist '../../base/auxils/timestep_conversion/input/GH_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GH_T.gdx', GH_T;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/GH_T.gdx' GH_T(YYY,AAA,GGG,SSS,TTT)=0;
 
-PARAMETER  GH2_T(YYY,AAA,GGG,SSS,TTT)               "H2 generation (MW)  to be transferred to future runs";
-$ifi  exist '../../base/auxils/timestep_conversion/input/GH2_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GH2_T.gdx', GH2_T;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/GH2_T.gdx' GH2_T(YYY,AAA,GGG,SSS,TTT)=0;
-
-PARAMETER  GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT)               "Biomethane generation (MW)  to be transferred to future runs";
-$ifi  exist '../../base/auxils/timestep_conversion/input/GBIOMETHANE_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GBIOMETHANE_T.gdx', GBIOMETHANE_T;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/GBIOMETHANE_T.gdx' GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT)=0;
-
-PARAMETER  GBIOGASMETHANATION_T(YYY,AAA,GGG,SSS,TTT)   "Biomethane generation from biogas methanation (MW)  to be transferred to future runs";
-$ifi  exist '../../base/auxils/timestep_conversion/input/GBIOGASMETHANATION_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GBIOGASMETHANATION_T.gdx', GBIOGASMETHANATION_T;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/GBIOGASMETHANATION_T.gdx' GBIOGASMETHANATION_T(YYY,AAA,GGG,SSS,TTT)=0;
-
-PARAMETER  GBIOGASUPGRADING_T(YYY,AAA,GGG,SSS,TTT)               "Biomethane generation from biogas upgrading (MW)  to be transferred to future runs";
-$ifi  exist '../../base/auxils/timestep_conversion/input/GBIOGASUPGRADING_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GBIOGASUPGRADING_T.gdx', GBIOGASUPGRADING_T;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/GBIOGASUPGRADING_T.gdx' GBIOGASUPGRADING_T(YYY,AAA,GGG,SSS,TTT)=0;
-
 PARAMETER  GF_T(YYY,AAA,GGG,SSS,TTT)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
 $ifi  exist '../../base/auxils/timestep_conversion/input/GF_T.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/GF_T.gdx', GF_T;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/GF_T.gdx' GF_T(YYY,AAA,GGG,SSS,TTT)=0;
@@ -380,21 +353,6 @@ PARAMETER BIOMETHSTOVOLTSVAL(YYY,SSS,TTT) "Inter-seasonal biomethane storage con
 $ifi  exist '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx', BIOMETHSTOVOLTSVAL;
 $ifi not  exist '../../base/auxils/timestep_conversion/input/BIOMETHSTOVOLTSVAL.gdx' BIOMETHSTOVOLTSVAL(YYY,SSS,TTT)=0;
 
-PARAMETER ELECTRICITY_PRICE(YYY,RRR,SSS,TTT) "Electricity price to be transferred to future runs (Money/MWh)";
-$ifi  exist '../../base/auxils/timestep_conversion/input/ELECTRICITY_PRICE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/ELECTRICITY_PRICE.gdx', ELECTRICITY_PRICE;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/ELECTRICITY_PRICE.gdx' ELECTRICITY_PRICE(YYY,RRR,SSS,TTT)=0;
-
-PARAMETER HEAT_PRICE(YYY,AAA,SSS,TTT) "Heat price to be transferred to future runs (Money/MWh)";
-$ifi  exist '../../base/auxils/timestep_conversion/input/HEAT_PRICE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HEAT_PRICE.gdx', HEAT_PRICE;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/HEAT_PRICE.gdx' HEAT_PRICE(YYY,AAA,SSS,TTT)=0;
-
-PARAMETER HYDROGEN_PRICE(YYY,RRR,SSS,TTT) "Hydrogen price to be transferred to future runs (Money/MWh)";
-$ifi  exist '../../base/auxils/timestep_conversion/input/HYDROGEN_PRICE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/HYDROGEN_PRICE.gdx', HYDROGEN_PRICE;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/HYDROGEN_PRICE.gdx' HYDROGEN_PRICE(YYY,RRR,SSS,TTT)=0;
-
-PARAMETER BIOMETHANE_PRICE(YYY,SSS,TTT) "Biomethane price to be transferred to future runs (Money/MWh)";
-$ifi  exist '../../base/auxils/timestep_conversion/input/BIOMETHANE_PRICE.gdx'  execute_load  '../../base/auxils/timestep_conversion/input/BIOMETHANE_PRICE.gdx', BIOMETHANE_PRICE;
-$ifi not  exist '../../base/auxils/timestep_conversion/input/BIOMETHANE_PRICE.gdx' BIOMETHANE_PRICE(YYY,SSS,TTT)=0;
 
 
 *REST OF HYDRO PARAMETERS.........
@@ -449,10 +407,6 @@ PARAMETER  DE_T_NEW(YYY,RRR,SSS_NEW,TTT_NEW)                 "Electricity demand
 PARAMETER  DH_T_NEW(YYY,AAA,SSS_NEW,TTT_NEW)                 "Heat demand (MW) to be transferred to future runs";
 PARAMETER  GE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "Electricity generation (MW)  to be transferred to future runs";
 PARAMETER  GH_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "Heat generation (MW)  to be transferred to future runs";
-PARAMETER  GH2_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "H2 generation (MW)  to be transferred to future runs";
-PARAMETER  GBIOMETHANE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)       "Biomethane generation (MW)  to be transferred to future runs";
-PARAMETER  GBIOGASMETHANATION_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)       "Biomethane generation from biogas methanation (MW)  to be transferred to future runs";
-PARAMETER  GBIOGASUPGRADING_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)       "Biomethane generation from biogas upgrading (MW)  to be transferred to future runs";
 PARAMETER  GF_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)               "Fuel consumption rate (MW), existing units  to be transferred to future runs";
 PARAMETER ESTOLOADT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Intra-seasonal electricity storage loading to be transferred to future runs (MW)";
 PARAMETER ESTOLOADTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal electricity storage loading to be transferred to future runs (MW)";;
@@ -474,11 +428,6 @@ PARAMETER H2STOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal hydrogen s
 PARAMETER H2STOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW) "Inter-seasonal hydrogen storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
 PARAMETER BIOMETHSTOVOLTS_NEW(YYY,SSS_NEW,TTT_NEW) "Inter-seasonal biomethane storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER BIOMETHSTOVOLTSVAL_NEW(YYY,SSS_NEW,TTT_NEW) "Inter-seasonal biomethane storage content value (in input money) to be transferred to future runs (input-Money/MWh)";
-PARAMETER ELECTRICITY_PRICE_NEW(YYY,RRR,SSS_NEW,TTT_NEW) "Electricity price to be transferred to future runs (Money/MWh)";
-PARAMETER HEAT_PRICE_NEW(YYY,AAA,SSS_NEW,TTT_NEW) "Heat price to be transferred to future runs (Money/MWh)";
-PARAMETER HYDROGEN_PRICE_NEW(YYY,RRR,SSS_NEW,TTT_NEW) "Hydrogen price to be transferred to future runs (Money/MWh)";
-PARAMETER BIOMETHANE_PRICE_NEW(YYY,SSS_NEW,TTT_NEW) "Biomethane price to be transferred to future runs (Money/MWh)";
-
 
 *----------END OF INPUT DATA--------------------
 
@@ -504,7 +453,6 @@ WEIGHT_S_NEW(SSS_NEW)=1;
 WEIGHT_T_NEW(TTT_NEW)=1/12;
 $label No_DaysHours_Hours5min
 
-$ifi not %input_data_conversion%==yes $goto NO_input_data_conversion1
 WND_VAR_T_NEW(AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),WND_VAR_T(AAA,SSS,TTT));
 SOLE_VAR_T_NEW(AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),SOLE_VAR_T(AAA,SSS,TTT));
 SOLH_VAR_T_NEW(AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),SOLH_VAR_T(AAA,SSS,TTT));
@@ -534,9 +482,6 @@ EV_PHEV_Max_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,T
 EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_Min(YYY,SSS,TTT,RRR)) ;
 EV_VSOC_BEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_VSOC_BEV(YYY,RRR,SSS,TTT)) ;
 EV_VSOC_PHEV_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_VSOC_PHEV(YYY,RRR,SSS,TTT)) ;
-GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXFS(YYY,CCCRRRAAA,FFF,SSS)*WEIGHT_S_NEW(SSS_NEW)/WEIGHT_S(SSS));
-$label NO_input_data_conversion1
-
 EV_BEV_NETCHARGING_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_BEV_NETCHARGING(YYY,RRR,SSS,TTT)*WEIGHT_T_NEW(TTT_NEW)/WEIGHT_T(TTT)) ;
 EV_PHEV_NETCHARGING_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),EV_PHEV_NETCHARGING(YYY,RRR,SSS,TTT)*WEIGHT_T_NEW(TTT_NEW)/WEIGHT_T(TTT)) ;
 ESTOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOVOLTS(YYY,AAA,GGG,SSS,TTT)) ;
@@ -551,10 +496,6 @@ DE_T_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW)
 DH_T_NEW(YYY,AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),DH_T(YYY,AAA,SSS,TTT))          ;
 GE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GE_T(YYY,AAA,GGG,SSS,TTT))       ;
 GH_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GH_T(YYY,AAA,GGG,SSS,TTT))       ;
-GH2_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GH2_T(YYY,AAA,GGG,SSS,TTT))       ;
-GBIOMETHANE_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT))       ;
-GBIOGASMETHANATION_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GBIOGASMETHANATION_T(YYY,AAA,GGG,SSS,TTT))       ;
-GBIOGASUPGRADING_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GBIOGASUPGRADING_T(YYY,AAA,GGG,SSS,TTT))       ;
 GF_T_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),GF_T(YYY,AAA,GGG,SSS,TTT))         ;
 ESTOLOADT_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOLOADT(YYY,AAA,GGG,SSS,TTT)) ;
 ESTOLOADTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ESTOLOADTS(YYY,AAA,GGG,SSS,TTT)) ;
@@ -566,6 +507,7 @@ HYRSG_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),HYRSG(YYY,AAA,SSS));
 VHYRS_SL_NEW(YYY,AAA,SSS_NEW)=SUM(TTT_NEW$(ORD(TTT_NEW) EQ 1), SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),VHYRS_STL(YYY,AAA,SSS,TTT)));
 WATERVAL_NEW(YYY,AAA,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),WATERVAL(YYY,AAA,SSS));
 GMAXFS_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)$(GMAXF(YYY,CCCRRRAAA,FFF) OR SUM(ISSS,GMAXFS(YYY,CCCRRRAAA,FFF,ISSS)))=SUM((SSS,TTT,TTT_NEW)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),F_T(YYY,CCCRRRAAA,FFF,SSS,TTT)*WEIGHT_S(SSS))/SUM(TTT, WEIGHT_T(TTT));
+GMAXFS_ORIGINAL_NEW(YYY,CCCRRRAAA,FFF,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),GMAXFS(YYY,CCCRRRAAA,FFF,SSS)*WEIGHT_S_NEW(SSS_NEW)/WEIGHT_S(SSS));
 UCONMAINT_NEW(YYY,AAA,GGG,SSS_NEW)=SUM(SSS$S_LINK(SSS,SSS_NEW),UCONMAINT(YYY,AAA,GGG,SSS));
 UCON_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),UCON(YYY,AAA,GGG,SSS,TTT)) ;
 UCON_STOLOAD_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),UCON_STOLOAD(YYY,AAA,GGG,SSS,TTT)) ;
@@ -576,10 +518,7 @@ H2STOVOLTS_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NE
 H2STOVOLTSVAL_NEW(YYY,AAA,GGG,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),H2STOVOLTSVAL(YYY,AAA,GGG,SSS,TTT)) ;
 BIOMETHSTOVOLTS_NEW(YYY,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),BIOMETHSTOVOLTS(YYY,SSS,TTT));
 BIOMETHSTOVOLTSVAL_NEW(YYY,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),BIOMETHSTOVOLTSVAL(YYY,SSS,TTT)) ;
-ELECTRICITY_PRICE_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),ELECTRICITY_PRICE(YYY,RRR,SSS,TTT));
-HEAT_PRICE_NEW(YYY,AAA,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HEAT_PRICE(YYY,AAA,SSS,TTT));
-HYDROGEN_PRICE_NEW(YYY,RRR,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),HYDROGEN_PRICE(YYY,RRR,SSS,TTT));
-BIOMETHANE_PRICE_NEW(YYY,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,TTT_NEW),BIOMETHANE_PRICE(YYY,SSS,TTT)) ;
+
 
 *------------END OF CALCULATIONS-------------
 
@@ -589,14 +528,28 @@ BIOMETHANE_PRICE_NEW(YYY,SSS_NEW,TTT_NEW)=SUM((SSS,TTT)$ST_LINK(SSS,TTT,SSS_NEW,
 
 *------------OUTPUT GENERATION-------------
 
+
+execute_unload  '../../base/auxils/timestep_conversion/output/converted_timesteps.gdx',
+ST_LINK,S_LINK,
+WND_VAR_T_NEW=WND_VAR_T,
+SOLE_VAR_T_NEW=SOLE_VAR_T,
+SOLH_VAR_T_NEW=SOLH_VAR_T,
+GKRATE_NEW=GKRATE,
+WTRRSVAR_S_NEW=WTRRSVAR_S,
+WTRRRVAR_T_NEW=WTRRRVAR_T,
+HYRSDATA_NEW=HYRSDATA,
+HYPPROFILS_NEW=HYPPROFILS,
+DE_VAR_T_NEW=DE_VAR_T,
+DH_VAR_T_NEW=DH_VAR_T,
+WEIGHT_S_NEW=WEIGHT_S,
+WEIGHT_T_NEW=WEIGHT_T,
+GMAXFS_NEW=GMAXFS
+;
+
 execute_unload  "../../base/auxils/timestep_conversion/output/DE_T.gdx", DE_T_NEW=DE_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/DH_T.gdx", DH_T_NEW=DH_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/GE_T.gdx", GE_T_NEW=GE_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/GH_T.gdx", GH_T_NEW=GH_T;
-execute_unload  "../../base/auxils/timestep_conversion/output/GH2_T.gdx", GH2_T_NEW=GH2_T;
-execute_unload  "../../base/auxils/timestep_conversion/output/GBIOMETHANE_T.gdx", GBIOMETHANE_T_NEW=GBIOMETHANE_T;
-execute_unload  "../../base/auxils/timestep_conversion/output/GBIOGASMETHANATION_T.gdx", GBIOGASMETHANATION_T_NEW=GBIOGASMETHANATION_T;
-execute_unload  "../../base/auxils/timestep_conversion/output/GBIOGASUPGRADING_T.gdx", GBIOGASUPGRADING_T_NEW=GBIOGASUPGRADING_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/GF_T.gdx", GF_T_NEW=GF_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/X_T.gdx", X_T_NEW=X_T;
 execute_unload  "../../base/auxils/timestep_conversion/output/XH_T.gdx", XH_T_NEW=XH_T;
@@ -630,12 +583,8 @@ execute_unload  "../../base/auxils/timestep_conversion/output/EV_VSOC_BEV.gdx", 
 execute_unload  "../../base/auxils/timestep_conversion/output/EV_VSOC_PHEV.gdx", EV_VSOC_PHEV_NEW=EV_VSOC_PHEV;
 execute_unload  "../../base/auxils/timestep_conversion/output/EV_BEV_NETCHARGING.gdx", EV_BEV_NETCHARGING_NEW=EV_BEV_NETCHARGING;
 execute_unload  "../../base/auxils/timestep_conversion/output/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHARGING_NEW=EV_PHEV_NETCHARGING;
-execute_unload  "../../base/auxils/timestep_conversion/output/ELECTRICITY_PRICE.gdx", ELECTRICITY_PRICE_NEW=ELECTRICITY_PRICE;
-execute_unload  "../../base/auxils/timestep_conversion/output/HEAT_PRICE.gdx", HEAT_PRICE_NEW=HEAT_PRICE;
-execute_unload  "../../base/auxils/timestep_conversion/output/HYDROGEN_PRICE.gdx", HYDROGEN_PRICE_NEW=HYDROGEN_PRICE;
-execute_unload  "../../base/auxils/timestep_conversion/output/BIOMETHANE_PRICE.gdx", BIOMETHANE_PRICE_NEW=BIOMETHANE_PRICE;
 
-$ifi not %input_data_conversion%==yes $goto NO_input_data_conversion2
+$ONTEXT
 *WND_VAR_T timeseries
 file WND_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/WND_VAR_T.inc'/;
 WND_VAR_T_timeseries.nd  = 6;
@@ -856,6 +805,13 @@ loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_BEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
 );
 putclose;
 
+
+
+
+
+
+
+
 *EV_PHEV_Dumb timeseries
 file EV_PHEV_Dumb_timeseries /'../../base/auxils/timestep_conversion/output/EV_PHEV_Dumb.inc'/;
 EV_PHEV_Dumb_timeseries.nd  = 4;
@@ -936,93 +892,7 @@ loop((YYY,SSS_NEW,TTT_NEW,RRR)$EV_PHEV_Min_NEW(YYY,SSS_NEW,TTT_NEW,RRR),
 );
 putclose;
 
-*TTT
-file TTT_timeseries /'../../base/auxils/timestep_conversion/output/TTT.inc'/;
-TTT_timeseries.nd  = 6;
-put TTT_timeseries;
-put '*SET TTT CALCULATED WITH AUXILS' //
-$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET TTT /T01*T24/;'
-$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET TTT /T01/;'
-$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET TTT /T01/;'
-$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET TTT /T01*T12/;'
-putclose;
 
-*SSS
-file SSS_timeseries /'../../base/auxils/timestep_conversion/output/SSS.inc'/;
-SSS_timeseries.nd  = 6;
-put SSS_timeseries;
-put '*SET SSS CALCULATED WITH AUXILS' //
-$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET SSS /S001*S364/;'
-$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET SSS /S0001*S8736/;'
-$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET SSS /S0001*S8736/;'
-$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET SSS /S0001*S8736/;'
-putclose;
-
-*TWORKDAY (DUMMY DATA TO AVOID ERRORS BECAUSE IT IS NOT RELEVANT WHEN USING DIFFERENT TIME STEPS)
-file TWORKDAY_timeseries /'../../base/auxils/timestep_conversion/output/TWORKDAY.inc'/;
-TWORKDAY_timeseries.nd  = 6;
-put TWORKDAY_timeseries;
-put '*SET TWORKDAY CALCULATED WITH AUXILS' //
-$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET TWORKDAY /T01*T24/;'
-$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET TWORKDAY /T01/;'
-$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET TWORKDAY /T01/;'
-$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET TWORKDAY /T01*T10/;'
-putclose;
-
-*TWEEKEND (DUMMY DATA TO AVOID ERRORS BECAUSE IT IS NOT RELEVANT WHEN USING DIFFERENT TIME STEPS)
-file TWEEKEND_timeseries /'../../base/auxils/timestep_conversion/output/TWEEKEND.inc'/;
-TWEEKEND_timeseries.nd  = 6;
-put TWEEKEND_timeseries;
-put '*SET TWEEKEND CALCULATED WITH AUXILS' //
-$ifi  %timestep_conversion%==WeeksHours_DaysHours  PUT 'SET TWEEKEND //;'
-$ifi  %timestep_conversion%==WeeksHours_HoursHours PUT 'SET TWEEKEND //;'
-$ifi  %timestep_conversion%==DaysHours_HoursHours  PUT 'SET TWEEKEND //;'
-$ifi  %timestep_conversion%==DaysHours_Hours5min   PUT 'SET TWEEKEND //;'
-putclose;
-
-*Other files with empty data because the data is already in another file
-*OFFSHOREGRID_WND_VAR_T timeseries
-file OFFSHOREGRID_WND_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/OFFSHOREGRID_WND_VAR_T.inc'/;
-OFFSHOREGRID_WND_VAR_T_timeseries.nd  = 6;
-put OFFSHOREGRID_WND_VAR_T_timeseries;
-put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
-putclose;
-
-*INDIVUSERS_COP_VAR_T timeseries
-file INDIVUSERS_COP_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDIVUSERS_COP_VAR_T.inc'/;
-INDIVUSERS_COP_VAR_T_timeseries.nd  = 6;
-put INDIVUSERS_COP_VAR_T_timeseries;
-put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
-putclose;
-
-*INDUSTRY_COP_VAR_T timeseries
-file INDUSTRY_COP_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDUSTRY_COP_VAR_T.inc'/;
-INDUSTRY_COP_VAR_T_timeseries.nd  = 6;
-put INDUSTRY_COP_VAR_T_timeseries;
-put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
-putclose;
-
-*INDIVUSERS_DH_VAR_T timeseries
-file INDIVUSERS_DH_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDIVUSERS_DH_VAR_T.inc'/;
-INDIVUSERS_DH_VAR_T_timeseries.nd  = 6;
-put INDIVUSERS_DH_VAR_T_timeseries;
-put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
-putclose;
-
-*INDUSTRY_DH_VAR_T timeseries
-file INDUSTRY_DH_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDUSTRY_DH_VAR_T.inc'/;
-INDUSTRY_DH_VAR_T_timeseries.nd  = 6;
-put INDUSTRY_DH_VAR_T_timeseries;
-put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
-putclose;
-
-*INDIVUSERS_DE_VAR_T timeseries
-file INDIVUSERS_DE_VAR_T_timeseries /'../../base/auxils/timestep_conversion/output/INDIVUSERS_DE_VAR_T.inc'/;
-INDIVUSERS_DE_VAR_T_timeseries.nd  = 6;
-put INDIVUSERS_DE_VAR_T_timeseries;
-put '*FILE EMPTY BECAUSE DATA SHOULD BE ALREADY IN ANOTHER FILE' //
-putclose;
-
-$label NO_input_data_conversion2
+$OFFTEXT
 *------------END OF OUTPUT GENERATION-------------
 

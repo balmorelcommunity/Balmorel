@@ -15,8 +15,6 @@
 *-------------------------------------------------------------------------------
 
 IS3(S)   = YES;
-IS3_NEXT(S)=YES;
-IS3_ONLYNEXT(S)=YES;
 
 * Initialize the first year in the simulation:
 
@@ -240,10 +238,6 @@ $ifi %RollingSeasons%==yes LOOP(IS3LOOPSET$(ORD(IS3LOOPSET) LE (CARD(S)-ROLLINGS
 $ifi %RollingSeasons%==yes * Set the current set of seasons IS3:
 $ifi %RollingSeasons%==yes IS3(S)=NO;
 $ifi %RollingSeasons%==yes IS3(S)$((ORD(S) LE (ORD(IS3LOOPSET)+ROLLINGSEASONSNUMBER-1)) AND (ORD(S) GE ORD(IS3LOOPSET)) )=YES;
-$ifi %RollingSeasons%==yes IS3_NEXT(S)=NO;
-$ifi %RollingSeasons%==yes IS3_NEXT(S)$((ORD(S) LE (ORD(IS3LOOPSET)+ROLLINGSEASONSNUMBER)) AND (ORD(S) GE ORD(IS3LOOPSET)) )=YES;
-$ifi %RollingSeasons%==yes IS3_ONLYNEXT(S)=NO;
-$ifi %RollingSeasons%==yes IS3_ONLYNEXT(S)$((ORD(S) EQ (ORD(IS3LOOPSET)+ROLLINGSEASONSNUMBER)))=YES;
 
 $ifi %RollingSeasons%==yes * Redefinition of IHOURSINT for the current set of season IS3:
 $ifi %RollingSeasons%==yes IWEIGHSUMS=SUM(IS3, WEIGHT_S(IS3));

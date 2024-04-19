@@ -23,8 +23,6 @@
 *Other acronyms
 $if     EXIST '../data/ACRONYMS.inc' $INCLUDE         '../data/ACRONYMS.inc';
 $if not EXIST '../data/ACRONYMS.inc' $INCLUDE '../../base/data/ACRONYMS.inc';
-*------------- Any ACRONYMS additions for addon to be placed here: ----------------
-$include "../../base/addons/_hooks/acronymsadditions.inc"
 
 * Geography
 
@@ -171,15 +169,11 @@ SET TECH_GROUP     "Technology Groups" %semislash%
 $if     EXIST '../data/TECH_GROUP.inc' $INCLUDE      '../data/TECH_GROUP.inc';
 $if not EXIST '../data/TECH_GROUP.inc' $INCLUDE '../../base/data/TECH_GROUP.inc';
 %semislash%;
-*------------- Any TECH_GROUP additions for addon to be placed here: ----------------
-$include "../../base/addons/_hooks/tech_groupadditions.inc"
 
 PARAMETER TECH_GROUP_VALUE(TECH_GROUP)         "Technology Groups value" %semislash%
 $if     EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE      '../data/TECH_GROUP_VALUE.inc';
 $if not EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/TECH_GROUP_VALUE.inc';
 %semislash%;
-*------------- Any TECH_GROUP_VALUE additions for addon to be placed here: ----------------
-$include "../../base/addons/_hooks/tech_group_valueadditions.inc"
 
 PARAMETER TECHGROUP_DEUSER(TECH_GROUP,DEUSER) "assignment of tech groups into user groups for electricity"   %semislash%
 $if     EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE      '../data/TECHGROUP_DEUSER.inc';
@@ -207,6 +201,7 @@ $include "../../base/addons/_hooks/gadditions.inc"
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
 *-------------------------------------------------------------------------------
 
+$include "../../base/addons/_hooks/acronyms.inc"
 $include "../../base/addons/_hooks/setdeclare.inc"
 $include "../../base/addons/_hooks/setdefine.inc"
 
@@ -464,7 +459,7 @@ $include "../../base/addons/_hooks/subtechgroupkpotadditions.inc"
 PARAMETER FKMIN(YYY,CCCRRRAAA,FFF)    "Minimum fuel capacity restricted by geography (MW)"   %semislash%
 $if     EXIST '../data/FKMIN.inc' $INCLUDE      '../data/FKMIN.inc';
 $if not EXIST '../data/FKMIN.inc' $INCLUDE '../../base/data/FKMIN.inc';
-%semislash%;
+%semislash%;      
 
 
 PARAMETER FKMAX(YYY,CCCRRRAAA,FFF)    "Maximum fuel capacity restricted by geography (MW)"   %semislash%

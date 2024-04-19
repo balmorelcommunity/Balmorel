@@ -1,0 +1,91 @@
+
+--- Job annuity_calculation.gms Start 05/04/23 15:41:48 36.2.0 r433180e WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\36\gmsprmNT.txt
+    C:\Users\iokoun\Documents\GAMS\gamsconfig.yaml
+--- GAMS Parameters defined
+    Input "C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs and data\H2_STUDY_EXTENDED\base\auxils\annuity_calculation\annuity_calculation.gms"
+    PageWidth 80
+    PageSize 0
+    PageContr 3
+    Action CE
+    ScrDir "C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs and data\H2_STUDY_EXTENDED\base\model\225b\"
+    SysDir C:\GAMS\36\
+    WorkDir "C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs and data\H2_STUDY_EXTENDED\base\model\"
+    LogOption 3
+    DFormat 0
+    TFormat 0
+    ErrorLog 99
+    IDE 1
+Licensee: Large MUD - 20 User License                    G221124|0002AP-GEN
+          Technical University of Denmark, Management Engineering    DC8611
+          C:\Users\iokoun\Documents\GAMS\gamslice.txt
+          License Admin: Thomas Stidsen, thst@man.dtu.dk                   
+Processor information: 1 socket(s), 4 core(s), and 8 thread(s) available
+GAMS 36.2.0   Copyright (C) 1987-2021 GAMS Development. All rights reserved
+--- Starting compilation
+--- annuity_calculation.gms(30) 2 Mb
+--- . ../data/CCCRRRAAA.inc(1587) 3 Mb
+--- annuity_calculation.gms(35) 3 Mb
+--- . ../data/CCC.inc(39) 3 Mb
+--- annuity_calculation.gms(40) 3 Mb
+--- . ../data/C.inc(39) 3 Mb
+--- annuity_calculation.gms(44) 3 Mb
+--- . ../data/FFF.inc(112) 3 Mb
+--- annuity_calculation.gms(49) 3 Mb
+--- . ../data/FDATASET.inc(9) 3 Mb
+--- annuity_calculation.gms(54) 3 Mb
+--- . ../data/FDATA.inc(56) 3 Mb
+--- annuity_calculation.gms(59) 3 Mb
+--- . ../data/GGG.inc(1363) 3 Mb
+--- annuity_calculation.gms(62) 3 Mb
+--- . ../../base/addons/industry/bb4/industry_gggadditions.inc(4) 3 Mb
+--- .. ../data/INDUSTRY_GGG.inc(1) 3 Mb
+--- . ../../base/addons/industry/bb4/industry_gggadditions.inc(6) 3 Mb
+--- annuity_calculation.gms(63) 3 Mb
+--- . ../../base/addons/indivusers/bb4/indivusers_gggadditions.inc(4) 3 Mb
+--- .. ../data/INDIVUSERS_GGG.inc(5) 3 Mb
+--- . ../../base/addons/indivusers/bb4/indivusers_gggadditions.inc(6) 3 Mb
+--- annuity_calculation.gms(64) 3 Mb
+--- . ../../base/addons/hydrogen/bb4/hydrogen_gggadditions.inc(2) 3 Mb
+--- .. ../data/HYDROGEN_GGG.inc(289) 3 Mb
+--- . ../../base/addons/hydrogen/bb4/hydrogen_gggadditions.inc(4) 3 Mb
+--- annuity_calculation.gms(67) 3 Mb
+--- . ../data/G.inc(1350) 3 Mb
+--- annuity_calculation.gms(70) 3 Mb
+--- . ../../base/addons/industry/bb4/industry_gadditions.inc(4) 3 Mb
+--- .. ../data/INDUSTRY_G.inc(1) 3 Mb
+--- . ../../base/addons/industry/bb4/industry_gadditions.inc(6) 3 Mb
+--- annuity_calculation.gms(71) 3 Mb
+--- . ../../base/addons/indivusers/bb4/indivusers_gadditions.inc(4) 3 Mb
+--- .. ../data/INDIVUSERS_G.inc(5) 3 Mb
+--- . ../../base/addons/indivusers/bb4/indivusers_gadditions.inc(6) 3 Mb
+--- annuity_calculation.gms(72) 3 Mb
+--- . ../../base/addons/hydrogen/bb4/hydrogen_gadditions.inc(2) 3 Mb
+--- .. ../data/HYDROGEN_G.inc(290) 3 Mb
+--- . ../../base/addons/hydrogen/bb4/hydrogen_gadditions.inc(4) 3 Mb
+--- annuity_calculation.gms(75) 3 Mb
+--- . ../data/GDATASET.inc(63) 3 Mb
+--- annuity_calculation.gms(79) 3 Mb
+--- . ../data/GDATA.inc(1319) 4 Mb
+--- annuity_calculation.gms(82) 4 Mb
+--- . ../../base/addons/hydrogen/bb4/hydrogen_gdataadditions.inc(2) 4 Mb
+--- .. ../data/HYDROGEN_GDATA.inc(297) 4 Mb
+--- . ../../base/addons/hydrogen/bb4/hydrogen_gdataadditions.inc(4) 4 Mb
+--- annuity_calculation.gms(85) 4 Mb
+--- . ../data/DISCOUNTRATE.inc(2) 4 Mb
+--- annuity_calculation.gms(89) 4 Mb
+--- . ../data/LIFETIME_X.inc(2) 4 Mb
+--- annuity_calculation.gms(93) 4 Mb
+--- . ../data/HEATTRANS_LIFETIME_XH.inc(2) 4 Mb
+--- annuity_calculation.gms(97) 4 Mb
+--- . ../data/HYDROGEN_LIFETIME_XH2.inc(2) 4 Mb
+--- annuity_calculation.gms(214) 4 Mb
+--- Starting execution: elapsed 0:00:00.240
+--- annuity_calculation.gms(6921) 7 Mb
+--- Putfile annuity_generation C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs and data\H2_STUDY_EXTENDED\base\model\../../base/auxils/annuity_calculation/ANNUITYCG.inc
+--- Putfile annuity_transmission C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs and data\H2_STUDY_EXTENDED\base\model\../../base/auxils/annuity_calculation/ANNUITYCX.inc
+--- Putfile annuity_transmission_heat C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs and data\H2_STUDY_EXTENDED\base\model\../../base/auxils/annuity_calculation/HEATTRANS_ANNUITYCXH.inc
+--- Putfile annuity_transmission_hydrogen C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs and data\H2_STUDY_EXTENDED\base\model\../../base/auxils/annuity_calculation/HYDROGEN_ANNUITYCXH2.inc
+*** Status: Normal completion
+--- Job annuity_calculation.gms Stop 05/04/23 15:41:48 elapsed 0:00:00.371

@@ -1,0 +1,46 @@
+* The following variables define options pertaining to the gas add-on module.
+
+* Geographical resolution at MR level
+$Setglobal MR
+* Employ special nodes for larger district heating areas
+$Setglobal HEATING
+* Run pipeline simulation
+$Setglobal PIPELINE
+* (bb1 only) Create an input file for gas made available in specific weeks for
+* use in BB3
+$Setglobal STORAGEALLOCATIONS yes
+* (bb1 only) Create an input file for yearly and monthly capacity reservations
+* for use in BB3
+$Setglobal CAPACITYALLOCATIONS yes
+* (bb1 only) Create an input file for gas to be produced in specific weeks for
+* use in BB3
+
+* Include microCHP in the model
+$Setglobal micro
+* Include CAES in the model
+$Setglobal CAES
+
+* Fjernvarme områder med gasforsyning er tvungen til at fyre med gas?
+$Setglobal MUSTGAS yes
+
+* Fjernvarme områder uden gasforsyning kan udbygges med gas?
+$Setglobal EXPANDGAS
+
+* Allow electricity for Danish district heating
+$Setglobal ALLOWEH yes
+
+
+* Gasprice level at production nodes. Defaults to MEDGAS.
+$Setglobal LOWGAS
+$Setglobal MEDGAS yes
+$Setglobal HIGHGAS
+
+* No exogenous capacity charge on gas storage. However kapacitet tariffs kan be interpretted from the
+* marginal of the storage level value VSTOCK.
+$Setglobal FREESTORAGE yes
+$Setglobal FREEGAS yes
+
+$Setglobal NOCAPACITY
+
+* Set to yes if using descrete investments.
+$Setglobal SOLVEMIP yes

@@ -1,0 +1,393 @@
+GAMS 36.2.0  r433180e Released Sep  3, 2021 WEX-WEI x86 64bit/MS Windows - 06/03/22 11:45:14 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  * CODE TO CALCULATE THE ANNUITIES OF THE SYSTEM - JUAN GEA BERMUDEZ
+   2   
+   3   
+   4  *----------INPUT DATA--------------------
+   5   
+   6  * ACRONYMS:
+   7  * ACRONYMS for technology types
+   8  * Each of the following ACRONYMS symbolise a technology type.
+   9  * They correspond in a one-to-one way with the internal sets IGCND, IGBRP etc. below.
+  10  * They should generally not be changed.
+  11  * New technology types may be added only if also code specifying their properties are added.
+  12  ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GHYRR, GWND, GSOLE, GSOLH, GWAVE;
+  13   
+  14  *ACRONYMS for tech groups
+  15  * They can be used for multiple purposes
+  16  * They should generally not be changed.
+  17  * New technology types may be added only if also code specifying their properties are added.
+  18  ACRONYMS STEAMTURBINE_SUBCRITICAL, STEAMTURBINE_SUPERCRITICAL, RESERVOIR_PMP, WATERTURBINE, ENGINE_IC, BOILER, COMBINEDCYCLE, EXCESS_HEAT, ELECTRICITY_BATTERY, GEOTHERMAL,
+  19  GASTURBINE, DUMMY, HEATPUMP, PIT, WATERTANK, SOLARPV, SOLARHEATING,WINDTURBINE_ONSHORE, WINDTURBINE_OFFSHORE,BACKUP_ELECTRICITY,BACKUP_HEAT;
+  20   
+  21  *ACRONYMS for subtech groups
+  22  * They can be used for multiple purposes
+  23  * They should generally not be changed.
+  24  * New technology types may be added only if also code specifying their properties are added.
+  25  ACRONYMS RG1,RG2,RG3,RG1_OFF1,RG2_OFF1,RG3_OFF1,RG1_OFF2,RG2_OFF2,RG3_OFF2,RG1_OFF3,RG2_OFF3,RG3_OFF3,RG1_OFF4,RG2_OFF4,RG3_OFF4,RG1_OFF5,RG2_OFF5,RG3_OFF5,AIR,AIR_AIR,AIR_WTR, EXCESSHEAT_WTR, GROUND_WTR, EXCESSHEAT,GROUND,HUB_OFF;
+  26  *Hydrogen add-on
+  27  ACRONYMS HYDROGEN_GH2STO, H2_STORAGE, HYDROGEN_GETOH2, HYDROGEN_GETOHH2,HYDROGEN_GEHTOH2, HYDROGEN_GCH4TOH2, HYDROGEN_GH2FUEL, HYDROGEN_GH2TOEH,HYDROGEN_GH2TOE, HYDROGEN_GH2TOBIOMETH, FUELCELL, BIOMETHDAC, HYDROGEN, BIOMETHANE, ELECTROLYZER,STEAMREFORMING;
+  28   
+  29  SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)"
+  31  $INCLUDE '../../base/data/CCCRRRAAA.inc';
+****                                         $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  32   
+  33   
+  34  SET CCC(CCCRRRAAA)       "All Countries"
+  36  $INCLUDE '../../base/data/CCC.inc';
+****                                   $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  37   
+  38   
+  39  SET C(CCC)    "Countries in the simulation"
+  41  $INCLUDE '../../base/data/C.inc';
+****                                 $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  42   
+  43  SET FFF                "Fuels"
+  45  $INCLUDE '../../base/data/FFF.inc';
+****                                   $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  46   
+  47   
+  48  SET FDATASET           "Characteristics of fuels "
+  50  $INCLUDE '../../base/data/FDATASET.inc';
+****                                        $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  51   
+  52   
+  53  PARAMETER FDATA(FFF,FDATASET)    "Fuel specific values"
+  55  $INCLUDE '../../base/data/FDATA.inc';
+****                                     $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  56   
+  57   
+  58  SET GGG          "All generation technologies"
+  60  $INCLUDE '../../base/data/GGG.inc';
+****                                   $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  61  *INCLUDE GGG FROM OTHER ADDONS
+  62  $include   "../../base/addons/industry/bb4/industry_gggadditions.inc";
+****                                                                      $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  63  $include   "../../base/addons/indivusers/bb4/indivusers_gggadditions.inc";
+****                                                                          $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  64  $include   "../../base/addons/hydrogen/bb4/hydrogen_gggadditions.inc";
+****                                                                      $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  65   
+  66  SET G(GGG)    "Generation technologies in the simulation"
+  68  $INCLUDE '../../base/data/G.inc';
+****                                 $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  69  *INCLUDE G FROM OTHER ADDONS
+  70  $include   "../../base/addons/industry/bb4/industry_gadditions.inc";
+****                                                                    $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  71  $include   "../../base/addons/indivusers/bb4/indivusers_gadditions.inc";
+****                                                                        $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  72  $include   "../../base/addons/hydrogen/bb4/hydrogen_gadditions.inc";
+****                                                                    $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  73   
+  74  SET GDATASET     "Generation technology data"
+  76  $INCLUDE '../../base/data/GDATASET.inc';
+****                                        $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  77   
+  78  PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics"
+  80  $INCLUDE '../../base/data/GDATA.inc';
+****                                     $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  81  *INCLUDE GDATA FROM OTHER ADDONS
+  82  $include   "../../base/addons/hydrogen/bb4/hydrogen_gdataadditions.inc";
+****                                                                        $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  83   
+  84  SCALAR DISCOUNTRATE "Discount rate by country (fraction)"
+  86  $INCLUDE '../../base/data/DISCOUNTRATE.inc';
+****                                            $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  87   
+  88  SCALAR    LIFETIME_X               "Lifetime of transmission lines (years)";
+  90  $INCLUDE '../../base/data/LIFETIME_X.inc';
+****                                          $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  91   
+  92  SCALAR    LIFETIME_XH               "Lifetime of heat transmission lines (years)";
+  94  $INCLUDE '../../base/data/HEATTRANS_LIFETIME_XH.inc';
+****                                                     $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  95   
+  96  SCALAR    LIFETIME_XH2               "Lifetime of H2 transmission lines (years)";
+  98  $INCLUDE '../../base/data/HYDROGEN_LIFETIME_XH2.inc';
+****                                                     $282
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+  99   
+ 100  PARAMETER ANNUITYCG(CCC,GGG)               "Transforms investment in technologies into annual payment (fraction)";
+ 101   
+ 102  PARAMETER DEBT_SHARE_G(GGG)              "Share of debt for the investment of each generation technology (fraction)";
+ 103  DEBT_SHARE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=0;
+****                 $352    $141$352         $116,353
+**** 116  Label is unknown
+**** 141  Symbol declared but no values have been assigned. Check for missing
+****         data definition, assignment, data loading or implicit assignment
+****         via a solve statement.
+****         A wild shot: You may have spurious commas in the explanatory
+****         text of a declaration. Check symbol reference list.
+**** 352  Set has not been initialized
+**** 353  The domain for this index position is unknown and the element
+****         cannot be checked at this point. Missing data statement.
+ 104   
+ 105  PARAMETER INTEREST_RATE_G(GGG)           "Interest rate applied to the loan of each generation technology (fraction)";
+ 106  INTEREST_RATE_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=DISCOUNTRATE;
+****                    $352        $352         $353                $141
+**** 141  Symbol declared but no values have been assigned. Check for missing
+****         data definition, assignment, data loading or implicit assignment
+****         via a solve statement.
+****         A wild shot: You may have spurious commas in the explanatory
+****         text of a declaration. Check symbol reference list.
+**** 352  Set has not been initialized
+**** 353  The domain for this index position is unknown and the element
+****         cannot be checked at this point. Missing data statement.
+ 107   
+ 108  PARAMETER PAYBACK_TIME_G(GGG)            "Payback time of the loan for generation technologies (years)";
+ 109  * Private economic perspective: Loan repayment assumption: lifetime of the technology if lifetime is higher than 20 years, else 20 years
+ 110  *PAYBACK_TIME_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=MIN(GDATA(GGG,'GDLIFETIME'),20);
+ 111  * Socio economic perspective: loan repayment equals lifetime
+ 112  PAYBACK_TIME_G(GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)=GDATA(GGG,'GDLIFETIME');
+****                   $352        $352         $353             $352         $116,353
+**** 116  Label is unknown
+**** 352  Set has not been initialized
+**** 353  The domain for this index position is unknown and the element
+****         cannot be checked at this point. Missing data statement.
+ 113   
+ 114  PARAMETER ANNUITYCX(CCC)                 "Transforms investment in transmission lines into annual payment (fraction)";
+ 115   
+ 116  SCALAR DEBT_SHARE_X                    "Share of debt for the investment of transmission lines (fraction)";
+ 117  *Assumption: share of debt equal to 0
+ 118  DEBT_SHARE_X=0;
+ 119   
+ 120  SCALAR    INTEREST_RATE_X              "Interest rate applied to the loan of transmission lines";
+ 121  *Assumption: interest rate equals socio economic discount rate
+ 122  INTEREST_RATE_X = DISCOUNTRATE;
+ 123   
+ 124  SCALAR    PAYBACK_TIME_X               "Payback time of the loan for transmission lines (years)";
+ 125  *Assumption: payback time equals lifetime
+ 126  PAYBACK_TIME_X = LIFETIME_X;
+****                            $141
+**** 141  Symbol declared but no values have been assigned. Check for missing
+****         data definition, assignment, data loading or implicit assignment
+****         via a solve statement.
+****         A wild shot: You may have spurious commas in the explanatory
+****         text of a declaration. Check symbol reference list.
+ 127   
+ 128  PARAMETER ANNUITYCXH(CCC)  "Transforms investment in heat transmission lines into annual payment (fraction). Possibly different meaning in BB4";
+ 129   
+ 130  SCALAR DEBT_SHARE_XH                    "Share of debt for the investment of heat transmission lines (fraction)";
+ 131  *Assumption: share of debt equal to 0
+ 132  DEBT_SHARE_XH=0;
+ 133   
+ 134  SCALAR    INTEREST_RATE_XH              "Interest rate applied to the loan of heat transmission lines";
+ 135  *Assumption: interest rate equals socio economic discount rate
+ 136  INTEREST_RATE_XH = DISCOUNTRATE;
+ 137   
+ 138  SCALAR    PAYBACK_TIME_XH               "Payback time of the loan for heat transmission lines (years)";
+ 139  *Assumption: payback time equals lifetime
+ 140  PAYBACK_TIME_XH = LIFETIME_XH;
+****                              $141
+**** 141  Symbol declared but no values have been assigned. Check for missing
+****         data definition, assignment, data loading or implicit assignment
+****         via a solve statement.
+****         A wild shot: You may have spurious commas in the explanatory
+****         text of a declaration. Check symbol reference list.
+ 141   
+ 142  PARAMETER ANNUITYCXH2(CCC)  "Transforms investment in H2 transmission lines into annual payment (fraction). Possibly different meaning in BB4";
+ 143   
+ 144  SCALAR DEBT_SHARE_XH2                    "Share of debt for the investment of H2 transmission lines (fraction)";
+ 145  *Assumption: share of debt equal to 0
+ 146  DEBT_SHARE_XH2=0;
+ 147   
+ 148  SCALAR    INTEREST_RATE_XH2              "Interest rate applied to the loan of H2 transmission lines";
+ 149  *Assumption: interest rate equals socio economic discount rate
+ 150  INTEREST_RATE_XH2 = DISCOUNTRATE;
+ 151   
+ 152  SCALAR    PAYBACK_TIME_XH2               "Payback time of the loan for H2 transmission lines (years)";
+ 153  *Assumption: payback time equals lifetime
+ 154  PAYBACK_TIME_XH2 = LIFETIME_XH2;
+****                                $141
+**** 141  Symbol declared but no values have been assigned. Check for missing
+****         data definition, assignment, data loading or implicit assignment
+****         via a solve statement.
+****         A wild shot: You may have spurious commas in the explanatory
+****         text of a declaration. Check symbol reference list.
+ 155   
+ 156   
+ 157  *----------END OF INPUT DATA--------------------
+ 158   
+ 159   
+ 160   
+ 161  *------------CALCULATIONS-------------
+ 162   
+ 163  ANNUITYCG(CCC,GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1)= ((1-DEBT_SHARE_G(GGG))*DISCOUNTRATE + INTEREST_RATE_G(GGG) * DEBT_SHARE_G (GGG)* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_G(GGG))) / (1 - (1 + INTEREST_RATE_G(GGG)) **( -PAYBACK_TIME_G(GGG)))) / (1 - (1 + DISCOUNTRATE) ** (-GDATA(GGG,'GDLIFETIME')));
+****              $352$352        $352         $353                         $352                                 $352                 $352                                              $352                               $352                      $300
+**** 300  Remaining errors not printed for this line
+**** 352  Set has not been initialized
+**** 353  The domain for this index position is unknown and the element
+****         cannot be checked at this point. Missing data statement.
+ 164   
+ 165  ANNUITYCX(CCC)= ((1-DEBT_SHARE_X)*DISCOUNTRATE + INTEREST_RATE_X * DEBT_SHARE_X* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_X)) / (1 - (1 + INTEREST_RATE_X) ** (-PAYBACK_TIME_X))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_X));
+****              $352
+**** 352  Set has not been initialized
+ 166   
+ 167  ANNUITYCXH(CCC)= ((1-DEBT_SHARE_XH)*DISCOUNTRATE + INTEREST_RATE_XH * DEBT_SHARE_XH* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_XH)) / (1 - (1 + INTEREST_RATE_XH) ** (-PAYBACK_TIME_XH))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_XH));
+****               $352
+**** 352  Set has not been initialized
+ 168   
+ 169  ANNUITYCXH2(CCC)= ((1-DEBT_SHARE_XH2)*DISCOUNTRATE + INTEREST_RATE_XH2 * DEBT_SHARE_XH2* (1 - (1 + DISCOUNTRATE) ** (-PAYBACK_TIME_XH2)) / (1 - (1 + INTEREST_RATE_XH2) ** (-PAYBACK_TIME_XH2))) / (1 - (1 + DISCOUNTRATE) **( -PAYBACK_TIME_XH2));
+****                $352
+**** 352  Set has not been initialized
+ 170   
+ 171  *------------END OF CALCULATIONS-------------
+ 172   
+ 173   
+ 174   
+ 175  *------------OUTPUT GENERATION-------------
+ 176   
+ 177  file annuity_generation /'../../base/auxils/annuity_calculation/ANNUITYCG.inc'/;
+ 178  annuity_generation.nd  = 12;
+ 179  put annuity_generation;
+ 180  put '*PARAMETER ANNUITYCG(CCC,GGG) CALCULATED WITH AUXILS' //
+ 181  loop((CCC,GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1),
+****          $352$352        $352         $353
+**** 352  Set has not been initialized
+**** 353  The domain for this index position is unknown and the element
+****         cannot be checked at this point. Missing data statement.
+ 182            put ANNUITYCG.tn(CCC,GGG),'=' ANNUITYCG(CCC,GGG) :0 ';' /
+****                               $352$352               $352$352
+**** 352  Set has not been initialized
+ 183  );
+ 184  putclose;
+ 185   
+ 186  file annuity_transmission /'../../base/auxils/annuity_calculation/ANNUITYCX.inc'/;
+ 187  annuity_transmission.nd  = 12;
+ 188  put annuity_transmission;
+ 189  put '*PARAMETER ANNUITYCX(CCC) CALCULATED WITH AUXILS' //
+ 190  loop(CCC,
+****         $352
+**** 352  Set has not been initialized
+ 191            put ANNUITYCX.tn(CCC),'=' ANNUITYCX(CCC) :0 ';' /
+****                               $352               $352
+**** 352  Set has not been initialized
+ 192  );
+ 193  putclose;
+ 194   
+ 195  file annuity_transmission_heat /'../../base/auxils/annuity_calculation/HEATTRANS_ANNUITYCXH.inc'/;
+ 196  annuity_transmission_heat.nd  = 12;
+ 197  put annuity_transmission_heat;
+ 198  put '*PARAMETER ANNUITYCXH(CCC) CALCULATED WITH AUXILS' //
+ 199  loop(CCC,
+****         $352
+**** 352  Set has not been initialized
+ 200            put ANNUITYCXH.tn(CCC),'=' ANNUITYCXH(CCC) :0 ';' /
+****                                $352                $352
+**** 352  Set has not been initialized
+ 201  );
+ 202  putclose;
+ 203   
+ 204  file annuity_transmission_hydrogen /'../../base/auxils/annuity_calculation/HYDROGEN_ANNUITYCXH2.inc'/;
+ 205  annuity_transmission_hydrogen.nd  = 12;
+ 206  put annuity_transmission_hydrogen;
+ 207  put '*PARAMETER ANNUITYCXH2(CCC) CALCULATED WITH AUXILS' //
+ 208  loop(CCC,
+****         $352
+**** 352  Set has not been initialized
+ 209            put ANNUITYCXH2.tn(CCC),'=' ANNUITYCXH2(CCC) :0 ';' /
+****                                 $352                 $352
+**** 352  Set has not been initialized
+ 210  );
+ 211  putclose;
+ 212   
+ 213  *------------END OF OUTPUT GENERATION-------------
+ 214   
+
+**** 72 ERROR(S)   0 WARNING(S)
+GAMS 36.2.0  r433180e Released Sep  3, 2021 WEX-WEI x86 64bit/MS Windows - 06/03/22 11:45:14 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Include File Summary
+
+
+   SEQ   GLOBAL TYPE      PARENT   LOCAL  FILENAME
+
+     1        1 INPUT          0       0  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+     2       30 IF EXIST       1      30  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/CCCRRRAAA.inc
+     3       31 IF EXIST       1      31  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/CCCRRRAAA.inc
+     4       35 IF EXIST       1      35  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/CCC.inc
+     5       36 IF EXIST       1      36  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/CCC.inc
+     6       40 IF EXIST       1      40  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/C.inc
+     7       41 IF EXIST       1      41  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/C.inc
+     8       44 IF EXIST       1      44  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/FFF.inc
+     9       45 IF EXIST       1      45  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/FFF.inc
+    10       49 IF EXIST       1      49  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/FDATASET.inc
+    11       50 IF EXIST       1      50  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/FDATASET.inc
+    12       54 IF EXIST       1      54  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/FDATA.inc
+    13       55 IF EXIST       1      55  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/FDATA.inc
+    14       59 IF EXIST       1      59  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/GGG.inc
+    15       60 IF EXIST       1      60  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/GGG.inc
+    16       67 IF EXIST       1      67  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/G.inc
+    17       68 IF EXIST       1      68  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/G.inc
+    18       75 IF EXIST       1      75  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/GDATASET.inc
+    19       76 IF EXIST       1      76  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/GDATASET.inc
+    20       79 IF EXIST       1      79  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/GDATA.inc
+    21       80 IF EXIST       1      80  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/GDATA.inc
+    22       85 IF EXIST       1      85  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/DISCOUNTRATE.inc
+    23       86 IF EXIST       1      86  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/DISCOUNTRATE.inc
+    24       89 IF EXIST       1      89  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/LIFETIME_X.inc
+    25       90 IF EXIST       1      90  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/LIFETIME_X.inc
+    26       93 IF EXIST       1      93  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/HEATTRANS_LIFETIME_XH.inc
+    27       94 IF EXIST       1      94  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/HEATTRANS_LIFETIME_XH.inc
+    28       97 IF EXIST       1      97  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/HYDROGEN_LIFETIME_XH2.inc
+    29       98 IF EXIST       1      98  C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\../data/HYDROGEN_LIFETIME_XH2.inc
+
+
+COMPILATION TIME     =        0.016 SECONDS      3 MB  36.2.0 r433180e WEX-WEI
+
+
+USER: Course License                                 G220104|0002AO-GEN
+      Technical University of Denmark, Management Engineering   DCE1794
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.gms
+Output     C:\Users\iokoun\Desktop\IK PHD data\Department Work\Rasmus\Hydrogen North vs South\Balmorel Runs\H2Study\base\auxils\annuity_calculation\annuity_calculation.lst
+
+**** USER ERROR(S) ENCOUNTERED
