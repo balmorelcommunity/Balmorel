@@ -20,5 +20,5 @@ Balmorel is a modelling tool that can be used by energy system experts, energy c
 
 The model is developed and distributed under open source ideals. The source code has been provided on its homepage since 2001 and was assigned the [ISC license](https://opensource.org/licenses/ISC) in 2017. Ample documentation is available in the folder [within this repository](base/documentation). Application examples and contact information can be found on the [Balmorel homepage](https://balmorel.com). Presently the model development is mainly project driven, with a users' network around it, supporting the open source development idea.
 
-## Who to get started with Balmorel? 
+## How to get started with Balmorel? 
 Look at the following [documentation](https://github.com/balmorelcommunity/Balmorel/blob/A-unified-European-hydrogen-infrastructure-planning-to-support-the-rapid-scale-up-of-hydrogen-production/base/documentation/BalmorelGettingStarted-BGS302.pdf).
