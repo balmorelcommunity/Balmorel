@@ -239,6 +239,13 @@ $setglobal EV_INTERSEASONAL
 *!option yes
 *------------------------------END: EV ADDON-------------------------------------------------
 
+*------------------------------FLEXDEM ADDON-------------------------------------------------
+* Overall control variable of adding the flexible demand addon
+$setglobal FLEXDEM yes
+*!option yes
+
+*------------------------------END:FLEXDEM ADDON-------------------------------------------------
+
 *------------------------------TRANSPORT ADDON-------------------------------------------------
 * overall control variable TRANSPORT must be 'yes' if any of the other TRANSPORT controls are:
 * Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
