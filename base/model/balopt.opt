@@ -241,7 +241,15 @@ $setglobal EV_INTERSEASONAL
 
 *------------------------------FLEXDEM ADDON-------------------------------------------------
 * Overall control variable of adding the flexible demand addon
-$setglobal FLEXDEM yes
+$setglobal FLEXDEM 
+*!option yes
+
+* Seasonal demand
+$setglobal seasonal_demand 
+*!option yes
+
+* Inflexible demand
+$setglobal inflex_demand  
 *!option yes
 
 *------------------------------END:FLEXDEM ADDON-------------------------------------------------
