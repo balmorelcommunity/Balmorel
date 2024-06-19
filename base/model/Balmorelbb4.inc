@@ -2147,8 +2147,8 @@ QXK_UP(IY411,IRE,IRI,IS3,T)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXKN(Y,IRE,IRI)).
 $include "../../base/addons/_hooks/qxk_up.inc"
 ;
 
-* Put a cap on the maximum accummulated transmission capacity
-VXKNACCUMNET.UP(Y,IRRRE,IRRRI)$XINVCOST(Y,IRRRE,IRRRI) = XMAXINV(IRRRE,IRRRI);
+* Put a cap on the maximum accummulated transmission capacity, if a cap is specified
+VXKNACCUMNET.UP(Y,IRRRE,IRRRI)$(XINVCOST(Y,IRRRE,IRRRI) AND XMAXINV(IRRRE,IRRRI))= XMAXINV(IRRRE,IRRRI);
 
 *Cap h2 lines
 *VXH2KNACCUMNET.UP(Y,IRRRE,IRRRI)$XH2INVCOST(Y,IRRRE,IRRRI) = 35000;
