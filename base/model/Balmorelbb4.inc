@@ -304,9 +304,9 @@ PARAMETER FUELPRICE_EXC(YYY,AAA,FFF)             "Fuel prices to be transferred 
 $ifi     exist "bb4datainc.inc" $include                   "bb4datainc.inc";
 $ifi not exist "bb4datainc.inc" $include  "../../base/model/bb4datainc.inc";
 
-* UPS! Forgot DOL! TODO
-*GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = INF;    Presently not implemented.
-GKRATE(IA,G,S)$(GKRATE(IA,G,S) EQ 1) = 0; !! Should give no reduction in size unless the data files does not exploit that default value is 1.
+* GKRATE 
+$ifi %GKRATE_DOL%==AAA_GGG_SSS       GKRATE(IA,G,S)$(GKRATE(IA,G,S) EQ 1) = 0; !! Should give no reduction in size unless the data files does not exploit that default value is 1.
+$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT   GKRATE(IA,G,S,T)$(GKRATE(IA,G,S,T) EQ 1) = 0;
 
 * The two specifications of fuel type 'FDACRONYM' and 'FDNB', have relative merits.
 * Under most circumstances 'FDACRONYM' is preferable, because it is more transparent.
@@ -1095,7 +1095,8 @@ $ifi %HYDROGEN%==yes HYDROGEN_DH2_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SS
 *DHF_STEPS(AAA,SSS,TTT,DF_QP,DHF)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 *DHF_STEPS(IA,S,T,DF_QP,DHF)$((NOT DHF_D1(DHF) AND (NOT DHF_D2(DHF)) AND (NOT DHF_D3(DHF)) AND (NOT DHF_U1(DHF)) AND (NOT DHF_U2(DHF)) AND (NOT DHF_U3(DHF)))) = 0;
 
-GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS))) = 0;
+$ifi %GKRATE_DOL%==AAA_GGG_SSS GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS))) = 0;
+$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT GKRATE(AAA,GGG,SSS,TTT)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 FUELPRICE(YYY,AAA,FFF)$(NOT(Y(YYY)))=0;
 
 * Discounting
