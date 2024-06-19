@@ -2149,7 +2149,7 @@ $include "../../base/addons/_hooks/qxk_up.inc"
 
 *IK cap the possible expansion cap not more than double the assuming capacity
 *VX_T.UP(Y,IRRRE,IRRRI,S,T)$XINVCOST(Y,IRRRE,IRRRI)= XKFX(Y,IRRRE,IRRRI) + 15000;
-VXKNACCUMNET.UP(Y,IRRRE,IRRRI)$XINVCOST(Y,IRRRE,IRRRI) = 12000;
+* VXKNACCUMNET.UP(Y,IRRRE,IRRRI)$XINVCOST(Y,IRRRE,IRRRI) = 12000;
 
 *Cap h2 lines
 *VXH2KNACCUMNET.UP(Y,IRRRE,IRRRI)$XH2INVCOST(Y,IRRRE,IRRRI) = 35000;
