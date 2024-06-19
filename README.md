@@ -1,5 +1,8 @@
 # Balmorel
 
+This model is used for the DTU course, currently running in 3 weeks of June.
+The data can be downloaded from the branch ![here](https://github.com/balmorelcommunity/Balmorel_data/tree/dtu-balmorel-course-data), and an excel file will also be distributed in the course.
+
 ## What is Balmorel?
 
 Balmorel is a partial equilibrium model for analysing the electricity and combined heat and power sectors in an international perspective. It is highly versatile and may be applied for long range planning as well as shorter time operational analysis. Balmorel is implemented as a mainly linear programming optimisation problem.
