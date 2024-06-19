@@ -1,10 +1,15 @@
 * UC Translated to BB4 by Juan Gea Bermúdez 2018.
 
 EQUATION  QUCVUCON(Y,AAA,G,S,T)    'Unit commitment: Number of endogenous units on limited by unit size and capacity)';
+
 EQUATION  QUCVUCON_STOLOAD(Y,AAA,G,S,T)    'Unit commitment: Number of endogenous units on limited by unit size and capacity) for storage technologies';
+
 EQUATION  QUCVUCU(Y,AAA,G,S,T)     'Unit commitment: Number of start up endogenous units on limited by unit size and capacity)';
+
 EQUATION  QUCVUCU_STOLOAD(Y,AAA,G,S,T)     'Unit commitment: Number of start up endogenous units on limited by unit size and capacity) for storage technologies';
+
 EQUATION  QUCVUCD(Y,AAA,G,S,T)     'Unit commitment: Number of shut down endogenous units on limited by unit size and capacity)';
+
 EQUATION  QUCVUCD_STOLOAD(Y,AAA,G,S,T)     'Unit commitment: Number of shut down endogenous units on limited by unit size and capacity) for storage technologies';
 EQUATION  QUCSTARTQ(Y,AAA,G,S,T)   'Unit commitment: on-off logic';
 EQUATION  QUCSTARTQ_STOLOAD_INTRA(Y,AAA,G,S,T)   'Unit commitment: on-off logic for intraseasonal storage technologies';
@@ -64,7 +69,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC
 +VGKNACCUMNET(IY411,IA,IGUC)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IAGKN(IA,IGUC)))/GDATA(IGUC,'GDUCUNITSIZE')
 ;
 
-QUCSTARTQ(IY411,IA,IGUC,S,T)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IS3_NEXT(S)
+QUCSTARTQ(IY411,IA,IGUC,S,T)$(IAGK_HASORPOT(IY411,IA,IGUC) AND IS3(S)
 $ifi      %SEASONALLINKUC%==yes         AND (NOT (ORD(S) EQ 1 AND (ORD(T) EQ 1)))
 $ifi not  %SEASONALLINKUC%==yes         AND (NOT (ORD(T) EQ 1))
 )..   !! 'Unit commitment: on-off logic'
@@ -445,5 +450,4 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IGUC)$IGDECOMEXOPOT(IY411,IA,IGUC
 ;
 
 $label NO_PLANNED_MAINTENANCE
-
 

@@ -20,6 +20,7 @@ $ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandrespons
 $ifi %FlowBased%==yes      $include        "../../base/addons/FlowBased/bb4/flowbased_qeeq.inc";
 $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_qeeq.inc";
 $ifi %OPTIFLOW%==yes   $include   "../../base/addons/optiflow/bb4/optiflow_qeeq.inc";
+$ifi %FLEXDEM%==yes   $include   "../../base/addons/flexdem/bb4/flexdem_qeeq.inc";
 
 $ifi %vqdebug%==yes   $setglobal equation qeeq
 $ifi %vqdebug%==yes   $include   "../../base/addons/vqdebug/bb4/vqdebug_equations.inc";

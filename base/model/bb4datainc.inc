@@ -23,8 +23,6 @@
 *Other acronyms
 $if     EXIST '../data/ACRONYMS.inc' $INCLUDE         '../data/ACRONYMS.inc';
 $if not EXIST '../data/ACRONYMS.inc' $INCLUDE '../../base/data/ACRONYMS.inc';
-*------------- Any ACRONYMS additions for addon to be placed here: ----------------
-$include "../../base/addons/_hooks/acronymsadditions.inc"
 
 * Geography
 
@@ -171,15 +169,11 @@ SET TECH_GROUP     "Technology Groups" %semislash%
 $if     EXIST '../data/TECH_GROUP.inc' $INCLUDE      '../data/TECH_GROUP.inc';
 $if not EXIST '../data/TECH_GROUP.inc' $INCLUDE '../../base/data/TECH_GROUP.inc';
 %semislash%;
-*------------- Any TECH_GROUP additions for addon to be placed here: ----------------
-$include "../../base/addons/_hooks/tech_groupadditions.inc"
 
 PARAMETER TECH_GROUP_VALUE(TECH_GROUP)         "Technology Groups value" %semislash%
 $if     EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE      '../data/TECH_GROUP_VALUE.inc';
 $if not EXIST '../data/TECH_GROUP_VALUE.inc' $INCLUDE '../../base/data/TECH_GROUP_VALUE.inc';
 %semislash%;
-*------------- Any TECH_GROUP_VALUE additions for addon to be placed here: ----------------
-$include "../../base/addons/_hooks/tech_group_valueadditions.inc"
 
 PARAMETER TECHGROUP_DEUSER(TECH_GROUP,DEUSER) "assignment of tech groups into user groups for electricity"   %semislash%
 $if     EXIST '../data/TECHGROUP_DEUSER.inc' $INCLUDE      '../data/TECHGROUP_DEUSER.inc';
@@ -207,6 +201,7 @@ $include "../../base/addons/_hooks/gadditions.inc"
 *----- Any declarations and definitions of sets, aliases and acronyms for addon:
 *-------------------------------------------------------------------------------
 
+$include "../../base/addons/_hooks/acronyms.inc"
 $include "../../base/addons/_hooks/setdeclare.inc"
 $include "../../base/addons/_hooks/setdefine.inc"
 
@@ -464,7 +459,7 @@ $include "../../base/addons/_hooks/subtechgroupkpotadditions.inc"
 PARAMETER FKMIN(YYY,CCCRRRAAA,FFF)    "Minimum fuel capacity restricted by geography (MW)"   %semislash%
 $if     EXIST '../data/FKMIN.inc' $INCLUDE      '../data/FKMIN.inc';
 $if not EXIST '../data/FKMIN.inc' $INCLUDE '../../base/data/FKMIN.inc';
-%semislash%;
+%semislash%;      
 
 
 PARAMETER FKMAX(YYY,CCCRRRAAA,FFF)    "Maximum fuel capacity restricted by geography (MW)"   %semislash%
@@ -541,6 +536,10 @@ $ifi %WNDFLH_DOL%==AAA               PARAMETER WNDFLH(AAA)         "Full load ho
 $ifi %WNDFLH_DOL%==AAA_GGG           PARAMETER WNDFLH(AAA,GGG)     "Full load hours for wind power (hours)"  %semislash%
 $if     EXIST '../data/WNDFLH.inc' $INCLUDE      '../data/WNDFLH.inc';
 $if not EXIST '../data/WNDFLH.inc' $INCLUDE '../../base/data/WNDFLH.inc';
+$onmulti
+$if     EXIST '../data/WNDFLH3.inc' $INCLUDE      '../data/WNDFLH3.inc';
+$if not EXIST '../data/WNDFLH3.inc' $INCLUDE '../../base/data/WNDFLH3.inc';
+$offmulti
 %semislash%;
 *------------- Any WNDFLH additions for addon to be placed here: ----------------
 $include "../../base/addons/_hooks/wndflhadditions.inc"
@@ -549,6 +548,10 @@ $ifi %SOLEFLH_DOL%==AAA              PARAMETER SOLEFLH(AAA)        "Full load ho
 $ifi %SOLEFLH_DOL%==AAA_GGG          PARAMETER SOLEFLH(AAA,GGG)    "Full load hours for solar power (hours)"  %semislash%
 $if     EXIST '../data/SOLEFLH.inc' $INCLUDE      '../data/SOLEFLH.inc';
 $if not EXIST '../data/SOLEFLH.inc' $INCLUDE '../../base/data/SOLEFLH.inc';
+$onmulti
+$if     EXIST '../data/SOLEFLH2.inc' $INCLUDE      '../data/SOLEFLH2.inc';
+$if not EXIST '../data/SOLEFLH2.inc' $INCLUDE '../../base/data/SOLEFLH2.inc';
+$offmulti
 %semislash%;
 
 
@@ -782,6 +785,7 @@ $if not EXIST '../data/WTRRRVAR_T.inc' $INCLUDE '../../base/data/WTRRRVAR_T.inc'
 PARAMETER WND_VAR_T(AAA,SSS,TTT)                   "Variation of the wind generation"    %semislash%
 $if     EXIST '../data/WND_VAR_T.inc' $INCLUDE      '../data/WND_VAR_T.inc';
 $if not EXIST '../data/WND_VAR_T.inc' $INCLUDE '../../base/data/WND_VAR_T.inc';
+* The new series are loaded inside of WND_VAR_T (WND_VAR_T3)
 %semislash%;
 *------------- Any WND_VAR_T additions for addon to be placed here: ----------------
 $include "../../base/addons/_hooks/wnd_var_tadditions.inc"

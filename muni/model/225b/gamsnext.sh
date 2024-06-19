@@ -1,0 +1,1 @@
+gmsgenus.run /work3/mberos/AggregationTests/Balmorel/muni/model/225b/ /work3/mberos/AggregationTests/Balmorel/muni/model/ $1 /work3/mberos/AggregationTests/Balmorel/muni/model/225b/gamscntr.dat /appl/gams/24.9.2/ CPLEX

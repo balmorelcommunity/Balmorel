@@ -1,0 +1,730 @@
+* File bb123.sim to the Balmorel model.
+* This file is part of the Balmorel model, version 3.03 (November 2015; latest 20151127)
+* This file is $included at the end of Balmorel.gms (no other *.sim files included).
+
+* This file contains simulation structure for models BALBASE1, BALBASE2 and BALBASE3.
+* BALBASE1: optimisation simultaneuosly for all (S,T) in a year, exogenous investments.
+* BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
+* BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
+
+* Initialisation of the compare facility for welfare:
+$ifi %welfare%==yes $INCLUDE "..\..\base\addons\welfare\welfarecmp\compprint1.inc";
+
+*------------------------------------------------------------------------------
+* INITIALISATIONS FOR THE ANNUAL UPDATING PART:
+*------------------------------------------------------------------------------
+
+* If merging of savepoint files is to be performed,
+* make sure that there are no gdx files initially in applied folders:
+$ifi %system.filesys%==UNIX
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm *.gdx";
+$ifi %system.filesys%==MSNT
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del *.gdx";
+$ifi %system.filesys%==UNIX
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "rm ../output/temp/*.gdx";
+$ifi %system.filesys%==MSNT
+$ifi %MERGESAVEPOINTRESULTS%==yes  execute "del ../output/temp/*.gdx";
+$ifi %system.filesys%==UNIX
+$ifi     dexist "../output/temp"   execute 'rm "../output/temp/*.*"';
+$ifi %system.filesys%==MSNT
+$ifi     dexist "../output/temp"   execute 'del "../output/temp/*.*"';
+
+
+* Initialize the first year in the simulation:
+
+* IGKVACCTOY are the capacities (MW), for accumulated endogeneously
+* found generation capacities with decommissioning subtracted.
+* IXKVACCTOY are the capacities for accumulated endogenously found transmission
+* capacities.
+
+* Quickfixes
+IXKVACCTOY(IRE,IRI)       =0;
+XKACC(Y,IRE,IRI)          =0;
+
+$ifi %BB2%==yes XKACC(Y,IRE,IRI)          =0;
+$ifi %BB2%==yes GKVACC(Y,IA,G)            =0;
+$ifi %BB2%==yes GKVACCDECOM(Y,IA,G)       =0;
+$ifi %BB2%==yes GVKGN(YYY,IA,G)           =0;
+$ifi %BB2%==yes IXKVACCTOY(IRE,IRI)       =0;
+$ifi %BB2%==yes IGKVACCEOY(IA,G)          =0;
+
+IGKVACCTOY(IA,G) = 0;
+
+VGKN.L(IA,G)     = 0;
+VXKN.l(IR,IRI)   = 000;
+VDECOM.l(IA,G)   = 0;
+
+* Investments in new generation technology are excluded
+* by the following statement:
+
+$ifi %bb1%==yes IAGKN(IA,G)=NO;
+$ifi %bb3%==yes IAGKN(IA,G)=NO;
+
+IGKFXYMAX(IA,G)=SMAX(Y,GKFX(Y,IA,G));
+
+
+*------------------------------------------------------------------------------
+* INITIALISATIONS FOR addons:
+*------------------------------------------------------------------------------
+
+$ifi %GAS%==yes $INCLUDE '../../base/addons/gas/gasinit.inc';
+$ifi %HEATTRANS%==yes $INCLUDE '../../base/addons/heattrans/model/htinit.inc';
+
+*----- End of initialisation for the addons  ---------------------------------
+*----- End of initialisation for annual updating part -------------------------
+
+
+*------------------------------------------------------------------------------
+* Loop through all the years:
+LOOP(Y,
+
+*-------------------------------------------------------------------------------
+* START SIMULATION FOR CURRENT YEAR
+*-------------------------------------------------------------------------------
+
+* -----------------------------------------------------------------------------
+* Update parameters and bounds for current simulation year:
+* -----------------------------------------------------------------------------
+$ifi %REShareE%==yes  DE_Y(IR)=DE(Y,IR);
+$ifi %REShareEH%==yes DE_Y(IR)=DE(Y,IR);
+$ifi %REShareEH%==yes DH_Y(IA)=DH(Y,IA);
+
+
+*---- Generation technologies: ------------------------------------------------
+
+
+* Update generation and transmission capacities:
+* Externally specified capacities:
+  IGKFX_Y(IA,G)= GKFX(Y,IA,G);
+  IXKINI_Y(IR,IRI) = XKINI(Y,IR,IRI);
+* Externally specified capacities the year before (used in QGMAXINVEST2):
+  IGKFX_Y_1(IA,G)= GKFX(Y-1,IA,G) +GKFX(Y,IA,G)$(ord(Y)=1);
+
+
+* Update generation capacities according to stored investments from a bb2 calculation.
+$ifi %ADDINVEST%==yes IGKVACCTOY(IA,IGKFIND)=GKVACCDECOM(Y,IA,IGKFIND);
+
+* Generation capacities for those technologies for which investments
+* in new capacity may be internally found is equal to accumulated investments:
+$ifi %BB2%==yes IGKVACCTOY(IA,IGKFIND) = GKVACC(Y-1,IA,IGKFIND) - SUM(IYALIAS$(YVALUE(IYALIAS) LE (YVALUE(Y)-GDATA(IGKFIND,'GDLIFETIME'))),GVKGN(IYALIAS,IA,IGKFIND));;
+
+$ifi %ADDINVEST%==yes IXKVACCTOY(IRE,IRI)=XKACC(Y,IRE,IRI);
+
+IAGK_Y(IA,G)=NO;
+IAGK_Y(IA,G)=YES$(IGKVACCTOY(IA,G) + IGKFX_Y(IA,G));
+
+
+$ifi not %bb2%==yes $goto bb2_label1
+
+IGKNMAX_Y(IA,IGKFIND)=GKNMAX(Y,IA,IGKFIND);
+
+$ifi %AGKNDISC%==yes  * Discrete investments:
+$ifi %AGKNDISC%==yes  IAGKNDISCAG(IA,G) = YES$AGKNDISCAG(IA,G);
+$ifi %AGKNDISC%==yes  * No new capacity if capacity is not specified to be found endogeneously:
+$ifi %AGKNDISC%==yes  IAGKNDISCAG(IA,IGKKNOWN) = NO;
+
+IAGKN(IA,G) = YES$AGKN(IA,G);
+
+* No new capacity allowed and no associated generation
+* if technology is not available this year:
+
+IAGKN(IA,G)$(GDATA(G,'GDFROMYEAR') GT YVALUE(Y)) = NO;
+
+* No new capacity if capacity is not specified to be found endogeneously:
+IAGKN(IA,IGKKNOWN) = NO;
+
+$label  bb2_label1
+
+* Generation on existing plants
+* is restricted by the capacity (MW) adjusted by GKDERATE:
+* (For storages overwritten later.)
+
+
+VGE_T.UP(IA,IGKE,S,T)$IAGK_Y(IA,IGKE)=
+  (IGKVACCTOY(IA,IGKE) + IGKFX_Y(IA,IGKE))*(1$(NOT IGKRATE(IA,IGKE,S,T))+IGKRATE(IA,IGKE,S,T));
+VGH_T.UP(IA,IGKH,S,T)$IAGK_Y(IA,IGKH)=
+  (IGKVACCTOY(IA,IGKH) + IGKFX_Y(IA,IGKH))*(1$(NOT IGKRATE(IA,IGKH,S,T))+IGKRATE(IA,IGKH,S,T));
+
+
+$ifi %PLANTCLOSURES%==yes VDECOM.UP(IA,IGKE) = IGKVACCTOY(IA,IGKE) + IGKFX_Y(IA,IGKE);
+$ifi %PLANTCLOSURES%==yes VDECOM.UP(IA,IGKH) = IGKVACCTOY(IA,IGKH) + IGKFX_Y(IA,IGKH);
+
+$INCLUDE '../../base/addons/_hooks/sim.inc';
+*$ifi %COMBTECH%==YES  $INCLUDE '../../base/addons/combtech/combtech_sim.inc';
+
+* Storage loading (MW) and unloading (MW) do not exceed capacity:
+* Modified to account for storage investment options.
+* Simple bounds can only be set if no investment options exist.
+* Altered to include accumulated capacity. (In case investments are transfered from other simulation)
+$ifi not %BB2%==yes VHSTOLOADT.UP(IA,S,T)=
+$ifi not %BB2%==yes   SUM(IGHSTO$(IGKFX_Y(IA,IGHSTO) GT 0),
+$ifi not %BB2%==yes (IGKFX_Y(IA,IGHSTO)+IGKVACCTOY(IA,IGHSTO))/GDATA(IGHSTO,'GDSTOHLOAD'));
+
+$ifi not %BB2%==yes VHSTOLOADTS.UP(IA,S,T)=
+$ifi not %BB2%==yes   SUM(IGHSTOS$(IGKFX_Y(IA,IGHSTOS) GT 0),
+$ifi not %BB2%==yes (IGKFX_Y(IA,IGHSTOS)+IGKVACCTOY(IA,IGHSTOS))/GDATA(IGHSTOS,'GDSTOHLOAD'));
+
+$ifi not %BB2%==yes VESTOLOADT.UP(IA,S,T)=
+$ifi not %BB2%==yes   SUM(IGESTO$(IGKFX_Y(IA,IGESTO) GT 0),
+$ifi not %BB2%==yes (IGKFX_Y(IA,IGESTO)+IGKVACCTOY(IA,IGESTO))/GDATA(IGESTO,'GDSTOHLOAD'));
+
+$ifi not %BB2%==yes VESTOLOADTS.UP(IA,S,T)=
+$ifi not %BB2%==yes   SUM(IGESTOS$(IGKFX_Y(IA,IGESTOS) GT 0),
+$ifi not %BB2%==yes (IGKFX_Y(IA,IGESTOS)+IGKVACCTOY(IA,IGESTOS))/GDATA(IGESTOS,'GDSTOHLOAD'));
+
+* For efficiency reasons simple bounds are generated if no storage technology is available for investment in BB2:
+$ifi %BB2%==yes Loop(IA$(0=Sum(IGHSTO$IAGKN(IA,IGHSTO),1)),
+$ifi %BB2%==yes  VHSTOLOADT.UP(IA,S,T)=
+$ifi %BB2%==yes          SUM(IGHSTO$(IGKFX_Y(IA,IGHSTO) GT 0),
+$ifi %BB2%==yes  (IGKFX_Y(IA,IGHSTO)+IGKVACCTOY(IA,IGHSTO))/GDATA(IGHSTO,'GDSTOHLOAD'));
+$ifi %BB2%==yes );
+$ifi %BB2%==yes Loop(IA$(0=Sum(IGESTO$IAGKN(IA,IGESTO),1)),
+$ifi %BB2%==yes  VESTOLOADT.UP(IA,S,T)=
+$ifi %BB2%==yes          SUM(IGESTO$(IGKFX_Y(IA,IGESTO) GT 0),
+$ifi %BB2%==yes  (IGKFX_Y(IA,IGESTO)+IGKVACCTOY(IA,IGESTO))/GDATA(IGESTO,'GDSTOHLOAD'));
+$ifi %BB2%==yes );
+
+$ifi %BB2%==yes Loop(IA$(0=Sum(IGHSTOS$IAGKN(IA,IGHSTOS),1)),
+$ifi %BB2%==yes  VHSTOLOADTS.UP(IA,S,T)=
+$ifi %BB2%==yes          SUM(IGHSTOS$(IGKFX_Y(IA,IGHSTOS) GT 0),
+$ifi %BB2%==yes  (IGKFX_Y(IA,IGHSTOS)+IGKVACCTOY(IA,IGHSTOS))/GDATA(IGHSTOS,'GDSTOHLOAD'));
+$ifi %BB2%==yes );
+$ifi %BB2%==yes Loop(IA$(0=Sum(IGESTOS$IAGKN(IA,IGESTOS),1)),
+$ifi %BB2%==yes  VESTOLOADTS.UP(IA,S,T)=
+$ifi %BB2%==yes          SUM(IGESTOS$(IGKFX_Y(IA,IGESTOS) GT 0),
+$ifi %BB2%==yes  (IGKFX_Y(IA,IGESTOS)+IGKVACCTOY(IA,IGESTOS))/GDATA(IGESTOS,'GDSTOHLOAD'));
+$ifi %BB2%==yes );
+
+VGH_T.UP(IA,IGHSTOALL,S,T)$(IGKFX_Y(IA,IGHSTOALL) GT 0)=
+ (IGKFX_Y(IA,IGHSTOALL)+IGKVACCTOY(IA,IGHSTOALL))/GDATA(IGHSTOALL,'GDSTOHUNLD');   !! GKRATE taken into account later
+
+VGE_T.UP(IA,IGESTOALL,S,T)$(IGKFX_Y(IA,IGESTOALL) GT 0)=
+ (IGKFX_Y(IA,IGESTOALL)+IGKVACCTOY(IA,IGESTOALL))/GDATA(IGESTOALL,'GDSTOHUNLD');   !! GKRATE taken into account later
+
+* Storage contents does not exceed upper limit (MWh):
+* Altered to include accumulated capacity. (In case investments are transfered from other simulation)
+* Note: This code format may be simplified by using IAGKN for all model types, however for now this solution is more robust against coding errors.
+$ifi not %BB2%==yes VHSTOVOLT.UP(IA,S,T)=SUM(IGHSTO$(IGKFX_Y(IA,IGHSTO) GT 0),
+$ifi not %BB2%==yes    IGKFX_Y(IA,IGHSTO)+IGKVACCTOY(IA,IGHSTO));
+$ifi not %BB2%==yes VHSTOVOLTS.UP(IA,S,T)=SUM(IGHSTOS$(IGKFX_Y(IA,IGHSTOS) GT 0),
+$ifi not %BB2%==yes    IGKFX_Y(IA,IGHSTOS)+IGKVACCTOY(IA,IGHSTOS));
+
+* Altered to include accumulated capacity. (In case investments are transfered from other simulation)
+$ifi not %BB2%==yes VESTOVOLT.UP(IA,S,T)=SUM(IGESTO$(IGKFX_Y(IA,IGESTO) GT 0),
+$ifi not %BB2%==yes    IGKFX_Y(IA,IGESTO)+IGKVACCTOY(IA,IGESTO));
+
+* For efficiency reasons simple bounds are generated if no storage technology is available for investment in BB2:
+$ifi %BB2%==yes Loop(IA$(0=Sum(IGHSTO$IAGKN(IA,IGHSTO),1)),
+$ifi %BB2%==yes VHSTOVOLT.UP(IA,S,T)=SUM(IGHSTO$(IGKFX_Y(IA,IGHSTO) GT 0),
+$ifi %BB2%==yes                          IGKFX_Y(IA,IGHSTO)+IGKVACCTOY(IA,IGHSTO));
+$ifi %BB2%==yes );
+$ifi %BB2%==yes Loop(IA$(0=Sum(IGESTO$IAGKN(IA,IGESTO),1)),
+$ifi %BB2%==yes VESTOVOLT.UP(IA,S,T)=SUM(IGESTO$(IGKFX_Y(IA,IGESTO) GT 0),
+$ifi %BB2%==yes                          IGKFX_Y(IA,IGESTO)+IGKVACCTOY(IA,IGESTO));
+$ifi %BB2%==yes );
+
+
+* Existing  hydro-run-of-river, wind power, solar power and heat can not be dispatched:
+
+VGE_T.FX(IA,IGHYRR,S,T)$IAGK_Y(IA,IGHYRR)=
+    ((WTRRRFLH(IA) * (IGKVACCTOY(IA,IGHYRR) + IGKFX_Y(IA,IGHYRR))
+           * WTRRRVAR_T(IA,S,T)) / IWTRRRSUM(IA))$IWTRRRSUM(IA);
+VGE_T.FX(IA,IGHYRR,S,T)$(NOT IWTRRRSUM(IA)) = 0;
+
+$ifi not %WNDSHUTDOWN%==yes $ifi %WNDFLH_DOL%==AAA     VGE_T.FX(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA)       * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi not %WNDSHUTDOWN%==yes $ifi %WNDFLH_DOL%==AAA_GGG VGE_T.FX(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA,IGWND) * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi     %WNDSHUTDOWN%==yes $ifi %WNDFLH_DOL%==AAA     VGE_T.up(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA)       * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+$ifi     %WNDSHUTDOWN%==yes $ifi %WNDFLH_DOL%==AAA_GGG VGE_T.up(IA,IGWND,S,T)$IAGK_Y(IA,IGWND) =  ((WNDFLH(IA,IGWND) * (IGKVACCTOY(IA,IGWND) + IGKFX_Y(IA,IGWND))   * WND_VAR_T(IA,S,T)) / IWND_SUMST(IA))$IWND_SUMST(IA);
+VGE_T.FX(IA,IGWND,S,T)$(NOT IWND_SUMST(IA)) = 0;
+
+VGE_T.FX(IA,IGSOLE,S,T)$IAGK_Y(IA,IGSOLE) =
+$ifi %SOLEFLH_DOL%==AAA        ((SOLEFLH(IA)        * (IGKVACCTOY(IA,IGSOLE) + IGKFX_Y(IA,IGSOLE))
+$ifi %SOLEFLH_DOL%==AAA_GGG    ((SOLEFLH(IA,IGSOLE) * (IGKVACCTOY(IA,IGSOLE) + IGKFX_Y(IA,IGSOLE))
+           * SOLE_VAR_T(IA,S,T)) / ISOLESUMST(IA))$ISOLESUMST(IA);
+VGE_T.FX(IA,IGSOLE,S,T)$(NOT ISOLESUMST(IA)) = 0;
+
+VGH_T.FX(IA,IGSOLH,S,T)$IAGK_Y(IA,IGSOLH) =
+$ifi %SOLHFLH_DOL%==AAA        ((SOLHFLH(IA) * (IGKVACCTOY(IA,IGSOLH) + IGKFX_Y(IA,IGSOLH))* SOLH_VAR_T(IA,S,T)) / ISOLHSUMST(IA))$ISOLHSUMST(IA);
+$ifi %SOLHFLH_DOL%==AAA_GGG    ((SOLHFLH(IA,IGSOLH) * (IGKVACCTOY(IA,IGSOLH) + IGKFX_Y(IA,IGSOLH))* SOLH_VAR_T(IA,S,T)) / ISOLHSUMST(IA))$ISOLHSUMST(IA);
+VGH_T.FX(IA,IGSOLH,S,T)$(NOT ISOLHSUMST(IA)) = 0;
+
+* New hydro-run-of-river, wind power, solar power and heat can not generate if the production variation profile is not defined,
+* the $-conditions complement the $-conditions on equations QGKNHYRR, QGKNWND, QGKNSOLE, QGKNSOLH:
+VGEN_T.FX(IA,IGHYRR,S,T)$(NOT IWTRRRSUM(IA))  = 0;
+VGEN_T.FX(IA,IGWND,S,T)$(NOT IWND_SUMST(IA))  = 0;
+VGEN_T.FX(IA,IGSOLE,S,T)$(NOT ISOLESUMST(IA)) = 0;
+VGHN_T.FX(IA,IGSOLH,S,T)$(NOT ISOLHSUMST(IA)) = 0;
+
+
+* Calculate hydro inflow to reservoirs in MWh/MW installed capacity (new and old):
+
+$ifi %bb1%==yes  IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
+$ifi %bb2%==yes  IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
+$ifi %bb3%==yes  IHYINF_S(IA,S)= ((WTRRSFLH(IA) * WTRRSVAR_S(IA,S) * (WEIGHT_S(S)/IWEIGHSUMS)) / IWTRRSSUM(IA))$IWTRRSSUM(IA);
+
+
+$ifi not %bb2%==yes $goto bb2_label2
+* Fuel limitations: No new capacity nor new generation if zero fuel potential:
+
+LOOP((FFF,G)$IGF(G,FFF),
+     LOOP((IA,C)$ICA(C,IA),
+     IF( (not (not FKPOT(C,FFF) or (FKPOT(C,FFF) GE 0))),
+     IAGKN(IA,G) = NO; ););
+
+     LOOP((IA,IR)$RRRAAA(IR,IA),
+     IF( (not (not FKPOT(IR,FFF) or (FKPOT(IR,FFF) GE 0))),
+     IAGKN(IA,G) = NO; ););
+
+     LOOP(IA,
+     IF( (not (not FKPOT(IA,FFF) or (FKPOT(IA,FFF) GE 0))),
+     IAGKN(IA,G) = NO; ););
+);
+
+VGKN.UP(IA,IGKFIND)$IGKNMAX_Y(IA,IGKFIND)=
+         IGKNMAX_Y(IA,IGKFIND)-IGKVACCTOY(IA,IGKFIND);
+
+$label bb2_label2
+
+*---- Transmission: -----------------------------------------------------------
+
+* For balbase1 and balbase3 the transmission capacities are by default the same for all years.
+* For balbase2 the transmission capacities may be increased endogeneously.
+
+* Default: Overwrite any previous information to ensure no new transmission lines:
+  IXKN(IRE,IRI)=NO;
+
+$ifi not %bb2%==yes $goto bb2_label3
+* Update transmission capacities (MW)
+* (recall that new transmission is symmetric):
+
+  IXKVACCTOY(IRE,IRI) = IXKVACCTOY(IRE,IRI) + VXKN.L(IRE,IRI) + VXKN.L(IRI,IRE);
+
+* Observe: the following assumes that XINVCOST is nonsymmetric, also observe EPS-convention:
+  IXKN(IRRRE,IRRRI)$(IRE(IRRRE) AND IRI(IRRRI))=
+   YES$((XINVCOST(IRRRE,IRRRI) AND (XINVCOST(IRRRE,IRRRI) LT INF)) AND (ORD(IRRRE) GT ORD(IRRRI)));
+$label bb2_label3
+
+* Updates transmission capacity according to investments from a BB2 execution
+* ADDINVEST is automatically set to 'no' if BB2==yes (see balopt.opt).
+$ifi %ADDINVEST%==yes IXKVACCTOY(IRE,IRI)=XKACC(Y,IRE,IRI);
+
+
+$ifi %XKDERATE_DOL%==IRRRE_IRRRI          IXKDERATE(IRE,IRI,S,T) = XKDERATE(IRE,IRI);
+$ifi %XKDERATE_DOL%==IRRRE_IRRRI_SSS      IXKDERATE(IRE,IRI,S,T) = XKDERATE(IRE,IRI,S);
+$ifi %XKDERATE_DOL%==IRRRE_IRRRI_SSS_TTT  IXKDERATE(IRE,IRI,S,T) = XKDERATE(IRE,IRI,S,T);
+
+
+* Set the fixed exchange with third regions:
+
+IX3FX_T_Y(IR,S,T)= ((X3FX(Y,IR) * X3FX_VAR_T(IR,S,T)) / IX3FXSUMST(IR))$(IX3FXSUMST(IR) NE 0);
+
+* Annual updates wrt electricity exchange with 3. countries.
+$ifi %X3V%==yes $include '../../base/addons/x3v/model/x3vannual.inc';
+
+*---- Demands: ----------------------------------------------------------------
+
+* Set the demand for electricity and heat for the current simulation year:
+* Note that IDE_SUMST is the total load expressed according to DE_VAR_T:
+
+  IDE_T_Y(IR,S,T) =
+    SUM(DEUSER, (DE(Y,IR,DEUSER) * DE_VAR_T(IR,DEUSER,S,T) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0));
+
+  IDH_T_Y(IA,S,T) =
+    SUM(DHUSER, (DH(Y,IA,DHUSER) * DH_VAR_T(IA,DHUSER,S,T) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0));
+
+
+$ONTEXT not implemented presently
+* Elastic demands, upper bounds on the quantities of the individual steps.
+
+
+VDEF_T.UP(IR,S,T,DEF_D1)$(ORD(DEF_D1) LT CARD(DEF_D1))=
+   IDE_T_Y(IR,S,T)*
+ (DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D1+1)-DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D1));
+
+VDEF_T.UP(IR,S,T,DEF_D1)$((ORD(DEF_D1) EQ CARD(DEF_D1)) AND (1 LT CARD(DEF_D1)))=
+   IDE_T_Y(IR,S,T)*(1-DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D1));
+
+VDEF_T.UP(IR,S,T,DEF_U1)$((ORD(DEF_U1) EQ 1) AND (1 LT CARD(DEF_U1)))=
+   IDE_T_Y(IR,S,T)*(DEF_STEPS(IR,S,T,'DF_QUANT',DEF_U1)-1);
+
+VDEF_T.UP(IR,S,T,DEF_U1)$(1 LT ORD(DEF_U1))=
+  IDE_T_Y(IR,S,T)*
+(DEF_STEPS(IR,S,T,'DF_QUANT',DEF_U1)-DEF_STEPS(IR,S,T,'DF_QUANT',DEF_U1-1));
+
+
+VDEF_T.UP(IR,S,T,DEF_D2)$(ord(def_d2) eq card(def_d2)) = DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D2);
+VDEF_T.UP(IR,S,T,DEF_D2)$(ord(def_d2) lt card(def_d2)) = DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D2)- DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D2+1);
+
+VDEF_T.UP(IR,S,T,DEF_U2) = DEF_STEPS(IR,S,T,'DF_QUANT',DEF_U2);
+
+VDEF_T.UP(IR,S,T,DEF_U3) = IDE_T_Y(IR,S,T)*DEF_STEPS(IR,S,T,'DF_QUANT',DEF_U3);
+VDEF_T.UP(IR,S,T,DEF_D3) = IDE_T_Y(IR,S,T)*DEF_STEPS(IR,S,T,'DF_QUANT',DEF_D3);
+
+
+VDHF_T.UP(IA,S,T,DHF_D1)$(ORD(DHF_D1) EQ 1)= INF;
+
+VDHF_T.UP(IA,S,T,DHF_D1)$((1 LT ORD(DHF_D1)) AND (ORD(DHF_D1) LT CARD(DHF_D1)))=
+   IDH_T_Y(IA,S,T)*
+ (DHF_STEPS(IA,S,T,'DF_QUANT',DHF_D1+1)-DHF_STEPS(IA,S,T,'DF_QUANT',DHF_D1));
+
+VDHF_T.UP(IA,S,T,DHF_D1)$((ORD(DHF_D1) EQ CARD(DHF_D1)) AND (1 LT CARD(DHF_D1)))=
+   IDH_T_Y(IA,S,T)*(1-DHF_STEPS(IA,S,T,'DF_QUANT',DHF_D1));
+
+VDHF_T.UP(IA,S,T,DHF_U1)$((ORD(DHF_U1) EQ 1) AND (1 LT CARD(DHF_D1)))=
+   IDH_T_Y(IA,S,T)*(DHF_STEPS(IA,S,T,'DF_QUANT',DHF_U1)-1);
+
+VDHF_T.UP(IA,S,T,DHF_U1)$((1 LT ORD(DHF_U1)) AND (ORD(DHF_U1) LT CARD(DHF_U1)))=
+  IDH_T_Y(IA,S,T)*
+(DHF_STEPS(IA,S,T,'DF_QUANT',DHF_U1)-DHF_STEPS(IA,S,T,'DF_QUANT',DHF_U1-1));
+
+VDHF_T.UP(IA,S,T,DHF_U1)$(ORD(DHF_U1) EQ CARD(DHF_U1))= INF;
+$offtext
+
+* ---- Fuel prices: -----------------------------------------------------------
+
+* Set the fuelprice for the current simulation year:
+  IFUELP_Y(IA,FFF)= FUELPRICE(Y,IA,FFF);
+
+
+* ---- Fuel use: -----------------------------------------------------------
+
+* Set the fuel use restrictions for the current simulation year:
+
+$ifi %GMINF_DOL%==    CCCRRRAAA_FFF  IGMINF_Y(CCCRRRAAA,FFF)  = GMINF(CCCRRRAAA,FFF);
+$ifi %GMINF_DOL%==YYY_CCCRRRAAA_FFF  IGMINF_Y(CCCRRRAAA,FFF)  = GMINF(Y,CCCRRRAAA,FFF);
+$ifi %GMAXF_DOL%==    CCCRRRAAA_FFF  IGMAXF_Y(CCCRRRAAA,FFF)  = GMAXF(CCCRRRAAA,FFF);
+$ifi %GMAXF_DOL%==YYY_CCCRRRAAA_FFF  IGMAXF_Y(CCCRRRAAA,FFF)  = GMAXF(Y,CCCRRRAAA,FFF);
+$ifi %GEQF_DOL%==     CCCRRRAAA_FFF  IGEQF_Y(CCCRRRAAA,FFF)   = GEQF(CCCRRRAAA,FFF);
+$ifi %GEQF_DOL%== YYY_CCCRRRAAA_FFF  IGEQF_Y(CCCRRRAAA,FFF)   = GEQF(Y,CCCRRRAAA,FFF);
+
+
+*---- Environmental policies: -------------------------------------------------
+
+* Set the national environmental policies for the current simulation year:
+
+  ITAX_CO2_Y(C)  = M_POL(Y,'TAX_CO2',C);
+  ITAX_SO2_Y(C)  = M_POL(Y,'TAX_SO2',C);
+  ITAX_NOX_Y(C)  = M_POL(Y,'TAX_NOX',C);
+
+* Note: only balbase1 and balbase2 will handle annual constraints directly:
+
+$ifi %bb1%==yes    ILIM_CO2_Y(C)  = M_POL(Y,'LIM_CO2',C);
+$ifi %bb1%==yes    ILIM_SO2_Y(C)  = M_POL(Y,'LIM_SO2',C);
+$ifi %bb1%==yes    ILIM_NOX_Y(C)  = M_POL(Y,'LIM_NOX',C);
+
+$ifi %bb2%==yes    ILIM_CO2_Y(C)  = M_POL(Y,'LIM_CO2',C);
+$ifi %bb2%==yes    ILIM_SO2_Y(C)  = M_POL(Y,'LIM_SO2',C);
+$ifi %bb2%==yes    ILIM_NOX_Y(C)  = M_POL(Y,'LIM_NOX',C);
+
+ITAX_GF(IA,G)$(IAGK_Y(IA,G) or IAGKN(IA,G))        = TAX_GF(Y,IA,G);
+ITAX_GE(IA,IGE)$(IAGK_Y(IA,IGE) or IAGKN(IA,IGE))  = TAX_GE(Y,IA,IGE);
+ITAX_GH(IA,IGH)$(IAGK_Y(IA,IGH) or IAGKN(IA,IGH))  = TAX_GH(Y,IA,IGH);
+ITAX_KN(IA,IGE)$(IAGK_Y(IA,IGE) or IAGKN(IA,IGE))  = TAX_KN(Y,IA,IGE);
+
+*---- Annual updating of add-on parameters: -------------------------------------------------
+
+$INCLUDE '../../base/addons/_hooks/simau.inc';
+
+$ifi %bb3%==yes  $ifi not %HYRSBB123%==none  IHYRSBB123G_Y(IA,S)       = HYRSG(Y,IA,S);
+$ifi %bb3%==yes  $ifi not %HYRSBB123%==none  IWATERVAL_Y(IA,S)         = WATERVAL(Y,IA,S);
+$ifi %bb3%==yes  $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/HYRSBB123sim1.inc";
+
+
+$ifi %GAS%==yes $INCLUDE '../../base/addons/gas/annualupdate.inc';
+$ifi %HEATTRANS%==yes $INCLUDE '../../base/addons/heattrans/model/htannualupdate.inc'
+$ifi %FV%==yes $INCLUDE '../../base/addons/fjernvarme/yearupdate_fv.inc';
+$ifi %POLICIES%==yes $include '../../base/addons/policies/pol_yearupdate.inc';
+
+* Always MAKEWATER p.t.
+
+
+*
+*------------------------------------------------------------------------------
+* The following equations can exclude various elements of the model.
+*------------------------------------------------------------------------------
+
+* Electricity transmission between regions within countries and between
+* countries may be excluded by the following statement:
+
+* VX_T.FX(IRE,IRI,S,T)=0;
+
+* Electricity transmission between countries may be excluded
+* by the following statement (Note: the statement above must be comment out):
+
+* LOOP(C, VX_T.FX(IRE,IRI,S,T)$(NOT(CCCRRR(C,IRE) AND CCCRRR(C,IRI)))=0);
+
+* Investments in new generation technology are excluded by the following statement:
+
+$ifi %bb1%==yes IAGKN(IA,G)=NO;
+$ifi %bb3%==yes IAGKN(IA,G)=NO;
+
+*Start level of hydrogen storage in season S fixed to value found in yearly simulation
+$ifi not %H2%==yes $goto noh2store
+$ifi %bb3%==yes VH2STOVOL_T.FX(IA,IGH2STO,IS3,'T001')=IH2STOVOL_START(IA,IGH2STO,IS3);
+
+* End level of hydrogen storage in season S fixed to start level in season S+1
+*$ifi %bb3%==yes VH2STOVOL_T.FX(IA,IGH2STO,IS3,'T168')=IH2STOVOL_END(IA,IGH2STO,IS3);
+*$ifi %bb3%==yes VH2STOVOL_T.LO(IA,IGH2STO,IS3,'T168')=IH2STOVOL_END(IA,IGH2STO,IS3)-1;
+$label noh2store
+
+*----- End of: The following equations can exclude various elements ....-------
+
+*----- End of update parameters and bounds for current simulation year --------
+
+
+* Before solving the model, certain checks may be made on the input data:
+$INCLUDE '../../base/logerror/logerinc/error3.inc';
+
+*-------------------------------------------------------------------------------
+* The following lines can be commented in, if transmission conditions
+* are irrelevant, e.g. for calculation of "system price":
+*XLOSS(IRRRE,IRRRI)= 0;
+*IXKINI_Y(IRRRE,IRRRI)=INF;
+*-------------------------------------------------------------------------------
+
+
+* Unit commitment bounds:
+$ifi %Unitcomm%==yes $include '../../base/addons/unitcommitment/uc_annual_update.inc';
+
+
+*------------------------------------------------------------------------------
+$ifi %bb3%==yes * Loop through all the seasons:
+$ifi %bb3%==yes LOOP(IS3LOOPSET,
+$ifi %bb3%==yes * Start simulation for current season:
+*------------------------------------------------------------------------------
+
+$ifi %bb3%==yes * Set the current season IS3:
+$ifi %bb3%==yes IS3(S)=NO;
+$ifi %bb3%==yes IS3(S)$(ORD(S) EQ ORD(IS3LOOPSET))=YES;
+
+* Hydro storage:
+$ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/HYRSBB123sim2.inc";
+
+
+
+$ifi %bb1%==yes IS3(S)   = YES;
+$ifi %bb2%==yes IS3(S)   = YES;
+
+$ifi %bb3%==yes * Set <MODELNAME>.HOLDFIXED = 1 to save some computation time,
+$ifi %bb3%==yes * unless you need the associated marginal values:
+*$ifi %bb1%==yes BALBASE1.HOLDFIXED = 1; !
+*$ifi %bb2%==yes BALBASE2.HOLDFIXED = 1;
+*$ifi %bb3%==yes BALBASE3.HOLDFIXED = 1; !
+*-------------------------------------------------------------------------------
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+
+* Disable investments in electricity transmission capacity
+$ifi not %TransInvest%==yes IXKN(IRI,IRE)=NO;
+
+* Hydro storage:
+$ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/HYRSBB123sim2.inc";
+
+
+* This option must be active especially for BB1 and BB2 since this outputs the
+* solution basis, which is used for generating results database.
+OPTION Savepoint=%SAVEPOINTVALUE%;
+
+$ifi NOT %UnitComm%==yes $goto notunit
+$ifi not %UnitRMIP%==yes
+$ifi %bb1%==yes  SOLVE BALBASE1 USING MIP MINIMIZING VOBJ;
+$ifi not %UnitRMIP%==yes
+$ifi %bb2%==yes  SOLVE BALBASE2 USING MIP MINIMIZING VOBJ;
+$ifi not %UnitRMIP%==yes
+$ifi %bb3%==yes  SOLVE BALBASE3 USING MIP MINIMIZING VOBJ;
+$ifi %UnitRMIP%==yes
+$ifi %bb1%==yes  SOLVE BALBASE1 USING RMIP MINIMIZING VOBJ;
+$ifi %UnitRMIP%==yes
+$ifi %bb2%==yes  SOLVE BALBASE2 USING RMIP MINIMIZING VOBJ;
+$ifi %UnitRMIP%==yes
+$ifi %bb3%==yes  SOLVE BALBASE3 USING RMIP MINIMIZING VOBJ;
+$goto YESunit
+$label notunit
+$ifi %bb1%==yes SOLVE BALBASE1 USING LP MINIMIZING VOBJ;
+
+$ifi not %bb2%==yes $goto not_bb2;
+$ifi %SOLVEMIP%==yes SOLVE BALBASE2 USING MIP MINIMIZING VOBJ;
+$ifi not %SOLVEMIP%==yes SOLVE BALBASE2 USING LP MINIMIZING VOBJ;
+$label not_bb2;
+
+$ifi %bb3%==yes  SOLVE BALBASE3 USING LP MINIMIZING VOBJ;
+
+
+
+* Hydro storage:
+$ifi %bb3%==yes $ifi %HYRSBB123%==quantprice  $include "../../base/addons/hyrsbb123/HYRSBB123sim3.inc";
+
+
+* This file will print the solver status for each season in the simulation:
+$ifi %bb1%==yes $if errorfree $INCLUDE '../../base/logerror/logerinc/balbase1.mss';
+$ifi %bb2%==yes $if errorfree $INCLUDE '../../base/logerror/logerinc/balbase2.mss';
+$ifi %bb3%==yes $if errorfree $INCLUDE '../../base/logerror/logerinc/balbase3.mss';
+
+
+*------------------------------------------------------------------------------
+$ifi %bb3%==yes * End of loop over seasons:
+$ifi %bb3%==yes ); /* LOOP(IS3LOOPSET,...) */
+
+
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+
+* bb1 and bb2: Save yearly basis (as saved by SAVEPOINT) and move to temp directory:
+* This section aims to manipulate output files in a Windows-based file system
+$ifi not %system.filesys%==MSNT $goto endofMSNTmerge
+
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE1_p.gdx" '  '"%relpathModel%%relpathoutput%temp\'Y.tl:0:0 '.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb1%==yes  execute   "%batfileMERGESAVEPOINTRESULTS%";
+
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb2%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '"%relpathModel%''BALBASE2_p.gdx" '  '"%relpathModel%%relpathoutput%temp\'Y.tl:0:0 '.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb2%==yes execute  "%batfileMERGESAVEPOINTRESULTS%";
+
+* bb3: Merge yearly basis (as saved by SAVEPOINT and renamed) and move merged.gdx to temp directory:
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes execute 'rm BALBASE3_p*';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes execute_unload 'BALBASE3.gdx'
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes $ifi %limitedresults%==yes $INCLUDE '../../base/model/symoutput.inc';
+;
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes putclose  fileMERGESAVEPOINTRESULTSbat 'move  ' '%relpathModel%''BALBASE3.gdx '  '%relpathModel%../output/temp/'Y.tl:0:0 '.gdx';
+$ifi %MERGEINPUTDATA%==yes
+$ifi %BB3%==yes execute "%batfileMERGESAVEPOINTRESULTS%";
+
+$label endofMSNTmerge
+
+* This section aims to manipulate output files in a UNIX-based file system
+$ifi not %system.filesys%==UNIX  $goto endofUNIXmerge
+
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb1%==yes  putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv "%relpathModel%''BALBASE1_p.gdx" "%relpathModel%%relpathoutput%temp/'Y.tl:0:0 '.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb1%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb1%==yes  execute   './"%bashfileMERGESAVEPOINTRESULTS%"';
+
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb2%==yes putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv  "%relpathModel%''BALBASE2_p.gdx"  "%relpathModel%%relpathoutput%temp/'Y.tl:0:0 '.gdx"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb2%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb2%==yes execute  './"%bashfileMERGESAVEPOINTRESULTS%"';
+
+* bb3: Merge yearly basis (as saved by SAVEPOINT and renamed) and move merged.gdx to temp directory:
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes execute 'rm BALBASE3_p*';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes execute_unload 'BALBASE3.gdx'
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %BB3%==yes $ifi %limitedresults%==yes $INCLUDE '../../base/model/symoutput.inc';
+;
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb3%==yes putclose  fileMERGESAVEPOINTRESULTSbash '#!/bin/bash' / 'mv  "%relpathModel%''BALBASE3.gdx"  %relpathModel%../output/temp/'Y.tl:0:0 '.gdx';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb3%==yes execute 'chmod +x ./"%bashfileMERGESAVEPOINTRESULTS%"';
+$ifi %MERGESAVEPOINTRESULTS%==yes
+$ifi %bb3%==yes execute './"%bashfileMERGESAVEPOINTRESULTS%"';
+
+$label endofUNIXmerge
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+$ifi %X3V%==yes $INCLUDE '../../base/addons/x3v/model/x3vgeninput.inc';
+
+
+$ifi %H2%==yes $include '../../base/addons/Hydrogen/H2Sim.inc';
+
+* Certain checks may be made on the output:  /*Skal den flyttes ned eller andres?*/
+$INCLUDE '../../base/logerror/logerinc/error4.inc';
+
+* Various results from the simulation of current year may be printed out:
+* Calculate and store intermediate results from current year:
+$ifi %PRINTFILES%==yes $if errorfree $INCLUDE '../../base/output/printout/printinc/prt3-bb1.inc';
+
+
+* Print for current year,
+* according to the specifications given in the following file:
+
+$if errorfree $ifi %PRINTFILES%==yes $ifi %bb1%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb1.inc';
+
+$if errorfree $ifi %PRINTFILES%==yes $ifi %bb2%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb2.inc';
+
+$if errorfree $ifi %PRINTFILES%==yes $ifi %bb3%==yes   $INCLUDE '../../base/output/printout/printinc/prt4-bb2.inc';
+
+
+
+* The Welfare module
+$ifi %welfare%==yes $INCLUDE '../../base/addons/welfare/welfarecmp/compprint3.inc';
+* The following file includes instructions for processing output to be used in
+* the Economic module.
+*$ifi %ECONOMIC%==yes $INCLUDE '../../base/processing/economic/eco_process.inc';
+
+* Case specific output printing:
+$ifi EXIST 'caseprint.inc' $include 'caseprint.inc';
+
+*------------------------------------------------------------------------------
+*                GENERATE INPUT FILES FOR BB3 FROM RESULTS OF BB1
+*------------------------------------------------------------------------------
+$ifi %GAS%==yes $INCLUDE '../../base/addons/gas/gasgeninput.inc';
+$ifi %GAS%==yes $INCLUDE '../../base/addons/gas/gentariffs.inc';
+
+* For hydro with reservoir save the following, to be used in model BalBase3 by addon hyrsbb123:
+$ifi %bb1%==yes HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS))    = SUM(IGHYRS$IAGK_Y(IA,IGHYRS),SUM(T,IHOURSINST(S,T)*(VGE_T.L(IA,IGHYRS,S,T))));
+$ifi %bb1%==yes VHYRS_SL(Y,IA,S)  = VHYRS_S.l(IA,S);
+$ifi %bb1%==yes WATERVAL(Y,IA,S)  = QHYRSSEQ.m(IA,S);
+$ifi %bb2%==yes HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_Y(IA,IGHYRS))    = SUM(IGHYRS$IAGK_Y(IA,IGHYRS),SUM(T,IHOURSINST(S,T)*(VGE_T.L(IA,IGHYRS,S,T))));  !! todo: ny invest!
+$ifi %bb2%==yes VHYRS_SL(Y,IA,S)  = VHYRS_S.l(IA,S);
+$ifi %bb2%==yes WATERVAL(Y,IA,S)   = QHYRSSEQ.m(IA,S);
+$ifi %H2%==yes $INCLUDE '../../base/addons/Hydrogen/H2geninput.inc';
+
+
+
+* Update generation capacities according to stored investments from a bb2 calculation.
+$ifi %BB2%==yes GVKGN(Y,IA,IGKFIND)  = VGKN.L(IA,IGKFIND);
+$ifi %BB2%==yes GKVACC(Y,IA,IGKFIND) = GKVACC(Y-1,IA,IGKFIND) + VGKN.L(IA,IGKFIND);
+$ifi %BB2%==yes GKVACCDECOM(Y,IA,IGKFIND) = GKVACC(Y,IA,IGKFIND) - SUM(IYALIAS$(YVALUE(IYALIAS) LE (YVALUE(Y)-GDATA(IGKFIND,'GDLIFETIME'))),GVKGN(IYALIAS,IA,IGKFIND)) - VDECOM.l(IA,IGKFIND);
+
+* Update generation capacities according to stored investments from a bb2 calculation.
+$ifi %BB2%==yes IGKVACCEOY(IA,IGKFIND)= GKVACCDECOM(Y,IA,IGKFIND);
+
+XKACC(Y,IRE,IRI) = XKACC(Y-1,IRE,IRI)+VXKN.L(IRE,IRI) + VXKN.L(IRI,IRE);
+$include "../../base/addons/_hooks/varassign.inc"
+
+vge_t.l(ia,g,s,t)=0;
+vgh_t.l(ia,g,s,t)=0;
+vgen_t.l(ia,g,s,t)=0;
+vghn_t.l(ia,g,s,t)=0;
+vgf_t.l(ia,g,s,t)=0;
+vgfn_t.l(ia,g,s,t)=0;
+vgkn.l(ia,g)=0;
+vxkn.l(IRE,IRI)=0;
+
+$ifi %REShareE%==yes  $include  '../../base/addons/REShareE/printinc/RESEPrt4.inc';
+$ifi %REShareEH%==yes $include  '../../base/addons/REShareEH/printinc/RESEHPrt4.inc';
+
+*------------------------------------------------------------------------------
+*                    END OF SIMULATION FOR CURRENT YEAR
+*------------------------------------------------------------------------------
+); /* LOOP(Y,...) */
+
+
+
+*-------------------------------------------------------------------------------
+
+* The following permits comparison between scenarios, cf. the description. /Welfare
+* The following files are included only when comparing, i.e. not in basecase.
+* The code is tricky, it is based on existence of file welfare.inc only in relation to base folder:
+
+$ifi %welfare%==yes $INCLUDE '../../base/addons/welfare/welfarecmp/welfarebb3.inc';
+*$ifi %ECONOMIC%==yes $INCLUDE '../../base/processing/economic/eco_writetbl.inc';
+* Earnings
+* $ifi %PLANTCLOSURES%==yes $include '../../base/printinc/earningsout.inc';
+
+
+$label endoffile

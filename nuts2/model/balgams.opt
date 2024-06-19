@@ -1,0 +1,161 @@
+* File balgams.opt to the Balmorel model.
+* This file contains GAMS options.
+* This file is part of the Balmorel model, version 3.03.
+
+*===============================================================================
+* The following are options applying to the GAMS system (unless overwritten).
+* Observe that in order to make them apply everywhere,
+* the option $ONGLOBAL must be set in the Balmorel.gms file
+* before the $inclusion of the present file.
+*===============================================================================
+
+
+*-------------------------------------------------------------------------------
+* GAMS output:
+*-------------------------------------------------------------------------------
+
+*...............................................................................
+* $OFFLISTING suppresses printing of input to the list file.
+* The listing is convenient for instance if there are errors,
+* because the place of the errors will be specifed by the line numbers in the list file.
+* However, the file produced may be quite large.
+* Moreover, you may be more interested in specific parts of the listing,
+* therefore refinements are given in the following.
+
+* If you are primarily interested in the listing of the code,
+* you may find it annoying to find a listing of the data files in the list file.
+* Therefore the following construction is used to separate listing of code and data.
+* For a minimal listing, use:
+*   $Setglobal ONOFFDATALISTING  $OFFLISTING
+*   $Setglobal ONOFFCODELISTING  $OFFLISTING
+* To list code but not data, use:
+*   $Setglobal ONOFFDATALISTING  $OFFLISTING
+*   $Setglobal ONOFFCODELISTING  $ONLISTING
+* To list both code and data, use:
+*   $Setglobal ONOFFDATALISTING  $ONLISTING
+*   $Setglobal ONOFFCODELISTING  $ONLISTING
+
+$Setglobal ONOFFDATALISTING  $OffLISTING
+$Setglobal ONOFFCODELISTING  $OnLISTING
+%ONOFFCODELISTING%
+
+
+*...............................................................................
+* OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF, with the alternatives
+* ONSYMXREF  ONSYMLIST  ONUELLIST  ONUELXREF control the production of maps
+* in the list file. Useful for inspection of details and overview:
+$OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF
+*$ONSYMXREF ONSYMLIST ONUELLIST ONUELXREF
+
+*...............................................................................
+* LIMROW and LIMCOL specifies the maximum number of rows and columns
+* used in equations listing and inspection of details.
+* Defaults are LIMROW=3, LIMCOL=3;
+* The statement "LIMROW=0" turns the listing off:
+
+OPTIONS LIMROW=   5, LIMCOL=   6;
+
+*...............................................................................
+* SYSOUT controls the printing of the solved status in the list file.
+* Useful in emergency cases.
+* OPTIONS SYSOUT=OFF (default) or OPTIONS SYSOUT=ON:
+OPTIONS SYSOUT=Off;
+
+*...............................................................................
+* SOLPRINT controls the printing of the solution in the list file.
+* Useful for inspection of details.
+* OPTIONS SOLPRINT=OFF or OPTIONS SOLPRINT=ON (default):
+OPTIONS SOLPRINT=Off;
+
+*...............................................................................
+* DECIMALS controls the the number of decimals in the list file.
+* Default is 3, maximum is 8.
+OPTION DECIMALS = 3;
+
+* DISPWIDTH  Set the label length in columns for the display statement.
+* Default is 10, maximum is 31.
+OPTION  DISPWIDTH =  18;
+
+*...............................................................................
+* $ondollar/$offdollar controls the echoing of dollar control option lines in the listing file:
+$ondollar
+*-------------------------------------------------------------------------------
+
+*-------------------------------------------------------------------------------
+* GAMS input:
+*-------------------------------------------------------------------------------
+
+*...............................................................................
+* Comments:
+* ONINLINE makes it possible to comment out parts using /*  */. MUST be present:
+$ONINLINE
+
+* ONEOLCOM makes it possible to start a comment with !!, it stretches to end-of-line. MUST be present:
+$ONEOLCOM
+
+*...............................................................................
+* Handling of empty sets:
+* $ONEMPTY/OFFEMPTY permits/forbids definition of empty sets:
+$ONEMPTY
+*...............................................................................
+
+
+
+*-------------------------------------------------------------------------------
+* Solver related options:
+*-------------------------------------------------------------------------------
+
+*-------------------------------------------------------------------------------
+* Specify the Solver to use for relevant model types (LP, MIP etc.).
+* E.g., for using CBC for LP problems specify option   LP=CBC
+* E.g., for using IPOPT for LP problems specify option LP=IPOPT
+
+option LP   = CPLEX
+option RMIP = CPLEX
+option MIP  = CPLEX
+
+*-------------------------------------------------------------------------------
+* From GAMS many basic solver options may be specified, applicable for some or all solvers,
+* they may be specified here.
+
+* ITERLIM specifies the maximum number of iteration by the solver
+* Default value is 2e9.
+OPTIONS ITERLIM=2000000000;
+
+* OPTCR controls the precision of the solution. If optcr is greater than 0,
+* a good, not necessarily optimal solution will be accepted.
+* Default value is 0.10.
+option optcr = 0.000001
+
+* RESLIM specifies the maximum time (seconds) that the computer can run during execution of a solver.
+* Default value is 1000.
+option RESLIM = 1209600
+
+* Set default upper bound on integer variables
+option intVarUp = 0
+
+*-------------------------------------------------------------------------------
+* Solvers may be controlled by solver specific options in a solver option file,
+* in addition to the general options above.
+* Possibilities and details vary between solvers, consult GAMS Solver manuals.
+* Set USEOPTIONFILE to either 0 or a positive integer. A 0 indicates that no option file is to be used.
+* Option files are solver specific. In the following assume that a solver with name SolverName is used.
+* Any solver option file is expected to be found in model folder.
+* If a 1 is used then the solver will search for option file SolverName.opt
+* If another positive integer less than 10 is used, e.g. 4, then the solver will search for an option file SolverName.op4
+* The below option USEOPTIONFILE is used in the .sim file.
+* Be aware that if you change solver (cf. above) then you may also have to change the value for USEOPTIONFILE
+*
+* In the following a few option file possibilities are mentioned for use with Cplex,
+* their use assumes that appropriate files exist in the model folder.
+
+$Setglobal USEOPTIONFILE 4
+*!option 0   No option file is used. Note that not setting anything will generate an error.
+*!option 1   Use option file SolverName.opt.
+*!option 4   Predefined, don't change. Used with CPLEX it opens cplex.op4 and sets 'LPmethod 4' to run barrior method.
+*!option 6   Predefined, don't change. Used with CPLEX it opens cplex.op6 and sets 'LPmethod 6' to run multiple methods in parallel.
+
+
+*-------------------------------------------------------------------------------
+*-------------------------------------------------------------------------------
+
