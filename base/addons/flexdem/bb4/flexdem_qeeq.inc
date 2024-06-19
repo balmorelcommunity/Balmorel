@@ -1,0 +1,6 @@
+* Flexdem add-on. Added by Mathias Berg Rosendal
+
+ + SUM(FLEXUSER, VFLEXDEMAND_T(FLEXUSER,IY411,IR,IS3,T)$(FLEXYDEMAND(IY411,IR,FLEXUSER)))
+
+
+
