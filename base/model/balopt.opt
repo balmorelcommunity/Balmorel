@@ -11,9 +11,7 @@
 * Further, if you work with BUI, this file will not be $included into Balmorel.gms,
 * instead the file Balopt.bui will be $included. See the description elsewhere.
 
-*---- START: VQDEBUG ------------------------------------------------
-*-----------------------------------------------------------------
-* overall control variable vqdebug must be 'yes' if any of the other vqdebug controls are:
+
 * Debugging hints are available if you include feasiblity-ensuring variables.
 * However, adding more variables will increase calculation time.
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
@@ -22,11 +20,7 @@
 $setglobal vqdebug
 *!option yes
 
-*Reduce number of infeasibility variables. By default, infeasibility variables are added to many equations, which is not always required.
-$setglobal reduced_vqdebug
-*!option yes
-*-----------------------------------------------------------------
-*---- END: VQDEBUG ------------------------------------------------
+
 
 *===============================================================================
 *===============================================================================
@@ -60,9 +54,30 @@ $setglobal CASEID BASE
 
 *-------------------------------------------------------------------------------
 * The following global variables concern the choice of model.
+* If $Setglobal bb1 yes, the usual (S,T) time segments and no endogenous investment are chosen.
+* If $Setglobal bb2 yes, the usual (S,T) time segments and endogenous investment are chosen.
+* If $Setglobal bb3 yes, the no endogenous investment, forwards simulation is chosen.
 * If $Setglobal bb4 yes, BB4 is chosen.
+* Exactly one of the following Setgbobals must be assigned yes.
+*
+* bb1: use model BALBASE1: optimisation simultaneuosly for all (S,T) in a year, exogenous investments.
+$setglobal bb1
+*!option yes      !notif %BB2%==yes  !notif %BB3%==yes  !notif %BB4%==yes
+* bb2: use model BALBASE2: optimisation simultaneuosly for all (S,T) in a year, exogenous and endogenous investments.
+$setglobal bb2
+*!option yes      !notif %BB1%==yes  !notif %BB3%==yes  !notif %BB4%==yes
+* bb3: use model BALBASE3: optimisation of one season at a time, forwards through S, exogenous investments.
+$setglobal bb3
+*!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB4%==yes
 $setglobal bb4 yes
+*!option yes      !notif %BB1%==yes  !notif %BB2%==yes  !notif %BB3%==yes
+
+* During test period for BB4 make comparisons between BB4 and BB1, BB2, BB3.
+* The present implementation is for comparison of models (BB4 and one of BB1/BB2/BB3) with a single year (where results should be identical)
+* Not finished yet, but useful
+$setglobal testbb1234
 *!option yes
+
 
 *===============================================================================
 *===============================================================================
@@ -103,16 +118,17 @@ $setglobal TechInvest   yes
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
 GINVESTSTART= 2020;
 
+
 *---- End: Generation investments options----
 
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest yes
+$setglobal TransInvest YES
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
-XINVESTSTART= 2025;
+XINVESTSTART= 2035;
 
 *---- End: Transmission investments options----
 
@@ -138,14 +154,14 @@ $setglobal HeatTempLift
 *!option yes
 *-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
 
-* Include industry data in the optimization. Requires HEATTRANS add-on to be activated.
+* Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
 $setglobal INDUSTRY
 *!option yes
 
 *--------------------INDIVIDUAL USERS--------------------------------------------------------------
 * overall control variable INDIVUSERS must be 'yes' if any of the other INDIVUSERS controls are:
 
-* Include individual users data in the optimization. Requires HEATTRANS add-on to be activated.
+* Include individual users data in the optimization. Requires HEATTRANSFER add-on to be activated.
 $setglobal INDIVUSERS
 *!option yes
 
@@ -154,30 +170,23 @@ $setglobal GROUP_DEMAND_SHIFT
 *!option yes
 *-----------------END: INDIVIDUAL USERS--------------------------------------------------------------
 
-* Include seasonal variation of heat pump's COP. If not activated, heat pumps will have a constant COP during the year. (The current version does not support using heat pumps in addon COMBTECH)
+* Include seasonal variation of heat pump's COP. If not activated, heat pumps will have a constant COP during the year.
 $setglobal SEASONALCOP
 *!option yes
 
-*------------START OF: OFFSHORE GRIDS--------------------------
-* overall control variable OFFSHOREGRID must be 'yes' if any of the other OFFSHOREGRID controls are:
-* Allow to build a complicated offshore grid with hubs in the sea.
-$setglobal OFFSHOREGRID
+* Allow to build a complicated offshore grid with hubs in the sea. Requires MIP to work as intended since technologies are modelled with economies of scale via SOS variables. If RMIP is used, it will become a linear problem.
+$setglobal OFFSHOREGRID NO
 *!option yes
-
-*Adds Economies of Scale in generation elements that are part of offshore grids. It requires to use the MIP solver, so remember to activate it.
-$setglobal OFFSHOREGRID_ES_GEN
-*!option yes
-
-*Adds Economies of Scale in electricity transmission elements that are part of offshore grids. It requires to use the MIP solver, so remember to activate it.
-$setglobal OFFSHOREGRID_ES_ELTRANS
-*!option yes
-*------------END OF: OFFSHORE GRIDS--------------------------
 
 * Allow Carbon Capture Storage (CCS) technologies.
 $setglobal CCS
 *!option yes
 
-* Allow curtailment of variable renewable energy generators
+* Allow wind turbines to shut down  (BB1,BB2,BB3)
+$setglobal WNDSHUTDOWN
+*!option yes
+
+* Allow curtailment of variable renewable energy generators  (BB4)
 $setglobal VRESHUTDOWN   yes
 *!option yes
 
@@ -185,7 +194,7 @@ $setglobal VRESHUTDOWN   yes
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
 $setglobal EV
-*!option
+*!option YES
 
 * Adds DUMB charging:
 $setglobal DUMB
@@ -195,23 +204,23 @@ $setglobal DUMB
 $setglobal SMART
 *!option yes
 
-* Adds Vehicle-to-Grid possibility:
-$setglobal V2G   YES
+* Adds V2G charging:
+$setglobal V2G YES
 *!option  yes
 
 * Restricts PHEV vehicles from doing V2G (only relevant if V2G is activated):
 $setglobal NO_PHEV_V2G  yes
 *!option  yes
 
-* Adds step charging scheme (NOT SURE IT IS WORKING ANY MORE):
+* Adds step charging scheme:
 $setglobal STEPCHARGSCHEME
 *!option yes
 
-* Adds cycle degradation (NOT SURE IT IS WORKING ANY MORE, COSTS SHOULD BE ANNUALIZED):
+* Adds cycle degradation charging:
 $setglobal DEGCYCLE
 *!option  yes
 
-* Adds calendar degradation (NOT SURE IT IS WORKING ANY MORE, COSTS SHOULD BE ANNUALIZED):
+* Adds calendar degradation charging:
 $setglobal DEGCAL
 *!option yes
 
@@ -263,7 +272,7 @@ $setglobal RELAX_HYDROSTORAGE yes
 
 *-------------------------------------------------
 *---- Timeseries scaling ------
-*Allows to modify the time series scaling approach
+
 $setglobal timeseries_scaling  usedtimesteps_timseries_scaling
 *!option usedtimesteps_timseries_scaling   !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries"
 *!option full_timeseries_scaling           !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries"
@@ -273,9 +282,8 @@ $setglobal timeseries_scaling  usedtimesteps_timseries_scaling
 
 *-------------------------------------------------
 *---- IGKRATE data ------
-*Includes stochastic outages. If activated, IGKRATE will take the values in file IGKRATE.gdx, else it will be built based on GKRATE
 $setglobal IGKRATE_STOCHASTIC
-*!option yes
+*!option IGKRATE_STOCHASTIC   !Text  "If activated, IGKRATE will take the values in file IGKRATE.gdx, else it will be built based on GKRATE"
 *---- end: IGKRATE calculation ------
 *-------------------------------------------------
 
@@ -286,20 +294,10 @@ $setglobal IGKRATE_STOCHASTIC
 $setglobal BalancingMarket
 *!option yes
 
-*Define the purpose of the balancing run.
-$setglobal BALANCINGRUNPURPOSE TSOREDISPATCH
-*!option INTRADAYMARKET   !Text  "The run will simulate INTRADAY markets"
-*!option TSOREDISPATCH    !Text  "The run will simulate the re-dispatch optimization from the TSO perspective (congetion management), adding penalties to compensate for forced re-dispatch of the units based on the TSO needs"
-
-*If activated the TSO will also compensate generators for the forced down re-dispatch due to forecast errors, ramping limits, etc. (only relevant if BALANCINGRUNPURPOSE=TSOREDISPATCH) (to be finished)
-$setglobal FORCEDDOWNREDISPATCH
-*!option yes
-
-*Define which units will be allowed to change their commitment status (on/off) (requires Unit Commitment addon to be on)
-$setglobal CommitmentStatus  NoChange
+*Define which units will be allowed to change their commitment status (on/off)
+$setglobal CommitmentStatus  FastUnitsChange
 *!option NoChange         !Text  "The units will not be allowed to change their commitment, which will be taken from previous runs "
 *!option FastUnitsChange  !Text  "The slow units will not be allowed to change their commitment, which will be taken from previous runs "
-*!option None             !Text  "All the units will be allowed to change their commitment with respect to previous runs"
 
 *Restricts heat market from participating in the balancing market by restricting relevant heat generation variables from previous runs and not including the heat balance equation
 $setglobal NOHEATMARKET
@@ -322,38 +320,47 @@ $setglobal COMBTECH
 *-----------------HYDROGEN ADDON---------------------------------------
 * overall control variable HYDROGEN must be 'yes' if any of the other HYDROGEN controls are:
 * Set demands for hydrogen consumption and enable hydrogen technologies (some options require COMBTECH to be activated too).
-$Setglobal HYDROGEN
+$Setglobal HYDROGEN YES
 *!option yes
 
 * Allows investments in hydrogen transport
-$Setglobal H2TransInvest YES
+$Setglobal H2TransInvest yes
 *!option yes
 
 SCALAR XH2INVESTSTART 'Year from which endogenous decisions in H2 transmission capacities are allowed' ;
-XH2INVESTSTART= 2025;
+XH2INVESTSTART= 2030;
 
-*Adds Economies of Scale in H2 transmission. It requires to use the MIP solver, so remember to activate it.
-$setglobal ES_H2TRANS
+* Allows import of Hydrogen from 3rd countries outside Balmorel
+$Setglobal IMPORT_H2 YES
 *!option yes
+
 *-----------------END: HYDROGEN ADDON---------------------------------------
 
 * Use stepwise linear fuel prices
 $Setglobal STEPWISEPRICE
 
-* Set a common maximum for fuels. (it should be checked before using it)
+* Set a common maximum for fuels.
 $Setglobal LIMITSFORFUELS
 *!option yes
 
-* Allow demand elasticity (it should be checked before using it)
+* Allow demand elasticity
 $setglobal DFLEXQUANT
 *!option yes
 
-* Allow demand response (requires NETDEMAND) (it should be checked before using it)
+* Allow demand response (requires NETDEMAND)
 $setglobal DEMANDRESPONSE
 *!option yes
 
-* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (it should be checked before using it)
+* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
 $setglobal X3V
+*!option yes
+
+* This variable includes addon for distric heating (BB1, BB2, BB3)
+$Setglobal FV
+*!option yes
+
+*Policies (BB1, BB2, BB3)
+$setglobal POLICIES
 *!option yes
 
 * Grid tariffs on electricity use (requires NETDEMAND)
@@ -397,8 +404,31 @@ $setglobal ANC_SERV_VRE  YES
 $setglobal DOWN_REGULATION_INCLUDED
 *!option yes
 *-----------------------END: ANCILLIARY SERVICES----------------------------------------------------------------------------------------------------
+*
+$setglobal SYSTEMCOST
+*!option yes
 
-* Make investments in technologies only at specified capacities. (it should be checked before using it)
+* PLANTCLOSURES indicates that technology is decomissioned on the basis of profitability. (OLD CODE, USE "DECOM" ADD-ON INSTEAD)
+* When revenues can no longer cover both variable and fixed operating costs, capacity is decomissioned.
+$setglobal PLANTCLOSURES
+*!option yes
+
+* Differentiate yield requirements for different technologies.
+$setglobal YIELDREQUIREMENT
+*!option yes
+
+* Renewable energy share in electricity generation.
+$setglobal REShareE
+*!option yes
+*!notif %REShareEH%==yes
+*
+* Renewable energy share in heat generation.
+$setglobal REShareEH
+*!option yes
+*!notif %REShareE%==yes
+
+
+* Make investments in technologies only at specified capacities. (TO-DO, TEST IT)
 $setglobal AGKNDISC
 *!option yes
 *!onlyif %BB2%==yes
@@ -523,51 +553,13 @@ $setglobal SEASONALLINKRAMPING
 
 *----------------END OF STEPWISE RAMPING (LINEAR VERSION)----------------------------------------------------------
 
-* Options timeaggr control automatic aggregation of time (it should be checked before using it).
-$setglobal timeaggr
+* Calibrate the price side of electricity demand
+$setglobal DEFPCALIB
 *!option yes
-
-
-*-------------------------------------------------------------------------------
-* OptiFlow model.
-*-------------------------------------------------------------------------------
-$setglobal OPTIFLOW
+*
+* Calibrate the price side of heat demand
+$setglobal DHFPCALIB
 *!option yes
-* Addon APKNdisc: discrete size investments in PROC.
-$setglobal APKNdisc
-*!option yes
-*Investments in Optiflow technologies
-$setglobal inv yes
-*! option yes
-*Model solved as MIP
-$setglobal solveOptiFlowmip
-*! option yes
-
-* Debug possibilities:
-$Setglobal addEPStoL
-*! option yes
-* Not needed if there are no capacity bounds on internal proc
-* It will be needed if there are capacity bounds on some internal proc, therefore add them only in that case (requires some coding, TODO).
-* With such minimal use the infeasibilities will be moved to SOSIBU proc whenever possible.
-$Setglobal useQNODEslack
-*! option
-$Setglobal useSSBslack
-*! option yes
-$Setglobal useShareSlack
-*! option yes
-* Option uniquesol permit to use quadratic terms in QOBJ in order to attain unique solution.
-* Should be used for debug on small systems only.
-$Setglobal uniquesol
-*! option yes
-* Testing ONLY:
-$setglobal singlearea
-*! option yes
-* Testing ONLY:
-$setglobal addUP
-*! option yes
-*-------------------------------------------------------------------------------
-*Optiflow end
-*-------------------------------------------------------------------------------
 
 * In model Balbase4 (BB4) indicate the strategy for relative weighting of years
 $setglobal bb4weighty shareYYY
@@ -699,7 +691,7 @@ $Setglobal ADDEVSTOS  none
 $setglobal ADDTECHDEV
 *!option yes
 
-*Add expensive to operate backup generation technologies (electricity, heat, ...). It often occurs that the investment optimization underestimates the need for power.
+*Add expensive to operate backup power and heat generation technology. It often occurs that the investment optimization underestimates the need for power.
 $setglobal ADDBACKUPGEN
 *!option yes
 
@@ -764,7 +756,9 @@ $setglobal ADDGROUP_DEMAND_SHIFT
 *--------------END OF IMPORT OF RESULTS----------------
 *--------------------------------------------
 
-
+* Options timeaggr control automatic aggregation of time segments (to be tested!!).
+$setglobal timeaggr
+*!option yes
 
 
 *===============================================================================
@@ -822,7 +816,14 @@ $setglobal INPUTDATAGDX2XLS
 $setglobal all_endofmodelgdx yes
 *!option yes     !Save the file all_endofmodel.gdx to the model folder
 
+* Print out welfare results
+$Setglobal welfare
+*!option yes
 
+* Allow for limited printout of inputdata and results, as defined by files syminput.inc and symoutput.inc, respectively.
+* Only in effect for BB3
+$Setglobal limitedresults
+*!option yes
 
 
 * Make some output in text format to show some results of an execution.
