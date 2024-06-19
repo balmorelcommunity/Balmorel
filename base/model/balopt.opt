@@ -257,6 +257,22 @@ $setglobal TRANSPORT_DEMAND_AGGREGATED
 
 *------------------------------END:TRANSPORT ADDON-------------------------------------------------
 
+
+*------------------------------FLEXDEM ADDON-------------------------------------------------
+* Overall control variable of adding the flexible demand addon
+$setglobal FLEXDEM 
+*!option yes
+
+* Seasonal demand
+$setglobal seasonal_demand 
+*!option yes
+
+* Inflexible demand
+$setglobal inflex_demand  
+*!option yes
+
+*------------------------------END:FLEXDEM ADDON-------------------------------------------------
+
 *-----------------------------------------------------------
 *---------------HYDRO RESERVOIRS OPTIONS--------------------
 *Interpretation of the seasonal level of hydro reservoirs (QHYRSSEQ)

@@ -26,6 +26,9 @@ QINFLEXDEM_T(FLEXUSER, IY411, IR, IS3, T)$(ord(T) > 1)..
    VFLEXDEMAND_T(FLEXUSER,IY411,IR,IS3,T++1)
 ; 
 
+* Limit maximum flexible consumption
+VFLEXDEMAND_T.UP(FLEXUSER,Y,RRR,S,T) = FLEXMAXLIMIT(FLEXUSER, RRR, S, T);
+
 * Not working
 * EQUATION QINFLEXDEM_S(FLEXUSER, YYY, RRR, SSS) 'Seasons must be equal to each other';
 * QINFLEXDEM_S(FLEXUSER, IY411, IR, IS3)$(ord(IS3) > 1)..

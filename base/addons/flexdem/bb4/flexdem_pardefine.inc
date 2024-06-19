@@ -10,4 +10,8 @@ $if     EXIST '../data/FLEXDEM_FLEXSDEMAND.inc' $INCLUDE         '../data/FLEXDE
 $if not EXIST '../data/FLEXDEM_FLEXSDEMAND.inc' $INCLUDE '../../base/data/FLEXDEM_FLEXSDEMAND.inc';
 %semislash%;
 
+PARAMETER FLEXMAXLIMIT(FLEXUSER, RRR, SSS, TTT) 'Maximum flexible consumption wrt. season and term (%)'  %semislash%
+$if     EXIST '../data/FLEXDEM_MAXLIMIT.inc' $INCLUDE         '../data/FLEXDEM_MAXLIMIT.inc';
+$if not EXIST '../data/FLEXDEM_MAXLIMIT.inc' $INCLUDE '../../base/data/FLEXDEM_MAXLIMIT.inc';
+%semislash%;
 
