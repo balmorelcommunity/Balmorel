@@ -1,7 +1,7 @@
 # Balmorel
 
 This model is used for the DTU course, currently running in 3 weeks of June.
-The data can be downloaded from the branch ![here](https://github.com/balmorelcommunity/Balmorel_data/tree/dtu-balmorel-course-data), and an excel file will also be distributed in the course.
+The data can be downloaded from the branch [here](https://github.com/balmorelcommunity/Balmorel_data/tree/dtu-balmorel-course-data), and an excel file will also be distributed in the course.
 
 ## What is Balmorel?
 
