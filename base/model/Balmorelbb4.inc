@@ -1914,17 +1914,6 @@ QGEQCF(IY411,C,FFF)$IGEQF(IY411,C,FFF)..
 $include "../../base/addons/_hooks/qgeqcf.inc"
 ;
 
-*restriction maximum fuel by model
-* "Maximum fuel use by year and fuel (GJ)" IK
-equation
-QGMAXF(Y,FFF)
-;
-
-IGMAXF(Y,C,'NATGAS') = 5760000000;
-
-QGMAXF(IY411,'NATGAS')$sum(C,IGMAXF(IY411,C,'NATGAS'))..
-   sum(C, SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,'NATGAS') AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC * VGF_T(IY411,IA,G,IS3,T))))
-    =L= 5796000000;
 
 * "Minimum fuel use by year, region and fuel  (GJ)"
 QGMINRF(IY411,IR,FFF)$IGMINF(IY411,IR,FFF)..
@@ -2456,7 +2445,6 @@ $ifi not %RollingSeasons%==yes QGMAXFUELA
 *--- Fuel consumption restrictions ---------------------------------------------
 $ifi not %RollingSeasons%==yes  QGMINCF
 $ifi not %RollingSeasons%==yes  QGMAXCF
-$ifi not %RollingSeasons%==yes  QGMAXF
 $ifi not %RollingSeasons%==yes  QGEQCF
 $ifi not %RollingSeasons%==yes  QGMINRF
 $ifi not %RollingSeasons%==yes  QGMAXRF
