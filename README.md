@@ -1,7 +1,7 @@
 # Balmorel
 
 This study investigates a unified European hydrogen infrastructure. 
-A pre-print can be found [here](https://www.researchsquare.com/article/rs-3185467/v1), and the framework should be used with [this corresponding Balmorel_data repository](https://github.com/balmorelcommunity/Balmorel/tree/A-unified-European-hydrogen-infrastructure-planning-to-support-the-rapid-scale-up-of-hydrogen-production) 
+A pre-print can be found [here](https://www.researchsquare.com/article/rs-3185467/v1), and the framework should be used with [this corresponding Balmorel_data repository](https://github.com/balmorelcommunity/Balmorel_data/tree/A-unified-European-hydrogen-infrastructure-planning-to-support-the-rapid-scale-up-of-hydrogen-production) 
 
 ## What is Balmorel?
 
