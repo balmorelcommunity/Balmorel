@@ -1,5 +1,8 @@
 # Balmorel
 
+This study investigates a unified European hydrogen infrastructure. 
+A pre-print can be found [here](https://www.researchsquare.com/article/rs-3185467/v1), and the framework should be used with [this corresponding Balmorel_data repository](https://github.com/balmorelcommunity/Balmorel/tree/A-unified-European-hydrogen-infrastructure-planning-to-support-the-rapid-scale-up-of-hydrogen-production) 
+
 ## What is Balmorel?
 
 Balmorel is a partial equilibrium model for analysing the electricity and combined heat and power sectors in an international perspective. It is highly versatile and may be applied for long range planning as well as shorter time operational analysis. Balmorel is implemented as a mainly linear programming optimisation problem.
