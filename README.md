@@ -1,5 +1,7 @@
 # Balmorel
 
+A scenario that's possible to run with an academic trial license of GAMS can be found in the balmorel-demo branch.
+
 ## What is Balmorel?
 
 Balmorel is a partial equilibrium model for analysing the electricity and combined heat and power sectors in an international perspective. It is highly versatile and may be applied for long range planning as well as shorter time operational analysis. Balmorel is implemented as a mainly linear programming optimisation problem.
@@ -18,4 +20,30 @@ Balmorel is a modelling tool that can be used by energy system experts, energy c
 
 ## How is Balmorel supported and further developed?
 
-The model is developed and distributed under open source ideals. The source code has been provided on its homepage since 2001 and was assigned the [ISC license](https://opensource.org/licenses/ISC) in 2017. Ample documentation is available in the folder [within this repository](base/documentation). Application examples and contact information can be found on the [Balmorel homepage](https://balmorel.com). Presently the model development is mainly project driven, with a users' network around it, supporting the open source development idea.
+The model is developed and distributed under open source ideals. The source code has been provided on its homepage since 2001 and was assigned the [ISC license](https://opensource.org/licenses/ISC) in 2017. Ample documentation is available in the folder [within this repository](base/documentation). We also refer to information on [openmod](https://wiki.openmod-initiative.org/wiki/Balmorel). Presently the model development is mainly project driven, with a users' network around it, supporting the open source development idea.
+
+### Procedure for Merging Changes to Master
+
+The DTU Balmorel team has decided on the following procedure for merging new changes to the master:
+1. A decision to merge should be agreed upon in a Balmorel meeting with the admins
+2. Create a new branch from master, which will be used as a temporary branch to do all the changes
+3. Make the desired changes in a new scenario:
+    
+    a. Add a new scenario called 'changes', which result in the following folder structure:
+        
+        Balmorel
+        ├── base
+        ├── changes
+        │   └── model
+        │   │   ├── cplex.op4
+        │   │   └── Balmorel.gms
+        ├── simex
+        ├── README.md
+        ├── .gitignore
+        └── .gitattributes
+
+    b. Keep the base scenario identical to the current master and apply all changes to the 'changes' scenario
+   
+4. Run the [test script](base/auxils/master_merge_tests/merge_tests.ipynb) and make sure that the model stays feasible and that you verify the changes
+5. Make a pull request and report the changes made with the KPI outputs from the tests in 4. in ... (todo: check where it makes sense to put these descriptions, as simple as possible)
+
