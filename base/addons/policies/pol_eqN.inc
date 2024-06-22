@@ -1,0 +1,7 @@
+* Addon for securing policy requirements are forfilled
+
+QPOLSHAREGROSS
+QPOLSHARENET
+QPOLMAXCO2
+QPOLMINPROD
+QPOLCAPTARGET
