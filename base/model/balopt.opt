@@ -263,7 +263,7 @@ $setglobal TRANSPORT_DEMAND_AGGREGATED
 $setglobal FLEXDEM 
 *!option yes
 
-* Seasonal demand
+* Seasonal demand - if not set to yes, demand will just have to be met within a year
 $setglobal seasonal_demand 
 *!option yes
 
