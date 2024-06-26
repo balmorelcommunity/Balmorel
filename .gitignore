@@ -23,4 +23,7 @@ base/data/README.md
 *.log
 *.lxi
 *.pf
+*.log~1
+*.log~2
+*.log~3
 %batfileMERGEWITHBASE%
