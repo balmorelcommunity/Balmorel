@@ -2128,6 +2128,11 @@ QXK_UP(IY411,IRE,IRI,IS3,T)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXKN(Y,IRE,IRI)).
 $include "../../base/addons/_hooks/qxk_up.inc"
 ;
 
+
+* Put a cap on the maximum accummulated transmission capacity, if a cap is specified
+VXKNACCUMNET.UP(Y,IRRRE,IRRRI)$(XINVCOST(Y,IRRRE,IRRRI) AND XMAXINV(IRRRE,IRRRI))= XMAXINV(IRRRE,IRRRI);
+
+
 * Accumulated endogenous transmission investments during present BB4 model -----
 * Note that it is assumed that there are no endogenous decommissioning
 * of previous endogenous investment (cf. QGKACCUMNET).
