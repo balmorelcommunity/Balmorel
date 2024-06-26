@@ -30,9 +30,11 @@ SET CCCRRRAAA          "All geographical entities (CCC + RRR + AAA)"
 $if     EXIST '../data/CCCRRRAAA.inc' $INCLUDE         '../data/CCCRRRAAA.inc';
 $if not EXIST '../data/CCCRRRAAA.inc' $INCLUDE '../../base/data/CCCRRRAAA.inc';
 
+
 SET CCC(CCCRRRAAA)       "All Countries"
 $if     EXIST '../data/CCC.inc' $INCLUDE         '../data/CCC.inc';
 $if not EXIST '../data/CCC.inc' $INCLUDE '../../base/data/CCC.inc';
+
 
 SET C(CCC)    "Countries in the simulation"
 $if     EXIST '../data/C.inc' $INCLUDE         '../data/C.inc';
@@ -41,12 +43,14 @@ $if not EXIST '../data/C.inc' $INCLUDE '../../base/data/C.inc';
 SET FFF                "Fuels"
 $if     EXIST '../data/FFF.inc' $INCLUDE      '../data/FFF.inc';
 $if not EXIST '../data/FFF.inc' $INCLUDE '../../base/data/FFF.inc';
+
 *INCLUDE FFF FROM OTHER ADDONS
 $include   "../../base/addons/hydrogen/bb4/hydrogen_fffadditions.inc";
 
 SET FDATASET           "Characteristics of fuels "
 $if     EXIST '../data/FDATASET.inc' $INCLUDE      '../data/FDATASET.inc';
 $if not EXIST '../data/FDATASET.inc' $INCLUDE '../../base/data/FDATASET.inc';
+
 
 PARAMETER FDATA(FFF,FDATASET)    "Fuel specific values"
 $if     EXIST '../data/FDATA.inc' $INCLUDE      '../data/FDATA.inc';

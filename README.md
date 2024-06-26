@@ -29,14 +29,15 @@ The DTU Balmorel team has decided on the following procedure for merging new cha
 2. Create a new branch from master, which will be used as a temporary branch to do all the changes
 3. Make the desired changes in a new scenario:
     
-    a. Add a new scenario called 'changes', which result in the following folder structure:
+    a. Add a new scenario called 'changes', which the following files and folder structure (copy Balmorel.gms and cplex.op4 from base/model if nothing is to be changed in these files):
         
         Balmorel
         ├── base
         ├── changes
+        │   ├── data
         │   └── model
-        │   │   ├── cplex.op4
-        │   │   └── Balmorel.gms
+        │       ├── cplex.op4
+        │       └── Balmorel.gms 
         ├── simex
         ├── README.md
         ├── .gitignore
@@ -44,6 +45,7 @@ The DTU Balmorel team has decided on the following procedure for merging new cha
 
     b. Keep the base scenario identical to the current master and apply all changes to the 'changes' scenario
    
-4. Run the [test script](base/auxils/master_merge_tests/merge_tests.ipynb) and make sure that the model stays feasible and that you verify the changes
-5. Make a pull request and report the changes made with the KPI outputs from the tests in 4. in ... (todo: check where it makes sense to put these descriptions, as simple as possible)
+4. Run the [test script](base/auxils/master_merge_tests/merge_tests.ipynb), make sure that the model stays feasible and that the results make sense
+5. Consider critically if the tests performed in 4. is enough to verify and validate the changes made
+6. Make a pull request with the changes and report them in general terms, including the KPI outputs from the tests in 4. in ... (todo: check where it makes sense to put these descriptions, as simple as possible)
 

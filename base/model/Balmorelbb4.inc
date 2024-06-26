@@ -1,4 +1,7 @@
 * File BalmorelBB4.inc for handling the Balbase4 model in Balmorel.
+* First version 2009(hr) based on DTU Master project by Jesper Felstedt &QHYDROGEN_ Morten Middelboe Pedersen under supervision by Hans Ravn.
+* Present version 20150428(hr), 20150430(Weiming), 20151217(hr), 20160810(hr), 20170419 (Juan and hr), 20240624 (Mathias and Ioannis)
+* Thanks to Weiming Xiong, Andreas von Recklinghausen and others for good contributions.
 
 * The model is still under development.
 * It will be available from www.balmorel.com under open source conditions.
@@ -31,7 +34,7 @@
 
 * SETS:
 * Geography related:
-SET CCCRRRAAA         All geographical entities (CCC + RRR + AAA)';
+SET CCCRRRAAA         All geographical entities (CCC + RRR + AAA);
 SET CCC(CCCRRRAAA)    "All Countries";
 SET C(CCC)            "Countries in the simulation";
 SET RRR(CCCRRRAAA)    "All regions";
@@ -250,7 +253,7 @@ PARAMETER VHYRS_STL(YYY,AAA,SSS,TTT)  "Hourly hydro storage level (MWh)";
 PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
 PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
 
-* Data for handling other storage
+* Data for handling storage
 PARAMETER ESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER HSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER ESTOVOLT(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
@@ -2565,7 +2568,7 @@ $ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY.inc' 
 *--- End of Main results calculation ---------------------------------------
 
 *----optiflow output file (TO BE MERGED IN OUTPUT_SUMMARY.inc)
-$ifi %Optiflow%==yes $include '../output/Optiflow_OutputFile.inc';
+$ifi %Optiflow%==yes       $if     EXIST '../../base/output/Optiflow_OutputFile.inc' $include '../../base/output/Optiflow_OutputFile.inc';
 
 $ifi not %export_results%==yes $goto result_export
 *------------------------------------------------------------------------------
@@ -2671,7 +2674,7 @@ ESTOVOLTVAL(Y,IA,G,S,T)=0;
 HSTOVOLTVAL(Y,IA,G,S,T)=0;
 
 
-*Energy and commitment dispatch to be used in future runs by addon "import_results"
+*Energy dispatch to be used in future runs by addon "import_results"
 *DE_T(Y,IR,S,T)= SUM(DEUSER, ((DE(Y,IR,DEUSER) * DE_VAR_T(IR,DEUSER,S,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0))/(1-DISLOSS_E(IR));
 *DH_T(Y,IA,S,T)=SUM(DHUSER, ((DH(Y,IA,DHUSER) * DH_VAR_T(IA,DHUSER,S,T)) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0))/(1-DISLOSS_H(IA));
 GE_T(Y,IA,IGE,S,T)$IAGK_HASORPOT(Y,IA,IGE)=VGE_T.L(Y,IA,IGE,S,T);

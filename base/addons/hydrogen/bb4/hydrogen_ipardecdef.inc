@@ -6,6 +6,29 @@ PARAMETERS
 
 PARAMETER IHYDROGEN_DH2_REGION_T_Y(YYY,RRR,SSS,TTT)  'Variation of H2 demand in each region along the year';
 PARAMETER IHYDROGEN_DH2_AREA_T_Y(YYY,AAA,SSS,TTT)    'Variation of H2 demand in each region along the year';
+
+*IK addd
+PARAMETERS
+*IHYDROGEN_DH2SYNFUEL_REGION_Y_TOT(YYY,RRR)
+IHYDROGEN_DH2SYNFUEL_REGION_Y(YYY,RRR) 'demand for synthetic fuel to shift per year'
+;
+
+* If this is zero, no hydrogen demand related to synthetic fuels can be relocated endogenously
+* Make two options here, that:
+* 1. Activates synthetic fuel data
+* 2. Allocate the fraction of demand that can be allocated (THETA_FLEX_SYNFUEL)
+Scalar
+THETA_FLEX_SYNFUEL /0/
+; 
+
+*Assing Demand for synthetic fuels
+IHYDROGEN_DH2SYNFUEL_REGION_Y(Y,IR) = HYDROGEN_DH2_SYN(Y,IR);
+
+*Deduct the synthetic fuels, from overall demand
+HYDROGEN_DH2(Y,IR) = HYDROGEN_DH2(Y,IR) - HYDROGEN_DH2_SYN(Y,IR);
+
+*IK finish here
+
 IHYDROGEN_DH2_REGION_T_Y(Y,IR,S,T) = (HYDROGEN_DH2(Y,IR)*HYDROGEN_DH2_VAR_T(IR,S,T)/IHYDROGEN_DH2_REGION_SUMST(IR))$(IHYDROGEN_DH2_REGION_SUMST(IR) GT 0);
 IHYDROGEN_DH2_AREA_T_Y(Y,IA,S,T)  = (HYDROGEN_DH2(Y,IA)*HYDROGEN_DH2_VAR_T(IA,S,T)/IHYDROGEN_DH2_AREA_SUMST(IA))$(IHYDROGEN_DH2_AREA_SUMST(IA) GT 0);
 

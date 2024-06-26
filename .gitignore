@@ -19,3 +19,8 @@
 *.gsp
 base/data/.gitignore
 base/data/README.md
+*.lst
+*.log
+*.lxi
+*.pf
+%batfileMERGEWITHBASE%

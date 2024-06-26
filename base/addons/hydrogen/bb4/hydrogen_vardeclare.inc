@@ -17,5 +17,12 @@ POSITIVE VARIABLES
 
 ;
 
+*Demand shift IK
+Positive variable 
+VGE_T_SYNFUEL_ST(Y,RRR,S,T) 'Hourly hydrogen for synthetic fuel'
+VGE_T_SYNFUEL(Y,RRR) 'Total hydrogen for synthetic fuel'
+VSYN_FUEL_SHIFT(Y,RRR) 'how much to shift from one area to area'
+; 
+
 SOS2 VARIABLE VXH2LAMBDA(Y,IRRRE,IRRRI,XES) 'SOS2 Variable for modelling economy of scale';
 
