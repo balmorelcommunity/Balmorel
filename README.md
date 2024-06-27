@@ -1,5 +1,7 @@
 # Balmorel
 
+A scenario that's possible to run with an academic trial license of GAMS can be found in the balmorel-demo branch.
+
 ## What is Balmorel?
 
 Balmorel is a partial equilibrium model for analysing the electricity and combined heat and power sectors in an international perspective. It is highly versatile and may be applied for long range planning as well as shorter time operational analysis. Balmorel is implemented as a mainly linear programming optimisation problem.
