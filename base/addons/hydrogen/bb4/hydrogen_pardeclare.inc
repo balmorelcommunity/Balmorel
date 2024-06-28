@@ -1,7 +1,7 @@
 PARAMETERS
 HYDROGEN_DH2          (YYY,CCCRRRAAA)              'Yearly demand for hydrogen from the transport sector'
-*IK add
-HYDROGEN_DH2_SYN      (YYY,CCCRRRAAA)              'Yearly demand for hydrogen but synthetic fuels'
+
+HYDROGEN_FLEXDH2      (YYY,CCCRRRAAA)              'Yearly demand for hydrogen but synthetic fuels'
 
 HYDROGEN_DH2_VAR_T    (CCCRRRAAA,SSS,TTT)          'Variation profile of H2 demand per region'
 HYDROGEN_STOVOL_START (Y,AAA,G,SSS)                'Start level of hydrogen storage'

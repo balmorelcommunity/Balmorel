@@ -17,12 +17,13 @@ POSITIVE VARIABLES
 
 ;
 
-*Demand shift IK
+$ifi not %flexible_h2_space%==yes $goto no_flexible_h2_space
 Positive variable 
-VGE_T_SYNFUEL_ST(Y,RRR,S,T) 'Hourly hydrogen for synthetic fuel'
-VGE_T_SYNFUEL(Y,RRR) 'Total hydrogen for synthetic fuel'
-VSYN_FUEL_SHIFT(Y,RRR) 'how much to shift from one area to area'
+VGE_T_FLEXDH2(Y,RRR,S,T) 'Hourly hydrogen for flexible hydrogen demand'
+VGE_FLEXDH2(Y,RRR) 'Total hydrogen for flexible hydrogen demand'
+VFLEXDH2_SHIFT(Y,RRR) 'how much to shift from one area to area'
 ; 
+$label no_flexible_h2_space
 
 SOS2 VARIABLE VXH2LAMBDA(Y,IRRRE,IRRRI,XES) 'SOS2 Variable for modelling economy of scale';
 

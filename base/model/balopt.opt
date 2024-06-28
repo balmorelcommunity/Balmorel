@@ -341,6 +341,10 @@ $setglobal ES_H2TRANS
 $Setglobal IMPORT_H2 YES
 *!option yes
 
+* Allows flexible demand of H2 in regions (set ratio of flexible demand in HYDROGEN_FLEXDH2 with the scalar THETA_FLEX_DH2)
+$setglobal flexible_h2_space 
+*!option yes
+
 *-----------------END: HYDROGEN ADDON---------------------------------------
 
 * Use stepwise linear fuel prices
