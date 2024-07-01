@@ -1,5 +1,7 @@
 # Balmorel
 
+The Balmorel energy system model. Data is included in the [Balmorel_data repository](https://github.com/balmorelcommunity/Balmorel_data), which we recommend cloning to base/ for version control of both base data and framework. Note that the cloned folder should be renamed from Balmorel_data to data in order to function properly.
+
 A scenario that's possible to run with an academic trial license of GAMS can be found in the balmorel-demo branch.
 
 ## What is Balmorel?
