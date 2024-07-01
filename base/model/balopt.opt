@@ -335,7 +335,7 @@ SCALAR XH2INVESTSTART 'Year from which endogenous decisions in H2 transmission c
 XH2INVESTSTART= 2030;
 
 *Adds Economies of Scale in H2 transmission. It requires to use the MIP solver, so remember to activate it (Dataset not updated for new countries in pan-European system)
-$setglobal ES_H2TRANS
+$setglobal ES_H2TRANS 
 
 * Allows import of Hydrogen from 3rd countries outside Balmorel
 $Setglobal IMPORT_H2 YES
@@ -380,7 +380,7 @@ $setglobal TRANS_RAMP
 
 *-----------------------ANCILLARY SERVICES----------------------------------------------------------------------------------------------------
 * Ancillary services addon (it requires UnitComm to be active). The other options require this one to be activated.
-$setglobal ANC_SERV
+$setglobal ANC_SERV 
 *!option yes
 
 * FCR reserve requirement activated
@@ -409,7 +409,7 @@ $setglobal DOWN_REGULATION_INCLUDED
 *-----------------------END: ANCILLIARY SERVICES----------------------------------------------------------------------------------------------------
 
 * Make investments in technologies only at specified capacities. (it should be checked before using it)
-$setglobal AGKNDISC
+$setglobal AGKNDISC 
 *!option yes
 *!onlyif %BB2%==yes
 *!onlyif %solvetype%==MIP
@@ -486,7 +486,7 @@ $setglobal REVERT_DECOM_EXO_G   yes
 *-------------------- UNIT COMMITMENT -----------------------------------------------------------
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
-$setglobal UnitComm
+$setglobal UnitComm 
 *!option yes
 
 * Adds minimal production-when-on:
@@ -959,7 +959,7 @@ putclose fileMERGEWITHBASEbat;
 
 * The model type has implications for the solver type.
 * Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Programming).
-$setglobal SOLVETYPE RMIP
+$setglobal SOLVETYPE LP
 *!option LP      "Linear Programming"
 *!option RMIP    "Relaxed Mixed Integer Programming"
 *!option MIP     "Mixed Integer Programming"

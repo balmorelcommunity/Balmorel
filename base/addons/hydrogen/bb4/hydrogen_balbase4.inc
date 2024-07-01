@@ -25,8 +25,8 @@ $ifi %H2TransInvest%==yes  QXH2KNACCUMNET_NGTOH2
 $ifi %H2TransInvest%==yes  QXH2INVSYMMETRY
 $ifi %H2TransInvest%==yes  QXH2INVSYMMETRY_NGTOH2
 $ifi %H2TransInvest%==yes  QXH2KMAX_NGTOH2
-$ifi %H2TransInvest%==yes  QVXH2KN_ES
-$ifi %H2TransInvest%==yes  QXH2LAMBDA_ES
+$ifi %H2TransInvest%==yes  $ifi %ES_H2TRANS%==yes  QVXH2KN_ES
+$ifi %H2TransInvest%==yes  $ifi %ES_H2TRANS%==yes  QXH2LAMBDA_ES
 
 * Flexible hydrogen demand in space by Ioannis
 $ifi not %flexible_h2_space%==yes $goto no_flexible_h2_space
