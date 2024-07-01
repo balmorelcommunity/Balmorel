@@ -24,7 +24,7 @@ The model is developed and distributed under open source ideals. The source code
 
 ### Procedure for Merging Changes to Master
 
-The DTU Balmorel team has decided on the following procedure for merging new changes to the master:
+The Balmorel team of DTU Management, Energy Economics and Modelling has decided on the following procedure for merging new changes to the master:
 1. A decision to merge should be agreed upon in a Balmorel meeting with the admins
 2. Create a new branch from master, which will be used as a temporary branch to do all the changes
 3. Make the desired changes in a new scenario:
