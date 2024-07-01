@@ -16,5 +16,14 @@
 **/model/Balmorel.l*
 **/output/economic/*.*
 /base/bui/gamsscr/*.*
-
-
+*.gsp
+base/data/.gitignore
+base/data/README.md
+*.lst
+*.log
+*.lxi
+*.pf
+*.log~1
+*.log~2
+*.log~3
+%batfileMERGEWITHBASE%
