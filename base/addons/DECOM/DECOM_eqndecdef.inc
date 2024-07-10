@@ -35,8 +35,6 @@ $ifi not %LIFETIME_DECOM_EXO_G%==yes $ifi not %ECONOMIC_DECOM_EXO_G%==yes  $goto
 EQUATION  QDECOM_EXO_ACCUM(Y,AAA,G)         'Equation that calculates the accumulated endogenous decommissioning of exogenous technologies';
 EQUATION  QDECOM_EXO_LIM(Y,AAA,G)           'Equation limiting the yearly decommission of exogenous technologies';
 
-
-
 QDECOM_EXO_ACCUM(IY411,IA,G)$IGDECOMEXOPOT(IY411,IA,G)..
         VDECOM_EXO_ACCUM(IY411,IA,G)
 =E=
@@ -50,6 +48,7 @@ QDECOM_EXO_LIM(IY411,IA,G)$IGDECOMEXOPOT(IY411,IA,G)..
 =L=
         GKFX(IY411,IA,G)
 ;
+
 
 $ifi not %LIFETIME_DECOM_EXO_G%==yes $ifi %ECONOMIC_DECOM_EXO_G%==yes  $goto NO_DECOMMISSIONING_EXOGENOUS_GENERATION
 EQUATION  QDECOM_EXO_ACCUM_REST(Y,AAA,G)    'Equation establishing the restriction on the minimum decommissionining of exogenous technologies';
