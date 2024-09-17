@@ -4,6 +4,5 @@ We will describe how to transfer files through [WinSCP](https://winscp.net/eng/i
 
 :::{admonition} Installation 
 1. Download and install [WinSCP](https://winscp.net/eng/index.php).
-   
 2. Download and install [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html).
 :::
