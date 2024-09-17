@@ -7,5 +7,5 @@ This section will explain how to do this on the [LSF 10 Cluster](https://www.hpc
 ```{toctree}
 :maxdepth: 1
 
-get_started/installation.md
+running_on_hpc/installation.md
 ```
