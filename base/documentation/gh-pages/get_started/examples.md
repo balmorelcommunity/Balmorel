@@ -1,2 +1,2 @@
-## Examples
+# Examples
 How to run Balmorel

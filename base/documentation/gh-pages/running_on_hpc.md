@@ -8,4 +8,5 @@ This section will explain how to do this on the [LSF 10 Cluster](https://www.hpc
 :maxdepth: 1
 
 running_on_hpc/installation.md
+running_on_hpc/access.md
 ```
