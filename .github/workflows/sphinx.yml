@@ -1,0 +1,40 @@
+name: Build documentation
+on:
+  push:
+    branches: [ create_tutorial ]
+  pull_request:
+    branches: [ create_tutorial ]
+
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - uses: mamba-org/setup-micromamba@v1
+      with:
+        micromamba-version: '1.5.8-0' # any version from https://github.com/mamba-org/micromamba-releases
+        environment-file: docs/docs_environment.yml
+        init-shell: bash
+        cache-environment: true
+        post-cleanup: 'all'
+        generate-run-shell: false
+
+    - name: Sphinx build
+      run: |
+        sphinx-build docs _build
+      shell: bash -el {0}
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/create_tutorial' }}
+      with:
+        publish_branch: gh-pages
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: _build/
+        force_orphan: true
