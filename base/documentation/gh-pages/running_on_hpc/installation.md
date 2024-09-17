@@ -1,1 +1,7 @@
 ## Installation
+
+We will describe how to transfer files through [WinSCP](https://winscp.net/eng/index.php) and submit jobs through [PuTTy](https://putty.org/), but it is possible to access the clusters in many ways, such as [Visual Studio Code](https://code.visualstudio.com/docs/remote/ssh) or [thinlinc](https://www.gbar.dtu.dk/index.php/faq/43-thinlinc).
+:::{prereq} Preparation
+1. Download and install [WinSCP](https://winscp.net/eng/index.php).
+1. Download and install [PuTTy](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html).
+:::
