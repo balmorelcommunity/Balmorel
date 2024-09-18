@@ -33,7 +33,7 @@ user_name@login.gbar.dtu.dk's password:
 
 ## WinSCP Example
 
-When you open WinSCP, the GUI illustrated in the [Figure](winscp_login) below will appear. Type your user name followed by @transfer.gbar.dtu.dk in the "Host name" form and press enter. Once again, you will need to write your DTU password. You will then enter the main WinSCP GUI, where you can browse local files in the left window and HPC files in the right window. Files can be transferred by dragging and dropping between the two systems.
+When you open WinSCP, the GUI illustrated in the [Figure](winscp_login) below will appear. Type your user name followed by @transfer.gbar.dtu.dk in the "Host name" form and press enter. Once again, you will need to write your DTU password. You will then enter the main WinSCP GUI, where you can browse local files in the left window and HPC files in the right window. Files can be transferred by dragging and dropping between the two windows.
 :::{figure} ../img/winscp_login.jpg 
 :name: winscp_login
 :alt: Logging into PuTTY
