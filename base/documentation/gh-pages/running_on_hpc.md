@@ -9,4 +9,5 @@ This section will explain how to do this on the [LSF 10 Cluster](https://www.hpc
 
 running_on_hpc/installation.md
 running_on_hpc/access.md
+running_on_hpc/submitting_a_job.md
 ```
