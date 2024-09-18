@@ -4,13 +4,7 @@ channels:
 dependencies:
   - python=3.12
   - myst-parser
-  - myst_nb
   - sphinx
-  - sphinx-lesson
   - sphinx-rtd-theme
-  - sphinx_rtd_theme_ext_color_contrast
   - sphinx-autoapi
-  - pip
-  - pip:
-    - git+https://github.com/rkdarst/sphinx-copybutton.git@exclude-unselectable-3
-    - git+https://github.com/coderefinery/sphinx-coderefinery-branding.git@master
+  - sphinx-copybutton
