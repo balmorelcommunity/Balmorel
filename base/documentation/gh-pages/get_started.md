@@ -1,5 +1,7 @@
 # Get Started
 
+The intention of this tutorial is to teach the user how to install and run Balmorel, using a small test case.
+
 ```{toctree}
 :maxdepth: 1
 

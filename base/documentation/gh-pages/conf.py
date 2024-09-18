@@ -1,7 +1,7 @@
 project = "Balmorel"
 copyright = "2024, Mathias Berg Rosendal"
 author = "Mathias Berg Rosendal"
-release = "0.3.4"
+release = "5.0"
 
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", ".testenv", ".testenv/**", "README.md"]
 
