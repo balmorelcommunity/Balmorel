@@ -14,7 +14,7 @@ Balmorel
 This is how to setup different scenarios in Balmorel. The framework will first attempt to look for files in the test_run, and then in the base folder if the required file did not exist. This means you do not have to copy paste all of the data in base/data everytime you make a new scenario, but can simply add the *changed* data. We will do this below.  
 
 ## Prepare Scenario Data
-Lets decrease the temporal and spatial resolution significantly, so Balmorel will solve within one or two minutes and we can verify our setup. We can do this by creating new Y.inc, S.inc, T.inc and C.inc files in test_run/data. In GAMS Studio, press File/New..., find the test_run/data folder and save as type "GAMS Include files (*.inc)". Copy and paste the contents from each of the snippets below:
+Lets decrease the temporal and spatial resolution significantly, so Balmorel will solve within one or two minutes and we can verify our setup. We can do this by creating new [Y.inc](#y-inc), [S.inc](#s-inc), [T.inc](#t-inc) and [C.inc](#c-inc) files in test_run/data. In GAMS Studio, press File/New..., find the test_run/data folder and save as type "GAMS Include files (*.inc)". Copy and paste the contents from each of the snippets below:
 
 ### Y.inc
 ```gams
