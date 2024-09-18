@@ -9,6 +9,7 @@ Balmorel is an energy system model. Get started [here](get_started.md).
 
 get_started
 addons
+pre_processing
 running_on_hpc
 ```
 
