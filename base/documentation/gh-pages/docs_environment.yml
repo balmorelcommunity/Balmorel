@@ -7,3 +7,6 @@ dependencies:
   - sphinx
   - sphinx-rtd-theme
   - sphinx-autoapi
+  - pip
+  - pip:
+    - git+https://github.com/rkdarst/sphinx-copybutton.git@exclude-unselectable-3
