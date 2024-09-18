@@ -12,6 +12,7 @@ html_static_path = ["css"]
 # General configurations
 extensions = [
     "myst_parser",  # in order to use markdown
+    'sphinx_copybutton',
     # "autoapi.extension",  # in order to use markdown
 ]
 
