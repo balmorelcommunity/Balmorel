@@ -10,7 +10,7 @@ Remember to study the log report after your job finishes, so you can be more acc
 
 After having transferred our Balmorel model through WinSCP (see [previous page](access.md)), we want it. We need to submit a job, which means creating a job script that asks for the right amount of memory usage and time before completion. This is done through a job script, illustrated in the code snippet below. We refer to [this general guide](https://www.hpc.dtu.dk/?page_id=1416) by DTU Computing Center for the exact explanations of the different elements. 
 
-Note that the bottom commands assumes that the job script is placed inside your Balmorel folder, and that your Balmorel project contains a "scenario1" scenario - see [how to create new scenarios](../get_started/scenario_setup.md). The `--threads=$LSB_DJOB_NUMPROC` command makes sure that Balmorel does not use more cores than defined  in your job script (four in this case, due to `-n 4`)
+Note that the bottom commands assumes that the job script is placed inside your Balmorel folder, and that your Balmorel project contains a "scenario1" scenario - see [how to create new scenarios](../get_started/scenario_setup.md). The `--threads=$LSB_DJOB_NUMPROC` command makes sure that Balmorel does not use more cores than defined  in your job script (four in this case, due to `#BSUB -n 4`)
 ```batch
 #!/bin/sh 
 ### General options 
@@ -47,9 +47,11 @@ cd scenario1/model
 gams Balmorel --threads=$LSB_DJOB_NUMPROC
 ```
 
-## Submitting the Job in PuTTY
-Log in to PuTTY, change directory to inside your Balmorel folder (i.e. the `cd` command below), and submit the job that we created above using the `bsub` command. This assumes that you saved the job script as "job_script.sh".
+## Submitting the Job from PuTTY
+Log in to PuTTY, change directory to inside your Balmorel folder (i.e. the `cd` command below), and submit the job that we created above using the `bsub` command. This assumes that you saved the job script as "job_script.sh". The job is now pending in a queue or is already running, you can check this using the command `bstat`.  
 ```bash
 cd path/to/Balmorel
 bsub < job_script.sh
+bstat
 ```
+If you named your output log "Output_%J.log" as in the job script above (`#BSUB -o Output_%J.out`), you can check this to see the progress of the optimisation. "%J" will be the unique job number, that the HPC assigns to the job. E.g., you could ctrl + F and search for "LOOPS IYALIAS" to see which model years have been or are being optimised. Errors are reported in the .err file.
