@@ -53,5 +53,4 @@ DENMARK
 ```
 This selects countries Norway and Denmark (which consist of respectively 5 and 2 electricity and hydrogen nodes, corresponding to the bidding zones of Norway and Denmark).
 
-
 We are now ready to run Balmorel, see the next page.
