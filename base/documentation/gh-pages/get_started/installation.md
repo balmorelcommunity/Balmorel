@@ -16,5 +16,5 @@ git clone https://github.com/balmorelcommunity/Balmorel_data.git
 Remember to rename Balmorel_data to data inside Balmorel/base.
 
 :::{tip}
-If you use [VS Code](https://code.visualstudio.com/?wt.mc_id=DX_841432) with git source on, this specific placing of the data repository Balmorel_data inside the framework repository Balmorel/base folder will enable git to simultaneously keep track of changes to both the framework and data. 
+If you use [VS Code](https://code.visualstudio.com/?wt.mc_id=DX_841432) with git, this specific placing of the data repository Balmorel_data inside the framework repository Balmorel/base folder will enable you to simultaneously keep track of changes to both the Balmorel framework and data in your workspace. 
 :::
