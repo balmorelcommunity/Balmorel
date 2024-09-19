@@ -1,4 +1,4 @@
-* Decommissioning introduced by Juan Gea Bermúdez 2018.
+* Decommissioning introduced by Juan Gea Bermï¿½dez 2018.
 
 
 $ifi not %LIFETIME_DECOM_EXO_G%==yes $ifi not %ECONOMIC_DECOM_EXO_G%==yes  $ifi not %NO_DECOM_EXO_G%==yes  $goto DEFAULT_DECOMMISSIONING_EXOGENOUS_GENERATION
@@ -11,6 +11,9 @@ PARAMETER IDECOM_CHANGE(YYY,AAA,G) "Change in GKFX with respect to previous year
 IDECOM_CHANGE(YYY,IA,G)=0;
 
 ILOOPBREAK=0;
+
+PARAMETER IGKFX_OG(YYY,AAA,G)   'The initial GKFX that isnt edited';
+IGKFX_OG(YYY,IA,G) = GKFX(YYY,IA,G);     
 
 LOOP(YYY$(NOT(ORD(YYY) EQ 1) AND (YYY.VAL GT GDECOMEXOPOTSTART)),
   LOOP(IA,
@@ -90,4 +93,3 @@ LOOP(IGKFIND,
     );
   );
 );
-

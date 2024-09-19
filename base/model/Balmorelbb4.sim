@@ -341,6 +341,7 @@ $ifi %TechInvest%==yes         VGKNACCUMNET.FX(IY411FIRST,IA,G)$SUM(Y$(YVALUE(Y)
 $ifi %TransInvest%==yes        VXKN.FX(IY411FIRST,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXKN(Y,IRE,IRI))= VXKN.L(IY411FIRST,IRE,IRI);
 $ifi %TransInvest%==yes        VXKNACCUMNET.FX(IY411FIRST,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411FIRST)),IXKN(Y,IRE,IRI))= VXKNACCUMNET.L(IY411FIRST,IRE,IRI);
 
+
 $include "../../base/addons/_hooks/varassign.inc"
 
 * ------------------------------------------------------------------------------

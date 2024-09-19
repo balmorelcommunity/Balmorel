@@ -29,7 +29,7 @@ QMINFLOW_A
 QMINFLOW_R
 QMINFLOW_C
 
-*$ifi %inv%==yes       QPROCKAPACCUMNET        !! Has weakness - but used anyway
+$ifi %inv%==yes       QPROCKAPACCUMNET        !! Has weakness - but used anyway
 $ifi %inv%==yes       QPROCKAP_UP
 $ifi %inv%==yes       QSTOVOLTLIM_T
 $ifi %inv%==yes       QSTOVOLTLIM
