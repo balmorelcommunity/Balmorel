@@ -1,9 +1,9 @@
 name: Build documentation
 on:
   push:
-    branches: [ create_tutorial ]
+    branches: [ master ]
   pull_request:
-    branches: [ create_tutorial ]
+    branches: [ master ]
 
 permissions:
   contents: write
@@ -32,7 +32,7 @@ jobs:
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/create_tutorial' }}
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       with:
         publish_branch: gh-pages
         github_token: ${{ secrets.GITHUB_TOKEN }}
