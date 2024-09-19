@@ -11,3 +11,10 @@ Check your working directory by opening View/Project Explorer, and then press th
 :::
 
 Make sure that Balmorel/test_run/model/Balmorel.gms is the main file and press the green run button ▶️. Balmorel should now optimise model year 2030, 2040, 2050 for Denmark and Norway using the previously specificed timesteps. 
+
+## Command-Line Interface
+Balmorel can also be run using GAMS' command-line interface (CLI). You will need to use this when [running on a HPC](../running_on_hpc.md). The commands below change directory to the relevant scenario/model folder (assuming that your command prompt is already inside the Balmorel folder) and executes Balmorel. 
+```console
+cd test_run/model
+gams Balmorel
+```

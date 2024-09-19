@@ -8,7 +8,7 @@ The Balmorel framework can be downloaded from [GitHub](https://github.com/balmor
 The corresponding data is in another [GitHub repository](https://github.com/balmorelcommunity/Balmorel_data), and can also be downloaded as a .zip. Place the Balmorel_data folder in Balmorel/base and rename it to "data". 
 
 This installation can also be done using git commands in a command line interface:
-```bash
+```console
 git clone https://github.com/balmorelcommunity/Balmorel.git
 cd Balmorel/base
 git clone https://github.com/balmorelcommunity/Balmorel_data.git
