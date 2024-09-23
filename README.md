@@ -1,7 +1,7 @@
 # Spatial Aggregation Study
-This branch is used for analysing the effect of various spatial resolutions in Denmark - from Nordpool bidding zones, through NUTS2-3 and to a municipality resolution. An application is illustrated in the conference poster below.
+This branch is used for analysing the effect of various spatial resolutions in Denmark. The pre-processing of data is performed through the balmorel-preprocessing tool in https://github.com/Mathias157/balmorel-preprocessing. 
 
-The pre-processing of data is performed through the balmorel-preprocessing tool ("Raw Data Processing" folder) in https://github.com/Mathias157/balmorel-preprocessing. A Zenodo repository is also provided here.
+An application is illustrated in the conference poster from EGU24 (see below). Check the egu24-poster tag for applied Balmorel model in this repository and source code in the preprocessing repository.
 ![Application example](https://github.com/Mathias157/balmorel-preprocessing/blob/master/Raw%20Data%20Processing/Conference%20Poster%20for%20Analysis%20of%20Spatial%20Resolutions%20for%20Modelling%20Sector-Coupled%20Energy%20Systems.png)
 
 # Balmorel
@@ -23,4 +23,32 @@ Balmorel is a modelling tool that can be used by energy system experts, energy c
 
 ## How is Balmorel supported and further developed?
 
-The model is developed and distributed under open source ideals. The source code has been provided on its homepage since 2001 and was assigned the [ISC license](https://opensource.org/licenses/ISC) in 2017. Ample documentation is available in the folder [within this repository](base/documentation). Application examples and contact information can be found on the [Balmorel homepage](https://balmorel.com). Presently the model development is mainly project driven, with a users' network around it, supporting the open source development idea.
+The model is developed and distributed under open source ideals. The source code has been provided on its homepage since 2001 and was assigned the [ISC license](https://opensource.org/licenses/ISC) in 2017. Ample documentation is available in the folder [within this repository](base/documentation). We also refer to information on [openmod](https://wiki.openmod-initiative.org/wiki/Balmorel). Presently the model development is mainly project driven, with a users' network around it, supporting the open source development idea.
+
+### Procedure for Merging Changes to Master
+
+The Balmorel team of DTU Management, Energy Economics and Modelling has decided on the following procedure for merging new changes to the master:
+1. A decision to merge should be agreed upon in a Balmorel meeting with the admins
+2. Create a new branch from master, which will be used as a temporary branch to do all the changes
+3. Make the desired changes in a new scenario:
+    
+    a. Add a new scenario called 'changes', which the following files and folder structure (copy Balmorel.gms and cplex.op4 from base/model if nothing is to be changed in these files):
+        
+        Balmorel
+        ├── base
+        ├── changes
+        │   ├── data
+        │   └── model
+        │       ├── cplex.op4
+        │       └── Balmorel.gms 
+        ├── simex
+        ├── README.md
+        ├── .gitignore
+        └── .gitattributes
+
+    b. Keep the base scenario identical to the current master and apply all changes to the 'changes' scenario
+   
+4. Run the [test script](base/auxils/master_merge_tests/merge_tests.ipynb), make sure that the model stays feasible and that the results make sense
+5. Consider critically if the tests performed in 4. is enough to verify and validate the changes made
+6. Make a pull request with the changes and report them in general terms, including the KPI outputs from the tests in 4. in ... (todo: check where it makes sense to put these descriptions, as simple as possible)
+
