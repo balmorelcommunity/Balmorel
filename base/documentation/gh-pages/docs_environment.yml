@@ -1,0 +1,10 @@
+name: docs_building
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - myst-parser
+  - sphinx
+  - sphinx-rtd-theme
+  - sphinx-autoapi
+  - sphinx-copybutton
