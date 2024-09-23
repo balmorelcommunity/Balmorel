@@ -26,5 +26,6 @@ base/data/README.md
 *.log~1
 *.log~2
 *.log~3
+data
 build
 %batfileMERGEWITHBASE%
