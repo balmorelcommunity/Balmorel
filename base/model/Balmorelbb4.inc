@@ -2397,10 +2397,10 @@ $ifi %bypass%==yes              QGFEQEXTBYPASS2
 
 *--- Hydro reservior restrictions ----------------------------------------------
 
-                                QHYRSSEQ
-                                QHYRSMINVOL
-                                QHYRSMAXVOL
-                                QHYMAXG
+*                                QHYRSSEQ
+*                                QHYRSMINVOL
+*                                QHYRSMAXVOL
+*                                QHYMAXG
 
 *--- Storage restrictions ------------------------------------------------------
                                 QESTOVOLT
