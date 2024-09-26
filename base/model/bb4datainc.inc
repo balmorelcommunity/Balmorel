@@ -536,10 +536,6 @@ $ifi %WNDFLH_DOL%==AAA               PARAMETER WNDFLH(AAA)         "Full load ho
 $ifi %WNDFLH_DOL%==AAA_GGG           PARAMETER WNDFLH(AAA,GGG)     "Full load hours for wind power (hours)"  %semislash%
 $if     EXIST '../data/WNDFLH.inc' $INCLUDE      '../data/WNDFLH.inc';
 $if not EXIST '../data/WNDFLH.inc' $INCLUDE '../../base/data/WNDFLH.inc';
-$onmulti
-$if     EXIST '../data/WNDFLH3.inc' $INCLUDE      '../data/WNDFLH3.inc';
-$if not EXIST '../data/WNDFLH3.inc' $INCLUDE '../../base/data/WNDFLH3.inc';
-$offmulti
 %semislash%;
 *------------- Any WNDFLH additions for addon to be placed here: ----------------
 $include "../../base/addons/_hooks/wndflhadditions.inc"
@@ -548,10 +544,6 @@ $ifi %SOLEFLH_DOL%==AAA              PARAMETER SOLEFLH(AAA)        "Full load ho
 $ifi %SOLEFLH_DOL%==AAA_GGG          PARAMETER SOLEFLH(AAA,GGG)    "Full load hours for solar power (hours)"  %semislash%
 $if     EXIST '../data/SOLEFLH.inc' $INCLUDE      '../data/SOLEFLH.inc';
 $if not EXIST '../data/SOLEFLH.inc' $INCLUDE '../../base/data/SOLEFLH.inc';
-$onmulti
-$if     EXIST '../data/SOLEFLH2.inc' $INCLUDE      '../data/SOLEFLH2.inc';
-$if not EXIST '../data/SOLEFLH2.inc' $INCLUDE '../../base/data/SOLEFLH2.inc';
-$offmulti
 %semislash%;
 
 
@@ -785,7 +777,6 @@ $if not EXIST '../data/WTRRRVAR_T.inc' $INCLUDE '../../base/data/WTRRRVAR_T.inc'
 PARAMETER WND_VAR_T(AAA,SSS,TTT)                   "Variation of the wind generation"    %semislash%
 $if     EXIST '../data/WND_VAR_T.inc' $INCLUDE      '../data/WND_VAR_T.inc';
 $if not EXIST '../data/WND_VAR_T.inc' $INCLUDE '../../base/data/WND_VAR_T.inc';
-* The new series are loaded inside of WND_VAR_T (WND_VAR_T3)
 %semislash%;
 *------------- Any WND_VAR_T additions for addon to be placed here: ----------------
 $include "../../base/addons/_hooks/wnd_var_tadditions.inc"
@@ -859,5 +850,4 @@ $if not EXIST '../data/XES.inc' $INCLUDE '../../base/data/XES.inc';
 *-------------------------------------------------------------------------------
 $include "../../base/addons/_hooks/pardeclare.inc"
 $include "../../base/addons/_hooks/pardefine.inc"
-
 
