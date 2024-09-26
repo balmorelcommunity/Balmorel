@@ -31,7 +31,7 @@ $setglobal vqdebug
 * PROJECTID is the identification of the Project.
 * Convenient, and additioanally needed if results shall be compared among projects.
 *
-$setglobal PROJECTID %scenario_name%
+$setglobal PROJECTID firsttests
 *!option !fixedvalue
 *
 *
@@ -161,7 +161,7 @@ $setglobal INDUSTRY yes
 * overall control variable INDIVUSERS must be 'yes' if any of the other INDIVUSERS controls are:
 
 * Include individual users data in the optimization. Requires HEATTRANSFER add-on to be activated.
-$setglobal INDIVUSERS 
+$setglobal INDIVUSERS yes
 *!option yes
 
 * Include the possibility to shift exogenous heat demand between technology groups.
