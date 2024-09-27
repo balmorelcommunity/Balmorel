@@ -251,7 +251,7 @@ $setglobal inflex_demand
 *------------------------------TRANSPORT ADDON-------------------------------------------------
 * overall control variable TRANSPORT must be 'yes' if any of the other TRANSPORT controls are:
 * Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
-$setglobal TRANSPORT 
+$setglobal TRANSPORT yes
 *!option yes
 
 * Defines the commodity used to model synthetic fuel generation.
@@ -357,7 +357,7 @@ $Setglobal IMPORT_H2 YES
 *!option yes
 
 * Allows flexible demand of H2 in regions (set ratio of flexible demand in HYDROGEN_FLEXDH2 with the scalar THETA_FLEX_DH2)
-$setglobal flexible_h2_space 
+$setglobal flexible_h2_space  
 *!option yes
 
 *-----------------END: HYDROGEN ADDON---------------------------------------
