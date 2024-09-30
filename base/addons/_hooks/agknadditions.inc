@@ -9,10 +9,4 @@ $ifi %HYDROGEN%==yes  $include   "../../base/addons/hydrogen/bb4/hydrogen_agknad
 
 
 
-$onmulti
-$include "../data/OFFSHORE_AGKN.inc"
-$offmulti
-
-
-
 

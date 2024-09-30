@@ -4,10 +4,6 @@ $ifi %OFFSHOREGRID%==yes  $include   "../../base/addons/offshoregrid/bb4/offshor
 
 
 
-$onmulti
-$include "../data/OFFSHORE_WNDFLH.inc"
-$offmulti
-
 
 
 

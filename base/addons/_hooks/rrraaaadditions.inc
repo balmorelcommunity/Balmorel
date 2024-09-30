@@ -5,8 +5,4 @@ $ifi %INDUSTRY%==yes       $include   "../../base/addons/industry/bb4/industry_r
 $ifi %INDIVUSERS%==yes       $include   "../../base/addons/indivusers/bb4/indivusers_rrraaaadditions.inc";
 
 
-$onmulti
-$include "../data/OFFSHORE_RRRAAA.inc"
-$offmulti
-
 
