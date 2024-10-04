@@ -38,7 +38,7 @@ $setglobal reduced_vqdebug
 * PROJECTID is the identification of the Project.
 * Convenient, and additioanally needed if results shall be compared among projects.
 *
-$setglobal PROJECTID %scenario_name%
+$setglobal PROJECTID firsttests
 *!option !fixedvalue
 *
 *
@@ -124,7 +124,7 @@ XINVESTSTART= 2035;
 *overall control variable HEATTRANS must be 'yes' if any of the other heat trans controls are.
 
 * Permit heat transmission between areas.
-$setglobal HEATTRANS YES
+$setglobal HEATTRANS 
 *!option yes
 
 * Permit heat transmission investments between areas.
@@ -235,11 +235,11 @@ $setglobal EV_INTERSEASONAL
 
 *------------------------------FLEXDEM ADDON-------------------------------------------------
 * Overall control variable of adding the flexible demand addon
-$setglobal FLEXDEM 
+$setglobal FLEXDEM yes
 *!option yes
 
 * Seasonal demand
-$setglobal seasonal_demand 
+$setglobal seasonal_demand yes
 *!option yes
 
 * Inflexible demand
@@ -251,7 +251,7 @@ $setglobal inflex_demand
 *------------------------------TRANSPORT ADDON-------------------------------------------------
 * overall control variable TRANSPORT must be 'yes' if any of the other TRANSPORT controls are:
 * Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
-$setglobal TRANSPORT YES 
+$setglobal TRANSPORT yes
 *!option yes
 
 * Defines the commodity used to model synthetic fuel generation.
@@ -357,7 +357,7 @@ $Setglobal IMPORT_H2 YES
 *!option yes
 
 * Allows flexible demand of H2 in regions (set ratio of flexible demand in HYDROGEN_FLEXDH2 with the scalar THETA_FLEX_DH2)
-$setglobal flexible_h2_space 
+$setglobal flexible_h2_space  
 *!option yes
 
 *-----------------END: HYDROGEN ADDON---------------------------------------
@@ -639,7 +639,7 @@ $label endofMSNTrelpaths
 * e.g. one model output serving as input to another model.
 
 * Overall control to export results so they can be used in future runs :
-$Setglobal export_results yes
+$Setglobal export_results 
 *!option yes
 
 *--------------------------------------------
@@ -974,7 +974,7 @@ putclose fileMERGEWITHBASEbat;
 
 * The model type has implications for the solver type.
 * Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Programming).
-$setglobal SOLVETYPE LP
+$setglobal SOLVETYPE RMIP
 *!option LP      "Linear Programming"
 *!option RMIP    "Relaxed Mixed Integer Programming"
 *!option MIP     "Mixed Integer Programming"
