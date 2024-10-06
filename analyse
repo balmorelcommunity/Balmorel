@@ -8,8 +8,10 @@ function showHelp()
    echo ""
    echo "Usage: $0 [--gencap, --stocap]" 
    echo ""
-   echo -e "\t --gencap Will plot generation capacities"
-   echo -e "\t --stocap Will plot storage capacities"
+   echo -e "\t --all Plots everything"
+   echo -e "\t --gencap Plots generation capacities"
+   echo -e "\t --stocap Plots storage capacities"
+   echo -e "\t --obj Plots system costs"
    echo -e "\t --help Show this help message"
    exit 1 # Exit script after printing help
 }
