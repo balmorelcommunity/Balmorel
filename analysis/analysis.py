@@ -121,7 +121,7 @@ def plot_costs(path_to_Balmorel: str, overwrite: bool, **kwargs):
 @click.option('--overwrite', is_flag=True, required=False, help='Overwrite previous collected results?')
 @click.option('--dark-style', is_flag=True, required=False, help='Dark style of the plot')
 @click.option('--plot-ext', type=str, required=False, default='.pdf', help='The extension of the plots, defaults to ".pdf"')
-@click.option('--path', type=str, required=False, default='.', help='Path to top level of Balmorel folders')
+@click.option('--path', type=str, required=False, default='.', help='Path to top level of Balmorel folders, defaults to "."')
 def main(gencap: bool, stocap: bool, obj: bool, all: bool, 
          overwrite: bool, dark_style: bool, plot_ext: str, path: str):
     
