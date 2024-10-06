@@ -3,26 +3,14 @@
 # source ~/miniconda3/bin/activate
 # conda activate spatialstudy
 
-function showHelp()
-{
-   echo ""
-   echo "Usage: $0 [--gencap, --stocap]" 
-   echo ""
-   echo -e "\t --all Plots everything"
-   echo -e "\t --gencap Plots generation capacities"
-   echo -e "\t --stocap Plots storage capacities"
-   echo -e "\t --obj Plots system costs"
-   echo -e "\t --help Show this help message"
-   exit 1 # Exit script after printing help
-}
 
 # If no commands are input, display help
 if [ "$#" -eq 0 ]; then
-    showHelp
+    python analysis/analysis.py --help
     exit 0
 fi
 
-
+# Send all arguments to python script
 python analysis/analysis.py $@
 # Based on the parsed options, run different Python scripts
 # if [[ "$1" == "--gencap" ||  "$1" == "--stocap" ]]; then

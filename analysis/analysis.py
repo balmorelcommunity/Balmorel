@@ -21,23 +21,16 @@ import os
 
 def plot_style(fig: plt.figure, ax: plt.axes, 
                path: str, name: str,
-               extension: str = '.pdf',
-               style: str = 'report'):
-    
-    if style == 'report':
-        plt.style.use('default')
-        fc = 'white'
-    elif style == 'ppt':
-        plt.style.use('dark_background')
-        fc = 'none'
+               fc: tuple,
+               plot_ext: str):
 
     ax.set_facecolor(fc)
     ax.legend(loc='center',
             bbox_to_anchor=(.5, 1.15),
             ncol=3)
     
-    fig.savefig(os.path.join(path, 'analysis', 'files', name + extension),
-                bbox_inches='tight')
+    fig.savefig(os.path.join(path, 'analysis', 'files', name + plot_ext),
+                bbox_inches='tight', transparent=True)
 
     return fig, ax
 
@@ -67,13 +60,12 @@ def collect_results(symbol: str,
 
     return df
 
-def plot_capacities(path_to_Balmorel: str, types: dict, overwrite: bool):
+def plot_capacities(path_to_Balmorel: str, types: dict, overwrite: bool, **kwargs):
     
     for key in [key for key in types.keys() if types[key]]:
         print('\nPlotting %s capacities..'%key)
         
         fig, ax = plt.subplots()
-            
         if key == 'gen':
             df = (
                 collect_results('G_CAP_YCRAF', path_to_Balmorel, overwrite)
@@ -95,10 +87,10 @@ def plot_capacities(path_to_Balmorel: str, types: dict, overwrite: bool):
             .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
         )
         
-        plot_style(fig, ax, path_to_Balmorel, '%scap'%key)
+        plot_style(fig, ax, path_to_Balmorel, '%scap'%key, **kwargs)
         
         
-def plot_costs(path_to_Balmorel: str, overwrite: bool):
+def plot_costs(path_to_Balmorel: str, overwrite: bool, **kwargs):
     print('\nPlotting system costs..')
     
     fig, ax = plt.subplots()
@@ -114,32 +106,42 @@ def plot_costs(path_to_Balmorel: str, overwrite: bool):
     ylims = ax.get_ylim()
     ax.set_ylim(ylims[0], ylims[1]*1.05)
     
-    plot_style(fig, ax, path_to_Balmorel, 'systemcosts')
+    plot_style(fig, ax, path_to_Balmorel, 'systemcosts', **kwargs)
 
 #%% ------------------------------- ###
 ###            X. Main              ###
 ### ------------------------------- ###
 # @click.option('gencap', is_flag=True, required=False, help='Get capacity plot')
 
-@click.command()
+@click.command(context_settings=dict(ignore_unknown_options=True))
 @click.option('--gencap', is_flag=True, required=False, help='Plot generation capacities')
 @click.option('--stocap', is_flag=True, required=False, help='Plot storage capacities')
 @click.option('--obj', is_flag=True, required=False, help='Plot objective function')
 @click.option('--all', is_flag=True, required=False, help='Plot everything')
 @click.option('--overwrite', is_flag=True, required=False, help='Overwrite previous collected results?')
+@click.option('--dark-style', is_flag=True, required=False, help='Dark style of the plot')
+@click.option('--plot-ext', type=str, required=False, default='.pdf', help='The extension of the plots, defaults to ".pdf"')
 @click.option('--path', type=str, required=False, default='.', help='Path to top level of Balmorel folders')
-def main(gencap: bool, stocap: bool, obj: bool, all: bool, overwrite: bool, path: str):
+def main(gencap: bool, stocap: bool, obj: bool, all: bool, 
+         overwrite: bool, dark_style: bool, plot_ext: str, path: str):
     
+    # Set global style of plot
+    if dark_style:
+        plt.style.use('dark_background')
+        fc = 'none'
+    else:
+        fc = 'white'
+        
     if all:
         gencap = True
         stocap = True
         obj = True
     
     if gencap | stocap:
-        plot_capacities(path, {'gen' : gencap, 'sto' : stocap}, overwrite)
+        plot_capacities(path, {'gen' : gencap, 'sto' : stocap}, overwrite, plot_ext=plot_ext, fc=fc)
     
     if obj: 
-        plot_costs(path, overwrite)
+        plot_costs(path, overwrite, plot_ext=plot_ext, fc=fc)
     
     print('') # A nice little space in the end
 
