@@ -29,3 +29,10 @@ base/data/README.md
 data
 build
 %batfileMERGEWITHBASE%
+logs
+analysis/files
+
+base/model/225a
+base_lowtemp
+*clusters
+*clusters_lowtemp
