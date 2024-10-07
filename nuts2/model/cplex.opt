@@ -1,3 +1,0 @@
-* Option file 1 for CPLEX solver. For possible options, see the GAMS Solver Manual. Change as needed.
-
-LPmethod  4
