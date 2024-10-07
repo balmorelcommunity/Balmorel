@@ -3,15 +3,8 @@
 # source ~/miniconda3/bin/activate
 # conda activate spatialstudy
 
-
-# If no commands are input, display help
-if [ "$#" -eq 0 ]; then
-    python analysis/analysis.py --help
-    exit 0
-fi
-
 # Send all arguments to python script
-python analysis/analysis.py $@
+python analysis/analyse.py $@
 # Based on the parsed options, run different Python scripts
 # if [[ "$1" == "--gencap" ||  "$1" == "--stocap" ]]; then
 #     python analysis/analysis.py "$@"
