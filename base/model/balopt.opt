@@ -28,7 +28,6 @@ $setglobal reduced_vqdebug
 *-----------------------------------------------------------------
 *---- END: VQDEBUG ------------------------------------------------
 
-
 *===============================================================================
 *===============================================================================
 * Project and Case ID:
@@ -37,8 +36,8 @@ $setglobal reduced_vqdebug
 
 * PROJECTID is the identification of the Project.
 * Convenient, and additioanally needed if results shall be compared among projects.
-*
-$setglobal PROJECTID
+
+$setglobal PROJECTID %scenario_name%
 *!option !fixedvalue
 *
 *
@@ -102,18 +101,18 @@ $setglobal TechInvest   yes
 *!option yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
-GINVESTSTART= 2025;
+GINVESTSTART= 2020;
 
 *---- End: Generation investments options----
 
 *---- Transmission investments options----
 
 * Permit investments in transmission capacity:
-$setglobal TransInvest YES
+$setglobal TransInvest yes
 *!option yes
 
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
-XINVESTSTART= 2035;
+XINVESTSTART= 2025;
 
 *---- End: Transmission investments options----
 
@@ -124,11 +123,11 @@ XINVESTSTART= 2035;
 *overall control variable HEATTRANS must be 'yes' if any of the other heat trans controls are.
 
 * Permit heat transmission between areas.
-$setglobal HEATTRANS YES
+$setglobal HEATTRANS 
 *!option yes
 
 * Permit heat transmission investments between areas.
-$setglobal HeatTransInvest
+$setglobal HeatTransInvest 
 *!option yes
 
 SCALAR XHINVESTSTART 'Year from which endogenous decisions in heat transmission capacities are allowed' ;
@@ -139,30 +138,30 @@ $setglobal HeatTempLift
 *!option yes
 *-----------------------END OF: HEAT TRANSFER--------------------------------------------------------
 
-* Include industry data in the optimization. Requires HEATTRANSFER add-on to be activated.
-$setglobal INDUSTRY YES
+* Include industry data in the optimization. Requires HEATTRANS add-on to be activated.
+$setglobal INDUSTRY yes
 *!option yes
 
 *--------------------INDIVIDUAL USERS--------------------------------------------------------------
 * overall control variable INDIVUSERS must be 'yes' if any of the other INDIVUSERS controls are:
 
-* Include individual users data in the optimization. Requires HEATTRANSFER add-on to be activated.
-$setglobal INDIVUSERS YES
+* Include individual users data in the optimization. Requires HEATTRANS add-on to be activated.
+$setglobal INDIVUSERS 
 *!option yes
 
 * Include the possibility to shift exogenous heat demand between technology groups.
-$setglobal GROUP_DEMAND_SHIFT 
+$setglobal GROUP_DEMAND_SHIFT
 *!option yes
 *-----------------END: INDIVIDUAL USERS--------------------------------------------------------------
 
-* Include seasonal variation of heat pump's COP. If not activated, heat pumps will have a constant COP during the year.
+* Include seasonal variation of heat pump's COP. If not activated, heat pumps will have a constant COP during the year. (The current version does not support using heat pumps in addon COMBTECH)
 $setglobal SEASONALCOP
 *!option yes
 
 *------------START OF: OFFSHORE GRIDS--------------------------
 * overall control variable OFFSHOREGRID must be 'yes' if any of the other OFFSHOREGRID controls are:
-* Allow to build a complicated offshore grid with hubs in the sea. Requires MIP to work as intended since technologies are modelled with economies of scale via SOS variables. If RMIP is used, it will become a linear problem.
-$setglobal OFFSHOREGRID NO
+* Allow to build a complicated offshore grid with hubs in the sea.
+$setglobal OFFSHOREGRID
 *!option yes
 
 *Adds Economies of Scale in generation elements that are part of offshore grids. It requires to use the MIP solver, so remember to activate it.
@@ -174,12 +173,11 @@ $setglobal OFFSHOREGRID_ES_ELTRANS
 *!option yes
 *------------END OF: OFFSHORE GRIDS--------------------------
 
-
 * Allow Carbon Capture Storage (CCS) technologies.
-$setglobal CCS YES
+$setglobal CCS
 *!option yes
 
-* Allow curtailment of variable renewable energy generators  (BB4)
+* Allow curtailment of variable renewable energy generators
 $setglobal VRESHUTDOWN   yes
 *!option yes
 
@@ -187,18 +185,18 @@ $setglobal VRESHUTDOWN   yes
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
 $setglobal EV 
-*!option YES
+*!option
 
 * Adds DUMB charging:
-$setglobal DUMB
+$setglobal DUMB 
 *!option yes
 
 * Adds smart charging. Only smart charging, without V2G!:
-$setglobal SMART 
+$setglobal SMART
 *!option yes
 
-* Adds V2G charging: 
-$setglobal V2G YES  
+* Adds Vehicle-to-Grid possibility:
+$setglobal V2G
 *!option  yes
 
 * Restricts PHEV vehicles from doing V2G (only relevant if V2G is activated):
@@ -220,7 +218,7 @@ $setglobal DEGCAL
 * EV timeseries will be averaged (relevant if less than all time steps in TTT are used).
 * NOTE: It currently only works if T are equally distanced from each other and if the first T chosen is equal to the first element int TTT). If this is not desired, one can replace the timeseries with new averaged-with-another-procedude timeseries
 * NOTE: It might lead to infeasibilities though
-$setglobal EV_PROFILE_AVG  yes
+$setglobal EV_PROFILE_AVG  yes 
 *!option yes
 
 *Adds EV infeasibility variables (added here on purpose, since if not all TTT are used it is very likely to run into small infeasibilities)
@@ -236,7 +234,7 @@ $setglobal EV_INTERSEASONAL
 *------------------------------TRANSPORT ADDON-------------------------------------------------
 * overall control variable TRANSPORT must be 'yes' if any of the other TRANSPORT controls are:
 * Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
-$setglobal TRANSPORT YES 
+$setglobal TRANSPORT 
 *!option yes
 
 * Defines the commodity used to model synthetic fuel generation.
@@ -245,7 +243,7 @@ $setglobal TRANSPORT_SYNTHFUEL_COMMODITY    HYDROGEN
 *!option HYDROGEN       !Text "The demand for synthetic fuel generation is modelled as hydrogen demand (requires hydrogen addon to be activated)"
 
 * Defines the possibility for the transport demand of synthetic fuels to be aggregated internationally instead of having to satisfy it regionally.
-$setglobal TRANSPORT_DEMAND_AGGREGATED    
+$setglobal TRANSPORT_DEMAND_AGGREGATED
 
 
 *------------------------------END:TRANSPORT ADDON-------------------------------------------------
@@ -318,13 +316,13 @@ $setglobal NOHEATMARKET
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH 
+$setglobal COMBTECH
 *!option yes
 
 *-----------------HYDROGEN ADDON---------------------------------------
 * overall control variable HYDROGEN must be 'yes' if any of the other HYDROGEN controls are:
 * Set demands for hydrogen consumption and enable hydrogen technologies (some options require COMBTECH to be activated too).
-$Setglobal HYDROGEN YES
+$Setglobal HYDROGEN yes
 *!option yes
 
 * Allows investments in hydrogen transport
@@ -332,19 +330,11 @@ $Setglobal H2TransInvest YES
 *!option yes
 
 SCALAR XH2INVESTSTART 'Year from which endogenous decisions in H2 transmission capacities are allowed' ;
-XH2INVESTSTART= 2030;
+XH2INVESTSTART= 2025;
 
-*Adds Economies of Scale in H2 transmission. It requires to use the MIP solver, so remember to activate it (Dataset not updated for new countries in pan-European system)
-$setglobal ES_H2TRANS 
-
-* Allows import of Hydrogen from 3rd countries outside Balmorel
-$Setglobal IMPORT_H2 YES
+*Adds Economies of Scale in H2 transmission. It requires to use the MIP solver, so remember to activate it.
+$setglobal ES_H2TRANS
 *!option yes
-
-* Allows flexible demand of H2 in regions (set ratio of flexible demand in HYDROGEN_FLEXDH2 with the scalar THETA_FLEX_DH2)
-$setglobal flexible_h2_space 
-*!option yes
-
 *-----------------END: HYDROGEN ADDON---------------------------------------
 
 * Use stepwise linear fuel prices
@@ -380,7 +370,7 @@ $setglobal TRANS_RAMP
 
 *-----------------------ANCILLARY SERVICES----------------------------------------------------------------------------------------------------
 * Ancillary services addon (it requires UnitComm to be active). The other options require this one to be activated.
-$setglobal ANC_SERV 
+$setglobal ANC_SERV
 *!option yes
 
 * FCR reserve requirement activated
@@ -409,7 +399,7 @@ $setglobal DOWN_REGULATION_INCLUDED
 *-----------------------END: ANCILLIARY SERVICES----------------------------------------------------------------------------------------------------
 
 * Make investments in technologies only at specified capacities. (it should be checked before using it)
-$setglobal AGKNDISC 
+$setglobal AGKNDISC
 *!option yes
 *!onlyif %BB2%==yes
 *!onlyif %solvetype%==MIP
@@ -458,7 +448,7 @@ $setglobal REVERT_DECOM_ENDO_G   yes
 * Note: If either NO_DECOM_EXO_G, or LIFETIME_DECOM_EXO_G, or ECONOMIC_DECOM_EXO_Gor is activated, then the parameter GKFX will be recalculated so capacities only increase in the system.
 
 SCALAR GDECOMEXOSTART 'Year from which endogenous decisions in decommissioning of exogenous generation capacities are allowed';
-GDECOMEXOSTART= 2025;
+GDECOMEXOSTART= 2020;
 
 SCALAR GDECOMEXOPOTSTART 'Starting year to calculate the yearly decommissioning capacity potential, i.e. exogenous decommissioning occuring before this year will not be considered' ;
 GDECOMEXOPOTSTART= 2016;
@@ -486,7 +476,7 @@ $setglobal REVERT_DECOM_EXO_G   yes
 *-------------------- UNIT COMMITMENT -----------------------------------------------------------
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
-$setglobal UnitComm 
+$setglobal UnitComm
 *!option yes
 
 * Adds minimal production-when-on:
@@ -541,7 +531,7 @@ $setglobal timeaggr
 *-------------------------------------------------------------------------------
 * OptiFlow model.
 *-------------------------------------------------------------------------------
-$setglobal OPTIFLOW
+$setglobal OPTIFLOW yes
 *!option yes
 * Addon APKNdisc: discrete size investments in PROC.
 $setglobal APKNdisc
@@ -774,7 +764,34 @@ $setglobal ADDGROUP_DEMAND_SHIFT
 *--------------END OF IMPORT OF RESULTS----------------
 *--------------------------------------------
 
+*--------------------ANTARES SOFT-LINK--------------------------------------------------------------
+$setglobal ANTBALM
+*!option yes
 
+* NOTE: The following options are chosen by the BAF framework 
+* Only change these if working with Balmorel stand-alone!
+
+* Using mapping of VRE areas from Antares to Balmorel?
+* If not 'yes': New areas area created and Antares timeseries are used
+$setglobal USEANTARESDATA 
+*!option yes
+
+* Adjust hydro to antares data?
+$setglobal ADJUSTHYDRO 
+*!option yes
+
+* The following aggregation options should be harmonised with the input antares data
+* Aggregate option 1? (NOS = NO1 + NO2 + NO5 and DE = DE4-N + DE4-E + DE4-S + DE4-W)
+$setglobal AGGR1 
+*!option yes
+
+
+* Disaggregation option 2? (FR = FR00, FR15, GR = GR00, GR03, IT = ITCA, ITCN, ITN1, ITSI, ITS1, ITSA, ITCS, UK = UK00, UKNI)
+$setglobal AGGR2 
+*!option yes
+
+
+*--------------------END OF ANTARES SOFT-LINK-----------------------------------------------------------
 
 
 *===============================================================================
@@ -959,7 +976,7 @@ putclose fileMERGEWITHBASEbat;
 
 * The model type has implications for the solver type.
 * Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Programming).
-$setglobal SOLVETYPE LP
+$setglobal SOLVETYPE RMIP
 *!option LP      "Linear Programming"
 *!option RMIP    "Relaxed Mixed Integer Programming"
 *!option MIP     "Mixed Integer Programming"
