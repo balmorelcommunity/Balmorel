@@ -6,5 +6,5 @@ A lot of different Balmorel versions exist, some of which are explained here
 :maxdepth: 1
 
 versions/master.md
-versions/mberos-spatialaggregation.md
+versions/dk-highspatialres.md
 ```
