@@ -8,7 +8,7 @@ A quick tutorial on how to get started can be found [here](get_started.md), and 
 :alt: Example of European Results
 :width: 100% 
 :align: center
-:alt: Example of European Results
+Example of European results from Kountouris et al 2024[^3].
 :::
 
 ```{toctree}

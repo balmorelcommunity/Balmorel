@@ -7,5 +7,5 @@
 :alt: Poster on Danish spatial aggregation study
 :width: 100% 
 :align: center
-Poster for EGU24 using this spatial aggregation
+Poster for EGU24 using this spatial aggregation model.
 :::
