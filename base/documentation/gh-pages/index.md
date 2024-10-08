@@ -9,6 +9,7 @@ A quick tutorial on how to get started can be found [here](get_started.md), and 
 :hidden:
 
 get_started
+versions
 addons
 pre_processing
 running_on_hpc
