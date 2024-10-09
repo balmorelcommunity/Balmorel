@@ -343,7 +343,7 @@ $Setglobal HYDROGEN YES
 *!option yes
 
 * Adds generic synfuel production
-$setglobal generic_synfuel yes 
+$setglobal generic_synfuel  
 *!option yes
 
 * Allows investments in hydrogen transport
