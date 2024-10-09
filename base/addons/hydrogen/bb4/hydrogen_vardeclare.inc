@@ -13,7 +13,7 @@ POSITIVE VARIABLES
    VXH2KN_NGTOH2(Y,IRRRE,IRRRI)          'New Conversion of existing natural gas pipe to H2 transmission capacity (MW)'
    VXH2KNACCUMNET(Y,IRRRE,IRRRI)         'Accumulated new H2 transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)'
    VXH2KNACCUMNET_NGTOH2(Y,IRRRE,IRRRI)  'Accumulated new Conversion of existing natural gas pipe to H2 Transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)'
-
+   VSYNFUEL_G_T(Y,AAA,G,S,T)             'Production of synfuel'
 
 ;
 

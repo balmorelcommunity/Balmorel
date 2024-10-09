@@ -11,6 +11,7 @@ SET IHYDROGEN_GBIOGASMETHANATION(G)  'Technologies consuming biogas, electricity
 SET IHYDROGEN_GBIOGASUPGRADING(G)    'Technologies consuming biogas and electricity to remove CO2 and produce biomethane'
 SET IGBIOMETHANE(G)               'Generation technology using biomethane technology'
 SET IHYDROGEN(G)                   'Generation technologies producing hydrogen'
+SET IHYDROGEN_SYNFUEL(G)             'Synfuel production technologies'
 ;
 
 * Based on 'GDTYPE'
@@ -24,6 +25,7 @@ IHYDROGEN_GH2TOEH(G)= YES$(GDATA(G,'GDTYPE') EQ HYDROGEN_GH2TOEH);
 IHYDROGEN_GH2TOBIOMETH(G) = YES$(GDATA(G,'GDTYPE') EQ HYDROGEN_GH2TOBIOMETH);
 IHYDROGEN_GBIOGASMETHANATION(G) = YES$(GDATA(G,'GDTYPE') EQ HYDROGEN_GBIOGASMETHANATION);
 IHYDROGEN_GBIOGASUPGRADING(G) = YES$(GDATA(G,'GDTYPE') EQ HYDROGEN_GBIOGASUPGRADING);
+IHYDROGEN_SYNFUEL(G) = YES$(GDATA(G, 'GDTYPE') EQ SYNFUEL);
 
 * Based on 'GDFUEL'
 IHYDROGEN_GH2FUEL(G)  = YES$(GDATA(G,'GDFUEL') EQ HYDROGEN);

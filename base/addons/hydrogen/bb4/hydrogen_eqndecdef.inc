@@ -9,12 +9,13 @@ Equations
    QHYDROGEN_STOMAXUNLD(Y,AAA,G,S,T)  'Maximum unloading capacity of hydrogen storage'
    QHYDROGEN_EQ(Y,RRR,S,T)            'Hydrogen production equal demand'
    QHYDROGEN_EQ_AREA(Y,AAA,S,T)       'Hydrogen production equals demand at an areal level'
-   QHYDROGENGKE_UP_ADD(Y,AAA,G,S,T)   'Capacity adjustment constraint on electricity generation from biogas upgraded plants (MW)'
    QBIOMETHANE_EQ(Y,S,T)              'Biomethane production equals demand on international level in each year'
    QBIOMETHANE_STOVOLTS(Y,S,T)        'Dynamic equation biomethane storage'
    QGKBIOGASUPGRADING_UP(Y,AAA,G,S,T)  'Maximum generation of biomethane from biogas upgrading restricted by capacity (MW)'
    QGKBIOGASMETHANATION_UP(Y,AAA,G,S,T)  'Maximum generation of biomethane via biogas methanation restricted by capacity (MW)'
    QGKBIOMETHANE_UP(Y,AAA,G,S,T)      'Maximum generation of SNG restricted by capacity (MW)'
+   QSYNFUEL_EQ(Y)                      "Synthfuel production equal demand"
+   QSYNFUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production is lower than capacity" 
 ;
 
 *Demand Shift equations
@@ -319,3 +320,23 @@ QVXH2KN_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
 
 QXH2LAMBDA_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
   SUM(XES,VXH2LAMBDA(IY411,IRE,IRI,XES)) =E= 1;
+
+
+QSYNFUEL_EQ(IY411)..
+   SUM((IA, IHYDROGEN_SYNFUEL, IS3, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_SYNFUEL) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_SYNFUEL)) OR IGDECOMEXOPOT(IY411,IA,IHYDROGEN_SYNFUEL))),
+   VSYNFUEL_G_T(IY411,IA,IHYDROGEN_SYNFUEL,IS3,T)/GDATA(IHYDROGEN_SYNFUEL,'GDFE')
+   )
+
+   =E=
+
+   100
+;
+
+
+* Hydrogen production from steam reforming restricted by capacity
+QSYNFUELPROD_UP(IY411,IA,IHYDROGEN_SYNFUEL,IS3,T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_SYNFUEL) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_SYNFUEL)) OR IGDECOMEXOPOT(IY411,IA,IHYDROGEN_SYNFUEL)))..
+        VSYNFUEL_G_T(IY411,IA,IHYDROGEN_SYNFUEL,IS3,T) =L=
+        (GKFX(IY411,IA,IHYDROGEN_SYNFUEL)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IHYDROGEN_SYNFUEL)$IGDECOMEXOPOT(IY411,IA,IHYDROGEN_SYNFUEL)
+        +VGKNACCUMNET(IY411,IA,IHYDROGEN_SYNFUEL)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_SYNFUEL)))*(1$(NOT IGKRATE(IA,IHYDROGEN_SYNFUEL,IS3,T)) + IGKRATE(IA,IHYDROGEN_SYNFUEL,IS3,T))
+;

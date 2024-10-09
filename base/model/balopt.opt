@@ -342,6 +342,10 @@ $setglobal COMBTECH
 $Setglobal HYDROGEN YES
 *!option yes
 
+* Adds generic synfuel production
+$setglobal generic_synfuel yes 
+*!option yes
+
 * Allows investments in hydrogen transport
 $Setglobal H2TransInvest YES
 *!option yes
