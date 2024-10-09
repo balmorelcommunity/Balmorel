@@ -14,7 +14,7 @@ Created on 06.10.2024
 import matplotlib.pyplot as plt
 import numpy as np
 import click
-from pybalmorel import Balmorel
+from pybalmorel import Balmorel, MainResults
 from pybalmorel.formatting import balmorel_colours
 import pickle
 import os
@@ -55,13 +55,13 @@ def all(ctx):
     Generate all plots
     """
     ctx.invoke(cap, gen=True, sto=True)
+    ctx.invoke(fuel)
     ctx.invoke(costs)
 
 @CLI.command()
 @click.option('--gen', '-g', is_flag=True, default=True, required=False, help='Plot generation capacities')
 @click.option('--sto', '-s', is_flag=True, default=True, required=False, help='Plot storage capacities')
-@click.pass_context
-def cap(ctx, gen: bool, sto: bool):
+def cap(gen: bool, sto: bool):
     """
     Plot generation or storage capacities
     """
@@ -73,13 +73,13 @@ def cap(ctx, gen: bool, sto: bool):
         fig, ax = plt.subplots()
         if key == 'generation':
             df = (
-                collect_results('G_CAP_YCRAF', ctx.obj['path'], ctx.obj['overwrite'])
+                collect_results('G_CAP_YCRAF')
                 .query('Technology != "H2-STORAGE" and not Technology.str.contains("INTERSEASONAL") and not Technology.str.contains("INTRASEASONAL")')
             ) 
             ax.set_ylabel('Generation Capacity [GW]')
         else:
             df = (
-                collect_results('G_STO_YCRAF', ctx.obj['path'], ctx.obj['overwrite'])
+                collect_results('G_STO_YCRAF')
                 .query('Technology == "H2-STORAGE" or Technology.str.contains("INTERSEASONAL") or Technology.str.contains("INTRASEASONAL")')
             )
             df['Value'] = df['Value'] / 1e3 
@@ -87,16 +87,39 @@ def cap(ctx, gen: bool, sto: bool):
         
         (
             df
-            .pivot_table(index='Scenario', columns='Technology', 
+            .pivot_table(index='Scenario', columns='Fuel', 
                             values='Value', aggfunc='sum')
             .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
         )
         
         fig, ax = plot_style(fig, ax, '%s_capacity'%key)
-        
+
 @CLI.command()
-@click.pass_context
-def costs(ctx):
+def fuel():
+    """
+    Plot fuel consumption
+    """
+
+    print('\nPlotting fuel consumption..')
+    
+    fig, ax = plt.subplots()
+    ax.set_ylabel('Fuel Consumption [TWh]')
+    
+    df = (
+        collect_results('F_CONS_YCRA')
+    ) 
+    
+    (
+        df
+        .pivot_table(index='Scenario', columns='Fuel', 
+                        values='Value', aggfunc='sum')
+        .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
+    )
+    
+    fig, ax = plot_style(fig, ax, 'fuelconsumption')
+     
+@CLI.command()
+def costs():
     """
     Plot system costs
     """
@@ -104,7 +127,7 @@ def costs(ctx):
     
     fig, ax = plt.subplots()
     (
-        collect_results('OBJ_YCR', ctx.obj['path'], ctx.obj['overwrite'])
+        collect_results('OBJ_YCR')
         .pivot_table(index='Scenario', columns='Category', 
                      values='Value', aggfunc=lambda x: np.sum(x)/1e3)
         .plot(ax=ax, kind='bar', stacked=True)
@@ -116,6 +139,50 @@ def costs(ctx):
     ax.set_ylim(ylims[0], ylims[1]*1.05)
     
     fig, ax = plot_style(fig, ax, 'systemcosts')
+    
+    
+@CLI.command()
+@click.pass_context
+@click.argument('symbol', type=str, required=True)
+@click.argument('filter_input', type=str, required=False, default='INTER-STO')
+def get(ctx, symbol: str, filter_input: str):
+    """Get some result (i.e.: symbol in GAMS language)
+
+    Args:
+        symbol (str): The symbol from the .gdx
+        filter_input (str): An input for a filter
+    """
+    
+    df = collect_results(symbol)
+    
+    fig, ax = plt.subplots()
+    
+    res = (
+        df
+        .query(f'Generation == "{filter_input}" and Area == "Aabenraa_A" and not Scenario.str.contains("_lowtemp")')
+        .pivot_table(index=['Scenario'],  columns=['Generation', 'Area'], values='Value', aggfunc='sum')
+    )
+    
+    print(res.to_string(), res)
+    
+    # res.plot(ax=ax)
+    
+    # ax.set_title(filter_input)
+    # fig, ax = plot_style(fig, ax, f'{result}_filter{filter_input}_intersto_hightemp')
+    
+    
+@CLI.command()
+@click.pass_context
+@click.argument('commodity', type=str)
+@click.argument('scenario', type=str)
+@click.argument('year', type=int, default=2050)
+def profile(ctx, commodity: str, scenario: str, year: int):
+    """Plot energy balance of a commodity"""
+
+    m = MainResults(['MainResults_base.gdx'], paths=os.path.join(ctx.obj['path'], scenario, 'model'), scenario_names=[scenario])
+    
+    fig, ax = m.plot_profile(commodity, year, scenario)
+    fig, ax = plot_style(fig, ax, '%s_profile'%(commodity + '-' + str(year) + '-' + scenario))
 
 #%% ------------------------------- ###
 ###            2. Utils             ###
@@ -129,18 +196,21 @@ def plot_style(ctx, fig: plt.figure, ax: plt.axes, name: str):
             bbox_to_anchor=(.5, 1.15),
             ncol=3)
     
-    fig.savefig(os.path.join(ctx.obj['path'], 'analysis', 'files', name + ctx.obj['plot_ext']),
+    plot_path = os.path.join(ctx.obj['path'], 'analysis', 'plots')
+    if not(os.path.exists(plot_path)):
+        os.mkdir(plot_path)
+            
+    fig.savefig(os.path.join(ctx.obj['path'], 'analysis', 'plots', name + ctx.obj['plot_ext']),
                 bbox_inches='tight', transparent=True)
 
     return fig, ax
 
-def collect_results(symbol: str,
-                    path: str,
-                    overwrite: bool = False):
+@click.pass_context
+def collect_results(ctx, symbol: str):
     
-    abspath = os.path.abspath(path)
+    abspath = os.path.abspath(ctx.obj['path'])
     file_path = os.path.join(abspath, 'analysis', 'files', f'{symbol}.pkl')
-    if os.path.exists(file_path) and not(overwrite):
+    if os.path.exists(file_path) and not(ctx.obj['overwrite']):
         with open(file_path, 'rb') as f:
             df = pickle.load(f)
     
@@ -150,6 +220,10 @@ def collect_results(symbol: str,
         m.collect_results()
         
         df = m.results.get_result(symbol)
+    
+        file_folder_path = os.path.join(abspath, 'analysis', 'files')
+        if not(os.path.exists(file_folder_path)):
+            os.mkdir(file_folder_path)
     
         with open(file_path, 'wb') as f:
             pickle.dump(df, f)
