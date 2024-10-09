@@ -42,3 +42,4 @@ $ifi %generic_synfuel%==yes    QSYNBIOFUELPROD_UP
 $ifi %generic_synfuel%==yes    QSYNH2FUELPROD_UP  
 $ifi %generic_synfuel%==yes    QSYNFUELSET  
 $ifi %generic_synfuel%==yes    QSYNKSET  
+$ifi %generic_synfuel%==yes $ifi %generic_synfuel_inflex%==yes    QSYNINFLEX  

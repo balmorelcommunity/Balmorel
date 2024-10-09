@@ -19,6 +19,7 @@ Equations
    QSYNH2FUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production related to h2 consumption is lower than capacity" 
    QSYNFUELSET(Y,AAA,S,T)              "The generator representing the other fuel consumption must consume equivalent amounts"
    QSYNKSET(Y,AAA,S,T)                 "The generator representing the other fuel consumption must have equivalent capacity"
+   QSYNINFLEX(Y,AAA,G,S,T)             "Synthetic fuel producers are inflexible, i.e. minimum production constraint all year"
 ;
 
 *Demand Shift equations
@@ -367,4 +368,16 @@ QSYNFUELSET(IY411,IA,IS3,T)..
    =E=
 
    VSYNFUEL_G_T(IY411,IA,'GNR_TG-MeOH-2050_H2',IS3,T)
+;
+
+QSYNINFLEX(IY411,IA,IHYDROGEN_SYNFUEL,S,T)..
+   VSYNFUEL_G_T(IY411,IA,IHYDROGEN_SYNFUEL,S,T)
+
+   =G=
+
+   GDATA(IHYDROGEN_SYNFUEL, 'GDUCGMIN') * 
+   (GKFX(IY411,IA,IHYDROGEN_SYNFUEL)
+$ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IHYDROGEN_SYNFUEL)$IGDECOMEXOPOT(IY411,IA,IHYDROGEN_SYNFUEL)
+   +VGKNACCUMNET(IY411,IA,IHYDROGEN_SYNFUEL)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_SYNFUEL)))
+
 ;

@@ -346,6 +346,10 @@ $Setglobal HYDROGEN YES
 $setglobal generic_synfuel  
 *!option yes
 
+* Make generic synfuel production inflexible (will use GDUCGMIN from GDATA to create minimum production constraint)
+$setglobal generic_synfuel_inflex   
+*!option yes
+
 * Allows investments in hydrogen transport
 $Setglobal H2TransInvest YES
 *!option yes
