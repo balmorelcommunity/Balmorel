@@ -17,8 +17,8 @@ Equations
    QSYNFUEL_EQ(Y)                      "Synthfuel production equal demand"
    QSYNBIOFUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production related to bio consumption is lower than capacity" 
    QSYNH2FUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production related to h2 consumption is lower than capacity" 
-   QSYNFUELSET(Y,AAA,G,G,S,T)              "The generator representing the other fuel consumption must consume equivalent amounts"
-   QSYNKSET(Y,AAA,G,G,S,T)                 "The generator representing the other fuel consumption must have equivalent capacity"
+   QSYNFUELSET(Y,AAA,S,T)              "The generator representing the other fuel consumption must consume equivalent amounts"
+   QSYNKSET(Y,AAA,S,T)                 "The generator representing the other fuel consumption must have equivalent capacity"
 ;
 
 *Demand Shift equations
@@ -327,8 +327,8 @@ QXH2LAMBDA_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
 
 
 QSYNFUEL_EQ(IY411)..
-   SUM((IA, IHYDROGEN_BIOTOSYNFUEL, IS3, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_BIOTOSYNFUEL)) OR IGDECOMEXOPOT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL))),
-   VSYNFUEL_G_T(IY411,IA,IHYDROGEN_BIOTOSYNFUEL,IS3,T) *IHOURSINST(IS3,T)
+   SUM((IA, IHYDROGEN_H2TOSYNFUEL, IS3, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_H2TOSYNFUEL)) OR IGDECOMEXOPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL))),
+   VSYNFUEL_G_T(IY411,IA,IHYDROGEN_H2TOSYNFUEL,IS3,T) *IHOURSINST(IS3,T)
    )
 
    =E=
@@ -353,18 +353,18 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IHYDROGEN_H2TOSYNFUEL)$IGDECOMEXO
 ;
 
 
-QSYNKSET(IY411,IA,IHYDROGEN_BIOTOSYNFUEL,IHYDROGEN_H2TOSYNFUEL,IS3,T)..
-   VGKN(IY411,IA,IHYDROGEN_BIOTOSYNFUEL)
+QSYNKSET(IY411,IA,IS3,T)..
+   VGKN(IY411,IA,'GNR_TG-MeOH-2050')
 
    =E=
 
-   VGKN(IY411,IA,IHYDROGEN_H2TOSYNFUEL)
+   VGKN(IY411,IA,'GNR_TG-MeOH-2050_H2')
 ;
 
-QSYNFUELSET(IY411,IA,IHYDROGEN_BIOTOSYNFUEL,IHYDROGEN_H2TOSYNFUEL,IS3,T)..
-   VSYNFUEL_G_T(IY411,IA,IHYDROGEN_BIOTOSYNFUEL,IS3,T)
+QSYNFUELSET(IY411,IA,IS3,T)..
+   VSYNFUEL_G_T(IY411,IA,'GNR_TG-MeOH-2050',IS3,T)
 
    =E=
 
-   VSYNFUEL_G_T(IY411,IA,IHYDROGEN_H2TOSYNFUEL,IS3,T)
+   VSYNFUEL_G_T(IY411,IA,'GNR_TG-MeOH-2050_H2',IS3,T)
 ;
