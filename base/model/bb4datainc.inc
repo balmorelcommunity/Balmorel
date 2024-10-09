@@ -213,9 +213,10 @@ PARAMETER GDATA(GGG,GDATASET)    "Technologies characteristics" %semislash%
 $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 %semislash%;
+$onmulti
 *------------- Any GDATA additions for addon to be placed here: ----------------
 $include "../../base/addons/_hooks/gdataadditions.inc"
-
+$offmulti
 * ------------------------------------------------------------------------------
 %ONOFFCODELISTING%
 
