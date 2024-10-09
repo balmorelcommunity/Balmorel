@@ -38,6 +38,7 @@ QSYNTHETIC_EQ_SHIFT_BALANCE_OVERALL
 $label no_flexible_h2_space
 
 $ifi %generic_synfuel%==yes    QSYNFUEL_EQ
+$ifi %generic_synfuel%==yes    QSYNFUEL_AVIATION_SHARE
 $ifi %generic_synfuel%==yes    QSYNBIOFUELPROD_UP  
 $ifi %generic_synfuel%==yes    QSYNH2FUELPROD_UP  
 $ifi %generic_synfuel%==yes    QSYNFUELSET  

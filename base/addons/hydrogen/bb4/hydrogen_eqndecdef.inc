@@ -14,7 +14,8 @@ Equations
    QGKBIOGASUPGRADING_UP(Y,AAA,G,S,T)  'Maximum generation of biomethane from biogas upgrading restricted by capacity (MW)'
    QGKBIOGASMETHANATION_UP(Y,AAA,G,S,T)  'Maximum generation of biomethane via biogas methanation restricted by capacity (MW)'
    QGKBIOMETHANE_UP(Y,AAA,G,S,T)      'Maximum generation of SNG restricted by capacity (MW)'
-   QSYNFUEL_EQ(Y)                      "Synthfuel production equal demand"
+   QSYNFUEL_EQ(Y)                         "Total synthfuel production equal demand"
+   QSYNFUEL_AVIATION_SHARE(Y)             "Aviation share of synthfuel production equal demand"
    QSYNBIOFUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production related to bio consumption is lower than capacity" 
    QSYNH2FUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production related to h2 consumption is lower than capacity" 
    QSYNFUELSET(Y,AAA,S,T)              "The generator representing the other fuel consumption must consume equivalent amounts"
@@ -334,8 +335,19 @@ QSYNFUEL_EQ(IY411)..
 
    =E=
 
+   10e6
+;
+
+QSYNFUEL_AVIATION_SHARE(IY411)..
+   SUM((IA, IHYDROGEN_BIOTOSYNFUEL, IS3, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_BIOTOSYNFUEL)) OR IGDECOMEXOPOT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL))),
+   VSYNFUEL_G_T(IY411,IA,IHYDROGEN_BIOTOSYNFUEL,IS3,T) *IHOURSINST(IS3,T)
+   )
+
+   =G=
+
    5e6
 ;
+
 
 
 QSYNBIOFUELPROD_UP(IY411,IA,IHYDROGEN_BIOTOSYNFUEL,IS3,T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_BIOTOSYNFUEL)) OR IGDECOMEXOPOT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL)))..
