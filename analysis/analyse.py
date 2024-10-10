@@ -58,6 +58,7 @@ def all(ctx):
     """
     ctx.invoke(all_bars)
     ctx.invoke(all_profiles)
+    ctx.invoke(all_maps)
 
 @CLI.command()
 @click.pass_context
@@ -82,7 +83,20 @@ def all_profiles(ctx, year: int):
     for scenario in ctx.obj['Balmorel'].scenarios:
         for commodity in ['electricity', 'heat', 'hydrogen']:
             ctx.invoke(profile, commodity=commodity, scenario=scenario, year=year)
-                
+    
+@CLI.command()
+@click.pass_context
+@click.option('--year', type=int, required=False, default=2050, help="Which year to plot profiles from")
+def all_maps(ctx, year: int):
+    """
+    Generate all maps for a year (2050 default) 
+    """
+    
+    for scenario in ctx.obj['Balmorel'].scenarios:
+        for commodity in ['Electricity', 'Hydrogen']:
+            ctx.invoke(map, commodity=commodity, scenario=scenario, year=year)
+           
+              
 @CLI.command()
 @click.option('--gen', '-g', is_flag=True, default=True, required=False, help='Plot generation capacities')
 @click.option('--sto', '-s', is_flag=True, default=True, required=False, help='Plot storage capacities')
@@ -202,7 +216,7 @@ def costs():
 @click.argument('scenario', type=str)
 @click.argument('year', type=int, default=2050)
 def profile(ctx, commodity: str, scenario: str, year: int):
-    """Plot energy balance of a commodity"""
+    """Plot energy balance of electricity, heat or hydrogen"""
 
     model_path = os.path.join(ctx.obj['path'], scenario, 'model')
 
@@ -216,11 +230,50 @@ def profile(ctx, commodity: str, scenario: str, year: int):
     if len(m.sc) > 1:
         for sc in m.sc:
             fig, ax = m.plot_profile(commodity, year, sc)
-            fig, ax = plot_style(fig, ax, '%s_profile'%(commodity + '-' + str(year) + '-' + scenario + '-' + sc))
-    else:
+            fig, ax = plot_style(fig, ax, 'profile_%s'%(commodity + '-' + str(year) + '-' + scenario + '-' + sc))
+    elif len(m.sc) == 1:
         fig, ax = m.plot_profile(commodity, year, m.sc[0])
-        fig, ax = plot_style(fig, ax, '%s_profile'%(commodity + '-' + str(year) + '-' + sc))
+        fig, ax = plot_style(fig, ax, 'profile_%s'%(commodity + '-' + str(year) + '-' + m.sc[0]))
+    else:
+        print('No results for %s'%scenario)
+
+@CLI.command()
+@click.pass_context
+@click.argument('commodity', type=str)
+@click.argument('scenario', type=str)
+@click.argument('year', type=int, default=2050)
+@click.argument('geofile', type=str, default='analysis/geofiles/gadm36_DNK_2.shp')
+@click.argument('geofile_region_column', type=str, default='NAME_2')
+@click.argument('lon-lims', type=list, default=[7.8, 13])
+@click.argument('lat-lims', type=list, default=[54.4, 58])
+def map(ctx, commodity: str, scenario: str, year: int, 
+        geofile: str, geofile_region_column: str,
+        lon_lims: list, lat_lims: list):
+    """Plot transmission capacity maps for electricity or hydrogen"""
+
+    model_path = os.path.join(ctx.obj['path'], scenario, 'model')
+
+    # Get mainresults files
+    mainresult_files = pd.Series(os.listdir(model_path))
+    idx = mainresult_files.str.contains('MainResults')
+    mainresult_files = mainresult_files[idx]
     
+    m = MainResults(list(mainresult_files), paths=model_path)
+    
+    if len(m.sc) > 1:
+        for sc in m.sc:
+            fig, ax = m.plot_map(sc, commodity.capitalize(), year, path_to_geofile=geofile, geo_file_region_column=geofile_region_column)
+            ax.set_xlim(lon_lims)
+            ax.set_ylim(lat_lims)
+            fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario + '-' + sc), legend=False)
+    elif len(m.sc) == 1:
+        fig, ax = m.plot_map(m.sc[0], commodity.capitalize(), year, path_to_geofile=geofile, geo_file_region_column=geofile_region_column)
+        ax.set_xlim(lon_lims)
+        ax.set_ylim(lat_lims)
+        fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + m.sc[0]), legend=False)
+    else:
+        print('No results for %s'%scenario)
+        
 
 @CLI.command()
 @click.pass_context
@@ -241,11 +294,15 @@ def get(ctx, symbol: str, filter_input: str):
     res = (
         df
         # .query(f'Generation == "{filter_input}" and Area == "Aabenraa_A" and not Scenario.str.contains("_lowtemp")')
-        # .query(f'Category == "{filter_input}"')
-        .pivot_table(index=['Scenario'],  columns=['Category'], values='Value', aggfunc='sum')
+        .query(f'Technology == "{filter_input}"')
+        .pivot_table(index=['Scenario', 'Region'],  columns='Generation', values='Value', aggfunc='sum')
     )
     
-    print(res.to_string(), res)
+    for col in res.columns:
+        print('Largest %s'%col)
+        print(res.nlargest(10, col))
+        print('Smallest %s'%col)
+        print(res.nsmallest(10, col))
     
     # res.plot(ax=ax)
     
@@ -260,12 +317,15 @@ def get(ctx, symbol: str, filter_input: str):
 ### ------------------------------- ###
 
 @click.pass_context
-def plot_style(ctx, fig: plt.figure, ax: plt.axes, name: str):
+def plot_style(ctx, fig: plt.figure, ax: plt.axes, name: str,
+               legend: bool = True):
     
     ax.set_facecolor(ctx.obj['fc'])
-    ax.legend(loc='center',
-            bbox_to_anchor=(.5, 1.15),
-            ncol=3)
+    
+    if legend:
+        ax.legend(loc='center',
+                bbox_to_anchor=(.5, 1.15),
+                ncol=3)
     
     plot_path = os.path.join(ctx.obj['path'], 'analysis', 'plots')
     if not(os.path.exists(plot_path)):
