@@ -2,7 +2,7 @@
 Analysis Script
 
 Will plot different things, depending on command-line input.
-Meant to be used with the analyse.sh shell-script, to ease command writing.
+Meant to be used with the analyse/analyse.bat shell/batch scripts (Linux/Windows), to ease command writing.
 
 Created on 06.10.2024
 @author: Mathias Berg Rosendal, PhD Student at DTU Management (Energy Economics & Modelling)
