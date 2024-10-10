@@ -13,6 +13,7 @@ Created on 06.10.2024
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import click
 from pybalmorel import Balmorel, MainResults
 from pybalmorel.formatting import balmorel_colours
@@ -37,6 +38,7 @@ def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str):
         
     # Store global options in the context object
     ctx.ensure_object(dict)
+    ctx.obj['Balmorel'] = Balmorel(path) # Find Balmorel folder
     ctx.obj['fc'] = fc  # Store facecolor in context
     ctx.obj['overwrite'] = overwrite
     ctx.obj['dark_style'] = dark_style
@@ -54,10 +56,33 @@ def all(ctx):
     """
     Generate all plots
     """
+    ctx.invoke(all_bars)
+    ctx.invoke(all_profiles)
+
+@CLI.command()
+@click.pass_context
+def all_bars(ctx):
+    """
+    Generate all bar charts
+    """
     ctx.invoke(cap, gen=True, sto=True)
     ctx.invoke(fuel)
     ctx.invoke(costs)
-
+    for commodity in ['electricity', 'heat', 'hydrogen']:
+        ctx.invoke(dem, commodity=commodity)
+    
+@CLI.command()
+@click.pass_context
+@click.option('--year', type=int, required=False, default=2050, help="Which year to plot profiles from")
+def all_profiles(ctx, year: int):
+    """
+    Generate all profiles for a year (2050 default) 
+    """
+    
+    for scenario in ctx.obj['Balmorel'].scenarios:
+        for commodity in ['electricity', 'heat', 'hydrogen']:
+            ctx.invoke(profile, commodity=commodity, scenario=scenario, year=year)
+                
 @CLI.command()
 @click.option('--gen', '-g', is_flag=True, default=True, required=False, help='Plot generation capacities')
 @click.option('--sto', '-s', is_flag=True, default=True, required=False, help='Plot storage capacities')
@@ -117,6 +142,36 @@ def fuel():
     )
     
     fig, ax = plot_style(fig, ax, 'fuelconsumption')
+    
+@CLI.command()
+@click.argument('commodity', type=str)
+def dem(commodity: str):
+    """
+    Plot fuel consumption
+    """
+
+    print('\nPlotting %s demand..'%commodity)
+    
+    symbol = {'electricity' : 'EL_DEMAND_YCR',
+              'hydrogen' : 'H2_DEMAND_YCR',
+              'heat' : 'H_DEMAND_YCRA'}
+    
+    fig, ax = plt.subplots()
+    ax.set_ylabel('%s Demand [TWh]'%(commodity.capitalize()))
+    
+    df = (
+        collect_results(symbol[commodity.lower()])
+    ) 
+    
+    (
+        df
+        .pivot_table(index='Scenario', columns='Category', 
+                        values='Value', aggfunc='sum')
+        .plot(ax=ax, kind='bar', stacked=True)
+    )
+    
+    fig, ax = plot_style(fig, ax, '%s_demand'%commodity.lower())
+    
      
 @CLI.command()
 def costs():
@@ -140,7 +195,33 @@ def costs():
     
     fig, ax = plot_style(fig, ax, 'systemcosts')
     
+
+@CLI.command()
+@click.pass_context
+@click.argument('commodity', type=str)
+@click.argument('scenario', type=str)
+@click.argument('year', type=int, default=2050)
+def profile(ctx, commodity: str, scenario: str, year: int):
+    """Plot energy balance of a commodity"""
+
+    model_path = os.path.join(ctx.obj['path'], scenario, 'model')
+
+    # Get mainresults files
+    mainresult_files = pd.Series(os.listdir(model_path))
+    idx = mainresult_files.str.contains('MainResults')
+    mainresult_files = mainresult_files[idx]
     
+    m = MainResults(list(mainresult_files), paths=model_path)
+    
+    if len(m.sc) > 1:
+        for sc in m.sc:
+            fig, ax = m.plot_profile(commodity, year, sc)
+            fig, ax = plot_style(fig, ax, '%s_profile'%(commodity + '-' + str(year) + '-' + scenario + '-' + sc))
+    else:
+        fig, ax = m.plot_profile(commodity, year, m.sc[0])
+        fig, ax = plot_style(fig, ax, '%s_profile'%(commodity + '-' + str(year) + '-' + sc))
+    
+
 @CLI.command()
 @click.pass_context
 @click.argument('symbol', type=str, required=True)
@@ -159,8 +240,9 @@ def get(ctx, symbol: str, filter_input: str):
     
     res = (
         df
-        .query(f'Generation == "{filter_input}" and Area == "Aabenraa_A" and not Scenario.str.contains("_lowtemp")')
-        .pivot_table(index=['Scenario'],  columns=['Generation', 'Area'], values='Value', aggfunc='sum')
+        # .query(f'Generation == "{filter_input}" and Area == "Aabenraa_A" and not Scenario.str.contains("_lowtemp")')
+        # .query(f'Category == "{filter_input}"')
+        .pivot_table(index=['Scenario'],  columns=['Category'], values='Value', aggfunc='sum')
     )
     
     print(res.to_string(), res)
@@ -170,19 +252,8 @@ def get(ctx, symbol: str, filter_input: str):
     # ax.set_title(filter_input)
     # fig, ax = plot_style(fig, ax, f'{result}_filter{filter_input}_intersto_hightemp')
     
-    
-@CLI.command()
-@click.pass_context
-@click.argument('commodity', type=str)
-@click.argument('scenario', type=str)
-@click.argument('year', type=int, default=2050)
-def profile(ctx, commodity: str, scenario: str, year: int):
-    """Plot energy balance of a commodity"""
+        
 
-    m = MainResults(['MainResults_base.gdx'], paths=os.path.join(ctx.obj['path'], scenario, 'model'), scenario_names=[scenario])
-    
-    fig, ax = m.plot_profile(commodity, year, scenario)
-    fig, ax = plot_style(fig, ax, '%s_profile'%(commodity + '-' + str(year) + '-' + scenario))
 
 #%% ------------------------------- ###
 ###            2. Utils             ###
@@ -211,12 +282,13 @@ def collect_results(ctx, symbol: str):
     abspath = os.path.abspath(ctx.obj['path'])
     file_path = os.path.join(abspath, 'analysis', 'files', f'{symbol}.pkl')
     if os.path.exists(file_path) and not(ctx.obj['overwrite']):
+        print('Result file already exists, loading %s..'%file_path)
         with open(file_path, 'rb') as f:
             df = pickle.load(f)
     
     else:
         print('\nCollecting results to %s..\n'%file_path, flush=True)
-        m = Balmorel(abspath)
+        m = ctx.obj['Balmorel']
         m.collect_results()
         
         df = m.results.get_result(symbol)
