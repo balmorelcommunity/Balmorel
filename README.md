@@ -3,6 +3,8 @@
 The Balmorel energy system model. Data is included in the [Balmorel_data repository](https://github.com/balmorelcommunity/Balmorel_data), which we recommend cloning to base/ for version control of both base data and framework. Note: The cloned folder should be renamed from "Balmorel_data" to "data" to function properly.
 A scenario that's possible to run with an academic trial license of GAMS can be found in the balmorel-demo branch.
 
+How to get started? Check out [this link](https://balmorelcommunity.github.io/Balmorel/index.html)
+
 ## What is Balmorel?
 
 Balmorel is a partial equilibrium model for analysing the electricity and combined heat and power sectors in an international perspective. It is highly versatile and may be applied for long range planning as well as shorter time operational analysis. Balmorel is implemented as a mainly linear programming optimisation problem.
