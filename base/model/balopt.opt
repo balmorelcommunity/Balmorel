@@ -37,7 +37,7 @@ $setglobal reduced_vqdebug
 * PROJECTID is the identification of the Project.
 * Convenient, and additioanally needed if results shall be compared among projects.
 *
-$setglobal PROJECTID firsttests
+$setglobal PROJECTID %scenario_name%
 *!option !fixedvalue
 *
 *
