@@ -251,7 +251,7 @@ $setglobal inflex_demand
 *------------------------------TRANSPORT ADDON-------------------------------------------------
 * overall control variable TRANSPORT must be 'yes' if any of the other TRANSPORT controls are:
 * Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
-$setglobal TRANSPORT yes
+$setglobal TRANSPORT 
 *!option yes
 
 * Defines the commodity used to model synthetic fuel generation.
@@ -347,7 +347,7 @@ $setglobal generic_synfuel   yes
 *!option yes
 
 * Make generic synfuel production inflexible (will use GDUCGMIN from GDATA to create minimum production constraint)
-$setglobal generic_synfuel_inflex  yes 
+$setglobal generic_synfuel_inflex  
 *!option yes
 
 * Allows investments in hydrogen transport
