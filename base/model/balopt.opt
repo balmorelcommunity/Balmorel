@@ -28,7 +28,6 @@ $setglobal reduced_vqdebug
 *-----------------------------------------------------------------
 *---- END: VQDEBUG ------------------------------------------------
 
-
 *===============================================================================
 *===============================================================================
 * Project and Case ID:
@@ -369,6 +368,15 @@ $setglobal flexible_h2_space
 *!option yes
 
 *-----------------END: HYDROGEN ADDON---------------------------------------
+
+
+*-----------------FUELTRANSPORT ADDON---------------------------------------
+
+* Enable annual transport of fuels, only possible if a FUELTRANSPORT_COST is defined 
+$setglobal fueltransport yes
+
+*-----------------END: FUELTRANSPORT ADDON---------------------------------------
+
 
 * Use stepwise linear fuel prices
 $Setglobal STEPWISEPRICE
