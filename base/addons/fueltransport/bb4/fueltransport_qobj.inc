@@ -1,0 +1,2 @@
+* -------- COSTS of Annual Transport of Fuel -------- *
++ SUM((FFF, IRRRE, IRRRI), FUELTRANSPORT_COST(FFF,IRRRI,IRRRE)*VFUELTRANSPORT(Y,IRRRE,IRRRI,FFF))

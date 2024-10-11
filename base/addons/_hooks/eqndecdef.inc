@@ -37,5 +37,6 @@ $ifi %BalancingMarket%==yes       $include   "../../base/addons/balancing_market
 $ifi %INDIVUSERS%==yes       $include   "../../base/addons/indivusers/bb4/indivusers_eqndecdef.inc";
 $ifi %OPTIFLOW%==yes $include "../../base/addons/optiflow/bb4/optiflow_eqndecdef.inc";
 $ifi %FLEXDEM%==yes $include "../../base/addons/flexdem/bb4/flexdem_eqndecdef.inc";
+$ifi %FUELTRANSPORT%==yes $include "../../base/addons/fueltransport/bb4/fueltransport_eqndecdef.inc";
 
 $label endoffile

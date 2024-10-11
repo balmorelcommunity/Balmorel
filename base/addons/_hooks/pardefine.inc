@@ -42,7 +42,7 @@ $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_pardefine.inc";
 $ifi %INDIVUSERS%==yes       $include   "../../base/addons/indivusers/bb4/indivusers_pardefine.inc";
 $ifi %OPTIFLOW%==yes  $include   "../../base/addons/optiflow/bb4/optiflow_pardefine.inc";
 $ifi %FLEXDEM%==yes  $include   "../../base/addons/flexdem/bb4/flexdem_pardefine.inc";
-
+$ifi %FUELTRANSPORT%==yes $include "../../base/addons/fueltransport/bb4/fueltransport_pardefine.inc";
 
 
 $label endoffile
