@@ -29,6 +29,7 @@ dependencies:
   - sphinx
   - sphinx-rtd-theme
   - sphinx-autoapi
+  - sphinx-copybutton
 ```
 
 ## Installation instructions
