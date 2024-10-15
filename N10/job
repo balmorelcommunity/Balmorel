@@ -5,7 +5,7 @@
 ### -- set the job Name --
 #BSUB -J N10
 ### -- ask for number of cores (default: 1) --
-#BSUB -n 10
+#BSUB -n 3
 ### -- specify that we need a certain architecture --
 #BSUB -R "select[model == XeonGold6226R]"
 ### -- specify that the cores must be on the same host --
@@ -15,7 +15,7 @@
 ### -- specify that we want the job to get killed if it exceeds X GB per core/slot --
 #BSUB -M 2.6GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 5:00
+#BSUB -W 1:00
 ### -- set the email address --
 #BSUB -u mberos@dtu.dk
 ### -- send notification at start --
