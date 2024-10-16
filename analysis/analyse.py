@@ -29,21 +29,23 @@ import os
 def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str):
     "A CLI to analyse Balmorel results"
     
-    # Set global style of plot
-    if dark_style:
-        plt.style.use('dark_background')
-        fc = 'none'
-    else:
-        fc = 'white'
-        
     # Store global options in the context object
     ctx.ensure_object(dict)
     ctx.obj['Balmorel'] = Balmorel(path) # Find Balmorel folder
-    ctx.obj['fc'] = fc  # Store facecolor in context
     ctx.obj['overwrite'] = overwrite
     ctx.obj['dark_style'] = dark_style
     ctx.obj['plot_ext'] = plot_ext
     ctx.obj['path'] = path
+    
+    # Set global style of plot (only true for plots using function in THIS script)
+    if dark_style:
+        plt.style.use('dark_background')
+        ctx.obj['fc'] = 'none'                              # Facecolor
+        ctx.obj['plot_style_for_modules'] = 'dark'          # Plot style for modules
+    else:
+        ctx.obj['fc'] = 'white'  
+        ctx.obj['plot_style_for_modules'] = 'light'         # Plot style for modules
+        
 
 
 #%% ------------------------------- ###
@@ -100,11 +102,13 @@ def all_maps(ctx, year: int):
 @CLI.command()
 @click.option('--gen', '-g', is_flag=True, default=True, required=False, help='Plot generation capacities')
 @click.option('--sto', '-s', is_flag=True, default=True, required=False, help='Plot storage capacities')
-def cap(gen: bool, sto: bool):
+@click.option('--exclude-filters', '-e', type=str, default={}, required=False, help='Filters in .json format')
+def cap(gen: bool, sto: bool, exclude_filters: str):
     """
     Plot generation or storage capacities
     """
     
+    exclude_filters = eval(exclude_filters)
     plot_types = {'generation' : gen, 'storage' : sto}
     for key in [key for key in plot_types.keys() if plot_types[key]]:
         print('\nPlotting %s capacities..'%key)
@@ -124,9 +128,19 @@ def cap(gen: bool, sto: bool):
             df['Value'] = df['Value'] / 1e3 
             ax.set_ylabel('Storage Capacity [TWh]')
         
+        # Apply exclusion filters
+        for filter0 in exclude_filters.keys():
+            print('Filtering %s from'%(str(exclude_filters[filter0])), filter0)
+            if type(exclude_filters[filter0]) is list:
+                for val in exclude_filters[filter0]:
+                    df = df.query(f'{filter0} != @val')
+            else:
+                val = exclude_filters[filter0]
+                df = df.query(f'{filter0} != @val')
+                
         (
             df
-            .pivot_table(index='Scenario', columns='Fuel', 
+            .pivot_table(index=['Commodity', 'Scenario'], columns='Technology', 
                             values='Value', aggfunc='sum')
             .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
         )
@@ -229,10 +243,10 @@ def profile(ctx, commodity: str, scenario: str, year: int):
     
     if len(m.sc) > 1:
         for sc in m.sc:
-            fig, ax = m.plot_profile(commodity, year, sc)
+            fig, ax = m.plot_profile(commodity, year, sc, style=ctx.obj['plot_style_for_modules'])
             fig, ax = plot_style(fig, ax, 'profile_%s'%(commodity + '-' + str(year) + '-' + scenario + '-' + sc))
     elif len(m.sc) == 1:
-        fig, ax = m.plot_profile(commodity, year, m.sc[0])
+        fig, ax = m.plot_profile(commodity, year, m.sc[0], style=ctx.obj['plot_style_for_modules'])
         fig, ax = plot_style(fig, ax, 'profile_%s'%(commodity + '-' + str(year) + '-' + m.sc[0]))
     else:
         print('No results for %s'%scenario)
@@ -260,14 +274,18 @@ def map(ctx, commodity: str, scenario: str, year: int,
     
     m = MainResults(list(mainresult_files), paths=model_path)
     
+    if 'N' in scenario:
+        geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(scenario.lstrip('N')))
+        geofile_region_column = 'cluster_name'
+    
     if len(m.sc) > 1:
         for sc in m.sc:
-            fig, ax = m.plot_map(sc, commodity.capitalize(), year, path_to_geofile=geofile, geo_file_region_column=geofile_region_column)
+            fig, ax = m.plot_map(sc, commodity.capitalize(), year, path_to_geofile=geofile, geo_file_region_column=geofile_region_column, style=ctx.obj['plot_style_for_modules'])
             ax.set_xlim(lon_lims)
             ax.set_ylim(lat_lims)
             fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario + '-' + sc), legend=False)
     elif len(m.sc) == 1:
-        fig, ax = m.plot_map(m.sc[0], commodity.capitalize(), year, path_to_geofile=geofile, geo_file_region_column=geofile_region_column)
+        fig, ax = m.plot_map(m.sc[0], commodity.capitalize(), year, path_to_geofile=geofile, geo_file_region_column=geofile_region_column, style=ctx.obj['plot_style_for_modules'])
         ax.set_xlim(lon_lims)
         ax.set_ylim(lat_lims)
         fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + m.sc[0]), legend=False)

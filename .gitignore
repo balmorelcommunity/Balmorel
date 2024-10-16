@@ -27,12 +27,20 @@ base/data/README.md
 *.log~1
 *.log~2
 *.log~3
+**/**/model/225*
 data
 build
 %batfileMERGEWITHBASE%
 logs
 analysis/files
 analysis/plots
+analysis/config
+analysis/output
+
+geofiles
+gamslice.*
+gamslice
+
 
 base/model/225a
 base_lowtemp
