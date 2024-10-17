@@ -297,12 +297,17 @@ def map(ctx, commodity: str, scenario: str, year: int,
         
 @CLI.command()
 @click.pass_context
-def storage_profiles(ctx):
+@click.argument('scenarios', type=str, required=False, default=None)
+def storage_profiles(ctx, scenarios: str):
     """
     Get storage profiles
     """
-    
-    sto = collect_storage_profiles()
+    if scenarios == None:
+        scenarios = ctx.obj['Balmorel'].scenarios
+    else:
+        scenarios = scenarios.replace(' ', '').split(',')
+        
+    sto = collect_storage_profiles(scenarios=scenarios)
 
     print(sto)
 
@@ -383,7 +388,7 @@ def plot_style(ctx, fig: plt.figure, ax: plt.axes, name: str,
     return fig, ax
 
 @click.pass_context
-def collect_storage_profiles(ctx):
+def collect_storage_profiles(ctx, scenarios: list):
     
     abspath = os.path.abspath(ctx.obj['path'])
     profiles = ['charge', 'discharge', 'level']
@@ -391,17 +396,17 @@ def collect_storage_profiles(ctx):
     file_paths = [os.path.join(abspath, 'analysis', 'files', '%s_profile.pkl'%profile) for profile in profiles]
     if os.path.exists(file_paths[0]) and os.path.exists(file_paths[1]) and os.path.exists(file_paths[2]) and not(ctx.obj['overwrite']):
         print('Result file already exists, loading storage profiles..')
-        for i in len(profiles):
+        for i in range(len(profiles)):
             with open(file_paths[i], 'rb') as f:
                 sto[profiles[i]] = pickle.load(f)
     
     else:
         print('\nCollecting storage results to storage profiles..\n', flush=True)
-        m = ctx.obj['Balmorel']
+        
         sto['charge'] =  pd.DataFrame()
         sto['discharge'] =  pd.DataFrame()
         sto['level'] =  pd.DataFrame()
-        for scenario in m.scenarios:
+        for scenario in scenarios:
             for storage_type in ['inter', 'intra']:
                 for carrier in ['electricity', 'heat', 'hydrogen']:
                     if storage_type == 'inter' and (carrier == 'electricity' or carrier == 'hydrogen'):
@@ -425,7 +430,7 @@ def collect_storage_profiles(ctx):
         if not(os.path.exists(file_folder_path)):
             os.mkdir(file_folder_path)
     
-        for i in len(profiles):
+        for i in range(len(profiles)):
             with open(file_paths[i], 'wb') as f:
                 pickle.dump(sto[profiles[i]], f)
 
