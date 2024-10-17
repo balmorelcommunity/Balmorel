@@ -9,6 +9,7 @@
 **/*.bak
 **/*.out
 **/*.bat
+__pycache__
 !analyse.bat
 **/*.gpr
 **/*.dat

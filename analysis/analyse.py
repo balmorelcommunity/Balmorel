@@ -11,11 +11,14 @@ Created on 06.10.2024
 ###           0. Main CLI           ###
 ### ------------------------------- ###
 
+from gams import GamsWorkspace
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import click
+from specific.pit_storage.pit_storage import get_storage_profiles
 from pybalmorel import Balmorel, MainResults
+from pybalmorel.utils import symbol_to_df
 from pybalmorel.formatting import balmorel_colours
 import pickle
 import os
@@ -292,6 +295,16 @@ def map(ctx, commodity: str, scenario: str, year: int,
     else:
         print('No results for %s'%scenario)
         
+@CLI.command()
+@click.pass_context
+def storage_profiles(ctx):
+    """
+    Get storage profiles
+    """
+    
+    sto = collect_storage_profiles()
+
+    print(sto)
 
 @CLI.command()
 @click.pass_context
@@ -327,8 +340,23 @@ def get(ctx, symbol: str, filter_input: str):
     # ax.set_title(filter_input)
     # fig, ax = plot_style(fig, ax, f'{result}_filter{filter_input}_intersto_hightemp')
     
-        
-
+@CLI.command()
+@click.pass_context
+@click.argument('scenario', type=str, required=True)
+@click.argument('symbol', type=str, required=True)
+def allendofmodel(ctx, scenario: str, symbol: str,
+                   gams_system_directory: str = '/appl/gams/47.6.0'):
+    
+    # Load all_endofmodel for the specified scenario
+    ws = GamsWorkspace(system_directory=gams_system_directory)
+    db = ws.add_database_from_gdx(os.path.abspath(os.path.join(ctx.obj['path'], scenario, 'model', 'all_endofmodel.gdx')))
+    
+    # Get symbol
+    df = symbol_to_df(db, symbol)
+    
+    print(df)
+    
+    return df
 
 #%% ------------------------------- ###
 ###            2. Utils             ###
@@ -353,6 +381,56 @@ def plot_style(ctx, fig: plt.figure, ax: plt.axes, name: str,
                 bbox_inches='tight', transparent=True)
 
     return fig, ax
+
+@click.pass_context
+def collect_storage_profiles(ctx):
+    
+    abspath = os.path.abspath(ctx.obj['path'])
+    profiles = ['charge', 'discharge', 'level']
+    sto = {}
+    file_paths = [os.path.join(abspath, 'analysis', 'files', '%s_profile.pkl'%profile) for profile in profiles]
+    if os.path.exists(file_paths[0]) and os.path.exists(file_paths[1]) and os.path.exists(file_paths[2]) and not(ctx.obj['overwrite']):
+        print('Result file already exists, loading storage profiles..')
+        for i in len(profiles):
+            with open(file_paths[i], 'rb') as f:
+                sto[profiles[i]] = pickle.load(f)
+    
+    else:
+        print('\nCollecting storage results to storage profiles..\n', flush=True)
+        m = ctx.obj['Balmorel']
+        sto['charge'] =  pd.DataFrame()
+        sto['discharge'] =  pd.DataFrame()
+        sto['level'] =  pd.DataFrame()
+        for scenario in m.scenarios:
+            for storage_type in ['inter', 'intra']:
+                for carrier in ['electricity', 'heat', 'hydrogen']:
+                    if storage_type == 'inter' and (carrier == 'electricity' or carrier == 'hydrogen'):
+                        continue
+                    
+                    if carrier == 'hydrogen':
+                        storage_type = 'h2-storage'
+                    
+                    charge, discharge, level = get_storage_profiles(os.path.join(abspath, scenario, 'model', 'all_endofmodel.gdx'),
+                                                                    carrier, storage_type)
+
+                    for profile in profiles:
+                        data = eval(profile)
+                        data['Scenario'] = scenario
+                        data['Technology'] = storage_type
+                        data['Commodity'] = carrier
+                        sto[profile] = pd.concat((sto[profile], data))
+                        
+        
+        file_folder_path = os.path.join(abspath, 'analysis', 'files')
+        if not(os.path.exists(file_folder_path)):
+            os.mkdir(file_folder_path)
+    
+        for i in len(profiles):
+            with open(file_paths[i], 'wb') as f:
+                pickle.dump(sto[profiles[i]], f)
+
+    return sto
+
 
 @click.pass_context
 def collect_results(ctx, symbol: str):
