@@ -67,26 +67,27 @@ def get_storage_profiles(all_endofmodel: str,
     if carrier != 'hydrogen':
         charge_symbol = 'V%sSTOLOADT%s'%(carrier_dict[carrier], storage_type_dict[storage_type])
         discharge_symbol = 'VG%s_T'%(carrier_dict[carrier])
-        content_symbol = 'V%sSTOVOLT%s'%(carrier_dict[carrier], storage_type_dict[storage_type])
+        level_symbol = 'V%sSTOVOLT%s'%(carrier_dict[carrier], storage_type_dict[storage_type])
     else:
         charge_symbol = 'VHYDROGEN_GH2_T'
         discharge_symbol = 'VHYDROGEN_STOLOADT'
-        content_symbol = 'VHYDROGEN_STOVOL_T'
+        level_symbol = 'VHYDROGEN_STOVOL_T'
     
     # Load variables
     charge = symbol_to_df(db, charge_symbol)
     discharge = symbol_to_df(db, discharge_symbol)
-    content = symbol_to_df(db, content_symbol)
+    level = symbol_to_df(db, level_symbol)
 
-    # Correct column name    
-    charge.columns = pd.Series(charge.columns).str.replace('GGG', 'G')
-    discharge.columns = pd.Series(discharge.columns).str.replace('GGG', 'G')
+    # Correct column names    
+    charge.columns = pd.Series(charge.columns).str.replace('GGG', 'G').str.replace('AAA', 'A').str.replace('SSS', 'S').str.replace('TTT', 'T')
+    discharge.columns = pd.Series(discharge.columns).str.replace('GGG', 'G').str.replace('AAA', 'A').str.replace('SSS', 'S').str.replace('TTT', 'T')
+    level.columns = pd.Series(level.columns).str.replace('GGG', 'G').str.replace('AAA', 'A').str.replace('SSS', 'S').str.replace('TTT', 'T')
 
     # Sort away carrier generation technologies from dispatch variable
     sto_set = charge.G.unique()
     discharge = discharge.query('G in @sto_set')
     
-    return charge, discharge, content
+    return charge, discharge, level
 
 #%% ------------------------------- ###
 ###             2. Tests            ### 
@@ -108,7 +109,7 @@ class Tests(unittest.TestCase):
             
     def test_get_storage_profiles(self):
         filename = '/work3/mberos/Balmorel/N2/model/all_endofmodel.gdx'
-        charge, discharge, content = get_storage_profiles(filename, 'heat', 'inter')
+        charge, discharge, level = get_storage_profiles(filename, 'heat', 'inter')
 
 
 #%% ------------------------------- ###

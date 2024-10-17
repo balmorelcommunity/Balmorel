@@ -12,11 +12,12 @@ Created on 06.10.2024
 ### ------------------------------- ###
 
 from gams import GamsWorkspace
+import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import click
-from specific.pit_storage.pit_storage import get_storage_profiles
+from specific.pit_storage.pit_storage import get_storage_profiles, polygon_with_point
 from pybalmorel import Balmorel, MainResults
 from pybalmorel.utils import symbol_to_df
 from pybalmorel.formatting import balmorel_colours
@@ -39,6 +40,7 @@ def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str):
     ctx.obj['dark_style'] = dark_style
     ctx.obj['plot_ext'] = plot_ext
     ctx.obj['path'] = path
+    ctx.obj['plot_path'] = os.path.join(path, 'analysis', 'plots')
     
     # Set global style of plot (only true for plots using function in THIS script)
     if dark_style:
@@ -297,8 +299,10 @@ def map(ctx, commodity: str, scenario: str, year: int,
         
 @CLI.command()
 @click.pass_context
+@click.argument('cluster', type=str, required=True)
 @click.argument('scenarios', type=str, required=False, default=None)
-def storage_profiles(ctx, scenarios: str):
+@click.argument('size', type=str, required=False, default='decentral')
+def storage_profile(ctx, cluster: str, scenarios: str, size: str):
     """
     Get storage profiles
     """
@@ -307,9 +311,67 @@ def storage_profiles(ctx, scenarios: str):
     else:
         scenarios = scenarios.replace(' ', '').split(',')
         
+    if size == 'decentral':
+        size_type = 'GNR_HS_HEAT_PIT_L-DEC_E-70_Y-2050'
+    else:
+        size_type = 'GNR_HS_HEAT_PIT_L-CEN_E-70_Y-2050'
+        
     sto = collect_storage_profiles(scenarios=scenarios)
 
-    print(sto)
+    for scenario in scenarios:
+        if 'N' in scenario:
+            geofile = gpd.read_file('analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%int(scenario.replace('N', '')))
+        else:
+            geofile = gpd.read_file('analysis/geofiles/gadm36_DNK_2.shp')
+            name_column = 'NAME_2'
+            geofile[name_column] = (
+                geofile[name_column]
+                .str.replace('Æ', 'Ae')
+                .str.replace('Ø', 'Oe')
+                .str.replace('Å', 'Aa')
+                .str.replace('æ', 'ae')
+                .str.replace('ø', 'oe')
+                .str.replace('å', 'aa')
+            )
+            geofile.columns = pd.Series(geofile.columns).str.replace('NAME_2', 'cluster_name')
+        
+        # Find Brønderslev cluster
+        # idx = polygon_with_point(geofile)
+        # cluster = geofile.loc[idx, 'cluster_name'].iloc[0] # Will only be one cluster
+        
+        # Find the storage with the largest stored volume
+        
+
+        # Filter
+        cluster_area = cluster + '_A'
+        temp = {}
+        for profile in ['charge', 'discharge', 'level']:
+            temp[profile] = sto[profile].query(
+                'A == @cluster_area \
+                and Technology == "inter" \
+                and Commodity == "heat" \
+                and Scenario == @scenario \
+                and G == @size_type' 
+            )
+                # and G == "GNR_HS_HEAT_PIT_L-CEN_E-70_Y-2050"'
+                # and G == "GNR_HS_HEAT_PIT_L-DEC_E-70_Y-2050"'
+            # if len(temp[profile].G.unique()) > 1:
+            #     print(temp[profile].G.unique())
+            #     raise ValueError('Several interseasonal technologies in cluster %s!'%cluster)
+              
+            temp[profile] = temp[profile].pivot_table(index=['S', 'T'], values='Value')
+              
+        # Plot  
+        fig, ax1 = plt.subplots()
+        ax2 = ax1.twinx()
+        discharge_charge = temp['charge'] - temp['discharge']
+        # discharge_charge.Value.name = 'Char/Dischar'
+        discharge_charge['Value'].plot(color='k', linestyle='--', linewidth=1, ax=ax1, label='Dischar/Char', legend=True)
+        temp['level']['Value'].plot(color='r', ax=ax2, label='Volume', legend=True)
+        ax1.set_ylabel('Charge (+) and Discharge (-) (MWh)')
+        ax2.set_ylabel('Storage Volume (MWh)')
+        ax2.legend(loc='upper right')
+        fig.savefig('%s/%s_storageprofile.pdf'%(ctx.obj['plot_path'], scenario), bbox_inches='tight')
 
 @CLI.command()
 @click.pass_context
@@ -378,11 +440,11 @@ def plot_style(ctx, fig: plt.figure, ax: plt.axes, name: str,
                 bbox_to_anchor=(.5, 1.15),
                 ncol=3)
     
-    plot_path = os.path.join(ctx.obj['path'], 'analysis', 'plots')
+    plot_path = ctx.obj['plot_path']
     if not(os.path.exists(plot_path)):
         os.mkdir(plot_path)
             
-    fig.savefig(os.path.join(ctx.obj['path'], 'analysis', 'plots', name + ctx.obj['plot_ext']),
+    fig.savefig(os.path.join(ctx.obj['plot_path'], name + ctx.obj['plot_ext']),
                 bbox_inches='tight', transparent=True)
 
     return fig, ax
@@ -396,16 +458,35 @@ def collect_storage_profiles(ctx, scenarios: list):
     file_paths = [os.path.join(abspath, 'analysis', 'files', '%s_profile.pkl'%profile) for profile in profiles]
     if os.path.exists(file_paths[0]) and os.path.exists(file_paths[1]) and os.path.exists(file_paths[2]) and not(ctx.obj['overwrite']):
         print('Result file already exists, loading storage profiles..')
+        file_exists = True
         for i in range(len(profiles)):
             with open(file_paths[i], 'rb') as f:
                 sto[profiles[i]] = pickle.load(f)
-    
+
+        # Check if scenarios in file
+        scenario_in_existing_file = True
+        scenarios_not_in_file = [] 
+        for scenario in scenarios:
+            if not(np.any(sto[profiles[0]].Scenario.str.contains(scenario))) or not(np.any(sto[profiles[1]].Scenario.str.contains(scenario))) or not(np.any(sto[profiles[2]].Scenario.str.contains(scenario))):
+                scenarios_not_in_file.append(scenario)
+                scenario_in_existing_file = False
+                print('Could not find %s in existing storage profile files..'%scenario)
     else:
-        print('\nCollecting storage results to storage profiles..\n', flush=True)
+        file_exists = False
+        scenario_in_existing_file = False
         
-        sto['charge'] =  pd.DataFrame()
-        sto['discharge'] =  pd.DataFrame()
-        sto['level'] =  pd.DataFrame()
+    if not(scenario_in_existing_file):
+        print('\nCollecting storage results to storage profiles..\n')
+        
+        if not(file_exists):
+            # If there is no file, append to these empty dataframes
+            sto['charge'] =  pd.DataFrame()
+            sto['discharge'] =  pd.DataFrame()
+            sto['level'] =  pd.DataFrame()
+        else:
+            # In this case, the file existed, but the following scenarios were missing, so we append
+            scenarios = scenarios_not_in_file
+
         for scenario in scenarios:
             for storage_type in ['inter', 'intra']:
                 for carrier in ['electricity', 'heat', 'hydrogen']:
