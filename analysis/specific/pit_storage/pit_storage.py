@@ -17,7 +17,7 @@ import click
 from shapely import Point
 import geopandas as gpd
 import unittest
-from gams import GamsWorkspace
+from gams import GamsWorkspace, control
 
 #%% ------------------------------- ###
 ###        1. 
@@ -51,8 +51,11 @@ def get_storage_profiles(all_endofmodel: str,
     """
     
     # Load all_endofmodel
-    ws = GamsWorkspace(system_directory=gams_system_directory)
-    db = ws.add_database_from_gdx(os.path.abspath(all_endofmodel))
+    try:
+        ws = GamsWorkspace(system_directory=gams_system_directory)
+        db = ws.add_database_from_gdx(os.path.abspath(all_endofmodel))
+    except control.workspace.GamsException:
+        raise FileNotFoundError("Couldn't find %s"%(os.path.abspath(all_endofmodel)))
 
     # Balmorel syntax
     carrier_dict = {
@@ -77,6 +80,9 @@ def get_storage_profiles(all_endofmodel: str,
     charge = symbol_to_df(db, charge_symbol)
     discharge = symbol_to_df(db, discharge_symbol)
     level = symbol_to_df(db, level_symbol)
+    efficiency = symbol_to_df(db, 'GDATA', ['G', 'GDATASET', 'GDFE']).query('GDATASET == "GDFE"')
+    ssize = symbol_to_df(db, 'SSIZE', ['S', 'SSIZE'])
+    chronohour = symbol_to_df(db, 'CHRONOHOUR', ['S', 'T', 'CHRONOHOUR'])
 
     # Correct column names    
     charge.columns = pd.Series(charge.columns).str.replace('GGG', 'G').str.replace('AAA', 'A').str.replace('SSS', 'S').str.replace('TTT', 'T')
@@ -86,8 +92,28 @@ def get_storage_profiles(all_endofmodel: str,
     # Sort away carrier generation technologies from dispatch variable
     sto_set = charge.G.unique()
     discharge = discharge.query('G in @sto_set')
+    efficiency = efficiency.query('G in @sto_set')
     
-    return charge, discharge, level
+    # Combine everything
+    charge['result'] = 'charge'
+    discharge['result'] = 'discharge'
+    level['result'] = 'level'
+    storage_results = pd.concat((charge, discharge, level))
+    storage_results = (
+        storage_results
+        .merge(efficiency, on='G', how='inner')
+        .merge(ssize, on='S', how='inner')
+        .merge(chronohour, on=['S', 'T'], how='inner')
+    )
+    
+    # Do timeseries scaling
+    storage_results['Value_ts-scaled'] = storage_results['Value']
+    idx = storage_results.query('result == "discharge"').index
+    storage_results.loc[idx, 'Value_ts-scaled'] = storage_results.loc[idx, 'Value_ts-scaled'] / storage_results.loc[idx, 'GDFE']
+    idx = storage_results.query('result == "discharge" or result == "charge"').index
+    storage_results.loc[idx, 'Value_ts-scaled'] = storage_results.loc[idx, 'Value_ts-scaled'] * storage_results.loc[idx, 'CHRONOHOUR'] * storage_results.loc[idx, 'SSIZE']
+    
+    return storage_results
 
 #%% ------------------------------- ###
 ###             2. Tests            ### 
@@ -109,7 +135,7 @@ class Tests(unittest.TestCase):
             
     def test_get_storage_profiles(self):
         filename = '/work3/mberos/Balmorel/N2/model/all_endofmodel.gdx'
-        charge, discharge, level = get_storage_profiles(filename, 'heat', 'inter')
+        storage_results = get_storage_profiles(filename, 'heat', 'inter')
 
 
 #%% ------------------------------- ###

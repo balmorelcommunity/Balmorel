@@ -11,6 +11,7 @@ Created on 06.10.2024
 ###           0. Main CLI           ###
 ### ------------------------------- ###
 
+from matplotlib.dates import DateFormatter
 from gams import GamsWorkspace
 import geopandas as gpd
 import matplotlib.pyplot as plt
@@ -319,21 +320,8 @@ def storage_profile(ctx, cluster: str, scenarios: str, size: str):
     sto = collect_storage_profiles(scenarios=scenarios)
 
     for scenario in scenarios:
-        if 'N' in scenario:
-            geofile = gpd.read_file('analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%int(scenario.replace('N', '')))
-        else:
-            geofile = gpd.read_file('analysis/geofiles/gadm36_DNK_2.shp')
-            name_column = 'NAME_2'
-            geofile[name_column] = (
-                geofile[name_column]
-                .str.replace('Æ', 'Ae')
-                .str.replace('Ø', 'Oe')
-                .str.replace('Å', 'Aa')
-                .str.replace('æ', 'ae')
-                .str.replace('ø', 'oe')
-                .str.replace('å', 'aa')
-            )
-            geofile.columns = pd.Series(geofile.columns).str.replace('NAME_2', 'cluster_name')
+        
+        # geofile = load_geofile(scenario)
         
         # Find Brønderslev cluster
         # idx = polygon_with_point(geofile)
@@ -372,6 +360,92 @@ def storage_profile(ctx, cluster: str, scenarios: str, size: str):
         ax2.set_ylabel('Storage Volume (MWh)')
         ax2.legend(loc='upper right')
         fig.savefig('%s/%s_storageprofile.pdf'%(ctx.obj['plot_path'], scenario), bbox_inches='tight')
+
+@CLI.command()
+@click.pass_context
+@click.argument('cluster', type=str, required=True)
+@click.argument('scenario', type=str, required=False, default=None)
+@click.argument('size', type=str, required=False, default='decentral')
+@click.argument('weather-year', type=int, required=False, default=2012)
+@click.argument('freq', type=str, required=False, default='1M')
+def sifnaios_profile(ctx, cluster: str, scenario: str, size: str, 
+                        weather_year: int, freq: str):
+    """
+    Make a plot like in Sifnaios et al. 2023
+    """
+
+    if size == 'decentral':
+        size_type = 'GNR_HS_HEAT_PIT_L-DEC_E-70_Y-2050'
+    elif size == 'central':
+        size_type = 'GNR_HS_HEAT_PIT_L-CEN_E-70_Y-2050'
+    else:
+        raise ValueError('Choose size = decentral or central!')
+        
+    sto = collect_storage_profiles(scenarios=[scenario])
+    
+    # Make datetime index corresponding to S and T set
+    time_ind = pd.Series(pd.date_range('%d-01-01-00:00'%weather_year, 
+                                       '%d-12-31-23:00'%weather_year, freq='1h'))
+    
+    ## Get it in 52 weeks, i.e. 8736 hours
+    idx = time_ind.dt.isocalendar().query('year == @weather_year').index
+    time_ind = time_ind[idx]
+    
+    ## Get corresponding S and T set
+    S = ['S0%d'%i for i in range(1, 10)] + ['S%d'%i for i in range(10, 53)]
+    T = ['T00%d'%i for i in range(1, 10)] + ['T0%d'%i for i in range(10, 100)] + ['T%d'%i for i in range(100, 169)] 
+    ST_ind = pd.MultiIndex.from_product((S, T))
+    index = pd.DataFrame(index=ST_ind).reset_index()
+    
+    ## Combine
+    index = index.set_index(time_ind).reset_index()
+    index.columns = ['time', 'S', 'T']
+    
+    
+    # Filter data
+    cluster_area = cluster + '_A'
+    df = sto.query(
+                'A == @cluster_area \
+                and Technology == "inter" \
+                and Commodity == "heat" \
+                and Scenario == @scenario \
+                and G == @size_type' 
+            ).loc[:, ['S', 'T', 'result', 'Value_ts-scaled']]
+
+    # Join time index to S,T set in results
+    df = df.merge(index, on=['S', 'T'], how='inner').pivot_table(index='time', columns=['result'], values='Value_ts-scaled', aggfunc='sum')
+    storage_content = df['level'].copy()
+    
+    dfr = df.resample(freq).sum()
+
+    bar_width = pd.Timedelta(days=25)
+    x = dfr.index
+    lw = 0.75
+
+    fig, ax = plt.subplots(figsize=(9, 5))
+    ax.bar(x=x, height=dfr['charge'], width=bar_width, label='Charge', lw=lw, edgecolor='k')
+    ax.bar(x=x, height=-dfr['discharge'], width=bar_width, label='Discharge', lw=lw, edgecolor='k')
+    ax.set_ylabel('Heat [MWh]')
+
+    # Hide the right and top spines
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+
+    # Plot energy content
+    # ax.plot(x, storage_content.resample(freq).last()[dfr.index], c='k', linestyle='--', label='Energy content')
+    ax.plot(storage_content.index+pd.Timedelta(weeks=2), storage_content, c='k', linestyle='--', label='Energy content')
+
+    # Format x-ticks and set x-limit
+    ax.set_xticks(pd.date_range(index['time'].iloc[0], freq=freq, periods=15))
+    ax.xaxis.set_major_formatter(DateFormatter('%b'))
+    ax.set_xlim(index['time'].iloc[0], index['time'].iloc[-1]+pd.Timedelta(weeks=2))
+    ax.set_xlabel('')
+
+    ax.legend(loc='upper center', ncol=3, frameon=False, handleheight=0.5, handlelength=1.5, bbox_to_anchor=[0.5,1.03])
+    # ax.set_ylim(-2500, 6000)
+
+    ax.axhline(0, c='k', lw=0.35);
+    fig.savefig(os.path.join(ctx.obj['plot_path'], '%s_sifstoprofile.pdf'%(scenario+'_'+cluster+'_'+size)))
 
 @CLI.command()
 @click.pass_context
@@ -453,21 +527,18 @@ def plot_style(ctx, fig: plt.figure, ax: plt.axes, name: str,
 def collect_storage_profiles(ctx, scenarios: list):
     
     abspath = os.path.abspath(ctx.obj['path'])
-    profiles = ['charge', 'discharge', 'level']
-    sto = {}
-    file_paths = [os.path.join(abspath, 'analysis', 'files', '%s_profile.pkl'%profile) for profile in profiles]
-    if os.path.exists(file_paths[0]) and os.path.exists(file_paths[1]) and os.path.exists(file_paths[2]) and not(ctx.obj['overwrite']):
+    file_path = os.path.join(abspath, 'analysis', 'files', 'storage_profiles.pkl')
+    if os.path.exists(file_path) and not(ctx.obj['overwrite']):
         print('Result file already exists, loading storage profiles..')
         file_exists = True
-        for i in range(len(profiles)):
-            with open(file_paths[i], 'rb') as f:
-                sto[profiles[i]] = pickle.load(f)
+        with open(file_path, 'rb') as f:
+            sto = pickle.load(f)
 
         # Check if scenarios in file
         scenario_in_existing_file = True
         scenarios_not_in_file = [] 
         for scenario in scenarios:
-            if not(np.any(sto[profiles[0]].Scenario.str.contains(scenario))) or not(np.any(sto[profiles[1]].Scenario.str.contains(scenario))) or not(np.any(sto[profiles[2]].Scenario.str.contains(scenario))):
+            if not(np.any(sto.Scenario.str.contains(scenario))):
                 scenarios_not_in_file.append(scenario)
                 scenario_in_existing_file = False
                 print('Could not find %s in existing storage profile files..'%scenario)
@@ -480,9 +551,7 @@ def collect_storage_profiles(ctx, scenarios: list):
         
         if not(file_exists):
             # If there is no file, append to these empty dataframes
-            sto['charge'] =  pd.DataFrame()
-            sto['discharge'] =  pd.DataFrame()
-            sto['level'] =  pd.DataFrame()
+            sto = pd.DataFrame()
         else:
             # In this case, the file existed, but the following scenarios were missing, so we append
             scenarios = scenarios_not_in_file
@@ -496,27 +565,23 @@ def collect_storage_profiles(ctx, scenarios: list):
                     if carrier == 'hydrogen':
                         storage_type = 'h2-storage'
                     
-                    charge, discharge, level = get_storage_profiles(os.path.join(abspath, scenario, 'model', 'all_endofmodel.gdx'),
+                    storage_results = get_storage_profiles(os.path.join(abspath, scenario, 'model', 'all_endofmodel.gdx'),
                                                                     carrier, storage_type)
 
-                    for profile in profiles:
-                        data = eval(profile)
-                        data['Scenario'] = scenario
-                        data['Technology'] = storage_type
-                        data['Commodity'] = carrier
-                        sto[profile] = pd.concat((sto[profile], data))
+                    storage_results['Scenario'] = scenario
+                    storage_results['Technology'] = storage_type
+                    storage_results['Commodity'] = carrier
+                    sto = pd.concat((sto, storage_results))
                         
         
         file_folder_path = os.path.join(abspath, 'analysis', 'files')
         if not(os.path.exists(file_folder_path)):
             os.mkdir(file_folder_path)
     
-        for i in range(len(profiles)):
-            with open(file_paths[i], 'wb') as f:
-                pickle.dump(sto[profiles[i]], f)
+        with open(file_path, 'wb') as f:
+            pickle.dump(sto, f)
 
     return sto
-
 
 @click.pass_context
 def collect_results(ctx, symbol: str):
@@ -543,6 +608,32 @@ def collect_results(ctx, symbol: str):
             pickle.dump(df, f)
 
     return df
+
+@click.pass_context
+def load_geofile(scenario: str, cluster_params: str = 'DE, DH, WNDFLH, SOLEFLH'):
+    """
+    Get the geofile for the scenario
+    """    
+    
+    cluster_params = '-'.join(cluster_params.replace(' ', '').split(','))
+    
+    if 'N' in scenario:
+        geofile = gpd.read_file('analysis/geofiles/%s_%dcluster_geofile.gpkg'%(cluster_params, int(scenario.replace('N', ''))))
+    else:
+        geofile = gpd.read_file('analysis/geofiles/gadm36_DNK_2.shp')
+        name_column = 'NAME_2'
+        geofile[name_column] = (
+            geofile[name_column]
+            .str.replace('Æ', 'Ae')
+            .str.replace('Ø', 'Oe')
+            .str.replace('Å', 'Aa')
+            .str.replace('æ', 'ae')
+            .str.replace('ø', 'oe')
+            .str.replace('å', 'aa')
+        )
+        geofile.columns = pd.Series(geofile.columns).str.replace('NAME_2', 'cluster_name')
+        
+    return geofile
 
 
 # 3. Main
