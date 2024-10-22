@@ -12,6 +12,7 @@
 **/*.gpr
 **/*.dat
 **/*.cmd
+**/data
 **/data/*.inc
 **/model/Balmorel.l*
 **/output/economic/*.*
