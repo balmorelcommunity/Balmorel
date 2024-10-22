@@ -11,9 +11,7 @@
 * Further, if you work with BUI, this file will not be $included into Balmorel.gms,
 * instead the file Balopt.bui will be $included. See the description elsewhere.
 
-*---- START: VQDEBUG ------------------------------------------------
-*-----------------------------------------------------------------
-* overall control variable vqdebug must be 'yes' if any of the other vqdebug controls are:
+
 * Debugging hints are available if you include feasiblity-ensuring variables.
 * However, adding more variables will increase calculation time.
 * Hence, if calculation time is an issue, it is recommended as default to not use them,
@@ -65,6 +63,7 @@ $setglobal CASEID BASE
 $setglobal bb4 yes
 *!option yes
 
+
 *===============================================================================
 *===============================================================================
 * Basic models details and Addon modules:
@@ -103,6 +102,24 @@ $setglobal TechInvest   yes
 
 SCALAR GINVESTSTART 'Year from which endogenous decisions in generation capacities are allowed' ;
 GINVESTSTART= 2025;
+
+
+* Set a ramping constraint on the build-out of solar and wind
+$setglobal RampingVRE
+*!option yes
+
+SCALAR RAMP_RATE_SOLE 'ramping rate build-out of solar in GW/yr';
+SCALAR RAMP_RATE_WND 'ramping rate build-out of wind in GW/yr';
+SCALAR RAMP_RATE_HP 'ramping rate build-out of heat pumps in GW/yr';
+SCALAR RAMP_RATE_HS	'ramping rate build-out of heat savings in GW/yr';
+SCALAR RAMP_YEAR 'year that the ramping rate is effective until';
+* The ramp-rate of heat savings is a bit ambiguous, it is defined as the total capacity of all heat saving technologies divided by 10
+
+RAMP_RATE_SOLE = 50;
+RAMP_RATE_WND = 30;
+RAMP_RATE_HP = 30;
+RAMP_RATE_HS = 15;
+RAMP_YEAR = 2030;
 
 *---- End: Generation investments options----
 
@@ -153,6 +170,12 @@ $setglobal INDIVUSERS YES
 * Include the possibility to shift exogenous heat demand between technology groups.
 $setglobal GROUP_DEMAND_SHIFT 
 *!option yes
+
+* Include the investment in heat saving generation technologies
+* Technologies are added in the normal GDATA, and applied to _IDVU_SPACEHEATING and DH areas
+$setglobal GHEATSAVING
+*!option yes
+
 *-----------------END: INDIVIDUAL USERS--------------------------------------------------------------
 
 * Include seasonal variation of heat pump's COP. If not activated, heat pumps will have a constant COP during the year.
@@ -161,16 +184,16 @@ $setglobal SEASONALCOP
 
 *------------START OF: OFFSHORE GRIDS--------------------------
 * overall control variable OFFSHOREGRID must be 'yes' if any of the other OFFSHOREGRID controls are:
-* Allow to build a complicated offshore grid with hubs in the sea. Requires MIP to work as intended since technologies are modelled with economies of scale via SOS variables. If RMIP is used, it will become a linear problem.
-$setglobal OFFSHOREGRID NO
+* Allow to build a complicated offshore grid with hubs in the sea.
+$setglobal OFFSHOREGRID
 *!option yes
 
 *Adds Economies of Scale in generation elements that are part of offshore grids. It requires to use the MIP solver, so remember to activate it.
 $setglobal OFFSHOREGRID_ES_GEN
 *!option yes
 
-*Adds Economies of Scale in electricity transmission elements that are part of offshore grids. It requires to use the MIP solver, so remember to activate it.
-$setglobal OFFSHOREGRID_ES_ELTRANS
+* Allow to build a complicated offshore grid with hubs in the sea. Requires MIP to work as intended since technologies are modelled with economies of scale via SOS variables. If RMIP is used, it will become a linear problem.
+$setglobal OFFSHOREGRID NO
 *!option yes
 *------------END OF: OFFSHORE GRIDS--------------------------
 
@@ -205,15 +228,15 @@ $setglobal V2G YES
 $setglobal NO_PHEV_V2G  yes
 *!option  yes
 
-* Adds step charging scheme (NOT SURE IT IS WORKING ANY MORE):
+* Adds step charging scheme:
 $setglobal STEPCHARGSCHEME
 *!option yes
 
-* Adds cycle degradation (NOT SURE IT IS WORKING ANY MORE, COSTS SHOULD BE ANNUALIZED):
+* Adds cycle degradation charging:
 $setglobal DEGCYCLE
 *!option  yes
 
-* Adds calendar degradation (NOT SURE IT IS WORKING ANY MORE, COSTS SHOULD BE ANNUALIZED):
+* Adds calendar degradation charging:
 $setglobal DEGCAL
 *!option yes
 
@@ -247,6 +270,9 @@ $setglobal TRANSPORT_SYNTHFUEL_COMMODITY    HYDROGEN
 * Defines the possibility for the transport demand of synthetic fuels to be aggregated internationally instead of having to satisfy it regionally.
 $setglobal TRANSPORT_DEMAND_AGGREGATED    
 
+* Enable electricity demand from EVs with a simple charging profile
+$setglobal SIMPLE_EV yes
+*!option yes
 
 *------------------------------END:TRANSPORT ADDON-------------------------------------------------
 
@@ -265,7 +291,7 @@ $setglobal RELAX_HYDROSTORAGE yes
 
 *-------------------------------------------------
 *---- Timeseries scaling ------
-*Allows to modify the time series scaling approach
+
 $setglobal timeseries_scaling  usedtimesteps_timseries_scaling
 *!option usedtimesteps_timseries_scaling   !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the used part of the timeseries"
 *!option full_timeseries_scaling           !Text  "Timeseries values are scaled linearly by the following factor: scaling factor = annual energy content / sum of the energy in the full timeseries"
@@ -275,9 +301,8 @@ $setglobal timeseries_scaling  usedtimesteps_timseries_scaling
 
 *-------------------------------------------------
 *---- IGKRATE data ------
-*Includes stochastic outages. If activated, IGKRATE will take the values in file IGKRATE.gdx, else it will be built based on GKRATE
 $setglobal IGKRATE_STOCHASTIC
-*!option yes
+*!option IGKRATE_STOCHASTIC   !Text  "If activated, IGKRATE will take the values in file IGKRATE.gdx, else it will be built based on GKRATE"
 *---- end: IGKRATE calculation ------
 *-------------------------------------------------
 
@@ -297,11 +322,10 @@ $setglobal BALANCINGRUNPURPOSE TSOREDISPATCH
 $setglobal FORCEDDOWNREDISPATCH
 *!option yes
 
-*Define which units will be allowed to change their commitment status (on/off) (requires Unit Commitment addon to be on)
-$setglobal CommitmentStatus  NoChange
+*Define which units will be allowed to change their commitment status (on/off)
+$setglobal CommitmentStatus  FastUnitsChange
 *!option NoChange         !Text  "The units will not be allowed to change their commitment, which will be taken from previous runs "
 *!option FastUnitsChange  !Text  "The slow units will not be allowed to change their commitment, which will be taken from previous runs "
-*!option None             !Text  "All the units will be allowed to change their commitment with respect to previous runs"
 
 *Restricts heat market from participating in the balancing market by restricting relevant heat generation variables from previous runs and not including the heat balance equation
 $setglobal NOHEATMARKET
@@ -328,10 +352,11 @@ $Setglobal HYDROGEN YES
 *!option yes
 
 * Allows investments in hydrogen transport
-$Setglobal H2TransInvest YES
+$Setglobal H2TransInvest yes
 *!option yes
 
 SCALAR XH2INVESTSTART 'Year from which endogenous decisions in H2 transmission capacities are allowed' ;
+XH2INVESTSTART= 2030;
 XH2INVESTSTART= 2030;
 
 *Adds Economies of Scale in H2 transmission. It requires to use the MIP solver, so remember to activate it (Dataset not updated for new countries in pan-European system)
@@ -350,19 +375,19 @@ $setglobal flexible_h2_space
 * Use stepwise linear fuel prices
 $Setglobal STEPWISEPRICE
 
-* Set a common maximum for fuels. (it should be checked before using it)
+* Set a common maximum for fuels.
 $Setglobal LIMITSFORFUELS
 *!option yes
 
-* Allow demand elasticity (it should be checked before using it)
+* Allow demand elasticity
 $setglobal DFLEXQUANT
 *!option yes
 
-* Allow demand response (requires NETDEMAND) (it should be checked before using it)
+* Allow demand response (requires NETDEMAND)
 $setglobal DEMANDRESPONSE
 *!option yes
 
-* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (it should be checked before using it)
+* Permit exchange of electricity with third regions using a price interface (in contrast to X3FX) (TO-DO, TEST IT)
 $setglobal X3V
 *!option yes
 
@@ -469,18 +494,71 @@ $setglobal NO_DECOM_EXO_G
 *!option yes
 
 * Adds Exogenous capacities will maximum stay in the system as much as their lifetimes (or as much as political decissions suggest it, for instance), which should be represented in the yearly development of capacities of the input parameter GKFX:
-$setglobal LIFETIME_DECOM_EXO_G  YES
+$setglobal LIFETIME_DECOM_EXO_G YES
 *!option yes
 
 * Adds Exogenous capacities can be decommissioned based on their profitability:
-$setglobal ECONOMIC_DECOM_EXO_G    yes
-*!option yes
+$setglobal ECONOMIC_DECOM_EXO_G
+*!option
 
 * Adds Endogenous decommissioned exogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
-$setglobal REVERT_DECOM_EXO_G   yes
+$setglobal REVERT_DECOM_EXO_G
 *!option yes
 *--------END OF ENDOGENOUS CAPACITIES-----
 *-----------------------End of TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
+
+*-------------------------------------------------------------------------------
+* OptiFlow model.
+*-------------------------------------------------------------------------------
+$setglobal OPTIFLOW yes
+*!option yes
+* Addon APKNdisc: discrete size investments in PROC.
+$setglobal APKNdisc
+*!option yes
+*Investments in Optiflow technologies
+$setglobal inv yes
+*! option yes
+*Model solved as MIP
+$setglobal solveOptiFlowmip
+*! option yes
+* Connects biomass use between Balmorel and OptiFlow.
+* Also sets MAXFLOW to 0
+$setglobal baloptfuelbridge yes
+*! option yes
+* Connects biogas produced by OptiFlow to Balmorel.
+* Also sets balmorel biogas potential to 0
+$setglobal baloptgasbridge yes
+*! option yes
+* Connects captured CO2 in Balmorel with CO2 use in OptiFlow
+* !! Requires the CCS addon!!!
+$setglobal baloptCCU yes
+*! option yes
+
+* Debug possibilities:
+$Setglobal addEPStoL
+*! option yes
+* Not needed if there are no capacity bounds on internal proc
+* It will be needed if there are capacity bounds on some internal proc, therefore add them only in that case (requires some coding, TODO).
+* With such minimal use the infeasibilities will be moved to SOSIBU proc whenever possible.
+$Setglobal useQNODEslack
+*! option
+$Setglobal useSSBslack
+*! option yes
+$Setglobal useShareSlack
+*! option yes
+* Option uniquesol permit to use quadratic terms in QOBJ in order to attain unique solution.
+* Should be used for debug on small systems only.
+$Setglobal uniquesol
+*! option yes
+* Testing ONLY:
+$setglobal singlearea
+*! option yes
+* Testing ONLY:
+$setglobal addUP
+*! option yes
+*-------------------------------------------------------------------------------
+*Optiflow end
+*-------------------------------------------------------------------------------
 
 
 *-------------------- UNIT COMMITMENT -----------------------------------------------------------
@@ -533,51 +611,13 @@ $setglobal SEASONALLINKRAMPING
 
 *----------------END OF STEPWISE RAMPING (LINEAR VERSION)----------------------------------------------------------
 
-* Options timeaggr control automatic aggregation of time (it should be checked before using it).
-$setglobal timeaggr
+* Calibrate the price side of electricity demand
+$setglobal DEFPCALIB
 *!option yes
-
-
-*-------------------------------------------------------------------------------
-* OptiFlow model.
-*-------------------------------------------------------------------------------
-$setglobal OPTIFLOW
+*
+* Calibrate the price side of heat demand
+$setglobal DHFPCALIB
 *!option yes
-* Addon APKNdisc: discrete size investments in PROC.
-$setglobal APKNdisc
-*!option yes
-*Investments in Optiflow technologies
-$setglobal inv yes
-*! option yes
-*Model solved as MIP
-$setglobal solveOptiFlowmip
-*! option yes
-
-* Debug possibilities:
-$Setglobal addEPStoL
-*! option yes
-* Not needed if there are no capacity bounds on internal proc
-* It will be needed if there are capacity bounds on some internal proc, therefore add them only in that case (requires some coding, TODO).
-* With such minimal use the infeasibilities will be moved to SOSIBU proc whenever possible.
-$Setglobal useQNODEslack
-*! option
-$Setglobal useSSBslack
-*! option yes
-$Setglobal useShareSlack
-*! option yes
-* Option uniquesol permit to use quadratic terms in QOBJ in order to attain unique solution.
-* Should be used for debug on small systems only.
-$Setglobal uniquesol
-*! option yes
-* Testing ONLY:
-$setglobal singlearea
-*! option yes
-* Testing ONLY:
-$setglobal addUP
-*! option yes
-*-------------------------------------------------------------------------------
-*Optiflow end
-*-------------------------------------------------------------------------------
 
 * In model Balbase4 (BB4) indicate the strategy for relative weighting of years
 $setglobal bb4weighty shareYYY
@@ -709,7 +749,7 @@ $Setglobal ADDEVSTOS  none
 $setglobal ADDTECHDEV
 *!option yes
 
-*Add expensive to operate backup generation technologies (electricity, heat, ...). It often occurs that the investment optimization underestimates the need for power.
+*Add expensive to operate backup power and heat generation technology. It often occurs that the investment optimization underestimates the need for power.
 $setglobal ADDBACKUPGEN
 *!option yes
 
@@ -774,9 +814,6 @@ $setglobal ADDGROUP_DEMAND_SHIFT
 *--------------END OF IMPORT OF RESULTS----------------
 *--------------------------------------------
 
-
-
-
 *===============================================================================
 *===============================================================================
 * Output:
@@ -833,8 +870,6 @@ $setglobal all_endofmodelgdx yes
 *!option yes     !Save the file all_endofmodel.gdx to the model folder
 
 
-
-
 * Make some output in text format to show some results of an execution.
 * The detailed code for the writing of the files is given in /output/printout/printinc.
 * Setting "yes" for PRINTFILES will make some standard printout files to folder /output/printout/.
@@ -843,6 +878,7 @@ $setglobal PRINTFILES
 
 $setglobal OUTPUT_SUMMARY   yes
 *!option yes
+
 
 * PRINTSEPARATOR is a single character used for separating columns in printfiles,
 * convenient e.g. to use ';' for copy-paste to Excel.
