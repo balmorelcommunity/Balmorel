@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import click
+import re
 from specific.pit_storage.pit_storage import get_storage_profiles, polygon_with_point
 from pybalmorel import Balmorel, MainResults
 from pybalmorel.utils import symbol_to_df
@@ -34,9 +35,13 @@ import os
 def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str):
     "A CLI to analyse Balmorel results"
     
+    # Locate results
+    model = Balmorel(path)
+    model.locate_results() 
+    
     # Store global options in the context object
     ctx.ensure_object(dict)
-    ctx.obj['Balmorel'] = Balmorel(path) # Find Balmorel folder
+    ctx.obj['Balmorel'] = model # Find Balmorel folder
     ctx.obj['overwrite'] = overwrite
     ctx.obj['dark_style'] = dark_style
     ctx.obj['plot_ext'] = plot_ext
@@ -87,10 +92,12 @@ def all_profiles(ctx, year: int):
     """
     Generate all profiles for a year (2050 default) 
     """
+    m = ctx.obj['Balmorel']
     
-    for scenario in ctx.obj['Balmorel'].scenarios:
-        for commodity in ['electricity', 'heat', 'hydrogen']:
-            ctx.invoke(profile, commodity=commodity, scenario=scenario, year=year)
+    for sc_folder in m.scenarios:
+        for scenario in m.scfolder_to_scname[sc_folder]:
+            for commodity in ['electricity', 'heat', 'hydrogen']:
+                ctx.invoke(profile, commodity=commodity, scenario=scenario, year=year)
     
 @CLI.command()
 @click.pass_context
@@ -234,28 +241,25 @@ def costs():
 @click.pass_context
 @click.argument('commodity', type=str)
 @click.argument('scenario', type=str)
+@click.argument('node', type=str, default='all')
 @click.argument('year', type=int, default=2050)
-def profile(ctx, commodity: str, scenario: str, year: int):
+def profile(ctx, commodity: str, scenario: str, node: str, year: int):
     """Plot energy balance of electricity, heat or hydrogen"""
 
-    model_path = os.path.join(ctx.obj['path'], scenario, 'model')
+    m = ctx.obj['Balmorel']
+
+    model_path = os.path.join(ctx.obj['path'], m.scname_to_scfolder[scenario], 'model')
 
     # Get mainresults files
-    mainresult_files = pd.Series(os.listdir(model_path))
-    idx = mainresult_files.str.contains('MainResults')
-    mainresult_files = mainresult_files[idx]
+    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
     
-    m = MainResults(list(mainresult_files), paths=model_path)
+    fig, ax = res.plot_profile(commodity, year, scenario, region=node, style=ctx.obj['plot_style_for_modules'])
     
-    if len(m.sc) > 1:
-        for sc in m.sc:
-            fig, ax = m.plot_profile(commodity, year, sc, style=ctx.obj['plot_style_for_modules'])
-            fig, ax = plot_style(fig, ax, 'profile_%s'%(commodity + '-' + str(year) + '-' + scenario + '-' + sc))
-    elif len(m.sc) == 1:
-        fig, ax = m.plot_profile(commodity, year, m.sc[0], style=ctx.obj['plot_style_for_modules'])
-        fig, ax = plot_style(fig, ax, 'profile_%s'%(commodity + '-' + str(year) + '-' + m.sc[0]))
-    else:
-        print('No results for %s'%scenario)
+    if node != 'all':
+        scenario += '_' + node
+    
+    fig, ax = plot_style(fig, ax, 'profile_%s'%(commodity + '-' + str(year) + '-' + scenario))
+
 
 @CLI.command()
 @click.pass_context
@@ -271,33 +275,22 @@ def map(ctx, commodity: str, scenario: str, year: int,
         lon_lims: list, lat_lims: list):
     """Plot transmission capacity maps for electricity or hydrogen"""
 
-    model_path = os.path.join(ctx.obj['path'], scenario, 'model')
+    model = ctx.obj['Balmorel']
+    model_path = os.path.join(ctx.obj['path'], model.scname_to_scfolder[scenario], 'model')
 
     # Get mainresults files
-    mainresult_files = pd.Series(os.listdir(model_path))
-    idx = mainresult_files.str.contains('MainResults')
-    mainresult_files = mainresult_files[idx]
-    
-    m = MainResults(list(mainresult_files), paths=model_path)
+    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
     
     if 'N' in scenario:
-        geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(scenario.lstrip('N')))
+        geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(re.findall('N\d+', scenario)[0].lstrip('N')))
         geofile_region_column = 'cluster_name'
     
-    if len(m.sc) > 1:
-        for sc in m.sc:
-            fig, ax = m.plot_map(sc, commodity.capitalize(), year, path_to_geofile=geofile, geo_file_region_column=geofile_region_column, style=ctx.obj['plot_style_for_modules'])
-            ax.set_xlim(lon_lims)
-            ax.set_ylim(lat_lims)
-            fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario + '-' + sc), legend=False)
-    elif len(m.sc) == 1:
-        fig, ax = m.plot_map(m.sc[0], commodity.capitalize(), year, path_to_geofile=geofile, geo_file_region_column=geofile_region_column, style=ctx.obj['plot_style_for_modules'])
-        ax.set_xlim(lon_lims)
-        ax.set_ylim(lat_lims)
-        fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + m.sc[0]), legend=False)
-    else:
-        print('No results for %s'%scenario)
-        
+    fig, ax = res.plot_map(scenario, commodity.capitalize(), year, path_to_geofile=geofile, geo_file_region_column=geofile_region_column, style=ctx.obj['plot_style_for_modules'])
+    ax.set_xlim(lon_lims)
+    ax.set_ylim(lat_lims)
+    fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario), legend=False)
+    
+    
 @CLI.command()
 @click.pass_context
 @click.argument('cluster', type=str, required=True)
@@ -363,12 +356,12 @@ def storage_profile(ctx, cluster: str, scenarios: str, size: str):
 
 @CLI.command()
 @click.pass_context
-@click.argument('cluster', type=str, required=True)
 @click.argument('scenario', type=str, required=False, default=None)
+@click.argument('cluster', type=str, required=True)
 @click.argument('size', type=str, required=False, default='decentral')
 @click.argument('weather-year', type=int, required=False, default=2012)
 @click.argument('freq', type=str, required=False, default='1M')
-def sifnaios_profile(ctx, cluster: str, scenario: str, size: str, 
+def sifnaios_profile(ctx, scenario: str, cluster: str, size: str, 
                         weather_year: int, freq: str):
     """
     Make a plot like in Sifnaios et al. 2023
@@ -422,9 +415,15 @@ def sifnaios_profile(ctx, cluster: str, scenario: str, size: str,
     x = dfr.index
     lw = 0.75
 
+    # Plot
     fig, ax = plt.subplots(figsize=(9, 5))
-    ax.bar(x=x, height=dfr['charge'], width=bar_width, label='Charge', lw=lw, edgecolor='k')
-    ax.bar(x=x, height=-dfr['discharge'], width=bar_width, label='Discharge', lw=lw, edgecolor='k')
+    if ctx.obj['dark_style']:
+        linecolor = 'w'
+    else:
+        linecolor = 'k'
+        
+    ax.bar(x=x, height=dfr['charge'], width=bar_width, label='Charge', lw=lw, edgecolor=linecolor)
+    ax.bar(x=x, height=-dfr['discharge'], width=bar_width, label='Discharge', lw=lw, edgecolor=linecolor)
     ax.set_ylabel('Heat [MWh]')
 
     # Hide the right and top spines
@@ -432,8 +431,7 @@ def sifnaios_profile(ctx, cluster: str, scenario: str, size: str,
     ax.spines['top'].set_visible(False)
 
     # Plot energy content
-    # ax.plot(x, storage_content.resample(freq).last()[dfr.index], c='k', linestyle='--', label='Energy content')
-    ax.plot(storage_content.index+pd.Timedelta(weeks=2), storage_content, c='k', linestyle='--', label='Energy content')
+    ax.plot(storage_content.index+pd.Timedelta(weeks=2), storage_content, c=linecolor, linestyle='--', label='Energy content')
 
     # Format x-ticks and set x-limit
     ax.set_xticks(pd.date_range(index['time'].iloc[0], freq=freq, periods=15))
@@ -444,8 +442,10 @@ def sifnaios_profile(ctx, cluster: str, scenario: str, size: str,
     ax.legend(loc='upper center', ncol=3, frameon=False, handleheight=0.5, handlelength=1.5, bbox_to_anchor=[0.5,1.03])
     # ax.set_ylim(-2500, 6000)
 
-    ax.axhline(0, c='k', lw=0.35);
-    fig.savefig(os.path.join(ctx.obj['plot_path'], '%s_sifstoprofile.pdf'%(scenario+'_'+cluster+'_'+size)))
+    ax.axhline(0, c=linecolor, lw=0.35)
+    
+    fig, ax = plot_style(fig, ax, '%s_sifstoprofile'%(scenario+'_'+cluster+'_'+size), legend=False)
+    # fig.savefig(os.path.join(ctx.obj['plot_path'], ))
 
 @CLI.command()
 @click.pass_context
@@ -549,12 +549,16 @@ def collect_storage_profiles(ctx, scenarios: list):
     if not(scenario_in_existing_file):
         print('\nCollecting storage results to storage profiles..\n')
         
+        # New dataframe or append to existing        
         if not(file_exists):
             # If there is no file, append to these empty dataframes
             sto = pd.DataFrame()
         else:
             # In this case, the file existed, but the following scenarios were missing, so we append
             scenarios = scenarios_not_in_file
+
+        # Find paths
+        m = ctx.obj['Balmorel']
 
         for scenario in scenarios:
             for storage_type in ['inter', 'intra']:
@@ -565,7 +569,7 @@ def collect_storage_profiles(ctx, scenarios: list):
                     if carrier == 'hydrogen':
                         storage_type = 'h2-storage'
                     
-                    storage_results = get_storage_profiles(os.path.join(abspath, scenario, 'model', 'all_endofmodel.gdx'),
+                    storage_results = get_storage_profiles(os.path.join(abspath, m.scname_to_scfolder[scenario], 'model', 'all_endofmodel.gdx'),
                                                                     carrier, storage_type)
 
                     storage_results['Scenario'] = scenario
