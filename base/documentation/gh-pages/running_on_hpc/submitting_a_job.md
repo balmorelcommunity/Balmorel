@@ -41,6 +41,11 @@ Note that the bottom commands assumes that the job script is placed inside your 
 #BSUB -o Output_%J.out 
 #BSUB -e Output_%J.err 
 
+### Get paths to GAMS 47 (command specific to DTU HPC)
+
+export PATH=/appl/gams/47.6.0:$PATH
+export LD_LIBRARY_PATH=/appl/gams/47.6.0:$LD_LIBRARY_PATH
+
 # Go to model folder of your scenario - this assumes that the job script is at the same level of the Balmorel folder
 cd scenario1/model 
 # Run Balmorel
