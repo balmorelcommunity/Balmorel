@@ -655,7 +655,7 @@ $label endofMSNTrelpaths
 * e.g. one model output serving as input to another model.
 
 * Overall control to export results so they can be used in future runs :
-$Setglobal export_results 
+$Setglobal export_results yes
 *!option yes
 
 *--------------------------------------------
