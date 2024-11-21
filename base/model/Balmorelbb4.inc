@@ -2568,43 +2568,6 @@ $INCLUDE "../../base/addons/BB4/BB4overview.inc";
 
 *-------------------------------------------------------------------------------
 
-* OTHER
-* VFUELTRANSPORT.LO('2050', 'Gentofte', 'Koebenhavn', 'STRAW') = 10;
-* VGE_T.LO('2050', 'Koebenhavn_A', 'GNR_ST_MSW_CND_E-25_LS-220-MW-FEED_Y-2050', S, T) = 1;
-* VGE_T.LO('2050', 'Koebenhavn_A', 'GNR_ST_MSW_BP_E-25_LS-220-MW-FEED_Y-2050', S, T) = 1;
-* VGE_T.LO('2050', 'Koebenhavn_A', 'GNR_ST_WOODCHI_CND_E-29_LS-600-MW-FEED_Y-2050', S, T) = 1;
-VGE_T.LO('2050', 'Koebenhavn_A', 'GNR_ST_STRW_CND_E-31_LS-132-MW-FEED_Y-2050', S, T) = 1;
-* VGE_T.LO('2050', 'Koebenhavn_A', 'GNR_CC_NGASCCS_CND_E-63_LS-100-MW_Y-2050', S, T) = 1;
-* VGE_T.LO('2050', 'Koebenhavn_A', 'GNR_ST_STRW_BP_E-31_LS-132-MW-FEED_Y-2050', S, T) = 1;
-* VGE_T.LO('2050', 'Koebenhavn_A', 'GNR_ST_WOODCHI_BP_E-29_LS-600-MW-FEED_Y-2050', S, T) = 1;
-* VGE_T.LO('2050', 'Koebenhavn_A', 'GNR_BO_STRW_E-102_LS-6-MW_Y-2050', S, T) = 1;
-* VGE_T.LO('2050', 'Koebenhavn_A', 'GNR_BO_WOODCHI_E-115_LS-7-MW_Y-2050', S, T) = 1;
-* VGE_T.LO('2050', 'Koebenhavn_A', 'GNR_CC_NGASCCS_EXT_E-63_LS-100-MW_Y-2050', S, T) = 1;
-
-
-* * Defining large base investment options
-* SET LARGE_INV_OPTIONS(GGG)
-* /
-* GNR_HP_ELEC_AIR-WTR_COP-360_LS_Y-2050
-* GNR_HP_ELEC_GROUND-WTR_COP-410_LS-4-MW_Y-2050
-* GNR_HS_HEAT_PIT_L-DEC_E-70_Y-2050
-* GNR_HS_HEAT_WTR-TANK_LS_E-95_Y-2010
-* GNR_BO_ELEC_E-99_LS-10-MW-FEED_Y-2050
-* GNR_ES_ELEC_BAT-LITHIO-PEAK_E-86_Y-2050
-* GNR_ES_ELEC_BAT-LITHIO-GRID_E-86_Y-2050
-* GNR_PV_SUN_LS-8-MW_RG1_Y-2050
-* GNR_WT-SP277-HH100_ONS_LS_L-RG1_Y-2050
-* GNR_ST_MSW_CND_E-25_LS-220-MW-FEED_Y-2050
-* GNR_ST_MSW_BP_E-25_LS-220-MW-FEED_Y-2050
-* GNR_ST_WOODCHI_CND_E-29_LS-600-MW-FEED_Y-2050
-* GNR_ST_STRW_CND_E-31_LS-132-MW-FEED_Y-2050
-* GNR_CC_NGASCCS_CND_E-63_LS-100-MW_Y-2050
-* GNR_ST_STRW_BP_E-31_LS-132-MW-FEED_Y-2050
-* GNR_ST_WOODCHI_BP_E-29_LS-600-MW-FEED_Y-2050
-* GNR_BO_STRW_E-102_LS-6-MW_Y-2050
-* GNR_BO_WOODCHI_E-115_LS-7-MW_Y-2050
-* GNR_CC_NGASCCS_EXT_E-63_LS-100-MW_Y-2050
-
 
 $ifi     exist 'Balmorelbb4.sim'  $include                  'Balmorelbb4.sim';
 $ifi not exist 'Balmorelbb4.sim'  $include '../../base/model/Balmorelbb4.sim';
