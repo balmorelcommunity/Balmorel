@@ -7,7 +7,7 @@
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 20
 ### -- specify that we need a certain architecture --
-#BSUB -R "select[model == XeonGold6226R]"
+#BSUB -R "select[model == XeonPlatinum8462Y]"
 ### -- specify that the cores must be on the same host --
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need X GB of memory per core/slot --
@@ -15,7 +15,7 @@
 ### -- specify that we want the job to get killed if it exceeds X GB per core/slot --
 #BSUB -M 12.1GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 72:00
+#BSUB -W 168:00
 ### -- set the email address --
 #BSUB -u mberos@dtu.dk
 ### -- send notification at start --
@@ -31,8 +31,25 @@
 ### Path to GAMS binary
 export PATH=/appl/gams/47.6.0:$PATH
 
+### Activate spatialstudy environment
+source ~/miniconda3/bin/activate spatialstudy
+
 for name in base; do
     # Running Balmorel 
     cd base/model 
     gams Balmorel license=../../gamslice.txt --scenario_name=$name --threads=$LSB_DJOB_NUMPROC
+
+    # Exit, if there are errors
+    if [ $? -ne 0 ]; then
+        echo "GAMS execution failed for scenario $name"
+        exit 1
+    fi
+    
+    cd ../../
+
+    # Copy the simex folder
+    cp simex -r simex_$name
+
+    # Collect heat storage profile data
+    analyse sifnaios-profile Aalborg base
 done

@@ -7,7 +7,7 @@
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 3
 ### -- specify that we need a certain architecture --
-#BSUB -R "select[model == XeonGold6226R]"
+#BSUB -R "select[model == XeonPlatinum8462Y]"
 ### -- specify that the cores must be on the same host --
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need X GB of memory per core/slot --
@@ -31,8 +31,25 @@
 ### Path to GAMS binary
 export PATH=/appl/gams/47.6.0:$PATH
 
+### Activate spatialstudy environment
+source ~/miniconda3/bin/activate spatialstudy
+
 for name in N10; do
     # Running Balmorel 
     cd N10/model 
     gams Balmorel license=../../gamslice.txt --scenario_name=$name --threads=$LSB_DJOB_NUMPROC
+
+    # Exit, if there are errors
+    if [ $? -ne 0 ]; then
+        echo "GAMS execution failed for scenario $name"
+        exit 1
+    fi
+    
+    cd ../../
+
+    # Copy the simex folder
+    cp simex -r simex_$name
+
+    # Collect heat storage profile data
+    analyse storage-profile CL7 N10
 done
