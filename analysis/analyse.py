@@ -266,8 +266,8 @@ def profile(ctx, commodity: str, scenario: str, node: str, year: int):
 @click.argument('commodity', type=str)
 @click.argument('scenario', type=str)
 @click.argument('year', type=int, default=2050)
-@click.argument('geofile', type=str, default='analysis/geofiles/gadm36_DNK_2.shp')
-@click.argument('geofile_region_column', type=str, default='NAME_2')
+@click.argument('geofile', type=str, default='analysis/geofiles/municipalities.gpkg')
+@click.argument('geofile_region_column', type=str, default='Name')
 @click.argument('lon-lims', type=list, default=[7.8, 13])
 @click.argument('lat-lims', type=list, default=[54.4, 58])
 def map(ctx, commodity: str, scenario: str, year: int, 
@@ -356,7 +356,7 @@ def storage_profile(ctx, cluster: str, scenarios: str, size: str):
 
 @CLI.command()
 @click.pass_context
-@click.argument('scenario', type=str, required=False, default=None)
+@click.argument('scenario', type=str, required=True)
 @click.argument('cluster', type=str, required=True)
 @click.argument('size', type=str, required=False, default='decentral')
 @click.argument('weather-year', type=int, required=False, default=2012)
