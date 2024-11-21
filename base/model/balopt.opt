@@ -658,6 +658,9 @@ $label endofMSNTrelpaths
 $Setglobal export_results yes
 *!option yes
 
+* If no hydro is modelled, you will need to set this global to yes
+$setglobal no_hydro yes
+
 *--------------------------------------------
 *--------------IMPORT OF RESULTS----------------
 *--------------------------------------------

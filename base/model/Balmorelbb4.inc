@@ -2588,6 +2588,7 @@ $ifi not %export_results%==yes $goto result_export
 *------------------------------------------------------------------------------
 * For hydro with reservoir save the following, to be used in future runs by addon "import_results":
 
+$ifi %no_hydro%==yes $goto no_hydro_export
 HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHYRST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
 VHYRS_SL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = VHYRS_S.L(Y,IA,S);
 WATERVAL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS))= QHYRSSEQ.M(Y,IA,S)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y))*8736/IOF8760
@@ -2610,6 +2611,7 @@ HYRSG(Y,IA,S)=0;
 VHYRS_SL(Y,IA,S)=0;
 WATERVAL(Y,IA,S)=0;
 VHYRS_STL(Y,IA,S,T)=0;
+$label no_hydro_export
 
 * For runs with investments and/or decommissionning save the following, to be used in future runs by addon "import_results":
 XKACCUMNET(Y,IRE,IRI)$IXK_HASORPOT(Y,IRE,IRI)=XKFX(Y,IRE,IRI)
