@@ -47,3 +47,7 @@ base/model/225a
 base_lowtemp
 *clusters
 *clusters_lowtemp
+
+simex_*
+Balmorel_ReadData.gms
+Balmorelbb4_ReadData.inc
