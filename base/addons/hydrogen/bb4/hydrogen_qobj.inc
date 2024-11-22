@@ -58,6 +58,7 @@ $offtext
 + SUM((IRE,IRI)$IXH2K_HASORPOT(Y,IRE,IRI),
         SUM((IS3,T), IHOURFRAC*IHOURSINST(IS3,T) * (VXH2_T(Y,IRE,IRI,IS3,T) * XH2COST(IRE,IRI))))
 
+$ifi not %H2TransInvest%==yes $goto no_transmission_investments
 * Investment costs, new H2 transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):
     + SUM((IRE,IRI)$((IXH2KN(Y,IRI,IRE) OR IXH2KN(Y,IRE,IRI)) AND (NOT (IXH2KN_ES(IRE,IRI) OR IXH2KN_ES(IRI,IRE)))),IOF05*VXH2KN(Y,IRE,IRI)*XH2INVCOST(Y,IRE,IRI)*
@@ -87,3 +88,4 @@ $ifi not %ES_H2TRANS%==yes $goto no_economy_of_scale
      VXH2LAMBDA(IYALIAS2,IRE,IRI,XES)*XH2INVCOST_ES(IYALIAS2,IRE,IRI,XES)*IOF05*
      (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCXH2(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCXH2(C))))*IYHASANNUITYXH2(IYALIAS2,Y))
 $label no_economy_of_scale
+$label no_transmission_investments
