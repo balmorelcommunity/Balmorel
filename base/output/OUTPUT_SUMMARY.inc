@@ -1262,7 +1262,7 @@ $label No_HEATTRANS_costs
 
 *Hydrogen
 $ifi not %HYDROGEN%==yes $goto No_H2TRANS_costs
-
+$ifi not %H2TransInvest%==yes $goto H2_Transmission_investment_cost_end
 ** TRANSMISSION INVESTMENTS
 ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','H2_TRANSMISSION_CAPITAL_COSTS','Mmoney')$(CCCRRR(C,IR) AND IXH2K_HASORPOT(Y,IR,IRI))=
           OMONEY*IOF0000001*(SUM((IYALIAS2)$((IXH2KN(IYALIAS2,IRI,IR) OR IXH2KN(IYALIAS2,IR,IRI)) AND (NOT (IXKN_ES(IR,IRI) OR IXKN_ES(IRI,IR)))  AND ORD(IYALIAS2) LE ORD(Y)) ,
@@ -1274,6 +1274,7 @@ $ifi %ES_H2TRANS%==yes      IOF05*ANNUITYCXH2(C)*IYHASANNUITYXH2(IYALIAS2,Y)*SUM
 $ifi %ES_H2TRANS%==yes                           )
                             )
 ;
+$label  H2_Transmission_investment_cost_end
 
 ** TRANSMISSION FLOW
 ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','H2_TRANSMISSION_OPERATIONAL_COSTS','Mmoney')$(CCCRRR(C,IR) AND IXH2K_HASORPOT(Y,IR,IRI))=
