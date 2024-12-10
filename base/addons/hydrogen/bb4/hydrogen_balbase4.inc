@@ -37,8 +37,10 @@ QSYNTHETIC_EQ_SHIFT_BALANCE_MOVE
 QSYNTHETIC_EQ_SHIFT_BALANCE_OVERALL
 $label no_flexible_h2_space
 
-$ifi %generic_synfuel%==yes    QSYNFUEL_EQ
-$ifi %generic_synfuel%==yes    QSYNFUEL_AVIATION_SHARE
+$ifi %generic_synfuel%==yes $ifi not %RollingSeasons%==yes   QSYNFUEL_EQ
+$ifi %generic_synfuel%==yes $ifi not %RollingSeasons%==yes   QSYNFUEL_AVIATION_SHARE
+$ifi %generic_synfuel%==yes $ifi %RollingSeasons%==yes       QSYNFUEL_S_EQ
+$ifi %generic_synfuel%==yes $ifi %RollingSeasons%==yes       QSYNFUEL_AVIATION_SHARE_S
 $ifi %generic_synfuel%==yes    QSYNBIOFUELPROD_UP  
 $ifi %generic_synfuel%==yes    QSYNH2FUELPROD_UP  
 $ifi %generic_synfuel%==yes    QSYNFUELSET  

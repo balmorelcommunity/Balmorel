@@ -14,8 +14,10 @@ Equations
    QGKBIOGASUPGRADING_UP(Y,AAA,G,S,T)  'Maximum generation of biomethane from biogas upgrading restricted by capacity (MW)'
    QGKBIOGASMETHANATION_UP(Y,AAA,G,S,T)  'Maximum generation of biomethane via biogas methanation restricted by capacity (MW)'
    QGKBIOMETHANE_UP(Y,AAA,G,S,T)      'Maximum generation of SNG restricted by capacity (MW)'
-   QSYNFUEL_EQ(Y)                         "Total synthfuel production equal demand"
-   QSYNFUEL_AVIATION_SHARE(Y)             "Aviation share of synthfuel production equal demand"
+   QSYNFUEL_EQ(Y)                           "Total synthfuel production equal demand per year"
+   QSYNFUEL_S_EQ(Y,S)                       "Total synthfuel production equal demand per week"
+   QSYNFUEL_AVIATION_SHARE(Y)             "Aviation share of synthfuel production equal demand per year"
+   QSYNFUEL_AVIATION_SHARE_S(Y,S)         "Aviation share of synthfuel production equal demand per week"
    QSYNBIOFUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production related to bio consumption is lower than capacity" 
    QSYNH2FUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production related to h2 consumption is lower than capacity" 
    QSYNFUELSET(Y,AAA,S,T)              "The generator representing the other fuel consumption must consume equivalent amounts"
@@ -329,6 +331,8 @@ QXH2LAMBDA_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
 
 
 $ifi not %generic_synfuel%==yes $goto NO_GENERIC_SYNFUEL
+
+$ifi %RollingSeasons%==yes $goto ROLLING_SEASONS
 QSYNFUEL_EQ(IY411)..
    SUM((IA, IHYDROGEN_H2TOSYNFUEL, IS3, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_H2TOSYNFUEL)) OR IGDECOMEXOPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL))),
    VSYNFUEL_G_T(IY411,IA,IHYDROGEN_H2TOSYNFUEL,IS3,T) *IHOURSINST(IS3,T)
@@ -347,6 +351,27 @@ QSYNFUEL_AVIATION_SHARE(IY411)..
    =G=
 
    SYNFUELDEMAND(IY411, 'AVIATION')
+;
+$label ROLLING_SEASONS
+$ifi not %RollingSeasons%==yes $goto NO_GENERIC_SYNFUEL
+QSYNFUEL_S_EQ(IY411, IS3)..
+   SUM((IA, IHYDROGEN_H2TOSYNFUEL, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_H2TOSYNFUEL)) OR IGDECOMEXOPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL))),
+   VSYNFUEL_G_T(IY411,IA,IHYDROGEN_H2TOSYNFUEL,IS3,T) * WEIGHT_S(IS3)/IWEIGHSUMT 
+   )
+
+   =E=
+
+   SYNFUELDEMAND(IY411, 'TOTAL') / 52
+;
+
+QSYNFUEL_AVIATION_SHARE_S(IY411, IS3)..
+   SUM((IA, IHYDROGEN_BIOTOSYNFUEL, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_BIOTOSYNFUEL)) OR IGDECOMEXOPOT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL))),
+   VSYNFUEL_G_T(IY411,IA,IHYDROGEN_BIOTOSYNFUEL,IS3,T) * WEIGHT_S(IS3)/IWEIGHSUMT 
+   )
+
+   =G=
+
+   SYNFUELDEMAND(IY411, 'AVIATION') / 52
 ;
 $label NO_GENERIC_SYNFUEL
 
