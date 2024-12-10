@@ -1,4 +1,4 @@
-*Import results Juan Gea Bermúdez 2019.
+*Import results Juan Gea Bermï¿½dez 2019.
 
 $ifi %ADDTECHDEV%==yes  GKFX(YYY,AAA,GGG)=0;
 $ifi %ADDTECHDEV%==yes  GKFX(Y,IA,G)=GKACCUMNET(Y,IA,G);
@@ -51,6 +51,14 @@ $ifi not %HYDROGEN%==yes  $goto NO_HYDROGEN
             IF (SUM(IHYDROGEN_GH2TOBIOMETH,GKFX(Y,IA,IHYDROGEN_GH2TOBIOMETH)),
                GKFX(Y,IA,G)$(GDATA(G,'GDTECHGROUP') EQ BACKUP_BIOMETHANE)=1000000;
             );
+$ifi not %generic_synfuel%==yes $goto NO_GENERIC_SYNFUEL
+            IF (SUM(IHYDROGEN_H2TOSYNFUEL,GKFX(Y,IA,IHYDROGEN_H2TOSYNFUEL)),
+               GKFX(Y,IA,G)$(GDATA(G,'GDTECHGROUP') EQ BACKUP_H2SYNFUELPRODUCER)=1000000;
+            );
+            IF (SUM(IHYDROGEN_BIOTOSYNFUEL,GKFX(Y,IA,IHYDROGEN_BIOTOSYNFUEL)),
+               GKFX(Y,IA,G)$(GDATA(G,'GDTECHGROUP') EQ BACKUP_BIOSYNFUELPRODUCER)=1000000;
+            );
+$label NO_GENERIC_SYNFUEL
 $label NO_HYDROGEN
          );
       );
