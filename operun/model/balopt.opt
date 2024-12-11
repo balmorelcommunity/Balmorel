@@ -373,7 +373,7 @@ $setglobal flexible_h2_space
 *-----------------FUELTRANSPORT ADDON---------------------------------------
 
 * Enable annual transport of fuels, only possible if a FUELTRANSPORT_COST is defined 
-$setglobal fueltransport yes
+$setglobal fueltransport 
 
 *-----------------END: FUELTRANSPORT ADDON---------------------------------------
 
@@ -465,7 +465,7 @@ $setglobal bypass yes
 
 *-----------------------TECHNOLOGY DECOMMISSIONING--------------------------------------------------------
 * overall control variable DECOM must be 'yes' if any of the other decommissioning controls are.
-$setglobal DECOM yes
+$setglobal DECOM 
 *!option yes
 
 *-------ENDOGENOUS CAPACITIES----------
