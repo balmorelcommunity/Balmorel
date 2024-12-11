@@ -20,7 +20,8 @@ Equations
    QSYNFUEL_AVIATION_SHARE_S(Y,S)         "Aviation share of synthfuel production equal demand per week"
    QSYNBIOFUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production related to bio consumption is lower than capacity" 
    QSYNH2FUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production related to h2 consumption is lower than capacity" 
-   QSYNFUELSET(Y,AAA,S,T)              "The generator representing the other fuel consumption must consume equivalent amounts"
+   QSYNFUELSET1(Y,AAA,S,T)              "The TG-MeOH generator representing the other fuel consumption must consume equivalent amounts"
+   QSYNFUELSET2(Y,AAA,S,T)              "The BACKUP_TG-MeOH generator representing the other fuel consumption must consume equivalent amounts"
    QSYNKSET(Y,AAA,S,T)                 "The generator representing the other fuel consumption must have equivalent capacity"
    QSYNINFLEX(Y,AAA,G,S,T)             "Synthetic fuel producers are inflexible, i.e. minimum production constraint all year"
 ;
@@ -355,7 +356,7 @@ QSYNFUEL_AVIATION_SHARE(IY411)..
 $label ROLLING_SEASONS
 $ifi not %RollingSeasons%==yes $goto NO_GENERIC_SYNFUEL
 QSYNFUEL_S_EQ(IY411, IS3)..
-   SUM((IA, IHYDROGEN_H2TOSYNFUEL, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_H2TOSYNFUEL)) OR IGDECOMEXOPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL))),
+   SUM((IA, IHYDROGEN_H2TOSYNFUEL, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL)),
    VSYNFUEL_G_T(IY411,IA,IHYDROGEN_H2TOSYNFUEL,IS3,T) * WEIGHT_S(IS3)/IWEIGHSUMT 
    )
 
@@ -365,7 +366,7 @@ QSYNFUEL_S_EQ(IY411, IS3)..
 ;
 
 QSYNFUEL_AVIATION_SHARE_S(IY411, IS3)..
-   SUM((IA, IHYDROGEN_BIOTOSYNFUEL, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL) AND (SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_BIOTOSYNFUEL)) OR IGDECOMEXOPOT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL))),
+   SUM((IA, IHYDROGEN_BIOTOSYNFUEL, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL)),
    VSYNFUEL_G_T(IY411,IA,IHYDROGEN_BIOTOSYNFUEL,IS3,T) * WEIGHT_S(IS3)/IWEIGHSUMT 
    )
 
@@ -400,13 +401,22 @@ QSYNKSET(IY411,IA,IS3,T)..
    VGKN(IY411,IA,'GNR_TG-MeOH-2050_H2')
 ;
 
-QSYNFUELSET(IY411,IA,IS3,T)..
+QSYNFUELSET1(IY411,IA,IS3,T)..
    VSYNFUEL_G_T(IY411,IA,'GNR_TG-MeOH-2050',IS3,T)
 
    =E=
 
    VSYNFUEL_G_T(IY411,IA,'GNR_TG-MeOH-2050_H2',IS3,T)
 ;
+
+QSYNFUELSET2(IY411,IA,IS3,T)..
+   VSYNFUEL_G_T(IY411,IA,'GNR_BACKUP_TG-MeOH-2050',IS3,T)
+
+   =E=
+
+   VSYNFUEL_G_T(IY411,IA,'GNR_BACKUP_TG-MeOH-2050_H2',IS3,T)
+;
+
 
 QSYNINFLEX(IY411,IA,IHYDROGEN_SYNFUEL,S,T)..
    VSYNFUEL_G_T(IY411,IA,IHYDROGEN_SYNFUEL,S,T)
