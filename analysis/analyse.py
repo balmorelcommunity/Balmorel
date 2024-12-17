@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 import click
 import re
+import gams
 from specific.pit_storage.pit_storage import get_storage_profiles, polygon_with_point
 from pybalmorel import Balmorel, MainResults
 from pybalmorel.utils import symbol_to_df
@@ -498,6 +499,47 @@ def allendofmodel(ctx, scenario: str, symbol: str,
     print(df)
     
     return df
+
+
+@CLI.command()
+@click.argument('scenario', type=str, required=True)
+def adequacy(scenario: str):
+    "Quantify the adequacy in terms of LOLE (h) and energy not supplied (TWh)"
+    
+    # Read all_endofmodel
+    ws = gams.GamsWorkspace()
+    db = ws.add_database_from_gdx(os.path.abspath(os.path.join(scenario, 'model', 'all_endofmodel.gdx')))
+    
+    print('\nAdequacy in scenario %s\n'%scenario)
+    for carrier in ['VGE_T', 'VGH_T', 'VHYDROGEN_GH2_T', 'VSYNFUEL_G_T']:
+        df = symbol_to_df(db, carrier) 
+        
+        df.columns = (
+            pd.Series(df.columns)
+            .str.replace('GGG', 'G')
+            .str.replace('AAA', 'A')
+            .str.replace('RRR', 'R')
+        )
+        
+        # Area or region column 
+        if 'R' in df.columns:
+            regoraaa = 'R'
+        elif 'A' in df.columns:
+            regoraaa = 'A'
+            
+        temp = df.query('G.str.contains("BACKUP") and Value > 0').pivot_table(index=['S', 'T'], columns=regoraaa, values='Value', aggfunc='sum')
+        
+        print('\n\n----- %s -----'%carrier)
+        print('\nEnergy not served (TWh):')
+        print((temp.sum()/1e6).to_string())
+        print('\nIn total (TWh):')
+        print(temp.sum().sum()/1e6)
+        
+        print('\nLOLE (h):')
+        print(temp.count().to_string())
+        print('\nIn total (h):')
+        print(len(temp.index))
+
 
 #%% ------------------------------- ###
 ###            2. Utils             ###
