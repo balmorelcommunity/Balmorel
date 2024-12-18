@@ -165,9 +165,14 @@ def cap_disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
                             GDX_disagg['GKACCUMNET'].add_record((year, disaggregated_area, technology))
                             GDX_disagg['GKACCUMNET'][year, disaggregated_area, technology].value = temp.loc[0, 'Value']
                 else:
-                    raise Exception("Need to set every capacity in this area to zero!")
+                    # Will delete all technologies in this area
+                    df_disagg.loc[areas_disagg_idx, 'Value'] = 0
+                    for technology in df_disagg.loc[areas_disagg_idx, 'GGG'].unique():
+                        for disaggregated_area in df_disagg.loc[areas_disagg_idx, 'AAA'].unique():
+                            GDX_disagg['GKACCUMNET'].delete_record((year, disaggregated_area, technology))
                        
     print('Sum of capacities in disaggregated scenario AFTER processing: %0.2f MW'%(df_disagg.Value.sum()))
+    print('Sum of disaggregated capacities AFTER - Sum of aggregated capacities = %0.2f'%(df_disagg.Value.sum() - df_agg.Value.sum()))
     
     # df_disagg.to_excel('./GKACCUMNET.xlsx', index=False)
     GDX_disagg.export('/work3/mberos/Balmorel/GKACCUMNET2.gdx')
