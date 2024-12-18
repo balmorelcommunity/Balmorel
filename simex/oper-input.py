@@ -175,7 +175,7 @@ def cap_disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
     print('Sum of disaggregated capacities AFTER - Sum of aggregated capacities = %0.2f'%(df_disagg.Value.sum() - df_agg.Value.sum()))
     
     # df_disagg.to_excel('./GKACCUMNET.xlsx', index=False)
-    GDX_disagg.export('/work3/mberos/Balmorel/GKACCUMNET2.gdx')
+    GDX_disagg.export('/work3/mberos/Balmorel/simex/GKACCUMNET.gdx')
     
     fig.savefig('simex/%s_%s_connection-validation.png'%(aggregated_scenario, disaggregated_scenario))
     
