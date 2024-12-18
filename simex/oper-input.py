@@ -1,7 +1,11 @@
 """
-TITLE
+Disaggregate Capacities from Aggregated Scenario
 
-Description
+This script assumes that you have 
+1) shapefiles of the spatial resolution of two equivalent energy system models at different resolutions (see hardcoded gpd.read_file statements), 
+2) GKACCUMNET files of investment runs from both (see read_gdx statements) 
+
+Sorry about the inefficient and horrible nested for-loops. It can be parallelised by rewriting to a gamspy application.
 
 Created on 16.12.2024
 @author: Mathias Berg Rosendal, PhD Student at DTU Management (Energy Economics & Modelling)
@@ -52,10 +56,9 @@ def CLI(ctx, dark_style: bool, plot_ext: str):
 @click.argument('disaggregated-scenario', type=str, required=True)
 @click.option('--agg-regcol', type=str, required=False, default='cluster_name', help='The name of the column containing the aggregated regions')
 @click.option('--disagg-regcol', type=str, required=False, default='Name', help='The name of the column containing the disaggregated regions')
-@click.option('--captol', type=float, required=False, default=1e-6, help="The tolerance for a capacity to be considered 'real' and not a LP artefact")
 @click.pass_context
 def cap_disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
-               agg_regcol: str, disagg_regcol: str, captol: float):
+               agg_regcol: str, disagg_regcol: str):
     """
     Disaggregate capacities from an aggregated to a disaggregated scenario, 
     by checking which shapefiles in the disaggregated scenario are contained in the aggregated regions.
@@ -101,21 +104,20 @@ def cap_disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
                 
                 # Check if there is any capacity
                 aggregated_capacity_exists = area_agg in df_agg.AAA.unique()
-                disaggregated_capacities_exist = df_disagg.loc[areas_disagg_idx, 'Value'].sum() > captol
                 
-                if aggregated_capacity_exists and disaggregated_capacities_exist:
+                if aggregated_capacity_exists:
                     
                     aggregated_techs = df_agg.loc[area_agg_idx, 'GGG'].unique()
-                    disaggregated_techs = df_disagg.loc[area_agg_idx, 'GGG'].unique()
+                    disaggregated_techs = df_disagg.loc[areas_disagg_idx, 'GGG'].unique()
                     
                     # Delete technologies not invested in by aggregated model
                     unique_disaggregated_techs = list(set(disaggregated_techs) - set(aggregated_techs))
                     unique_aggregated_techs = list(set(aggregated_techs) - set(disaggregated_techs))
-                    unique_idx = df_disagg.loc[area_agg_idx].query('@unique_disaggregated_techs in GGG').index
-                    df_disagg.loc[np.intersect1d(area_agg_idx, unique_idx), 'Value'] = 0
+                    unique_idx = df_disagg.loc[areas_disagg_idx].query('@unique_disaggregated_techs in GGG').index
+                    df_disagg.loc[np.intersect1d(areas_disagg_idx, unique_idx), 'Value'] = 0
                     
                     # Loop through aggregated technologies
-                    for technology in aggregated_techs:
+                    for technology in list(set(aggregated_techs) - set(unique_aggregated_techs)):
                         
                         if 'BACKUP' in technology:
                             continue
@@ -133,37 +135,37 @@ def cap_disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
                     # Loop through unique disaggregated technologies to delete them
                     for technology in unique_disaggregated_techs:
                         tech_idx_disagg = np.intersect1d(areas_disagg_idx, df_disagg.query('GGG == @technology').index)
+                        df_disagg.loc[tech_idx_disagg, 'Value'] = 0
                         for disaggregated_area in df_disagg.loc[tech_idx_disagg, 'AAA'].unique():
                             try:
                                 GDX_disagg['GKACCUMNET'][year, disaggregated_area, technology].value = 0
                             except gams.GamsException:
-                                # In this particular area, the unique tech was not present
+                                ## In this particular area, the unique tech was not present
                                 pass                
                         
                     # Make uniform distribution of technologies unique to aggregated solution
-                    ## Create new dataframe
-                    # temp = pd.DataFrame({'YYY' : year, 'AAA' : gf_disagg.loc[geo_disagg_idx, 'cluster_name'] + suffix})
+                    ## Create new dataframe with all disaggregated regions
+                    temp = pd.DataFrame({'YYY' : year, 'AAA' : gf_disagg.loc[geo_disagg_idx, 'cluster_name'] + suffix})
                     
-                    # ## Do cartesian product, to distribute aggregated capacities equally to all areas
-                    # temp = temp.merge(df_agg.loc[area_agg_idx].query('@unique_aggregated_techs in GGG'), on='YYY')
+                    ## Do cartesian product, to distribute aggregated capacities equally to all areas
+                    temp = temp.merge(df_agg.loc[area_agg_idx].query('@unique_aggregated_techs in GGG'), on='YYY')
                     
-                    # ## Clean up
-                    # temp = temp.drop(columns=['AAA_y'])
-                    # temp.columns = ['YYY', 'AAA', 'GGG', 'Value']
+                    ## Clean up
+                    temp = temp.drop(columns=['AAA_y'])
+                    temp.columns = ['YYY', 'AAA', 'GGG', 'Value']
                     
-                    # ## Make uniform distribution by taking the average 
-                    # temp.loc[:, 'Value'] = temp.loc[:, 'Value'] / M_regions
+                    ## Make uniform distribution by taking the average 
+                    temp.loc[:, 'Value'] = temp.loc[:, 'Value'] / M_regions
                     
-                    # ## Append to disaggregated capacity dataframe
-                    # df_disagg = pd.concat((df_disagg, temp), ignore_index=True)
-                    
-                    # for technology in temp.GGG:
-                    #     tech_idx_agg = np.intersect1d(area_agg_idx, df_agg.query('GGG == @technology').index)
-                    #     for disaggregated_area in temp.AAA:
-                    #         GDX_disagg['GKACCUMNET'].add_record((year, disaggregated_area, technology)).value = temp.loc[0, 'Value']
-
+                    ## Append to disaggregated capacity dataframe
+                    df_disagg = pd.concat((df_disagg, temp), ignore_index=True)
+                    for technology in temp.GGG.unique():
+                        tech_idx_agg = np.intersect1d(area_agg_idx, df_agg.query('GGG == @technology').index)
+                        for disaggregated_area in temp.AAA.unique():
+                            GDX_disagg['GKACCUMNET'].add_record((year, disaggregated_area, technology))
+                            GDX_disagg['GKACCUMNET'][year, disaggregated_area, technology].value = temp.loc[0, 'Value']
                 else:
-                    print('Set disaggregated capacities to zero')
+                    raise Exception("Need to set every capacity in this area to zero!")
                        
     print('Sum of capacities in disaggregated scenario AFTER processing: %0.2f MW'%(df_disagg.Value.sum()))
     
