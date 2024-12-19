@@ -60,7 +60,7 @@ def CLI(ctx, dark_style: bool, plot_ext: str):
 def cap_disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
                agg_regcol: str, disagg_regcol: str):
     """
-    Disaggregate capacities from an aggregated to a disaggregated scenario, 
+    Disaggregate capacities from an aggregated scenario result to a disaggregated scenario operational input, 
     by checking which shapefiles in the disaggregated scenario are contained in the aggregated regions.
     
     The capacities in the disaggregated scenario is used to distribute the capacities from the aggregated scenario
@@ -173,23 +173,30 @@ def cap_disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
                        
     print('Sum of capacities in disaggregated scenario AFTER processing: %0.2f MW'%(df_disagg.Value.sum()))
     print('Sum of disaggregated capacities AFTER - Sum of aggregated capacities = %0.2f'%(df_disagg.Value.sum() - df_agg.Value.sum()))
+    plot_style(fig, ax, 'simex/%s_%s_connection-validation'%(aggregated_scenario, disaggregated_scenario))
     
-    # df_disagg.to_excel('./GKACCUMNET.xlsx', index=False)
     GDX_disagg.export('/work3/mberos/Balmorel/simex/GKACCUMNET.gdx')
     
-    fig.savefig('simex/%s_%s_connection-validation.png'%(aggregated_scenario, disaggregated_scenario))
     
-    # How to change a GDX
-    # for rec in GDX:
-    #     if rec.keys == ['2050', 'CL1_A', 'GNR_TG-MeOH-2050']:
-    #         print('The capacity of TG-MeOH in CL1_A: ', rec.value)
-    #         print('Changing that..')
-    #         rec.value = 50000
+@CLI.command()
+@click.argument('aggregated-scenario', type=str, required=True)
+@click.pass_context
+def seasonal_levels(ctx, aggregated_scenario: str):
+    """
+    Inter- and extrapolates seasonal storage levels to all seasons based on a previous run
     
-    # exported_file = 'output_gdx.gdx'
-    # print('Saving to %s'%exported_file)
-    # db.export(os.path.join('/work3/mberos/Balmorel', exported_file))
-
+    """
+    
+    fig, ax = plt.subplots()
+    for seasonal_storage in ['HSTOVOLTS', 'H2STOVOLTS']:
+        
+        df, GDX = read_gdx(seasonal_storage, 'simex_%s/%s.gdx'%(aggregated_scenario, seasonal_storage))
+        print('For %s, there are %d seasons in the aggregated scenario'%(seasonal_storage, len(df.SSS.unique())))
+        
+        df.query('TTT == "T001"').pivot_table(index=['SSS', 'TTT'], values='Value', aggfunc='sum').plot(ax=ax, label=seasonal_storage)
+        
+    plot_style(fig, ax, 'simex/seasonal_levels')
+    
 #%% ------------------------------- ###
 ###            2. Utils             ###
 ### ------------------------------- ###
