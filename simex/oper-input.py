@@ -177,25 +177,56 @@ def cap_disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
     
     GDX_disagg.export('/work3/mberos/Balmorel/simex/GKACCUMNET.gdx')
     
-    
+
 @CLI.command()
 @click.argument('aggregated-scenario', type=str, required=True)
 @click.pass_context
 def seasonal_levels(ctx, aggregated_scenario: str):
     """
     Inter- and extrapolates seasonal storage levels to all seasons based on a previous run
-    
     """
     
+    all_seasons = ['S0%d'%i for i in range(1, 10)] + ['S%d'%i for i in range(10, 53)]
+    translator = pd.DataFrame(data={'SSS' : all_seasons})
+    # translator = pd.DataFrame(index=all_seasons, data={'ind' : np.arange(1, 53),
+    #                                                    'previous' : ['S52'] + all_seasons[:-1],
+    #                                                    'next' : all_seasons[1:] + ['S01']})
+    
     fig, ax = plt.subplots()
+    fig2, ax2 = plt.subplots()
     for seasonal_storage in ['HSTOVOLTS', 'H2STOVOLTS']:
         
+        # Read file
         df, GDX = read_gdx(seasonal_storage, 'simex_%s/%s.gdx'%(aggregated_scenario, seasonal_storage))
-        print('For %s, there are %d seasons in the aggregated scenario'%(seasonal_storage, len(df.SSS.unique())))
+        df.columns = pd.Series(df.columns).str.replace('YYY', 'Y') # Minor correction
+        included_seasons = df.SSS.unique()        
+
+        temp = df.query('TTT == "T001"')
+        temp.loc[temp.Value < 1e-9, 'Value'] = 0
+        temp = temp.pivot_table(index=['Y', 'SSS'], columns=['AAA', 'GGG'], values='Value', aggfunc='sum').fillna(0)
         
-        df.query('TTT == "T001"').pivot_table(index=['SSS', 'TTT'], values='Value', aggfunc='sum').plot(ax=ax, label=seasonal_storage)
+        # Interpolate with a circular yearly logic
+        for year in temp.index.get_level_values(0).unique():
+            for area in temp.columns.get_level_values(0).unique():
+                ## Merge
+                merged = pd.merge(translator, temp.loc[(year, slice(None)), area], on='SSS', how='left')
+                
+                ## Try to add first value as the last to ensure yearly cycle
+                try:
+                    merged = pd.concat((merged, merged.query('SSS == "S01"')), ignore_index=True)
+                    merged = merged.interpolate(method='linear').drop(index=52)
+                except KeyError:
+                    ## S01 was not present, so last values will be constants until S52
+                    merged = merged.interpolate(method='linear')      
+                    
+                ## Adapt the GDX file
+                for technology in merged.drop(columns='SSS').columns:
+                    for season in list(set(all_seasons) - set(included_seasons)):
+                        GDX[seasonal_storage].add_record((year, area, technology, season, 'T001'))
+                        GDX[seasonal_storage][year, area, technology, season, 'T001'].value = merged.loc[merged.SSS == season, technology].values[0]
+
+        GDX.export('/work3/mberos/Balmorel/simex/%s.gdx'%seasonal_storage)
         
-    plot_style(fig, ax, 'simex/seasonal_levels')
     
 #%% ------------------------------- ###
 ###            2. Utils             ###
