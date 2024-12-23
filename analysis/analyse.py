@@ -502,13 +502,18 @@ def allendofmodel(ctx, scenario: str, symbol: str,
 
 
 @CLI.command()
+@click.pass_context
 @click.argument('scenario', type=str, required=True)
-def adequacy(scenario: str):
+def adequacy(ctx, scenario: str):
     "Quantify the adequacy in terms of LOLE (h) and energy not supplied (TWh)"
+    
+    # Find path to scenario
+    model = ctx.obj['Balmorel']
+    folder = model.scname_to_scfolder[scenario]
     
     # Read all_endofmodel
     ws = gams.GamsWorkspace()
-    db = ws.add_database_from_gdx(os.path.abspath(os.path.join(scenario, 'model', 'all_endofmodel.gdx')))
+    db = ws.add_database_from_gdx(os.path.abspath(os.path.join(folder, 'model', 'all_endofmodel.gdx')))
     
     print('\nAdequacy in scenario %s\n'%scenario)
     for carrier in ['VGE_T', 'VGH_T', 'VHYDROGEN_GH2_T', 'VSYNFUEL_G_T']:
