@@ -172,7 +172,7 @@ def disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
                             GDX_disagg['GKACCUMNET'][year, disaggregated_area, technology].value = temp.loc[0, 'Value']
                             
                     # Disaggregate storage levels    
-                    for seasonal_storage in ['HSTOVOLTS']: #, 'H2STOVOLTS']:
+                    for seasonal_storage in ['HSTOVOLTS', 'H2STOVOLTS']:
                         ## Merge
                         try:
                             # Interpolate 
