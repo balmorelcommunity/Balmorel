@@ -32,10 +32,11 @@ import os
 @click.option('--dark-style', is_flag=True, required=False, help='Dark plot style')
 @click.option('--plot-ext', type=str, required=False, default='.pdf', help='The extension of the plots, defaults to ".pdf"')
 @click.option('--path', type=str, required=False, default='.', help='Path to top level of Balmorel folders, defaults to "."')
+@click.option('--gams-sysdir', type=str, required=False, default='/appl/gams/47.6.0', help='Path to GAMS system directory')
 @click.pass_context
-def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str):
+def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
+        gams_sysdir: str):
     "A CLI to analyse Balmorel results"
-    
     # Locate results
     model = Balmorel(path)
     model.locate_results() 
@@ -48,6 +49,7 @@ def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str):
     ctx.obj['plot_ext'] = plot_ext
     ctx.obj['path'] = path
     ctx.obj['plot_path'] = os.path.join(path, 'analysis', 'plots')
+    ctx.obj['gams_system_directory'] = gams_sysdir
     
     # Set global style of plot (only true for plots using function in THIS script)
     if dark_style:
@@ -486,11 +488,10 @@ def get(ctx, symbol: str, filter_input: str):
 @click.pass_context
 @click.argument('scenario', type=str, required=True)
 @click.argument('symbol', type=str, required=True)
-def allendofmodel(ctx, scenario: str, symbol: str,
-                   gams_system_directory: str = '/appl/gams/47.6.0'):
+def allendofmodel(ctx, scenario: str, symbol: str):
     
     # Load all_endofmodel for the specified scenario
-    ws = GamsWorkspace(system_directory=gams_system_directory)
+    ws = GamsWorkspace(system_directory=ctx.obj['gams_system_directory'])
     db = ws.add_database_from_gdx(os.path.abspath(os.path.join(ctx.obj['path'], scenario, 'model', 'all_endofmodel.gdx')))
     
     # Get symbol
@@ -509,41 +510,23 @@ def adequacy(ctx, scenario: str):
     
     # Find path to scenario
     model = ctx.obj['Balmorel']
-    folder = model.scname_to_scfolder[scenario]
+    model_path = os.path.join(ctx.obj['path'], model.scname_to_scfolder[scenario], 'model')
+
+    # Get mainresults files
+    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path, system_directory=ctx.obj['gams_system_directory'])
     
-    # Read all_endofmodel
-    ws = gams.GamsWorkspace()
-    db = ws.add_database_from_gdx(os.path.abspath(os.path.join(folder, 'model', 'all_endofmodel.gdx')))
+    # Get backup production
+    df = res.get_result('PRO_YCRAGFST').query('Scenario == @scenario and Generation.str.contains("BACKUP")')
     
-    print('\nAdequacy in scenario %s\n'%scenario)
-    for carrier in ['VGE_T', 'VGH_T', 'VHYDROGEN_GH2_T', 'VSYNFUEL_G_T']:
-        df = symbol_to_df(db, carrier) 
-        
-        df.columns = (
-            pd.Series(df.columns)
-            .str.replace('GGG', 'G')
-            .str.replace('AAA', 'A')
-            .str.replace('RRR', 'R')
-        )
-        
-        # Area or region column 
-        if 'R' in df.columns:
-            regoraaa = 'R'
-        elif 'A' in df.columns:
-            regoraaa = 'A'
-            
-        temp = df.query('G.str.contains("BACKUP") and Value > 0').pivot_table(index=['S', 'T'], columns=regoraaa, values='Value', aggfunc='sum')
-        
-        print('\n\n----- %s -----'%carrier)
-        print('\nEnergy not served (TWh):')
-        print((temp.sum()/1e6).to_string())
-        print('\nIn total (TWh):')
-        print(temp.sum().sum()/1e6)
-        
-        print('\nLOLE (h):')
-        print(temp.count().to_string())
-        print('\nIn total (h):')
-        print(len(temp.index))
+    ## Get energy not served
+    ENS = df.pivot_table(index=['Season', 'Time'], columns='Commodity',
+                          values='Value', aggfunc='sum')
+    print('Energy not served [TWh]')
+    print((ENS.sum() / 1e6).to_string(header=None))
+    
+    ## Get hours with loss of load
+    print('Loss of load expectation [h]')
+    print(ENS.count().to_string(header=None))
 
 
 #%% ------------------------------- ###
