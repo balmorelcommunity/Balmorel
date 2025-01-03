@@ -56,9 +56,10 @@ def CLI(ctx, dark_style: bool, plot_ext: str):
 @click.argument('disaggregated-scenario', type=str, required=True)
 @click.option('--agg-regcol', type=str, required=False, default='cluster_name', help='The name of the column containing the aggregated regions')
 @click.option('--disagg-regcol', type=str, required=False, default='Name', help='The name of the column containing the disaggregated regions')
+@click.option('--ssl', is_flag=True, required=False, help='Perform inter- and extrapolation of seasonal storage levels')
 @click.pass_context
 def disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
-               agg_regcol: str, disagg_regcol: str):
+               agg_regcol: str, disagg_regcol: str, ssl: bool = False):
     """
     Disaggregate capacities and seasonal storage levels from an aggregated scenario result to a disaggregated scenario operational input, 
     by checking which shapefiles in the disaggregated scenario are contained in the aggregated regions.
@@ -78,10 +79,13 @@ def disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
     gf_disagg.columns = pd.Series(gf_disagg.columns).str.replace(disagg_regcol, 'cluster_name')
     
     # Read seasonal storage files
-    dfHSTO, GDXHS = read_gdx('HSTOVOLTS', 'simex_%s/HSTOVOLTS.gdx'%aggregated_scenario)
-    dfH2STO, GDXH2S = read_gdx('H2STOVOLTS', 'simex_%s/H2STOVOLTS.gdx'%aggregated_scenario)
-    seasonal_storage_files = {'HSTOVOLTS' : {'df' : dfHSTO, 'GDX' : GDXHS},
-                              'H2STOVOLTS' : {'df' : dfH2STO, 'GDX' : GDXH2S}}
+    if ssl:
+        dfHSTO, GDXHS = read_gdx('HSTOVOLTS', 'simex_%s/HSTOVOLTS.gdx'%aggregated_scenario)
+        dfH2STO, GDXH2S = read_gdx('H2STOVOLTS', 'simex_%s/H2STOVOLTS.gdx'%aggregated_scenario)
+        seasonal_storage_files = {'HSTOVOLTS' : {'df' : dfHSTO, 'GDX' : GDXHS},
+                                'H2STOVOLTS' : {'df' : dfH2STO, 'GDX' : GDXH2S}}
+    else:
+        print('No inter- and extrapolation of seasonal storage levels')
         
     # Loop through polygons of aggregated scenario
     fig, ax = plt.subplots()
@@ -172,34 +176,35 @@ def disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
                             GDX_disagg['GKACCUMNET'][year, disaggregated_area, technology].value = temp.loc[0, 'Value']
                             
                     # Disaggregate storage levels    
-                    for seasonal_storage in ['HSTOVOLTS', 'H2STOVOLTS']:
-                        ## Merge
-                        try:
-                            # Interpolate 
-                            merged = interpolate_seasons(area_agg, year, seasonal_storage_files[seasonal_storage]['df'])
-                                
-                            # Adapt the GDX file
-                            for technology in merged.drop(columns='SSS').columns:
-                                
-                                # Normalise timeseries
-                                # print('Before normalisation: ', merged)
-                                merged.loc[:, technology] = merged.loc[:, technology] / (merged.loc[:, technology].max() + 0.01) # Add 0.01 for feasibility
-                                # print('After normalisation: ', merged)
-                                
-                                for disaggregated_area in temp.AAA.unique():
+                    if ssl:
+                        for seasonal_storage in ['HSTOVOLTS', 'H2STOVOLTS']:
+                            ## Merge
+                            try:
+                                # Interpolate 
+                                merged = interpolate_seasons(area_agg, year, seasonal_storage_files[seasonal_storage]['df'])
                                     
-                                    # Try to get capacity in this area
-                                    try:
-                                        cap = GDX_disagg['GKACCUMNET'][year, disaggregated_area, technology].value
-                                        print('Capacity of %s in %s'%(technology, disaggregated_area), cap)
-                                        for season in merged.SSS.unique():
-                                            seasonal_storage_files[seasonal_storage]['GDX'][seasonal_storage].add_record((year, disaggregated_area, technology, season, 'T001'))
-                                            seasonal_storage_files[seasonal_storage]['GDX'][seasonal_storage][year, disaggregated_area, technology, season, 'T001'].value = merged.loc[merged.SSS == season, technology].values[0] * cap
-                                    except gams.GamsException:
-                                        pass
+                                # Adapt the GDX file
+                                for technology in merged.drop(columns='SSS').columns:
+                                    
+                                    # Normalise timeseries
+                                    # print('Before normalisation: ', merged)
+                                    merged.loc[:, technology] = merged.loc[:, technology] / (merged.loc[:, technology].max() + 0.01) # Add 0.01 for feasibility
+                                    # print('After normalisation: ', merged)
+                                    
+                                    for disaggregated_area in temp.AAA.unique():
+                                        
+                                        # Try to get capacity in this area
+                                        try:
+                                            cap = GDX_disagg['GKACCUMNET'][year, disaggregated_area, technology].value
+                                            print('Capacity of %s in %s'%(technology, disaggregated_area), cap)
+                                            for season in merged.SSS.unique():
+                                                seasonal_storage_files[seasonal_storage]['GDX'][seasonal_storage].add_record((year, disaggregated_area, technology, season, 'T001'))
+                                                seasonal_storage_files[seasonal_storage]['GDX'][seasonal_storage][year, disaggregated_area, technology, season, 'T001'].value = merged.loc[merged.SSS == season, technology].values[0] * cap
+                                        except gams.GamsException:
+                                            pass
 
-                        except KeyError:
-                            print('No seasonal storage in %s'%area_agg)
+                            except KeyError:
+                                print('No seasonal storage in %s'%area_agg)
                                                     
                 else:
                     # Will delete all technologies in this area
@@ -213,8 +218,9 @@ def disagg(ctx, aggregated_scenario: str, disaggregated_scenario: str,
     plot_style(fig, ax, 'simex/%s_%s_connection-validation'%(aggregated_scenario, disaggregated_scenario))
     
     GDX_disagg.export('/work3/mberos/Balmorel/simex/GKACCUMNET.gdx')
-    seasonal_storage_files['HSTOVOLTS']['GDX'].export('/work3/mberos/Balmorel/simex/HSTOVOLTS.gdx')
-    seasonal_storage_files['H2STOVOLTS']['GDX'].export('/work3/mberos/Balmorel/simex/H2STOVOLTS.gdx')
+    if ssl:
+        seasonal_storage_files['HSTOVOLTS']['GDX'].export('/work3/mberos/Balmorel/simex/HSTOVOLTS.gdx')
+        seasonal_storage_files['H2STOVOLTS']['GDX'].export('/work3/mberos/Balmorel/simex/H2STOVOLTS.gdx')
     
 
 @CLI.command()

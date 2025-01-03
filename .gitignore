@@ -51,3 +51,5 @@ base_lowtemp
 simex_*
 Balmorel_ReadData.gms
 Balmorelbb4_ReadData.inc
+
+*_connection-validation.*
