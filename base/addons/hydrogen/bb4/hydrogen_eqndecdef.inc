@@ -257,6 +257,8 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IHYDROGEN_GH2TOBIOMETH)$IGDECOMEX
 
 EQUATIONS
 QXH2K_UP(Y,IRRRE,IRRRI,S,T)           "H2 transmission capacity constraint (MW)"
+
+$iftheni %H2TransInvest%==yes
 QXH2KNACCUMNET(Y,IRRRE,IRRRI)         "NOT FINISHED, TODO, Accumulated new H2 transmission investments available at beginning of next year (MW)"
 QXH2KNACCUMNET_NGTOH2(Y,IRRRE,IRRRI)  "NOT FINISHED, TODO, Accumulated new investments in conversion of existing natural gas pipe to H2 transmission available at beginning of next year (MW)"
 QXH2INVSYMMETRY(Y,IRRRE,IRRRI)        "H2 Transmission investments are set symetric(MW)"
@@ -265,17 +267,19 @@ QXH2KMAX_NGTOH2(Y,IRRRE,IRRRI)        "Maximum conversion of existing natural ga
 *Equations for modelling economy of scale
 QVXH2KN_ES(YYY,IRRRE,IRRRI)  "Equation to ensure the proper H2 capacity when using SOS2 variables"
 QXH2LAMBDA_ES(YYY,IRRRE,IRRRI) "Equation to ensure all the Lambda variables are equal to 1 for the same H2 transmission line"
+$endif
 ;
 
 *"H2 transmission capacity constraint (MW)"
 QXH2K_UP(IY411,IRE,IRI,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IRE,IRI)) OR SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IRE,IRI)))..
    (  XH2KFX(IY411,IRE,IRI)
-      + VXH2KNACCUMNET(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IRE,IRI))
-      + VXH2KNACCUMNET_NGTOH2(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IRE,IRI))
+$ifi %H2TransInvest%==yes      + VXH2KNACCUMNET(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IRE,IRI))
+$ifi %H2TransInvest%==yes      + VXH2KNACCUMNET_NGTOH2(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IRE,IRI))
     )*(1$(NOT IXH2KRATE(IRE,IRI,IS3,T))+IXH2KRATE(IRE,IRI,IS3,T))
      =G=  VXH2_T(IY411,IRE,IRI,IS3,T)
 ;
 
+$ifi not %H2TransInvest%==yes $goto no_transmission_investments
 *"NOT FINISHED, TODO, Accumulated new heat transmission investments available at beginning of next year (MW)"
 QXH2KNACCUMNET(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IRE,IRI))..
   VXH2KNACCUMNET(IY411,IRE,IRI)  !! End of this year's VXH2KNACCUMNET (available at beginning of next year)'
@@ -319,3 +323,5 @@ QVXH2KN_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
 
 QXH2LAMBDA_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
   SUM(XES,VXH2LAMBDA(IY411,IRE,IRI,XES)) =E= 1;
+
+$label no_transmission_investments
