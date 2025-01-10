@@ -19,6 +19,8 @@ import numpy as np
 import pandas as pd
 import click
 import re
+from premailer import transform
+from typing import Union
 import gams
 from specific.pit_storage.pit_storage import get_storage_profiles, polygon_with_point
 from pybalmorel import Balmorel, MainResults
@@ -450,45 +452,15 @@ def sifnaios_profile(ctx, scenario: str, cluster: str, size: str,
     fig, ax = plot_style(fig, ax, '%s_sifstoprofile'%(scenario+'_'+cluster+'_'+size), legend=False)
     # fig.savefig(os.path.join(ctx.obj['plot_path'], ))
 
-@CLI.command()
-@click.pass_context
-@click.argument('symbol', type=str, required=True)
-@click.argument('filter_input', type=str, required=False, default='INTER-STO')
-def get(ctx, symbol: str, filter_input: str):
-    """Get some result (i.e.: symbol in GAMS language)
 
-    Args:
-        symbol (str): The symbol from the .gdx
-        filter_input (str): An input for a filter
-    """
-    
-    df = collect_results(symbol)
-    
-    fig, ax = plt.subplots()
-    
-    res = (
-        df
-        # .query(f'Generation == "{filter_input}" and Area == "Aabenraa_A" and not Scenario.str.contains("_lowtemp")')
-        .query(f'Technology == "{filter_input}"')
-        .pivot_table(index=['Scenario', 'Region'],  columns='Generation', values='Value', aggfunc='sum')
-    )
-    
-    for col in res.columns:
-        print('Largest %s'%col)
-        print(res.nlargest(10, col))
-        print('Smallest %s'%col)
-        print(res.nsmallest(10, col))
-    
-    # res.plot(ax=ax)
-    
-    # ax.set_title(filter_input)
-    # fig, ax = plot_style(fig, ax, f'{result}_filter{filter_input}_intersto_hightemp')
-    
 @CLI.command()
 @click.pass_context
 @click.argument('scenario', type=str, required=True)
 @click.argument('symbol', type=str, required=True)
 def allendofmodel(ctx, scenario: str, symbol: str):
+    """
+    Get and print a symbol from all_endofmodel as a dataframe
+    """
     
     # Load all_endofmodel for the specified scenario
     ws = GamsWorkspace(system_directory=ctx.obj['gams_system_directory'])
@@ -501,6 +473,75 @@ def allendofmodel(ctx, scenario: str, symbol: str):
     
     return df
 
+@CLI.command()
+@click.pass_context
+@click.argument('symbol', type=str, required=True)
+@click.argument('pars', required=True)
+@click.option('--filters', type=str, required=False, help='String for filtering that can be passed to a query')
+@click.option('--diff', is_flag=True, required=False, help='Show difference or not?')
+def get(ctx, symbol: str, pars, filters: str, diff: bool):
+    """
+    Get a certain symbol and show the values as a table.
+    This function retrieves results for a specified symbol from a Balmorel model context,
+    applies optional filters, and generates both absolute and relative difference tables.
+    The results are then saved as HTML files with conditional formatting.
+
+    Parameters:
+    ctx (object): The context object containing the Balmorel model.
+    symbol (str): The symbol to retrieve results for.
+    pars (list): The parameters to use for pivoting the table.
+    filters (str): The filters to apply to the results, specified as a query string.
+    Returns:
+    None    
+    """
+    
+    model = ctx.obj['Balmorel']
+    model.collect_results()
+    
+    df = model.results.get_result(symbol)
+    if type(filters) == str:
+        df = df.query(filters).pivot_table(index='Scenario', columns=pars, values='Value', aggfunc='sum')
+    else:
+        df = df.pivot_table(index='Scenario', columns=pars, values='Value', aggfunc='sum')
+    
+    # Some HTML formatting
+    cell_format = {
+    "selector": "td",
+    "props": [("text-align", "right")]
+    }
+    
+    if diff:
+        # Make absolute and relative difference calculations 
+        df_abs = df - df.loc['base', :]
+        df_rel = (df - df.loc['base', :]) / df.loc['base', :] * 100
+        
+        print(df_rel.to_string())
+        
+        
+        # Loop through both absolute and relative difference dataframes
+        for df_name in ['df_abs', 'df_rel']:
+            
+            df = eval(df_name)
+            df_styled = df.style.format(precision=1).set_table_styles([cell_format]) # Precision and general formatting
+            
+            # Style each column, so zero is white (with cmap RdBu reversed, higher values become red and lower blue)
+            for col in df.columns: 
+                max_abs = df[col].abs().max() 
+                df_styled = df_styled.background_gradient(
+                    cmap="RdBu_r", subset=[col], vmin=-max_abs, vmax=max_abs
+                )
+            
+            html = df_styled.to_html()
+            with open('analysis/output/%s_output.html'%df_name, 'w') as f: 
+                f.write(transform(html)) # Use transform to get inline styling, which is supported by Obsidian's markdown
+    else:
+        print(df.to_string())
+        # Precision and general formatting
+        html = df.style.format(precision=1).set_table_styles([cell_format]).background_gradient(cmap="RdYlGn_r").to_html()
+        with open('analysis/output/df_tot_output.html', 'w') as f: 
+            f.write(transform(html)) # Use transform to get inline styling, which is supported by Obsidian's markdown
+            
+        
 
 @CLI.command()
 @click.pass_context
