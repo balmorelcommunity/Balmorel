@@ -15,7 +15,7 @@
 ### -- specify that we want the job to get killed if it exceeds X GB per core/slot --
 #BSUB -M 2.6GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 1:00
+#BSUB -W 10:00
 ### -- set the email address --
 #BSUB -u mberos@dtu.dk
 ### -- send notification at start --
@@ -37,14 +37,14 @@ source ~/miniconda3/bin/activate spatialstudy
 for name in N10; do
     # Running Balmorel 
     cd N10/model 
-    gams Balmorel license=../../gamslice.txt --scenario_name=$name --threads=$LSB_DJOB_NUMPROC
+    gams Balmorel license=../../gamslice.txt --scenario_name=$name threads=$LSB_DJOB_NUMPROC
 
     # Exit, if there are errors
     if [ $? -ne 0 ]; then
         echo "GAMS execution failed for scenario $name"
         exit 1
     fi
-    
+
     cd ../../
 
     # Copy the simex folder

@@ -3,7 +3,7 @@
 ### -- specify queue --
 #BSUB -q man
 ### -- set the job Name --
-#BSUB -J DA_operuns
+#BSUB -J DA_HC_operuns
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 20
 ### -- specify that we need a certain architecture --
@@ -15,7 +15,7 @@
 ### -- specify that we want the job to get killed if it exceeds X GB per core/slot --
 #BSUB -M 2.1GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 10:00
+#BSUB -W 25:00
 ### -- set the email address --
 #BSUB -u mberos@dtu.dk
 ### -- send notification at start --
@@ -24,8 +24,8 @@
 #BSUB -N
 ### -- Specify the output and error file. %J is the job-id --
 ### -- -o and -e mean append, -oo and -eo mean overwrite --
-#BSUB -o ./logs/DA_operuns_%J.out
-#BSUB -e ./logs/DA_operuns_%J.err
+#BSUB -o ./logs/DA_HC_operuns_%J.out
+#BSUB -e ./logs/DA_HC_operuns_%J.err
 # here follow the commands you want to execute with input.in as the input file
 
 ### Path to GAMS binary
@@ -34,7 +34,7 @@ export PATH=/appl/gams/47.6.0:$PATH
 ### Activate spatialstudy environment
 source ~/miniconda3/bin/activate spatialstudy
 
-for name in N70 N50 N30 N10 N2; do
+for name in N10M2 N30M2 N50M2 N70M2 N30M10 N50M10 N70M10 N50M30 N70M30 N70M50; do
 
     # Copy most results from disaggregated run to simex
     cp -f ./simex_base/*.gdx ./simex

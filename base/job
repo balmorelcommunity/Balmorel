@@ -3,7 +3,7 @@
 ### -- specify queue --
 #BSUB -q man
 ### -- set the job Name --
-#BSUB -J base
+#BSUB -J base_RA
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 20
 ### -- specify that we need a certain architecture --
@@ -15,7 +15,7 @@
 ### -- specify that we want the job to get killed if it exceeds X GB per core/slot --
 #BSUB -M 12.1GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 168:00
+#BSUB -W 140:00
 ### -- set the email address --
 #BSUB -u mberos@dtu.dk
 ### -- send notification at start --
@@ -24,8 +24,8 @@
 #BSUB -N
 ### -- Specify the output and error file. %J is the job-id --
 ### -- -o and -e mean append, -oo and -eo mean overwrite --
-#BSUB -o ./logs/base_%J.out
-#BSUB -e ./logs/base_%J.err
+#BSUB -o ./logs/base_RA_%J.out
+#BSUB -e ./logs/base_RA_%J.err
 # here follow the commands you want to execute with input.in as the input file
 
 ### Path to GAMS binary
@@ -34,10 +34,10 @@ export PATH=/appl/gams/47.6.0:$PATH
 ### Activate spatialstudy environment
 source ~/miniconda3/bin/activate spatialstudy
 
-for name in base; do
+for name in base_RA; do
     # Running Balmorel 
     cd base/model 
-    gams Balmorel license=../../gamslice.txt --scenario_name=$name --threads=$LSB_DJOB_NUMPROC
+    gams Balmorel license=../../gamslice.txt --scenario_name=$name threads=$LSB_DJOB_NUMPROC
 
     # Exit, if there are errors
     if [ $? -ne 0 ]; then
@@ -48,8 +48,8 @@ for name in base; do
     cd ../../
 
     # Copy the simex folder
-    cp simex -r simex_$name
+    # cp simex -r simex_$name
 
     # Collect heat storage profile data
-    analyse sifnaios-profile Aalborg base
+    # analyse sifnaios-profile Aalborg base_RA
 done

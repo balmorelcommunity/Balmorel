@@ -34,7 +34,7 @@ export PATH=/appl/gams/47.6.0:$PATH
 for name in N30; do
     # Running Balmorel 
     cd N30/model 
-    gams Balmorel license=../../gamslice.txt --scenario_name=$name --threads=$LSB_DJOB_NUMPROC
+    gams Balmorel license=../../gamslice.txt --scenario_name=$name threads=$LSB_DJOB_NUMPROC
 
     # Exit, if there are errors
     if [ $? -ne 0 ]; then
@@ -46,6 +46,9 @@ for name in N30; do
 
     # Copy the simex folder
     cp simex -r simex_$name
+
+    # # Copy log (will %J work??)
+    # cp logs/$name_%J.out N30 # 
 
     # Collect heat storage profile data
     analyse storage-profile CL15 N30

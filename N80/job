@@ -34,5 +34,5 @@ export PATH=/appl/gams/47.6.0:$PATH
 for name in N80; do
     # Running Balmorel 
     cd N80/model 
-    gams Balmorel license=../../gamslice.txt --scenario_name=$name --threads=$LSB_DJOB_NUMPROC
+    gams Balmorel license=../../gamslice.txt --scenario_name=$name threads=$LSB_DJOB_NUMPROC
 done

@@ -37,7 +37,7 @@ source ~/miniconda3/bin/activate spatialstudy
 for name in N70; do
     # Running Balmorel 
     cd N70/model 
-    gams Balmorel license=../../gamslice.txt --scenario_name=$name --threads=$LSB_DJOB_NUMPROC
+    gams Balmorel license=../../gamslice.txt --scenario_name=$name threads=$LSB_DJOB_NUMPROC
 
     # Exit, if there are errors
     if [ $? -ne 0 ]; then

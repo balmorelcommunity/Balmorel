@@ -3,19 +3,19 @@
 ### -- specify queue --
 #BSUB -q man
 ### -- set the job Name --
-#BSUB -J N50
+#BSUB -J N30M10
 ### -- ask for number of cores (default: 1) --
-#BSUB -n 10
+#BSUB -n 7
 ### -- specify that we need a certain architecture --
 #BSUB -R "select[model == XeonPlatinum8462Y]"
 ### -- specify that the cores must be on the same host --
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need X GB of memory per core/slot --
-#BSUB -R "rusage[mem=3GB]"
+#BSUB -R "rusage[mem=2.5GB]"
 ### -- specify that we want the job to get killed if it exceeds X GB per core/slot --
-#BSUB -M 3.1GB
+#BSUB -M 2.6GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 24:00
+#BSUB -W 4:00
 ### -- set the email address --
 #BSUB -u mberos@dtu.dk
 ### -- send notification at start --
@@ -24,16 +24,16 @@
 #BSUB -N
 ### -- Specify the output and error file. %J is the job-id --
 ### -- -o and -e mean append, -oo and -eo mean overwrite --
-#BSUB -o ./logs/N50_%J.out
-#BSUB -e ./logs/N50_%J.err
+#BSUB -o ./logs/N30M10_%J.out
+#BSUB -e ./logs/N30M10_%J.err
 # here follow the commands you want to execute with input.in as the input file
 
 ### Path to GAMS binary
 export PATH=/appl/gams/47.6.0:$PATH
 
-for name in N50; do
+for name in N30M10; do
     # Running Balmorel 
-    cd N50/model 
+    cd N30M10/model 
     gams Balmorel license=../../gamslice.txt --scenario_name=$name threads=$LSB_DJOB_NUMPROC
 
     # Exit, if there are errors
@@ -43,10 +43,4 @@ for name in N50; do
     fi
 
     cd ../../
-
-    # Copy the simex folder
-    cp simex -r simex_$name
-
-    # Collect heat storage profile data
-    analyse storage-profile CL31 N50
 done

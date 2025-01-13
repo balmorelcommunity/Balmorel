@@ -8,7 +8,7 @@
 * advind is set to 0 by default since for large problems a better performance has been experienced. If 0, the optimization will not use the previous solution to try to find the next run faster.
 
 LPmethod  4
-Threads  -1
+
 advind 0
 predual -1
 

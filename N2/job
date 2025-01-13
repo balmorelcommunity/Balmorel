@@ -5,17 +5,17 @@
 ### -- set the job Name --
 #BSUB -J N2
 ### -- ask for number of cores (default: 1) --
-#BSUB -n 1
+#BSUB -n 20
 ### -- specify that we need a certain architecture --
 #BSUB -R "select[model == XeonPlatinum8462Y]"
 ### -- specify that the cores must be on the same host --
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need X GB of memory per core/slot --
-#BSUB -R "rusage[mem=2.5GB]"
+#BSUB -R "rusage[mem=0.5GB]"
 ### -- specify that we want the job to get killed if it exceeds X GB per core/slot --
-#BSUB -M 2.6GB
+#BSUB -M 0.6GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 1:00
+#BSUB -W 5:00
 ### -- set the email address --
 #BSUB -u mberos@dtu.dk
 ### -- send notification at start --
@@ -37,14 +37,14 @@ source ~/miniconda3/bin/activate spatialstudy
 for name in N2; do
     # Running Balmorel 
     cd N2/model 
-    gams Balmorel license=../../gamslice.txt --scenario_name=$name --threads=$LSB_DJOB_NUMPROC
+    gams Balmorel license=../../gamslice.txt --scenario_name=$name threads=$LSB_DJOB_NUMPROC
 
     # Exit, if there are errors
     if [ $? -ne 0 ]; then
         echo "GAMS execution failed for scenario $name"
         exit 1
     fi
-    
+
     cd ../../
 
     # Copy the simex folder

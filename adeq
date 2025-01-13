@@ -15,7 +15,7 @@
 ### -- specify that we want the job to get killed if it exceeds X GB per core/slot --
 #BSUB -M 2.1GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 1:00
+#BSUB -W 5:00
 ### -- set the email address --
 #BSUB -u mberos@dtu.dk
 ### -- send notification at start --
@@ -35,4 +35,6 @@ export PATH=/appl/gams/47.6.0:$PATH
 source ~/miniconda3/bin/activate spatialstudy
 
 # Analyse adequacy
-analyse adequacy N2DA_SSL_operun
+for name in base N70 N50 N30 N10 N2; do
+    analyse adequacy ${name}_DA_SSL_operun
+done
