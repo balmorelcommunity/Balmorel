@@ -39,6 +39,7 @@ import os
 def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
         gams_sysdir: str):
     "A CLI to analyse Balmorel results"
+    
     # Locate results
     model = Balmorel(path)
     model.locate_results() 
@@ -61,7 +62,7 @@ def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
     else:
         ctx.obj['fc'] = 'white'  
         ctx.obj['plot_style_for_modules'] = 'light'         # Plot style for modules
-        
+            
 
 
 #%% ------------------------------- ###
@@ -120,13 +121,12 @@ def all_maps(ctx, year: int):
 @CLI.command()
 @click.option('--gen', '-g', is_flag=True, default=True, required=False, help='Plot generation capacities')
 @click.option('--sto', '-s', is_flag=True, default=True, required=False, help='Plot storage capacities')
-@click.option('--exclude-filters', '-e', type=str, default={}, required=False, help='Filters in .json format')
-def cap(gen: bool, sto: bool, exclude_filters: str):
+@click.option('--filters', type=str, default='', required=False, help='Filters for df.query(...)')
+def cap(gen: bool, sto: bool, filters: str):
     """
     Plot generation or storage capacities
     """
     
-    exclude_filters = eval(exclude_filters)
     plot_types = {'generation' : gen, 'storage' : sto}
     for key in [key for key in plot_types.keys() if plot_types[key]]:
         print('\nPlotting %s capacities..'%key)
@@ -147,14 +147,8 @@ def cap(gen: bool, sto: bool, exclude_filters: str):
             ax.set_ylabel('Storage Capacity [TWh]')
         
         # Apply exclusion filters
-        for filter0 in exclude_filters.keys():
-            print('Filtering %s from'%(str(exclude_filters[filter0])), filter0)
-            if type(exclude_filters[filter0]) is list:
-                for val in exclude_filters[filter0]:
-                    df = df.query(f'{filter0} != @val')
-            else:
-                val = exclude_filters[filter0]
-                df = df.query(f'{filter0} != @val')
+        if filters != '':
+            df = df.query(filters)
                 
         (
             df
@@ -286,7 +280,7 @@ def map(ctx, commodity: str, scenario: str, year: int,
     # Get mainresults files
     res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
     
-    if 'N' in scenario:
+    if 'N' in scenario and not 'TransRelaxation' in scenario:
         geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(re.findall('N\d+', scenario)[0].lstrip('N')))
         geofile_region_column = 'cluster_name'
     
@@ -503,7 +497,7 @@ def get(ctx, symbol: str, pars, filters: str, diff: bool):
         df = df.query(filters).pivot_table(index='Scenario', columns=pars, values='Value', aggfunc='sum')
     else:
         df = df.pivot_table(index='Scenario', columns=pars, values='Value', aggfunc='sum')
-    
+   
     # Some HTML formatting
     cell_format = {
     "selector": "td",
@@ -562,11 +556,10 @@ def adequacy(ctx, scenario: str):
     ## Get energy not served
     ENS = df.pivot_table(index=['Season', 'Time'], columns='Commodity',
                           values='Value', aggfunc='sum')
-    print('Energy not served [TWh]')
+    print('Energy not served [TWh] (first four rows) and Loss of load expectation (h) in the next four rows:')
     print((ENS.sum() / 1e6).to_string(header=None))
     
     ## Get hours with loss of load
-    print('Loss of load expectation [h]')
     print(ENS.count().to_string(header=None))
 
 

@@ -4,7 +4,7 @@
 # conda activate spatialstudy
 
 # Send all arguments to python script
-python analysis/analyse.py $@
+python analysis/analyse.py "$@"
 # Based on the parsed options, run different Python scripts
 # if [[ "$1" == "--gencap" ||  "$1" == "--stocap" ]]; then
 #     python analysis/analysis.py "$@"
