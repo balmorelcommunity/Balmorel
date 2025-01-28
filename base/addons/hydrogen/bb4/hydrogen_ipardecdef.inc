@@ -29,6 +29,8 @@ IHYDROGEN_DH2_AREA_T_Y(Y,IA,S,T)  = (HYDROGEN_DH2(Y,IA)*HYDROGEN_DH2_VAR_T(IA,S,
 * therefore set a default and update if investments are intended.
 * Even though IXH2K_HASORPOT and IXH2KN are sets, it is convenient to define them here
 
+
+$ifi not %h2_transmission_definition% == 'region' $goto AREA_TRANSMISSION
 PARAMETER IYHASANNUITYXH2(Y,Y)           "Binary parameter to establish whether the annuity of an investment of a H2 transmission line investment made in Y (first index) should be paid in the time period Y (second index) (0,1)";
 SET IXH2K_HASORPOT(Y,IRRRE,IRRRI)        "H2 transmission lines with existing or potentially invested capacity current year";
 SET IXH2KN(Y,IRRRE,IRRRI)                "Pair of regions that may get new H2 transmission capacity, yearly dependent";
@@ -119,4 +121,102 @@ LOOP(Y$(ORD(Y) GT 1),
   );
 );
 
+
+$label AREA_TRANSMISSION
+$ifi not %h2_transmission_definition% == 'area' $goto REGION_TRANSMISSION
+
+
+PARAMETER IYHASANNUITYXH2(Y,Y)           "Binary parameter to establish whether the annuity of an investment of a H2 transmission line investment made in Y (first index) should be paid in the time period Y (second index) (0,1)";
+SET IXH2K_HASORPOT(Y,IAAAE,IAAAI)        "H2 transmission lines with existing or potentially invested capacity current year";
+SET IXH2KN(Y,IAAAE,IAAAI)                "Pair of regions that may get new H2 transmission capacity, yearly dependent";
+SET IXH2KN_NGTOH2(Y,IAAAE,IAAAI)         "Pair of regions that may get new Conversion of existing natural gas pipe to H2 transmission capacity, yearly dependent";
+PARAMETER IXH2KRATE(IAAAE,IAAAI,S,T)     "H2 Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)";
+
+IXH2KRATE(IAE,IAI,S,T) = XH2KRATE(IAE,IAI,S,T);
+IXH2K_HASORPOT(Y,IAE,IAI) = YES$XH2KFX(Y,IAE,IAI);
+IXH2KN(Y,IAE,IAI)=NO;
+IXH2KN_NGTOH2(Y,IAE,IAI)=NO;
+
+$ifi not %H2TransInvest%==yes IYHASANNUITYXH2(IYALIAS,Y)= 0;
+
+$ifi not %H2TransInvest%==yes $goto H2_Transmission_investments_end2
+
+*IYHASANNUITYXH2 CALCULATION
+LOOP(IYALIAS,
+  LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)),
+    IINVYEARX_LEFT(IYALIAS,Y)=LIFETIME_XH2;
+  );
+);
+
+LOOP(IYALIAS,
+  ILOOPBREAK=0;
+  IN_INV_X(IYALIAS)=ROUND(IWEIGHTY(IYALIAS)/LIFETIME_XH2);
+*Correction of inv
+  IF ( IN_INV_X(IYALIAS) EQ 0,
+    IN_INV_X(IYALIAS)=1;
+  );
+  LOOP(Y$(ORD(Y) GE ORD(IYALIAS) AND (ILOOPBREAK EQ 0)),
+
+*First year's annuity
+    IF ( ORD(Y) EQ ORD(IYALIAS),
+      IYHASANNUITYXH2(IYALIAS,Y)= 1;
+      IF(IINVYEARX_LEFT(IYALIAS,Y)*IN_INV_X(IYALIAS) LE IWEIGHTY(Y),
+      ILOOPBREAK=1;
+      );
+      IINVYEARX_LEFT(IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=LIFETIME_XH2*IN_INV_X(IYALIAS)-IWEIGHTY(Y);
+    );
+*Remaining year's annuity
+    IF ( ORD(Y) GT ORD(IYALIAS),
+      IF ( IINVYEARX_LEFT(IYALIAS,Y) GT IWEIGHTY(Y) ,
+        IYHASANNUITYXH2(IYALIAS,Y)= 1;
+        IINVYEARX_LEFT(IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2))=IINVYEARX_LEFT(IYALIAS,Y)-IWEIGHTY(Y);
+      );
+      IF ( (IINVYEARX_LEFT(IYALIAS,Y) GE IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(IYALIAS,Y) LE IWEIGHTY(Y)) ,
+        IYHASANNUITYXH2(IYALIAS,Y)= 1;
+        ILOOPBREAK=1;
+      );
+      IF ( (IINVYEARX_LEFT(IYALIAS,Y) LT IWEIGHTY(Y)/2) AND (IINVYEARX_LEFT(IYALIAS,Y) LE IWEIGHTY(Y)) ,
+        IYHASANNUITYXH2(IYALIAS,Y)= 0;
+        ILOOPBREAK=1;
+      );
+    );
+  );
+);
+
+
+IXH2KN(Y,IAE,IAI)$(XH2INVCOST(Y,IAE,IAI) AND XH2INVCOST(Y,IAE,IAI) LT INF AND (XH2INVESTSTART LE YVALUE(Y))) = YES;
+IXH2KN_NGTOH2(Y,IAE,IAI)$(XH2INVCOST_NGTOH2(Y,IAE,IAI) AND XH2INVCOST_NGTOH2(Y,IAE,IAI) LT INF AND (XH2INVESTSTART LE YVALUE(Y))) = YES;
+IXH2K_HASORPOT(Y,IAE,IAI)$(XH2INVCOST(Y,IAE,IAI) AND XH2INVCOST(Y,IAE,IAI) LT INF AND (XH2INVESTSTART LE YVALUE(Y))) = YES;
+IXH2K_HASORPOT(Y,IAE,IAI)$(XH2INVCOST_NGTOH2(Y,IAE,IAI) AND XH2INVCOST_NGTOH2(Y,IAE,IAI) LT INF AND (XH2INVESTSTART LE YVALUE(Y))) = YES;
+
+*These loops makes sure that if you invest in one line in the year Y, you can use this line in the future, even if you do not allow for investments on this line in the future
+LOOP(Y$(ORD(Y) GT 1),
+  LOOP(IAE,
+    LOOP(IAI,
+      IF ((XH2INVCOST(Y-1,IAE,IAI) AND XH2INVCOST(Y-1,IAE,IAI) LT INF AND (XH2INVESTSTART LE YVALUE(Y))),
+        IXH2K_HASORPOT(Y,IAE,IAI)=IXH2KN(Y,IAE,IAI)+YES$XH2KFX(Y,IAE,IAI);
+      );
+      LOOP(IYALIAS2$((ORD(IYALIAS2) GE ORD(Y)) AND (ORD(IYALIAS2) NE CARD(IYALIAS2))),
+      IXH2K_HASORPOT(Y+1,IAE,IAI)= IXH2K_HASORPOT(Y+1,IAE,IAI)+IXH2KN(Y,IAE,IAI);
+      );
+    );
+  );
+);
+
+LOOP(Y$(ORD(Y) GT 1),
+  LOOP(IAE,
+    LOOP(IAI,
+      IF ((XH2INVCOST_NGTOH2(Y-1,IAE,IAI) AND XH2INVCOST_NGTOH2(Y-1,IAE,IAI) LT INF AND (XH2INVESTSTART LE YVALUE(Y))),
+        IXH2K_HASORPOT(Y,IAE,IAI)=IXH2KN_NGTOH2(Y,IAE,IAI)+YES$XH2KFX(Y,IAE,IAI);
+      );
+      LOOP(IYALIAS2$((ORD(IYALIAS2) GE ORD(Y)) AND (ORD(IYALIAS2) NE CARD(IYALIAS2))),
+      IXH2K_HASORPOT(Y+1,IAE,IAI)= IXH2K_HASORPOT(Y+1,IAE,IAI)+IXH2KN_NGTOH2(Y,IAE,IAI);
+      );
+    );
+  );
+);
+
+
+$label  H2_Transmission_investments_end2
+$label REGION_TRANSMISSION
 $label  H2_Transmission_investments_end

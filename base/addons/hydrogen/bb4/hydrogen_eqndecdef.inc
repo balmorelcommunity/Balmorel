@@ -71,14 +71,15 @@ QHYDROGEN_EQ(IY411,IR,IS3,T)..
    IHYDROGEN_DH2_REGION_T_Y(IY411,IR,IS3,T)/(1-DISLOSS_H2(IR))+
 
 $ifi %flexible_h2_space%==yes   VGE_T_FLEXDH2(IY411,IR,IS3,T)/(1-DISLOSS_H2(IR))  +
-$ifi %generic_synfuel%==yes    SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL)$(RRRAAA(IR,IA)),VSYNFUEL_G_T(IY411,IA,IHYDROGEN_H2TOSYNFUEL,IS3,T)/GDATA(IHYDROGEN_H2TOSYNFUEL,'GDFE')) +
+$ifi %generic_synfuel%==yes $ifi %h2_transmission_definition%=='region'    SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL)$(RRRAAA(IR,IA)),VSYNFUEL_G_T(IY411,IA,IHYDROGEN_H2TOSYNFUEL,IS3,T)/GDATA(IHYDROGEN_H2TOSYNFUEL,'GDFE')) +
     SUM(IA$RRRAAA(IR,IA),IHYDROGEN_DH2_AREA_T_Y(IY411,IA,IS3,T)/(1-DISLOSS_H2(IA)))
    + SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2FUEL)$(RRRAAA(IR,IA)),VGE_T(IY411,IA,IHYDROGEN_GH2FUEL,IS3,T)/GDATA(IHYDROGEN_GH2FUEL,'GDFE'))
     + SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2TOBIOMETH)$(RRRAAA(IR,IA)),VGBIOMETH_T(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)/GDATA(IHYDROGEN_GH2TOBIOMETH,'GDFE'))
   + SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GBIOGASMETHANATION)$(RRRAAA(IR,IA)),VGBIOGASMETHANATION_T(IY411,IA,IHYDROGEN_GBIOGASMETHANATION,IS3,T)*METHANATION_DH2(IHYDROGEN_GBIOGASMETHANATION))
 
-- (SUM(IRE$IXH2K_HASORPOT(IY411,IRE,IR), VXH2_T(IY411,IRE,IR,IS3,T)*(1-XH2LOSS(IRE,IR))))                      !! Import to IR
-+ (SUM(IRI$IXH2K_HASORPOT(IY411,IR,IRI), VXH2_T(IY411,IR,IRI,IS3,T)))                                          !! Export from IR
+
+$ifi %h2_transmission_definition% == 'region' - (SUM(IRE$IXH2K_HASORPOT(IY411,IRE,IR), VXH2_T(IY411,IRE,IR,IS3,T)*(1-XH2LOSS(IRE,IR))))                      !! Import to IR
+$ifi %h2_transmission_definition% == 'region' + (SUM(IRI$IXH2K_HASORPOT(IY411,IR,IRI), VXH2_T(IY411,IR,IRI,IS3,T)))                                          !! Export from IR
 
 
 $include "../../base/addons/_hooks/qhydrogen_eq.inc"
@@ -136,7 +137,7 @@ $label no_flexible_h2_space
 * Hydrogen production equal demand on area level:
 * Prod + OutputStorage - InputStorage = DemandTransport + DemandPower + DemandBioRefinery + other
 
-QHYDROGEN_EQ_AREA(IY411,IA,IS3,T)$HYDROGEN_DH2(IY411,IA)..
+QHYDROGEN_EQ_AREA(IY411,IA,IS3,T)..
    SUM(IHYDROGEN_GETOH2$IAGK_HASORPOT(IY411,IA,IHYDROGEN_GETOH2),VGE_T(IY411,IA,IHYDROGEN_GETOH2,IS3,T)*GDATA(IHYDROGEN_GETOH2,'GDFE')) +
    SUM(IHYDROGEN_GETOHH2$IAGK_HASORPOT(IY411,IA,IHYDROGEN_GETOHH2),VGE_T(IY411,IA,IHYDROGEN_GETOHH2,IS3,T)*GDATA(IHYDROGEN_GETOHH2,'GDFE'))+
    SUM(IHYDROGEN_GEHTOH2$IAGK_HASORPOT(IY411,IA,IHYDROGEN_GEHTOH2),VGE_T(IY411,IA,IHYDROGEN_GEHTOH2,IS3,T)*GDATA(IHYDROGEN_GEHTOH2,'GDFE')) +
@@ -148,6 +149,10 @@ QHYDROGEN_EQ_AREA(IY411,IA,IS3,T)$HYDROGEN_DH2(IY411,IA)..
    + SUM(IHYDROGEN_GH2FUEL$IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2FUEL),VGE_T(IY411,IA,IHYDROGEN_GH2FUEL,IS3,T)/GDATA(IHYDROGEN_GH2FUEL,'GDFE'))
    + SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2TOBIOMETH),VGBIOMETH_T(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)/GDATA(IHYDROGEN_GH2TOBIOMETH,'GDFE'))
    + SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GBIOGASMETHANATION),VGBIOGASMETHANATION_T(IY411,IA,IHYDROGEN_GBIOGASMETHANATION,IS3,T)*METHANATION_DH2(IHYDROGEN_GBIOGASMETHANATION))
+
+$ifi %generic_synfuel%==yes $ifi %h2_transmission_definition%=='area'    + SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL), VSYNFUEL_G_T(IY411,IA,IHYDROGEN_H2TOSYNFUEL,IS3,T)/GDATA(IHYDROGEN_H2TOSYNFUEL,'GDFE')) 
+$ifi %h2_transmission_definition% == 'area' - (SUM(IAE$IXH2K_HASORPOT(IY411,IAE,IA), VXH2_T(IY411,IAE,IA,IS3,T)*(1-XH2LOSS(IAE,IA))))                      !! Import to IA
+$ifi %h2_transmission_definition% == 'area' + (SUM(IAI$IXH2K_HASORPOT(IY411,IA,IAI), VXH2_T(IY411,IA,IAI,IS3,T)))                                          !! Export from IA
 
 $include "../../base/addons/_hooks/qhydrogen_eq_area.inc"
 ;
@@ -264,6 +269,7 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IHYDROGEN_GH2TOBIOMETH)$IGDECOMEX
 
 
 *Hydrogen pipe transmission
+$ifi not %h2_transmission_definition% == 'region' $goto AREA_TRANSMISSION
 
 EQUATIONS
 QXH2K_UP(Y,IRRRE,IRRRI,S,T)           "H2 transmission capacity constraint (MW)"
@@ -286,7 +292,7 @@ QXH2K_UP(IY411,IRE,IRI,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IRE,I
      =G=  VXH2_T(IY411,IRE,IRI,IS3,T)
 ;
 
-*"NOT FINISHED, TODO, Accumulated new heat transmission investments available at beginning of next year (MW)"
+*"NOT FINISHED, TODO, Accumulated new hydrogen transmission investments available at beginning of next year (MW)"
 QXH2KNACCUMNET(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IRE,IRI))..
   VXH2KNACCUMNET(IY411,IRE,IRI)  !! End of this year's VXH2KNACCUMNET (available at beginning of next year)'
      =E=
@@ -294,7 +300,7 @@ QXH2KNACCUMNET(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IRE,IR
 
 ;
 
-*"NOT FINISHED, TODO, Accumulated new heat transmission investments available at beginning of next year (MW)"
+*"NOT FINISHED, TODO, Accumulated new hydrogen transmission investments available at beginning of next year (MW)"
 QXH2KNACCUMNET_NGTOH2(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IRE,IRI))..
   VXH2KNACCUMNET_NGTOH2(IY411,IRE,IRI)  !! End of this year's VXH2KNACCUMNET (available at beginning of next year)'
      =E=
@@ -329,6 +335,75 @@ QVXH2KN_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
 
 QXH2LAMBDA_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
   SUM(XES,VXH2LAMBDA(IY411,IRE,IRI,XES)) =E= 1;
+
+$label AREA_TRANSMISSION
+$ifi not %h2_transmission_definition% == 'area' $goto REGION_TRANSMISSION
+
+EQUATIONS
+QXH2K_UP(Y,IAAAE,IAAAI,S,T)           "H2 transmission capacity constraint (MW)"
+QXH2KNACCUMNET(Y,IAAAE,IAAAI)         "NOT FINISHED, TODO, Accumulated new H2 transmission investments available at beginning of next year (MW)"
+QXH2KNACCUMNET_NGTOH2(Y,IAAAE,IAAAI)  "NOT FINISHED, TODO, Accumulated new investments in conversion of existing natural gas pipe to H2 transmission available at beginning of next year (MW)"
+QXH2INVSYMMETRY(Y,IAAAE,IAAAI)        "H2 Transmission investments are set symetric(MW)"
+QXH2INVSYMMETRY_NGTOH2(Y,IAAAE,IAAAI) "Conversion of existing natural gas pipe to H2 Transmission investments are set symetric(MW)"
+QXH2KMAX_NGTOH2(Y,IAAAE,IAAAI)        "Maximum conversion of existing natural gas pipe to H2 transmission capacity between regions"
+*Equations for modelling economy of scale
+QVXH2KN_ES(YYY,IAAAE,IAAAI)  "Equation to ensure the proper H2 capacity when using SOS2 variables"
+QXH2LAMBDA_ES(YYY,IAAAE,IAAAI) "Equation to ensure all the Lambda variables are equal to 1 for the same H2 transmission line"
+;
+
+*"H2 transmission capacity constraint (MW)"
+QXH2K_UP(IY411,IAE,IAI,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IAE,IAI)) OR SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IAE,IAI)))..
+   (  XH2KFX(IY411,IAE,IAI)
+      + VXH2KNACCUMNET(IY411,IAE,IAI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IAE,IAI))
+      + VXH2KNACCUMNET_NGTOH2(IY411,IAE,IAI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IAE,IAI))
+    )*(1$(NOT IXH2KRATE(IAE,IAI,IS3,T))+IXH2KRATE(IAE,IAI,IS3,T))
+     =G=  VXH2_T(IY411,IAE,IAI,IS3,T)
+;
+
+*"NOT FINISHED, TODO, Accumulated new hydrogen transmission investments available at beginning of next year (MW)"
+QXH2KNACCUMNET(IY411,IAE,IAI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IAE,IAI))..
+  VXH2KNACCUMNET(IY411,IAE,IAI)  !! End of this year's VXH2KNACCUMNET (available at beginning of next year)'
+     =E=
+  SUM(IY402$IY411PREVY(IY411,IY402), VXH2KNACCUMNET(IY402,IAE,IAI)$SUM(Y$(YVALUE(Y) LT YVALUE(IY411)),IXH2KN(Y,IAE,IAI))) + VXH2KN(IY411,IAE,IAI)$IXH2KN(IY411,IAE,IAI)  !! VXH2KNVACCUMNET available at end of previous(i.e., start of this) year PLUS investment during this year
+
+;
+
+*"NOT FINISHED, TODO, Accumulated new hydrogen transmission investments available at beginning of next year (MW)"
+QXH2KNACCUMNET_NGTOH2(IY411,IAE,IAI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IAE,IAI))..
+  VXH2KNACCUMNET_NGTOH2(IY411,IAE,IAI)  !! End of this year's VXH2KNACCUMNET (available at beginning of next year)'
+     =E=
+  SUM(IY402$IY411PREVY(IY411,IY402), VXH2KNACCUMNET_NGTOH2(IY402,IAE,IAI)$SUM(Y$(YVALUE(Y) LT YVALUE(IY411)),IXH2KN(Y,IAE,IAI))) + VXH2KN_NGTOH2(IY411,IAE,IAI)$IXH2KN_NGTOH2(IY411,IAE,IAI)  !! VXH2KNVACCUMNET_NGTOH2 available at end of previous(i.e., start of this) year PLUS investment during this year
+
+;
+
+* "Transmission investments are set symetric(MW)"
+QXH2INVSYMMETRY(IY411,IAE,IAI)$IXH2KN(IY411,IAE,IAI)..
+   VXH2KN(IY411,IAE,IAI)
+         =E=
+   VXH2KN(IY411,IAI,IAE)
+;
+
+* "Transmission investments are set symetric(MW)"
+QXH2INVSYMMETRY_NGTOH2(IY411,IAE,IAI)$IXH2KN_NGTOH2(IY411,IAE,IAI)..
+   VXH2KN_NGTOH2(IY411,IAE,IAI)
+         =E=
+   VXH2KN_NGTOH2(IY411,IAI,IAE)
+;
+
+*"Maximum H2 transmission capacity between regions"
+QXH2KMAX_NGTOH2(IY411,IAE,IAI)$XH2MAXK_NGTOH2(IY411,IAE,IAI)..
+    XH2MAXK_NGTOH2(IY411,IAE,IAI)
+     =G=
+    VXH2KNACCUMNET_NGTOH2(IY411,IAE,IAI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IAE,IAI))
+;
+
+
+QVXH2KN_ES(IY411,IAE,IAI)$(IXH2KN(IY411,IAI,IAE) AND (IXH2KN_ES(IAE,IAI)))..
+   VXH2KN(IY411,IAE,IAI) =E= SUM(XES,VXH2LAMBDA(IY411,IAE,IAI,XES)*XH2KN_ES(IAE,IAI,XES));
+
+QXH2LAMBDA_ES(IY411,IAE,IAI)$(IXH2KN(IY411,IAI,IAE) AND (IXH2KN_ES(IAE,IAI)))..
+  SUM(XES,VXH2LAMBDA(IY411,IAE,IAI,XES)) =E= 1;
+$label REGION_TRANSMISSION
 
 
 $ifi not %generic_synfuel%==yes $goto NO_GENERIC_SYNFUEL

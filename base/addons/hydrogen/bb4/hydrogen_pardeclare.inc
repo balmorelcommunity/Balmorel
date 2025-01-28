@@ -22,7 +22,8 @@ GBIOMETHANE_T(YYY,AAA,GGG,SSS,TTT)      'Synthetic natural gas generation (MW)  
 GBIOGASMETHANATION_T(YYY,AAA,GGG,SSS,TTT)      'Biomethane generation (MW) from biogas methanation  to be transferred to future runs'
 GBIOGASUPGRADING_T(YYY,AAA,GGG,SSS,TTT)      'Biomethane generation (MW)from biogas upgrading  to be transferred to future runs'
 
-HYDROGEN_PRICE(YYY,RRR,SSS,TTT)                'Hydrogen price (money/MWh)  to be transferred to future runs'
+$ifi %h2_transmission_definition%==region HYDROGEN_PRICE(YYY,RRR,SSS,TTT)                'Hydrogen price (money/MWh)  to be transferred to future runs'
+$ifi %h2_transmission_definition%==area   HYDROGEN_PRICE(YYY,AAA,SSS,TTT)                'Hydrogen price (money/MWh)  to be transferred to future runs'
 BIOMETHANE_PRICE(YYY,SSS,TTT)            'Biomethane price (money/MWh)  to be transferred to future runs'
 ;
 
@@ -34,6 +35,7 @@ PARAMETER DISLOSS_H2(CCCRRRAAA)            'Distribution loss H2';
 
 * Transmission capacity (MW) between regions IRE (exporting) and  IRI (importing)
 * at the beginning of current simulation year:
+$ifi %h2_transmission_definition%==area $goto AREA_TRANSMISSION
 PARAMETER XH2KFX(YYY,IRRRE,IRRRI) "H2 transmission capacity between regions at beginning of year (MW)";
 
 PARAMETER XH2INVCOST(YYY,IRRRE,IRRRI)  "Investment cost in new H2 transmission capacity (Money/MW)";
@@ -59,3 +61,33 @@ PARAMETER  XH2_T(Y,IRRRE,IRRRI,S,T)      "H2 export from region IRRRE to IRRRI t
 
 PARAMETER XH2INVCOST_ES(YYY,IRRRE,IRRRI,XES) 'Investment cost in H2 transmission lines at the beginning of each XES (money/XKN_ES )';
 PARAMETER XH2KN_ES(IRRRE,IRRRI,XES) 'Installed capacity in H2 transmission lines at the beginning of each XES (MW)';
+$label AREA_TRANSMISSION
+
+
+$ifi %h2_transmission_definition%==region $goto REGION_TRANSMISSION2
+PARAMETER XH2KFX(YYY,IAAAE,IAAAI) "H2 transmission capacity between regions at beginning of year (MW)";
+
+PARAMETER XH2INVCOST(YYY,IAAAE,IAAAI)  "Investment cost in new H2 transmission capacity (Money/MW)";
+* Observe: if INF is entered in XH2INVCOST, this means that no tranmission capacity can be established between the two associated regions.
+
+PARAMETER XH2INVCOST_NGTOH2(YYY,IAAAE,IAAAI)  "Investment cost in conversion of natural grids to  H2 transmission capacity (Money/MW)";
+* Observe: if INF is entered in XH2INVCOST_NGTOH2, this means that no tranmission capacity can be established between the two associated regions.
+
+PARAMETER XH2COST(IAAAE,IAAAI)  "H2 transmission cost between regions (calculated from exported quantity) (Money/MWh)" ;
+
+PARAMETER XH2LOSS(IAAAE,IAAAI)  "H2 transmission loss between regions (calculated from exported quantity) (share)";
+
+PARAMETER XH2KRATE(IAAAE,IAAAI,SSS,TTT)    "H2 Transmission capacity rating (share; non-negative, typically close to 1; default/1/, use eps for 0)" ;
+
+PARAMETER ANNUITYCXH2(CCC) "Transforms investment in H2 transmission lines into annual payment (fraction). Possibly different meaning in BB4";
+
+PARAMETER XH2MAXK_NGTOH2(YYY,IAAAE,IAAAI)  "Max H2 transmission capacity between two regions of potential conversion of natural grids to H2 grids (MW)";
+
+SCALAR    LIFETIME_XH2                   "Lifetime of H2 transmission lines (years)";
+
+PARAMETER  XH2KACCUMNET(YYY,IAAAE,IAAAI) "Resulting H2 transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
+PARAMETER  XH2_T(Y,IAAAE,IAAAI,S,T)      "H2 export from region IAAAE to IAAAI to be transferred to future runs (MW)  to be transferred to future runs";
+
+PARAMETER XH2INVCOST_ES(YYY,IAAAE,IAAAI,XES) 'Investment cost in H2 transmission lines at the beginning of each XES (money/XKN_ES )';
+PARAMETER XH2KN_ES(IAAAE,IAAAI,XES) 'Installed capacity in H2 transmission lines at the beginning of each XES (MW)';
+$label REGION_TRANSMISSION2

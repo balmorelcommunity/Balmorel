@@ -349,9 +349,17 @@ $setglobal generic_synfuel   yes
 $setglobal generic_synfuel_inflex  
 *!option yes
 
+* Set whether synfuel places an area or regional demand
+$setglobal generic_synfuel_h2dem region
+*!option area or region
+
 * Allows investments in hydrogen transport
 $Setglobal H2TransInvest YES
 *!option yes
+
+* Set whether hydrogen transmission investments should be determined at an area or region level
+$setglobal h2_transmission_definition region
+*!option area or region
 
 SCALAR XH2INVESTSTART 'Year from which endogenous decisions in H2 transmission capacities are allowed' ;
 XH2INVESTSTART= 2030;

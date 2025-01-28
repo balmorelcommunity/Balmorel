@@ -58,9 +58,21 @@ IHYDROGEN(G)= IHYDROGEN_GEHTOH2(G)+IHYDROGEN_GETOHH2(G)+ IHYDROGEN_GETOH2(G) + I
 
 
 *ECONOMIES OF SCALE
+$ifi not %h2_transmission_definition% == 'region' $goto AREA_TRANSMISSION
 SET IXH2KN_ES(IRRRE,IRRRI) "H2 Transmission lines whose cost depends on economy of scale";
 
 IXH2KN_ES(IRRRE,IRRRI)$SUM(XES,XH2KN_ES(IRRRE,IRRRI,XES))=YES;
 
 $ifi not %H2TransInvest%==yes  IXH2KN_ES(IRRRE,IRRRI)=NO;
 $ifi not %ES_H2TRANS%==yes  IXH2KN_ES(IRRRE,IRRRI)=NO;
+
+$label AREA_TRANSMISSION
+
+$ifi not %h2_transmission_definition% == 'area' $goto REGION_TRANSMISSION
+SET IXH2KN_ES(IAAAE,IAAAI) "H2 Transmission lines whose cost depends on economy of scale";
+
+IXH2KN_ES(IAAAE,IAAAI)$SUM(XES,XH2KN_ES(IAAAE,IAAAI,XES))=YES;
+
+$ifi not %H2TransInvest%==yes  IXH2KN_ES(IAAAE,IAAAI)=NO;
+$ifi not %ES_H2TRANS%==yes  IXH2KN_ES(IAAAE,IAAAI)=NO;
+$label REGION_TRANSMISSION

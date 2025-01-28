@@ -75,9 +75,12 @@ PARAMETER H_BALANCE_YCRAST(Y,C,RRR,AAA,H_BAL_TYPE,SSS,TTT,UNITS) "Hourly heat ba
 $ifi %HYDROGEN%==yes PARAMETER H2_PRICE_YCR(Y,C,RRR,PRICE_CATEGORY,UNITS) "Average Hydrogen Prices for each region (money/MWh)";
 $ifi %HYDROGEN%==yes PARAMETER H2_PRICE_YCRST(Y,C,RRR,SSS,TTT,UNITS) "Hourly hydrogen Prices for each region (money/MWh)";
 $ifi %HYDROGEN%==yes PARAMETER BIOMETH_PRICE_YST(Y,SSS,TTT,UNITS) "Hourly biomethane Prices for each region (money/MWh)";
-$ifi %HYDROGEN%==yes PARAMETER XH2_CAP_YCR(Y,C,IRRRE,IRRRI,VARIABLE_CATEGORY,UNITS) "H2 Transmission capacity for each year, country, from region to region (GW)";
-$ifi %HYDROGEN%==yes PARAMETER XH2_FLOW_YCRST(Y,C,IRRRE,IRRRI,SSS,TTT,UNITS) "H2 Transmission flow for each year, country, from region to region, for each season and hour (MWh)";
-$ifi %HYDROGEN%==yes PARAMETER XH2_FLOW_YCR(Y,C,IRRRE,IRRRI,UNITS) "H2 Transmission flow for each year, country, from region to region (TWh)";
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='region' PARAMETER XH2_CAP_YCR(Y,C,IRRRE,IRRRI,VARIABLE_CATEGORY,UNITS) "H2 Transmission capacity for each year, country, from region to region (GW)";
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='region' PARAMETER XH2_FLOW_YCRST(Y,C,IRRRE,IRRRI,SSS,TTT,UNITS) "H2 Transmission flow for each year, country, from region to region, for each season and hour (MWh)";
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='region' PARAMETER XH2_FLOW_YCR(Y,C,IRRRE,IRRRI,UNITS) "H2 Transmission flow for each year, country, from region to region (TWh)";
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='area' PARAMETER XH2_CAP_YCR(Y,C,IAAAE,IAAAI,VARIABLE_CATEGORY,UNITS) "H2 Transmission capacity for each year, country, from region to region (GW)";
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='area' PARAMETER XH2_FLOW_YCRST(Y,C,IAAAE,IAAAI,SSS,TTT,UNITS) "H2 Transmission flow for each year, country, from region to region, for each season and hour (MWh)";
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='area' PARAMETER XH2_FLOW_YCR(Y,C,IAAAE,IAAAI,UNITS) "H2 Transmission flow for each year, country, from region to region (TWh)";
 $ifi %HYDROGEN%==yes PARAMETER ECO_XH2_YCR(Y,C,RRR,IRRRI,CATEGORY,SUBCATEGORY,UNITS) "H2 Transmission Economic Output for each year, country and region (Mmoney)";
 $ifi %HYDROGEN%==yes PARAMETER H2_DEMAND_YCRST(Y,C,RRR,SSS,TTT,VARIABLE_CATEGORY,UNITS) "Aggregated Hourly H2 Demand (MWh)";
 $ifi %HYDROGEN%==yes PARAMETER H2_DEMAND_YCR(Y,C,RRR,VARIABLE_CATEGORY,UNITS) "Aggregated annual H2 Demand (TWh)";
@@ -811,7 +814,8 @@ $label NO_GENERIC_SYNFUEL3
 
 H2_DEMAND_YCRST(Y,C,IR,S,T,'TRANS_LOSSES','MWh')$CCCRRR(C,IR)=
 *TRANSMISSION LOSSES
-+SUM(IRE$IXH2K_HASORPOT(Y,IRE,IR),VXH2_T.L(Y,IRE,IR,S,T)*XH2LOSS(IRE,IR));
+$ifi %h2_transmission_definition%=='region' +SUM(IRE$IXH2K_HASORPOT(Y,IRE,IR),VXH2_T.L(Y,IRE,IR,S,T)*XH2LOSS(IRE,IR));
+$ifi %h2_transmission_definition%=='area'   +SUM((IA, IAE)$(IXH2K_HASORPOT(Y,IAE,IA) AND RRRAAA(IR, IA)), VXH2_T.L(Y,IAE,IA,S,T)*XH2LOSS(IAE,IA));
 
 
 *ANNUAL DEMAND
@@ -945,22 +949,20 @@ $ifi NOT %hydrogen%==yes $goto no_hydrogentrans
 * -------------------- H2 TRANSMISSION CAPACITY -----------------------
 
 ** EXOGENOUS H2 TRANSMISSION CAPACITY
-
+$ifi %h2_transmission_definition%=='area' $goto AREA_TRANSMISSION1 
 XH2_CAP_YCR(Y,C,IR,IRI,'EXOGENOUS','GW')$(CCCRRR(C,IR) AND XH2KFX(Y,IR,IRI))=
 IOF0001*XH2KFX(Y,IR,IRI)
 ;
 
 ** ENDOGENOUS H2 TRANSMISSION CAPACITY
 
-$ifi not %H2TransInvest%==yes $goto H2_Transmission_investments_end
+$ifi not %H2TransInvest%==yes $goto H2_Transmission_investments_end1
 XH2_CAP_YCR(Y,C,IR,IRI,'ENDOGENOUS','GW')$(CCCRRR(C,IR) AND IXH2K_HASORPOT(Y,IR,IRI))=
 IOF0001*(VXH2KNACCUMNET.L(Y,IR,IRI)$SUM(IYALIAS2$(YVALUE(IYALIAS2) LE YVALUE(Y)),IXH2KN(IYALIAS2,IR,IRI))
           +VXH2KNACCUMNET_NGTOH2.L(Y,IR,IRI)$SUM(IYALIAS2$(YVALUE(IYALIAS2) LE YVALUE(Y)),IXH2KN_NGTOH2(IYALIAS2,IR,IRI)))
 ;
-$label  H2_Transmission_investments_end
 
-
-* -------------------- END OF HEAT TRANSMISSION CAPACITY -----------------------
+* -------------------- END OF H2 TRANSMISSION CAPACITY -----------------------
 
 * -------------------- H2 TRANSMISSION FLOW -----------------------
 
@@ -976,6 +978,48 @@ SUM((S,T),IHOURSINST(S,T)*IHOURFRAC*VXH2_T.L(Y,IR,IRI,S,T))/IOF1000000;
 ;
 
 * -------------------- END OF H2 TRANSMISSION FLOW -----------------------
+
+$label  H2_Transmission_investments_end1
+$label AREA_TRANSMISSION1
+$ifi %h2_transmission_definition%=='region' $goto REGION_TRANSMISSION1
+XH2_CAP_YCR(Y,C,IA,IAI,'EXOGENOUS','GW')$(XH2KFX(Y,IA,IAI))=
+SUM(IR$(CCCRRR(C,IR) AND RRRAAA(IR, IA)), 
+IOF0001*XH2KFX(Y,IA,IAI)
+);
+
+** ENDOGENOUS H2 TRANSMISSION CAPACITY
+
+$ifi not %H2TransInvest%==yes $goto H2_Transmission_investments_end2
+XH2_CAP_YCR(Y,C,IA,IAI,'ENDOGENOUS','GW')$(IXH2K_HASORPOT(Y,IA,IAI))=
+SUM(IR$(CCCRRR(C,IR) AND RRRAAA(IR, IA)), 
+IOF0001*(VXH2KNACCUMNET.L(Y,IA,IAI)$SUM(IYALIAS2$(YVALUE(IYALIAS2) LE YVALUE(Y)),IXH2KN(IYALIAS2,IA,IAI))
+          +VXH2KNACCUMNET_NGTOH2.L(Y,IA,IAI)$SUM(IYALIAS2$(YVALUE(IYALIAS2) LE YVALUE(Y)),IXH2KN_NGTOH2(IYALIAS2,IA,IAI)))
+);
+$label  H2_Transmission_investments_end2
+
+* -------------------- END OF H2 TRANSMISSION CAPACITY -----------------------
+
+* -------------------- H2 TRANSMISSION FLOW -----------------------
+
+** HOURLY H2 TRANSMISSION FLOW
+
+XH2_FLOW_YCRST(Y,C,IA,IAI,S,T,'MWh')$(IXH2K_HASORPOT(Y,IA,IAI))=
+SUM(IR$(CCCRRR(C,IR) AND RRRAAA(IR, IA)), 
+VXH2_T.L(Y,IA,IAI,S,T)
+)
+;
+
+** ANNUAL H2 TRANSMISSION FLOW
+XH2_FLOW_YCR(Y,C,IA,IAI,'TWh')$(IXH2K_HASORPOT(Y,IA,IAI))=
+SUM(IR$(CCCRRR(C,IR) AND RRRAAA(IR, IA)), 
+SUM((S,T),IHOURSINST(S,T)*IHOURFRAC*VXH2_T.L(Y,IA,IAI,S,T))/IOF1000000
+)
+;
+
+* -------------------- END OF H2 TRANSMISSION FLOW -----------------------
+
+
+$label REGION_TRANSMISSION1
 $label no_hydrogentrans
 
 * ---------------------- ECONOMIC OUTPUT ----------------------
@@ -1068,7 +1112,8 @@ $offtext
 $ifi NOT %HYDROGEN%==yes $goto NO_HYDROGEN_PRICE
 
 *HOURLY HYDROGEN PRICE
-H2_PRICE_YCRST(Y,C,IR,S,T,'Money_per_MWh')$CCCRRR(C,IR)=OMONEY*QHYDROGEN_EQ.M(Y,IR,S,T)
+$ifi %h2_transmission_definition%=='region' H2_PRICE_YCRST(Y,C,IR,S,T,'Money_per_MWh')$CCCRRR(C,IR)=OMONEY*QHYDROGEN_EQ.M(Y,IR,S,T)
+$ifi %h2_transmission_definition%=='area'   H2_PRICE_YCRST(Y,C,IR,S,T,'Money_per_MWh')$CCCRRR(C,IR)=SUM(IA$RRRAAA(IR, IA), OMONEY*QHYDROGEN_EQ_AREA.M(Y,IA,S,T))
 $ifi %RollingSeasons%==yes         /IHOURSINTROLLINGSEASON(S,T)
 $ifi not %RollingSeasons%==yes     /IHOURSINST(S,T)
 /IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
@@ -1321,6 +1366,7 @@ $label No_HEATTRANS_costs
 *Hydrogen
 $ifi not %HYDROGEN%==yes $goto No_H2TRANS_costs
 
+$ifi %h2_transmission_definition%=='area' $goto AREA_TRANSMISSION2
 ** TRANSMISSION INVESTMENTS
 ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','H2_TRANSMISSION_CAPITAL_COSTS','Mmoney')$(CCCRRR(C,IR) AND IXH2K_HASORPOT(Y,IR,IRI))=
           OMONEY*IOF0000001*(SUM((IYALIAS2)$((IXH2KN(IYALIAS2,IRI,IR) OR IXH2KN(IYALIAS2,IR,IRI)) AND (NOT (IXKN_ES(IR,IRI) OR IXKN_ES(IRI,IR)))  AND ORD(IYALIAS2) LE ORD(Y)) ,
@@ -1345,7 +1391,42 @@ OMONEY*IOF0000001*SUM((S,T), IHOURSINST(S,T) * (VXH2_T.L(Y,IR,IRI,S,T) * H2_PRIC
 ECO_XH2_YCR(Y,C,IR,IRI,'INCOME','TRANSMISSION_TRADE_INCOME','Mmoney')$(CCCRRR(C,IR) AND IXH2K_HASORPOT(Y,IR,IRI))=
 OMONEY*IOF0000001*SUM((S,T), IHOURSINST(S,T) * (VXH2_T.L(Y,IR,IRI,S,T) * H2_PRICE_YCRST(Y,C,IR,S,T,'Money_per_MWh')));
 
+$label AREA_TRANSMISSION2
+$ifi %h2_transmission_definition%=='region' $goto REGION_TRANSMISSION2 
 
+** TRANSMISSION INVESTMENTS
+ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','H2_TRANSMISSION_CAPITAL_COSTS','Mmoney')$(CCCRRR(C,IR))=
+SUM((IA, IAI)$(RRRAAA(IR, IA) AND RRRAAA(IRI, IAI) AND IXH2K_HASORPOT(Y,IA,IAI)),
+          OMONEY*IOF0000001*(SUM((IYALIAS2)$((IXH2KN(IYALIAS2,IAI,IA) OR IXH2KN(IYALIAS2,IA,IAI)) AND (NOT (IXKN_ES(IR,IRI) OR IXKN_ES(IRI,IR)))  AND ORD(IYALIAS2) LE ORD(Y)) ,
+                                    IOF05*ANNUITYCXH2(C)*IYHASANNUITYXH2(IYALIAS2,Y)*VXH2KN.L(IYALIAS2,IA,IAI)*XH2INVCOST(IYALIAS2,IA,IAI))
+                             +  SUM((IYALIAS2)$((IXH2KN_NGTOH2(IYALIAS2,IAI,IA) OR IXH2KN_NGTOH2(IYALIAS2,IA,IAI)) AND ORD(IYALIAS2) LE ORD(Y)) ,
+                                    IOF05*ANNUITYCXH2(C)*IYHASANNUITYXH2(IYALIAS2,Y)*VXH2KN_NGTOH2.L(IYALIAS2,IA,IAI)*XH2INVCOST_NGTOH2(IYALIAS2,IA,IAI))
+$ifi %ES_H2TRANS%==yes                             +SUM((IYALIAS2)$((IXH2KN(IYALIAS2,IAI,IA) OR IXH2KN(IYALIAS2,IA,IAI)) AND (ORD(IYALIAS2) LE ORD(Y)) AND (IXH2KN_ES(IA,IAI) OR IXH2KN_ES(IAI,IA))),
+$ifi %ES_H2TRANS%==yes      IOF05*ANNUITYCXH2(C)*IYHASANNUITYXH2(IYALIAS2,Y)*SUM(XES,VXH2LAMBDA.L(IYALIAS2,IA,IAI,XES)*XH2INVCOST_ES(IYALIAS2,IA,IAI,XES)))
+$ifi %ES_H2TRANS%==yes                           )
+                            )
+)
+;
+
+** TRANSMISSION FLOW
+ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','H2_TRANSMISSION_OPERATIONAL_COSTS','Mmoney')$(CCCRRR(C,IR))=
+SUM((IA, IAI)$(RRRAAA(IR, IA) AND RRRAAA(IRI, IAI) AND IXH2K_HASORPOT(Y,IA,IAI)),
+OMONEY*IOF0000001*SUM((S,T), IHOURSINST(S,T) * (VXH2_T.L(Y,IA,IAI,S,T) * IHOURFRAC *XH2COST(IA,IAI)))
+);
+
+** TRANSMISSION TRADE COST
+ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','TRANSMISSION_TRADE_COSTS','Mmoney')$(CCCRRR(C,IR))=
+SUM((IA, IAI)$(RRRAAA(IR, IA) AND RRRAAA(IRI, IAI) AND IXH2K_HASORPOT(Y,IA,IAI)),
+OMONEY*IOF0000001*SUM((S,T), IHOURSINST(S,T) * (VXH2_T.L(Y,IA,IAI,S,T) * H2_PRICE_YCRST(Y,C,IR,S,T,'Money_per_MWh')))
+);
+
+** TRANSMISSION TRADE INCOME
+ECO_XH2_YCR(Y,C,IR,IRI,'INCOME','TRANSMISSION_TRADE_INCOME','Mmoney')$(CCCRRR(C,IR))=
+SUM((IA, IAI)$(RRRAAA(IR, IA) AND RRRAAA(IRI, IAI) AND IXH2K_HASORPOT(Y,IA,IAI)),
+OMONEY*IOF0000001*SUM((S,T), IHOURSINST(S,T) * (VXH2_T.L(Y,IA,IAI,S,T) * H2_PRICE_YCRST(Y,C,IR,S,T,'Money_per_MWh')))
+);
+
+$label REGION_TRANSMISSION2
 $label No_H2TRANS_costs
 
 * ------------- END OF COSTS --------------
@@ -1457,11 +1538,13 @@ $label  No_HEATTRANS_costs_2
 
 $ifi not %HYDROGEN%==yes $goto No_H2_costs_2
 OBJ_YCR(Y,C,IR,'H2_TRANSMISSION_CAPITAL_COSTS','Mmoney')$CCCRRR(C,IR)=
-SUM(IRI$IXH2K_HASORPOT(Y,IR,IRI),ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','H2_TRANSMISSION_CAPITAL_COSTS','Mmoney'))
+$ifi %h2_transmission_definition%=='region' SUM(IRI$IXH2K_HASORPOT(Y,IR,IRI),ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','H2_TRANSMISSION_CAPITAL_COSTS','Mmoney'))
+$ifi %h2_transmission_definition%=='area'   SUM(IRI, SUM((IA, IAI)$(RRRAAA(IRI,IAI) AND RRRAAA(IR, IA) AND IXH2K_HASORPOT(Y,IA,IAI)),ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','H2_TRANSMISSION_CAPITAL_COSTS','Mmoney')))
 ;
 
 OBJ_YCR(Y,C,IR,'H2_TRANSMISSION_OPERATIONAL_COSTS','Mmoney')$CCCRRR(C,IR)=
-SUM(IRI$IXH2K_HASORPOT(Y,IR,IRI), ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','H2_TRANSMISSION_OPERATIONAL_COSTS','Mmoney'))
+$ifi %h2_transmission_definition%=='region' SUM(IRI$IXH2K_HASORPOT(Y,IR,IRI), ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','H2_TRANSMISSION_OPERATIONAL_COSTS','Mmoney'))
+$ifi %h2_transmission_definition%=='area'   SUM(IRI, SUM((IA, IAI)$(RRRAAA(IRI,IAI) AND RRRAAA(IR, IA) AND IXH2K_HASORPOT(Y,IA,IAI)), ECO_XH2_YCR(Y,C,IR,IRI,'COSTS','H2_TRANSMISSION_OPERATIONAL_COSTS','Mmoney')))
 ;
 $label  No_H2_costs_2
 
@@ -1769,13 +1852,16 @@ $ifi %HEATTRANS%==yes XH_CAP_YCA(Y,C,IAAAE,IAAAI,VARIABLE_CATEGORY,UNITS)=0;
 $ifi %HEATTRANS%==yes XH_FLOW_YCAST(Y,C,IAAAE,IAAAI,SSS,TTT,UNITS)=0;
 $ifi %HEATTRANS%==yes XH_FLOW_YCA(Y,C,IAAAE,IAAAI,UNITS)=0;
 $ifi %HEATTRANS%==yes ECO_XH_YCRA(Y,C,RRR,AAA,IAAAI,CATEGORY,SUBCATEGORY,UNITS)=0;
-$ifi %HYDROGEN%==yes  XH2_CAP_YCR(Y,C,IRRRE,IRRRI,VARIABLE_CATEGORY,UNITS)=0;
-$ifi %HYDROGEN%==yes  XH2_FLOW_YCRST(Y,C,IRRRE,IRRRI,SSS,TTT,UNITS)=0;
-$ifi %HYDROGEN%==yes  XH2_FLOW_YCR(Y,C,IRRRE,IRRRI,UNITS)=0;
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='region' XH2_CAP_YCR(Y,C,IRRRE,IRRRI,VARIABLE_CATEGORY,UNITS)=0;
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='region' XH2_FLOW_YCRST(Y,C,IRRRE,IRRRI,SSS,TTT,UNITS)=0;
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='region' XH2_FLOW_YCR(Y,C,IRRRE,IRRRI,UNITS)=0;
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='area' XH2_CAP_YCR(Y,C,IAAAE,IAAAI,VARIABLE_CATEGORY,UNITS)=0;
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='area' XH2_FLOW_YCRST(Y,C,IAAAE,IAAAI,SSS,TTT,UNITS)=0;
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='area' XH2_FLOW_YCR(Y,C,IAAAE,IAAAI,UNITS)=0;
 $ifi %HYDROGEN%==yes  ECO_XH2_YCR(Y,C,RRR,IRRRI,CATEGORY,SUBCATEGORY,UNITS)=0;
 $ifi %HYDROGEN%==yes  H2_DEMAND_YCRST(Y,C,RRR,SSS,TTT,VARIABLE_CATEGORY,UNITS)=0;
 $ifi %HYDROGEN%==yes  H2_DEMAND_YCR(Y,C,RRR,VARIABLE_CATEGORY,UNITS)=0;
-
+    
 
 
 

@@ -2706,7 +2706,8 @@ ELECTRICITY_PRICE(Y,IR,S,T)=QEEQ.M(Y,IR,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/
 HEAT_PRICE(Y,IA,S,T)$(SUM(DHUSER, IDH_SUMST(IA,DHUSER))
 $ifi  %HEATTRANS%==yes OR SUM(IAE,IXHK_HASORPOT(Y,IAE,IA)) OR SUM(IAI,IXHK_HASORPOT(Y,IA,IAI))
 )=QHEQ.M(Y,IA,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
-$ifi %HYDROGEN%==yes  HYDROGEN_PRICE(Y,IR,S,T)=QHYDROGEN_EQ.M(Y,IR,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%==region HYDROGEN_PRICE(Y,IR,S,T)=QHYDROGEN_EQ.M(Y,IR,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%==area   HYDROGEN_PRICE(Y,IA,S,T)=QHYDROGEN_EQ_AREA.M(Y,IA,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
 $ifi %HYDROGEN%==yes  BIOMETHANE_PRICE(Y,S,T)=QBIOMETHANE_EQ.M(Y,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
 
 
@@ -2737,7 +2738,8 @@ $ifi %HYDROGEN%==yes  GBIOGASMETHANATION_T(Y,IA,G,S,T)=0;
 $ifi %HYDROGEN%==yes  GBIOGASUPGRADING_T(Y,IA,G,S,T)=0;
 ELECTRICITY_PRICE(Y,IR,S,T)=0;
 HEAT_PRICE(Y,IA,S,T)=0;
-$ifi %HYDROGEN%==yes  HYDROGEN_PRICE(Y,IR,S,T)=0;
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%==region HYDROGEN_PRICE(Y,IR,S,T)=0;
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%==area   HYDROGEN_PRICE(Y,IA,S,T)=0;
 $ifi %HYDROGEN%==yes  BIOMETHANE_PRICE(Y,S,T)=0;
 
 *Fuel use in T to be used in auxils folder "timestep conversion"
@@ -2816,14 +2818,17 @@ $ifi %HYDROGEN%==yes   execute_unload  "../../simex/BIOMETHSTOVOLTSVAL.gdx", BIO
 $ifi %HYDROGEN%==yes   BIOMETHSTOVOLTS(Y,S,T)=0;
 $ifi %HYDROGEN%==yes   BIOMETHSTOVOLTSVAL(Y,S,T)=0;
 
-$ifi %HYDROGEN%==yes    XH2KACCUMNET(Y,IRE,IRI)$IXH2K_HASORPOT(Y,IRE,IRI)=XH2KFX(Y,IRE,IRI)
-$ifi %HYDROGEN%==yes    $ifi %H2TransInvest%==yes +VXH2KNACCUMNET.L(Y,IRE,IRI)
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='region'    XH2KACCUMNET(Y,IRE,IRI)$IXH2K_HASORPOT(Y,IRE,IRI)=XH2KFX(Y,IRE,IRI)
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='region'   $ifi %H2TransInvest%==yes +VXH2KNACCUMNET.L(Y,IRE,IRI)
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='area'    XH2KACCUMNET(Y,IAE,IAI)$IXH2K_HASORPOT(Y,IAE,IAI)=XH2KFX(Y,IAE,IAI)
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='area'   $ifi %H2TransInvest%==yes +VXH2KNACCUMNET.L(Y,IAE,IAI)
 $ifi %HYDROGEN%==yes    ;
 
 $ifi %HYDROGEN%==yes  execute_unload  "../../simex/XH2KACCUMNET.gdx", XH2KACCUMNET;
 
 *Reducing size of export files once they have been exported
-$ifi %HYDROGEN%==yes XH2KACCUMNET(Y,IRE,IRI)=0;
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='region' XH2KACCUMNET(Y,IRE,IRI)=0;
+$ifi %HYDROGEN%==yes $ifi %h2_transmission_definition%=='area' XH2KACCUMNET(Y,IAE,IAI)=0;
 
 
 $ifi %EV%==yes   EV_VSOC_BEV(Y,IR,S,T)$IHASBEV(IR)=VEV_VSOC_BEV.L(Y,IR,S,T);

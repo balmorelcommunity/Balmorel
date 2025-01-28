@@ -8,11 +8,16 @@ POSITIVE VARIABLES
    VBIOMETHSTOVOLTS(Y,SSS,T)             'Energy content of biomethane storage in the beginning of time step T'
    VBIOMETH_STOLOADT(Y,S,T)              'Loading of biomethane storage'
    VBIOMETH_STOUNLOADT(Y,S,T)            'Unloading of biomethane storage'
-   VXH2_T(Y,IRRRE,IRRRI,S,T)             'H2 export from region IRRRE towards IRRRI (MW)'
-   VXH2KN(Y,IRRRE,IRRRI)                 'New H2 transmission capacity (MW)'
-   VXH2KN_NGTOH2(Y,IRRRE,IRRRI)          'New Conversion of existing natural gas pipe to H2 transmission capacity (MW)'
-   VXH2KNACCUMNET(Y,IRRRE,IRRRI)         'Accumulated new H2 transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)'
-   VXH2KNACCUMNET_NGTOH2(Y,IRRRE,IRRRI)  'Accumulated new Conversion of existing natural gas pipe to H2 Transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)'
+$ifi %h2_transmission_definition%=='region'   VXH2_T(Y,IRRRE,IRRRI,S,T)             'H2 export from region IRRRE towards IRRRI (MW)'
+$ifi %h2_transmission_definition%=='region'   VXH2KN(Y,IRRRE,IRRRI)                 'New H2 transmission capacity (MW)'
+$ifi %h2_transmission_definition%=='region'   VXH2KNACCUMNET(Y,IRRRE,IRRRI)         'Accumulated new H2 transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)'
+$ifi %h2_transmission_definition%=='region'   VXH2KN_NGTOH2(Y,IRRRE,IRRRI)          'New Conversion of existing natural gas pipe to H2 transmission capacity (MW)'
+$ifi %h2_transmission_definition%=='region'   VXH2KNACCUMNET_NGTOH2(Y,IRRRE,IRRRI)  'Accumulated new Conversion of existing natural gas pipe to H2 Transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)'
+$ifi %h2_transmission_definition%=='area'   VXH2_T(Y,IAAAE,IAAAI,S,T)             'H2 export from region IAAAE towards IAAAI (MW)'
+$ifi %h2_transmission_definition%=='area'   VXH2KN(Y,IAAAE,IAAAI)                 'New H2 transmission capacity (MW)'
+$ifi %h2_transmission_definition%=='area'   VXH2KNACCUMNET(Y,IAAAE,IAAAI)         'Accumulated new H2 transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)'
+$ifi %h2_transmission_definition%=='area'   VXH2KN_NGTOH2(Y,IAAAE,IAAAI)          'New Conversion of existing natural gas pipe to H2 transmission capacity (MW)'
+$ifi %h2_transmission_definition%=='area'   VXH2KNACCUMNET_NGTOH2(Y,IAAAE,IAAAI)  'Accumulated new Conversion of existing natural gas pipe to H2 Transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)'
    VSYNFUEL_G_T(Y,AAA,G,S,T)             'Production of synfuel'
 
 ;
@@ -25,5 +30,6 @@ VFLEXDH2_SHIFT(Y,RRR) 'how much to shift from one area to area'
 ; 
 $label no_flexible_h2_space
 
-SOS2 VARIABLE VXH2LAMBDA(Y,IRRRE,IRRRI,XES) 'SOS2 Variable for modelling economy of scale';
+$ifi %h2_transmission_definition%=='region' SOS2 VARIABLE VXH2LAMBDA(Y,IRRRE,IRRRI,XES) 'SOS2 Variable for modelling economy of scale';
+$ifi %h2_transmission_definition%=='area'   SOS2 VARIABLE VXH2LAMBDA(Y,IAAAE,IAAAI,XES) 'SOS2 Variable for modelling economy of scale';
 
