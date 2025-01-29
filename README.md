@@ -1,7 +1,7 @@
 # Spatial Aggregation Study
 This branch is used for analysing the effect of various spatial resolutions in Denmark. The pre-processing of raw data is performed using the [following balmorel-preprocessing tool](https://github.com/Mathias157/balmorel-preprocessing/tree/master), and the prepared .inc-files for the fully resolved model can be found in [the data repository](https://github.com/balmorelcommunity/Balmorel_data/tree/dk-highspatialres).
 
-An application is illustrated in the conference poster from EGU24 (see below). Check the egu24-poster tag for applied Balmorel model in this repository and source code in the preprocessing repository.
+An application is illustrated in the conference poster from EGU24 (see below). Check the [EGU24-poster tag](https://github.com/balmorelcommunity/Balmorel/tree/egu24-poster) for applied Balmorel model in this repository and source code in the preprocessing repository.
 ![Application example](https://github.com/Mathias157/balmorel-preprocessing/blob/egu24-poster/Raw%20Data%20Processing/Conference%20Poster%20for%20Analysis%20of%20Spatial%20Resolutions%20for%20Modelling%20Sector-Coupled%20Energy%20Systems.png)
 
 # Balmorel
