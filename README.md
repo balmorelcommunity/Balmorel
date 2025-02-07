@@ -1,7 +1,7 @@
 # Balmorel
 
 This framework was used in an investigation of a unified European hydrogen infrastructure. 
-The study was published in Nature Communications and can be found [here]([https://www.researchsquare.com/article/rs-3185467/v1](https://www.nature.com/articles/s41467-024-49867-w)). The framework should be used with [this corresponding Balmorel_data repository](https://github.com/balmorelcommunity/Balmorel_data/tree/A-unified-European-hydrogen-infrastructure-planning-to-support-the-rapid-scale-up-of-hydrogen-production).
+The study was published in Nature Communications and can be found [here](https://www.nature.com/articles/s41467-024-49867-w). The framework should be used with [this corresponding Balmorel_data repository](https://github.com/balmorelcommunity/Balmorel_data/tree/A-unified-European-hydrogen-infrastructure-planning-to-support-the-rapid-scale-up-of-hydrogen-production).
 
 ## What is Balmorel?
 
