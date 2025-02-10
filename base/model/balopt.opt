@@ -383,6 +383,9 @@ $setglobal flexible_h2_space
 * Enable annual transport of fuels, only possible if a FUELTRANSPORT_COST is defined 
 $setglobal fueltransport yes
 
+$setglobal fueltransport_definition region
+*!option region or area
+
 *-----------------END: FUELTRANSPORT ADDON---------------------------------------
 
 

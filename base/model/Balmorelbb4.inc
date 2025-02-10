@@ -1907,8 +1907,8 @@ QGMAXRF(IY411,IR,FFF)$IGMAXF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC * VGF_T(IY411,IA,G,IS3,T)))
     =L= 
      IGMAXF(IY411,IR,FFF)
-$ifi %fueltransport% == yes     + SUM(IRRRE$(FUELTRANSPORT_COST(FFF,IRRRE,IR)), VFUELTRANSPORT(IY411,IRRRE,IR,FFF)) 
-$ifi %fueltransport% == yes     - SUM(IRRRI$(FUELTRANSPORT_COST(FFF,IR,IRRRI)), VFUELTRANSPORT(IY411,IR,IRRRI,FFF)) 
+$ifi %fueltransport% == yes $ifi %fueltransport_definition%==region + SUM(IRRRE$(FUELTRANSPORT_COST(FFF,IRRRE,IR)), VFUELTRANSPORT(IY411,IRRRE,IR,FFF)) 
+$ifi %fueltransport% == yes $ifi %fueltransport_definition%==region - SUM(IRRRI$(FUELTRANSPORT_COST(FFF,IR,IRRRI)), VFUELTRANSPORT(IY411,IR,IRRRI,FFF)) 
 ;
 
 * "Exact fuel use by year, region and fuel (GJ)"
@@ -1927,7 +1927,10 @@ QGMINAF(IY411,IA,FFF)$IGMINF(IY411,IA,FFF)..
 QGMAXAF(IY411,IA,FFF)$IGMAXF(IY411,IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC * VGF_T(IY411,IA,G,IS3,T)))
     =L= 
-    IGMAXF(IY411,IA,FFF);
+    IGMAXF(IY411,IA,FFF)
+$ifi %fueltransport% == yes $ifi %fueltransport_definition%==area + SUM(IAAAE$(FUELTRANSPORT_COST(FFF,IAAAE,IA)), VFUELTRANSPORT(IY411,IAAAE,IA,FFF)) 
+$ifi %fueltransport% == yes $ifi %fueltransport_definition%==area - SUM(IAAAI$(FUELTRANSPORT_COST(FFF,IA,IAAAI)), VFUELTRANSPORT(IY411,IA,IAAAI,FFF))   
+;
 
 * "Exact fuel use by year, area and fuel (GJ)"
 QGEQAF(IY411,IA,FFF)$IGEQF(IY411,IA,FFF)..
