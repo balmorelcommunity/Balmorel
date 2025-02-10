@@ -284,7 +284,10 @@ def map(ctx, commodity: str, scenario: str, year: int,
         geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(re.findall('N\d+', scenario)[0].lstrip('N')))
         geofile_region_column = 'cluster_name'
     
-    fig, ax = res.plot_map(scenario, commodity.capitalize(), year, path_to_geofile=geofile, geo_file_region_column=geofile_region_column, style=ctx.obj['plot_style_for_modules'])
+    fig, ax = res.plot_map(scenario, year, commodity.capitalize(), 
+                           path_to_geofile=os.path.abspath(geofile), geo_file_region_column=geofile_region_column, 
+                           lines='UtilizationYear', generation='Production',
+                           style=ctx.obj['plot_style_for_modules'], pie_radius_max=0.5, pie_radius_min=0.03)
     ax.set_xlim(lon_lims)
     ax.set_ylim(lat_lims)
     fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario), legend=False)
