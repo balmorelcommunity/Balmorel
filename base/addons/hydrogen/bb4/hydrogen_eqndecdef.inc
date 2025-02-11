@@ -20,9 +20,11 @@ Equations
    QSYNFUEL_AVIATION_SHARE_S(Y,S)         "Aviation share of synthfuel production equal demand per week"
    QSYNBIOFUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production related to bio consumption is lower than capacity" 
    QSYNH2FUELPROD_UP(Y,AAA,G,S,T)        "Synthfuel production related to h2 consumption is lower than capacity" 
-   QSYNFUELSET1(Y,AAA,S,T)              "The TG-MeOH generator representing the other fuel consumption must consume equivalent amounts"
+   QSYNFUELSET1(Y,AAA,S,T)              "The straw TG-MeOH generator representing the other fuel consumption must consume equivalent amounts"
    QSYNFUELSET2(Y,AAA,S,T)              "The BACKUP_TG-MeOH generator representing the other fuel consumption must consume equivalent amounts"
-   QSYNKSET(Y,AAA,S,T)                 "The generator representing the other fuel consumption must have equivalent capacity"
+   QSYNFUELSET3(Y,AAA,S,T)              "The wood TG-MeOH generator representing the other fuel consumption must consume equivalent amounts"
+   QSYNKSETA(Y,AAA,S,T)                 "The straw generator representing the other fuel consumption must have equivalent capacity"
+   QSYNKSETB(Y,AAA,S,T)                 "The wood generator representing the other fuel consumption must have equivalent capacity"
    QSYNINFLEX(Y,AAA,G,S,T)             "Synthetic fuel producers are inflexible, i.e. minimum production constraint all year"
 ;
 
@@ -468,20 +470,20 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IHYDROGEN_H2TOSYNFUEL)$IGDECOMEXO
 ;
 
 
-QSYNKSET(IY411,IA,IS3,T)..
-   VGKN(IY411,IA,'GNR_TG-MeOH-2050')$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-2050')
+QSYNKSETA(IY411,IA,IS3,T)..
+   VGKN(IY411,IA,'GNR_TG-MeOH-STRAW-2050')$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-STRAW-2050')
 
    =E=
 
-   VGKN(IY411,IA,'GNR_TG-MeOH-2050_H2')$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-2050_H2')
+   VGKN(IY411,IA,'GNR_TG-MeOH-STRAW-2050_H2')$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-STRAW-2050_H2')
 ;
 
 QSYNFUELSET1(IY411,IA,IS3,T)..
-   VSYNFUEL_G_T(IY411,IA,'GNR_TG-MeOH-2050',IS3,T)$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-2050')
+   VSYNFUEL_G_T(IY411,IA,'GNR_TG-MeOH-STRAW-2050',IS3,T)$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-STRAW-2050')
 
    =E=
 
-   VSYNFUEL_G_T(IY411,IA,'GNR_TG-MeOH-2050_H2',IS3,T)$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-2050_H2')
+   VSYNFUEL_G_T(IY411,IA,'GNR_TG-MeOH-STRAW-2050_H2',IS3,T)$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-STRAW-2050_H2')
 ;
 
 QSYNFUELSET2(IY411,IA,IS3,T)..
@@ -490,6 +492,23 @@ QSYNFUELSET2(IY411,IA,IS3,T)..
    =E=
 
    VSYNFUEL_G_T(IY411,IA,'GNR_BACKUP_TG-MeOH-2050_H2',IS3,T)$IAGK_HASORPOT(IY411, IA, 'GNR_BACKUP_TG-MeOH-2050_H2')
+;
+
+
+QSYNKSETB(IY411,IA,IS3,T)..
+   VGKN(IY411,IA,'GNR_TG-MeOH-WOOD-2050')$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-WOOD-2050')
+
+   =E=
+
+   VGKN(IY411,IA,'GNR_TG-MeOH-WOOD-2050_H2')$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-WOOD-2050_H2')
+;
+
+QSYNFUELSET3(IY411,IA,IS3,T)..
+   VSYNFUEL_G_T(IY411,IA,'GNR_TG-MeOH-WOOD-2050',IS3,T)$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-WOOD-2050')
+
+   =E=
+
+   VSYNFUEL_G_T(IY411,IA,'GNR_TG-MeOH-WOOD-2050_H2',IS3,T)$IAGK_HASORPOT(IY411, IA, 'GNR_TG-MeOH-WOOD-2050_H2')
 ;
 
 
