@@ -5,10 +5,8 @@ SET C_SOV(C)  					"Group of countries that collectively achieve energy sovereig
 C_SOV(C)=NO;	
 
 *** Add soveregin countries here ***
-C_SOV('DENMARK')=YES;
-C_SOV('NORWAY')=YES;		
-C_SOV('SWEDEN')=YES;	
-C_SOV('FINLAND')=YES;	
+*C_SOV('DENMARK')=YES;
+*C_SOV('NORWAY')=YES;		
 
 ***	Balmorel
 SET IR_SOV(RRR)     			"Internal regions that belong to group of sovereign countries";

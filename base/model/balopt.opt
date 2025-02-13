@@ -142,7 +142,7 @@ XINVESTSTART= 2035;
 *overall control variable HEATTRANS must be 'yes' if any of the other heat trans controls are.
 
 * Permit heat transmission between areas.
-$setglobal HEATTRANS YES
+$setglobal HEATTRANS
 *!option yes
 
 * Permit heat transmission investments between areas.
@@ -824,19 +824,18 @@ $setglobal ADDGROUP_DEMAND_SHIFT
 
 *--------------------ENERGY SOVEREIGNTY----------------------------------------------------------------
 *Specified group of regions is aggregate net neutral or net exporter of specified energy carriers (default: electricity)
-$setglobal SOVEREIGNTY yes
+$setglobal SOVEREIGNTY
 *!option yes
 
 *Sovereignty requirement for hydrogen energy carrier
-$setglobal SOV_H2 yes
+$setglobal SOV_H2
 *! option yes
 *! requires Hydrogen addon and %H2TransInvest%==yes
 
 *Sovereignty requirement for optiflow transport processes
-$setglobal SOV_OPTIFLOW yes
+$setglobal SOV_OPTIFLOW
 *! option yes
 *! requires OPTIFLOW addon
-
 
 *Group of sovereign regions may be net exporter
 $setglobal SOV_NET_EXP
