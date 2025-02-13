@@ -57,10 +57,9 @@ $ifi %inv%==yes  EQUATION QPROCKAUP_SCALE2(Y,AAA,PROC)   "Equation for modelling
 $ifi %inv%==yes  EQUATION QPROCKAP_DEC(Y,AAA,IPROCFROM,IPROCTO,FLOW,S,T) "Equation for modelling of decomissioning plants";
 
 * OBS FF
-$ifi %inv%==yes  EQUATION QTRANSPROCKAP                 'Capacity constraint on transport processes (U/h)';
-$ifi %inv%==yes  EQUATION QTRANSPROCKAP_SYMMETRY        'Transport capcity investments are symmetric';
-
-
+$ifi %inv%==yes  EQUATION QPROCEXIMKAPACCUMNET          'Accumulate PROCEXIM capacity over investment years'
+$ifi %inv%==yes  EQUATION QPROCEXIMKAP                  'Capacity constraint on transport processes (U/h)';
+$ifi %inv%==yes  EQUATION QPROCEXIMKAP_SYMMETRY         'Transport capcity investments are symmetric';
 
 * Flows from SOSIBU and EXIM in units [U/h] are indic-weighted, time-weighted and summarized.
 QINDICQUANT(IY411,FLOWINDIC)..
@@ -474,33 +473,48 @@ QPROCKAP_UP(IY411,IA,IPROCFROM,IPROCTO,FLOW,S,T)$(
  + VPROCKAPACCUMNET(IY411,IA,IPROCTO)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAPROCKAPNEW(Y,IA,IPROCTO)) AND (IPROCKAPDATA(IY411,IPROCTO,FLOW,'IFLOWINOUT_IN')))
 ;
 
-* OBS FF
-* Conditional for where the equation is applied:
-* - IPROCKAPDATA requires a capacity, either based on the outgoing or incoming flow.
-* - Process is defined in PROCEXIM (transport process).
-* - Flow is defined in IFLOWEXIM (transport flow).
-* - There is a defined transport connection ITRANSFROMTOPROC using the process PROC connecting the areas IAE and IAI.
+* OBS FF * Optiflow Capacity Investments in ProcExim *
 
-* OBS FF notes: Equation is not working on any set right now. Maybe add 'Pipeline' as iflowinout in IPROCKAPDATA. Or something else
+* Define PROCINOUTRELATION='IFLOWINOUT_SYM_INV' in IPROCKAPDATA
+* Define Proc in PROCEXIM
+* Define in IAPROCEXIMKAPNEW(Y,IAE,IAI,IPROC)
+* Verify a defined transport conenction in ITRANSFROMTOPROC
 
-QTRANSPROCKAP(IY411,IAE,IAI,IPROC,S,T)$(ITRANSFROMTOPROC(IPROC,IAE,IAI) AND PROCEXIM(IPROC) AND SUM(FLOW$(IFLOWEXIM(FLOW)), IPROCKAPDATA(IY411,IPROC,FLOW,'PIPELINE')))..
+*To do: Lifetime decommisioning
 
-   SUM(FLOW$(IFLOWEXIM(FLOW) AND IPROCKAPDATA(IY411,IPROC,FLOW,'PIPELINE')), VFLOWTRANS(IY411,IAE,IAI,IPROC,FLOW,S,T))
-  
-  =L=
+* Accumulated investments in PROCEXIM capacity
+QPROCEXIMKAPACCUMNET(Y,IAE,IAI,IPROC)$(ITRANSFROMTOPROC(IPROC,IAE,IAI) AND IAPROCEXIMKAPNEW(Y,IAE,IAI,IPROC))..
 
-   VTRANSPROCKAPNEW(IY411,IAE,IAI,IPROC)
-;
-
-
-QTRANSPROCKAP_SYMMETRY(IY411,IAE,IAI,IPROC)$(ITRANSFROMTOPROC(IPROC,IAE,IAI) AND PROCEXIM(IPROC) AND SUM(FLOW$(IFLOWEXIM(FLOW)), IPROCKAPDATA(IY411,IPROC,FLOW,'PIPELINE')))..
-
-  VTRANSPROCKAPNEW(IY411,IAE,IAI,IPROC)
+  VPROCEXIMKAPACCUMNET(Y,IAE,IAI,IPROC) 
 
   =E=
 
-  VTRANSPROCKAPNEW(IY411,IAI,IAE,IPROC)
+  +SUM(IY402$(YVALUE(IY402) < YVALUE(Y)), VPROCEXIMKAPNEW(IY402,IAE,IAI,IPROC)) 
+  +VPROCEXIMKAPNEW(Y,IAE,IAI,IPROC)
+  +PROCEXIMKAPFX(Y,IAE,IAI,IPROC)
 ;
+
+* Transport capacity limit
+QPROCEXIMKAP(Y,IAE,IAI,IPROC,S,T)$(ITRANSFROMTOPROC(IPROC,IAE,IAI) AND IAPROCEXIMKAPNEW(Y,IAE,IAI,IPROC) AND SUM(FLOW$(IFLOWEXIM(FLOW)), IPROCKAPDATA(Y,IPROC,FLOW,'IFLOWINOUT_SYM_INV')))..
+
+  VPROCEXIMKAPACCUMNET(Y,IAE,IAI,IPROC)
+  
+  =G=
+
+  SUM(FLOW$(IFLOWEXIM(FLOW) AND IPROCKAPDATA(Y,IPROC,FLOW,'IFLOWINOUT_SYM_INV')), VFLOWTRANS(Y,IAE,IAI,IPROC,FLOW,S,T))
+;
+
+* Symmetric capacity investments
+QPROCEXIMKAP_SYMMETRY(Y,IAE,IAI,IPROC)$(ITRANSFROMTOPROC(IPROC,IAE,IAI) AND IAPROCEXIMKAPNEW(Y,IAE,IAI,IPROC))..
+
+  VPROCEXIMKAPACCUMNET(Y,IAE,IAI,IPROC)
+
+  =E=
+
+  VPROCEXIMKAPACCUMNET(Y,IAI,IAE,IPROC)
+;
+
+* OBS FF * End *
 
 
 QPROCKAUP_SCALE1(IY411,IA,PROC)$(IAPROCKAPNEW(IY411,IA,PROC) AND PROCKAPNEWSCALE(PROC))..

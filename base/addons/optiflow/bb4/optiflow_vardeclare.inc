@@ -30,7 +30,8 @@ $ifi %inv%==yes   POSITIVE VARIABLE VPROCKAPACCUMNET(Y,AAA,PROC)         'Accumu
 $ifi %inv%==yes   POSITIVE VARIABLE VPROCKAPNEW(Y,AAA,PROC)              'New capacity (/h)';  !! se kommentarer til YYY  i bb4.sim
 
 *OBS FF
-$ifi %inv%==yes   POSITIVE VARIABLE VTRANSPROCKAPNEW(Y,IAAAE,IAAAI,PROC)     'New transport process capacity'
+$ifi %inv%==yes   POSITIVE VARIABLE VPROCEXIMKAPACCUMNET(Y,IAAAE,IAAAI,PROC)        'Accumulated transport process capacity in Y (/h)';
+$ifi %inv%==yes   POSITIVE VARIABLE VPROCEXIMKAPNEW(Y,IAAAE,IAAAI,PROC)     'New transport process capacity in Y (/h)'
 
 
 

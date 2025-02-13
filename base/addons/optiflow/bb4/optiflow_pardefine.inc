@@ -180,6 +180,7 @@ $ifi %inv%==yes SET IAPROCKAPNEW_notY(AAA,PROC)	'Same as IAPROCKAPNEW, but not f
 IAPROCKAPNEW(Y,IA,PROC) = APROCKAPNEW(Y,IA,PROC);    !! MORE LATER
 IAPROCKAPNEW_notY(IA,PROC) = SUM(Y,IAPROCKAPNEW(Y,IA,PROC));
 
+
 * NB: for debugging, print and ailing memory nice to have FLOW elements in UPPERCASE og Proc elements in CamelCase.
 * NONONO: I now prefer the other way:  FLOW elements in CamelCase og Proc elements in UPPERCASE!
 
@@ -211,7 +212,31 @@ ITRANSFROMTOPROC(PROC,IAE,IAI)$(TRANSDIST(PROC,IAE,IAI)) = YES;
 ITRANSFROMTOPROC(PROC,IA,IA) = NO;
 
 
+* OBS FF * Optiflow Capacity Investments in ProcExim *
 
+* Areas with new PROCEXIM investments
+$ifi %inv%==yes ALIAS(AAAOPTIFLOW,IAAAEOPTIFLOW,IAAAIOPTIFLOW);
+$ifi %inv%==yes SET APROCEXIMKAPNEW(YYY,IAAAE,IAAAI,PROC)  'Areas for possible location of new ProcExim capacity';
+$ifi %inv%==yes $if     EXIST '../data/OPTIFLOW_APROCEXIMKAPNEW.inc' $INCLUDE '../data/OPTIFLOW_APROCEXIMKAPNEW.inc';
+$ifi %inv%==yes $if not EXIST '../data/OPTIFLOW_APROCEXIMKAPNEW.inc' $INCLUDE '../../base/data/OPTIFLOW_APROCEXIMKAPNEW.inc';
+$ifi %inv%==yes %semislash%;
+
+$ifi %inv%==yes SET IAPROCEXIMKAPNEW(Y,IAAAE,IAAAI,PROC);	
+$ifi %inv%==yes IAPROCEXIMKAPNEW(Y,IAAAEOPTIFLOW,IAAAIOPTIFLOW,PROC) = APROCEXIMKAPNEW(Y,IAAAEOPTIFLOW,IAAAIOPTIFLOW,PROC)
+$ifi %inv%==yes SET IAPROCEXIMKAPNEW_notY(IAAAE,IAAAI,PROC);
+$ifi %inv%==yes IAPROCEXIMKAPNEW_notY(IAAAEOPTIFLOW,IAAAIOPTIFLOW,PROC) = SUM(Y,IAPROCEXIMKAPNEW(Y,IAAAEOPTIFLOW,IAAAIOPTIFLOW,PROC));
+
+
+* Existing PROCEXIM capacity
+
+ALIAS(IY402,IY403)
+
+PARAMETER PROCEXIMKAPFX(YYY,IAAAE,IAAAI,PROC) "Existing capacity of PROCEXIM (U/h)" %semislash%
+$if     EXIST '../data/OPTIFLOW_PROCEXIMKAPFX.inc' $INCLUDE         '../data/OPTIFLOW_PROCEXIMKAPFX.inc';
+$if not EXIST '../data/OPTIFLOW_PROCEXIMKAPFX.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCEXIMKAPFX.inc';
+%semislash%;
+
+* OBS FF * End *
 
 SET PROCDATASET  'Process addons/OptiFlow/data types' %semislash%   !! TODO: what kind of addons/OptiFlow/data? not all, some are  clearly in  procinoutflow
 $if     EXIST '../data/OPTIFLOW_PROCDATASET.inc' $INCLUDE         '../data/OPTIFLOW_PROCDATASET.inc';
@@ -230,7 +255,7 @@ $if not EXIST '../data/OPTIFLOW_PROCDATA.inc' $INCLUDE '../../base/data/OPTIFLOW
 * The PROC can have only one Flow Bundle. ASSUMPTION   NOT ANYMORE NEEDED
 * Capacity cannot be given for entering Flow with IMANYONE in PROCINOUTFLOW nor for leaving Flow with IONEMANY.
 
-SET IFLOWINOUT "Specifies for PROCKAPFX that if the capacity of Proc (index 3) is set as a bound on entering/leaving Flow from/to Proc (index 4)" / IFLOWINOUT_IN, IFLOWINOUT_OUT, PIPELINE /;
+SET IFLOWINOUT "Specifies for PROCKAPFX that if the capacity of Proc (index 3) is set as a bound on entering/leaving Flow from/to Proc (index 4)" / IFLOWINOUT_IN, IFLOWINOUT_OUT, IFLOWINOUT_SYM_INV /;
 
 
 SET  PROCKAPDATA(YYY,PROC,FLOW,IFLOWINOUT)    "Process addons/OptiFlow/data: capacity relative to FLOW and in/out direction"  %semislash%
@@ -255,8 +280,6 @@ PARAMETER PROCKAPFX(YYY,AAA,PROC,FLOW,IFLOWINOUT) "Capacity of Process (U/h)" %s
 $if     EXIST '../data/OPTIFLOW_PROCKAPFX.inc' $INCLUDE         '../data/OPTIFLOW_PROCKAPFX.inc';
 $if not EXIST '../data/OPTIFLOW_PROCKAPFX.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCKAPFX.inc';
 %semislash%;
-
-
 
 
 PARAMETER PROCKAPNEWSCALE(PROC) "Capacity of Process (U/h)" %semislash%
