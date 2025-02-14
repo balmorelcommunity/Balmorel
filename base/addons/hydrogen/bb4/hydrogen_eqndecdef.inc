@@ -1,6 +1,6 @@
 Equations
-   QHYDROGEN_HGEHTOH2(Y,AAA,G,S,T)    'Link heat and electricity demand of technologies consuming heat and electricity to produce H2'
-   QHYDROGEN_HGETOHH2(Y,AAA,G,S,T)    'Link electricity demand of technologies consuming electricity to produce H2 and heat'
+   QHYDROGEN_HGEHTOH2(Y,AAA,G,S,T)    'Link heat and electricity demand in hydrogen production of technologies consuming heat and electricity to produce H2'
+   QHYDROGEN_HGETOHH2(Y,AAA,G,S,T)    'Link heat and electricity demand in hydrogen production of technologies consuming electricity to produce H2 and heat'
    QHYDROGEN_H2TOEH(Y,AAA,G,S,T)      'Link heat and electricity in technologies consuming hydrogen and producing heat and electricity'
    QHYDROGEN_GCH4KT_UP(Y,AAA,G,S,T)   'Hydrogen production of steam reforming plants restricted by capacity'
    QHYDROGEN_STOVOL(Y,AAA,G,S,T)      'Dynamic equation hydrogen storage'
@@ -15,6 +15,16 @@ Equations
    QGKBIOGASUPGRADING_UP(Y,AAA,G,S,T)  'Maximum generation of biomethane from biogas upgrading restricted by capacity (MW)'
    QGKBIOGASMETHANATION_UP(Y,AAA,G,S,T)  'Maximum generation of biomethane via biogas methanation restricted by capacity (MW)'
    QGKBIOMETHANE_UP(Y,AAA,G,S,T)      'Maximum generation of SNG restricted by capacity (MW)'
+;
+
+*Demand Shift equations
+Equations
+QSYNTHETIC_EQ_PRODUCTION(Y,RRR,S,T)
+QSYNTHETIC_EQ_SHIFT(Y,RRR)
+QSYNTHETIC_EQ_SHIFT_UP(Y,RRR)
+QSYNTHETIC_EQ_SHIFT_DOWN(Y,RRR)
+QSYNTHETIC_EQ_SHIFT_BALANCE_MOVE(Y)
+QSYNTHETIC_EQ_SHIFT_BALANCE_OVERALL(Y)
 ;
 
 
@@ -40,6 +50,7 @@ QHYDROGEN_H2TOEH(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2TOEH),IS3,T)$GDATA(IHYDROGE
 * Hydrogen production equal demand on region level:
 * Prod + OutputStorage - InputStorage = DemandTransport + DemandPower+DemandBioRefinery + other
 
+
 QHYDROGEN_EQ(IY411,IR,IS3,T)..
    SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GETOH2)$(RRRAAA(IR,IA)),VGE_T(IY411,IA,IHYDROGEN_GETOH2,IS3,T)*GDATA(IHYDROGEN_GETOH2,'GDFE')) +
    SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GETOHH2)$(RRRAAA(IR,IA)),VGE_T(IY411,IA,IHYDROGEN_GETOHH2,IS3,T)*GDATA(IHYDROGEN_GETOHH2,'GDFE'))+
@@ -49,6 +60,8 @@ QHYDROGEN_EQ(IY411,IR,IS3,T)..
    - SUM((IA,IHYDROGEN_GH2STO)$(RRRAAA(IR,IA) AND (IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2STO))),VHYDROGEN_STOLOADT(IY411,IA,IHYDROGEN_GH2STO,IS3,T))
    =E=
    IHYDROGEN_DH2_REGION_T_Y(IY411,IR,IS3,T)/(1-DISLOSS_H2(IR))+
+
+$ifi %flexible_h2_space%==yes   VGE_T_FLEXDH2(IY411,IR,IS3,T)/(1-DISLOSS_H2(IR))  + 
    SUM(IA$RRRAAA(IR,IA),IHYDROGEN_DH2_AREA_T_Y(IY411,IA,IS3,T)/(1-DISLOSS_H2(IA)))
    + SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2FUEL)$(RRRAAA(IR,IA)),VGE_T(IY411,IA,IHYDROGEN_GH2FUEL,IS3,T)/GDATA(IHYDROGEN_GH2FUEL,'GDFE'))
     + SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2TOBIOMETH)$(RRRAAA(IR,IA)),VGBIOMETH_T(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)/GDATA(IHYDROGEN_GH2TOBIOMETH,'GDFE'))

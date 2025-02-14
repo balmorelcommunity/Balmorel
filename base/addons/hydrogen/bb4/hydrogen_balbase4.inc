@@ -10,6 +10,7 @@
    QHYDROGEN_STOMAXUNLD
    QHYDROGEN_STOVOL
    QHYDROGEN_GCH4KT_UP
+$ifi %COMBTECH%==yes   QHYDROGENGKE_UP_ADD
    QBIOMETHANE_EQ
    QBIOMETHANE_STOVOLTS
    QGKBIOMETHANE_UP
@@ -23,6 +24,16 @@ $ifi %H2TransInvest%==yes  QXH2KNACCUMNET_NGTOH2
 $ifi %H2TransInvest%==yes  QXH2INVSYMMETRY
 $ifi %H2TransInvest%==yes  QXH2INVSYMMETRY_NGTOH2
 $ifi %H2TransInvest%==yes  QXH2KMAX_NGTOH2
-$ifi %H2TransInvest%==yes  QVXH2KN_ES
-$ifi %H2TransInvest%==yes  QXH2LAMBDA_ES
+$ifi %H2TransInvest%==yes  $ifi %ES_H2TRANS%==yes  QVXH2KN_ES
+$ifi %H2TransInvest%==yes  $ifi %ES_H2TRANS%==yes  QXH2LAMBDA_ES
+
+* Flexible hydrogen demand in space by Ioannis
+$ifi not %flexible_h2_space%==yes $goto no_flexible_h2_space
+QSYNTHETIC_EQ_PRODUCTION
+QSYNTHETIC_EQ_SHIFT
+QSYNTHETIC_EQ_SHIFT_UP
+QSYNTHETIC_EQ_SHIFT_DOWN
+QSYNTHETIC_EQ_SHIFT_BALANCE_MOVE
+QSYNTHETIC_EQ_SHIFT_BALANCE_OVERALL
+$label no_flexible_h2_space
 
