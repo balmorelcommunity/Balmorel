@@ -44,8 +44,7 @@ def CLI(ctx, dark_style: bool, plot_ext: str):
 @CLI.command()
 @click.option('--scenario', type=str, required=True, help="Scenario")
 @click.option('--thresh', type=float, required=True, help="Threshold that capacities cannot be below")
-@click.option('--iteration', type=int, required=True, help="Iteration number")
-def inv_options(scenario: str, thresh: float, iteration: int):
+def inv_options(scenario: str, thresh: float):
     "Disallow investment options below a certain treshold"
     
     # Find scenario
@@ -65,6 +64,8 @@ def inv_options(scenario: str, thresh: float, iteration: int):
     
     if len(df.loc[idx]) == 0:
         print('No investments below threshold!')
+        exit(5)
+        
     else:
         # Write lines for AGKN to disallow investments
         all_generators = ['GNR_TG-MeOH-STRAW-2050_H2', 
@@ -83,9 +84,9 @@ def inv_options(scenario: str, thresh: float, iteration: int):
         
         # Write to file
         with open('./%s/data/AGKN.inc'%scfolder, '+a') as f:
-            f.write('\n\n* ------ Beginning of Iteration %d scenario %s Disallowed Investments ------\n\n'%(iteration, scenario))
+            f.write('\n\n* ------ Beginning of scenario %s Disallowed Investments ------\n\n'%scenario)
             f.write(append_lines)
-            f.write('\n\n* ------ End of Iteration %d scenario %s Disallowed Investments ------\n\n'%(iteration, scenario))
+            f.write('\n\n* ------ End of scenario %s Disallowed Investments ------\n\n'%scenario)
         
 #%% ------------------------------- ###
 ###            2. Utils             ###
