@@ -26,6 +26,7 @@ Equations
    QSYNKSETA(Y,AAA,S,T)                 "The straw generator representing the other fuel consumption must have equivalent capacity"
    QSYNKSETB(Y,AAA,S,T)                 "The wood generator representing the other fuel consumption must have equivalent capacity"
    QSYNINFLEX(Y,AAA,G,S,T)             "Synthetic fuel producers are inflexible, i.e. minimum production constraint all year"
+   QSYNFUEL_EXCESSHEAT(Y,AAA,G,S,T)    "Excess heat from synfuel production"
 ;
 
 *Demand Shift equations
@@ -431,6 +432,13 @@ QSYNFUEL_AVIATION_SHARE(IY411)..
    SYNFUELDEMAND(IY411, 'AVIATION')
 ;
 $label ROLLING_SEASONS
+
+QSYNFUEL_EXCESSHEAT(IY411,IA,IHYDROGEN_BIOTOSYNFUEL,IS3,T)$GDATA(IHYDROGEN_BIOTOSYNFUEL,'GDCB')..
+
+   VSYNFUEL_G_T(IY411,IA,IHYDROGEN_BIOTOSYNFUEL,IS3,T) =E= VGH_T(IY411,IA,IHYDROGEN_BIOTOSYNFUEL,IS3,T)*GDATA(IHYDROGEN_BIOTOSYNFUEL,'GDCB')
+;
+
+
 $ifi not %RollingSeasons%==yes $goto NO_GENERIC_SYNFUEL
 QSYNFUEL_S_EQ(IY411, IS3)..
    SUM((IA, IHYDROGEN_H2TOSYNFUEL, T)$(IAGK_HASORPOT(IY411,IA,IHYDROGEN_H2TOSYNFUEL)),

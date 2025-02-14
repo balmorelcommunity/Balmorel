@@ -48,4 +48,5 @@ $ifi %generic_synfuel%==yes    QSYNFUELSET2
 $ifi %generic_synfuel%==yes    QSYNFUELSET3
 $ifi %generic_synfuel%==yes    QSYNKSETA  
 $ifi %generic_synfuel%==yes    QSYNKSETB  
+$ifi %generic_synfuel%==yes    QSYNFUEL_EXCESSHEAT
 $ifi %generic_synfuel%==yes $ifi %generic_synfuel_inflex%==yes    QSYNINFLEX  
