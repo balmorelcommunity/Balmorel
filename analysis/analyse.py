@@ -26,8 +26,10 @@ from specific.pit_storage.pit_storage import get_storage_profiles, polygon_with_
 from pybalmorel import Balmorel, MainResults
 from pybalmorel.utils import symbol_to_df
 from pybalmorel.formatting import balmorel_colours
+from pybalmorel.plotting import plot_bar_chart
 import pickle
 import os
+balmorel_colours['SYNFUELPRODUCER'] = '#E8C3A8'
 
 @click.group()
 @click.option('--overwrite', is_flag=True, required=False, help='Overwrite previous collected results?')
@@ -40,13 +42,22 @@ def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
         gams_sysdir: str):
     "A CLI to analyse Balmorel results"
     
-    # Locate results
-    model = Balmorel(path)
-    model.locate_results() 
-    
     # Store global options in the context object
     ctx.ensure_object(dict)
-    ctx.obj['Balmorel'] = model # Find Balmorel folder
+    
+    # Detect which command has been passed
+    command = ctx.invoked_subcommand
+    if command in ['all', 'all-bars', 'all-profiles', 'all_maps',
+                   'costs', 'cap', 'map', 'profile', 'bar-chart']:
+
+        # Locate results
+        model = Balmorel(path)
+        model.locate_results() 
+        ctx.obj['Balmorel'] = model # Find Balmorel folder
+
+    else:
+        pass
+    
     ctx.obj['overwrite'] = overwrite
     ctx.obj['dark_style'] = dark_style
     ctx.obj['plot_ext'] = plot_ext
@@ -143,17 +154,20 @@ def cap(gen: bool, sto: bool, filters: str):
                 collect_results('G_STO_YCRAF')
                 .query('Technology == "H2-STORAGE" or Technology.str.contains("INTERSEASONAL") or Technology.str.contains("INTRASEASONAL")')
             )
-            df['Value'] = df['Value'] / 1e3 
+            df.loc[:, 'Value'] = df['Value'] / 1e3 
             ax.set_ylabel('Storage Capacity [TWh]')
         
         # Apply exclusion filters
         if filters != '':
             df = df.query(filters)
+
+        # Sort scenarios, e.g. so N2 comes before N10
+        df = sort_scenarios(df)
                 
         (
             df
             .pivot_table(index=['Commodity', 'Scenario'], columns='Technology', 
-                            values='Value', aggfunc='sum')
+                    values='Value', aggfunc='sum')
             .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
         )
         
@@ -214,15 +228,24 @@ def dem(commodity: str):
     
      
 @CLI.command()
-def costs():
+@click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
+def costs(filters: str):
     """
     Plot system costs
     """
     print('\nPlotting system costs..')
     
     fig, ax = plt.subplots()
+    
+    df = collect_results('OBJ_YCR') 
+    
+    if filters != None:
+        df = df.query(filters)
+    
+    df = sort_scenarios(df)
+    
     (
-        collect_results('OBJ_YCR')
+        df
         .pivot_table(index='Scenario', columns='Category', 
                      values='Value', aggfunc=lambda x: np.sum(x)/1e3)
         .plot(ax=ax, kind='bar', stacked=True)
@@ -269,9 +292,12 @@ def profile(ctx, commodity: str, scenario: str, node: str, year: int):
 @click.argument('geofile_region_column', type=str, default='Name')
 @click.argument('lon-lims', type=list, default=[7.8, 13])
 @click.argument('lat-lims', type=list, default=[54.4, 58])
+@click.option('--lines', type=str, default='UtilizationYear')
+@click.option('--generation', type=str, default='Production')
 def map(ctx, commodity: str, scenario: str, year: int, 
         geofile: str, geofile_region_column: str,
-        lon_lims: list, lat_lims: list):
+        lon_lims: list, lat_lims: list,
+        lines: str, generation: str):
     """Plot transmission capacity maps for electricity or hydrogen"""
 
     model = ctx.obj['Balmorel']
@@ -280,13 +306,13 @@ def map(ctx, commodity: str, scenario: str, year: int,
     # Get mainresults files
     res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
     
-    if 'N' in scenario and not 'TransRelaxation' in scenario:
+    if 'N' in scenario and not 'TransRelaxation' in scenario and geofile=='analysis/geofiles/municipalities.gpkg':
         geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(re.findall('N\d+', scenario)[0].lstrip('N')))
         geofile_region_column = 'cluster_name'
     
     fig, ax = res.plot_map(scenario, year, commodity.capitalize(), 
                            path_to_geofile=os.path.abspath(geofile), geo_file_region_column=geofile_region_column, 
-                           lines='UtilizationYear', generation='Production',
+                           lines=lines, generation=generation,
                            style=ctx.obj['plot_style_for_modules'], pie_radius_max=0.5, pie_radius_min=0.03)
     ax.set_xlim(lon_lims)
     ax.set_ylim(lat_lims)
@@ -566,9 +592,60 @@ def adequacy(ctx, scenario: str):
     print(ENS.count().to_string(header=None))
 
 
+@CLI.command()
+@click.pass_context
+@click.argument('scenarios', type=str, required=True)
+@click.argument('symbol', type=str, required=True)
+@click.argument('index', type=str, required=True)
+@click.argument('columns', type=str, required=True)
+def bar_chart(ctx, scenarios: str, symbol: str, 
+              index: Union[str | list], columns: Union[str | list]):
+    """
+    Generates a bar chart from the specified scenarios and symbol.
+    This function retrieves data from the specified scenarios, processes it, and generates a bar chart
+    based on the provided symbol, index, and columns. The resulting chart is saved as 'bar_chart_output.png'.
+    
+    Args:
+        ctx (click.Context): The Click context object containing the Balmorel model and path information.
+        scenarios (str): A comma-separated string of scenario names.
+        symbol (str): The symbol to retrieve data for.
+        index (Union[str, list]): The index or indices to use for the pivot table.
+        columns (Union[str, list]): The columns to use for the pivot table.
+    """
+    
+    # Find scenarios
+    model = ctx.obj['Balmorel']
+    scenarios = scenarios.replace(' ', '').split(',')
+    paths = []
+    files = []
+    for sc in scenarios:
+        paths.append(os.path.join(ctx.obj['path'], model.scname_to_scfolder[sc], 'model'))
+        files.append('MainResults_%s.gdx'%sc)
+    mr = MainResults(files=files, paths=paths)
+    
+    # Prepare index and columns
+    if ',' in index:
+        index = index.replace(' ', '').split(',')
+    if ',' in columns:
+        columns = columns.replace(' ', '').split(',')
+    
+    # Get symbol
+    fig, ax = plt.subplots()
+    df = mr.get_result(symbol)
+    df.pivot_table(index=index, columns=columns, values='Value', aggfunc='sum').plot(kind='bar', stacked=True, ax=ax)
+    fig.savefig('analysis/bar_chart_output.png')
+    
+
 #%% ------------------------------- ###
 ###            2. Utils             ###
 ### ------------------------------- ###
+
+def sort_scenarios(df: pd.DataFrame):
+    "Will sort scenarios, so e.g. N2 comes before N10"
+    
+    df['Scenario'] = pd.Categorical(df['Scenario'], categories=sorted(df['Scenario'].unique(), key=lambda x: int(re.findall(r'\d+', x)[0]) if re.findall(r'\d+', x) else float('inf')))
+    
+    return df
 
 @click.pass_context
 def plot_style(ctx, fig: plt.figure, ax: plt.axes, name: str,
