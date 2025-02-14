@@ -106,7 +106,7 @@ GINVESTSTART= 2020;
 
 * TMAD
 * Set a ramping constraint on the build-out of solar and wind
-$setglobal RampingVRE yes
+$setglobal RampingVRE
 *!option yes
 
 SCALAR RAMP_RATE_SOLE 'ramping rate build-out of solar in GW/yr';
@@ -169,7 +169,7 @@ $setglobal INDIVUSERS YES
 *!option yes
 
 * Include the possibility to shift exogenous heat demand between technology groups.
-$setglobal GROUP_DEMAND_SHIFT
+$setglobal GROUP_DEMAND_SHIFT 
 *!option yes
 
 * TMAD
@@ -211,7 +211,7 @@ $setglobal VRESHUTDOWN   yes
 *------------------------------EV ADDON-------------------------------------------------
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV
+$setglobal EV 
 *!option YES
 
 * Adds DUMB charging:
@@ -219,11 +219,11 @@ $setglobal DUMB
 *!option yes
 
 * Adds smart charging. Only smart charging, without V2G!:
-$setglobal SMART
+$setglobal SMART 
 *!option yes
 
-* Adds V2G charging:
-$setglobal V2G YES
+* Adds V2G charging: 
+$setglobal V2G YES  
 *!option  yes
 
 * Restricts PHEV vehicles from doing V2G (only relevant if V2G is activated):
@@ -270,7 +270,7 @@ $setglobal TRANSPORT_SYNTHFUEL_COMMODITY    HYDROGEN
 *!option HYDROGEN       !Text "The demand for synthetic fuel generation is modelled as hydrogen demand (requires hydrogen addon to be activated)"
 
 * Defines the possibility for the transport demand of synthetic fuels to be aggregated internationally instead of having to satisfy it regionally.
-$setglobal TRANSPORT_DEMAND_AGGREGATED
+$setglobal TRANSPORT_DEMAND_AGGREGATED    
 
 * TMAD
 * Enable electricity demand from EVs with a simple charging profile
@@ -327,7 +327,7 @@ $setglobal FORCEDDOWNREDISPATCH
 *!option yes
 
 *Define which units will be allowed to change their commitment status (on/off) (requires Unit Commitment addon to be on)
-$setglobal CommitmentStatus  FastUnitsChange
+$setglobal CommitmentStatus  NoChange
 *!option NoChange         !Text  "The units will not be allowed to change their commitment, which will be taken from previous runs "
 *!option FastUnitsChange  !Text  "The slow units will not be allowed to change their commitment, which will be taken from previous runs "
 *!option None             !Text  "All the units will be allowed to change their commitment with respect to previous runs"
@@ -347,7 +347,7 @@ $setglobal NOHEATMARKET
 * however, it has not been checked. Please take contact if problems.
 
 * Combine two technologies to one to achieve e.g. multifuel characteristics.
-$setglobal COMBTECH
+$setglobal COMBTECH 
 *!option yes
 
 *-----------------HYDROGEN ADDON---------------------------------------
@@ -357,7 +357,7 @@ $Setglobal HYDROGEN YES
 *!option yes
 
 * Allows investments in hydrogen transport
-$Setglobal H2TransInvest yes
+$Setglobal H2TransInvest YES
 *!option yes
 
 SCALAR XH2INVESTSTART 'Year from which endogenous decisions in H2 transmission capacities are allowed' ;
@@ -409,7 +409,7 @@ $setglobal TRANS_RAMP
 
 *-----------------------ANCILLARY SERVICES----------------------------------------------------------------------------------------------------
 * Ancillary services addon (it requires UnitComm to be active). The other options require this one to be activated.
-$setglobal ANC_SERV
+$setglobal ANC_SERV 
 *!option yes
 
 * FCR reserve requirement activated
@@ -438,7 +438,7 @@ $setglobal DOWN_REGULATION_INCLUDED
 *-----------------------END: ANCILLIARY SERVICES----------------------------------------------------------------------------------------------------
 
 * Make investments in technologies only at specified capacities. (it should be checked before using it)
-$setglobal AGKNDISC
+$setglobal AGKNDISC 
 *!option yes
 *!onlyif %BB2%==yes
 *!onlyif %solvetype%==MIP
@@ -474,11 +474,11 @@ $setglobal LIFETIME_DECOM_ENDO_G YES
 *!option yes
 
 * Adds Endogenous capacities can be decommissioned based on their profitability:
-$setglobal ECONOMIC_DECOM_ENDO_G  
+$setglobal ECONOMIC_DECOM_ENDO_G   yes
 *!option yes
 
 * Adds Endogenous decommissioned endogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
-$setglobal REVERT_DECOM_ENDO_G
+$setglobal REVERT_DECOM_ENDO_G   yes
 *!option yes
 
 *--------END OF ENDOGENOUS CAPACITIES-----
@@ -498,12 +498,12 @@ $setglobal NO_DECOM_EXO_G
 *!option yes
 
 * Adds Exogenous capacities will maximum stay in the system as much as their lifetimes (or as much as political decissions suggest it, for instance), which should be represented in the yearly development of capacities of the input parameter GKFX:
-$setglobal LIFETIME_DECOM_EXO_G YES
+$setglobal LIFETIME_DECOM_EXO_G  YES
 *!option yes
 
 * Adds Exogenous capacities can be decommissioned based on their profitability:
 $setglobal ECONOMIC_DECOM_EXO_G
-*!option
+*!option yes
 
 * Adds Endogenous decommissioned exogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
 $setglobal REVERT_DECOM_EXO_G
@@ -578,7 +578,7 @@ $setglobal addUP
 *-------------------- UNIT COMMITMENT -----------------------------------------------------------
 * overall control variable UnitComm must be 'yes' if any of the other unit commitment controls are:
 
-$setglobal UnitComm
+$setglobal UnitComm 
 *!option yes
 
 * Adds minimal production-when-on:
@@ -915,14 +915,7 @@ $setglobal INPUTDATAGDX2XLS
 $setglobal all_endofmodelgdx yes
 *!option yes     !Save the file all_endofmodel.gdx to the model folder
 
-* Print out welfare results
-$Setglobal welfare
-*!option yes
 
-* Allow for limited printout of inputdata and results, as defined by files syminput.inc and symoutput.inc, respectively.
-* Only in effect for BB3
-$Setglobal limitedresults
-*!option yes
 
 
 * Make some output in text format to show some results of an execution.
@@ -932,9 +925,6 @@ $setglobal PRINTFILES
 *!option yes
 
 $setglobal OUTPUT_SUMMARY   yes
-*!option yes
-
-$setglobal OPTIFLOW_OUTPUT_SUMMARY
 *!option yes
 
 * PRINTSEPARATOR is a single character used for separating columns in printfiles,
@@ -1052,7 +1042,7 @@ putclose fileMERGEWITHBASEbat;
 
 * The model type has implications for the solver type.
 * Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Programming).
-$setglobal SOLVETYPE RMIP
+$setglobal SOLVETYPE LP
 *!option LP      "Linear Programming"
 *!option RMIP    "Relaxed Mixed Integer Programming"
 *!option MIP     "Mixed Integer Programming"
