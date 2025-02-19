@@ -48,7 +48,7 @@ def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
     # Detect which command has been passed
     command = ctx.invoked_subcommand
     if command in ['all', 'all-bars', 'all-profiles', 'all_maps',
-                   'costs', 'cap', 'map', 'profile', 'bar-chart']:
+                   'costs', 'cap', 'map', 'profile', 'bar-chart', 'adequacy']:
 
         # Locate results
         model = Balmorel(path)
@@ -133,7 +133,10 @@ def all_maps(ctx, year: int):
 @click.option('--gen', '-g', is_flag=True, default=True, required=False, help='Plot generation capacities')
 @click.option('--sto', '-s', is_flag=True, default=True, required=False, help='Plot storage capacities')
 @click.option('--filters', type=str, default='', required=False, help='Filters for df.query(...)')
-def cap(gen: bool, sto: bool, filters: str):
+@click.option('--include-backup', is_flag=True, default=False, help="Include interpreted backup capacities from the @adequacy function in this plot")
+@click.option('--backup-nth-max', type=int, default=3, help="The nth-max value used for the @adequacy function, if backup capacities should be included")
+def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
+        backup_nth_max: int):
     """
     Plot generation or storage capacities
     """
@@ -146,7 +149,7 @@ def cap(gen: bool, sto: bool, filters: str):
         if key == 'generation':
             df = (
                 collect_results('G_CAP_YCRAF')
-                .query('Technology != "H2-STORAGE" and not Technology.str.contains("INTERSEASONAL") and not Technology.str.contains("INTRASEASONAL")')
+                .query('Technology != "H2-STORAGE" and not Technology.str.contains("INTERSEASONAL") and not Technology.str.contains("INTRASEASONAL") and not Generation.str.contains("BACKUP")')
             ) 
             ax.set_ylabel('Generation Capacity [GW]')
         else:
@@ -162,12 +165,32 @@ def cap(gen: bool, sto: bool, filters: str):
             df = df.query(filters)
 
         # Sort scenarios, e.g. so N2 comes before N10
-        df = sort_scenarios(df)
+        df = sort_scenarios(df).pivot_table(index=['Scenario'], columns='Technology', 
+                                            values='Value', aggfunc='sum')
+        
+        if key == 'generation':
                 
+            # Re-arrange technologies
+            cols = df.columns
+            cols = cols[(cols != 'WIND-OFF') & (cols != 'SYNFUELPRODUCER') & (cols != 'ELECTROLYZER')]
+            cols = list(cols) + ['WIND-OFF', 'ELECTROLYZER', 'SYNFUELPRODUCER']
+            
+            # Include interpreted backup capacity
+            if include_backup:
+                for scenario in df.index.unique():
+                    df.loc[scenario, 'BACKUP'] = 0
+                    f = pd.read_csv('analysis/output/%s_backcapN%d.csv'%(scenario, backup_nth_max)).drop(columns='Region').sum()
+                    
+                    for commodity in f.index:
+                        df.loc[scenario, 'BACKUP'] += f[commodity] / 1e3
+                
+                balmorel_colours['BACKUP'] = '#000000'
+                cols = cols + ['BACKUP'] 
+            
+            df = df.loc[:, cols]
+        
         (
             df
-            .pivot_table(index=['Commodity', 'Scenario'], columns='Technology', 
-                    values='Value', aggfunc='sum')
             .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
         )
         
@@ -265,7 +288,8 @@ def costs(filters: str):
 @click.argument('scenario', type=str)
 @click.argument('node', type=str, default='all')
 @click.argument('year', type=int, default=2050)
-def profile(ctx, commodity: str, scenario: str, node: str, year: int):
+@click.option('--columns', type=str, default='Technology', help="Which parameter to stack, either 'Technology' or 'Fuel'")
+def profile(ctx, commodity: str, scenario: str, node: str, year: int, columns: str):
     """Plot energy balance of electricity, heat or hydrogen"""
 
     m = ctx.obj['Balmorel']
@@ -275,7 +299,8 @@ def profile(ctx, commodity: str, scenario: str, node: str, year: int):
     # Get mainresults files
     res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
     
-    fig, ax = res.plot_profile(commodity, year, scenario, region=node, style=ctx.obj['plot_style_for_modules'])
+    fig, ax = res.plot_profile(commodity, year, scenario, region=node, style=ctx.obj['plot_style_for_modules'],
+                               columns=columns)
     
     if node != 'all':
         scenario += '_' + node
@@ -569,7 +594,8 @@ def get(ctx, symbol: str, pars, filters: str, diff: bool):
 @CLI.command()
 @click.pass_context
 @click.argument('scenario', type=str, required=True)
-def adequacy(ctx, scenario: str):
+@click.option('--nth-max', type=int, required=False, default=3, help="Which nth maximum backup production to interpret as required backup capacity Default is 3, as it could be interpreted as a LOLE = 3 h condition.")
+def adequacy(ctx, scenario: str, nth_max: int):
     "Quantify the adequacy in terms of LOLE (h) and energy not supplied (TWh)"
     
     # Find path to scenario
@@ -581,6 +607,18 @@ def adequacy(ctx, scenario: str):
     
     # Get backup production
     df = res.get_result('PRO_YCRAGFST').query('Scenario == @scenario and Generation.str.contains("BACKUP")')
+    
+    # Get backup 'capacity' based on the nth maximum production from BACKUP units (nth_max = 1 => No inadequacy, nth_max = 3 => LOLE = 3 h, perhaps)
+    if nth_max == -1:
+        cap = df.pivot_table(index=['Region'], columns=['Commodity'],
+                            values='Value', aggfunc='max')
+    else:
+        cap = (
+            df.groupby(['Region', 'Commodity'])['Value']    
+            .apply(lambda x: x.nlargest(nth_max).iloc[-1])  # Selects N'th max
+            .unstack()  # Reshapes the data into a table
+        )
+    cap.to_csv('analysis/output/%s_backcapN%d.csv'%(scenario, nth_max))
     
     ## Get energy not served
     ENS = df.pivot_table(index=['Season', 'Time'], columns='Commodity',
@@ -598,8 +636,10 @@ def adequacy(ctx, scenario: str):
 @click.argument('symbol', type=str, required=True)
 @click.argument('index', type=str, required=True)
 @click.argument('columns', type=str, required=True)
+@click.option('--filters', type=str, default=None, required=False, help='Filters for df.query(...)')
 def bar_chart(ctx, scenarios: str, symbol: str, 
-              index: Union[str | list], columns: Union[str | list]):
+              index: Union[str | list], columns: Union[str | list],
+              filters: str):
     """
     Generates a bar chart from the specified scenarios and symbol.
     This function retrieves data from the specified scenarios, processes it, and generates a bar chart
@@ -628,12 +668,23 @@ def bar_chart(ctx, scenarios: str, symbol: str,
         index = index.replace(' ', '').split(',')
     if ',' in columns:
         columns = columns.replace(' ', '').split(',')
+
+    # Apply filters
+    if filters != None:
+        df = df.query(filters)
     
     # Get symbol
     fig, ax = plt.subplots()
-    df = mr.get_result(symbol)
-    df.pivot_table(index=index, columns=columns, values='Value', aggfunc='sum').plot(kind='bar', stacked=True, ax=ax)
-    fig.savefig('analysis/bar_chart_output.png')
+    df = sort_scenarios(mr.get_result(symbol))
+    df = df.pivot_table(index=index, columns=columns, values='Value', aggfunc='sum')
+    try:
+        df.plot(kind='bar', stacked=True, ax=ax, color=balmorel_colours)
+    except KeyError:
+        df.plot(kind='bar', stacked=True, ax=ax)
+    
+    ax.legend(bbox_to_anchor=(1.01, .5), loc='center left')
+    
+    fig.savefig('analysis/plots/bar_chart_output.png', bbox_inches='tight')
     
 
 #%% ------------------------------- ###
@@ -643,7 +694,7 @@ def bar_chart(ctx, scenarios: str, symbol: str,
 def sort_scenarios(df: pd.DataFrame):
     "Will sort scenarios, so e.g. N2 comes before N10"
     
-    df['Scenario'] = pd.Categorical(df['Scenario'], categories=sorted(df['Scenario'].unique(), key=lambda x: int(re.findall(r'\d+', x)[0]) if re.findall(r'\d+', x) else float('inf')))
+    df['Scenario'] = pd.Categorical(df['Scenario'], categories=sorted(df['Scenario'].unique(), key=lambda x: int(re.findall(r'N\d+', x)[0][1:]) if re.findall(r'N\d+', x) else float('inf')))
     
     return df
 
