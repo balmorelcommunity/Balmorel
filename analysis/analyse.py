@@ -179,11 +179,13 @@ def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
             if include_backup:
                 for scenario in df.index.unique():
                     df.loc[scenario, 'BACKUP'] = 0
-                    f = pd.read_csv('analysis/output/%s_backcapN%d.csv'%(scenario, backup_nth_max)).drop(columns='Region').sum()
+                    try:
+                        f = pd.read_csv('analysis/output/%s_backcapN%d.csv'%(scenario, backup_nth_max)).drop(columns='Region').sum()
                     
-                    for commodity in f.index:
-                        df.loc[scenario, 'BACKUP'] += f[commodity] / 1e3
-                
+                        for commodity in f.index:
+                            df.loc[scenario, 'BACKUP'] += f[commodity] / 1e3
+                    except FileNotFoundError:
+                        print('No backup capacity for scenario %s'%scenario)
                 balmorel_colours['BACKUP'] = '#000000'
                 cols = cols + ['BACKUP'] 
             
@@ -319,10 +321,11 @@ def profile(ctx, commodity: str, scenario: str, node: str, year: int, columns: s
 @click.argument('lat-lims', type=list, default=[54.4, 58])
 @click.option('--lines', type=str, default='UtilizationYear')
 @click.option('--generation', type=str, default='Production')
+@click.option('--hier', is_flag=True, default=False, help="A hierarchically clustered run?")
 def map(ctx, commodity: str, scenario: str, year: int, 
         geofile: str, geofile_region_column: str,
         lon_lims: list, lat_lims: list,
-        lines: str, generation: str):
+        lines: str, generation: str, hier: bool):
     """Plot transmission capacity maps for electricity or hydrogen"""
 
     model = ctx.obj['Balmorel']
@@ -331,9 +334,13 @@ def map(ctx, commodity: str, scenario: str, year: int,
     # Get mainresults files
     res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
     
-    if 'N' in scenario and not 'TransRelaxation' in scenario and geofile=='analysis/geofiles/municipalities.gpkg':
+    if hier and geofile=='analysis/geofiles/municipalities.gpkg':
+        geofile = model_path.replace('model', 'data') + '/DE_%dcluster_geofile_2nd-order.gpkg'%(int(re.findall('M\d+', scenario)[0].lstrip('M')))
+        geofile_region_column = 'cluster_name'
+    elif 'N' in scenario and not 'TransRelaxation' in scenario and geofile=='analysis/geofiles/municipalities.gpkg':
         geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(re.findall('N\d+', scenario)[0].lstrip('N')))
         geofile_region_column = 'cluster_name'
+    
     
     fig, ax = res.plot_map(scenario, year, commodity.capitalize(), 
                            path_to_geofile=os.path.abspath(geofile), geo_file_region_column=geofile_region_column, 
@@ -623,11 +630,13 @@ def adequacy(ctx, scenario: str, nth_max: int):
     ## Get energy not served
     ENS = df.pivot_table(index=['Season', 'Time'], columns='Commodity',
                           values='Value', aggfunc='sum')
-    print('Energy not served [TWh] (first four rows) and Loss of load expectation (h) in the next four rows:')
-    print((ENS.sum() / 1e6).to_string(header=None))
     
-    ## Get hours with loss of load
-    print(ENS.count().to_string(header=None))
+    df_out = pd.DataFrame({
+        'ENS_TWh' : ENS.sum() / 1e6,
+        'LOLE_h'  : ENS.count()
+    })
+    
+    df_out.to_csv('analysis/output/%s_adeq.csv'%scenario)
 
 
 @CLI.command()
@@ -668,14 +677,15 @@ def bar_chart(ctx, scenarios: str, symbol: str,
         index = index.replace(' ', '').split(',')
     if ',' in columns:
         columns = columns.replace(' ', '').split(',')
-
-    # Apply filters
-    if filters != None:
-        df = df.query(filters)
     
     # Get symbol
     fig, ax = plt.subplots()
     df = sort_scenarios(mr.get_result(symbol))
+    
+    # Apply filters
+    if filters != None:
+        df = df.query(filters)
+        
     df = df.pivot_table(index=index, columns=columns, values='Value', aggfunc='sum')
     try:
         df.plot(kind='bar', stacked=True, ax=ax, color=balmorel_colours)
