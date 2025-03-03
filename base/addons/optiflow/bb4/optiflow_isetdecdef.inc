@@ -27,7 +27,6 @@ $ifi not %baloptgasbridge%==yes $goto nogasbridge
 
 
 IFFLOW('STRAW','STRAW_FLOW_BIOGAS')=YES;
-
 IFFLOW('BIOGAS','SNG_FLOW_FOR_USE')=YES;
 IFPROC('BIOGAS','Gas_Buffer')=YES;
 
@@ -57,9 +56,8 @@ ICO2_CC('CO2_Biochar_Sum','CO2_FLOW_BIOCHAR') = YES;
 
 SET ICO2_CU(PROC,FLOW)			"Set of PROC/FLOW pairs that deliver CO2 for CU";
 ICO2_CU(PROC,FLOW)=0;
-ICO2_CU('CO2_BIOGEN','CO2_FLOW_BIOGEN') = YES;
-ICO2_CU('CO2_FOS','CO2_FLOW_FOSSIL') = YES;
-ICO2_CU('CO2_DAC_Total','CO2_FLOW_DAC') = YES;
+ICO2_CU('CO2_CU_Split','CO2_FLOW_EME') = YES;
+ICO2_CU('CO2_CU_Split','CO2_FLOW_FT') = YES;
 
 $label noCCUopti
 
