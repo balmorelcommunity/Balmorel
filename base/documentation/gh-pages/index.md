@@ -13,6 +13,7 @@ versions
 addons
 pre_processing
 running_on_hpc
+github_tutorial
 ```
 
 ```{toctree}
