@@ -8,10 +8,15 @@ Remember to study the log report after your job finishes, so you can be more acc
 
 ## Job Script
 
-After having transferred our Balmorel model through WinSCP (see [previous page](access.md)), we want it. We need to submit a job, which means creating a job script that asks for the right amount of memory usage and time before completion. This is done through a job script, illustrated in the code snippet below. We refer to [this general guide](https://www.hpc.dtu.dk/?page_id=1416) by DTU Computing Center for the exact explanations of the different elements. 
+After having transferred our Balmorel model through WinSCP (see [previous page](access.md)), we need to submit a job. This means creating a job script that asks for the right amount of memory usage and time before completion. This is done through a job script, illustrated in the code snippet below. We refer to [this general guide](https://www.hpc.dtu.dk/?page_id=1416) by DTU Computing Center for the exact explanations of the different elements. Note that the paths in the `export` commands are specific to our setup at DTU's clusters. 
 
-Note that the bottom commands assumes that the job script is placed inside your Balmorel folder, and that your Balmorel project contains a "scenario1" scenario - see [how to create new scenarios](../get_started/scenario_setup.md). The `--threads=$LSB_DJOB_NUMPROC` command makes sure that Balmorel does not use more cores than defined  in your job script (four in this case, due to `#BSUB -n 4`)
-```batch
+The bottom commands assumes that the job script is submitted from inside your Balmorel folder, and that your Balmorel project contains a "scenario1" scenario - see [how to create new scenarios](../get_started/scenario_setup.md). The `threads=$LSB_DJOB_NUMPROC` command makes sure that Balmorel does not use more cores than defined  in your job script (four in this case, due to `#BSUB -n 4`)
+
+:::{warning}
+Please make sure to switch to the solver options file `cplex.op2`, by going into the `balgams.opt` file and setting `$Setglobal USEOPTIONFILE 2`. Otherwise CPLEX will overwrite the number of chosen threads and will ue more resources than requested.
+:::
+
+```bash
 #!/bin/sh 
 ### General options 
 ### -- specify queue -- 
@@ -41,10 +46,14 @@ Note that the bottom commands assumes that the job script is placed inside your 
 #BSUB -o Output_%J.out 
 #BSUB -e Output_%J.err 
 
+# Get paths to GAMS 47
+export PATH=/appl/gams/47.6.0:$PATH
+export LD_LIBRARY_PATH=/appl/gams/47.6.0:$LD_LIBRARY_PATH
+
 # Go to model folder of your scenario - this assumes that the job script is at the same level of the Balmorel folder
 cd scenario1/model 
 # Run Balmorel
-gams Balmorel --threads=$LSB_DJOB_NUMPROC
+gams Balmorel threads=$LSB_DJOB_NUMPROC
 ```
 
 ## Submitting the Job from PuTTY

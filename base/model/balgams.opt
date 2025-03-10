@@ -152,6 +152,7 @@ option intVarUp = 0
 $Setglobal USEOPTIONFILE 4
 *!option 0   No option file is used. Note that not setting anything will generate an error.
 *!option 1   Use option file SolverName.opt.
+*!option 2   Predefined, don't change. Used with CPLEX it opens cplex.op2 and sets 'LPmethod 4' to run barrior method. Also does not set any Threads option to allow running on HPC.
 *!option 4   Predefined, don't change. Used with CPLEX it opens cplex.op4 and sets 'LPmethod 4' to run barrior method.
 *!option 6   Predefined, don't change. Used with CPLEX it opens cplex.op6 and sets 'LPmethod 6' to run multiple methods in parallel.
 
