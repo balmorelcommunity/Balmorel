@@ -9,17 +9,13 @@ This tutorial will show, how to work with **Balmorel** on **GitHub**. It will co
 - Creating your own **branch**
 - Making a **pull request** to merge into the **master branch**
 
-## GitHub, VS Code, or command line
-
 We offer **three different paths** for this exercise:
-- **GitHub** (this is the one we will demonstrate)
-- **VS Code** (if you prefer to follow along using an editor)
-- **Command line** (for people comfortable with the command line)
+- **GitHub**
+- **VS Code**
+- **Command line**
 
 ```{toctree}
 :maxdepth: 1
-:caption: Balmorel GitHub Tutorial
-:hidden:
 
 github_tutorial/browsing
 github_tutorial/branching
