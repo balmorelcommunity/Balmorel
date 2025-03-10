@@ -98,7 +98,7 @@ ALIAS(CCCRRRAAA,CCCRRRAAAALIAS);
 * They correspond in a one-to-one way with the internal sets IGCND, IGBRP etc. below.
 * They should generally not be changed.
 * New technology types may be added only if also code specifying their properties are added.
-ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GHYRR, GWND, GSOLE, GSOLH, GWAVE;
+ACRONYMS  GCND, GBPR, GEXT, GHOB, GETOH, GHSTO, GESTO, GHSTOS, GESTOS, GHYRS, GHYRR, GWND, GSOLE, GSOLH, GWAVE, GHS;
 
 * ACRONYMS for user defined fuels will be given as part of file FFF.inc
 * ACRONYMS for other purposes are defined in ACRONYMS.inc
@@ -177,6 +177,7 @@ SET IGCND(G)               "Condensing technologies";                           
 SET IGBPR(G)               "Back pressure technologies";                        !! Corresponding to acronym GBPR
 SET IGEXT(G)               "Extraction technologies";                           !! Corresponding to acronym GEXT
 SET IGHOB(G)               "Heat-only boilers";                                 !! Corresponding to acronym GHOB
+SET IGHS(G)				   "Heat savings";										!! Corresponding to acronym GHS
 SET IGETOH(G)              "Electric heaters, heatpumps, electrolysis plants";  !! Corresponding to acronym GETOH
 SET IGHSTO(G)              "Intra-seasonal heat storage technologies";          !! Corresponding to acronym GHSTO
 SET IGHSTOS(G)             "Inter-seasonal heat storage technologies";          !! Corresponding to acronym GHSTOS
@@ -189,6 +190,7 @@ SET IGHYRR(G)              "Hydropower run-of-river no reservoir";              
 SET IGWND(G)               "Wind power technologies";                           !! Corresponding to acronym GWND
 SET IGSOLE(G)              "Solar electrical power technologies";               !! Corresponding to acronym GSOLE
 SET IGSOLH(G)              "Solar heat technologies";                           !! Corresponding to acronym GSOLH
+SET IGVRE(G)                            "VRE technologies";
 SET IGWAVE(G)              "Wave power technologies";                           !! Corresponding to acronym GWAVE
 SET IGHH(G)                "Technologies generating heat-only";
 SET IGHHNOSTO(G)           "Technologies generating heat-only, except storage";
@@ -353,6 +355,7 @@ IS33(S,ISALIAS)$((ORD(S) EQ CARD(S)) AND (ORD(ISALIAS) EQ 1)) = YES; !! CIRCULAR
    IGSOLE(G)   = YES$(GDATA(G,'GDTYPE') EQ GSOLE);
    IGSOLH(G)   = YES$(GDATA(G,'GDTYPE') EQ GSOLH);
    IGWAVE(G)   = YES$(GDATA(G,'GDTYPE') EQ GWAVE);
+   IGHS(G)	   = YES$(GDATA(G,'GDTECHGROUP') EQ HEAT_SAVING);
 
 
 * Assignments of IGESTO, IGESTOS, IGHSTO and IGHSTOS may be changed if option stointers has a non-default value.
@@ -402,6 +405,9 @@ $ifi "%stointers%"=="none" IGESTOS(IGESTOS) = NO; IGHSTOS(IGHSTOS) = NO;
                          +IGWAVE(G)
                          +IGESTO(G)
                          +IGESTOS(G);
+
+   IGVRE(G)                     =       IGWND(G)
+                                                + IGSOLE(G);
 
    IGESTOALL(G) =       IGESTO(G)
                          +IGESTOS(G);
@@ -766,7 +772,7 @@ PARAMETER   IM_SO2(G)   "SO2 emission coefficient for fuel (kg/GJ)";
 PARAMETER   IM_N2O(G)   "NO2 emission coefficient for fuel (kg/GJ)";
 
 LOOP(FFF, !! TODO: Check forbedringen af kode som givet p\E5 SONYstick
-  IM_CO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDCO2');
+  IM_CO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDCO2')*(1 - FDATA(FFF,'FDRE'));
   IM_CO2RE(G)$IGF(G,FFF) = FDATA(FFF,'FDCO2')*FDATA(FFF,'FDRE');
   IM_SO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDSO2')$(GDATA(G,'GDDESO2') EQ 0) +
       (FDATA(FFF,'FDSO2')*(1-GDATA(G,'GDDESO2')))$(GDATA(G,'GDDESO2') GT 0);
@@ -1888,6 +1894,7 @@ QGMINCF(IY411,C,FFF)$IGMINF(IY411,C,FFF)..
 * "Maximum fuel use by year, country and fuel (GJ)"
 QGMAXCF(IY411,C,FFF)$IGMAXF(IY411,C,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND ICA(C,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC * VGF_T(IY411,IA,G,IS3,T)))
+$include "../../base/addons/_hooks/qgmaxcf.inc"
     =L= IGMAXF(IY411,C,FFF);
 
 * "Exact fuel use by year, country and fuel (GJ)"
@@ -1905,6 +1912,7 @@ QGMINRF(IY411,IR,FFF)$IGMINF(IY411,IR,FFF)..
 * "Maximum fuel use by year, region and fuel constraint (GJ)"
 QGMAXRF(IY411,IR,FFF)$IGMAXF(IY411,IR,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF) AND RRRAAA(IR,IA)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC * VGF_T(IY411,IA,G,IS3,T)))
+$include "../../base/addons/_hooks/qgmaxrf.inc"
     =L= IGMAXF(IY411,IR,FFF);
 
 * "Exact fuel use by year, region and fuel (GJ)"
@@ -1922,6 +1930,7 @@ QGMINAF(IY411,IA,FFF)$IGMINF(IY411,IA,FFF)..
 * "Maximum fuel use by year, area and fuel (GJ)"
 QGMAXAF(IY411,IA,FFF)$IGMAXF(IY411,IA,FFF)..
     SUM(IAGK_HASORPOT(IY411,IA,G)$(IGF(G,FFF)), IOF3P6 * SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC * VGF_T(IY411,IA,G,IS3,T)))
+$include "../../base/addons/_hooks/qgmaxaf.inc"
     =L= IGMAXF(IY411,IA,FFF);
 
 * "Exact fuel use by year, area and fuel (GJ)"
@@ -2215,6 +2224,39 @@ QGKNACCUMNET(IY411,IA,IGKFIND)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IG
 
 $include "../../base/addons/_hooks/qgknaccumnet.inc";
 
+*---
+* Restrictions on accumulated new generation capacity
+*---
+
+EQUATION QGKNMAXSOLE(Y)            'Restriction on new solar PV generation capacity from one year to the next';
+EQUATION QGKNMAXWND(Y)             'Restriction on new wind generation capacity from one year to the next';
+EQUATION QGKNMAXHP(Y)              'Restriction on new heat pump capacity from one year to the next';
+EQUATION QGKNMAXHS(Y)			   'Restriction on new heat saving capacity from one year to the next';
+
+QGKNMAXSOLE(IY411)$(YVALUE(IY411) LE RAMP_YEAR)..
+        SUM((IA,IGSOLE),VGKN(IY411,IA,IGSOLE))
+                =L=
+        IWEIGHTY(IY411) * RAMP_RATE_SOLE * IOF1000
+;
+
+QGKNMAXWND(IY411)$(YVALUE(IY411) LE RAMP_YEAR)..
+        SUM((IA,IGWND),VGKN(IY411,IA,IGWND))
+                =L=
+        IWEIGHTY(IY411) * RAMP_RATE_WND * IOF1000
+;
+
+QGKNMAXHP(IY411)$(YVALUE(IY411) LE RAMP_YEAR)..
+        SUM((IA,IHEATPUMP),VGKN(IY411,IA,IHEATPUMP))
+                =L=
+        IWEIGHTY(IY411) * RAMP_RATE_HP * IOF1000
+;
+QGKNMAXHS(IY411)$(YVALUE(IY411) LE RAMP_YEAR)..
+        SUM((IA,IGHS),VGKN(IY411,IA,IGHS))
+                =L=
+        IWEIGHTY(IY411) * RAMP_RATE_HS * IOF1000
+;
+
+
 *-------------------------------------------------------------------------------
 *---------- Capacity constraint on technologies wiht endogenous investment -----
 *-------------------------------------------------------------------------------
@@ -2502,6 +2544,10 @@ $ifi not %TechInvest%==yes $ifi not %DECOM%==yes  $goto NO_TECH_INVESTMENTS_NO_D
 *--- Investment restrictions----------------------------------------------------
                                  QMAXINVESTNAF
                                  QMAXINVESTCF
+$ifi %RampingVRE%==yes                   QGKNMAXSOLE
+$ifi %RampingVRE%==yes                   QGKNMAXWND
+$ifi %RampingVRE%==yes                   QGKNMAXHP
+$ifi %RampingVRE%==yes $ifi %GHEATSAVING%==yes  QGKNMAXHS
 
 $label  NO_TECH_INVESTMENTS_NO_DECOMMISSIONING
 *---------------------------------------------------------------
@@ -2573,8 +2619,6 @@ $ifi not exist 'Balmorelbb4.sim'  $include '../../base/model/Balmorelbb4.sim';
 $ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY.inc';
 *--- End of Main results calculation ---------------------------------------
 
-*----optiflow output file (TO BE MERGED IN OUTPUT_SUMMARY.inc)
-$ifi %Optiflow%==yes       $if     EXIST '../../base/output/Optiflow_OutputFile.inc' $include '../../base/output/Optiflow_OutputFile.inc';
 
 $ifi not %export_results%==yes $goto result_export
 *------------------------------------------------------------------------------

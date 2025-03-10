@@ -101,15 +101,15 @@ $if not EXIST '../data/OPTIFLOW_PROC.inc' $INCLUDE '../../base/data/OPTIFLOW_PRO
 
 ALIAS (PROC,IPROC,IPROCFROM,IPROCTO,IPROCFROM2,IPROCTO2,IPROCABROAD); !!IPROCABROAD ?
 
-* Indholdet i denne kan garanteres afledes af PROCPAR nedenfor, lige nu håndlaver vi den.
-* Men i øvrigt er det formentlig sikrere (ift. bruger) at definere eksplicit her. Bør i øvrigt checkes i errorcode. TODO/done?
+* Indholdet i denne kan garanteres afledes af PROCPAR nedenfor, lige nu hï¿½ndlaver vi den.
+* Men i ï¿½vrigt er det formentlig sikrere (ift. bruger) at definere eksplicit her. Bï¿½r i ï¿½vrigt checkes i errorcode. TODO/done?
 SET PROCSOURCE(PROC) "Source PROC (no flow entering it)" %semislash%
 $if     EXIST '../data/OPTIFLOW_PROCSOURCE.inc' $INCLUDE         '../data/OPTIFLOW_PROCSOURCE.inc';
 $if not EXIST '../data/OPTIFLOW_PROCSOURCE.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCSOURCE.inc';
 %semislash%;
 
-* Indholdet i denne kan garanteres afledes af PROCPAR nedenfor, lige nu håndlaver vi den.
-* Men i øvrigt er det formentlig sikrere (ift. bruger) at definere eksplicit her. Bør i øvrigt checkes i errorcode. TODO/done?
+* Indholdet i denne kan garanteres afledes af PROCPAR nedenfor, lige nu hï¿½ndlaver vi den.
+* Men i ï¿½vrigt er det formentlig sikrere (ift. bruger) at definere eksplicit her. Bï¿½r i ï¿½vrigt checkes i errorcode. TODO/done?
 SET PROCSINK(PROC) "Sink PROC (no flow leaving it)" %semislash%
 $if     EXIST '../data/OPTIFLOW_PROCSINK.inc' $INCLUDE         '../data/OPTIFLOW_PROCSINK.inc';
 $if not EXIST '../data/OPTIFLOW_PROCSINK.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCSINK.inc';
@@ -175,9 +175,12 @@ $ifi %inv%==yes $if     EXIST '../data/OPTIFLOW_APROCKAPNEW.inc' $INCLUDE       
 $ifi %inv%==yes $if not EXIST '../data/OPTIFLOW_APROCKAPNEW.inc' $INCLUDE '../../base/data/OPTIFLOW_APROCKAPNEW.inc';
 $ifi %inv%==yes %semislash%;
 
-$ifi %inv%==yes SET IAPROCKAPNEW(YYY,AAA,PROC) 'Area, Proc where technology may be invested based on APKN and some implicit constraints';
-IAPROCKAPNEW(YYY,IA,PROC) = APROCKAPNEW(YYY,IA,PROC);    !! MORE LATER
-
+$ifi %inv%==yes SET IAPROCKAPNEW(YYY,AAA,PROC)	'Area, Proc where technology may be invested based on APKN and some implicit constraints';
+$ifi %inv%==yes SET IAPROCKAPNEW_notY(AAA,PROC)	'Same as IAPROCKAPNEW, but not for a year';
+$ifi %inv%==yes SET IAPROCKAPNEW_all(YYY,AAA,PROC)	'Based on IAPROCKAPNEW, but contains all years, procs, and aras';
+IAPROCKAPNEW(Y,IA,PROC) = APROCKAPNEW(Y,IA,PROC);    !! MORE LATER
+IAPROCKAPNEW_notY(IA,PROC) = SUM(Y,IAPROCKAPNEW(Y,IA,PROC));
+IAPROCKAPNEW_all(YYY,IA,PROC) = APROCKAPNEW(YYY,'DK1_A',PROC);
 
 * NB: for debugging, print and ailing memory nice to have FLOW elements in UPPERCASE og Proc elements in CamelCase.
 * NONONO: I now prefer the other way:  FLOW elements in CamelCase og Proc elements in UPPERCASE!
@@ -201,9 +204,13 @@ $if not EXIST '../data/OPTIFLOW_TRANSDIST.inc' $INCLUDE '../../base/data/OPTIFLO
 %semislash%;
 
 SET ITRANSFROMTO(IAAAE,IAAAI) "Set of Areas that are connected by transport (not necessarily symmetric)";
-ITRANSFROMTO(IAE,IAI)$SUM(PROC,TRANSDIST(PROC,IAE,IAI)) =  YES;
+ITRANSFROMTO(IAE,IAI)$(SUM(PROC,TRANSDIST(PROC,IAE,IAI))) =  YES;
 * Remove diagonal elements :
 ITRANSFROMTO(IA,IA) = NO;
+
+SET ITRANSFROMTOPROC(PROC,IAAAE,IAAAI)	"Set of areas that are connected for transport via process proc";
+ITRANSFROMTOPROC(PROC,IAE,IAI)$(TRANSDIST(PROC,IAE,IAI)) = YES;
+ITRANSFROMTOPROC(PROC,IA,IA) = NO;
 
 
 
@@ -233,8 +240,18 @@ $if     EXIST '../data/OPTIFLOW_PROCKAPDATA.inc' $INCLUDE         '../data/OPTIF
 $if not EXIST '../data/OPTIFLOW_PROCKAPDATA.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCKAPDATA.inc';
 %semislash%;
 
+* To ensure that flow restricted by capacity functions properly with accumulating investments, we update the PROCKAPDATA set to not include all combinations.
+* The set should, firstly, only include the years in the simulation, and secondly, not include processes that are not available yet in that year.
+
+SET  IPROCKAPDATA(YYY,PROC,FLOW,IFLOWINOUT)		"Same as PROCKAPDATA, but includes only simulated years, as well as the year an investment is available from";
+*SET  IPROCKAPDATA_V2(YYY,PROC,FLOW,IFLOWINOUT)	"Same as before, for test";
+IPROCKAPDATA(Y,PROC,FLOW,IFLOWINOUT) = PROCKAPDATA(Y,PROC,FLOW,IFLOWINOUT);
 
 
+
+* Create subset of processes that is for the model to invest in, based on if it is in PROCDATA and has investment cost
+$ifi %inv%==yes SET IPROCFIND(PROC) 'Set of processes to be found as investments';
+$ifi %inv%==yes IPROCFIND(PROC)=PROC(PROC)$(PROCDATA(PROC,'PROCKAPVARIABLE') EQ 1);
 
 PARAMETER PROCKAPFX(YYY,AAA,PROC,FLOW,IFLOWINOUT) "Capacity of Process (U/h)" %semislash%
 $if     EXIST '../data/OPTIFLOW_PROCKAPFX.inc' $INCLUDE         '../data/OPTIFLOW_PROCKAPFX.inc';
@@ -264,7 +281,7 @@ $if not EXIST '../data/OPTIFLOW_PROCKAPDECOM.inc' $INCLUDE '../../base/data/OPTI
 
 
 
-IAPROCKAPNEW(YYY,IA,PROC)$(PROCDATA(PROC,'PROCKAPVARIABLE') EQ 0) = NO;   !! Not needed, is implicit in APROCKAPNEW
+*IAPROCKAPNEW(YYY,IA,PROC)$(PROCDATA(PROC,'PROCKAPVARIABLE') EQ 0) = NO;   !! Not needed, is implicit in APROCKAPNEW
 * TODO: add condition for COMBINATION OF Y AND PROCFROMYEAR  (which may reduce IAPROCKAPNEW).
 
 
@@ -387,6 +404,8 @@ $if     EXIST '../data/OPTIFLOW_FLOWFROMTOPROC.inc' $INCLUDE         '../data/OP
 $if not EXIST '../data/OPTIFLOW_FLOWFROMTOPROC.inc' $INCLUDE '../../base/data/OPTIFLOW_FLOWFROMTOPROC.inc';
 %semislash%
 SET IFLOWFROMTOPROC_Y(AAA,IPROCFROM,IPROCTO,FLOW) "FLOW from PROC (index 2) to PROC (index 3) in the year of optimization";
+FLOWFROMTOPROC(Y,IA,IPROCFROM,IPROCTO,FLOW)$(SUM(YYY,IAPROCKAPNEW_all(YYY,IA,IPROCTO)) AND (NOT IAPROCKAPNEW_notY(IA,IPROCTO))) = NO;
+FLOWFROMTOPROC(Y,IA,IPROCFROM,IPROCTO,FLOW)$(SUM(YYY,IAPROCKAPNEW_all(YYY,IA,IPROCFROM)) AND (NOT IAPROCKAPNEW_notY(IA,IPROCFROM))) = NO;
 
 
 PARAMETER PROCINOUTFLOW(YYY,AAA,PROC,IFLOWIN,IFLOWOUT,IPROCINOUTRELATION) "Relationship at PROC between FLOWIN (index 3) and FLOWOUT (index 4); interior PROC only (~)"  %semislash%
@@ -399,6 +418,7 @@ PARAMETER IPROCINOUTFLOW_Y(AAA,PROC,IFLOWIN,IFLOWOUT,IPROCINOUTRELATION) "Relati
 
 SET  IPROCINOUTFLOW(YYY,AAA,PROC,IFLOWIN,IFLOWOUT) "Set of combinations of (AAA,PROC,IFLOWIN,IFLOWOUT) in PROCINOUTFLOW";
 IPROCINOUTFLOW(Y,IA,PROC,IFLOWIN,IFLOWOUT) = YES$(SUM(IPROCINOUTRELATION$PROCINOUTFLOW(Y,IA,PROC,IFLOWIN,IFLOWOUT,IPROCINOUTRELATION),1));
+IPROCINOUTFLOW(Y,IA,PROC,IFLOWIN,IFLOWOUT)$(SUM(YYY,IAPROCKAPNEW_all(YYY,IA,PROC)) AND (NOT IAPROCKAPNEW_notY(IA,PROC))) = NO;
 
 SET  IPROCINOUTFLOW_Y_set(AAA,PROC,IFLOWIN,IFLOWOUT) "Set of combinations of (AAA,PROC,IFLOWIN,IFLOWOUT) in PROCINOUTFLOW";
 
@@ -612,6 +632,8 @@ $if     EXIST '../data/OPTIFLOW_RateOfReturn.inc' $INCLUDE         '../data/OPTI
 $if not EXIST '../data/OPTIFLOW_RateOfReturn.inc' $INCLUDE '../../base/data/OPTIFLOW_RateOfReturn.inc';
 %semislash%;
 
+* Annuity calculation
+$ifi %OPTIFLOW%==yes      $include	"../../base/addons/optiflow/bb4/optiflow_annuities.inc";
 
 * ------------------------------------------------------------------------------
 * OBJECTIVES:

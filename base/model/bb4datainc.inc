@@ -416,6 +416,16 @@ $if     EXIST '../data/FMAXINVESTNA.inc' $INCLUDE      '../data/FMAXINVESTNA.inc
 $if not EXIST '../data/FMAXINVESTNA.inc' $INCLUDE '../../base/data/FMAXINVESTNA.inc';
 %semislash%;
 
+PARAMETER GROWTHCAP(CCC,GGG)  													'Maximum model generated capacity increase (MW) from one year to the next' %semislash%
+$if     EXIST '../data/GROWTHCAP.inc' 	$INCLUDE      '../data/GROWTHCAP.inc';
+$if not EXIST '../data/GROWTHCAP.inc' 	$INCLUDE '../../base/data/GROWTHCAP.inc';
+%semislash%;
+
+PARAMETER GKNMAX(YYY,AAA,GGG)													'Maximum capacity of production technologies' %semislash%
+$if     EXIST '../data/GKNMAX.inc' 		$INCLUDE      '../data/GKNMAX.inc';
+$if not EXIST '../data/GKNMAX.inc' 		$INCLUDE '../../base/data/GKNMAX.inc';
+%semislash%;
+
 PARAMETER DISLOSS_E(RRR)    "Loss in electricity distribution (fraction)"   %semislash%
 $if     EXIST '../data/DISLOSS_E.inc' $INCLUDE      '../data/DISLOSS_E.inc';
 $if not EXIST '../data/DISLOSS_E.inc' $INCLUDE '../../base/data/DISLOSS_E.inc';
