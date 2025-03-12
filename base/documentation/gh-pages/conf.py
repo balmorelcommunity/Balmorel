@@ -1,6 +1,6 @@
 project = "Balmorel"
-copyright = "2024, Mathias Berg Rosendal"
-author = "Mathias Berg Rosendal"
+copyright = "2024, Mathias Berg Rosendal, Tim Graulich"
+author = "Mathias Berg Rosendal, Tim Graulich"
 release = "5.0"
 
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", ".testenv", ".testenv/**", "README.md"]

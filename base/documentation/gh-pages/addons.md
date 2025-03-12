@@ -5,5 +5,5 @@ Addons are modular additions to the Balmorel framework that can be turned on and
 ```{toctree}
 :maxdepth: 1
 
-
+addons/operational_run.md
 ```

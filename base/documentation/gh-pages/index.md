@@ -3,6 +3,14 @@ Balmorel is an open-source, bottom-up partial equilibrium energy system model[^1
 
 A quick tutorial on how to get started can be found [here](get_started.md), and the full documentation can be found [here](https://github.com/balmorelcommunity/Balmorel/blob/master/base/documentation/TheBalmorelModelStructure-BMS301.pdf).
 
+:::{figure} https://media.springernature.com/lw685/springer-static/image/art%3A10.1038%2Fs41467-024-49867-w/MediaObjects/41467_2024_49867_Fig5_HTML.png?
+:name: Exampleresults
+:alt: Example of European Results
+:width: 100% 
+:align: center
+Example of European results from Kountouris et al 2024.
+:::
+
 ```{toctree}
 :maxdepth: 1
 :caption: Balmorel
