@@ -287,7 +287,8 @@ def costs(filters: str):
 @click.option('--sc-group', type=str, required=True, default=None, help="Groups of scenarios, with groups separated by ; and scenarios by ,")
 @click.option('--group-names', type=str, required=True, default=None, help="Scenario group names separated by ;")
 @click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
-def cost_change(sc_group: str, group_names: str, filters: str):
+@click.option('--filename', type=str, required=False, default=None, help="Output filename")
+def cost_change(sc_group: str, group_names: str, filters: str, filename: str):
     """
     Plot change in system costs between scenarios
     """
@@ -298,6 +299,7 @@ def cost_change(sc_group: str, group_names: str, filters: str):
     all_scenarios = sc_group.replace(' ', '').replace(';', ',').split(',')
     scenario_groups = sc_group.replace(' ', '').split(';')
     group_names = group_names.split(';')
+    
     if filters != None:
         df = df.query(filters + " Scenario in %s"%str(all_scenarios))
     else:
@@ -339,7 +341,10 @@ def cost_change(sc_group: str, group_names: str, filters: str):
     # ax.set_xlabel('Resolution in # of Nodes')
     ax.set_xlabel('')
     
-    fig, ax = plot_style(fig, ax, 'systemcost_changes', legend=False)
+    if filename == None:
+        filename = 'systemcost_changes'
+    
+    fig, ax = plot_style(fig, ax, filename, legend=False)
 
 
 @CLI.command()
