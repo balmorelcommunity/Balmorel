@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Analyse Scenarios with no Small H2/Synfuel Capacities",
+        "type": "shell",
+        "command": "./.vscode/analyseENSC.sh",
+        "group": {
+          "kind": "none",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Analyse Scenarios with Hydrogen at Country Level",
+        "type": "shell",
+        "command": "./.vscode/analyseH1.sh",
+        "group": {
+          "kind": "none",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        },
+        "problemMatcher": []
+      }
+    ]
+  }
