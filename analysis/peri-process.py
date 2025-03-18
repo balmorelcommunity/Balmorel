@@ -57,43 +57,80 @@ def CLI(ctx, scenario: str, dark_style: bool, plot_ext: str):
 
 @CLI.command()
 @click.pass_context
-@click.option('--thresh', type=float, required=True, help="Threshold that capacities cannot be below")
-def inv_options(ctx, thresh: float):
+@click.option('--thresh', type=float, required=False, default=0, help="Threshold that capacities cannot be below")
+@click.option('--max-only', is_flag=True, default=False, help="Will remove all investment options instead of the place with largest capacity (bypasses the threshold value)")
+def inv_options(ctx, thresh: float, max_only: bool):
     "Disallow investment options below a certain treshold"
     
+    synfuel = ['GNR_TG-MeOH-STRAW-2050_H2', 
+                'GNR_TG-MeOH-STRAW-2050',
+                'GNR_TG-MeOH-WOOD-2050_H2', 
+                'GNR_TG-MeOH-WOOD-2050',
+                'GNR_TG-FT-STRAW-2050',
+                'GNR_TG-FT-WOOD-2050',
+                'GNR_eNH3-2050']
+    
+    electrolysers = [
+        'GNR_ELYS_ELEC_AEC_DH_Y-2020',
+        'GNR_ELYS_ELEC_AEC_DH_Y-2030',
+        'GNR_ELYS_ELEC_AEC_DH_Y-2040',
+        'GNR_ELYS_ELEC_AEC_DH_Y-2050',
+        'GNR_ELYS_ELEC_AEC_Y-2020',
+        'GNR_ELYS_ELEC_AEC_Y-2030',
+        'GNR_ELYS_ELEC_AEC_Y-2040',
+        'GNR_ELYS_ELEC_AEC_Y-2050'
+    ]
+    
+    all_generators = {
+        'HYDROGEN' : electrolysers,
+        'SYNFUEL'  : synfuel
+    }
+            
     df = ctx.obj['mainresults'].get_result('G_CAP_YCRAF')
-    df = df.query('Commodity == "SYNFUEL"').pivot_table(index='Area', columns='Generation', values='Value', aggfunc='sum')
-    
-    # Find too small investments from the sum of all synfuelproducertypes
-    idx = df.sum(axis=1) < thresh
-    
-    if len(df.loc[idx]) == 0:
-        print('No investments below threshold!')
-        exit(5)
+    dfs = {
+        'SYNFUEL' : df.query('Commodity == "SYNFUEL"').pivot_table(index='Area', columns='Generation', values='Value', aggfunc='sum'),
+        'HYDROGEN' : df.query('Commodity == "HYDROGEN" and Technology != "H2-STORAGE"').pivot_table(index='Area', columns='Generation', values='Value', aggfunc='sum')
+    }
         
+    append_lines = '\n'
+    if not(max_only):
+        for commodity in ['HYDROGEN', 'SYNFUEL']:
+            df = dfs[commodity]
+            # Find too small investments from the sum of all synfuelproducertypes
+            idx = df.sum(axis=1) < thresh
+        
+            if len(df.loc[idx]) == 0:
+                print('No investments below threshold!')
+                exit(5)
+                
+            # Write lines for AGKN to disallow investments
+            lines = []
+            for area in df.loc[idx].index:
+                for generator in all_generators[commodity]:
+                    lines.append("AGKN('%s','%s') = NO;"%(area, generator))
+            append_lines += '\n'.join(lines)
     else:
-        # Write lines for AGKN to disallow investments
-        all_generators = ['GNR_TG-MeOH-STRAW-2050_H2', 
-                        'GNR_TG-MeOH-STRAW-2050',
-                        'GNR_TG-MeOH-WOOD-2050_H2', 
-                        'GNR_TG-MeOH-WOOD-2050',
-                        'GNR_TG-FT-STRAW-2050',
-                        'GNR_TG-FT-WOOD-2050',
-                        'GNR_eNH3-2050']
+        for commodity in ['HYDROGEN', 'SYNFUEL']:
+            
+            df = dfs[commodity]
+            
+            # Find maximum investment
+            max_area = df.sum(axis=1)
+            max_area = max_area.loc[max_area == max_area.max()].index[0]
+            
+            # Remove investments everywhere else than where the max capacity of synfuelproduction is
+            for generator in all_generators[commodity]:
+                append_lines += 'AGKN(AAA,"%s") = NO;\n'%generator
+                append_lines += 'AGKN("%s","%s") = YES;\n'%(max_area, generator)
         
-        lines = []
-        for area in df.loc[idx].index:
-            for generator in all_generators:
-                lines.append("AGKN('%s','%s') = NO;"%(area, generator))
-        append_lines = '\n'.join(lines)
         
-        # Write to file
-        scenario = ctx.obj['scenario']
-        scfolder = ctx.obj['scfolder']
-        with open('./%s/data/AGKN.inc'%scfolder, '+a') as f:
-            f.write('\n\n* ------ Beginning of scenario %s Disallowed Investments ------\n\n'%scenario)
-            f.write(append_lines)
-            f.write('\n\n* ------ End of scenario %s Disallowed Investments ------\n\n'%scenario)
+    # Write to file
+    scenario = ctx.obj['scenario']
+    scfolder = ctx.obj['scfolder']
+    with open('./%s/data/AGKN.inc'%scfolder, '+a') as f:
+        f.write('\n\n* ------ Beginning of scenario %s Disallowed Investments ------\n\n'%scenario)
+        f.write(append_lines)
+        f.write('\n\n* ------ End of scenario %s Disallowed Investments ------\n\n'%scenario)
         
 @CLI.command()
 @click.pass_context

@@ -48,7 +48,7 @@ def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
     # Detect which command has been passed
     command = ctx.invoked_subcommand
     if command in ['all', 'all-bars', 'all-profiles', 'all_maps',
-                   'costs', 'cap', 'map', 'profile', 'bar-chart', 'adequacy']:
+                   'costs', 'cost-change', 'cap', 'map', 'profile', 'bar-chart', 'adequacy']:
 
         # Locate results
         model = Balmorel(path)
@@ -768,14 +768,18 @@ def sort_scenarios(df: pd.DataFrame):
 
 @click.pass_context
 def plot_style(ctx, fig: plt.figure, ax: plt.axes, name: str,
-               legend: bool = True):
-    
+               legend: bool = True, legend_pos: str = 'right'):
+    fig.set_size_inches((7, 4))
     ax.set_facecolor(ctx.obj['fc'])
     
-    if legend:
-        ax.legend(loc='center',
-                bbox_to_anchor=(.5, 1.15),
+    if legend and legend_pos == 'up':
+        ax.legend(loc='lower center',
+                bbox_to_anchor=(.5, 1),
                 ncol=3)
+    elif legend and legend_pos == 'right':
+        ax.legend(loc='center left',
+                bbox_to_anchor=(1, .5),
+                ncol=1)
     
     plot_path = ctx.obj['plot_path']
     if not(os.path.exists(plot_path)):
