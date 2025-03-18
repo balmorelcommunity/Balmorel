@@ -283,6 +283,64 @@ def costs(filters: str):
     
     fig, ax = plot_style(fig, ax, 'systemcosts')
     
+@CLI.command()
+@click.option('--sc-group', type=str, required=True, default=None, help="Groups of scenarios, with groups separated by ; and scenarios by ,")
+@click.option('--group-names', type=str, required=True, default=None, help="Scenario group names separated by ;")
+@click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
+def cost_change(sc_group: str, group_names: str, filters: str):
+    """
+    Plot change in system costs between scenarios
+    """
+    print('\nPlotting system costs..')
+    
+    df = collect_results('OBJ_YCR') 
+    
+    all_scenarios = sc_group.replace(' ', '').replace(';', ',').split(',')
+    scenario_groups = sc_group.replace(' ', '').split(';')
+    group_names = group_names.split(';')
+    if filters != None:
+        df = df.query(filters + " Scenario in %s"%str(all_scenarios))
+    else:
+        df = df.query("Scenario in %s"%str(all_scenarios))
+        
+    df = sort_scenarios(df)  
+    
+    plt.rcParams.update({'font.size' : 15})
+    fig, ax = plt.subplots(figsize=(.2,.3))
+    
+    n = 0
+    colors = ['r', 'k']
+    for group in group_names:
+                
+        # Filter
+        scenarios = scenario_groups[n].split(',')
+        temp = df.pivot_table(index='Scenario', 
+                        values='Value', 
+                        aggfunc=lambda x: np.sum(x)/1e3).loc[scenarios]
+        
+        # Replace scenario names with resolution
+        scenarios = pd.Series(scenarios).str.replace('base', 'N99').str.extract(r'([N]\d*)')[0]
+        
+        temp.index = scenarios 
+        temp.plot(ax=ax, color=colors[n])
+        # print(temp.to_csv('analysis/output/%s_cost_change.csv'%group_names[n]))
+        
+        n += 1
+        
+    
+    ax.set_xticks(np.arange(len(scenarios)))
+    ax.set_xticklabels(scenarios)
+    # Y limits were a bit too tight
+    ylims = ax.get_ylim()
+    ax.legend(group_names, loc='lower center', 
+              bbox_to_anchor=(.5, 1.01), ncol=len(group_names))
+    ax.set_ylim(ylims[0], ylims[1]*1.05)
+    ax.set_ylabel('System Costs [B€]')
+    # ax.set_xlabel('Resolution in # of Nodes')
+    ax.set_xlabel('')
+    
+    fig, ax = plot_style(fig, ax, 'systemcost_changes', legend=False)
+
 
 @CLI.command()
 @click.pass_context

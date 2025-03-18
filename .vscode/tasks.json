@@ -2,7 +2,32 @@
     "version": "2.0.0",
     "tasks": [
       {
-        "label": "Analyse Scenarios with no Small H2/Synfuel Capacities",
+      "label": "Plot Change in Costs between ENSC and Base Scenarios",
+      "type": "shell",
+      "command": "./.vscode/analysescgroupchange.sh",
+      "group": {
+        "kind": "none",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "echo": true,
+        "focus": false,
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      // The following options could be used to change terminal profile:
+      "options": {
+        "shell": {
+        "executable": "/bin/bash",
+        "args": ["-c"]
+        }
+      }
+      },
+      {
+        "label": "Plot Scenarios with no Small H2/Synfuel Capacities",
         "type": "shell",
         "command": "./.vscode/analyseENSC.sh",
         "group": {
@@ -16,7 +41,7 @@
         "problemMatcher": []
       },
       {
-        "label": "Analyse Scenarios with Hydrogen at Country Level",
+        "label": "Plot Scenarios with Hydrogen at Country Level",
         "type": "shell",
         "command": "./.vscode/analyseH1.sh",
         "group": {
