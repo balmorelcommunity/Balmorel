@@ -38,7 +38,14 @@
           "reveal": "always",
           "panel": "new"
         },
-        "problemMatcher": []
+        "problemMatcher": [],
+        // The following options could be used to change terminal profile:
+        "options": {
+          "shell": {
+          "executable": "/bin/bash",
+          "args": ["-c"]
+          }
+        }
       },
       {
         "label": "Plot Scenarios with Hydrogen at Country Level",
@@ -52,7 +59,35 @@
           "reveal": "always",
           "panel": "new"
         },
-        "problemMatcher": []
+        "problemMatcher": [],
+        // The following options could be used to change terminal profile:
+        "options": {
+          "shell": {
+          "executable": "/bin/bash",
+          "args": ["-c"]
+          }
+        }
+      },
+      {
+        "label": "Plot Main Results",
+        "type": "shell",
+        "command": "./.vscode/analyseMainResults.sh",
+        "group": {
+          "kind": "none",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        },
+        "problemMatcher": [],
+        // The following options could be used to change terminal profile:
+        "options": {
+          "shell": {
+          "executable": "/bin/bash",
+          "args": ["-c"]
+          }
+        }
       }
     ]
   }

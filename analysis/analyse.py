@@ -42,7 +42,7 @@ balmorel_colours['GENERATION_FIXED_COSTS'] = '#D2A106'
 balmorel_colours['GENERATION_FUEL_COSTS'] = '#747474'
 balmorel_colours['GENERATION_OPERATIONAL_COSTS'] = '#E5D8D8'
 balmorel_colours['ELECTRICITY'] = '#FFD700'
-balmorel_colours['HEAT'] = '#@BA4E00'
+balmorel_colours['HEAT'] = '#BA4E00'
 
 
 @click.group()
