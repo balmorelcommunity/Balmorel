@@ -29,7 +29,21 @@ from pybalmorel.formatting import balmorel_colours
 from pybalmorel.plotting import plot_bar_chart
 import pickle
 import os
+
+# Some formatting
 balmorel_colours['SYNFUELPRODUCER'] = '#E8C3A8'
+balmorel_colours['FUEL_TRANSPORT'] = balmorel_colours['WIND-ON']
+balmorel_colours['H2_TRANSMISSION_CAPITAL_COSTS'] = '#A8D9E8'
+balmorel_colours['H2_TRANSMISSION_OPERATIONAL_COSTS'] = '#D3EBF2'
+balmorel_colours['TRANSMISSION_CAPITAL_COSTS'] = '#BA1600'
+balmorel_colours['TRANSMISSION_OPERATIONAL_COSTS'] = '#FF2B10'
+balmorel_colours['GENERATION_CAPITAL_COSTS'] = '#FFA500'
+balmorel_colours['GENERATION_FIXED_COSTS'] = '#D2A106'
+balmorel_colours['GENERATION_FUEL_COSTS'] = '#747474'
+balmorel_colours['GENERATION_OPERATIONAL_COSTS'] = '#E5D8D8'
+balmorel_colours['ELECTRICITY'] = '#FFD700'
+balmorel_colours['HEAT'] = '#@BA4E00'
+
 
 @click.group()
 @click.option('--overwrite', is_flag=True, required=False, help='Overwrite previous collected results?')
@@ -37,13 +51,18 @@ balmorel_colours['SYNFUELPRODUCER'] = '#E8C3A8'
 @click.option('--plot-ext', type=str, required=False, default='.pdf', help='The extension of the plots, defaults to ".pdf"')
 @click.option('--path', type=str, required=False, default='.', help='Path to top level of Balmorel folders, defaults to "."')
 @click.option('--gams-sysdir', type=str, required=False, default='/appl/gams/47.6.0', help='Path to GAMS system directory')
+@click.option('--large-plot', is_flag=True, required=False, default=False, help='Makes the plots large or small')
 @click.pass_context
 def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
-        gams_sysdir: str):
+        gams_sysdir: str, large_plot: bool):
     "A CLI to analyse Balmorel results"
     
     # Store global options in the context object
     ctx.ensure_object(dict)
+    
+    # Large or small plot?
+    if large_plot:
+        plt.rcParams.update({'font.size' : 15})
     
     # Detect which command has been passed
     command = ctx.invoked_subcommand
@@ -135,8 +154,9 @@ def all_maps(ctx, year: int):
 @click.option('--filters', type=str, default='', required=False, help='Filters for df.query(...)')
 @click.option('--include-backup', is_flag=True, default=False, help="Include interpreted backup capacities from the @adequacy function in this plot")
 @click.option('--backup-nth-max', type=int, default=3, help="The nth-max value used for the @adequacy function, if backup capacities should be included")
+@click.option('--drop-hydro', is_flag=True, default=True, help="Include hydro-run-of-river in generation capacity plot?")
 def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
-        backup_nth_max: int):
+        backup_nth_max: int, drop_hydro: bool):
     """
     Plot generation or storage capacities
     """
@@ -170,17 +190,28 @@ def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
         
         if key == 'generation':
                 
+            # Drop hydro, as it is an invisibly small capacity
+            if drop_hydro and 'HYDRO-RUN-OF-RIVER' in df.columns:
+                df = df.drop(columns='HYDRO-RUN-OF-RIVER')
+                
             # Re-arrange technologies
-            cols = df.columns
-            cols = cols[(cols != 'WIND-OFF') & (cols != 'SYNFUELPRODUCER') & (cols != 'ELECTROLYZER')]
-            cols = list(cols) + ['WIND-OFF', 'ELECTROLYZER', 'SYNFUELPRODUCER']
+            if 'Technology' not in filters:
+                cols = df.columns
+                cols = cols[(cols != 'WIND-OFF') & (cols != 'SYNFUELPRODUCER') & (cols != 'ELECTROLYZER')]
+                cols = list(cols) + ['WIND-OFF', 'ELECTROLYZER', 'SYNFUELPRODUCER']
+            else:
+                cols = list(df.columns)
             
             # Include interpreted backup capacity
             if include_backup:
                 for scenario in df.index.unique():
+                    if scenario == 'N2_ZCEHX' or scenario == 'N10_ZCEHX':
+                        scenario_csv = scenario.replace('ZCEHX', 'synfheur')
+                    else:
+                        scenario_csv = scenario
                     df.loc[scenario, 'BACKUP'] = 0
                     try:
-                        f = pd.read_csv('analysis/output/%s_backcapN%d.csv'%(scenario, backup_nth_max)).drop(columns='Region').sum()
+                        f = pd.read_csv('analysis/output/%s_backcapN%d.csv'%(scenario_csv, backup_nth_max)).drop(columns='Region').sum()
                     
                         for commodity in f.index:
                             df.loc[scenario, 'BACKUP'] += f[commodity] / 1e3
@@ -196,7 +227,10 @@ def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
             .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
         )
         
-        fig, ax = plot_style(fig, ax, '%s_capacity'%key)
+        
+        ax.legend(loc='lower center', bbox_to_anchor=(.5, 1.01), ncols=2)
+        
+        fig, ax = plot_style(fig, ax, '%s_capacity'%key, legend=False)
 
 @CLI.command()
 def fuel():
@@ -273,15 +307,16 @@ def costs(filters: str):
         df
         .pivot_table(index='Scenario', columns='Category', 
                      values='Value', aggfunc=lambda x: np.sum(x)/1e3)
-        .plot(ax=ax, kind='bar', stacked=True)
+        .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
         .set_ylabel('System Costs [B€]')
     )
     
     # Y limits were a bit too tight
     ylims = ax.get_ylim()
     ax.set_ylim(ylims[0], ylims[1]*1.05)
+    ax.legend(loc='lower center', bbox_to_anchor=(.5, 1.01), ncols=2)
     
-    fig, ax = plot_style(fig, ax, 'systemcosts')
+    fig, ax = plot_style(fig, ax, 'systemcosts', legend=False)
     
 @CLI.command()
 @click.option('--sc-group', type=str, required=True, default=None, help="Groups of scenarios, with groups separated by ; and scenarios by ,")
@@ -307,7 +342,6 @@ def cost_change(sc_group: str, group_names: str, filters: str, filename: str):
         
     df = sort_scenarios(df)  
     
-    plt.rcParams.update({'font.size' : 15})
     fig, ax = plt.subplots(figsize=(.2,.3))
     
     n = 0
@@ -362,7 +396,7 @@ def profile(ctx, commodity: str, scenario: str, node: str, year: int, columns: s
     model_path = os.path.join(ctx.obj['path'], m.scname_to_scfolder[scenario], 'model')
 
     # Get mainresults files
-    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
+    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path, system_directory=ctx.obj['gams_system_directory'])
     
     fig, ax = res.plot_profile(commodity, year, scenario, region=node, style=ctx.obj['plot_style_for_modules'],
                                columns=columns)
@@ -395,7 +429,7 @@ def map(ctx, commodity: str, scenario: str, year: int,
     model_path = os.path.join(ctx.obj['path'], model.scname_to_scfolder[scenario], 'model')
 
     # Get mainresults files
-    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
+    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path, system_directory=ctx.obj['gams_system_directory'])
     
     if hier and geofile=='analysis/geofiles/municipalities.gpkg':
         geofile = model_path.replace('model', 'data') + '/DE_%dcluster_geofile_2nd-order.gpkg'%(int(re.findall('M\d+', scenario)[0].lstrip('M')))
@@ -405,10 +439,14 @@ def map(ctx, commodity: str, scenario: str, year: int,
         geofile_region_column = 'cluster_name'
     
     
+    # Pie radius for comparing scenarios
+    pie_radius_max = 0.5 # The largest one for comparison (N70 largest cluster is CL36 with 13.244423 GW)
+    pie_radius_max = 0.5*(7.07/13.24) # The smaller one (base largest cluster is Frederikshavn with 7.07 GW)
+    
     fig, ax = res.plot_map(scenario, year, commodity.capitalize(), 
                            path_to_geofile=os.path.abspath(geofile), geo_file_region_column=geofile_region_column, 
                            lines=lines, generation=generation,
-                           style=ctx.obj['plot_style_for_modules'], pie_radius_max=0.5, pie_radius_min=0.03)
+                           style=ctx.obj['plot_style_for_modules'], pie_radius_max=pie_radius_max, pie_radius_min=0.03)
     ax.set_xlim(lon_lims)
     ax.set_ylim(lat_lims)
     fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario), legend=False)
@@ -688,7 +726,7 @@ def adequacy(ctx, scenario: str, nth_max: int):
             .apply(lambda x: x.nlargest(nth_max).iloc[-1])  # Selects N'th max
             .unstack()  # Reshapes the data into a table
         )
-    cap.to_csv('analysis/output/%s_backcapN%d.csv'%(scenario, nth_max))
+    cap.to_csv('analysis/output/%s_backcapN%d.csv'%(scenario.replace('_operun', ''), nth_max))
     
     ## Get energy not served
     ENS = df.pivot_table(index=['Season', 'Time'], columns='Commodity',
@@ -699,8 +737,43 @@ def adequacy(ctx, scenario: str, nth_max: int):
         'LOLE_h'  : ENS.count()
     })
     
-    df_out.to_csv('analysis/output/%s_adeq.csv'%scenario)
+    df_out.to_csv('analysis/output/%s_adeq.csv'%scenario.replace('_operun', ''))
 
+@CLI.command()
+@click.pass_context
+@click.argument('scenarios', type=str, required=True)
+def RA_Plot(ctx, scenarios: str):
+    "Plot LOLE and ENS"
+    
+    scenarios = scenarios.replace(' ', '').split(',')
+    
+    for scenario in scenarios:
+        if 'df' not in locals():
+            df = pd.read_csv('analysis/output/%s_adeq.csv'%scenario)
+            df['Scenario'] = scenario
+        else:
+            temp = pd.read_csv('analysis/output/%s_adeq.csv'%scenario)
+            temp['Scenario'] = scenario
+            df = pd.concat((df, temp), ignore_index=True)
+            
+    # Plot
+    fig, ax = plt.subplots()
+    ax2 = ax.twinx()
+    
+    df = sort_scenarios(df)
+    df = df.pivot_table(index='Scenario', values=['ENS_TWh', 'LOLE_h'], 
+                     columns='Commodity', aggfunc='sum')
+    
+    df['ENS_TWh'].plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
+    for commodity in df.LOLE_h.columns:
+        ax2.plot(df.index, df.LOLE_h[commodity], linestyle='none', marker='o', 
+                markeredgecolor='k', color=balmorel_colours[commodity], label=f'LOLE {commodity}')
+    
+    ax2.set_ylabel('LOLE (h)')
+    ax2.set_ylim((0, df.LOLE_h.max().max()*1.1))
+    ax.set_ylabel('Energy Not Served (TWh)')
+    
+    plot_style(fig, ax, 'RA-plot', legend_pos='up')
 
 @CLI.command()
 @click.pass_context
@@ -733,7 +806,7 @@ def bar_chart(ctx, scenarios: str, symbol: str,
     for sc in scenarios:
         paths.append(os.path.join(ctx.obj['path'], model.scname_to_scfolder[sc], 'model'))
         files.append('MainResults_%s.gdx'%sc)
-    mr = MainResults(files=files, paths=paths)
+    mr = MainResults(files=files, paths=paths, system_directory=ctx.obj['gams_system_directory'])
     
     # Prepare index and columns
     if ',' in index:
