@@ -21,12 +21,10 @@ import click
 import re
 from premailer import transform
 from typing import Union
-import gams
 from specific.pit_storage.pit_storage import get_storage_profiles, polygon_with_point
 from pybalmorel import Balmorel, MainResults
 from pybalmorel.utils import symbol_to_df
 from pybalmorel.formatting import balmorel_colours
-from pybalmorel.plotting import plot_bar_chart
 import pickle
 import os
 

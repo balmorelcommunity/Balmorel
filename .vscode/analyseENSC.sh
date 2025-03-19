@@ -8,7 +8,7 @@ read -p 'Overwrite? (true/false): ' overwrite
 export PATH=/appl/gams/47.6.0:$PATH
 source ~/miniconda3/bin/activate spatialstudy
 
-if $overwrite; then
+if [ -z "${overwrite}" ] || [ "${overwrite}" = "y" ]; then
     overwrite_string="--overwrite"
 fi
 

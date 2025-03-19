@@ -88,6 +88,27 @@
           "args": ["-c"]
           }
         }
+      },
+      {
+        "label": "Plot Maps",
+        "type": "shell",
+        "command": "./.vscode/analyseMaps.sh",
+        "group": {
+          "kind": "none",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        },
+        "problemMatcher": [],
+        // The following options could be used to change terminal profile:
+        "options": {
+          "shell": {
+          "executable": "/bin/bash",
+          "args": ["-c"]
+          }
+        }
       }
     ]
   }
