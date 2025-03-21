@@ -109,6 +109,27 @@
           "args": ["-c"]
           }
         }
+      },
+      {
+        "label": "Plot Sensitivity Analyses",
+        "type": "shell",
+        "command": "./.vscode/analyseSensitivities.sh",
+        "group": {
+          "kind": "none",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        },
+        "problemMatcher": [],
+        // The following options could be used to change terminal profile:
+        "options": {
+          "shell": {
+          "executable": "/bin/bash",
+          "args": ["-c"]
+          }
+        }
       }
     ]
   }

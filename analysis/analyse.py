@@ -153,8 +153,9 @@ def all_maps(ctx, year: int):
 @click.option('--include-backup', is_flag=True, default=False, help="Include interpreted backup capacities from the @adequacy function in this plot")
 @click.option('--backup-nth-max', type=int, default=3, help="The nth-max value used for the @adequacy function, if backup capacities should be included")
 @click.option('--drop-hydro', is_flag=True, default=True, help="Include hydro-run-of-river in generation capacity plot?")
+@click.option('--get-df', is_flag=True, default=False, help="Dont plot, just get the dataframe")
 def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
-        backup_nth_max: int, drop_hydro: bool):
+        backup_nth_max: int, drop_hydro: bool, get_df: bool):
     """
     Plot generation or storage capacities
     """
@@ -219,6 +220,9 @@ def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
                 cols = cols + ['BACKUP'] 
             
             df = df.loc[:, cols]
+        
+        if get_df:
+            return df
         
         (
             df
@@ -286,7 +290,8 @@ def dem(commodity: str):
      
 @CLI.command()
 @click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
-def costs(filters: str):
+@click.option('--get-df', is_flag=True, required=False, default=False, help="Dont plot, just get the dataframe")
+def costs(filters: str, get_df: bool):
     """
     Plot system costs
     """
@@ -299,15 +304,17 @@ def costs(filters: str):
     if filters != None:
         df = df.query(filters)
     
-    df = sort_scenarios(df)
+    df = sort_scenarios(df).pivot_table(index='Scenario', columns='Category', 
+                     values='Value', aggfunc=lambda x: np.sum(x)/1e3)
     
     (
         df
-        .pivot_table(index='Scenario', columns='Category', 
-                     values='Value', aggfunc=lambda x: np.sum(x)/1e3)
         .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
         .set_ylabel('System Costs [B€]')
     )
+    
+    if get_df:
+        return df
     
     # Y limits were a bit too tight
     ylims = ax.get_ylim()
@@ -315,6 +322,29 @@ def costs(filters: str):
     ax.legend(loc='lower center', bbox_to_anchor=(.5, 1.01), ncols=2)
     
     fig, ax = plot_style(fig, ax, 'systemcosts', legend=False)
+
+@CLI.command()
+@click.pass_context
+@click.argument('result', type=str, required=True)
+@click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
+def matrix_output(ctx, result: str, filters: str):
+    
+    if result.lower() == 'costs':
+        df = ctx.invoke(costs, filters=filters, get_df=True).sum(axis=1)
+    elif result.lower() == 'gencap':
+        df = ctx.invoke(cap, gen=True, sto=False, filters=filters, get_df=True).sum(axis=1)
+    elif result.lower() == 'stocap':
+        df = ctx.invoke(cap, sto=True, gen=False, filters=filters, get_df=True).sum(axis=1)
+    
+    N = df.index.str.extract ('(N\d*)')
+    M = df.index.str.extract ('(M\d*)')
+    
+    df.index = pd.MultiIndex.from_arrays((N[0], M[0]), names=('N', 'M'))
+    df = pd.DataFrame({'' : df.values}, index=df.index).pivot_table(index='N', columns='M', values='')
+    df.index.name = ''
+    df.columns.name = ''
+    
+    df.to_csv('analysis/output/matrix_results.csv')
     
 @CLI.command()
 @click.option('--sc-group', type=str, required=True, default=None, help="Groups of scenarios, with groups separated by ; and scenarios by ,")
@@ -368,7 +398,8 @@ def cost_change(sc_group: str, group_names: str, filters: str, filename: str):
     ylims = ax.get_ylim()
     ax.legend(group_names, loc='lower center', 
               bbox_to_anchor=(.5, 1.01), ncol=len(group_names))
-    ax.set_ylim(ylims[0], ylims[1]*1.05)
+    # ax.set_ylim(ylims[0], ylims[1]*1.05)
+    ax.set_ylim(5.4, 6.4)
     ax.set_ylabel('System Costs [B€]')
     # ax.set_xlabel('Resolution in # of Nodes')
     ax.set_xlabel('')
@@ -416,11 +447,10 @@ def profile(ctx, commodity: str, scenario: str, node: str, year: int, columns: s
 @click.argument('lat-lims', type=list, default=[54.4, 58])
 @click.option('--lines', type=str, default='UtilizationYear')
 @click.option('--generation', type=str, default='Production')
-@click.option('--hier', is_flag=True, default=False, help="A hierarchically clustered run?")
 def map(ctx, commodity: str, scenario: str, year: int, 
         geofile: str, geofile_region_column: str,
         lon_lims: list, lat_lims: list,
-        lines: str, generation: str, hier: bool):
+        lines: str, generation: str):
     """Plot transmission capacity maps for electricity or hydrogen"""
 
     model = ctx.obj['Balmorel']
@@ -429,13 +459,8 @@ def map(ctx, commodity: str, scenario: str, year: int,
     # Get mainresults files
     res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path, system_directory=ctx.obj['gams_system_directory'])
     
-    if hier and geofile=='analysis/geofiles/municipalities.gpkg':
-        geofile = model_path.replace('model', 'data') + '/DE_%dcluster_geofile_2nd-order.gpkg'%(int(re.findall('M\d+', scenario)[0].lstrip('M')))
-        geofile_region_column = 'cluster_name'
-    elif 'N' in scenario and not 'TransRelaxation' in scenario and geofile=='analysis/geofiles/municipalities.gpkg':
-        geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(re.findall('N\d+', scenario)[0].lstrip('N')))
-        geofile_region_column = 'cluster_name'
-    
+    if geofile =='analysis/geofiles/municipalities.gpkg':
+        geofile, geofile_region_column = get_geofile(scenario, model_path)
     
     # Pie radius for comparing scenarios
     pie_radius_max = 0.5 # The largest one for comparison (N70 largest cluster is CL36 with 13.244423 GW)
@@ -448,6 +473,15 @@ def map(ctx, commodity: str, scenario: str, year: int,
     ax.set_xlim(lon_lims)
     ax.set_ylim(lat_lims)
     fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario), legend=False)
+    
+@click.pass_context
+def find_h2_synfuel_location(ctx, scenario: str):
+    """For economy of scale scenarios"""
+    
+    model = ctx.obj['Balmorel']
+    model_path = os.path.join(ctx.obj['path'], model.scname_to_scfolder[scenario], 'model')
+    geofile, geofile_region_column = get_geofile(scenario, model_path)
+    
     
     
 @CLI.command()
@@ -834,6 +868,19 @@ def bar_chart(ctx, scenarios: str, symbol: str,
 #%% ------------------------------- ###
 ###            2. Utils             ###
 ### ------------------------------- ###
+
+def get_geofile(scenario, model_path):
+    if re.match('N\d*M\d*', scenario):
+        geofile = model_path.replace('model', 'data') + '/DE_%dcluster_geofile_2nd-order.gpkg'%(int(re.findall('M\d+', scenario)[0].lstrip('M')))
+        geofile_region_column = 'cluster_name'
+    elif re.match('N\d*', scenario):
+        geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(re.findall('N\d+', scenario)[0].lstrip('N')))
+        geofile_region_column = 'cluster_name'
+    else:
+        geofile = 'analysis/geofiles/municipalities.gpkg'
+        geofile_region_column = 'Name'
+        
+    return geofile, geofile_region_column
 
 def sort_scenarios(df: pd.DataFrame):
     "Will sort scenarios, so e.g. N2 comes before N10"
