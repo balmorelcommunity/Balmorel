@@ -327,7 +327,8 @@ def costs(filters: str, get_df: bool):
 @click.pass_context
 @click.argument('result', type=str, required=True)
 @click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
-def matrix_output(ctx, result: str, filters: str):
+def matrix(ctx, result: str, filters: str):
+    """Generate a matrix of results with N rows and M columns"""
     
     if result.lower() == 'costs':
         df = ctx.invoke(costs, filters=filters, get_df=True).sum(axis=1)
@@ -336,9 +337,18 @@ def matrix_output(ctx, result: str, filters: str):
     elif result.lower() == 'stocap':
         df = ctx.invoke(cap, sto=True, gen=False, filters=filters, get_df=True).sum(axis=1)
     
-    N = df.index.str.extract ('(N\d*)')
-    M = df.index.str.extract ('(M\d*)')
+    df.index = pd.Series(
+        df.index
+        .str.replace('base', 'N99M99')
+        .str.replace('N2_', 'N2M2_')
+        .str.replace('N10_', 'N10M10_')
+        .str.replace('N30_', 'N30M30_')
+        .str.replace('N50_', 'N50M50_')
+        .str.replace('N70_', 'N70M70_')
+    )
     
+    N = df.index.str.extract('(N\d*)')
+    M = df.index.str.extract('(M\d*)')
     df.index = pd.MultiIndex.from_arrays((N[0], M[0]), names=('N', 'M'))
     df = pd.DataFrame({'' : df.values}, index=df.index).pivot_table(index='N', columns='M', values='')
     df.index.name = ''
