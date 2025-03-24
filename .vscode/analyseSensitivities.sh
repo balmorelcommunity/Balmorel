@@ -12,7 +12,7 @@ if [ -z "${overwrite}" ] || [ "${overwrite}" = "y" ]; then
     overwrite_string="--overwrite"
 fi
 
-scenario_string="Scenario in ['N2_ZCEHX', 'N2_ZCEHX_fullyear', 'N2H1_ZCEHX', 'baseH1_ZCEHX', 'base_ZCEHX']"
+scenario_string="Scenario in ['N2_ZCEHX', 'N2_ZCEHX_fullyear', 'N2H1_ZCEHX', 'N2_ZCEHX_NoH2ExpCavern', 'N50_ZCEHX_NoH2ExpCavern', 'baseH1_ZCEHX', 'base_ZCEHX']"
 analyse $overwrite_string costs --filters "${scenario_string}"
 analyse $overwrite_string cap --filters "${scenario_string}"
 mv analysis/plots/systemcosts.pdf analysis/plots/systemcosts_sens.pdf

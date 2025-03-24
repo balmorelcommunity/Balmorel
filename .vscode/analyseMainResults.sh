@@ -34,19 +34,28 @@ mv analysis/plots/storage_capacity.pdf analysis/plots/storage_capacity_hierarchy
 mv analysis/plots/systemcosts.pdf analysis/plots/systemcosts_hierarchy.pdf
 mv analysis/plots/RA-plot.pdf analysis/plots/RA-plot_hierarchy.pdf
 
-# All results
+# All main results in a matrix .csv
 analyse $overwrite_string matrix gencap --filters "Scenario in ['N2_ZCEHX', 'N10M2_ZCEHX', 'N30M2_ZCEHX', 'N50M2_ZCEHX', 'N70M2_ZCEHX', \
                                                       'N10_ZCEHX', 'N30M10_ZCEHX', 'N50M10_ZCEHX', 'N70M10_ZCEHX', \
                                                       'N30_ZCEHX', 'N50M30_ZCEHX', 'N70M30_ZCEHX', \
                                                       'N50_ZCEHX', 'N70M50_ZCEHX', 'N70_ZCEHX', 'base_ZCEHX']"
 mv analysis/output/matrix_results.csv analysis/output/matrix_results_gencap.csv
+
 analyse $overwrite_string matrix stocap --filters "Scenario in ['N2_ZCEHX', 'N10M2_ZCEHX', 'N30M2_ZCEHX', 'N50M2_ZCEHX', 'N70M2_ZCEHX', \
                                                       'N10_ZCEHX', 'N30M10_ZCEHX', 'N50M10_ZCEHX', 'N70M10_ZCEHX', \
                                                       'N30_ZCEHX', 'N50M30_ZCEHX', 'N70M30_ZCEHX', \
                                                       'N50_ZCEHX', 'N70M50_ZCEHX', 'N70_ZCEHX', 'base_ZCEHX']"
 mv analysis/output/matrix_results.csv analysis/output/matrix_results_stocap.csv
+
 analyse $overwrite_string matrix costs --filters "Scenario in ['N2_ZCEHX', 'N10M2_ZCEHX', 'N30M2_ZCEHX', 'N50M2_ZCEHX', 'N70M2_ZCEHX', \
                                                       'N10_ZCEHX', 'N30M10_ZCEHX', 'N50M10_ZCEHX', 'N70M10_ZCEHX', \
                                                       'N30_ZCEHX', 'N50M30_ZCEHX', 'N70M30_ZCEHX', \
                                                       'N50_ZCEHX', 'N70M50_ZCEHX', 'N70_ZCEHX', 'base_ZCEHX']"
 mv analysis/output/matrix_results.csv analysis/output/matrix_results_costs.csv
+
+analyse $overwrite_string matrix fuel   --filters "Scenario in ['N2_ZCEHX', 'N10M2_ZCEHX', 'N30M2_ZCEHX', 'N50M2_ZCEHX', 'N70M2_ZCEHX', \
+                                                      'N10_ZCEHX', 'N30M10_ZCEHX', 'N50M10_ZCEHX', 'N70M10_ZCEHX', \
+                                                      'N30_ZCEHX', 'N50M30_ZCEHX', 'N70M30_ZCEHX', \
+                                                      'N50_ZCEHX', 'N70M50_ZCEHX', 'N70_ZCEHX', 'base_ZCEHX'] \
+                                                    and Fuel in ['BIOGAS', 'MUNIWASTE', 'STRAW', 'WOOD']"
+mv analysis/output/matrix_results.csv analysis/output/matrix_results_biomassconsumption.csv

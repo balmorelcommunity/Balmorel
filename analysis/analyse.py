@@ -65,10 +65,12 @@ def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
     # Detect which command has been passed
     command = ctx.invoked_subcommand
     if command in ['all', 'all-bars', 'all-profiles', 'all_maps',
-                   'costs', 'cost-change', 'cap', 'map', 'profile', 'bar-chart', 'adequacy']:
+                   'costs', 'cost-change', 'cap', 'map', 'profile', 
+                   'bar-chart', 'adequacy', 'sifnaios-profile',
+                   'vre-seas-prod', 'fuel']:
 
         # Locate results
-        model = Balmorel(path)
+        model = Balmorel(path, gams_system_directory=gams_sysdir)
         model.locate_results() 
         ctx.obj['Balmorel'] = model # Find Balmorel folder
 
@@ -235,7 +237,9 @@ def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
         fig, ax = plot_style(fig, ax, '%s_capacity'%key, legend=False)
 
 @CLI.command()
-def fuel():
+@click.option('--filters', type=str, default=None, required=False, help='Filters for df.query(...)')
+@click.option('--get-df', is_flag=True, default=False, help="Dont plot, just get the dataframe")
+def fuel(filters: str, get_df: bool):
     """
     Plot fuel consumption
     """
@@ -247,16 +251,19 @@ def fuel():
     
     df = (
         collect_results('F_CONS_YCRA')
-    ) 
-    
-    (
-        df
+        .pipe(lambda x: x.query(filters) if filters != None else x)
+        .pipe(sort_scenarios)
         .pivot_table(index='Scenario', columns='Fuel', 
                         values='Value', aggfunc='sum')
-        .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
-    )
+    ) 
+            
+    if get_df:
+        return df
+    
+    df.plot(ax=ax, kind='bar', stacked=True)
     
     fig, ax = plot_style(fig, ax, 'fuelconsumption')
+    
     
 @CLI.command()
 @click.argument('commodity', type=str)
@@ -336,6 +343,8 @@ def matrix(ctx, result: str, filters: str):
         df = ctx.invoke(cap, gen=True, sto=False, filters=filters, get_df=True).sum(axis=1)
     elif result.lower() == 'stocap':
         df = ctx.invoke(cap, sto=True, gen=False, filters=filters, get_df=True).sum(axis=1)
+    elif result.lower() == 'fuel':
+        df = ctx.invoke(fuel, filters=filters, get_df=True).sum(axis=1)
     
     df.index = pd.Series(
         df.index
@@ -650,6 +659,36 @@ def sifnaios_profile(ctx, scenario: str, cluster: str, size: str,
     fig, ax = plot_style(fig, ax, '%s_sifstoprofile'%(scenario+'_'+cluster+'_'+size), legend=False)
     # fig.savefig(os.path.join(ctx.obj['plot_path'], ))
 
+@CLI.command()
+@click.pass_context
+@click.argument('scenario', type=str, required=True)
+# @click.argument('vre', type=str, required=True)
+def vre_seas_prod(ctx, scenario: str):
+    """Plot the seasonal production of wind or solar"""
+    model = ctx.obj['Balmorel']
+    model.collect_results()
+    df = symbol_to_df(model.results.db[scenario], 'PRO_YCRAGFST')
+    
+    # if vre.lower() == 'wind':
+    #     query_string = 'Technology == "WIND-OFF" or Technology == "WIND-ON"'
+    # elif vre.lower() == 'solar':
+    #     query_string = 'Technology == "SOLAR-PV"'
+    # else:
+    #     raise ValueError("vre must be either 'wind' or 'solar'!")
+
+    query_string = 'Technology == "WIND-OFF" or Technology == "WIND-ON" or Technology == "SOLAR-PV"'
+
+    fig, ax = plt.subplots(figsize=(9, 5))
+    (
+        df
+        .query(query_string)
+        .pivot_table(index='Season', columns='Technology', 
+                     values='Value', aggfunc='sum') 
+        .plot(kind='area', stacked=True, ax=ax, color=balmorel_colours)
+    )
+    ax.set_ylabel('VRE Electricity Production [MWh]')
+    ax.legend(loc='lower center', ncol=3, bbox_to_anchor=(.5, 1.03))
+    plot_style(fig, ax, 'vre_seasonal_availability_plot_%s'%scenario, legend=False)
 
 @CLI.command()
 @click.pass_context
