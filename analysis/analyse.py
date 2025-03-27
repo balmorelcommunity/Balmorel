@@ -17,6 +17,7 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import sys
 import click
 import re
 from premailer import transform
@@ -64,10 +65,11 @@ def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
     
     # Detect which command has been passed
     command = ctx.invoked_subcommand
-    if command in ['all', 'all-bars', 'all-profiles', 'all_maps',
+    is_help = any(arg in sys.argv for arg in ['-h', '--help'])
+    if (command in ['all', 'all-bars', 'all-profiles', 'all_maps',
                    'costs', 'cost-change', 'cap', 'map', 'profile', 
-                   'bar-chart', 'adequacy', 'sifnaios-profile',
-                   'vre-seas-prod', 'fuel']:
+                   'bar-chart', 'adequacy', 'sifnaios-profile', 
+                   'vre-seas-prod', 'fuel']) and not is_help:
 
         # Locate results
         model = Balmorel(path, gams_system_directory=gams_sysdir)
@@ -156,8 +158,9 @@ def all_maps(ctx, year: int):
 @click.option('--backup-nth-max', type=int, default=3, help="The nth-max value used for the @adequacy function, if backup capacities should be included")
 @click.option('--drop-hydro', is_flag=True, default=True, help="Include hydro-run-of-river in generation capacity plot?")
 @click.option('--get-df', is_flag=True, default=False, help="Dont plot, just get the dataframe")
+@click.option('--filename', type=str, default='capacity', required=False, help="The filename")
 def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
-        backup_nth_max: int, drop_hydro: bool, get_df: bool):
+        backup_nth_max: int, drop_hydro: bool, get_df: bool, filename: str):
     """
     Plot generation or storage capacities
     """
@@ -222,6 +225,10 @@ def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
                 cols = cols + ['BACKUP'] 
             
             df = df.loc[:, cols]
+            
+        if 'Scenario in [' in filters:
+            sc_order = filters.replace(' ', '').split('Scenarioin[')[1].split(']')[0].replace('"', '').replace("'", "").split(',')
+            df = df.loc[sc_order, :] 
         
         if get_df:
             return df
@@ -234,7 +241,7 @@ def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
         
         ax.legend(loc='lower center', bbox_to_anchor=(.5, 1.01), ncols=2)
         
-        fig, ax = plot_style(fig, ax, '%s_capacity'%key, legend=False)
+        fig, ax = plot_style(fig, ax, '%s_%s'%(key, filename), legend=False)
 
 @CLI.command()
 @click.option('--filters', type=str, default=None, required=False, help='Filters for df.query(...)')
@@ -298,7 +305,8 @@ def dem(commodity: str):
 @CLI.command()
 @click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
 @click.option('--get-df', is_flag=True, required=False, default=False, help="Dont plot, just get the dataframe")
-def costs(filters: str, get_df: bool):
+@click.option('--filename', type=str, default='systemcosts', required=False, help="The filename")
+def costs(filters: str, get_df: bool, filename: str):
     """
     Plot system costs
     """
@@ -314,6 +322,10 @@ def costs(filters: str, get_df: bool):
     df = sort_scenarios(df).pivot_table(index='Scenario', columns='Category', 
                      values='Value', aggfunc=lambda x: np.sum(x)/1e3)
     
+    if 'Scenario in [' in filters:
+        sc_order = filters.replace(' ', '').split('Scenarioin[')[1].split(']')[0].replace('"', '').replace("'", "").split(',')
+        df = df.loc[sc_order, :] 
+
     (
         df
         .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
@@ -328,7 +340,7 @@ def costs(filters: str, get_df: bool):
     ax.set_ylim(ylims[0], ylims[1]*1.05)
     ax.legend(loc='lower center', bbox_to_anchor=(.5, 1.01), ncols=2)
     
-    fig, ax = plot_style(fig, ax, 'systemcosts', legend=False)
+    fig, ax = plot_style(fig, ax, filename, legend=False)
 
 @CLI.command()
 @click.pass_context
