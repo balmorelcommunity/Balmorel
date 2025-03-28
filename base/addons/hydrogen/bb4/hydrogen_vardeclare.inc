@@ -9,11 +9,13 @@ POSITIVE VARIABLES
    VBIOMETH_STOLOADT(Y,S,T)              'Loading of biomethane storage'
    VBIOMETH_STOUNLOADT(Y,S,T)            'Unloading of biomethane storage'
    VXH2_T(Y,IRRRE,IRRRI,S,T)             'H2 export from region IRRRE towards IRRRI (MW)'
+
+$iftheni %H2TransInvest%==yes
    VXH2KN(Y,IRRRE,IRRRI)                 'New H2 transmission capacity (MW)'
    VXH2KN_NGTOH2(Y,IRRRE,IRRRI)          'New Conversion of existing natural gas pipe to H2 transmission capacity (MW)'
    VXH2KNACCUMNET(Y,IRRRE,IRRRI)         'Accumulated new H2 transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)'
    VXH2KNACCUMNET_NGTOH2(Y,IRRRE,IRRRI)  'Accumulated new Conversion of existing natural gas pipe to H2 Transmission investments (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW)'
-
+$endif
 
 ;
 
@@ -25,5 +27,5 @@ VFLEXDH2_SHIFT(Y,RRR) 'how much to shift from one area to area'
 ; 
 $label no_flexible_h2_space
 
-SOS2 VARIABLE VXH2LAMBDA(Y,IRRRE,IRRRI,XES) 'SOS2 Variable for modelling economy of scale';
+$ifi %H2TransInvest%==yes SOS2 VARIABLE VXH2LAMBDA(Y,IRRRE,IRRRI,XES) 'SOS2 Variable for modelling economy of scale';
 
