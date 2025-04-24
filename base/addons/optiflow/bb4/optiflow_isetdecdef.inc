@@ -6,14 +6,14 @@ IFFLOW(FFF,FLOW)=0;
 
 IFFLOW('STRAW','STRAW_GEN_FLOW')=YES;
 IFFLOW('WOODCHIPS','WOOD_GEN_FLOW')=YES;
-IFFLOW('WOODPELLETS','WOOD_PELLETS_GEN_FLOW')=YES;
+*IFFLOW('WOODPELLETS','WOOD_PELLETS_GEN_FLOW')=YES;
 
 SET IFPROC(FFF,PROC)	"Fuel in Balmorel that corresponds to a flow in OptiFlow";
 IFPROC(FFF,PROC)=0;
 
 IFPROC('STRAW','Straw_Gen')=YES;
 IFPROC('WOODCHIPS','Wood_Gen')=YES;
-IFPROC('WOODPELLETS','Wood_Pellets_Gen')=YES;
+*IFPROC('WOODPELLETS','Wood_Pellets_Gen')=YES;
 
 $label nofuelbridge
 
@@ -21,7 +21,7 @@ $label nofuelbridge
 
 $ifi not %baloptgasbridge%==yes $goto nogasbridge
 
-IFFLOW('STRAW','STRAW_FLOW_BIOGAS')=YES;
+*IFFLOW('STRAW','STRAW_FLOW_BIOGAS')=YES;
 IFFLOW('BIOGAS','SNG_FLOW')=YES;
 IFPROC('BIOGAS','Gas_Buffer')=YES;
 
