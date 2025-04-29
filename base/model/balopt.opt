@@ -525,28 +525,36 @@ $setglobal inv yes
 *Model solved as MIP
 $setglobal solveOptiFlowmip
 *! option yes
+
 * Connects biomass use between Balmorel and OptiFlow.
 * Also sets MAXFLOW to 0
 $setglobal baloptfuelbridge yes
 *! option yes
+
 * Connects biogas produced by OptiFlow to Balmorel.
 * Also sets balmorel biogas potential to 0
 $setglobal baloptgasbridge yes
-*! option yes
+*! option 
+
+* OBS FF
+
 * Connects captured CO2 in Balmorel with CO2 use in OptiFlow
 * !! Requires the CCS addon!!!
 $setglobal baloptCCU yes
 *! option yes
 
-* OBS FF
-$setglobal optiFossils
-*! option no
-* Buy fossil fuel substitutes at fixed cost for road, aviation, shipping
-
-$setglobal baloptCCS yes
-*! option yes
 * Require investments in CO2 sequestration in OptiFlow.
 * !! Requires the CCS addon and baloptgasbridge=yes !!
+$setglobal baloptCCS yes
+*! option yes
+
+* Buy fossil fuel substitutes at fixed cost for road, aviation, shipping
+$setglobal optiFossils yes
+*! option yes
+
+* Import renewable fuels from a global exogenous market at fixed cost
+$setglobal  yes
+*! option yes
 
 * Debug possibilities:
 $Setglobal addEPStoL
