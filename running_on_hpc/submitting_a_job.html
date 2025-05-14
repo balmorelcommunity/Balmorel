@@ -1,0 +1,198 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submitting a Job &mdash; Balmorel 5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css_options.css?v=313b1874" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=ee801c84"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Balmorel GitHub Tutorial" href="../github_tutorial.html" />
+    <link rel="prev" title="Accessing the Cluster" href="access.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Balmorel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Balmorel</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../get_started.html">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../versions.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../addons.html">Addons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pre_processing.html">Pre-Processing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../running_on_hpc.html">Running on HPC</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access.html">Accessing the Cluster</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Submitting a Job</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#job-script">Job Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#submitting-the-job-from-putty">Submitting the Job from PuTTY</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../github_tutorial.html">Balmorel GitHub Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About this code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/balmorelcommunity/Balmorel/blob/master/base/documentation/TheBalmorelModelStructure-BMS301.pdf">Full Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Balmorel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../running_on_hpc.html">Running on HPC</a></li>
+      <li class="breadcrumb-item active">Submitting a Job</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/running_on_hpc/submitting_a_job.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="submitting-a-job">
+<h1>Submitting a Job<a class="headerlink" href="#submitting-a-job" title="Link to this heading"></a></h1>
+<p>We refer to the <a class="reference external" href="https://www.hpc.dtu.dk/?page_id=4204">best practice guide</a> by DTU Computing Center on how to figure out what resources to ask for.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Remember to study the log report after your job finishes, so you can be more accurate on what resources your job needs in the next submission!</p>
+</div>
+<section id="job-script">
+<h2>Job Script<a class="headerlink" href="#job-script" title="Link to this heading"></a></h2>
+<p>After having transferred our Balmorel model through WinSCP (see <a class="reference internal" href="access.html"><span class="std std-doc">previous page</span></a>), we need to submit a job. This means creating a job script that asks for the right amount of memory usage and time before completion. This is done through a job script, illustrated in the code snippet below. We refer to <a class="reference external" href="https://www.hpc.dtu.dk/?page_id=1416">this general guide</a> by DTU Computing Center for the exact explanations of the different elements. Note that the paths in the <code class="docutils literal notranslate"><span class="pre">export</span></code> commands are specific to our setup at DTU’s clusters.</p>
+<p>The bottom commands assumes that the job script is submitted from inside your Balmorel folder, and that your Balmorel project contains a “scenario1” scenario - see <a class="reference internal" href="../get_started/scenario_setup.html"><span class="std std-doc">how to create new scenarios</span></a>. The <code class="docutils literal notranslate"><span class="pre">threads=$LSB_DJOB_NUMPROC</span></code> command makes sure that Balmorel does not use more cores than defined  in your job script (four in this case, due to <code class="docutils literal notranslate"><span class="pre">#BSUB</span> <span class="pre">-n</span> <span class="pre">4</span></code>)</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Please make sure to switch to the solver options file <code class="docutils literal notranslate"><span class="pre">cplex.op2</span></code>, by going into the <code class="docutils literal notranslate"><span class="pre">balgams.opt</span></code> file and setting <code class="docutils literal notranslate"><span class="pre">$Setglobal</span> <span class="pre">USEOPTIONFILE</span> <span class="pre">2</span></code>. Otherwise CPLEX will overwrite the number of chosen threads and will ue more resources than requested.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh </span>
+<span class="c1">### General options </span>
+<span class="c1">### -- specify queue -- </span>
+<span class="c1">#BSUB -q hpc</span>
+<span class="c1">### -- set the job Name -- </span>
+<span class="c1">#BSUB -J My_Application</span>
+<span class="c1">### -- ask for number of cores (default: 1) -- </span>
+<span class="c1">#BSUB -n 4 </span>
+<span class="c1">### -- specify that the cores must be on the same host -- </span>
+<span class="c1">#BSUB -R &quot;span[hosts=1]&quot;</span>
+<span class="c1">### -- specify that we need 4GB of memory per core/slot -- </span>
+<span class="c1">#BSUB -R &quot;rusage[mem=4GB]&quot;</span>
+<span class="c1">### -- specify that we want the job to get killed if it exceeds 5 GB per core/slot -- </span>
+<span class="c1">#BSUB -M 5GB</span>
+<span class="c1">### -- set walltime limit: hh:mm -- </span>
+<span class="c1">#BSUB -W 24:00 </span>
+<span class="c1">### -- set the email address -- </span>
+<span class="c1"># please uncomment the following line and put in your e-mail address,</span>
+<span class="c1"># if you want to receive e-mail notifications on a non-default address</span>
+<span class="c1">##BSUB -u your_email_address</span>
+<span class="c1">### -- send notification at start -- </span>
+<span class="c1">#BSUB -B </span>
+<span class="c1">### -- send notification at completion -- </span>
+<span class="c1">#BSUB -N </span>
+<span class="c1">### -- Specify the output and error file. %J is the job-id -- </span>
+<span class="c1">### -- -o and -e mean append, -oo and -eo mean overwrite -- </span>
+<span class="c1">#BSUB -o Output_%J.out </span>
+<span class="c1">#BSUB -e Output_%J.err </span>
+
+<span class="c1"># Get paths to GAMS 47</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>/appl/gams/47.6.0:<span class="nv">$PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>/appl/gams/47.6.0:<span class="nv">$LD_LIBRARY_PATH</span>
+
+<span class="c1"># Go to model folder of your scenario - this assumes that the job script is at the same level of the Balmorel folder</span>
+<span class="nb">cd</span><span class="w"> </span>scenario1/model<span class="w"> </span>
+<span class="c1"># Run Balmorel</span>
+gams<span class="w"> </span>Balmorel<span class="w"> </span><span class="nv">threads</span><span class="o">=</span><span class="nv">$LSB_DJOB_NUMPROC</span>
+</pre></div>
+</div>
+</section>
+<section id="submitting-the-job-from-putty">
+<h2>Submitting the Job from PuTTY<a class="headerlink" href="#submitting-the-job-from-putty" title="Link to this heading"></a></h2>
+<p>Log in to PuTTY, change directory to inside your Balmorel folder (i.e. the <code class="docutils literal notranslate"><span class="pre">cd</span></code> command below), and submit the job that we created above using the <code class="docutils literal notranslate"><span class="pre">bsub</span></code> command. This assumes that you saved the job script as “job_script.sh”. The job is now pending in a queue or is already running, you can check this using the command <code class="docutils literal notranslate"><span class="pre">bstat</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>path/to/Balmorel
+bsub<span class="w"> </span>&lt;<span class="w"> </span>job_script.sh
+bstat
+</pre></div>
+</div>
+<p>If you named your output log “Output_%J.log” as in the job script above (<code class="docutils literal notranslate"><span class="pre">#BSUB</span> <span class="pre">-o</span> <span class="pre">Output_%J.out</span></code>), you can check this to see the progress of the optimisation. “%J” will be the unique job number, that the HPC assigns to the job. E.g., you could ctrl + F and search for “LOOPS IYALIAS” to see which model years have been or are being optimised. Errors are reported in the .err file.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="access.html" class="btn btn-neutral float-left" title="Accessing the Cluster" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../github_tutorial.html" class="btn btn-neutral float-right" title="Balmorel GitHub Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Mathias Berg Rosendal, Tim Graulich.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

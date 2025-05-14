@@ -1,0 +1,400 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merging changes and contributing to the project &mdash; Balmorel 5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css_options.css?v=313b1874" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=ee801c84"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/tabs.js?v=3030b3cb"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="About this code" href="../about.html" />
+    <link rel="prev" title="Creating branches and commits" href="branching.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Balmorel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Balmorel</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../get_started.html">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../versions.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../addons.html">Addons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pre_processing.html">Pre-Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running_on_hpc.html">Running on HPC</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../github_tutorial.html">Balmorel GitHub Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="browsing.html">Creating a copy of the repository by “forking” and/or “cloning”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="branching.html">Creating branches and commits</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Merging changes and contributing to the project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exercise-merging-contributing-to-the-main-repository">Exercise: Merging &amp; contributing to the main repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#solution-and-walk-through">Solution and walk-through</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#navigate-to-your-branch">(1) Navigate to your branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#begin-the-pull-request-process">(2) Begin the pull request process</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fill-out-and-verify-the-pull-request">(3) Fill out and verify the pull request</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-the-pull-request">(4) Create the pull request</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merge-the-pull-request">(5) Merge the pull request</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#delete-merged-branches">(6) Delete merged branches</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#contribute-to-the-original-repository-with-a-pull-request">(7) Contribute to the original repository with a pull request</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About this code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/balmorelcommunity/Balmorel/blob/master/base/documentation/TheBalmorelModelStructure-BMS301.pdf">Full Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Balmorel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../github_tutorial.html">Balmorel GitHub Tutorial</a></li>
+      <li class="breadcrumb-item active">Merging changes and contributing to the project</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/github_tutorial/merging.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="merging-changes-and-contributing-to-the-project">
+<span id="merging"></span><h1>Merging changes and contributing to the project<a class="headerlink" href="#merging-changes-and-contributing-to-the-project" title="Link to this heading"></a></h1>
+<p>Git allows us to have different development lines where we can try things out.
+It also allows different people to work on the same project at the same.  This
+means that we have to somehow combine the changes later. In this part we will
+practice this: <strong>merging</strong>.</p>
+<p>Goals for this section:</p>
+<ul class="simple">
+<li><p>Understand that on GitHub merging is done through a <strong>pull request</strong> (on GitLab: “merge request”). Think
+of it as a <strong>change proposal</strong>.</p></li>
+<li><p>Create and merge a pull request within your own repository.</p></li>
+<li><p>Understand (and optionally) do the same across repositories, to contribute to
+the upstream public repository.</p></li>
+</ul>
+<section id="exercise-merging-contributing-to-the-main-repository">
+<h2>Exercise: Merging &amp; contributing to the main repository<a class="headerlink" href="#exercise-merging-contributing-to-the-main-repository" title="Link to this heading"></a></h2>
+<div class="admonition-exercise-merging-branches admonition">
+<p class="admonition-title">Exercise: Merging branches</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-0-TG9jYWwgKFZTIENvZGUsIENvbW1hbmQgbGluZSk=" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-TG9jYWwgKFZTIENvZGUsIENvbW1hbmQgbGluZSk=" name="TG9jYWwgKFZTIENvZGUsIENvbW1hbmQgbGluZSk=" role="tab" tabindex="-1">Local (VS Code, Command line)</button></div><div aria-labelledby="tab-0-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-0-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>First, we make something called a pull request, which allows
+review and commenting before the actual merge.</p>
+<p>We assume that in the previous exercise you have created a new branch with one
+or few new commits.  We provide basic hints. You should refer to the solution
+as needed.</p>
+<ol class="arabic simple">
+<li><p>Navigate to your branch from the previous exercise
+(hint: the same branch view we used last time).</p></li>
+<li><p>Begin the pull request process
+(hint: There is a “Contribute” button in the branch view).</p></li>
+<li><p><strong>(Only GitHub)</strong> Add or modify the pull request title and description, and verify the other data.
+In the pull request verify the target repository and the target
+branch. Make sure that you are merging within your own repository.
+<strong>GitHub: By default, it will offer to make the change to the
+upstream repository, <code class="docutils literal notranslate"><span class="pre">balmorelcommunity</span></code>.  You should change this</strong>, you
+shouldn’t contribute your commit(s) upstream yet.  Where it says
+<code class="docutils literal notranslate"><span class="pre">base</span> <span class="pre">repository</span></code>, select your own repository.</p></li>
+<li><p><strong>(Only GitHub)</strong> Create the pull request by clicking “Create pull request”. Browse
+the network view to see if anything has changed yet.</p></li>
+<li><p>Merge the pull request, or if you are not on GitHub you can merge
+the branch locally. Browse the network again. What has changed?</p></li>
+<li><p>Find out which branches are merged and thus safe to delete. Then remove them
+and verify that the commits are still there, only the branch labels are
+gone (hint: you can delete branches that have been merged into <code class="docutils literal notranslate"><span class="pre">main</span></code>).</p></li>
+<li><p>Optional: Try to create a new branch with a new change, then open a pull
+request but towards the original (upstream) repository. We will later merge few of
+those.</p></li>
+</ol>
+</div><div aria-labelledby="tab-0-TG9jYWwgKFZTIENvZGUsIENvbW1hbmQgbGluZSk=" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-TG9jYWwgKFZTIENvZGUsIENvbW1hbmQgbGluZSk=" name="TG9jYWwgKFZTIENvZGUsIENvbW1hbmQgbGluZSk=" role="tabpanel" tabindex="0"><p>When working locally, it’s easier to merge branches: we can just do
+the merge, without making a pull request.  But we don’t have that step
+of review and commenting and possibly adjusting.</p>
+<ol class="arabic simple">
+<li><p>Switch to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch that you want to merge the <em>other</em>
+branch into. (Note that this is the other way around from the
+GitHub path).</p></li>
+</ol>
+<p>Then:</p>
+<ol class="arabic simple" start="5">
+<li><p>Merge the other branch into <code class="docutils literal notranslate"><span class="pre">main</span></code> (which is then your current branch).</p></li>
+<li><p>Find out which branches are merged and thus safe to delete. Then remove them
+and verify that the commits are still there, only the branch labels are
+gone. (Hint: you can delete branches that have been merged into <code class="docutils literal notranslate"><span class="pre">main</span></code>).</p></li>
+<li><p>Optional: Try to create a new branch, and make a
+GitHub pull request with your change, and contribute it to our
+upstream repository.</p></li>
+</ol>
+</div></div>
+</div>
+<p>The solution below goes over most of the answers, and you are
+encouraged to use it when the hints aren’t enough - this is by design.</p>
+</section>
+<section id="solution-and-walk-through">
+<h2>Solution and walk-through<a class="headerlink" href="#solution-and-walk-through" title="Link to this heading"></a></h2>
+<section id="navigate-to-your-branch">
+<h3>(1) Navigate to your branch<a class="headerlink" href="#navigate-to-your-branch" title="Link to this heading"></a></h3>
+<p>Before making the pull request, or doing a merge, it’s important to
+make sure that you are on the right branch.  Many people have been
+frustrated because they forgot this!</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-1-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-1-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-1-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-1-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-1-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-1-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-1-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>GitHub will notice a recently changed branch and offer to make a pull request (clicking there will bring you to step 3):</p>
+<figure class="align-default">
+<a class="with-border reference internal image-reference" href="../_images/pull_request.png"><img alt="Screenshot on GitHub suggesting to compare and make a pull request." class="with-border" src="../_images/pull_request.png" style="width: 80%;" />
+</a>
+</figure>
+<p>If the yellow box is not there, make sure you are on the branch you want to
+merge <strong>from</strong>:</p>
+<figure class="align-default">
+<a class="with-border reference internal image-reference" href="../_images/own_branch.png"><img alt="Screenshot on GitHub where we navigate to the branch we wish to merge." class="with-border" src="../_images/own_branch.png" style="width: 80%;" />
+</a>
+</figure>
+</div><div aria-labelledby="tab-1-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-1-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>Remember, you need to switch to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch, the branch we want to merge <strong>to</strong>.
+This is different from the GitHub path.</p>
+</div><div aria-labelledby="tab-1-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-1-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>Remember, you need to switch to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch, the branch we want to merge <strong>to</strong>.
+This is different from the GitHub path:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>switch<span class="w"> </span>main
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="begin-the-pull-request-process">
+<span id="create-pull-request"></span><h3>(2) Begin the pull request process<a class="headerlink" href="#begin-the-pull-request-process" title="Link to this heading"></a></h3>
+<p>In GitHub, the pull request is the way we propose to merge two
+branches together.  We start the process of making one.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-2-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-2-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-2-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-2-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-2-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-2-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-2-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><figure class="align-default">
+<a class="with-border reference internal image-reference" href="../_images/contribute.png"><img alt="Screenshot on GitHub where we get to the pull request process." class="with-border" src="../_images/contribute.png" style="width: 80%;" />
+</a>
+</figure>
+</div><div aria-labelledby="tab-2-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-2-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>It is possible to open pull requests from the editor, but
+we don’t cover that here.</p>
+<p>If you are working locally, continue to step 5.</p>
+</div><div aria-labelledby="tab-2-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-2-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>It is possible to open pull requests from the command line, but
+we don’t cover that here.</p>
+<p>If you are working locally, continue to step 5.</p>
+</div></div>
+</section>
+<section id="fill-out-and-verify-the-pull-request">
+<h3>(3) Fill out and verify the pull request<a class="headerlink" href="#fill-out-and-verify-the-pull-request" title="Link to this heading"></a></h3>
+<p>Check that the pull request is directed to the right repository and branch
+and that it contains the changes that you meant to merge.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-3-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-3-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-3-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-3-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-3-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-3-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-3-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>Things to check:</p>
+<ul>
+<li><p>Base repository: this should be your own and not <code class="docutils literal notranslate"><span class="pre">balmorelcommunity</span></code></p></li>
+<li><p>Title: make it descriptive</p></li>
+<li><p>Description: make it informative</p></li>
+<li><p>Scroll down to see commits: are these the ones you want to merge?</p></li>
+<li><p>Scroll down to see th
+e changes: are these the ones you want to merge?</p>
+<figure class="align-default" id="id1">
+<a class="with-border reference internal image-reference" href="../_images/comparing_changes.png"><img alt="Screenshot on GitHub where we verify the changes we want to merge." class="with-border" src="../_images/comparing_changes.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">This screenshot only shows the top part. If you scroll down, you
+can see the commits and the changes. We recommend to do this before
+clicking on “Create pull request”.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</li>
+</ul>
+</div><div aria-labelledby="tab-3-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-3-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>If you are working locally, continue to step 5.</p>
+</div><div aria-labelledby="tab-3-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-3-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>If you are working locally, continue to step 5.</p>
+</div></div>
+</section>
+<section id="create-the-pull-request">
+<h3>(4) Create the pull request<a class="headerlink" href="#create-the-pull-request" title="Link to this heading"></a></h3>
+<p>We actually create the pull request.  Don’t forget to navigate to the Network
+view after opening the pull request.  Note that the changes proposed in the
+pull request are not yet merged.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-4-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-4-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-4-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-4-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-4-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-4-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-4-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>Click on the green button “Create pull request”.</p>
+<p>If you click on the little arrow next to “Create pull request”, you can also
+see the option to “Create draft pull request”. This will be interesting later
+when collaborating with others. It allows you to open a pull request that is
+not ready to be merged yet, but you want to show it to others and get feedback.</p>
+</div><div aria-labelledby="tab-4-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-4-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>It is possible to create pull requests from the editor, but
+we don’t cover that here.</p>
+<p>If you are working locally, continue to step 5.</p>
+</div><div aria-labelledby="tab-4-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-4-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>It is possible to create pull requests from the command line, but
+we don’t cover that here.</p>
+<p>If you are working locally, continue to step 5.</p>
+</div></div>
+</section>
+<section id="merge-the-pull-request">
+<h3>(5) Merge the pull request<a class="headerlink" href="#merge-the-pull-request" title="Link to this heading"></a></h3>
+<p>Now, we do the actual merging. We see some effects now.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-5-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-5-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-5-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-5-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-5-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-5-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-5-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>Review it again (commits and changes), and then click “Merge pull request”.</p>
+<p>After merging, verify the network view. Also navigate then to your “main”
+branch and check that your change is there.</p>
+</div><div aria-labelledby="tab-5-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-5-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>Just like with the command line, when we merge we modify our <em>current</em> branch.  Verify you are on the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p>
+<ol class="arabic simple">
+<li><p>Verify current branch at the bottom.</p></li>
+<li><p>From the version control sidebar → Three dots → Branch → Merge.</p></li>
+<li><p>In the selector that comes up, choose the branch you want to merge <em>from</em>.
+The commits on that branch will be added to the current branch.</p></li>
+</ol>
+</div><div aria-labelledby="tab-5-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-5-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>On the command line, when we merge, we always modify our <em>current</em> branch.</p>
+<p>If you are not sure anymore what your current branch is, type:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>branch
+</pre></div>
+</div>
+<p>… or equally useful to see where we are right now:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>status
+</pre></div>
+</div>
+<p>In this case we merge the <code class="docutils literal notranslate"><span class="pre">new-tutorial</span></code> branch into our current branch:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>merge<span class="w"> </span>my-branch
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="delete-merged-branches">
+<h3>(6) Delete merged branches<a class="headerlink" href="#delete-merged-branches" title="Link to this heading"></a></h3>
+<p>Before deleting branches, first check whether they are merged.</p>
+<p>If you delete an un-merged branch, it will be difficult to find the commits
+that were on that branch. If you delete a merged branch, the commits are now
+also part of the branch where we have merged to.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-6-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-6-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-6-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-6-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-6-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-6-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-6-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-6-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>One way to delete the branch is to click on the “Delete branch” button after the pull
+request is merged. But what if we forgot? Then navigate to the branch view:</p>
+<figure class="align-default">
+<a class="with-border reference internal image-reference" href="../_images/branch_view.png"><img alt="Screenshot on GitHub where we navigate to the branches view." class="with-border" src="../_images/branch_view.png" style="width: 80%;" />
+</a>
+</figure>
+<p>In the overview we can see that it has been merged and we can delete it.</p>
+</div><div aria-labelledby="tab-6-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-6-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>From the Source Control sidebar → the three dots (as before) → Branch → Delete Branch.  Select the branch name to delete.</p>
+</div><div aria-labelledby="tab-6-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-6-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>Verify which branches are merged to the current branch:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>branch<span class="w"> </span>--merged
+
+<span class="go">* main</span>
+<span class="go">  my-branch</span>
+</pre></div>
+</div>
+<p>This means that it is safe to delete the <code class="docutils literal notranslate"><span class="pre">new-tutorial</span></code> branch:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>branch<span class="w"> </span>-d<span class="w"> </span>my-branch
+</pre></div>
+</div>
+<p>Verify then that the branch is gone but that the commits are still there:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>branch
+<span class="gp">$ </span>git<span class="w"> </span>log<span class="w"> </span>--oneline
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="contribute-to-the-original-repository-with-a-pull-request">
+<h3>(7) Contribute to the original repository with a pull request<a class="headerlink" href="#contribute-to-the-original-repository-with-a-pull-request" title="Link to this heading"></a></h3>
+<p>This is an advanced step. We will practice this tomorrow and
+it is OK to skip this at this stage.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-7-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-7-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-7-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-7-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-7-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-7-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-7-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-7-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>Now that you know how to create branches and opening a pull request, try to
+open a new pull request with a new change but this time the base repository
+should be the upstream one.</p>
+<p>In other words, you now send a pull request <strong>across repositories</strong>: from your fork
+to the original repository.</p>
+<p>In case you try to merge into the <code class="docutils literal notranslate"><span class="pre">main</span></code> upstream repository, you will see that you do not have permission for that. This is to protect the repository from unwanted changes. You can still create a pull request, which will then get reviewed from members of the <code class="docutils literal notranslate"><span class="pre">balmorelcommunity</span></code>.</p>
+</div><div aria-labelledby="tab-7-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-7-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>Not described.</p>
+<p>You would create a new branch locally like above, push it to GitHub to your own
+user’s repository, and from there open a pull request towards the upstream
+repository.</p>
+</div><div aria-labelledby="tab-7-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-7-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>Not described.</p>
+<p>You would create a new branch locally like above, push it to GitHub to your own
+user’s repository, and from there open a pull request towards the upstream
+repository.</p>
+</div></div>
+</section>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>We learned how to merge two branches together.</p></li>
+<li><p>When is this useful? This is not only useful to combine development lines in
+your own work. Being able to merge branches also <strong>forms the basis for collaboration</strong>.</p></li>
+<li><p>Branches which are merged to other branches are safe to delete, since we only
+delete the “sticky note” next to a commit, not the commits themselves.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="branching.html" class="btn btn-neutral float-left" title="Creating branches and commits" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../about.html" class="btn btn-neutral float-right" title="About this code" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Mathias Berg Rosendal, Tim Graulich.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
