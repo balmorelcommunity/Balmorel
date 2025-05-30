@@ -261,7 +261,7 @@ $setglobal EV_INTERSEASONAL
 *------------------------------TRANSPORT ADDON-------------------------------------------------
 * overall control variable TRANSPORT must be 'yes' if any of the other TRANSPORT controls are:
 * Include transport data in the optimization (it is supposed to complement the EV addon, so check consistency of data before using it).
-$setglobal TRANSPORT YES 
+$setglobal TRANSPORT 
 *!option yes
 
 * Defines the commodity used to model synthetic fuel generation.
@@ -470,15 +470,15 @@ $setglobal DECOM yes
 * Note: If no option for endogenous capacities is activated, endogenous investments will not be decommissioned
 
 * Adds Endogenous capacities will maximum stay in the system as much as their lifetimes:
-$setglobal LIFETIME_DECOM_ENDO_G YES
+$setglobal LIFETIME_DECOM_ENDO_G yes
 *!option yes
 
 * Adds Endogenous capacities can be decommissioned based on their profitability:
-$setglobal ECONOMIC_DECOM_ENDO_G   yes
+$setglobal ECONOMIC_DECOM_ENDO_G 
 *!option yes
 
 * Adds Endogenous decommissioned endogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
-$setglobal REVERT_DECOM_ENDO_G   yes
+$setglobal REVERT_DECOM_ENDO_G
 *!option yes
 
 *--------END OF ENDOGENOUS CAPACITIES-----
