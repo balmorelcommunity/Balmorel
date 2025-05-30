@@ -57,7 +57,7 @@ $ifi %inv%==yes  EQUATION QPROCKAUP_SCALE2(Y,AAA,PROC)   "Equation for modelling
 $ifi %inv%==yes  EQUATION QPROCKAP_DEC(Y,AAA,IPROCFROM,IPROCTO,FLOW,S,T) "Equation for modelling of decomissioning plants";
 
 * OBS FF
-$ifi %inv%==yes  EQUATION QPROCEXIMKAPACCUMNET          'Accumulate PROCEXIM capacity over investment years'
+$ifi %inv%==yes  EQUATION QPROCEXIMKAPACCUMNET          'Accumulate PROCEXIM capacity over investment years';
 $ifi %inv%==yes  EQUATION QPROCEXIMKAP                  'Capacity constraint on transport processes (U/h)';
 $ifi %inv%==yes  EQUATION QPROCEXIMKAP_SYMMETRY         'Transport capcity investments are symmetric';
 
