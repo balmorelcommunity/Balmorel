@@ -553,7 +553,7 @@ $setglobal optiFossils yes
 *! option yes
 
 * Import renewable fuels from a global exogenous market at fixed cost
-$setglobal  yes
+$setglobal optiGlobalFuels yes
 *! option yes
 
 * Debug possibilities:
