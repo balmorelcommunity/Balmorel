@@ -247,6 +247,17 @@ $if     EXIST '../data/OPTIFLOW_PROCDATA.inc' $INCLUDE         '../data/OPTIFLOW
 $if not EXIST '../data/OPTIFLOW_PROCDATA.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCDATA.inc';
 %semislash%;
 
+*Parameters for relative cost increase from underwater share
+PARAMETER TRANSSHARE(PROC,IAAAE,IAAAI)	'Fraction of pipeline length between IAAAE and IAAAI that is underwater'
+$if     EXIST '../data/OPTIFLOW_TRANSSHARE_UNDERWATER.inc' $INCLUDE         '../data/OPTIFLOW_TRANSSHARE_UNDERWATER.inc';
+$if not EXIST '../data/OPTIFLOW_TRANSSHARE_UNDERWATER.inc' $INCLUDE '../../base/data/OPTIFLOW_TRANSSHARE_UNDERWATER.inc';
+%semislash%;
+
+SCALAR UNDERWATER_REL_INCR 'Increase in PROCINVCOST and PROCFIXEDCOST for the subsea share of a transport pipeline (relative increase from base)'
+$if     EXIST '../data/OPTIFLOW_UNDERWATER_REL_INCR.inc' $INCLUDE         '../data/OPTIFLOW_UNDERWATER_REL_INCR.inc';
+$if not EXIST '../data/OPTIFLOW_UNDERWATER_REL_INCR.inc' $INCLUDE '../../base/data/OPTIFLOW_UNDERWATER_REL_INCR.inc';
+%semislash%;
+
 * Capacity is implemented as a bound on a Flow (index 4) that enters or leaves PROC (index 3).
 * The value of IFLOWINOUT determines whether the Flow enters or leaves PROC.
 * Hence, with 'IFLOWINOUT_OUT' the bound will be on the Flow from PROC,
