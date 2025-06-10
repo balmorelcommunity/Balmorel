@@ -42,6 +42,8 @@ ICO2_CC(PROC,FLOW)=0;
 ICO2_CC('CO2_DAC','CO2_FLOW_DAC') = YES;
 ICO2_CC('CO2_Biogas','CO2_FLOW_BIOGAS') = YES;
 ICO2_CC('CO2_Biochar_Sum','CO2_FLOW_BIOCHAR') = YES;
+ICO2_CC('CO2_Port_Handling','CO2_OCC_SEQ') = YES;
+
 
 *Re-ad CO2 used for CU in OptiFlow
 SET ICO2_CU(PROC,FLOW)			"Set of PROC/FLOW pairs that deliver CO2 for CU";
