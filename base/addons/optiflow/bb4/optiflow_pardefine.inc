@@ -450,6 +450,11 @@ IPROCINOUTFLOW(Y,IA,PROC,IFLOWIN,IFLOWOUT) = YES$(SUM(IPROCINOUTRELATION$PROCINO
 
 SET  IPROCINOUTFLOW_Y_set(AAA,PROC,IFLOWIN,IFLOWOUT) "Set of combinations of (AAA,PROC,IFLOWIN,IFLOWOUT) in PROCINOUTFLOW";
 
+* OBS FF *
+SET ALLOWEDTRANS(PROC, FLOW)	"Set of areas that are connected for transport via process proc";
+$if     EXIST '../data/OPTIFLOW_ALLOWEDTRANS.inc' $INCLUDE         '../data/OPTIFLOW_ALLOWEDTRANS.inc';
+$if not EXIST '../data/OPTIFLOW_ALLOWEDTRANS.inc' $INCLUDE '../../base/data/OPTIFLOW_ALLOWEDTRANS.inc';
+
 
 * TODO: Reconsider name (no 'VARI...' anymore)
 PARAMETER IPRIOVARIOUTSUM(YYY,AAA,PROC,IFLOWIN,IFLOWOUT) "Indicator for use with VARIOUTSUM: 0: not outsum, 1: outsum primary, 2: outsumt secondary;  only primary used for equation indexes (~)";
