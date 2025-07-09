@@ -84,7 +84,6 @@ PARAMETER CYCLES(TTT);
 CYCLES(T)=CARD(TTT)/(CARD(T)*TIMELENGHT(T));
 
 
-
 *-------------------------------------------------------------------------------
 * WASTE NETWORK WITHIN AREAS (PROCESSES AND FLOWS):
 *-------------------------------------------------------------------------------
@@ -234,6 +233,22 @@ PARAMETER PROCEXIMKAPFX(YYY,IAAAE,IAAAI,PROC) "Existing capacity of PROCEXIM (U/
 $if     EXIST '../data/OPTIFLOW_PROCEXIMKAPFX.inc' $INCLUDE         '../data/OPTIFLOW_PROCEXIMKAPFX.inc';
 $if not EXIST '../data/OPTIFLOW_PROCEXIMKAPFX.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCEXIMKAPFX.inc';
 %semislash%;
+
+
+* Parameter for PROCEIM endogenous fuel use
+
+PARAMETER PROCEXIM_ENDO_FUEL(PROC, FLOW) "PROCEXIM endogenous fuel use per km[GJ/GJ/km]" %semislash%
+$if     EXIST '../data/OPTIFLOW_PROCEXIM_ENDO_FUEL.inc' $INCLUDE         '../data/OPTIFLOW_PROCEXIM_ENDO_FUEL.inc';
+$if not EXIST '../data/OPTIFLOW_PROCEXIM_ENDO_FUEL.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCEXIM_ENDO_FUEL.inc';
+%semislash%;
+
+SET PROCEXIM_ENDO_SET(PROC,FLOW) "PROCEXIM/FLOW pairs with endogenous fuel use" ;
+PROCEXIM_ENDO_SET(PROC,FLOW) = yes$(PROCEXIM_ENDO_FUEL(PROC,FLOW));
+
+PARAMETER PROCEXIM_ENDO_LOSS(IAAAE,IAAAI,PROC,FLOW) "PROCEXIM endogenous fuel use between area pairs";
+PROCEXIM_ENDO_LOSS(IAAAE,IAAAI,PROC,FLOW)$(PROCEXIM_ENDO_SET(PROC,FLOW)) = PROCEXIM_ENDO_FUEL(PROC,FLOW) * TRANSDIST(PROC,IAAAE,IAAAI);
+PROCEXIM_ENDO_LOSS(IAAAE,IAAAI,PROC,FLOW)$(PROCEXIM_ENDO_SET(PROC,FLOW)) = MIN(1, PROCEXIM_ENDO_LOSS(IAAAE,IAAAI,PROC,FLOW));
+
 
 * OBS FF * End *
 
