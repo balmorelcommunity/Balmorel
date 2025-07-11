@@ -50,6 +50,20 @@ ISIMWEIGHT(YMODEL) = SUM(IYMODEL4$((1 LT ORD(IYMODEL4)) AND (ORD(IYMODEL4) <= OR
 * Initialize total capacity variables to start values.
 *-------------------------------------------------------------------------------
 
+* OBS FF * Operational runs
+
+$ifi not %load_ex_cap%==yes $goto NO_EXISTING_CAPACITIES
+
+* Production capacity
+$ifi %OPTIFLOW%==yes   execute_load "../localsimex/PROCKAPACCUMNET.gdx", PROCKAPACCUMNET;
+VPROCKAPACCUMNET.FX(IY411, AAAOPTIFLOW, PROC)$(PROCKAPACCUMNET(IY411, AAAOPTIFLOW, PROC)) = PROCKAPACCUMNET(IY411, AAAOPTIFLOW, PROC);
+
+* Transmission capacity
+$ifi %OPTIFLOW%==yes   execute_load "../localsimex/PROCEXIMKAPACCUMNET.gdx", PROCEXIMKAPACCUMNET;
+VPROCEXIMKAPACCUMNET.FX(IY411, IAAAE, IAAAI, PROC)$(PROCEXIMKAPACCUMNET(IY411, IAAAE, IAAAI, PROC))=PROCEXIMKAPACCUMNET(IY411, IAAAE, IAAAI, PROC);
+
+$label NO_EXISTING_CAPACITIES
+
 *------------------------------------------------------------------------------------------------------------------------------------------------------------
 *------------------------------------------------------------------------------------------------------------------------------------------------------------
 *------------------------------------------------------------------------------------------------------------------------------------------------------------

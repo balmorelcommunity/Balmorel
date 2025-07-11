@@ -125,7 +125,7 @@ OPTIONS ITERLIM=2000000000;
 * OPTCR controls the precision of the solution. If optcr is greater than 0,
 * a good, not necessarily optimal solution will be accepted.
 * Default value is 0.10.
-option optcr = 0.000001
+option optcr = 0.01
 
 * RESLIM specifies the maximum time (seconds) that the computer can run during execution of a solver.
 * Default value is 1000.
@@ -149,7 +149,7 @@ option intVarUp = 0
 * In the following a few option file possibilities are mentioned for use with Cplex,
 * their use assumes that appropriate files exist in the model folder.
 
-$Setglobal USEOPTIONFILE 4
+$Setglobal USEOPTIONFILE 0
 *!option 0   No option file is used. Note that not setting anything will generate an error.
 *!option 1   Use option file SolverName.opt.
 *!option 4   Predefined, don't change. Used with CPLEX it opens cplex.op4 and sets 'LPmethod 4' to run barrior method.

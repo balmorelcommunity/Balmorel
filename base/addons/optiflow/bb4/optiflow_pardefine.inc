@@ -234,7 +234,6 @@ $if     EXIST '../data/OPTIFLOW_PROCEXIMKAPFX.inc' $INCLUDE         '../data/OPT
 $if not EXIST '../data/OPTIFLOW_PROCEXIMKAPFX.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCEXIMKAPFX.inc';
 %semislash%;
 
-
 * Parameter for PROCEIM endogenous fuel use
 
 PARAMETER PROCEXIM_ENDO_FUEL(PROC, FLOW) "PROCEXIM endogenous fuel use per km[GJ/GJ/km]" %semislash%
@@ -248,6 +247,11 @@ PROCEXIM_ENDO_SET(PROC,FLOW) = yes$(PROCEXIM_ENDO_FUEL(PROC,FLOW));
 PARAMETER PROCEXIM_ENDO_LOSS(IAAAE,IAAAI,PROC,FLOW) "PROCEXIM endogenous fuel use between area pairs";
 PROCEXIM_ENDO_LOSS(IAAAE,IAAAI,PROC,FLOW)$(PROCEXIM_ENDO_SET(PROC,FLOW)) = PROCEXIM_ENDO_FUEL(PROC,FLOW) * TRANSDIST(PROC,IAAAE,IAAAI);
 PROCEXIM_ENDO_LOSS(IAAAE,IAAAI,PROC,FLOW)$(PROCEXIM_ENDO_SET(PROC,FLOW)) = MIN(1, PROCEXIM_ENDO_LOSS(IAAAE,IAAAI,PROC,FLOW));
+
+* Operational Run
+
+PARAMETER PROCKAPACCUMNET(Y,AAAOPTIFLOW,PROC) "Capacities from investment run to be fixed in operational run";
+PARAMETER PROCEXIMKAPACCUMNET(Y,IAAAE,IAAAI,PROC) "Inter-region transmission capacities from investment run to be fixed in operational run";
 
 
 * OBS FF * End *
@@ -707,8 +711,6 @@ $if not EXIST '../data/OPTIFLOW_INDICLIMGOAL.inc' $INCLUDE '../../base/data/OPTI
 
 SCALAR IPENALTYQ   "Penalty on violation of equation" / 1e9 /;
 SCALAR ILOUPBOUNDS "Default lower and upper bounds to guard against unbounded solution" /1e10/;
-
-*mason
 
 Set PROCTECHTYPE(PROC,TECH_GROUP) "Type of technology aggrigated"  %semislash%;
 $if     EXIST '../data/OPTIFLOW_PROCTECHTYPE.inc' $INCLUDE         '../data/OPTIFLOW_PROCTECHTYPE.inc';

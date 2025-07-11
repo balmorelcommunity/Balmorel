@@ -2651,6 +2651,20 @@ $ifi not %export_results%==yes $goto result_export
 *------------------------------------------------------------------------------
 * For hydro with reservoir save the following, to be used in future runs by addon "import_results":
 
+* OBS FF * Operational run
+
+$ifi %OPTIFLOW%==yes    PROCKAPACCUMNET(Y,AAAOPTIFLOW,PROC)=
+$ifi %OPTIFLOW%==yes 	$ifi %inv%==yes + VPROCKAPACCUMNET.L(Y,AAAOPTIFLOW,PROC)
+$ifi %OPTIFLOW%==yes 	; 
+$ifi %OPTIFLOW%==yes    execute_unload "../localsimex/PROCKAPACCUMNET.gdx", PROCKAPACCUMNET;
+
+$ifi %OPTIFLOW%==yes    PROCEXIMKAPACCUMNET(Y,IAAAE,IAAAI,PROC)$(AAAOPTIFLOW(IAAAE) AND AAAOPTIFLOW(IAAAI))=
+$ifi %OPTIFLOW%==yes 	$ifi %inv%==yes + VPROCEXIMKAPACCUMNET.L(Y,IAAAE,IAAAI,PROC)
+$ifi %OPTIFLOW%==yes 	; 
+$ifi %OPTIFLOW%==yes    execute_unload "../localsimex/PROCEXIMKAPACCUMNET.gdx", PROCEXIMKAPACCUMNET;
+
+* OBS FF * End
+
 HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHYRST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));
 VHYRS_SL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = VHYRS_S.L(Y,IA,S);
 WATERVAL(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS))= QHYRSSEQ.M(Y,IA,S)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y))*8736/IOF8760

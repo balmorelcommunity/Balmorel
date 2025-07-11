@@ -556,6 +556,11 @@ $setglobal optiFossils yes
 $setglobal optiGlobalFuels yes
 *! option yes
 
+*Perform operational run by fixing capacities to PROCKAPAACUMNET in /localsimex
+$setglobal load_ex_cap yes
+*! option yes
+
+
 * Debug possibilities:
 $Setglobal addEPStoL
 *! option yes
