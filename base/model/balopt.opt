@@ -840,6 +840,10 @@ $setglobal ADDGROUP_DEMAND_SHIFT
 $setglobal SOVEREIGNTY
 *!option yes
 
+*Specified group of regions is aggregate net neutral or net exporter of specified energy carriers (default: electricity)
+$setglobal SOV_MODE individual
+*!option group, individual
+
 *Sovereignty requirement for hydrogen energy carrier
 $setglobal SOV_H2
 *! option yes
