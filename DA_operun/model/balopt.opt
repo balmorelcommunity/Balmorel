@@ -77,7 +77,7 @@ $setglobal bb4 yes
 *-------- Seasonal rolling horizon  ---------
 * Optimize seasons with a rolling horizon approach instead of all together.
 *NOTE: This option is supposed to be combined with the option "import_results", which must contain information for all S and at least the first element in T
-$setglobal RollingSeasons yes
+$setglobal RollingSeasons 
 *!option yes
 
 SCALAR ROLLINGSEASONSNUMBER 'Number of seasons to be optimized at a time in each rolling season optimization';
@@ -349,9 +349,17 @@ $setglobal generic_synfuel   yes
 $setglobal generic_synfuel_inflex  
 *!option yes
 
+* Set whether synfuel places an area or regional demand
+$setglobal generic_synfuel_h2dem region
+*!option area or region
+
 * Allows investments in hydrogen transport
 $Setglobal H2TransInvest 
 *!option yes
+
+* Set whether hydrogen transmission investments should be determined at an area or region level
+$setglobal h2_transmission_definition region
+*!option area or region
 
 SCALAR XH2INVESTSTART 'Year from which endogenous decisions in H2 transmission capacities are allowed' ;
 XH2INVESTSTART= 2030;
@@ -373,7 +381,10 @@ $setglobal flexible_h2_space
 *-----------------FUELTRANSPORT ADDON---------------------------------------
 
 * Enable annual transport of fuels, only possible if a FUELTRANSPORT_COST is defined 
-$setglobal fueltransport 
+$setglobal fueltransport
+
+$setglobal fueltransport_definition region
+*!option region or area
 
 *-----------------END: FUELTRANSPORT ADDON---------------------------------------
 
