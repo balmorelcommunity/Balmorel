@@ -2864,6 +2864,18 @@ $ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes execute_unload  "../../sim
 *Reducing size of export files once they have been exported
 $ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes INDIVUSERS_GROUPSHARE(Y,IR,DHUSER,INDIVUSERS_GROUP)=0;
 
+
+* Synfuel seasonal production
+PARAMETER SYNFUELDEMANDS(YYY, SSS, SYNFUELUSER);
+SYNFUELDEMANDS(Y, S, 'TOTAL') = SUM((IA, IHYDROGEN_H2TOSYNFUEL, T),
+  VSYNFUEL_G_T.L(Y,IA,IHYDROGEN_H2TOSYNFUEL, S, T) * IHOURSINST(S, T)
+);
+SYNFUELDEMANDS(Y, S, 'AVIATION') = SUM((IA, IHYDROGEN_BIOTOSYNFUEL, T),
+  VSYNFUEL_G_T.L(Y,IA,IHYDROGEN_BIOTOSYNFUEL, S, T) * IHOURSINST(S, T)
+);
+execute_unload  "../../simex/SYNFUELDEMANDS.gdx", SYNFUELDEMANDS;
+
+
 *------------------------------------------------------------------------------
 *                END: GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
 *------------------------------------------------------------------------------

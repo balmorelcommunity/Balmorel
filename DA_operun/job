@@ -32,12 +32,15 @@
 export PATH=/appl/gams/47.6.0:$PATH
 
 ### Activate spatialstudy environment
-source ~/miniconda3/bin/activate spatialstudy
+# source ~/miniconda3/bin/activate spatialstudy
+runtype=$1
 
 for name in N2; do
 
     # Copy most results from disaggregated run to simex
-    cp -f ./simex_${name}_ZCEHX/*.gdx ./simex
+    if [ $runtype = "dispatch" ]; then
+        cp -f ./simex_${name}_ZCEHX/*.gdx ./simex
+    fi
 
     # Seasonal heuristic for synfuel demand
     # python analysis/peri-process.py ${name}_ZCEHX seasonal-synfuel 
@@ -47,7 +50,10 @@ for name in N2; do
 
     # Copy S and T
     cp -f DA_operun/S.inc DA_operun/data/
-    cp -f DA_operun/T.inc DA_operun/data/
+    cp -f "DA_operun/T_${runtype}.inc" "DA_operun/data/T.inc"
+
+    # Choose balopt
+    mv "DA_operun/model/balopt_${runtype}.opt" "DA_operun/model/balopt.opt"
 
     # # Disaggregate capacities
     # if [ $name != "base" ]; then
@@ -58,11 +64,11 @@ for name in N2; do
 
     # Running Balmorel 
     cd DA_operun/model 
-    gams Balmorel Threads=$LSB_DJOB_NUMPROC --scenario_name="${name}_ZCEHX_dispatch"
+    gams Balmorel --scenario_name "${name}_ZCEHX_${runtype}"
 
     # Exit, if there are errors
     if [ $? -ne 0 ]; then
-        echo "GAMS execution failed for scenario ${name}_ZCEHX_dispatch"
+        echo "GAMS execution failed for scenario ${name}_ZCEHX_${runtype}"
         exit 1
     fi
     
@@ -71,7 +77,10 @@ for name in N2; do
     # Copy the simex folder
     # cp simex -r simex_$name
 
+    # Choose balopt
+    mv "DA_operun/model/balopt.opt" "DA_operun/model/balopt_${runtype}.opt"
+
     # Analyse adequacy
-    analyse adequacy ${name}_ZCEHX_dispatch --nth-max 3
-    analyse adequacy ${name}_ZCEHX_dispatch --nth-max 1
+    # analyse adequacy ${name}_ZCEHX_operun --nth-max 3
+    # analyse adequacy ${name}_ZCEHX_operun --nth-max 1
 done

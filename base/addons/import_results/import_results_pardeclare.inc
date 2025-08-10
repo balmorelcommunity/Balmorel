@@ -13,4 +13,5 @@ PARAMETER UCON(YYY,AAA,GGG,SSS,TTT)     "Unit commitment (0,1) on electricity ge
 PARAMETER UCON_STOLOAD(YYY,AAA,GGG,SSS,TTT)     "Unit commitment (0,1) on storage loading to be used in future runs";
 PARAMETER UCONMAINT(YYY,AAA,GGG,SSS)    "Unit commitment maintenance (0,1) on electricity generation to be used in future runs";
 
+$ifi %HYDROGEN%==yes  $ifi %generic_synfuel%==yes PARAMETER SYNFUELDEMANDS(YYY, SSS, SYNFUELUSER) "Seasonal synthetic fuel demand";
 

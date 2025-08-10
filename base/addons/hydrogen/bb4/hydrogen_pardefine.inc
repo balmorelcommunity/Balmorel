@@ -79,9 +79,5 @@ $ifi not %generic_synfuel%==yes $goto NO_GENERIC_SYNFUEL
 $ifi     EXIST '../data/HYDROGEN_SYNFUELDEMAND.inc'  $INCLUDE   '../data/HYDROGEN_SYNFUELDEMAND.inc';
 $ifi not EXIST '../data/HYDROGEN_SYNFUELDEMAND.inc'  $INCLUDE   '../../base/data/HYDROGEN_SYNFUELDEMAND.inc';
 
-$ifi not %RollingSeasons%==yes $goto NO_ROLLING_SEASONS
-$ifi     EXIST '../data/HYDROGEN_SYNFUELDEMANDS.inc'  $INCLUDE   '../data/HYDROGEN_SYNFUELDEMANDS.inc';
-$ifi not EXIST '../data/HYDROGEN_SYNFUELDEMANDS.inc'  $INCLUDE   '../../base/data/HYDROGEN_SYNFUELDEMANDS.inc';
-$label NO_ROLLING_SEASONS
 $label NO_GENERIC_SYNFUEL
 
