@@ -8,6 +8,11 @@ $if     EXIST '../data/OPTIFLOW_AAAOPTIFLOW.inc' $INCLUDE         '../data/OPTIF
 $if not EXIST '../data/OPTIFLOW_AAAOPTIFLOW.inc' $INCLUDE '../../base/data/OPTIFLOW_AAAOPTIFLOW.inc';
 %semislash%;
 
+SET  AAAOPTIFLOW_OFF(AAA) "Offshore areas used in the OptiFlow calculations"%semislash%
+$if     EXIST '../data/OPTIFLOW_AAAOPTIFLOW_OFF.inc' $INCLUDE         '../data/OPTIFLOW_AAAOPTIFLOW_OFF.inc';
+$if not EXIST '../data/OPTIFLOW_AAAOPTIFLOW_OFF.inc' $INCLUDE '../../base/data/OPTIFLOW_AAAOPTIFLOW_OFF.inc';
+%semislash%
+
 SET AAATRANSIT(AAA)   'Areas that are for waste transit only';
 SET AAAIMPORT(AAA)    'Areas that are for waste import only';
 ALIAS (AAATRANSIT,IATRANSITE,IATRANSITI);
@@ -212,7 +217,6 @@ ITRANSFROMTOPROC(PROC,IAAAE,IAAAI) = NO;
 ITRANSFROMTOPROC(PROC,IAE,IAI)$(AAAOPTIFLOW(IAE) AND AAAOPTIFLOW(IAI) AND TRANSDIST(PROC,IAE,IAI)) = YES;
 ITRANSFROMTOPROC(PROC,IA,IA) = NO;
 
-
 * OBS FF * Optiflow Capacity Investments in ProcExim *
 
 * Areas with new PROCEXIM investments
@@ -254,7 +258,6 @@ PROCEXIM_ENDO_LOSS(IAAAE,IAAAI,PROC,FLOW)$(PROCEXIM_ENDO_SET(PROC,FLOW)) = MIN(1
 
 PARAMETER PROCKAPACCUMNET(Y,AAAOPTIFLOW,PROC) "Capacities from investment run to be fixed in operational run";
 PARAMETER PROCEXIMKAPACCUMNET(Y,IAAAE,IAAAI,PROC) "Inter-region transmission capacities from investment run to be fixed in operational run";
-
 
 * OBS FF * End *
 
