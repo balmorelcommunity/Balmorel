@@ -36,7 +36,7 @@ $ifi %EV%==yes $ifi not %ADDEVSTOS%==none   execute_load  '../../simex/EV_VSOC_P
 $ifi %EV%==yes $ifi not %ADDEVSTOS%==none   execute_load  '../../simex/EV_BEV_NETCHARGING.gdx', EV_BEV_NETCHARGING;
 $ifi %EV%==yes $ifi not %ADDEVSTOS%==none   execute_load  '../../simex/EV_PHEV_NETCHARGING.gdx', EV_PHEV_NETCHARGING;
 
-$ifi %HYDROGEN%==yes $ifi %generic_synfuel%==yes execute_load   '../../simex/SYNFUELDEMANDS.gdx', SYNFUELDEMANDS;
+$ifi %HYDROGEN%==yes $ifi %generic_synfuel%==yes $ifi %RollingSeasons%==yes execute_load   '../../simex/SYNFUELDEMANDS.gdx', SYNFUELDEMANDS;
 
 *Investments with/without decommissioning of endogenous capacity
 $ifi %ADDTECHDEV%==yes      execute_load  '../../simex/GKACCUMNET.gdx', GKACCUMNET;
