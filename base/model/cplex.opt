@@ -1,3 +1,11 @@
 * Option file 1 for CPLEX solver. For possible options, see the GAMS Solver Manual. Change as needed.
 
-LPmethod  4
+* Optimised for stability and reduced memory usage. For running large-scale models
+
+LPmethod        4       * Use barrier
+BarCrossAlg    -1       * Let CPLEX choose best crossover method
+BarHomogeneous  1       * Improves stability in tough models
+BarObjRng    1e+10      * Helps avoid numerical instability (only if needed)
+BarConvTol   1e-6       * Slightly relaxed, still acceptable for most use
+AggFill        50       * Moderate fill-in to balance speed and stability
+AdvInd          1       * Try advanced basis for better crossover
