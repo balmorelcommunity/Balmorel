@@ -552,6 +552,11 @@ $setglobal baloptCCS yes
 $setglobal optiFossils yes
 *! option yes
 
+* Allow onboard carbon capture OCC when burning HFO/LNG
+* !! Requires optiFossils=yes
+$setglobal optiOCC yes
+* ! option yes
+
 * Import renewable fuels from a global exogenous market at fixed cost
 $setglobal optiGlobalFuels yes
 *! option yes
