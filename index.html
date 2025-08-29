@@ -1,0 +1,163 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Balmorel &mdash; Balmorel 5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css_options.css?v=313b1874" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=ee801c84"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Get Started" href="get_started.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Balmorel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Balmorel</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="get_started.html">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="versions.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="addons.html">Addons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pre_processing.html">Pre-Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running_on_hpc.html">Running on HPC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="github_tutorial.html">Balmorel GitHub Tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About this code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/balmorelcommunity/Balmorel/blob/master/base/documentation/TheBalmorelModelStructure-BMS301.pdf">Full Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Balmorel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Balmorel</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="balmorel">
+<h1>Balmorel<a class="headerlink" href="#balmorel" title="Link to this heading"></a></h1>
+<p>Balmorel is an open-source, bottom-up partial equilibrium energy system model<a class="footnote-reference brackets" href="#id7" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. It has traditionally been applied to investigate decarbonisation pathways of sector-coupled energy systems<a class="footnote-reference brackets" href="#id8" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>, infrastructure<a class="footnote-reference brackets" href="#id9" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>, renewable fuel production<a class="footnote-reference brackets" href="#id10" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> and more. Results and framework has been validated against other open-source models<a class="footnote-reference brackets" href="#id11" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id12" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>.</p>
+<p>A quick tutorial on how to get started can be found <a class="reference internal" href="get_started.html"><span class="std std-doc">here</span></a>, and the full documentation can be found <a class="reference external" href="https://github.com/balmorelcommunity/Balmorel/blob/master/base/documentation/TheBalmorelModelStructure-BMS301.pdf">here</a>.</p>
+<figure class="align-center" id="exampleresults">
+<a class="reference internal image-reference" href="https://media.springernature.com/lw685/springer-static/image/art%3A10.1038%2Fs41467-024-49867-w/MediaObjects/41467_2024_49867_Fig5_HTML.png?"><img alt="Example of European Results" src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1038%2Fs41467-024-49867-w/MediaObjects/41467_2024_49867_Fig5_HTML.png?" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Example of European results from Kountouris et al 2024.</span><a class="headerlink" href="#exampleresults" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<hr class="footnotes docutils" />
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id7" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Wiese, Frauke, Rasmus Bramstoft, Hardi Koduvere, Amalia Rosa Pizarro Alonso, Olexandr Balyk, Jon Gustav Kirkerud, Åsa Grytli Tveten, Torjus Folsland Bolkesjø, Marie Münster, and Hans V. Ravn. “Balmorel Open Source Energy System Model.” Energy Strategy Reviews 20 (2018): 26–34. <a class="reference external" href="https://doi.org/10.1016/j.esr.2018.01.003">https://doi.org/10.1016/j.esr.2018.01.003</a>.</p>
+</aside>
+<aside class="footnote brackets" id="id8" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Gea-Bermúdez, Juan, Ida Græsted Jensen, Marie Münster, Matti Koivisto, Jon Gustav Kirkerud, Yi-kuang Chen, and Hans Ravn. “The Role of Sector Coupling in the Green Transition: A Least-Cost Energy System Development in Northern-Central Europe towards 2050.” Applied Energy 289 (May 2021): 116685. <a class="reference external" href="https://doi.org/10.1016/j.apenergy.2021.116685">https://doi.org/10.1016/j.apenergy.2021.116685</a>.</p>
+</aside>
+<aside class="footnote brackets" id="id9" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">3</a><span class="fn-bracket">]</span></span>
+<p>Kountouris, Ioannis, Rasmus Bramstoft, Theis Madsen, Juan Gea-Bermúdez, Marie Münster, and Dogan Keles. “A Unified European Hydrogen Infrastructure Planning to Support the Rapid Scale-up of Hydrogen Production.” Nature Communications 15, no. 1 (June 29, 2024): 5517. <a class="reference external" href="https://doi.org/10.1038/s41467-024-49867-w">https://doi.org/10.1038/s41467-024-49867-w</a>.</p>
+</aside>
+<aside class="footnote brackets" id="id10" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">4</a><span class="fn-bracket">]</span></span>
+<p>Bramstoft, Rasmus, Amalia Pizarro-Alonso, Ida Græsted Jensen, Hans Ravn, and Marie Münster. “Modelling of Renewable Gas and Renewable Liquid Fuels in Future Integrated Energy Systems.” Applied Energy 268 (June 15, 2020): 114869. <a class="reference external" href="https://doi.org/10.1016/j.apenergy.2020.114869">https://doi.org/10.1016/j.apenergy.2020.114869</a>.</p>
+</aside>
+<aside class="footnote brackets" id="id11" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">5</a><span class="fn-bracket">]</span></span>
+<p>Ouwerkerk, Jonas van, Karlo Hainsch, Soner Candas, Christoph Muschner, Stefanie Buchholz, Stephan Günther, Hendrik Huyskens, et al. “Comparing Open Source Power System Models - A Case Study Focusing on Fundamental Modeling Parameters for the German Energy Transition.” Renewable &amp; Sustainable Energy Reviews 161, no. 112331 (2022). <a class="reference external" href="https://doi.org/10.1016/j.rser.2022.112331">https://doi.org/10.1016/j.rser.2022.112331</a>.</p>
+</aside>
+<aside class="footnote brackets" id="id12" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">6</a><span class="fn-bracket">]</span></span>
+<p>Candas, Soner, Christoph Muschner, Stefanie Buchholz, Rasmus Bramstoft, Jonas van Ouwerkerk, Karlo Hainsch, Konstantin Löffler, et al. “Code Exposed: Review of Five Open-Source Frameworks for Modeling Renewable Energy Systems.” Renewable and Sustainable Energy Reviews 161 (June 2022): 112272. <a class="reference external" href="https://doi.org/10.1016/j.rser.2022.112272">https://doi.org/10.1016/j.rser.2022.112272</a>.</p>
+</aside>
+</aside>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="get_started.html" class="btn btn-neutral float-right" title="Get Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Mathias Berg Rosendal, Tim Graulich.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

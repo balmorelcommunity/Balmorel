@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creating a copy of the repository by “forking” and/or “cloning” &mdash; Balmorel 5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css_options.css?v=313b1874" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=ee801c84"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/tabs.js?v=3030b3cb"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Creating branches and commits" href="branching.html" />
+    <link rel="prev" title="Balmorel GitHub Tutorial" href="../github_tutorial.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Balmorel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Balmorel</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../get_started.html">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../versions.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../addons.html">Addons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pre_processing.html">Pre-Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running_on_hpc.html">Running on HPC</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../github_tutorial.html">Balmorel GitHub Tutorial</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Creating a copy of the repository by “forking” and/or “cloning”</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exercise-copy-clone-the-repositories-and-setup-the-correct-folder-structure">Exercise: Copy (clone) the repositories and setup the correct folder structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#solution-and-walk-through-now">Solution and walk-through now</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basic-browsing">(1) Basic browsing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-can-you-browse-the-history-of-a-single-file">(2) How can you browse the history of a single file?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#which-files-creates-the-mainresults-gdx-file">(3) Which files creates the MainResults.gdx file?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#in-the-base-output-output-summary-inc-file-find-out-when-the-parameter-storage-level-was-added-and-in-which-commit">(4) In the <code class="docutils literal notranslate"><span class="pre">base/output/OUTPUT_SUMMARY.inc</span></code> file, find out when the parameter <code class="docutils literal notranslate"><span class="pre">STORAGE_LEVEL</span></code> was added and <strong>in which commit</strong>.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="branching.html">Creating branches and commits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merging.html">Merging changes and contributing to the project</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About this code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/balmorelcommunity/Balmorel/blob/master/base/documentation/TheBalmorelModelStructure-BMS301.pdf">Full Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Balmorel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../github_tutorial.html">Balmorel GitHub Tutorial</a></li>
+      <li class="breadcrumb-item active">Creating a copy of the repository by “forking” and/or “cloning”</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/github_tutorial/browsing.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="creating-a-copy-of-the-repository-by-forking-and-or-cloning">
+<span id="browsing"></span><h1>Creating a copy of the repository by “forking” and/or “cloning”<a class="headerlink" href="#creating-a-copy-of-the-repository-by-forking-and-or-cloning" title="Link to this heading"></a></h1>
+<p>A <strong>repository</strong> is a collection of files in one directory tracked by Git.  A
+GitHub repository is GitHub’s copy, which adds things like access control,
+issue tracking, and discussions.  Each GitHub repository is owned by a user or
+organization, who controls access.</p>
+<p>For Balmorel we have mainly two of these repositories:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/balmorelcommunity/Balmorel">https://github.com/balmorelcommunity/Balmorel</a>, which contains the framework, e.g. mathematical formulations and addons.</p></li>
+<li><p><a class="reference external" href="https://github.com/balmorelcommunity/Balmorel_data">https://github.com/balmorelcommunity/Balmorel_data</a>, which contains all the data needed to run the model.</p></li>
+</ul>
+<p>To start, we need to make <strong>our own copy</strong> of these repositories and transfer them to our <strong>own Computer</strong> or the <strong>HPC</strong>.</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/forking_cloning.png"><img alt="Illustration of the concepts of **forking** and **cloning** and the recommended workflow for Balmorel: **forking** then **cloning**." src="../_images/forking_cloning.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Illustration of the concepts of <strong>forking</strong> and <strong>cloning</strong> and the recommended workflow for Balmorel: <strong>forking</strong> then <strong>cloning</strong>.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>At all times you should be aware of if you are looking at <strong>your repository</strong>
+or the <strong>upstream repository</strong> (original repository):</p>
+<ul class="simple">
+<li><p>Your repository: https://github.com/<strong>USER</strong>/Balmorel</p></li>
+<li><p>Upstream repository: https://github.com/<strong>balmorelcommunity</strong>/Balmorel</p></li>
+</ul>
+<div class="admonition-how-to-create-a-fork admonition">
+<p class="admonition-title">How to create a fork</p>
+<ol class="arabic simple">
+<li><p>Go to the repository view on GitHub: <a class="reference external" href="https://github.com/balmorelcommunity/Balmorel">https://github.com/balmorelcommunity/Balmorel</a></p></li>
+<li><p>First, on GitHub, click the button that says “Fork”. It is towards
+the top-right of the screen.</p></li>
+<li><p>You should shortly be redirected to your copy of the repository
+<strong>USER/Balmorel</strong>.</p></li>
+<li><p>Repeat the same step for the <a class="reference external" href="https://github.com/balmorelcommunity/Balmorel_data">https://github.com/balmorelcommunity/Balmorel_data</a> repository.</p></li>
+</ol>
+</div>
+<section id="exercise-copy-clone-the-repositories-and-setup-the-correct-folder-structure">
+<h2>Exercise: Copy (clone) the repositories and setup the correct folder structure<a class="headerlink" href="#exercise-copy-clone-the-repositories-and-setup-the-correct-folder-structure" title="Link to this heading"></a></h2>
+<p>Work on this by yourself or in pairs.</p>
+<div class="admonition-exercise-preparation admonition">
+<p class="admonition-title">Exercise preparation</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-0-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-0-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-0-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-0-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>In this case you will download the repositories as a <strong>.zip</strong> file from GitHub:</p>
+<ol class="arabic simple">
+<li><p>Go to the Balmorel GitHub repository.</p></li>
+<li><p><strong>Make sure the URL says <code class="docutils literal notranslate"><span class="pre">https://github.com/USER/Balmorel</span></code>, where <code class="docutils literal notranslate"><span class="pre">USER</span></code> is your username.</strong></p></li>
+<li><p>Download the repository:</p></li>
+</ol>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/GitHub_clone.png"><img alt="../_images/GitHub_clone.png" src="../_images/GitHub_clone.png" style="width: 100%;" />
+</a>
+</figure>
+<ol class="arabic simple" start="4">
+<li><p>Extract the folder to a location of your choice.</p></li>
+<li><p>Download the <code class="docutils literal notranslate"><span class="pre">https://github.com/USER/Balmorel_data</span></code> repository the same way (<strong>Make sure you are cloning your forked repository</strong>).</p></li>
+<li><p>Extract the files into the local copy of the <strong>Balmorel</strong> repository, into the <strong>base</strong> folder.</p></li>
+<li><p>Rename the <code class="docutils literal notranslate"><span class="pre">Balmorel_data</span></code> folder to <code class="docutils literal notranslate"><span class="pre">data</span></code>.</p></li>
+</ol>
+</div><div aria-labelledby="tab-0-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>You need to have forked the repository as described above.</p>
+<p>We need to start by making a clone of this repository so that you can work
+locally.</p>
+<ol class="arabic simple">
+<li><p>Start VS Code.</p></li>
+<li><p>If you don’t have the default view (you already have a project
+open), go to File → New Window.</p></li>
+<li><p>Under “Start” on the screen, select “Clone Git Repository…”. Alternatively
+navigate to the “Source Control” tab on the left sidebar and click on the “Clone Repository” button.</p></li>
+<li><p>Paste in this URL: <code class="docutils literal notranslate"><span class="pre">https://github.com/USER/Balmorel</span></code>, where
+<code class="docutils literal notranslate"><span class="pre">USER</span></code> is your username.  You can copy this from the browser.</p></li>
+<li><p>Browse and select the folder in which you want to clone the
+repository.</p></li>
+<li><p>Say yes, you want to open this repository.</p></li>
+<li><p>Select “Yes, I trust the authors” (the other option works too).</p></li>
+<li><p>Repeat the same process for <code class="docutils literal notranslate"><span class="pre">https://github.com/USER/Balmorel_data</span></code> until you have to choose the location.</p></li>
+<li><p>Select the <code class="docutils literal notranslate"><span class="pre">.../Balmorel/</span></code> and clone the data to this location.</p></li>
+<li><p>Rename the <code class="docutils literal notranslate"><span class="pre">Balmorel_data</span></code> folder to <code class="docutils literal notranslate"><span class="pre">data</span></code>.</p></li>
+</ol>
+</div><div aria-labelledby="tab-0-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p><strong>This path is advanced and we do not include all command line
+information: you need to be somewhat
+comfortable with the command line already.</strong></p>
+<p>You need to have forked the repository as described above.</p>
+<p>We need to start by making a clone of this repository so that you can work
+locally.</p>
+<ol class="arabic simple">
+<li><p>Start the terminal in which you use Git (terminal application, or
+Git Bash).</p></li>
+<li><p>Change to the directory where you would want the repository to be
+(<code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">~/code</span></code> for example, if the <code class="docutils literal notranslate"><span class="pre">~/code</span></code> directory is where you
+store your files).</p></li>
+<li><p>Run the following command: <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/USER/Balmorel</span></code>, where <code class="docutils literal notranslate"><span class="pre">USER</span></code> is your username.  You might need to use a SSH clone command instead of HTTPS, depending on your setup.</p></li>
+<li><p>Change to that directory: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">Balmorel</span></code></p></li>
+<li><p>Run the following command: <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/USER/Balmorel_data</span></code>, where <code class="docutils literal notranslate"><span class="pre">USER</span></code> is your username.</p></li>
+<li><p>Rename the <code class="docutils literal notranslate"><span class="pre">Balmorel_data</span></code> folder to <code class="docutils literal notranslate"><span class="pre">data</span></code> by typing the following command: <code class="docutils literal notranslate"><span class="pre">mv</span> <span class="pre">Balmorel_data</span> <span class="pre">data</span></code>.</p></li>
+</ol>
+</div></div>
+</div>
+<div class="admonition-exercise-browsing-and-editing-the-repositories-10-min admonition">
+<p class="admonition-title">Exercise: Browsing and editing the repositories (10 min)</p>
+<p>Browse the <a class="reference external" href="https://github.com/balmorelcommunity/Balmorel">Balmorel repository</a> either on GitHub or your local PC and explore commits and branches. Take notes and
+prepare questions. The hints are for the GitHub path in the browser.</p>
+<ol class="arabic simple">
+<li><p>Browse the <strong>commit history</strong>: Are commit messages understandable?
+(Hint: “Commit history”, the timeline symbol, above the file list)</p></li>
+<li><p>Try to find the <strong>history of commits for a single file</strong>, e.g. <code class="docutils literal notranslate"><span class="pre">base/output/OUTPUT_SUMMARY.inc</span></code>.
+(Hint: “History” button in the file view)</p></li>
+<li><p><strong>Which files creates the MainResults.gdx file</strong>?
+(Hint: the GitHub search on top of the repository view, look for <code class="docutils literal notranslate"><span class="pre">execute_unload</span> <span class="pre">&quot;MainResults.gdx&quot;</span></code>)</p></li>
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">base/output/OUTPUT_SUMMARY.inc</span></code> file,
+find out when the parameter <code class="docutils literal notranslate"><span class="pre">STORAGE_LEVEL</span></code> was added and <strong>in which commit</strong>.
+(Hint: “Blame” view in the file view)</p></li>
+</ol>
+</div>
+<p>The solution below goes over most of the answers, and you are
+encouraged to use it when the hints aren’t enough - this is by
+design.</p>
+</section>
+<section id="solution-and-walk-through-now">
+<h2>Solution and walk-through now<a class="headerlink" href="#solution-and-walk-through-now" title="Link to this heading"></a></h2>
+<section id="basic-browsing">
+<h3>(1) Basic browsing<a class="headerlink" href="#basic-browsing" title="Link to this heading"></a></h3>
+<p>The most basic thing to look at is the history of commits.</p>
+<ul class="simple">
+<li><p>This is visible from a button in the repository view.  We see every
+change, when, and who has committed.</p></li>
+<li><p>Every change has a unique identifier, such as <code class="docutils literal notranslate"><span class="pre">244c993</span></code>.  This can
+be used to identify both this change, and the whole project’s
+version as of that change.</p></li>
+<li><p>Clicking on a change in the view shows more.</p></li>
+</ul>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-1-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-1-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-1-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-1-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-1-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-1-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-1-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>Click on the timeline symbol in the repository view:</p>
+<figure class="align-default">
+<a class="with-border reference internal image-reference" href="../_images/history.png"><img alt="Screenshot on GitHub of where to find the commit history" class="with-border" src="../_images/history.png" style="width: 100%;" />
+</a>
+</figure>
+</div><div aria-labelledby="tab-1-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-1-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>This can be done from “Timeline”, in the bottom of explorer, but only
+for a single file.</p>
+</div><div aria-labelledby="tab-1-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-1-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>Run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>log
+</pre></div>
+</div>
+<p>Try also:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>log<span class="w"> </span>--oneline
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="how-can-you-browse-the-history-of-a-single-file">
+<h3>(2) How can you browse the history of a single file?<a class="headerlink" href="#how-can-you-browse-the-history-of-a-single-file" title="Link to this heading"></a></h3>
+<p>We see the history for the whole repository, but we can also see it
+for a single file.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-2-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-2-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-2-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-2-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-2-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-2-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-2-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>Navigate to the file view: <code class="docutils literal notranslate"><span class="pre">Main</span> <span class="pre">page</span> <span class="pre">→</span> <span class="pre">/base/output/OUTPUT_SUMMARY.inc</span></code>.
+Click the “History” button near the top right.</p>
+</div><div aria-labelledby="tab-2-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-2-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>Open <code class="docutils literal notranslate"><span class="pre">OUTPUT_SUMMARY.inc</span></code> file in the editor.  Under the file browser,
+we see a “Timeline” view there.</p>
+</div><div aria-labelledby="tab-2-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-2-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>The <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">log</span></code> command can take a filename and provide the log of only
+a single file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git log OUTPUT_SUMMARY.inc
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="which-files-creates-the-mainresults-gdx-file">
+<h3>(3) Which files creates the MainResults.gdx file?<a class="headerlink" href="#which-files-creates-the-mainresults-gdx-file" title="Link to this heading"></a></h3>
+<p>Version control makes it very easy to find all occurrences of a
+word or pattern. This is useful for things like finding where functions or
+variables are defined or used.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-3-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-3-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-3-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-3-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-3-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-3-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-3-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>We go to the main file view.  We click the Search magnifying
+class at the very top, type <code class="docutils literal notranslate"><span class="pre">execute_unload</span> <span class="pre">&quot;MainResults.gdx&quot;</span></code>, and click enter. We see every
+instance, including the context.</p>
+<div class="admonition-searching-in-a-forked-repository-will-not-work-instantaneously admonition">
+<p class="admonition-title">Searching in a forked repository will not work instantaneously!</p>
+<p>It usually takes a few minutes before one can search for keywords in a forked repository
+since it first needs to build the search index the very first time we search.
+Start it, continue with other steps, then come back to this.</p>
+</div>
+</div><div aria-labelledby="tab-3-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-3-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>If you use the “Search” magnifying class on the left sidebar, and
+search for “position” it shows the occurrences in every file. You can
+click to see the usage in context.</p>
+</div><div aria-labelledby="tab-3-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-3-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p><code class="docutils literal notranslate"><span class="pre">grep</span></code> is the command line tool that searches for lines matching a term</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;execute_unload \&quot;MainResults.gdx\&quot;&#39;</span><span class="w">          </span><span class="c1"># only the lines</span>
+<span class="gp">$ </span>git<span class="w"> </span>grep<span class="w"> </span>-C<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="s1">&#39;execute_unload \&quot;MainResults.gdx\&quot;&#39;</span><span class="w">     </span><span class="c1"># three lines of context</span>
+<span class="gp">$ </span>git<span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;execute_unload \&quot;MainResults.gdx\&quot;&#39;</span><span class="w">       </span><span class="c1"># case insensitive</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="in-the-base-output-output-summary-inc-file-find-out-when-the-parameter-storage-level-was-added-and-in-which-commit">
+<h3>(4) In the <code class="docutils literal notranslate"><span class="pre">base/output/OUTPUT_SUMMARY.inc</span></code> file, find out when the parameter <code class="docutils literal notranslate"><span class="pre">STORAGE_LEVEL</span></code> was added and <strong>in which commit</strong>.<a class="headerlink" href="#in-the-base-output-output-summary-inc-file-find-out-when-the-parameter-storage-level-was-added-and-in-which-commit" title="Link to this heading"></a></h3>
+<p>This is called the “annotate” or “blame” view. The name “blame”
+is very unfortunate, but it is the standard term for historical reasons
+for this functionality and it is not meant to blame anyone.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-4-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-4-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-4-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-4-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-4-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-4-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-4-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>From a file view, change preview to “Blame” towards the top-left.
+To get the actual commit, click on the commit message next
+to the code line that you are interested in.</p>
+</div><div aria-labelledby="tab-4-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-4-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>This requires an extension.  We recommend for now you use the command
+line version, after opening a terminal.</p>
+</div><div aria-labelledby="tab-4-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-4-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>These two commands are similar but have slightly different output.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>annotate<span class="w"> </span>base/output/OUTPUT_SUMMARY.inc
+<span class="gp">$ </span>git<span class="w"> </span>blame<span class="w"> </span>base/output/OUTPUT_SUMMARY.inc
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../github_tutorial.html" class="btn btn-neutral float-left" title="Balmorel GitHub Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="branching.html" class="btn btn-neutral float-right" title="Creating branches and commits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Mathias Berg Rosendal, Tim Graulich.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
