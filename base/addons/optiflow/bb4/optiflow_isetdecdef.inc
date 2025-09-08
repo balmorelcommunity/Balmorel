@@ -44,10 +44,14 @@ ICO2_CC(PROC,FLOW)=0;
 ICO2_CC('CO2_DAC','CO2_FLOW_DAC') = YES;
 ICO2_CC('CO2_Biogas','CO2_FLOW_BIOGAS') = YES;
 ICO2_CC('CO2_Biochar_Sum','CO2_FLOW_BIOCHAR') = YES;
-ICO2_CC('CO2_Port_Handling','CO2_OCC_SEQ') = YES;
 
+$ifi not %optiOCC%==yes $goto NO_OCC
+
+ICO2_CC('CO2_Port_Handling','CO2_OCC_SEQ') = YES;
 ICO2_CC('CO2_Port_Handling','CO2_OCC_OFF_PIPE') = YES;
 ICO2_CC('CO2_Port_Handling','CO2_OCC_OFF_SHIP') = YES;
+
+$label NO_OCC
 
 
 *Re-ad CO2 used for CU in OptiFlow
