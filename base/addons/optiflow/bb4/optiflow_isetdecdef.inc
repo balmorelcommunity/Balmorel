@@ -24,10 +24,6 @@ IFPROC('BIOGAS','Gas_Buffer')=YES;
 
 $label nogasbridge
 
-*OBS FF Biomass Transport
-IFFLOW('WOODCHIPS','WOOD_GEN_FLOW_BUFFER')=YES;
-IFPROC('WOODCHIPS','Wood_Buffer')=YES;
-
 *Initializing CO2 sources
 
 $ifi not %baloptCCU%==yes $goto noCCUopti
