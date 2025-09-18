@@ -259,6 +259,14 @@ PROCEXIM_ENDO_LOSS(IAAAE,IAAAI,PROC,FLOW)$(PROCEXIM_ENDO_SET(PROC,FLOW)) = MIN(1
 PARAMETER PROCKAPACCUMNET(Y,AAAOPTIFLOW,PROC) "Capacities from investment run to be fixed in operational run";
 PARAMETER PROCEXIMKAPACCUMNET(Y,IAAAE,IAAAI,PROC) "Inter-region transmission capacities from investment run to be fixed in operational run";
 
+* Sectoral carbon budgets
+
+PARAMETER EMI_POLNA_MARITIME(YYY, EMIPOLSET)    "Sectoral carbon budget for maritime sector. 0 implies irrelevant, EPS implies no emission permitted (aggregated countries)"   %semislash%
+$if     EXIST '../data/OPTIFLOW_EMI_POLNA_MARITIME.inc' $INCLUDE         '../data/OPTIFLOW_EMI_POLNA_MARITIME.inc';
+$if not EXIST '../data/OPTIFLOW_EMI_POLNA_MARITIME.inc' $INCLUDE '../../base/data/OPTIFLOW_EMI_POLNA_MARITIME.inc';
+%semislash%;
+
+
 * OBS FF * End *
 
 SET PROCDATASET  'Process addons/OptiFlow/data types' %semislash%   !! TODO: what kind of addons/OptiFlow/data? not all, some are  clearly in  procinoutflow

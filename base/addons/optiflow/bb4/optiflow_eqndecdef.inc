@@ -58,6 +58,8 @@ $ifi %inv%==yes  EQUATION QPROCEXIMKAPACCUMNET          'Accumulate PROCEXIM cap
 $ifi %inv%==yes  EQUATION QPROCEXIMKAP                  'Capacity constraint on transport processes (U/h)';
 $ifi %inv%==yes  EQUATION QPROCEXIMKAP_SYMMETRY         'Transport capcity investments are symmetric';
 
+
+
 * Flows from SOSIBU and EXIM in units [U/h] are indic-weighted, time-weighted and summarized.
 QINDICQUANT(IY411,FLOWINDIC)..
   VFLOWINDICVALUES(IY411,FLOWINDIC) =E=
@@ -517,6 +519,11 @@ QPROCEXIMKAP_SYMMETRY(Y,IAE,IAI,IPROC)$(ITRANSFROMTOPROC(IPROC,IAE,IAI) AND IAPR
 VFLOWSOURCE.UP(IY411,IA,PROCSOURCE,FLOW,S,T)$(
     AAAOPTIFLOW_OFF(IA) AND ICO2(PROCSOURCE,FLOW)
 ) = 0;
+
+
+$ifi %maritime_carbon_budget%==yes EQUATION QLIMCO2AGG_MARITIME(Y)    "Limit on annual CO2-emission in the maritime sector, by year and group, aggregated for all countries";
+$ifi %maritime_carbon_budget%==yes  QLIMCO2AGG_MARITIME(Y)..
+$ifi %maritime_carbon_budget%==yes      EMI_POLNA_MARITIME(Y,'LIM_CO2') =G= SUM((IY411,IA,FLOW,S,T), VFLOWSINK(IY411, IA,'CO2_Emi_Sink', 'CO2EQ_DIR_EMI', S, T) * IHOURSINST(S,T));
 
 
 * OBS FF * End *
