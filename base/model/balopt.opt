@@ -554,7 +554,7 @@ $setglobal optiFossils yes
 
 * Allow onboard carbon capture OCC when burning HFO/LNG
 * !! Requires optiFossils=yes
-$setglobal optiOCC yes
+$setglobal optiOCC
 * ! option yes
 
 * Import renewable fuels from a global exogenous market at fixed cost
@@ -567,6 +567,11 @@ $setglobal load_ex_cap
 
 *Define a sector-level carbon budget for direct combustion emissions in the maritime sector
 $setglobal maritime_carbon_budget yes
+*! option yes
+
+
+*Allow retrofitting of old fleet (methanol, ammonia ICE)
+$setglobal optiRetrofit yes
 *! option yes
 
 
