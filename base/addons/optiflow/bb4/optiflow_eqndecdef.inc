@@ -523,7 +523,7 @@ VFLOWSOURCE.UP(IY411,IA,PROCSOURCE,FLOW,S,T)$(
 
 $ifi %maritime_carbon_budget%==yes EQUATION QLIMCO2AGG_MARITIME(Y)    "Limit on annual CO2-emission in the maritime sector, by year and group, aggregated for all countries";
 $ifi %maritime_carbon_budget%==yes  QLIMCO2AGG_MARITIME(IY411)..
-$ifi %maritime_carbon_budget%==yes      SUM((IA,FLOW,S,T), VFLOWSINK(IY411, IA,'CO2_Emi_Sink', 'CO2EQ_DIR_EMI', S, T) * IHOURSINST(S,T)) =L= EMI_POLNA_MARITIME(IY411,'LIM_CO2');
+$ifi %maritime_carbon_budget%==yes      SUM((IA,S,T), VFLOWSINK(IY411, IA,'CO2_Emi_Sink', 'CO2EQ_DIR_EMI', S, T) * IHOURSINST(S,T)) =L= EMI_POLNA_MARITIME(IY411,'LIM_CO2');
 
 
 * OBS FF * End *
