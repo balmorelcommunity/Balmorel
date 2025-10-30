@@ -44,8 +44,14 @@ ICO2_CC('CO2_Biochar_Sum','CO2_FLOW_BIOCHAR') = YES;
 $ifi not %optiOCC%==yes $goto NO_OCC
 
 ICO2_CC('CO2_Port_Handling','CO2_OCC_SEQ') = YES;
-ICO2_CC('CO2_Port_Handling','CO2_OCC_OFF_PIPE') = YES;
-ICO2_CC('CO2_Port_Handling','CO2_OCC_OFF_SHIP') = YES;
+ICO2_CC('ProcExim_Pipeline_CO2','CO2_OCC_OFF_PIPE') = YES;
+ICO2_CC('ProcExim_Ship_CO2','CO2_OCC_OFF_SHIP') = YES;
+
+
+
+
+*ICO2_CC('CO2_Port_Handling','CO2_OCC_OFF_PIPE') = YES;
+*ICO2_CC('CO2_Port_Handling','CO2_OCC_OFF_SHIP') = YES;
 
 $label NO_OCC
 
@@ -60,7 +66,6 @@ ICO2_CU('CO2_CU_Split','CO2_FLOW_FT') = YES;
 SET ICO2_FUELPROC(PROC,FLOW)		"Set of PROC/FLOW pairs that deliver CO2eq process emissions from fuel production PROCs";
 ICO2_FUELPROC(PROC,FLOW) = 0;
 ICO2_FUELPROC('AmmoniaBuffer','CO2EQ_PROC_EMI') = YES;
-ICO2_FUELPROC('Ammonia_Import_Eff','CO2EQ_PROC_EMI') = YES;
 ICO2_FUELPROC('EME_LPGBuffer','CO2EQ_PROC_EMI') = YES;
 ICO2_FUELPROC('E_FT_DieselBuffer','CO2EQ_PROC_EMI') = YES;
 ICO2_FUELPROC('Biooil_Buffer','CO2EQ_PROC_EMI') = YES;
