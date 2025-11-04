@@ -42,6 +42,12 @@ $ifi %inv%==yes       QPROCEXIMKAPACCUMNET
 $ifi %inv%==yes       QPROCEXIMKAP
 $ifi %inv%==yes       QPROCEXIMKAP_SYMMETRY  
 $ifi %maritime_carbon_budget%==yes QLIMCO2AGG_MARITIME
+$ifi %optiRetrofit%==yes QPROCKAP_SHARE_RETROFIT
+
+
+
+
+
 
 $ifi %APKNDISC%==yes  QAPKNDISCEQUALCONT
 

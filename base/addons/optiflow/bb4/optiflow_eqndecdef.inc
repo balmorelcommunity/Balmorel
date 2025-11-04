@@ -520,10 +520,31 @@ VFLOWSOURCE.UP(IY411,IA,PROCSOURCE,FLOW,S,T)$(
     AAAOPTIFLOW_OFF(IA) AND ICO2(PROCSOURCE,FLOW)
 ) = 0;
 
-
+*Maritime carbon budget
 $ifi %maritime_carbon_budget%==yes EQUATION QLIMCO2AGG_MARITIME(Y)    "Limit on annual CO2-emission in the maritime sector, by year and group, aggregated for all countries";
 $ifi %maritime_carbon_budget%==yes  QLIMCO2AGG_MARITIME(IY411)..
 $ifi %maritime_carbon_budget%==yes      SUM((IA,S,T), VFLOWSINK(IY411, IA,'CO2_Emi_Sink', 'CO2EQ_DIR_EMI', S, T) * IHOURSINST(S,T)) =L= EMI_POLNA_MARITIME(IY411,'LIM_CO2');
+
+
+*Retrofitting
+$ifi not %optiRetrofit%==yes $goto NO_RETROFIT
+
+EQUATION QPROCKAP_SHARE_RETROFIT(AAA,Y,S,T,PROC,FLOW,IPROCTO,IFLOWOUT) "Conventional engine capacity must cover conventional and retrofitted fuel flows";
+
+          QPROCKAP_SHARE_RETROFIT(IA,IY411,S,T,PROC,FLOW,IPROCTO,IFLOWOUT)$(AAAOPTIFLOW(IA) AND PROCKAP_RETRO(PROC,FLOW,IPROCTO,IFLOWOUT))..
+
+* Conventional use of the engine: all arcs carrying FLOW out of PROC
+    SUM(IPROCTO2$FLOWFROMTOPROC(IY411,IA,PROC,IPROCTO2,FLOW),VFLOW(IY411,IA,PROC,IPROCTO2,FLOW,S,T))
+
+* Retrofit use of the same engine: all arcs carrying IFLOWOUT out of IPROCTO
+  + SUM(IPROCTO2$FLOWFROMTOPROC(IY411,IA,IPROCTO,IPROCTO2,IFLOWOUT),VFLOW(IY411,IA,IPROCTO,IPROCTO2,IFLOWOUT,S,T))
+
+    =L= 
+
+* Invested capacity of conventional engine
+  VPROCKAPACCUMNET(IY411,IA,PROC);
+
+$label NO_RETROFIT
 
 
 * OBS FF * End *

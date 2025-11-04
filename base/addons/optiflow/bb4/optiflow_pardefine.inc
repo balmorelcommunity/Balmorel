@@ -267,6 +267,15 @@ $if not EXIST '../data/OPTIFLOW_EMI_POLNA_MARITIME.inc' $INCLUDE '../../base/dat
 %semislash%;
 
 
+*Retrofitting
+$ifi not %optiRetrofit%==yes $goto NO_RETROFIT
+SET PROCKAP_RETRO(PROC,FLOW,IPROCTO,IFLOWOUT) "Subset of (PROC,FLOW) engine capacity of PROC can be retrofitted and shared with another for process-flow pair" %semislash%
+$if     EXIST '../data/OPTIFLOW_PROCKAP_RETRO.inc' $INCLUDE         '../data/OPTIFLOW_PROCKAP_RETRO.inc';
+$if not EXIST '../data/OPTIFLOW_PROCKAP_RETRO.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCKAP_RETRO.inc';
+%semislash%;
+$label NO_RETROFIT
+
+
 * OBS FF * End *
 
 SET PROCDATASET  'Process addons/OptiFlow/data types' %semislash%   !! TODO: what kind of addons/OptiFlow/data? not all, some are  clearly in  procinoutflow
