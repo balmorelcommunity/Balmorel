@@ -27,6 +27,7 @@ from pybalmorel import Balmorel, MainResults
 from pybalmorel.utils import symbol_to_df
 from pybalmorel.formatting import balmorel_colours
 import pickle
+from pathlib import Path
 import os
 
 # Some formatting
@@ -443,6 +444,49 @@ def cost_change(sc_group: str, group_names: str, filters: str, filename: str):
 
 @CLI.command()
 @click.pass_context
+@click.argument('scenario_search_string', type=str)
+def electrolyser_vre_correlation(ctx, scenario_search_string):
+    """
+    Calculates how much electrolyser production there is 
+    when VRE or backup generation occur
+    """
+
+    path = Path('.')
+    files = [file.name for file in path.glob(f'**/model/MainResults{scenario_search_string}.gdx')]
+    paths = [str(file.parent) for file in path.glob(f'**/model/MainResults{scenario_search_string}.gdx')]
+
+
+    for i,scenario in enumerate(files):
+        res = MainResults(scenario, paths[i])
+        df = res.get_result('PRO_YCRAGFST')
+        df = (
+            df
+            .query('(Generation.str.contains("BACKUP") and Commodity == "ELECTRICITY") or Technology in ["ELECTROLYZER", "WIND-OFF", "WIND-ON", "SOLAR-PV", "SYNFUELPRODUCER"]')
+            .pivot_table(index=['Season', 'Time'], columns='Technology', values='Value', aggfunc='sum', fill_value=0)
+        )
+
+        # Total production
+        elys = df["ELECTROLYZER"].sum()
+        vre = df[["WIND-OFF", "WIND-ON", "SOLAR-PV"]].sum().sum()
+        back = df[[col for col in df.columns if col not in ["WIND-OFF", "WIND-ON", "SOLAR-PV", "ELECTROLYZER", "SYNFUELPRODUCER", "BOILERS"]]]
+        print('Electricity backup: ', back.columns)
+        back = back.sum(axis=1)
+        back_sum  = back.sum()
+
+        print(20*'=')
+        print('Scenario', scenario)
+        print('Weighted average of VRE production when electrolyser produces:')
+        print((df["ELECTROLYZER"] * df[["WIND-OFF", "WIND-ON", "SOLAR-PV"]].sum(axis=1)).sum() / (vre+elys))
+        print('Weighted average of backup production when electrolyser produces:')
+        print((df["ELECTROLYZER"] * back).sum() / (vre+back_sum))
+        print('Weighted average of VRE production when synfuelproducer produces:')
+        print((df["SYNFUELPRODUCER"] * df[["WIND-OFF", "WIND-ON", "SOLAR-PV"]].sum(axis=1)).sum() / (vre+elys))
+        print('Weighted average of backup production when synfuelproducer produces:')
+        print((df["SYNFUELPRODUCER"] * back).sum() / (vre+back_sum))
+        
+
+@CLI.command()
+@click.pass_context
 @click.argument('commodity', type=str)
 @click.argument('scenario', type=str)
 @click.argument('node', type=str, default='all')
@@ -581,24 +625,31 @@ def storage_profile(ctx, cluster: str, scenarios: str, size: str):
 @CLI.command()
 @click.pass_context
 @click.argument('scenario', type=str, required=True)
-@click.argument('cluster', type=str, required=True)
-@click.argument('size', type=str, required=False, default='decentral')
-@click.argument('weather-year', type=int, required=False, default=2012)
+@click.argument('commodity', type=str, required=False, default='heat')
+@click.argument('cluster', type=str, required=False, default='all')
+@click.argument('weather-year', type=int, required=False, default=2023)
 @click.argument('freq', type=str, required=False, default='1M')
-def sifnaios_profile(ctx, scenario: str, cluster: str, size: str, 
+def sifnaios_profile(ctx, scenario: str, cluster: str, commodity: str, 
                         weather_year: int, freq: str):
     """
     Make a plot like in Sifnaios et al. 2023
     """
+    commodity = commodity.lower()
 
-    if size == 'decentral':
-        size_type = 'GNR_HS_HEAT_PIT_L-DEC_E-70_Y-2050'
-    elif size == 'central':
-        size_type = 'GNR_HS_HEAT_PIT_L-CEN_E-70_Y-2050'
+    if commodity == 'heat':
+        commodity_query = 'G in ["GNR_HS_HEAT_PIT_L-DEC_E-70_Y-2050", "GNR_HS_HEAT_PIT_L-CEN_E-70_Y-2050"]'
+    elif commodity == 'hydrogen':
+        commodity_query = "G in ['GNR_H2S_H2-CAVERN_Y-2030', 'GNR_H2S_H2-CAVERN_Y-2040', 'GNR_H2S_H2-CAVERN_Y-2050']"
     else:
-        raise ValueError('Choose size = decentral or central!')
+        raise ValueError('Choose commodity = "heat" or "hydrogen"!')
         
     sto = collect_storage_profiles(scenarios=[scenario])
+    print(sto)
+    
+    model = ctx.obj['Balmorel']
+    model.collect_results()
+    sto = symbol_to_df(model.results.db[scenario], 'STORAGE_LEVEL')
+    print(sto)
     
     # Make datetime index corresponding to S and T set
     time_ind = pd.Series(pd.date_range('%d-01-01-00:00'%weather_year, 
@@ -618,16 +669,21 @@ def sifnaios_profile(ctx, scenario: str, cluster: str, size: str,
     index = index.set_index(time_ind).reset_index()
     index.columns = ['time', 'S', 'T']
     
-    
     # Filter data
-    cluster_area = cluster + '_A'
-    df = sto.query(
-                'A == @cluster_area \
-                and Technology == "inter" \
-                and Commodity == "heat" \
-                and Scenario == @scenario \
-                and G == @size_type' 
-            ).loc[:, ['S', 'T', 'result', 'Value_ts-scaled']]
+    if cluster.lower() == 'all':
+        df = sto.query(
+                    'Technology == "inter" \
+                    and Commodity == @commodity \
+                    and Scenario == @scenario'
+                ).query(commodity_query).loc[:, ['S', 'T', 'result', 'Value_ts-scaled']]
+    else:
+        cluster_area = cluster + '_A'
+        df = sto.query(
+                    'A == @cluster_area \
+                    and Technology == "inter" \
+                    and Commodity == @commodity \
+                    and Scenario == @scenario'
+                ).query(commodity_query).loc[:, ['S', 'T', 'result', 'Value_ts-scaled']]
 
     # Join time index to S,T set in results
     df = df.merge(index, on=['S', 'T'], how='inner').pivot_table(index='time', columns=['result'], values='Value_ts-scaled', aggfunc='sum')
@@ -663,12 +719,12 @@ def sifnaios_profile(ctx, scenario: str, cluster: str, size: str,
     ax.set_xlim(index['time'].iloc[0], index['time'].iloc[-1]+pd.Timedelta(weeks=2))
     ax.set_xlabel('')
 
-    ax.legend(loc='upper center', ncol=3, frameon=False, handleheight=0.5, handlelength=1.5, bbox_to_anchor=[0.5,1.03])
+    ax.legend(loc='lower center', ncol=3, frameon=False, handleheight=0.5, handlelength=1.5, bbox_to_anchor=[0.5,1.03])
     # ax.set_ylim(-2500, 6000)
 
     ax.axhline(0, c=linecolor, lw=0.35)
     
-    fig, ax = plot_style(fig, ax, '%s_sifstoprofile'%(scenario+'_'+cluster+'_'+size), legend=False)
+    fig, ax = plot_style(fig, ax, '%s_sifstoprofile'%(scenario+'_'+cluster+'_'+commodity), legend=False)
     # fig.savefig(os.path.join(ctx.obj['plot_path'], ))
 
 @CLI.command()
@@ -1014,7 +1070,7 @@ def collect_storage_profiles(ctx, scenarios: list):
         for scenario in scenarios:
             for storage_type in ['inter', 'intra']:
                 for carrier in ['electricity', 'heat', 'hydrogen']:
-                    if storage_type == 'inter' and (carrier == 'electricity' or carrier == 'hydrogen'):
+                    if storage_type == 'inter' and (carrier == 'electricity'):
                         continue
                     
                     if carrier == 'hydrogen':
