@@ -29,26 +29,18 @@ QMINFLOW_A
 QMINFLOW_R
 QMINFLOW_C
 
-$ifi %inv%==yes       QPROCKAPACCUMNET        !! Has weakness - but used anyway
+$ifi %inv%==yes       QPROCKAPACCUMNET
 $ifi %inv%==yes       QPROCKAP_UP
 $ifi %inv%==yes       QSTOVOLTLIM_T
 $ifi %inv%==yes       QSTOVOLTLIM
 $ifi %inv%==yes       QPROCKAUP_SCALE1
 $ifi %inv%==yes       QPROCKAUP_SCALE2
 $ifi %inv%==yes       QPROCKAP_DEC
-
-*OBS FF
 $ifi %inv%==yes       QPROCEXIMKAPACCUMNET
 $ifi %inv%==yes       QPROCEXIMKAP
 $ifi %inv%==yes       QPROCEXIMKAP_SYMMETRY  
 $ifi %maritime_carbon_budget%==yes QLIMCO2AGG_MARITIME
 $ifi %optiRetrofit%==yes QPROCKAP_SHARE_RETROFIT
-
-
-
-
-
-
 $ifi %APKNDISC%==yes  QAPKNDISCEQUALCONT
 
 
