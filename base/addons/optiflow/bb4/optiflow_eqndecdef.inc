@@ -443,7 +443,7 @@ QINDICINDICMAX(IY411,FLOWINDIC)$(INDICLIMGOAL(FLOWINDIC,"INDICMAX") AND (INDICLI
 *-------------------------------------
 
 * Effective accumulated capacity only counting vintages still within lifetime
-QPROCKAPACCUMNET(IY411,IA,IPROC)$SUM(IY402$((YVALUE(IY402) LE YVALUE(IY411)) AND IAPROCKAPNEW(IY402,IA,IPROC) AND IYHASANNUITYPROC(IY402,IY411,IPROC)),1)
+QPROCKAPACCUMNET(IY411,IA,IPROC)$SUM(IY402$((YVALUE(IY402) LE YVALUE(IY411)) AND IAPROCKAPNEW(IY402,IA,IPROC)),1)
 ..
 VPROCKAPACCUMNET(IY411,IA,IPROC)
   =E=
@@ -457,7 +457,6 @@ VPROCKAPACCUMNET(IY411,IA,IPROC)
       PROCKAPFX(IY402,IA,IPROC,FLOW,IFLOWINOUT)*IYHASANNUITYPROC(IY402,IY411,IPROC))
 
 ;
-
 
 * Accumulated process capacity accounting for technical lifetime and decommissioning
 
@@ -524,20 +523,35 @@ $ifi %maritime_carbon_budget%==yes      SUM((IA,S,T), VFLOWSINK(IY411, IA,'CO2_E
 *Retrofitting
 $ifi not %optiRetrofit%==yes $goto NO_RETROFIT
 
-EQUATION QPROCKAP_SHARE_RETROFIT(AAA,Y,S,T,PROC,FLOW,IPROCTO,IFLOWOUT) "Conventional engine capacity must cover conventional and retrofitted fuel flows";
+EQUATION QPROCKAP_SHARE_RETROFIT(AAA,Y,S,T,IPROCTO,IFLOWOUT) "Conventional engine capacity must cover conventional and retrofitted fuel flows";
 
-          QPROCKAP_SHARE_RETROFIT(IA,IY411,S,T,PROC,FLOW,IPROCTO,IFLOWOUT)$(AAAOPTIFLOW(IA) AND PROCKAP_RETRO(PROC,FLOW,IPROCTO,IFLOWOUT))..
+* Dual fuel sharing for each retrofit process (IPROCTO,IFLOWOUT) */
 
-* Conventional use of the engine: all arcs carrying FLOW out of PROC
-    SUM(IPROCTO2$FLOWFROMTOPROC(IY411,IA,PROC,IPROCTO2,FLOW),VFLOW(IY411,IA,PROC,IPROCTO2,FLOW,S,T))
+QPROCKAP_SHARE_RETROFIT(IA,IY411,S,T,IPROCTO,IFLOWOUT)$(
+    AAAOPTIFLOW(IA)
+    AND SUM((PROC,FLOW)$PROCKAP_RETRO(PROC,FLOW,IPROCTO,IFLOWOUT),1)
+)..
 
-* Retrofit use of the same engine: all arcs carrying IFLOWOUT out of IPROCTO
-  + SUM(IPROCTO2$FLOWFROMTOPROC(IY411,IA,IPROCTO,IPROCTO2,IFLOWOUT),VFLOW(IY411,IA,IPROCTO,IPROCTO2,IFLOWOUT,S,T))
+* Conventional use of the engines: all arcs carrying FLOW out of all linked PROC
+    SUM((PROC,FLOW,IPROCTO2)$(
+            PROCKAP_RETRO(PROC,FLOW,IPROCTO,IFLOWOUT)
+        AND FLOWFROMTOPROC(IY411,IA,PROC,IPROCTO2,FLOW)
+        ),
+        VFLOW(IY411,IA,PROC,IPROCTO2,FLOW,S,T)
+    )
 
-    =L= 
+* Retrofit use: all arcs carrying IFLOWOUT out of the retrofit process IPROCTO
+  + SUM(IPROCTO2$FLOWFROMTOPROC(IY411,IA,IPROCTO,IPROCTO2,IFLOWOUT),
+        VFLOW(IY411,IA,IPROCTO,IPROCTO2,IFLOWOUT,S,T)
+    )
 
-* Invested capacity of conventional engine
-  VPROCKAPACCUMNET(IY411,IA,PROC);
+    =L=
+
+* Total invested conventional capacity across all linked PROC
+    SUM((PROC,FLOW)$PROCKAP_RETRO(PROC,FLOW,IPROCTO,IFLOWOUT),
+        VPROCKAPACCUMNET(IY411,IA,PROC)
+    );
+
 
 $label NO_RETROFIT
 
