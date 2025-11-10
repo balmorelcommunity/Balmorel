@@ -766,7 +766,7 @@ PARAMETER   IM_SO2(G)   "SO2 emission coefficient for fuel (kg/GJ)";
 PARAMETER   IM_N2O(G)   "NO2 emission coefficient for fuel (kg/GJ)";
 
 LOOP(FFF, !! TODO: Check forbedringen af kode som givet p\E5 SONYstick
-  IM_CO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDCO2');
+  IM_CO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDCO2')*(1 - FDATA(FFF,'FDRE'));
   IM_CO2RE(G)$IGF(G,FFF) = FDATA(FFF,'FDCO2')*FDATA(FFF,'FDRE');
   IM_SO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDSO2')$(GDATA(G,'GDDESO2') EQ 0) +
       (FDATA(FFF,'FDSO2')*(1-GDATA(G,'GDDESO2')))$(GDATA(G,'GDDESO2') GT 0);
