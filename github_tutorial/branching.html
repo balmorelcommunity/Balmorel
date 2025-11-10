@@ -1,0 +1,305 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creating branches and commits &mdash; Balmorel 5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css_options.css?v=313b1874" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=ee801c84"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/tabs.js?v=3030b3cb"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Merging changes and contributing to the project" href="merging.html" />
+    <link rel="prev" title="Creating a copy of the repository by “forking” and/or “cloning”" href="browsing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Balmorel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Balmorel</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../get_started.html">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../versions.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../addons.html">Addons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pre_processing.html">Pre-Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running_on_hpc.html">Running on HPC</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../github_tutorial.html">Balmorel GitHub Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="browsing.html">Creating a copy of the repository by “forking” and/or “cloning”</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Creating branches and commits</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#background">Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exercise-creating-branches-and-commits">Exercise: Creating branches and commits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#solution-and-walk-through">Solution and walk-through</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#create-a-new-branch-and-a-new-commit">(1) Create a new branch and a new commit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#switch-to-the-main-branch-and-create-a-commit-there">(2) Switch to the main branch and create a commit there</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#browse-the-commits-you-just-made">(3) Browse the commits you just made</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compare-the-branches">(4) Compare the branches</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merging.html">Merging changes and contributing to the project</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About this code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/balmorelcommunity/Balmorel/blob/master/base/documentation/TheBalmorelModelStructure-BMS301.pdf">Full Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Balmorel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../github_tutorial.html">Balmorel GitHub Tutorial</a></li>
+      <li class="breadcrumb-item active">Creating branches and commits</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/github_tutorial/branching.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="creating-branches-and-commits">
+<span id="branching"></span><h1>Creating branches and commits<a class="headerlink" href="#creating-branches-and-commits" title="Link to this heading"></a></h1>
+<p>The first and most basic task to do in Git is <strong>record changes</strong> using
+commits. In this part, we will record changes in two
+ways: on a <strong>new branch</strong> (which supports multiple lines of work at once), and directly
+on the “main” branch (which happens to be the default branch here).</p>
+<p>The goal is to:</p>
+<ul class="simple">
+<li><p>Record new changes to our own copy of Balmorel.</p></li>
+<li><p>Understand adding changes in two separate branches.</p></li>
+<li><p>See how to compare different versions or branches.</p></li>
+</ul>
+<section id="background">
+<h2>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Each <strong>commit</strong> is a snapshot of the entire project at a certain
+point in time and has a unique identifier (<strong>hash</strong>) .</p></li>
+<li><p>A <strong>branch</strong> is a line of development, and the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch or <code class="docutils literal notranslate"><span class="pre">master</span></code> branch
+are often the default branch in Git.</p></li>
+<li><p>A branch in Git is like a <strong>sticky note that is attached to a commit</strong>. When we add
+new commits to a branch, the sticky note moves to the new commit.</p></li>
+<li><p><strong>Tags</strong> are a way to mark a specific commit as important, for example a release
+version. They are also like a sticky note, but they don’t move when new
+commits are added.</p></li>
+</ul>
+</section>
+<section id="exercise-creating-branches-and-commits">
+<h2>Exercise: Creating branches and commits<a class="headerlink" href="#exercise-creating-branches-and-commits" title="Link to this heading"></a></h2>
+<div class="admonition-exercise-practice-creating-commits-and-branches-20-min admonition">
+<p class="admonition-title">Exercise: Practice creating commits and branches (20 min)</p>
+<ol class="arabic simple">
+<li><p>First create a new branch and then modify an
+existing file and commit the change.  Make sure that you now work <strong>on your
+copy</strong> of the repository. You can for example change the years in the simulation by editing the <code class="docutils literal notranslate"><span class="pre">Y.inc</span></code> file.</p></li>
+<li><p>Switch to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch and create a commit there.</p></li>
+<li><p>Browse the network and locate the commits that you just created (“Insights” -&gt; “Network”).</p></li>
+<li><p>Compare the branch that you created with the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch. Can you find an easy way to see the differences?</p></li>
+</ol>
+</div>
+<p>The solution below goes over most of the answers, and you are
+encouraged to use it when the hints aren’t enough - this is by
+design.</p>
+</section>
+<section id="solution-and-walk-through">
+<h2>Solution and walk-through<a class="headerlink" href="#solution-and-walk-through" title="Link to this heading"></a></h2>
+<section id="create-a-new-branch-and-a-new-commit">
+<h3>(1) Create a new branch and a new commit<a class="headerlink" href="#create-a-new-branch-and-a-new-commit" title="Link to this heading"></a></h3>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-0-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-0-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-0-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-0-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><ol class="arabic simple">
+<li><p>Where it says “main” at the top left, click, enter a new branch
+name (e.g. <code class="docutils literal notranslate"><span class="pre">new-tutorial</span></code>), then click on
+“Create branch … from main”.</p></li>
+<li><p>Make sure you are still on the <code class="docutils literal notranslate"><span class="pre">new-tutorial</span></code> branch (it should say
+it at the top), and click “Add file” → “Create new file” from the
+upper right.</p></li>
+<li><p>Changes some file.</p></li>
+<li><p>Click “Commit changes”</p></li>
+<li><p>Enter a commit message. Then click “Commit
+changes”.</p></li>
+</ol>
+<p>You should appear back at the file browser view, and see your
+modification there.</p>
+</div><div aria-labelledby="tab-0-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><ol class="arabic simple">
+<li><p>Make sure that you are on the main branch.</p></li>
+<li><p>Version control button on left sidebar → Three dots in upper right of source control → Branch → Create branch.</p></li>
+<li><p>VS Code automatically switches to the new branch.</p></li>
+<li><p>Changes some file.</p></li>
+<li><p>In the version control sidebar, click the <code class="docutils literal notranslate"><span class="pre">+</span></code> sign to add the file for the next commit.</p></li>
+<li><p>Enter a brief message and click “Commit”.</p></li>
+</ol>
+</div><div aria-labelledby="tab-0-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>Create a new branch called <code class="docutils literal notranslate"><span class="pre">my-branch</span></code> from <code class="docutils literal notranslate"><span class="pre">main</span></code> and switch to it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>switch<span class="w"> </span>--create<span class="w"> </span>my-branch<span class="w"> </span>main
+</pre></div>
+</div>
+<p>Then change a file. Finally add and commit the file:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>add<span class="w"> </span>Y.inc<span class="w">  </span><span class="c1"># or a different file name</span>
+<span class="gp">$ </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Changing the years&quot;</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="switch-to-the-main-branch-and-create-a-commit-there">
+<h3>(2) Switch to the main branch and create a commit there<a class="headerlink" href="#switch-to-the-main-branch-and-create-a-commit-there" title="Link to this heading"></a></h3>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-1-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-1-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-1-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-1-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-1-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-1-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-1-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><ol class="arabic simple">
+<li><p>Go back to the main repository page (your user’s page).</p></li>
+<li><p>In the branch switch view (top left above the file view), switch to
+<code class="docutils literal notranslate"><span class="pre">main</span></code>.</p></li>
+<li><p>Modify another file that already exists, following the pattern
+from above.</p></li>
+</ol>
+</div><div aria-labelledby="tab-1-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-1-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>Use the branch selector at the bottom to switch back to the main branch.  Repeat the same steps as above,
+but this time modify a different file.</p>
+</div><div aria-labelledby="tab-1-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-1-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><p>First switch to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>switch<span class="w"> </span>main
+</pre></div>
+</div>
+<p>Then modify a file. Finally <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span></code> and then commit the change:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;short summary of the change&quot;</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="browse-the-commits-you-just-made">
+<h3>(3) Browse the commits you just made<a class="headerlink" href="#browse-the-commits-you-just-made" title="Link to this heading"></a></h3>
+<p>Let’s look at what we did.  Now, the <code class="docutils literal notranslate"><span class="pre">main</span></code> and the new branches
+have diverged: both have some modifications. Try to find the commits
+you created.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-2-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-2-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-2-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-2-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-2-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-2-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-2-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>Insights tab → Network view (just like we have done before).</p>
+</div><div aria-labelledby="tab-2-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-2-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>This requires an extension.  Opening the VS Code terminal lets you use the
+command line method (View → Terminal will open a terminal at bottom).  This is
+a normal command line interface and very useful for work.</p>
+</div><div aria-labelledby="tab-2-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-2-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>graph
+<span class="gp">$ </span>git<span class="w"> </span>log<span class="w"> </span>--graph<span class="w"> </span>--oneline<span class="w"> </span>--decorate<span class="w"> </span>--all<span class="w">  </span><span class="c1"># if you didn&#39;t define git graph yet.</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="compare-the-branches">
+<h3>(4) Compare the branches<a class="headerlink" href="#compare-the-branches" title="Link to this heading"></a></h3>
+<p>Comparing changes is an important thing we need to do.  When using the
+GitHub view only, this may not be so common, but we’ll show it so that
+it makes sense later on.</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-R2l0SHVi" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-3-R2l0SHVi" name="R2l0SHVi" role="tab" tabindex="0">GitHub</button><button aria-controls="panel-3-VlMgQ29kZQ==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-3-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tab" tabindex="-1">VS Code</button><button aria-controls="panel-3-Q29tbWFuZCBsaW5l" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-3-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tab" tabindex="-1">Command line</button></div><div aria-labelledby="tab-3-R2l0SHVi" class="sphinx-tabs-panel group-tab" id="panel-3-R2l0SHVi" name="R2l0SHVi" role="tabpanel" tabindex="0"><p>A nice way to compare branches is to add <code class="docutils literal notranslate"><span class="pre">/compare</span></code> to the URL of the repository,
+for example (replace USER):
+https://github.com/<strong>USER</strong>/Balmorel/compare</p>
+</div><div aria-labelledby="tab-3-VlMgQ29kZQ==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-3-VlMgQ29kZQ==" name="VlMgQ29kZQ==" role="tabpanel" tabindex="0"><p>This seems to require an extension.  We recommend you use the command line method.</p>
+</div><div aria-labelledby="tab-3-Q29tbWFuZCBsaW5l" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-3-Q29tbWFuZCBsaW5l" name="Q29tbWFuZCBsaW5l" role="tabpanel" tabindex="0"><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>diff<span class="w"> </span>main<span class="w"> </span>my-branch
+</pre></div>
+</div>
+<p>Try also the other way around:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>diff<span class="w"> </span>my-branch<span class="w"> </span>main
+</pre></div>
+</div>
+<p>Try also this if you only want to see the file names that are different:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>main<span class="w"> </span>my-branch
+</pre></div>
+</div>
+</div></div>
+</section>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>In this part, we saw how we can make changes to our files.  With branches, we
+can track several lines of work at once, and can compare their differences.</p>
+<ul class="simple">
+<li><p>You could commit directly to <code class="docutils literal notranslate"><span class="pre">main</span></code> if there is only one single line
+of work and it’s only you.</p></li>
+<li><p>You could commit to branches if there are multiple lines of work at
+once, and you don’t want them to interfere with each other.</p></li>
+<li><p>In Git, commits form a so-called “graph”. Branches are tags in Git function
+like sticky notes that stick to specific commits. What this means for us is
+that it does not cost any significant disk space to create new branches.</p></li>
+<li><p>Not all files should be added to Git. For example, temporary files or
+files with sensitive information or files which are generated as part of
+the build process should not be added to Git. For this we use
+<code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>.</p></li>
+<li><p>Unsure on which branch you are or what state the repository is in?
+On the command line, use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">status</span></code> frequently to get a quick overview.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="browsing.html" class="btn btn-neutral float-left" title="Creating a copy of the repository by “forking” and/or “cloning”" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merging.html" class="btn btn-neutral float-right" title="Merging changes and contributing to the project" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Mathias Berg Rosendal, Tim Graulich.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

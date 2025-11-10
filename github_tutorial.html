@@ -1,0 +1,152 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Balmorel GitHub Tutorial &mdash; Balmorel 5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css_options.css?v=313b1874" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=ee801c84"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Creating a copy of the repository by “forking” and/or “cloning”" href="github_tutorial/browsing.html" />
+    <link rel="prev" title="Submitting a Job" href="running_on_hpc/submitting_a_job.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Balmorel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Balmorel</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="get_started.html">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="versions.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="addons.html">Addons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pre_processing.html">Pre-Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running_on_hpc.html">Running on HPC</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Balmorel GitHub Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="github_tutorial/browsing.html">Creating a copy of the repository by “forking” and/or “cloning”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="github_tutorial/branching.html">Creating branches and commits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="github_tutorial/merging.html">Merging changes and contributing to the project</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About this code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/balmorelcommunity/Balmorel/blob/master/base/documentation/TheBalmorelModelStructure-BMS301.pdf">Full Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Balmorel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Balmorel GitHub Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/github_tutorial.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="balmorel-github-tutorial">
+<span id="github-tutorial"></span><h1>Balmorel GitHub Tutorial<a class="headerlink" href="#balmorel-github-tutorial" title="Link to this heading"></a></h1>
+<p>This tutorial will show, how to work with <strong>Balmorel</strong> on <strong>GitHub</strong>. It will cover the basic steps of:</p>
+<ul class="simple">
+<li><p><strong>Forking</strong> the <strong>Balmorel</strong> and <strong>Balmorel_data</strong> repository.</p></li>
+<li><p><strong>Cloning</strong> the repository to your <strong>local PC</strong> or <strong>HPC</strong> and setting up the folder structure</p></li>
+<li><p><strong>Commiting</strong> changes and pushing them upstream to your <strong>remote repository</strong></p></li>
+<li><p>Creating your own <strong>branch</strong></p></li>
+<li><p>Making a <strong>pull request</strong> to merge into the <strong>master branch</strong></p></li>
+</ul>
+<p>We offer <strong>three different paths</strong> for this exercise:</p>
+<ul class="simple">
+<li><p><strong>GitHub</strong></p></li>
+<li><p><strong>VS Code</strong></p></li>
+<li><p><strong>Command line</strong></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="github_tutorial/browsing.html">Creating a copy of the repository by “forking” and/or “cloning”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="github_tutorial/branching.html">Creating branches and commits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="github_tutorial/merging.html">Merging changes and contributing to the project</a></li>
+</ul>
+</div>
+<p>This tutorial was inspired by <a class="reference external" href="https://coderefinery.github.io/reproducible-python/#">this coderefinery course</a>. There you can also find more information on reproducible research in Python.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="running_on_hpc/submitting_a_job.html" class="btn btn-neutral float-left" title="Submitting a Job" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="github_tutorial/browsing.html" class="btn btn-neutral float-right" title="Creating a copy of the repository by “forking” and/or “cloning”" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Mathias Berg Rosendal, Tim Graulich.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
