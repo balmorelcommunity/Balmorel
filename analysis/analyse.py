@@ -22,6 +22,7 @@ import click
 import re
 from premailer import transform
 from typing import Union
+from matplotlib.patches import Wedge as WedgePatch
 from specific.pit_storage.pit_storage import get_storage_profiles, polygon_with_point
 from pybalmorel import Balmorel, MainResults
 from pybalmorel.utils import symbol_to_df
@@ -70,7 +71,7 @@ def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
     if (command in ['all', 'all-bars', 'all-profiles', 'all_maps',
                    'costs', 'cost-change', 'cap', 'map', 'profile', 
                    'bar-chart', 'adequacy', 'sifnaios-profile', 
-                   'vre-seas-prod', 'fuel']) and not is_help:
+                   'vre-seas-prod', 'fuel', 'dem', 'find-h2-synfuel-location']) and not is_help:
 
         # Locate results
         model = Balmorel(path, gams_system_directory=gams_sysdir)
@@ -549,15 +550,89 @@ def map(ctx, commodity: str, scenario: str, year: int,
     ax.set_ylim(lat_lims)
     fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario), legend=False)
     
+@CLI.command()
 @click.pass_context
+@click.argument('scenario', type=str, required=False, default=None)
 def find_h2_synfuel_location(ctx, scenario: str):
     """For economy of scale scenarios"""
     
+    # Get scenario result
     model = ctx.obj['Balmorel']
     model_path = os.path.join(ctx.obj['path'], model.scname_to_scfolder[scenario], 'model')
+    results = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
+
+    # Get geofile
     geofile, geofile_region_column = get_geofile(scenario, model_path)
+    gf = gpd.read_file(geofile).to_crs(epsg=3857)
+    gf.columns = ['Region', 'geometry']
+
+    df = (
+        results
+        .get_result('G_CAP_YCRAF')
+        .query('Technology in ["ELECTROLYZER", "SYNFUELPRODUCER"]')
+        .merge(gf, on='Region')
+        .pivot_table(index='Technology', columns='geometry', 
+                     values='Value', aggfunc='sum', fill_value=0)
+    )
+
+    fig, ax = plt.subplots()
+    gf.plot(ax=ax, color='lightgray', edgecolor='white')
+    scaling = 0.0001
+    for region in df.columns:
+        total_cap = df.loc[:, region].sum()
+        if total_cap > 0:
+            values = df.loc[:, region]
+            fractions = values / total_cap
+            coords = (region.centroid.x, region.centroid.y)
+            add_pie_chart(ax, coords, values, total_cap/scaling)
+
+    ax.axes.set_axis_off()
+    fig.savefig(f'analysis/plots/{scenario}_synfuelmap.pdf')
+
+def add_pie_chart(ax, center, data, size=2, colors=None):
+    """
+    Add a single pie chart to existing axes at specified coordinates.
+
+    Parameters:
+    -----------
+    ax : matplotlib axes
+        The axes object with the map
+    center : tuple
+        (lon, lat) coordinates for pie chart center
+    data : list/array
+        Data values for pie segments (will be normalized)
+    size : float
+        Radius of pie chart in map coordinates
+    colors : list
+        Colors for each segment
+    """
+    if colors is None:
+        colors = plt.cm.Set3.colors
+
+    if size < 7000:
+        size = 7000
     
+    # Normalize data to fractions
+    data = np.array(data)
+    fracs = data / data.sum()
     
+    # Calculate angles for each wedge
+    angles = np.cumsum([0] + list(fracs * 360))
+    
+    # Draw each wedge
+    for i, (start, end) in enumerate(zip(angles[:-1], angles[1:])):
+        wedge = WedgePatch(
+            center=center,
+            r=size,
+            theta1=start,
+            theta2=end,
+            facecolor=colors[i % len(colors)],
+            edgecolor='white',
+            linewidth=1.5
+        )
+        ax.add_patch(wedge)
+    
+    return ax
     
 @CLI.command()
 @click.pass_context
