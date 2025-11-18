@@ -526,7 +526,8 @@ def profile(ctx, commodity: str, scenario: str, node: str, year: int, columns: s
 def map(ctx, commodity: str, scenario: str, year: int, 
         geofile: str, geofile_region_column: str,
         lon_lims: list, lat_lims: list,
-        lines: str, generation: str):
+        lines: str, generation: str, invoked: bool = False,
+        generation_show: bool = True):
     """Plot transmission capacity maps for electricity or hydrogen"""
 
     model = ctx.obj['Balmorel']
@@ -545,15 +546,21 @@ def map(ctx, commodity: str, scenario: str, year: int,
     fig, ax = res.plot_map(scenario, year, commodity.capitalize(), 
                            path_to_geofile=os.path.abspath(geofile), geo_file_region_column=geofile_region_column, 
                            lines=lines, generation=generation,
-                           style=ctx.obj['plot_style_for_modules'], pie_radius_max=pie_radius_max, pie_radius_min=0.03)
+                           style=ctx.obj['plot_style_for_modules'], pie_radius_max=pie_radius_max, pie_radius_min=0.03,
+                           regions_model_color='lightgray', regions_ext_color='lightgray',
+                           **{'generation_show':generation_show})
     ax.set_xlim(lon_lims)
     ax.set_ylim(lat_lims)
-    fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario), legend=False)
+
+    if not invoked:
+        fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario), legend=False)
+
+    return fig, ax 
     
 @CLI.command()
 @click.pass_context
 @click.argument('scenario', type=str, required=False, default=None)
-def find_h2_synfuel_location(ctx, scenario: str):
+def find_h2_synfuel_location(ctx, scenario: str, year: int = 2050):
     """For economy of scale scenarios"""
     
     # Get scenario result
@@ -563,7 +570,7 @@ def find_h2_synfuel_location(ctx, scenario: str):
 
     # Get geofile
     geofile, geofile_region_column = get_geofile(scenario, model_path)
-    gf = gpd.read_file(geofile).to_crs(epsg=3857)
+    gf = gpd.read_file(geofile)
     gf.columns = ['Region', 'geometry']
 
     df = (
@@ -575,9 +582,12 @@ def find_h2_synfuel_location(ctx, scenario: str):
                      values='Value', aggfunc='sum', fill_value=0)
     )
 
-    fig, ax = plt.subplots()
-    gf.plot(ax=ax, color='lightgray', edgecolor='white')
-    scaling = 0.0001
+    fig, ax = ctx.invoke(map, commodity='hydrogen', scenario=scenario, 
+               year=year, geofile=geofile, geofile_region_column=geofile_region_column,
+                         generation_show=False)
+    # fig, ax = plt.subplots()
+    # gf.plot(ax=ax, color='lightgray', edgecolor='white')
+    scaling = 20
     for region in df.columns:
         total_cap = df.loc[:, region].sum()
         if total_cap > 0:
@@ -587,7 +597,7 @@ def find_h2_synfuel_location(ctx, scenario: str):
             add_pie_chart(ax, coords, values, total_cap/scaling)
 
     ax.axes.set_axis_off()
-    fig.savefig(f'analysis/plots/{scenario}_synfuelmap.pdf')
+    fig.savefig(f'analysis/plots/{scenario}_synfuelmap.svg')
 
 def add_pie_chart(ax, center, data, size=2, colors=None):
     """
@@ -609,8 +619,8 @@ def add_pie_chart(ax, center, data, size=2, colors=None):
     if colors is None:
         colors = plt.cm.Set3.colors
 
-    if size < 7000:
-        size = 7000
+    if size < 0.05:
+        size = 0.05
     
     # Normalize data to fractions
     data = np.array(data)
