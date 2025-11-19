@@ -177,6 +177,7 @@ def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
                 collect_results('G_CAP_YCRAF')
                 .query('Technology != "H2-STORAGE" and not Technology.str.contains("INTERSEASONAL") and not Technology.str.contains("INTRASEASONAL") and not Generation.str.contains("BACKUP")')
             ) 
+            print(df.query('Technology == "SYNFUELPRODUCER" and Commodity=="SYNFUEL" and %s'%filters).pivot_table(index='Scenario', columns='Generation', values='Value', aggfunc='sum'))
             ax.set_ylabel('Generation Capacity [GW]')
         else:
             df = (
@@ -228,9 +229,6 @@ def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
             
             df = df.loc[:, cols]
             
-        if 'Scenario in [' in filters:
-            sc_order = filters.replace(' ', '').split('Scenarioin[')[1].split(']')[0].replace('"', '').replace("'", "").split(',')
-            df = df.loc[sc_order, :] 
         
         if get_df:
             return df
@@ -276,7 +274,8 @@ def fuel(filters: str, get_df: bool):
     
 @CLI.command()
 @click.argument('commodity', type=str)
-def dem(commodity: str):
+@click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
+def dem(commodity: str, filters):
     """
     Plot fuel consumption
     """
@@ -293,6 +292,9 @@ def dem(commodity: str):
     df = (
         collect_results(symbol[commodity.lower()])
     ) 
+
+    if filters != None:
+        df = df.query(filters)
     
     (
         df
@@ -559,8 +561,9 @@ def map(ctx, commodity: str, scenario: str, year: int,
     
 @CLI.command()
 @click.pass_context
-@click.argument('scenario', type=str, required=False, default=None)
-def find_h2_synfuel_location(ctx, scenario: str, year: int = 2050):
+@click.argument('scenario', type=str, required=False)
+@click.argument('commodity', type=str, required=False, default='hydrogen')
+def find_h2_synfuel_location(ctx, scenario: str, commodity: str, year: int = 2050):
     """For economy of scale scenarios"""
     
     # Get scenario result
@@ -576,28 +579,29 @@ def find_h2_synfuel_location(ctx, scenario: str, year: int = 2050):
     df = (
         results
         .get_result('G_CAP_YCRAF')
-        .query('Technology in ["ELECTROLYZER", "SYNFUELPRODUCER"]')
+        .query('Technology in ["ELECTROLYZER", "SYNFUELPRODUCER"] and Commodity in ["HYDROGEN", "SYNFUEL"]')
         .merge(gf, on='Region')
         .pivot_table(index='Technology', columns='geometry', 
                      values='Value', aggfunc='sum', fill_value=0)
     )
 
-    fig, ax = ctx.invoke(map, commodity='hydrogen', scenario=scenario, 
-               year=year, geofile=geofile, geofile_region_column=geofile_region_column,
-                         generation_show=False)
-    # fig, ax = plt.subplots()
-    # gf.plot(ax=ax, color='lightgray', edgecolor='white')
+    fig, ax = ctx.invoke(map, commodity=commodity, scenario=scenario, 
+                        year=year, geofile=geofile, geofile_region_column=geofile_region_column,
+                        generation_show=False)
+
+    print('Max. capacities:')
+    print(df.max(axis=1))
+
     scaling = 20
     for region in df.columns:
         total_cap = df.loc[:, region].sum()
         if total_cap > 0:
             values = df.loc[:, region]
-            fractions = values / total_cap
             coords = (region.centroid.x, region.centroid.y)
             add_pie_chart(ax, coords, values, total_cap/scaling)
 
     ax.axes.set_axis_off()
-    fig.savefig(f'analysis/plots/{scenario}_synfuelmap.svg')
+    fig.savefig(f'analysis/plots/{scenario}_{commodity}_synfuelmap.svg')
 
 def add_pie_chart(ax, center, data, size=2, colors=None):
     """
