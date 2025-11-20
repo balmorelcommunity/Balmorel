@@ -22,6 +22,7 @@ import click
 import re
 from premailer import transform
 from typing import Union
+import itertools
 from matplotlib.patches import Wedge as WedgePatch
 from specific.pit_storage.pit_storage import get_storage_profiles, polygon_with_point
 from pybalmorel import Balmorel, MainResults
@@ -45,6 +46,13 @@ balmorel_colours['GENERATION_OPERATIONAL_COSTS'] = '#E5D8D8'
 balmorel_colours['ELECTRICITY'] = '#FFD700'
 balmorel_colours['HEAT'] = '#BA4E00'
 
+# Define color and marker options
+colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k', 'orange', 'purple', 'brown']
+markers = ['o', 's', '^', 'v', 'D', '*', 'p', 'h', 'X', 'P']
+
+# Create infinite cycles
+color_cycle = itertools.cycle(colors)
+marker_cycle = itertools.cycle(markers)
 
 @click.group()
 @click.option('--overwrite', is_flag=True, required=False, help='Overwrite previous collected results?')
@@ -71,7 +79,8 @@ def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
     if (command in ['all', 'all-bars', 'all-profiles', 'all_maps',
                    'costs', 'cost-change', 'cap', 'map', 'profile', 
                    'bar-chart', 'adequacy', 'sifnaios-profile', 
-                   'vre-seas-prod', 'fuel', 'dem', 'find-h2-synfuel-location']) and not is_help:
+                   'vre-seas-prod', 'fuel', 'dem', 'find-h2-synfuel-location',
+                    'ptes-and-adequacy']) and not is_help:
 
         # Locate results
         model = Balmorel(path, gams_system_directory=gams_sysdir)
@@ -934,8 +943,8 @@ def get(ctx, symbol: str, pars, filters: str, diff: bool):
         html = df.style.format(precision=1).set_table_styles([cell_format]).background_gradient(cmap="RdYlGn_r").to_html()
         with open('analysis/output/df_tot_output.html', 'w') as f: 
             f.write(transform(html)) # Use transform to get inline styling, which is supported by Obsidian's markdown
-            
-        
+
+
 
 @CLI.command()
 @click.pass_context
@@ -976,6 +985,81 @@ def adequacy(ctx, scenario: str, nth_max: int):
     })
     
     df_out.to_csv('analysis/output/%s_adeq.csv'%scenario.replace('_operun', ''))
+
+@CLI.command()
+@click.pass_context
+@click.argument('scenario', type=str, required=True)
+def ptes_and_adequacy(ctx, scenario: str):
+    "Relate LOLE (h) to PTES share of exogenous heat demand"
+    
+    # Find path to scenario
+    model = ctx.obj['Balmorel']
+    model_path = os.path.join(ctx.obj['path'], model.scname_to_scfolder[scenario], 'model')
+
+    # Get mainresults files
+    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path, system_directory=ctx.obj['gams_system_directory'])
+
+    # Get PTES areas
+    df = res.get_result('G_STO_YCRAF').query('Technology == "INTERSEASONAL-HEAT-STORAGE"')
+    ptes_caps = df.pivot_table(index='Area', columns='Generation', values='Value', aggfunc='sum')
+
+    # Get heat demand
+    ptes_areas = ptes_caps.index.to_list()
+    heat_dem = (
+        res
+        .get_result('H_DEMAND_YCRA')
+        .query('Category == "EXOGENOUS"')
+        .pivot_table(index='Area', values='Value', aggfunc=lambda x: np.sum(x)*1e3)
+        .rename(columns={'Value' : 'exo_heat_dem_GWh'})
+    )
+    ptes_caps = ptes_caps.join(heat_dem, how='outer')
+    ptes_caps['storage_share'] =  ptes_caps[ptes_caps.columns[:-1]].sum(axis=1) / ptes_caps['exo_heat_dem_GWh']
+    ptes_caps['storage_cap'] =  ptes_caps[ptes_caps.columns[:-1]].sum(axis=1)     
+    inf = np.inf
+    idx = ptes_caps.eval('storage_share == @inf')
+    ptes_caps.loc[idx, 'storage_share'] = 0
+
+    # Get backup production
+    df = res.get_result('PRO_YCRAGFST').query('Scenario == @scenario and Generation.str.contains("BACKUP") and Commodity == "HEAT"')
+    
+    ## Get energy not served
+    ENS = df.pivot_table(index=['Season', 'Time'], columns='Area',
+                          values='Value', aggfunc='sum')
+    
+    df_out = pd.DataFrame({
+        'ENS_TWh' : ENS.sum() / 1e6,
+        'LOLE_h'  : ENS.count()
+    })
+    
+    ptes_caps = ptes_caps.join(df_out, how='outer').fillna(0)
+    ptes_caps.to_csv('analysis/output/%s_ptes_caps.csv'%scenario)
+
+
+@CLI.command()
+@click.option('--filter', type=str, default='*', help="Search string for selecting $filter_ptes_caps files")
+def plot_ptes_adequacy_relation(filter):
+
+    path = Path('analysis/output')
+    files = [file.name for file in path.glob(filter+'_ptes_caps.csv')]
+
+    df = pd.DataFrame()
+    for file in files:
+        temp = pd.read_csv(str(path.joinpath(file)))
+        temp['Scenario'] = file.replace('_ptes_caps.csv', '')
+        df = pd.concat((df, temp))
+
+    fig, ax = plt.subplots()
+    pt = df.pivot_table(index=['Scenario','Area'], values=['LOLE_h', 'storage_cap'], aggfunc='sum')
+    for i, scenario in enumerate(df.Scenario.unique()):
+        color = next(color_cycle)
+        marker = next(marker_cycle)
+        pt.query('Scenario == @scenario').plot(ax=ax, kind='scatter', 
+                                               x='storage_cap', y='LOLE_h', 
+                                               marker=marker, color=color, 
+                                               alpha=.3, label=scenario,
+                                               legend=True)
+    ax.legend(bbox_to_anchor=(1.1, .5), loc='center left')
+    fig.savefig('analysis/plots/ptes_and_adequacy.png')
 
 @CLI.command()
 @click.pass_context
