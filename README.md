@@ -4,6 +4,21 @@ This branch is used for analysing the effect of various spatial resolutions in D
 An application is illustrated in the conference poster from EGU24 (see below). Check the [EGU24-poster tag](https://github.com/balmorelcommunity/Balmorel/tree/egu24-poster) for applied Balmorel model in this repository and source code in the preprocessing repository.
 ![Application example](https://github.com/Mathias157/balmorel-preprocessing/blob/egu24-poster/Raw%20Data%20Processing/Conference%20Poster%20for%20Analysis%20of%20Spatial%20Resolutions%20for%20Modelling%20Sector-Coupled%20Energy%20Systems.png)
 
+## Useful commands
+
+Scripts are provided to process results. The working directory should be the top level of this repository (where this README.md is located).
+Commands for processing results in a second iteration are provided by the analysis/peri-process.py 
+```
+python analysis/peri-process.py --help
+```
+
+Commands for analysing results are provided by the analysis/analyse.py script, which can be run simply using the batch script: 
+```
+analyse --help
+```
+
+If opening this repository in VS Code, there will also be specific tasks available for making specific plots. See them with ctrl+shift+p and select the command `Tasks: Run Task`.
+
 # Balmorel
 ## What is Balmorel?
 

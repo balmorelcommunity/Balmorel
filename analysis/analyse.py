@@ -17,17 +17,42 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import sys
 import click
 import re
 from premailer import transform
 from typing import Union
-import gams
+import itertools
+from matplotlib.patches import Wedge as WedgePatch
 from specific.pit_storage.pit_storage import get_storage_profiles, polygon_with_point
 from pybalmorel import Balmorel, MainResults
 from pybalmorel.utils import symbol_to_df
 from pybalmorel.formatting import balmorel_colours
 import pickle
+from pathlib import Path
 import os
+
+# Some formatting
+balmorel_colours['SYNFUELPRODUCER'] = '#E8C3A8'
+balmorel_colours['FUEL_TRANSPORT'] = balmorel_colours['WIND-ON']
+balmorel_colours['H2_TRANSMISSION_CAPITAL_COSTS'] = '#A8D9E8'
+balmorel_colours['H2_TRANSMISSION_OPERATIONAL_COSTS'] = '#D3EBF2'
+balmorel_colours['TRANSMISSION_CAPITAL_COSTS'] = '#BA1600'
+balmorel_colours['TRANSMISSION_OPERATIONAL_COSTS'] = '#FF2B10'
+balmorel_colours['GENERATION_CAPITAL_COSTS'] = '#FFA500'
+balmorel_colours['GENERATION_FIXED_COSTS'] = '#D2A106'
+balmorel_colours['GENERATION_FUEL_COSTS'] = '#747474'
+balmorel_colours['GENERATION_OPERATIONAL_COSTS'] = '#E5D8D8'
+balmorel_colours['ELECTRICITY'] = '#FFD700'
+balmorel_colours['HEAT'] = '#BA4E00'
+
+# Define color and marker options
+colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k', 'orange', 'purple', 'brown']
+markers = ['o', 's', '^', 'v', 'D', '*', 'p', 'h', 'X', 'P']
+
+# Create infinite cycles
+color_cycle = itertools.cycle(colors)
+marker_cycle = itertools.cycle(markers)
 
 @click.group()
 @click.option('--overwrite', is_flag=True, required=False, help='Overwrite previous collected results?')
@@ -35,18 +60,36 @@ import os
 @click.option('--plot-ext', type=str, required=False, default='.pdf', help='The extension of the plots, defaults to ".pdf"')
 @click.option('--path', type=str, required=False, default='.', help='Path to top level of Balmorel folders, defaults to "."')
 @click.option('--gams-sysdir', type=str, required=False, default='/appl/gams/47.6.0', help='Path to GAMS system directory')
+@click.option('--large-plot', is_flag=True, required=False, default=False, help='Makes the plots large or small')
 @click.pass_context
 def CLI(ctx, overwrite: bool, dark_style: bool, plot_ext: str, path: str,
-        gams_sysdir: str):
+        gams_sysdir: str, large_plot: bool):
     "A CLI to analyse Balmorel results"
-    
-    # Locate results
-    model = Balmorel(path)
-    model.locate_results() 
     
     # Store global options in the context object
     ctx.ensure_object(dict)
-    ctx.obj['Balmorel'] = model # Find Balmorel folder
+    
+    # Large or small plot?
+    if large_plot:
+        plt.rcParams.update({'font.size' : 15})
+    
+    # Detect which command has been passed
+    command = ctx.invoked_subcommand
+    is_help = any(arg in sys.argv for arg in ['-h', '--help'])
+    if (command in ['all', 'all-bars', 'all-profiles', 'all_maps',
+                   'costs', 'cost-change', 'cap', 'map', 'profile', 
+                   'bar-chart', 'adequacy', 'sifnaios-profile', 
+                   'vre-seas-prod', 'fuel', 'dem', 'find-h2-synfuel-location',
+                    'ptes-and-adequacy']) and not is_help:
+
+        # Locate results
+        model = Balmorel(path, gams_system_directory=gams_sysdir)
+        model.locate_results() 
+        ctx.obj['Balmorel'] = model # Find Balmorel folder
+
+    else:
+        pass
+    
     ctx.obj['overwrite'] = overwrite
     ctx.obj['dark_style'] = dark_style
     ctx.obj['plot_ext'] = plot_ext
@@ -122,7 +165,13 @@ def all_maps(ctx, year: int):
 @click.option('--gen', '-g', is_flag=True, default=True, required=False, help='Plot generation capacities')
 @click.option('--sto', '-s', is_flag=True, default=True, required=False, help='Plot storage capacities')
 @click.option('--filters', type=str, default='', required=False, help='Filters for df.query(...)')
-def cap(gen: bool, sto: bool, filters: str):
+@click.option('--include-backup', is_flag=True, default=False, help="Include interpreted backup capacities from the @adequacy function in this plot")
+@click.option('--backup-nth-max', type=int, default=3, help="The nth-max value used for the @adequacy function, if backup capacities should be included")
+@click.option('--drop-hydro', is_flag=True, default=True, help="Include hydro-run-of-river in generation capacity plot?")
+@click.option('--get-df', is_flag=True, default=False, help="Dont plot, just get the dataframe")
+@click.option('--filename', type=str, default='capacity', required=False, help="The filename")
+def cap(gen: bool, sto: bool, filters: str, include_backup: bool,
+        backup_nth_max: int, drop_hydro: bool, get_df: bool, filename: str):
     """
     Plot generation or storage capacities
     """
@@ -135,32 +184,78 @@ def cap(gen: bool, sto: bool, filters: str):
         if key == 'generation':
             df = (
                 collect_results('G_CAP_YCRAF')
-                .query('Technology != "H2-STORAGE" and not Technology.str.contains("INTERSEASONAL") and not Technology.str.contains("INTRASEASONAL")')
+                .query('Technology != "H2-STORAGE" and not Technology.str.contains("INTERSEASONAL") and not Technology.str.contains("INTRASEASONAL") and not Generation.str.contains("BACKUP")')
             ) 
+            print(df.query('Technology == "SYNFUELPRODUCER" and Commodity=="SYNFUEL" and %s'%filters).pivot_table(index='Scenario', columns='Generation', values='Value', aggfunc='sum'))
             ax.set_ylabel('Generation Capacity [GW]')
         else:
             df = (
                 collect_results('G_STO_YCRAF')
                 .query('Technology == "H2-STORAGE" or Technology.str.contains("INTERSEASONAL") or Technology.str.contains("INTRASEASONAL")')
             )
-            df['Value'] = df['Value'] / 1e3 
+            df.loc[:, 'Value'] = df['Value'] / 1e3 
             ax.set_ylabel('Storage Capacity [TWh]')
         
         # Apply exclusion filters
         if filters != '':
             df = df.query(filters)
+
+        # Sort scenarios, e.g. so N2 comes before N10
+        df = sort_scenarios(df).pivot_table(index=['Scenario'], columns='Technology', 
+                                            values='Value', aggfunc='sum')
+        
+        if key == 'generation':
                 
+            # Drop hydro, as it is an invisibly small capacity
+            if drop_hydro and 'HYDRO-RUN-OF-RIVER' in df.columns:
+                df = df.drop(columns='HYDRO-RUN-OF-RIVER')
+                
+            # Re-arrange technologies
+            if 'Technology' not in filters:
+                cols = df.columns
+                cols = cols[(cols != 'WIND-OFF') & (cols != 'SYNFUELPRODUCER') & (cols != 'ELECTROLYZER')]
+                cols = list(cols) + ['WIND-OFF', 'ELECTROLYZER', 'SYNFUELPRODUCER']
+            else:
+                cols = list(df.columns)
+            
+            # Include interpreted backup capacity
+            if include_backup:
+                for scenario in df.index.unique():
+                    if scenario == 'N2_ZCEHX' or scenario == 'N10_ZCEHX':
+                        scenario_csv = scenario.replace('ZCEHX', 'synfheur')
+                    else:
+                        scenario_csv = scenario
+                    df.loc[scenario, 'BACKUP'] = 0
+                    try:
+                        f = pd.read_csv('analysis/output/%s_backcapN%d.csv'%(scenario_csv, backup_nth_max)).drop(columns='Region').sum()
+                    
+                        for commodity in f.index:
+                            df.loc[scenario, 'BACKUP'] += f[commodity] / 1e3
+                    except FileNotFoundError:
+                        print('No backup capacity for scenario %s'%scenario)
+                balmorel_colours['BACKUP'] = '#000000'
+                cols = cols + ['BACKUP'] 
+            
+            df = df.loc[:, cols]
+            
+        
+        if get_df:
+            return df
+        
         (
             df
-            .pivot_table(index=['Commodity', 'Scenario'], columns='Technology', 
-                            values='Value', aggfunc='sum')
             .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
         )
         
-        fig, ax = plot_style(fig, ax, '%s_capacity'%key)
+        
+        ax.legend(loc='lower center', bbox_to_anchor=(.5, 1.01), ncols=2)
+        
+        fig, ax = plot_style(fig, ax, '%s_%s'%(key, filename), legend=False)
 
 @CLI.command()
-def fuel():
+@click.option('--filters', type=str, default=None, required=False, help='Filters for df.query(...)')
+@click.option('--get-df', is_flag=True, default=False, help="Dont plot, just get the dataframe")
+def fuel(filters: str, get_df: bool):
     """
     Plot fuel consumption
     """
@@ -172,20 +267,24 @@ def fuel():
     
     df = (
         collect_results('F_CONS_YCRA')
-    ) 
-    
-    (
-        df
+        .pipe(lambda x: x.query(filters) if filters != None else x)
+        .pipe(sort_scenarios)
         .pivot_table(index='Scenario', columns='Fuel', 
                         values='Value', aggfunc='sum')
-        .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
-    )
+    ) 
+            
+    if get_df:
+        return df
+    
+    df.plot(ax=ax, kind='bar', stacked=True)
     
     fig, ax = plot_style(fig, ax, 'fuelconsumption')
     
+    
 @CLI.command()
 @click.argument('commodity', type=str)
-def dem(commodity: str):
+@click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
+def dem(commodity: str, filters):
     """
     Plot fuel consumption
     """
@@ -202,6 +301,9 @@ def dem(commodity: str):
     df = (
         collect_results(symbol[commodity.lower()])
     ) 
+
+    if filters != None:
+        df = df.query(filters)
     
     (
         df
@@ -214,27 +316,186 @@ def dem(commodity: str):
     
      
 @CLI.command()
-def costs():
+@click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
+@click.option('--get-df', is_flag=True, required=False, default=False, help="Dont plot, just get the dataframe")
+@click.option('--filename', type=str, default='systemcosts', required=False, help="The filename")
+def costs(filters: str, get_df: bool, filename: str):
     """
     Plot system costs
     """
     print('\nPlotting system costs..')
     
     fig, ax = plt.subplots()
-    (
-        collect_results('OBJ_YCR')
-        .pivot_table(index='Scenario', columns='Category', 
+    
+    df = collect_results('OBJ_YCR') 
+    
+    if filters != None:
+        df = df.query(filters)
+    
+    df = sort_scenarios(df).pivot_table(index='Scenario', columns='Category', 
                      values='Value', aggfunc=lambda x: np.sum(x)/1e3)
-        .plot(ax=ax, kind='bar', stacked=True)
+    
+    if 'Scenario in [' in filters:
+        sc_order = filters.replace(' ', '').split('Scenarioin[')[1].split(']')[0].replace('"', '').replace("'", "").split(',')
+        df = df.loc[sc_order, :] 
+
+    (
+        df
+        .plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
         .set_ylabel('System Costs [B€]')
     )
+    
+    if get_df:
+        return df
     
     # Y limits were a bit too tight
     ylims = ax.get_ylim()
     ax.set_ylim(ylims[0], ylims[1]*1.05)
+    ax.legend(loc='lower center', bbox_to_anchor=(.5, 1.01), ncols=2)
     
-    fig, ax = plot_style(fig, ax, 'systemcosts')
+    fig, ax = plot_style(fig, ax, filename, legend=False)
+
+@CLI.command()
+@click.pass_context
+@click.argument('result', type=str, required=True)
+@click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
+def matrix(ctx, result: str, filters: str):
+    """Generate a matrix of results with N rows and M columns"""
     
+    if result.lower() == 'costs':
+        df = ctx.invoke(costs, filters=filters, get_df=True).sum(axis=1)
+    elif result.lower() == 'gencap':
+        df = ctx.invoke(cap, gen=True, sto=False, filters=filters, get_df=True).sum(axis=1)
+    elif result.lower() == 'stocap':
+        df = ctx.invoke(cap, sto=True, gen=False, filters=filters, get_df=True).sum(axis=1)
+    elif result.lower() == 'fuel':
+        df = ctx.invoke(fuel, filters=filters, get_df=True).sum(axis=1)
+    
+    df.index = pd.Series(
+        df.index
+        .str.replace('base', 'N99M99')
+        .str.replace('N2_', 'N2M2_')
+        .str.replace('N10_', 'N10M10_')
+        .str.replace('N30_', 'N30M30_')
+        .str.replace('N50_', 'N50M50_')
+        .str.replace('N70_', 'N70M70_')
+    )
+    
+    N = df.index.str.extract('(N\d*)')
+    M = df.index.str.extract('(M\d*)')
+    df.index = pd.MultiIndex.from_arrays((N[0], M[0]), names=('N', 'M'))
+    df = pd.DataFrame({'' : df.values}, index=df.index).pivot_table(index='N', columns='M', values='')
+    df.index.name = ''
+    df.columns.name = ''
+    
+    df.to_csv('analysis/output/matrix_results.csv')
+    
+@CLI.command()
+@click.option('--sc-group', type=str, required=True, default=None, help="Groups of scenarios, with groups separated by ; and scenarios by ,")
+@click.option('--group-names', type=str, required=True, default=None, help="Scenario group names separated by ;")
+@click.option('--filters', type=str, required=False, default=None, help="Query input for filtering")
+@click.option('--filename', type=str, required=False, default=None, help="Output filename")
+def cost_change(sc_group: str, group_names: str, filters: str, filename: str):
+    """
+    Plot change in system costs between scenarios
+    """
+    print('\nPlotting system costs..')
+    
+    df = collect_results('OBJ_YCR') 
+    
+    all_scenarios = sc_group.replace(' ', '').replace(';', ',').split(',')
+    scenario_groups = sc_group.replace(' ', '').split(';')
+    group_names = group_names.split(';')
+    
+    if filters != None:
+        df = df.query(filters + " Scenario in %s"%str(all_scenarios))
+    else:
+        df = df.query("Scenario in %s"%str(all_scenarios))
+        
+    df = sort_scenarios(df)  
+    
+    fig, ax = plt.subplots(figsize=(.2,.3))
+    
+    n = 0
+    colors = ['r', 'k']
+    for group in group_names:
+                
+        # Filter
+        scenarios = scenario_groups[n].split(',')
+        temp = df.pivot_table(index='Scenario', 
+                        values='Value', 
+                        aggfunc=lambda x: np.sum(x)/1e3).loc[scenarios]
+        
+        # Replace scenario names with resolution
+        scenarios = pd.Series(scenarios).str.replace('base', 'N99').str.extract(r'([N]\d*)')[0]
+        
+        temp.index = scenarios 
+        temp.plot(ax=ax, color=colors[n])
+        # print(temp.to_csv('analysis/output/%s_cost_change.csv'%group_names[n]))
+        
+        n += 1
+        
+    
+    ax.set_xticks(np.arange(len(scenarios)))
+    ax.set_xticklabels(scenarios)
+    # Y limits were a bit too tight
+    ylims = ax.get_ylim()
+    ax.legend(group_names, loc='lower center', 
+              bbox_to_anchor=(.5, 1.01), ncol=len(group_names))
+    # ax.set_ylim(ylims[0], ylims[1]*1.05)
+    ax.set_ylim(5.4, 6.4)
+    ax.set_ylabel('System Costs [B€]')
+    # ax.set_xlabel('Resolution in # of Nodes')
+    ax.set_xlabel('')
+    
+    if filename == None:
+        filename = 'systemcost_changes'
+    
+    fig, ax = plot_style(fig, ax, filename, legend=False)
+
+
+@CLI.command()
+@click.pass_context
+@click.argument('scenario_search_string', type=str)
+def electrolyser_vre_correlation(ctx, scenario_search_string):
+    """
+    Calculates how much electrolyser production there is 
+    when VRE or backup generation occur
+    """
+
+    path = Path('.')
+    files = [file.name for file in path.glob(f'**/model/MainResults{scenario_search_string}.gdx')]
+    paths = [str(file.parent) for file in path.glob(f'**/model/MainResults{scenario_search_string}.gdx')]
+
+
+    for i,scenario in enumerate(files):
+        res = MainResults(scenario, paths[i])
+        df = res.get_result('PRO_YCRAGFST')
+        df = (
+            df
+            .query('(Generation.str.contains("BACKUP") and Commodity == "ELECTRICITY") or Technology in ["ELECTROLYZER", "WIND-OFF", "WIND-ON", "SOLAR-PV", "SYNFUELPRODUCER"]')
+            .pivot_table(index=['Season', 'Time'], columns='Technology', values='Value', aggfunc='sum', fill_value=0)
+        )
+
+        # Total production
+        elys = df["ELECTROLYZER"].sum()
+        vre = df[["WIND-OFF", "WIND-ON", "SOLAR-PV"]].sum().sum()
+        back = df[[col for col in df.columns if col not in ["WIND-OFF", "WIND-ON", "SOLAR-PV", "ELECTROLYZER", "SYNFUELPRODUCER", "BOILERS"]]]
+        print('Electricity backup: ', back.columns)
+        back = back.sum(axis=1)
+        back_sum  = back.sum()
+
+        print(20*'=')
+        print('Scenario', scenario)
+        print('Weighted average of VRE production when electrolyser produces:')
+        print((df["ELECTROLYZER"] * df[["WIND-OFF", "WIND-ON", "SOLAR-PV"]].sum(axis=1)).sum() / (vre+elys))
+        print('Weighted average of backup production when electrolyser produces:')
+        print((df["ELECTROLYZER"] * back).sum() / (vre+back_sum))
+        print('Weighted average of VRE production when synfuelproducer produces:')
+        print((df["SYNFUELPRODUCER"] * df[["WIND-OFF", "WIND-ON", "SOLAR-PV"]].sum(axis=1)).sum() / (vre+elys))
+        print('Weighted average of backup production when synfuelproducer produces:')
+        print((df["SYNFUELPRODUCER"] * back).sum() / (vre+back_sum))
+        
 
 @CLI.command()
 @click.pass_context
@@ -242,7 +503,8 @@ def costs():
 @click.argument('scenario', type=str)
 @click.argument('node', type=str, default='all')
 @click.argument('year', type=int, default=2050)
-def profile(ctx, commodity: str, scenario: str, node: str, year: int):
+@click.option('--columns', type=str, default='Technology', help="Which parameter to stack, either 'Technology' or 'Fuel'")
+def profile(ctx, commodity: str, scenario: str, node: str, year: int, columns: str):
     """Plot energy balance of electricity, heat or hydrogen"""
 
     m = ctx.obj['Balmorel']
@@ -250,9 +512,10 @@ def profile(ctx, commodity: str, scenario: str, node: str, year: int):
     model_path = os.path.join(ctx.obj['path'], m.scname_to_scfolder[scenario], 'model')
 
     # Get mainresults files
-    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
+    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path, system_directory=ctx.obj['gams_system_directory'])
     
-    fig, ax = res.plot_profile(commodity, year, scenario, region=node, style=ctx.obj['plot_style_for_modules'])
+    fig, ax = res.plot_profile(commodity, year, scenario, region=node, style=ctx.obj['plot_style_for_modules'],
+                               columns=columns)
     
     if node != 'all':
         scenario += '_' + node
@@ -269,26 +532,130 @@ def profile(ctx, commodity: str, scenario: str, node: str, year: int):
 @click.argument('geofile_region_column', type=str, default='Name')
 @click.argument('lon-lims', type=list, default=[7.8, 13])
 @click.argument('lat-lims', type=list, default=[54.4, 58])
+@click.option('--lines', type=str, default='UtilizationYear')
+@click.option('--generation', type=str, default='Production')
 def map(ctx, commodity: str, scenario: str, year: int, 
         geofile: str, geofile_region_column: str,
-        lon_lims: list, lat_lims: list):
+        lon_lims: list, lat_lims: list,
+        lines: str, generation: str, invoked: bool = False,
+        generation_show: bool = True):
     """Plot transmission capacity maps for electricity or hydrogen"""
 
     model = ctx.obj['Balmorel']
     model_path = os.path.join(ctx.obj['path'], model.scname_to_scfolder[scenario], 'model')
 
     # Get mainresults files
-    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
+    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path, system_directory=ctx.obj['gams_system_directory'])
     
-    if 'N' in scenario and not 'TransRelaxation' in scenario:
-        geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(re.findall('N\d+', scenario)[0].lstrip('N')))
-        geofile_region_column = 'cluster_name'
+    if geofile =='analysis/geofiles/municipalities.gpkg':
+        geofile, geofile_region_column = get_geofile(scenario, model_path)
     
-    fig, ax = res.plot_map(scenario, commodity.capitalize(), year, path_to_geofile=geofile, geo_file_region_column=geofile_region_column, style=ctx.obj['plot_style_for_modules'])
+    # Pie radius for comparing scenarios
+    pie_radius_max = 0.5 # The largest one for comparison (N70 largest cluster is CL36 with 13.244423 GW)
+    pie_radius_max = 0.5*(7.07/13.24) # The smaller one (base largest cluster is Frederikshavn with 7.07 GW)
+    
+    fig, ax = res.plot_map(scenario, year, commodity.capitalize(), 
+                           path_to_geofile=os.path.abspath(geofile), geo_file_region_column=geofile_region_column, 
+                           lines=lines, generation=generation,
+                           style=ctx.obj['plot_style_for_modules'], pie_radius_max=pie_radius_max, pie_radius_min=0.03,
+                           regions_model_color='lightgray', regions_ext_color='lightgray',
+                           **{'generation_show':generation_show})
     ax.set_xlim(lon_lims)
     ax.set_ylim(lat_lims)
-    fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario), legend=False)
+
+    if not invoked:
+        fig, ax = plot_style(fig, ax, 'map_%s'%(commodity + '-' + str(year) + '-' + scenario), legend=False)
+
+    return fig, ax 
     
+@CLI.command()
+@click.pass_context
+@click.argument('scenario', type=str, required=False)
+@click.argument('commodity', type=str, required=False, default='hydrogen')
+def find_h2_synfuel_location(ctx, scenario: str, commodity: str, year: int = 2050):
+    """For economy of scale scenarios"""
+    
+    # Get scenario result
+    model = ctx.obj['Balmorel']
+    model_path = os.path.join(ctx.obj['path'], model.scname_to_scfolder[scenario], 'model')
+    results = MainResults('MainResults_%s.gdx'%scenario, paths=model_path)
+
+    # Get geofile
+    geofile, geofile_region_column = get_geofile(scenario, model_path)
+    gf = gpd.read_file(geofile)
+    gf.columns = ['Region', 'geometry']
+
+    df = (
+        results
+        .get_result('G_CAP_YCRAF')
+        .query('Technology in ["ELECTROLYZER", "SYNFUELPRODUCER"] and Commodity in ["HYDROGEN", "SYNFUEL"]')
+        .merge(gf, on='Region')
+        .pivot_table(index='Technology', columns='geometry', 
+                     values='Value', aggfunc='sum', fill_value=0)
+    )
+
+    fig, ax = ctx.invoke(map, commodity=commodity, scenario=scenario, 
+                        year=year, geofile=geofile, geofile_region_column=geofile_region_column,
+                        generation_show=False)
+
+    print('Max. capacities:')
+    print(df.max(axis=1))
+
+    scaling = 20
+    for region in df.columns:
+        total_cap = df.loc[:, region].sum()
+        if total_cap > 0:
+            values = df.loc[:, region]
+            coords = (region.centroid.x, region.centroid.y)
+            add_pie_chart(ax, coords, values, total_cap/scaling)
+
+    ax.axes.set_axis_off()
+    fig.savefig(f'analysis/plots/{scenario}_{commodity}_synfuelmap.svg')
+
+def add_pie_chart(ax, center, data, size=2, colors=None):
+    """
+    Add a single pie chart to existing axes at specified coordinates.
+
+    Parameters:
+    -----------
+    ax : matplotlib axes
+        The axes object with the map
+    center : tuple
+        (lon, lat) coordinates for pie chart center
+    data : list/array
+        Data values for pie segments (will be normalized)
+    size : float
+        Radius of pie chart in map coordinates
+    colors : list
+        Colors for each segment
+    """
+    if colors is None:
+        colors = plt.cm.Set3.colors
+
+    if size < 0.05:
+        size = 0.05
+    
+    # Normalize data to fractions
+    data = np.array(data)
+    fracs = data / data.sum()
+    
+    # Calculate angles for each wedge
+    angles = np.cumsum([0] + list(fracs * 360))
+    
+    # Draw each wedge
+    for i, (start, end) in enumerate(zip(angles[:-1], angles[1:])):
+        wedge = WedgePatch(
+            center=center,
+            r=size,
+            theta1=start,
+            theta2=end,
+            facecolor=colors[i % len(colors)],
+            edgecolor='white',
+            linewidth=1.5
+        )
+        ax.add_patch(wedge)
+    
+    return ax
     
 @CLI.command()
 @click.pass_context
@@ -356,24 +723,31 @@ def storage_profile(ctx, cluster: str, scenarios: str, size: str):
 @CLI.command()
 @click.pass_context
 @click.argument('scenario', type=str, required=True)
-@click.argument('cluster', type=str, required=True)
-@click.argument('size', type=str, required=False, default='decentral')
-@click.argument('weather-year', type=int, required=False, default=2012)
+@click.argument('commodity', type=str, required=False, default='heat')
+@click.argument('cluster', type=str, required=False, default='all')
+@click.argument('weather-year', type=int, required=False, default=2023)
 @click.argument('freq', type=str, required=False, default='1M')
-def sifnaios_profile(ctx, scenario: str, cluster: str, size: str, 
+def sifnaios_profile(ctx, scenario: str, cluster: str, commodity: str, 
                         weather_year: int, freq: str):
     """
     Make a plot like in Sifnaios et al. 2023
     """
+    commodity = commodity.lower()
 
-    if size == 'decentral':
-        size_type = 'GNR_HS_HEAT_PIT_L-DEC_E-70_Y-2050'
-    elif size == 'central':
-        size_type = 'GNR_HS_HEAT_PIT_L-CEN_E-70_Y-2050'
+    if commodity == 'heat':
+        commodity_query = 'G in ["GNR_HS_HEAT_PIT_L-DEC_E-70_Y-2050", "GNR_HS_HEAT_PIT_L-CEN_E-70_Y-2050"]'
+    elif commodity == 'hydrogen':
+        commodity_query = "G in ['GNR_H2S_H2-CAVERN_Y-2030', 'GNR_H2S_H2-CAVERN_Y-2040', 'GNR_H2S_H2-CAVERN_Y-2050']"
     else:
-        raise ValueError('Choose size = decentral or central!')
+        raise ValueError('Choose commodity = "heat" or "hydrogen"!')
         
     sto = collect_storage_profiles(scenarios=[scenario])
+    print(sto)
+    
+    model = ctx.obj['Balmorel']
+    model.collect_results()
+    sto = symbol_to_df(model.results.db[scenario], 'STORAGE_LEVEL')
+    print(sto)
     
     # Make datetime index corresponding to S and T set
     time_ind = pd.Series(pd.date_range('%d-01-01-00:00'%weather_year, 
@@ -393,16 +767,21 @@ def sifnaios_profile(ctx, scenario: str, cluster: str, size: str,
     index = index.set_index(time_ind).reset_index()
     index.columns = ['time', 'S', 'T']
     
-    
     # Filter data
-    cluster_area = cluster + '_A'
-    df = sto.query(
-                'A == @cluster_area \
-                and Technology == "inter" \
-                and Commodity == "heat" \
-                and Scenario == @scenario \
-                and G == @size_type' 
-            ).loc[:, ['S', 'T', 'result', 'Value_ts-scaled']]
+    if cluster.lower() == 'all':
+        df = sto.query(
+                    'Technology == "inter" \
+                    and Commodity == @commodity \
+                    and Scenario == @scenario'
+                ).query(commodity_query).loc[:, ['S', 'T', 'result', 'Value_ts-scaled']]
+    else:
+        cluster_area = cluster + '_A'
+        df = sto.query(
+                    'A == @cluster_area \
+                    and Technology == "inter" \
+                    and Commodity == @commodity \
+                    and Scenario == @scenario'
+                ).query(commodity_query).loc[:, ['S', 'T', 'result', 'Value_ts-scaled']]
 
     # Join time index to S,T set in results
     df = df.merge(index, on=['S', 'T'], how='inner').pivot_table(index='time', columns=['result'], values='Value_ts-scaled', aggfunc='sum')
@@ -438,14 +817,44 @@ def sifnaios_profile(ctx, scenario: str, cluster: str, size: str,
     ax.set_xlim(index['time'].iloc[0], index['time'].iloc[-1]+pd.Timedelta(weeks=2))
     ax.set_xlabel('')
 
-    ax.legend(loc='upper center', ncol=3, frameon=False, handleheight=0.5, handlelength=1.5, bbox_to_anchor=[0.5,1.03])
+    ax.legend(loc='lower center', ncol=3, frameon=False, handleheight=0.5, handlelength=1.5, bbox_to_anchor=[0.5,1.03])
     # ax.set_ylim(-2500, 6000)
 
     ax.axhline(0, c=linecolor, lw=0.35)
     
-    fig, ax = plot_style(fig, ax, '%s_sifstoprofile'%(scenario+'_'+cluster+'_'+size), legend=False)
+    fig, ax = plot_style(fig, ax, '%s_sifstoprofile'%(scenario+'_'+cluster+'_'+commodity), legend=False)
     # fig.savefig(os.path.join(ctx.obj['plot_path'], ))
 
+@CLI.command()
+@click.pass_context
+@click.argument('scenario', type=str, required=True)
+# @click.argument('vre', type=str, required=True)
+def vre_seas_prod(ctx, scenario: str):
+    """Plot the seasonal production of wind or solar"""
+    model = ctx.obj['Balmorel']
+    model.collect_results()
+    df = symbol_to_df(model.results.db[scenario], 'PRO_YCRAGFST')
+    
+    # if vre.lower() == 'wind':
+    #     query_string = 'Technology == "WIND-OFF" or Technology == "WIND-ON"'
+    # elif vre.lower() == 'solar':
+    #     query_string = 'Technology == "SOLAR-PV"'
+    # else:
+    #     raise ValueError("vre must be either 'wind' or 'solar'!")
+
+    query_string = 'Technology == "WIND-OFF" or Technology == "WIND-ON" or Technology == "SOLAR-PV"'
+
+    fig, ax = plt.subplots(figsize=(9, 5))
+    (
+        df
+        .query(query_string)
+        .pivot_table(index='Season', columns='Technology', 
+                     values='Value', aggfunc='sum') 
+        .plot(kind='area', stacked=True, ax=ax, color=balmorel_colours)
+    )
+    ax.set_ylabel('VRE Electricity Production [MWh]')
+    ax.legend(loc='lower center', ncol=3, bbox_to_anchor=(.5, 1.03))
+    plot_style(fig, ax, 'vre_seasonal_availability_plot_%s'%scenario, legend=False)
 
 @CLI.command()
 @click.pass_context
@@ -534,13 +943,14 @@ def get(ctx, symbol: str, pars, filters: str, diff: bool):
         html = df.style.format(precision=1).set_table_styles([cell_format]).background_gradient(cmap="RdYlGn_r").to_html()
         with open('analysis/output/df_tot_output.html', 'w') as f: 
             f.write(transform(html)) # Use transform to get inline styling, which is supported by Obsidian's markdown
-            
-        
+
+
 
 @CLI.command()
 @click.pass_context
 @click.argument('scenario', type=str, required=True)
-def adequacy(ctx, scenario: str):
+@click.option('--nth-max', type=int, required=False, default=3, help="Which nth maximum backup production to interpret as required backup capacity Default is 3, as it could be interpreted as a LOLE = 3 h condition.")
+def adequacy(ctx, scenario: str, nth_max: int):
     "Quantify the adequacy in terms of LOLE (h) and energy not supplied (TWh)"
     
     # Find path to scenario
@@ -553,30 +963,236 @@ def adequacy(ctx, scenario: str):
     # Get backup production
     df = res.get_result('PRO_YCRAGFST').query('Scenario == @scenario and Generation.str.contains("BACKUP")')
     
+    # Get backup 'capacity' based on the nth maximum production from BACKUP units (nth_max = 1 => No inadequacy, nth_max = 3 => LOLE = 3 h, perhaps)
+    if nth_max == -1:
+        cap = df.pivot_table(index=['Region'], columns=['Commodity'],
+                            values='Value', aggfunc='max')
+    else:
+        cap = (
+            df.groupby(['Region', 'Commodity'])['Value']    
+            .apply(lambda x: x.nlargest(nth_max).iloc[-1])  # Selects N'th max
+            .unstack()  # Reshapes the data into a table
+        )
+    cap.to_csv('analysis/output/%s_backcapN%d.csv'%(scenario.replace('_operun', ''), nth_max))
+    
     ## Get energy not served
     ENS = df.pivot_table(index=['Season', 'Time'], columns='Commodity',
                           values='Value', aggfunc='sum')
-    print('Energy not served [TWh] (first four rows) and Loss of load expectation (h) in the next four rows:')
-    print((ENS.sum() / 1e6).to_string(header=None))
     
-    ## Get hours with loss of load
-    print(ENS.count().to_string(header=None))
+    df_out = pd.DataFrame({
+        'ENS_TWh' : ENS.sum() / 1e6,
+        'LOLE_h'  : ENS.count()
+    })
+    
+    df_out.to_csv('analysis/output/%s_adeq.csv'%scenario.replace('_operun', ''))
 
+@CLI.command()
+@click.pass_context
+@click.argument('scenario', type=str, required=True)
+def ptes_and_adequacy(ctx, scenario: str):
+    "Relate LOLE (h) to PTES share of exogenous heat demand"
+    
+    # Find path to scenario
+    model = ctx.obj['Balmorel']
+    model_path = os.path.join(ctx.obj['path'], model.scname_to_scfolder[scenario], 'model')
+
+    # Get mainresults files
+    res = MainResults('MainResults_%s.gdx'%scenario, paths=model_path, system_directory=ctx.obj['gams_system_directory'])
+
+    # Get PTES areas
+    df = res.get_result('G_STO_YCRAF').query('Technology == "INTERSEASONAL-HEAT-STORAGE"')
+    ptes_caps = df.pivot_table(index='Area', columns='Generation', values='Value', aggfunc='sum')
+
+    # Get heat demand
+    ptes_areas = ptes_caps.index.to_list()
+    heat_dem = (
+        res
+        .get_result('H_DEMAND_YCRA')
+        .query('Category == "EXOGENOUS"')
+        .pivot_table(index='Area', values='Value', aggfunc=lambda x: np.sum(x)*1e3)
+        .rename(columns={'Value' : 'exo_heat_dem_GWh'})
+    )
+    ptes_caps = ptes_caps.join(heat_dem, how='outer')
+    ptes_caps['storage_share'] =  ptes_caps[ptes_caps.columns[:-1]].sum(axis=1) / ptes_caps['exo_heat_dem_GWh']
+    ptes_caps['storage_cap'] =  ptes_caps[ptes_caps.columns[:-1]].sum(axis=1)     
+    inf = np.inf
+    idx = ptes_caps.eval('storage_share == @inf')
+    ptes_caps.loc[idx, 'storage_share'] = 0
+
+    # Get backup production
+    df = res.get_result('PRO_YCRAGFST').query('Scenario == @scenario and Generation.str.contains("BACKUP") and Commodity == "HEAT"')
+    
+    ## Get energy not served
+    ENS = df.pivot_table(index=['Season', 'Time'], columns='Area',
+                          values='Value', aggfunc='sum')
+    
+    df_out = pd.DataFrame({
+        'ENS_TWh' : ENS.sum() / 1e6,
+        'LOLE_h'  : ENS.count()
+    })
+    
+    ptes_caps = ptes_caps.join(df_out, how='outer').fillna(0)
+    ptes_caps.to_csv('analysis/output/%s_ptes_caps.csv'%scenario)
+
+
+@CLI.command()
+@click.option('--filter', type=str, default='*', help="Search string for selecting $filter_ptes_caps files")
+def plot_ptes_adequacy_relation(filter):
+
+    path = Path('analysis/output')
+    files = [file.name for file in path.glob(filter+'_ptes_caps.csv')]
+
+    df = pd.DataFrame()
+    for file in files:
+        temp = pd.read_csv(str(path.joinpath(file)))
+        temp['Scenario'] = file.replace('_ptes_caps.csv', '')
+        df = pd.concat((df, temp))
+
+    fig, ax = plt.subplots()
+    pt = df.pivot_table(index=['Scenario','Area'], values=['LOLE_h', 'storage_cap'], aggfunc='sum')
+    for i, scenario in enumerate(df.Scenario.unique()):
+        color = next(color_cycle)
+        marker = next(marker_cycle)
+        pt.query('Scenario == @scenario').plot(ax=ax, kind='scatter', 
+                                               x='storage_cap', y='LOLE_h', 
+                                               marker=marker, color=color, 
+                                               alpha=.3, label=scenario,
+                                               legend=True)
+    ax.legend(bbox_to_anchor=(1.1, .5), loc='center left')
+    fig.savefig('analysis/plots/ptes_and_adequacy.png')
+
+@CLI.command()
+@click.pass_context
+@click.argument('scenarios', type=str, required=True)
+def RA_Plot(ctx, scenarios: str):
+    "Plot LOLE and ENS"
+    
+    scenarios = scenarios.replace(' ', '').split(',')
+    
+    for scenario in scenarios:
+        if 'df' not in locals():
+            df = pd.read_csv('analysis/output/%s_adeq.csv'%scenario)
+            df['Scenario'] = scenario
+        else:
+            temp = pd.read_csv('analysis/output/%s_adeq.csv'%scenario)
+            temp['Scenario'] = scenario
+            df = pd.concat((df, temp), ignore_index=True)
+            
+    # Plot
+    fig, ax = plt.subplots()
+    ax2 = ax.twinx()
+    
+    df = sort_scenarios(df)
+    df = df.pivot_table(index='Scenario', values=['ENS_TWh', 'LOLE_h'], 
+                     columns='Commodity', aggfunc='sum')
+    
+    df['ENS_TWh'].plot(ax=ax, kind='bar', stacked=True, color=balmorel_colours)
+    for commodity in df.LOLE_h.columns:
+        ax2.plot(df.index, df.LOLE_h[commodity], linestyle='none', marker='o', 
+                markeredgecolor='k', color=balmorel_colours[commodity], label=f'LOLE {commodity}')
+    
+    ax2.set_ylabel('LOLE (h)')
+    ax2.set_ylim((0, df.LOLE_h.max().max()*1.1))
+    ax.set_ylabel('Energy Not Served (TWh)')
+    
+    plot_style(fig, ax, 'RA-plot', legend_pos='up')
+
+@CLI.command()
+@click.pass_context
+@click.argument('scenarios', type=str, required=True)
+@click.argument('symbol', type=str, required=True)
+@click.argument('index', type=str, required=True)
+@click.argument('columns', type=str, required=True)
+@click.option('--filters', type=str, default=None, required=False, help='Filters for df.query(...)')
+def bar_chart(ctx, scenarios: str, symbol: str, 
+              index: Union[str | list], columns: Union[str | list],
+              filters: str):
+    """
+    Generates a bar chart from the specified scenarios and symbol.
+    This function retrieves data from the specified scenarios, processes it, and generates a bar chart
+    based on the provided symbol, index, and columns. The resulting chart is saved as 'bar_chart_output.png'.
+    
+    Args:
+        ctx (click.Context): The Click context object containing the Balmorel model and path information.
+        scenarios (str): A comma-separated string of scenario names.
+        symbol (str): The symbol to retrieve data for.
+        index (Union[str, list]): The index or indices to use for the pivot table.
+        columns (Union[str, list]): The columns to use for the pivot table.
+    """
+    
+    # Find scenarios
+    model = ctx.obj['Balmorel']
+    scenarios = scenarios.replace(' ', '').split(',')
+    paths = []
+    files = []
+    for sc in scenarios:
+        paths.append(os.path.join(ctx.obj['path'], model.scname_to_scfolder[sc], 'model'))
+        files.append('MainResults_%s.gdx'%sc)
+    mr = MainResults(files=files, paths=paths, system_directory=ctx.obj['gams_system_directory'])
+    
+    # Prepare index and columns
+    if ',' in index:
+        index = index.replace(' ', '').split(',')
+    if ',' in columns:
+        columns = columns.replace(' ', '').split(',')
+    
+    # Get symbol
+    fig, ax = plt.subplots()
+    df = sort_scenarios(mr.get_result(symbol))
+    
+    # Apply filters
+    if filters != None:
+        df = df.query(filters)
+        
+    df = df.pivot_table(index=index, columns=columns, values='Value', aggfunc='sum')
+    try:
+        df.plot(kind='bar', stacked=True, ax=ax, color=balmorel_colours)
+    except KeyError:
+        df.plot(kind='bar', stacked=True, ax=ax)
+    
+    ax.legend(bbox_to_anchor=(1.01, .5), loc='center left')
+    
+    fig.savefig('analysis/plots/bar_chart_output.png', bbox_inches='tight')
+    
 
 #%% ------------------------------- ###
 ###            2. Utils             ###
 ### ------------------------------- ###
 
+def get_geofile(scenario, model_path):
+    if re.match('N\d*M\d*', scenario):
+        geofile = model_path.replace('model', 'data') + '/DE_%dcluster_geofile_2nd-order.gpkg'%(int(re.findall('M\d+', scenario)[0].lstrip('M')))
+        geofile_region_column = 'cluster_name'
+    elif re.match('N\d*', scenario):
+        geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(re.findall('N\d+', scenario)[0].lstrip('N')))
+        geofile_region_column = 'cluster_name'
+    else:
+        geofile = 'analysis/geofiles/municipalities.gpkg'
+        geofile_region_column = 'Name'
+        
+    return geofile, geofile_region_column
+
+def sort_scenarios(df: pd.DataFrame):
+    "Will sort scenarios, so e.g. N2 comes before N10"
+    
+    df['Scenario'] = pd.Categorical(df['Scenario'], categories=sorted(df['Scenario'].unique(), key=lambda x: int(re.findall(r'N\d+', x)[0][1:]) if re.findall(r'N\d+', x) else float('inf')))
+    
+    return df
+
 @click.pass_context
 def plot_style(ctx, fig: plt.figure, ax: plt.axes, name: str,
-               legend: bool = True):
-    
+               legend: bool = True, legend_pos: str = 'right'):
+    fig.set_size_inches((7, 4))
     ax.set_facecolor(ctx.obj['fc'])
     
-    if legend:
-        ax.legend(loc='center',
-                bbox_to_anchor=(.5, 1.15),
+    if legend and legend_pos == 'up':
+        ax.legend(loc='lower center',
+                bbox_to_anchor=(.5, 1),
                 ncol=3)
+    elif legend and legend_pos == 'right':
+        ax.legend(loc='center left',
+                bbox_to_anchor=(1, .5),
+                ncol=1)
     
     plot_path = ctx.obj['plot_path']
     if not(os.path.exists(plot_path)):
@@ -627,7 +1243,7 @@ def collect_storage_profiles(ctx, scenarios: list):
         for scenario in scenarios:
             for storage_type in ['inter', 'intra']:
                 for carrier in ['electricity', 'heat', 'hydrogen']:
-                    if storage_type == 'inter' and (carrier == 'electricity' or carrier == 'hydrogen'):
+                    if storage_type == 'inter' and (carrier == 'electricity'):
                         continue
                     
                     if carrier == 'hydrogen':

@@ -45,5 +45,8 @@ $ifi %generic_synfuel%==yes    QSYNBIOFUELPROD_UP
 $ifi %generic_synfuel%==yes    QSYNH2FUELPROD_UP  
 $ifi %generic_synfuel%==yes    QSYNFUELSET1
 $ifi %generic_synfuel%==yes    QSYNFUELSET2
-$ifi %generic_synfuel%==yes    QSYNKSET  
+$ifi %generic_synfuel%==yes    QSYNFUELSET3
+$ifi %generic_synfuel%==yes    QSYNKSETA  
+$ifi %generic_synfuel%==yes    QSYNKSETB  
+$ifi %generic_synfuel%==yes    QSYNFUEL_EXCESSHEAT
 $ifi %generic_synfuel%==yes $ifi %generic_synfuel_inflex%==yes    QSYNINFLEX  

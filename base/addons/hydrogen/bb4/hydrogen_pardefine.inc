@@ -78,5 +78,6 @@ $if not EXIST '../data/HYDROGEN_XH2KN_ES.inc' $INCLUDE '../../base/data/HYDROGEN
 $ifi not %generic_synfuel%==yes $goto NO_GENERIC_SYNFUEL
 $ifi     EXIST '../data/HYDROGEN_SYNFUELDEMAND.inc'  $INCLUDE   '../data/HYDROGEN_SYNFUELDEMAND.inc';
 $ifi not EXIST '../data/HYDROGEN_SYNFUELDEMAND.inc'  $INCLUDE   '../../base/data/HYDROGEN_SYNFUELDEMAND.inc';
+
 $label NO_GENERIC_SYNFUEL
 

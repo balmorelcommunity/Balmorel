@@ -3,19 +3,19 @@
 ### -- specify queue --
 #BSUB -q man
 ### -- set the job Name --
-#BSUB -J N2_allareas
+#BSUB -J electrolyser_vre_correlation
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 10
 ### -- specify that we need a certain architecture --
-#BSUB -R "select[model == XeonGold6226R]"
+#BSUB -R "select[model == XeonPlatinum8462Y]"
 ### -- specify that the cores must be on the same host --
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need X GB of memory per core/slot --
-#BSUB -R "rusage[mem=5.5GB]"
+#BSUB -R "rusage[mem=5GB]"
 ### -- specify that we want the job to get killed if it exceeds X GB per core/slot --
-#BSUB -M 5.6GB
+#BSUB -M 5.1GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 10:00
+#BSUB -W 5:00
 ### -- set the email address --
 #BSUB -u mberos@dtu.dk
 ### -- send notification at start --
@@ -24,8 +24,8 @@
 #BSUB -N
 ### -- Specify the output and error file. %J is the job-id --
 ### -- -o and -e mean append, -oo and -eo mean overwrite --
-#BSUB -o ./logs/N2_allareas_%J.out
-#BSUB -e ./logs/N2_allareas_%J.err
+#BSUB -o ./logs/electrolyser_vre_correlation_%J.out
+#BSUB -e ./logs/electrolyser_vre_correlation_%J.err
 # here follow the commands you want to execute with input.in as the input file
 
 ### Path to GAMS binary
@@ -34,12 +34,4 @@ export PATH=/appl/gams/47.6.0:$PATH
 ### Activate spatialstudy environment
 source ~/miniconda3/bin/activate spatialstudy
 
-for name in N2_allareas; do
-    # Running Balmorel 
-    cd N2_allareas/model 
-    gams Balmorel license=../../gamslice.txt --scenario_name=$name threads=$LSB_DJOB_NUMPROC
-
-    # Collect heat storage profile data
-    cd ../../
-    analyse storage-profile CL1 N2_allareas
-done
+analyse electrolyser-vre-correlation *ZCEHX_2nd
