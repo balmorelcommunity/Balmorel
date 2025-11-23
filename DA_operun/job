@@ -3,7 +3,7 @@
 ### -- specify queue --
 #BSUB -q man
 ### -- set the job Name --
-#BSUB -J N2_dispatch_run
+#BSUB -J 3step_newoperun
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 20
 ### -- specify that we need a certain architecture --
@@ -15,7 +15,7 @@
 ### -- specify that we want the job to get killed if it exceeds X GB per core/slot --
 #BSUB -M 2.1GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 16:00
+#BSUB -W 10:00
 ### -- set the email address --
 #BSUB -u mberos@dtu.dk
 ### -- send notification at start --
@@ -24,8 +24,8 @@
 #BSUB -N
 ### -- Specify the output and error file. %J is the job-id --
 ### -- -o and -e mean append, -oo and -eo mean overwrite --
-#BSUB -o ./logs/N2_dispatch_run_%J.out
-#BSUB -e ./logs/N2_dispatch_run_%J.err
+#BSUB -o ./logs/3step_newoperun_%J.out
+#BSUB -e ./logs/3step_newoperun_%J.err
 # here follow the commands you want to execute with input.in as the input file
 
 ### Path to GAMS binary
@@ -34,44 +34,57 @@ export PATH=/appl/gams/47.6.0:$PATH
 ### Activate spatialstudy environment
 source ~/miniconda3/bin/activate spatialstudy
 
-for name in N2; do
 
-    # Copy most results from disaggregated run to simex
-    cp -f ./simex_${name}_ZCEHX/*.gdx ./simex
+for name in N2 N10 N30 N50 N70 base; do
+    for runtype in dispatch operun; do
 
-    # Seasonal heuristic for synfuel demand
-    # python analysis/peri-process.py ${name}_ZCEHX seasonal-synfuel 
+        # Copy most results from disaggregated run to simex
+        if [ $runtype = "dispatch" ]; then
+            cp -f ./simex_${name}_ZCEHX/*.gdx ./simex
+        fi
+
+        # Seasonal heuristic for synfuel demand
+        # python analysis/peri-process.py ${name}_ZCEHX seasonal-synfuel 
+        
+        # Remove previous data and copy new
+        rm DA_operun/data/*.inc 
+        cp -f ${name}/data/*.inc DA_operun/data/
+
+        # Copy S and T
+        cp -f DA_operun/S.inc DA_operun/data/
+        cp -f "DA_operun/T_${runtype}.inc" "DA_operun/data/T.inc"
+
+        # Choose balopt
+        mv "DA_operun/model/balopt_${runtype}.opt" "DA_operun/model/balopt.opt"
+
+        # # Disaggregate capacities
+        # if [ $name != "base" ]; then
+        #     python simex/oper-input.py disagg $name base
+        # else
+        #     echo "Skipping disaggregation due to running ${name} scenario"
+        # fi
+
+        # Running Balmorel 
+        cd DA_operun/model 
+        gams Balmorel --scenario_name "${name}_ZCEHX_${runtype}"
+
+        # Exit, if there are errors
+        if [ $? -ne 0 ]; then
+            echo "GAMS execution failed for scenario ${name}_ZCEHX_${runtype}"
+            exit 1
+        fi
+        
+        cd ../../
+
+        # Copy the simex folder
+        # cp simex -r simex_$name
+
+        # Choose balopt
+        mv "DA_operun/model/balopt.opt" "DA_operun/model/balopt_${runtype}.opt"
+
+        # Analyse adequacy
+        # analyse adequacy ${name}_ZCEHX_operun --nth-max 3
+    done
     
-    # Copy data
-    cp -f ${name}/data/*.inc DA_operun/data/
-
-    # Copy S and T
-    cp -f DA_operun/S.inc DA_operun/data/
-    cp -f DA_operun/T.inc DA_operun/data/
-
-    # # Disaggregate capacities
-    # if [ $name != "base" ]; then
-    #     python simex/oper-input.py disagg $name base
-    # else
-    #     echo "Skipping disaggregation due to running ${name} scenario"
-    # fi
-
-    # Running Balmorel 
-    cd DA_operun/model 
-    gams Balmorel Threads=$LSB_DJOB_NUMPROC --scenario_name="${name}_ZCEHX_dispatch"
-
-    # Exit, if there are errors
-    if [ $? -ne 0 ]; then
-        echo "GAMS execution failed for scenario ${name}_ZCEHX_dispatch"
-        exit 1
-    fi
-    
-    cd ../../
-
-    # Copy the simex folder
-    # cp simex -r simex_$name
-
-    # Analyse adequacy
-    analyse adequacy ${name}_ZCEHX_dispatch --nth-max 3
-    analyse adequacy ${name}_ZCEHX_dispatch --nth-max 1
+    analyse adequacy ${name}_ZCEHX_operun
 done
