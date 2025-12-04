@@ -270,9 +270,10 @@ $ifi %RollingSeasons%==yes IHOURSINST(IS3,T)=IOF8760*WEIGHT_S(IS3)*WEIGHT_T(T)/(
 * The Savepoint option must be active especially for BB1 and BB2 since this outputs the     REVISE
 * solution basis, which is used for generating results database.
 OPTION Savepoint=1;
+BALBASE4.scaleopt = 1;
+option sysout = on;
 
 $ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
-
 $ifi %SOLVETYPE%==LP   SOLVE BALBASE4 USING LP   MINIMIZING VOBJ;
 $ifi %SOLVETYPE%==RMIP SOLVE BALBASE4 USING RMIP MINIMIZING VOBJ;
 $ifi %SOLVETYPE%==MIP  SOLVE BALBASE4 USING MIP  MINIMIZING VOBJ;
