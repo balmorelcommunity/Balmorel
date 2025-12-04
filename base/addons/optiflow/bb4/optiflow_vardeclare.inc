@@ -54,17 +54,12 @@ $ifi %APKNdisc%==yes $include "..\addons\OptiFlow\apkndisc\apkndiscvarsequas.inc
 *----- End: Any declarations of variables for addon
 *-------------------------------------------------------------------------------
 
-
-* At least in development phase: add large but finite .UP on positive variables (IF to be applied in final code, add $conditions):
-$ifi %addUP%==yes VFLOWINDICVALUES.UP(Y,FLOWINDIC)      = 1E15;
-
-$ifi %addUP%==yes VFLOWSOURCE.UP(Y,IA,PROCSOURCE,FLOW,S,T)    = ILOUPBOUNDS;  !! May be overwritten by real data later
-$ifi %addUP%==yes VFLOWSINK.UP(Y,IA,PROCSINK,FLOW,S,T)        = ILOUPBOUNDS;  !! May be overwritten by real data later
-$ifi %addUP%==yes VFLOWBUFFER.LO(Y,IA,PROCBUFFER,FLOW,S,T)    =-ILOUPBOUNDS;  !! May be overwritten by real data later
-$ifi %addUP%==yes VFLOWBUFFER.UP(Y,IA,PROCBUFFER,FLOW,S,T)    = ILOUPBOUNDS;  !! May be overwritten by real data later
-$ifi %addUP%==yes VFLOWTRANS.UP(Y,IAAAE,IAAAI,FLOW,S,T)       = ILOUPBOUNDS;  !! May be overwritten by real data later
-$ifi %addUP%==yes VSTORAGEVOL.UP(Y,IA,PROCSTORAGE,FLOW,S,T)   = ILOUPBOUNDS;  !! May be overwritten by real data later
-$ifi %addUP%==yes VPROCKAPNEW.UP(Y,IA,PROC)                   = ILOUPBOUNDS;  !! May be overwritten by real data later
-
-
-VPROCKAPNEW.UP(Y,IA,PROC)$(APROCKAPNEW(Y,IA,PROC))=777777777777777;
+$ifi %addUP%==yes VFLOWINDICVALUES.UP(Y,FLOWINDIC)      = 1E12;
+$ifi %addUP%==yes VFLOWSOURCE.UP(Y,IA,PROCSOURCE,FLOW,S,T)    = ILOUPBOUNDS;
+$ifi %addUP%==yes VFLOWSINK.UP(Y,IA,PROCSINK,FLOW,S,T)        = ILOUPBOUNDS;
+$ifi %addUP%==yes VFLOWBUFFER.LO(Y,IA,PROCBUFFER,FLOW,S,T)    =-ILOUPBOUNDS;
+$ifi %addUP%==yes VFLOWBUFFER.UP(Y,IA,PROCBUFFER,FLOW,S,T)    = ILOUPBOUNDS;
+$ifi %addUP%==yes VFLOWTRANS.UP(Y,IAAAE,IAAAI,FLOW,S,T)       = ILOUPBOUNDS;
+$ifi %addUP%==yes VSTORAGEVOL.UP(Y,IA,PROCSTORAGE,FLOW,S,T)   = ILOUPBOUNDS;
+$ifi %addUP%==yes VPROCKAPNEW.UP(Y,IA,PROC)                   = ILOUPBOUNDS;
+VPROCKAPNEW.UP(Y,IA,PROC)$(APROCKAPNEW(Y,IA,PROC))=1E7;
