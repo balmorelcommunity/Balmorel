@@ -268,12 +268,22 @@ $if not EXIST '../data/OPTIFLOW_EMI_POLNA_MARITIME.inc' $INCLUDE '../../base/dat
 
 
 *Retrofitting
-$ifi not %optiRetrofit%==yes $goto NO_RETROFIT
+*$ifi not %optiRetrofit%==yes $goto NO_RETROFIT
 SET PROCKAP_RETRO(PROC,FLOW,IPROCTO,IFLOWOUT) "Subset of (PROC,FLOW) engine capacity of PROC can be retrofitted and shared with another for process-flow pair" %semislash%
 $if     EXIST '../data/OPTIFLOW_PROCKAP_RETRO.inc' $INCLUDE         '../data/OPTIFLOW_PROCKAP_RETRO.inc';
 $if not EXIST '../data/OPTIFLOW_PROCKAP_RETRO.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCKAP_RETRO.inc';
 %semislash%;
-$label NO_RETROFIT
+
+PARAMETER PROCKAP_RETRO_SURVIVAL(YYY, PROC) "Fraction of  capacity with vessels still technically operational in a given year (eligible for retrofit use only)" %semislash%
+$if     EXIST '../data/OPTIFLOW_PROCKAP_RETRO_SURVIVAL.inc' $INCLUDE         '../data/OPTIFLOW_PROCKAP_RETRO_SURVIVAL.inc';
+$if not EXIST '../data/OPTIFLOW_PROCKAP_RETRO_SURVIVAL.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCKAP_RETRO_SURVIVAL.inc';
+%semislash%;
+*$label NO_RETROFIT
+
+
+
+
+
 
 
 * OBS FF * End *

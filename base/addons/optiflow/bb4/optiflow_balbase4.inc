@@ -29,6 +29,8 @@ QMINFLOW_A
 QMINFLOW_R
 QMINFLOW_C
 
+QPROCKAP_SHARE_RETROFIT
+
 $ifi %inv%==yes       QPROCKAPACCUMNET
 $ifi %inv%==yes       QPROCKAP_UP
 $ifi %inv%==yes       QSTOVOLTLIM_T
@@ -40,7 +42,6 @@ $ifi %inv%==yes       QPROCEXIMKAPACCUMNET
 $ifi %inv%==yes       QPROCEXIMKAP
 $ifi %inv%==yes       QPROCEXIMKAP_SYMMETRY  
 $ifi %maritime_carbon_budget%==yes QLIMCO2AGG_MARITIME
-$ifi %optiRetrofit%==yes QPROCKAP_SHARE_RETROFIT
 $ifi %APKNDISC%==yes  QAPKNDISCEQUALCONT
 
 
