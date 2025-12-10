@@ -755,7 +755,7 @@ $if not EXIST '../data/OPTIFLOW_INDICLIMGOAL.inc' $INCLUDE '../../base/data/OPTI
 %semislash%;
 
 SCALAR IPENALTYQ   "Penalty on violation of equation" / 1e9 /;
-SCALAR ILOUPBOUNDS "Default lower and upper bounds to guard against unbounded solution" /1e10/;
+SCALAR ILOUPBOUNDS "Default lower and upper bounds to guard against unbounded solution" /1e8/;
 
 Set PROCTECHTYPE(PROC,TECH_GROUP) "Type of technology aggrigated"  %semislash%;
 $if     EXIST '../data/OPTIFLOW_PROCTECHTYPE.inc' $INCLUDE         '../data/OPTIFLOW_PROCTECHTYPE.inc';

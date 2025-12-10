@@ -47,10 +47,6 @@ ICO2_CC('CO2_Port_Handling','CO2_OCC_SEQ') = YES;
 ICO2_CC('ProcExim_Pipeline_CO2','CO2_OCC_OFF_PIPE') = YES;
 ICO2_CC('ProcExim_Ship_CO2','CO2_OCC_OFF_SHIP') = YES;
 
-
-*ICO2_CC('CO2_Port_Handling','CO2_OCC_OFF_PIPE') = YES;
-*ICO2_CC('CO2_Port_Handling','CO2_OCC_OFF_SHIP') = YES;
-
 $label NO_OCC
 
 
@@ -77,9 +73,7 @@ ICO2_FUELPROC('LNG_Eff','CO2EQ_PROC_EMI') = YES;
 ICO2_FUELPROC('LNG_Eff','CO2EQ_DIR_EMI') = YES;
 ICO2_FUELPROC('LNG_Eff_OCC','CO2EQ_PROC_EMI') = YES;
 ICO2_FUELPROC('LNG_Eff_OCC','CO2EQ_DIR_EMI') = YES;
-
 ICO2_FUELPROC('Hydrogen_Eff','CO2EQ_PROC_EMI') = YES;
-
 *CO2_OCC_SEQ does neither add or contribute to the CO2 balance, it is simply an abated emission
 
 $label noCCUopti

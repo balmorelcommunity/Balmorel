@@ -519,9 +519,15 @@ VFLOWSOURCE.UP(IY411,IA,PROCSOURCE,FLOW,S,T)$(
 ) = 0;
 
 *Maritime carbon budget
-$ifi %maritime_carbon_budget%==yes EQUATION QLIMCO2AGG_MARITIME(Y)    "Limit on annual CO2-emission in the maritime sector, by year and group, aggregated for all countries";
-$ifi %maritime_carbon_budget%==yes  QLIMCO2AGG_MARITIME(IY411)..
-$ifi %maritime_carbon_budget%==yes      SUM((IA,S,T), VFLOWSINK(IY411, IA,'CO2_Emi_Sink', 'CO2EQ_DIR_EMI', S, T) * IHOURSINST(S,T)) =L= EMI_POLNA_MARITIME(IY411,'LIM_CO2');
+* Maritime carbon budget (only internal OptiFlow areas)
+$ifi %maritime_carbon_budget%==yes EQUATION QLIMCO2AGG_MARITIME(Y);
+$ifi %maritime_carbon_budget%==yes QLIMCO2AGG_MARITIME(IY411)..
+$ifi %maritime_carbon_budget%==yes   SUM((IA,IFLOWIN,S,T)$AAAOPTIFLOW(IA),
+$ifi %maritime_carbon_budget%==yes       (  VFLOWSINK(IY411,IA,'CO2_Emi_Sink',IFLOWIN,S,T)$IENTERPROC(IY411,IA,'CO2_Emi_Sink',IFLOWIN)
+$ifi %maritime_carbon_budget%==yes        - VFLOWSINK(IY411,IA,'CO2_Neg_Sink',IFLOWIN,S,T)$IENTERPROC(IY411,IA,'CO2_Neg_Sink',IFLOWIN)
+$ifi %maritime_carbon_budget%==yes       ) * IHOURSINST(S,T)
+$ifi %maritime_carbon_budget%==yes   ) =L= EMI_POLNA_MARITIME(IY411,'LIM_CO2');
+
 
 
 **Retrofitting
