@@ -54,12 +54,17 @@ $ifi %APKNdisc%==yes $include "..\addons\OptiFlow\apkndisc\apkndiscvarsequas.inc
 *----- End: Any declarations of variables for addon
 *-------------------------------------------------------------------------------
 
-$ifi %addUP%==yes VFLOWINDICVALUES.UP(Y,FLOWINDIC)      = 1E12;
-$ifi %addUP%==yes VFLOWSOURCE.UP(Y,IA,PROCSOURCE,FLOW,S,T)    = ILOUPBOUNDS;
-$ifi %addUP%==yes VFLOWSINK.UP(Y,IA,PROCSINK,FLOW,S,T)        = ILOUPBOUNDS;
-$ifi %addUP%==yes VFLOWBUFFER.LO(Y,IA,PROCBUFFER,FLOW,S,T)    =-ILOUPBOUNDS;
-$ifi %addUP%==yes VFLOWBUFFER.UP(Y,IA,PROCBUFFER,FLOW,S,T)    = ILOUPBOUNDS;
-$ifi %addUP%==yes VFLOWTRANS.UP(Y,IAAAE,IAAAI,FLOW,S,T)       = ILOUPBOUNDS;
-$ifi %addUP%==yes VSTORAGEVOL.UP(Y,IA,PROCSTORAGE,FLOW,S,T)   = ILOUPBOUNDS;
-$ifi %addUP%==yes VPROCKAPNEW.UP(Y,IA,PROC)                   = ILOUPBOUNDS;
-VPROCKAPNEW.UP(Y,IA,PROC)$(APROCKAPNEW(Y,IA,PROC))=1E7;
+$ifi %addUP%==yes VFLOWINDICVALUES.UP(Y,FLOWINDIC)      		 = 1E12;
+$ifi %addUP%==yes VFLOWSOURCE.UP(Y,IA,PROCSOURCE,FLOW,S,T)    	 = ILOUPBOUNDS;
+$ifi %addUP%==yes VFLOWSINK.UP(Y,IA,PROCSINK,FLOW,S,T)        	 = ILOUPBOUNDS;
+$ifi %addUP%==yes VFLOWBUFFER.LO(Y,IA,PROCBUFFER,FLOW,S,T)    	 =-ILOUPBOUNDS;
+$ifi %addUP%==yes VFLOWBUFFER.UP(Y,IA,PROCBUFFER,FLOW,S,T)    	 = ILOUPBOUNDS;
+$ifi %addUP%==yes VFLOWTRANS.UP(Y,IAAAE,IAAAI,PROCEXIM,FLOW,S,T) = ILOUPBOUNDS;
+$ifi %addUP%==yes VSTORAGEVOL.UP(Y,IA,PROCSTORAGE,FLOW,S,T)   	 = ILOUPBOUNDS;
+$ifi %addUP%==yes VPROCKAPNEW.UP(Y,IA,PROC)                   	 = ILOUPBOUNDS;
+
+*OBS FF
+VPROCKAPNEW.UP(Y,IA,PROC)$(APROCKAPNEW(Y,IA,PROC))				 =1E7;
+VFLOWINDICVALUES.UP(Y,FLOWINDIC)      		 					 =1E11;
+VFLOWSOURCE.UP(Y,IA,PROCSOURCE,FLOW,S,T)    					 =1E8;
+
