@@ -74,3 +74,34 @@ $if     EXIST '../data/HYDROGEN_XH2KN_ES.inc' $INCLUDE         '../data/HYDROGEN
 $if not EXIST '../data/HYDROGEN_XH2KN_ES.inc' $INCLUDE '../../base/data/HYDROGEN_XH2KN_ES.inc';
 
 
+*OBS FF
+*Parameters for relative cost increase from underwater share (H2 corridors)
+PARAMETER TRANSSHARE_H2(IRRRE,IRRRI)  'Fraction of H2 corridor length between IRE and IRI that is underwater'
+$if     EXIST '../data/TRANSSHARE_H2.inc' $INCLUDE         '../data/TRANSSHARE_H2.inc';
+$if not EXIST '../data/TRANSSHARE_H2.inc' $INCLUDE '../../base/data/TRANSSHARE_H2.inc';
+%semislash%;
+
+*Parameters for relative cost increase from mountainous share (H2 corridors)
+PARAMETER TRANSSHARE_MOUNTAIN_H2(IRRRE,IRRRI)  'Fraction of H2 corridor length between IRE and IRI in mountainous regions'
+$if     EXIST '../data/TRANSSHARE_MOUNTAIN_H2.inc' $INCLUDE         '../data/TRANSSHARE_MOUNTAIN_H2.inc';
+$if not EXIST '../data/TRANSSHARE_MOUNTAIN_H2.inc' $INCLUDE '../../base/data/TRANSSHARE_MOUNTAIN_H2.inc';
+%semislash%;
+
+SCALAR UNDERWATER_REL_INCR 'Increase in PROCINVCOST and PROCFIXEDCOST for the subsea share of a transport pipeline (relative increase from base)'
+$if     EXIST '../data/OPTIFLOW_UNDERWATER_REL_INCR.inc' $INCLUDE         '../data/OPTIFLOW_UNDERWATER_REL_INCR.inc';
+$if not EXIST '../data/OPTIFLOW_UNDERWATER_REL_INCR.inc' $INCLUDE '../../base/data/OPTIFLOW_UNDERWATER_REL_INCR.inc';
+%semislash%;
+
+SCALAR MOUNTAIN_REL_INCR 'Increase in PROCINVCOST and PROCFIXEDCOST for the mountainous share of a transport pipeline (relative increase from base)'
+$if     EXIST '../data/OPTIFLOW_MOUNTAIN_REL_INCR.inc' $INCLUDE         '../data/OPTIFLOW_MOUNTAIN_REL_INCR.inc';
+$if not EXIST '../data/OPTIFLOW_MOUNTAIN_REL_INCR.inc' $INCLUDE '../../base/data/OPTIFLOW_MOUNTAIN_REL_INCR.inc';
+%semislash%;
+
+*Geography multiplier for H2 transmission corridors
+PARAMETER XH2_GEOMULT(IRRRE,IRRRI) 'Relative cost multiplier for H2 pipelines accounting for underwater and mountainous shares';
+
+XH2_GEOMULT(IRE,IRI) =
+    1
+  + TRANSSHARE_H2(IRE,IRI)          * (UNDERWATER_REL_INCR - 1)
+  + TRANSSHARE_MOUNTAIN_H2(IRE,IRI) * (MOUNTAIN_REL_INCR  - 1)
+;
