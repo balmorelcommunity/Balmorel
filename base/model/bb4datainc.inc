@@ -710,6 +710,39 @@ $if     EXIST '../data/XMAXINV.inc' $INCLUDE         '../data/XMAXINV.inc';
 $if not EXIST '../data/XMAXINV.inc' $INCLUDE '../../base/data/XMAXINV.inc';
 %semislash%;
 
+
+*OBS FF
+*Parameters for relative cost increase from underwater share (electricity transmission)
+PARAMETER TRANSSHARE_SUBSEA(IRRRE,IRRRI)  'Fraction of corridor length between IRE and IRI that is underwater'
+$if     EXIST '../data/TRANSSHARE_SUBSEA.inc' $INCLUDE         '../data/TRANSSHARE_SUBSEA.inc';
+$if not EXIST '../data/TRANSSHARE_SUBSEA.inc' $INCLUDE '../../base/data/TRANSSHARE_SUBSEA.inc';
+%semislash%;
+
+*Parameters for relative cost increase from mountainous share (electricity transmission)
+PARAMETER TRANSSHARE_MOUNTAIN(IRRRE,IRRRI)  'Fraction of corridor length between IRE and IRI in mountainous regions'
+$if     EXIST '../data/TRANSSHARE_MOUNTAIN.inc' $INCLUDE         '../data/TRANSSHARE_MOUNTAIN.inc';
+$if not EXIST '../data/TRANSSHARE_MOUNTAIN.inc' $INCLUDE '../../base/data/TRANSSHARE_MOUNTAIN.inc';
+%semislash%;
+
+SCALAR SUBSEA_REL_INCR 'Increase in PROCINVCOST and PROCFIXEDCOST for the subsea share of a transmission line/pipeline (relative increase from base)'
+$if     EXIST '../data/SUBSEA_REL_INCR.inc' $INCLUDE         '../data/SUBSEA_REL_INCR.inc';
+$if not EXIST '../data/SUBSEA_REL_INCR.inc' $INCLUDE '../../base/data/SUBSEA_REL_INCR.inc';
+%semislash%;
+
+SCALAR MOUNTAIN_REL_INCR 'Increase in PROCINVCOST and PROCFIXEDCOST for the mountainous share of a transport pipeline (relative increase from base)'
+$if     EXIST '../data/MOUNTAIN_REL_INCR.inc' $INCLUDE         '../data/MOUNTAIN_REL_INCR.inc';
+$if not EXIST '../data/MOUNTAIN_REL_INCR.inc' $INCLUDE '../../base/data/MOUNTAIN_REL_INCR.inc';
+%semislash%;
+
+*Geography multiplier for electricity transmission lines
+PARAMETER X_GEOMULT(IRRRE,IRRRI) 'Relative cost multiplier for electricity lines accounting for underwater and mountainous shares';
+
+X_GEOMULT(IRE,IRI) =
+  + TRANSSHARE_SUBSEA(IRE,IRI)      * (SUBSEA_REL_INCR - 1)
+  + TRANSSHARE_MOUNTAIN(IRE,IRI)    * (MOUNTAIN_REL_INCR  - 1)
+;
+
+
 *-------------------------------------------------------------------------------
 * Annually specified fuel prices: ---------------------------------------------
 *-------------------------------------------------------------------------------

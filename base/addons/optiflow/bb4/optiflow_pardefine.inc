@@ -282,10 +282,6 @@ $if not EXIST '../data/OPTIFLOW_PROCKAP_RETRO_SURVIVAL.inc' $INCLUDE '../../base
 
 
 
-
-
-
-
 * OBS FF * End *
 
 SET PROCDATASET  'Process addons/OptiFlow/data types' %semislash%   !! TODO: what kind of addons/OptiFlow/data? not all, some are  clearly in  procinoutflow
@@ -299,26 +295,26 @@ $if not EXIST '../data/OPTIFLOW_PROCDATA.inc' $INCLUDE '../../base/data/OPTIFLOW
 %semislash%;
 
 *Parameters for relative cost increase from underwater share
-PARAMETER TRANSSHARE(PROC,IAAAE,IAAAI)	'Fraction of pipeline length between IAAAE and IAAAI that is underwater'
-$if     EXIST '../data/OPTIFLOW_TRANSSHARE_UNDERWATER.inc' $INCLUDE         '../data/OPTIFLOW_TRANSSHARE_UNDERWATER.inc';
-$if not EXIST '../data/OPTIFLOW_TRANSSHARE_UNDERWATER.inc' $INCLUDE '../../base/data/OPTIFLOW_TRANSSHARE_UNDERWATER.inc';
+PARAMETER OPTIFLOW_TRANSSHARE_SUBSEA(PROC,IAAAE,IAAAI)	'Fraction of pipeline length between IAAAE and IAAAI that is underwater'
+$if     EXIST '../data/OPTIFLOW_TRANSSHARE_SUBSEA.inc' $INCLUDE         '../data/OPTIFLOW_TRANSSHARE_SUBSEA.inc';
+$if not EXIST '../data/OPTIFLOW_TRANSSHARE_SUBSEA.inc' $INCLUDE '../../base/data/OPTIFLOW_TRANSSHARE_SUBSEA.inc';
 %semislash%;
 
-SCALAR UNDERWATER_REL_INCR 'Increase in PROCINVCOST and PROCFIXEDCOST for the subsea share of a transport pipeline (relative increase from base)'
-$if     EXIST '../data/OPTIFLOW_UNDERWATER_REL_INCR.inc' $INCLUDE         '../data/OPTIFLOW_UNDERWATER_REL_INCR.inc';
-$if not EXIST '../data/OPTIFLOW_UNDERWATER_REL_INCR.inc' $INCLUDE '../../base/data/OPTIFLOW_UNDERWATER_REL_INCR.inc';
-%semislash%;
 
 *Parameters for relative cost increase from mountainous share
-PARAMETER TRANSSHARE_MOUNTAIN(PROC,IAAAE,IAAAI)	'Fraction of pipeline length between IAAAE and IAAAI in mountainous regions'
+PARAMETER OPTIFLOW_TRANSSHARE_MOUNTAIN(PROC,IAAAE,IAAAI)	'Fraction of pipeline length between IAAAE and IAAAI in mountainous regions'
 $if     EXIST '../data/OPTIFLOW_TRANSSHARE_MOUNTAIN.inc' $INCLUDE         '../data/OPTIFLOW_TRANSSHARE_MOUNTAIN.inc';
 $if not EXIST '../data/OPTIFLOW_TRANSSHARE_MOUNTAIN.inc' $INCLUDE '../../base/data/OPTIFLOW_TRANSSHARE_MOUNTAIN.inc';
 %semislash%;
 
-SCALAR MOUNTAIN_REL_INCR 'Increase in PROCINVCOST and PROCFIXEDCOST for the mountainous share of a transport pipeline (relative increase from base)'
-$if     EXIST '../data/OPTIFLOW_MOUNTAIN_REL_INCR.inc' $INCLUDE         '../data/OPTIFLOW_MOUNTAIN_REL_INCR.inc';
-$if not EXIST '../data/OPTIFLOW_MOUNTAIN_REL_INCR.inc' $INCLUDE '../../base/data/OPTIFLOW_MOUNTAIN_REL_INCR.inc';
-%semislash%;
+*Geography multiplier for electricity transmission lines
+PARAMETER OPTIFLOW_GEOMULT(PROC,IAAAE,IAAAI) 'Relative cost multiplier for electricity lines accounting for underwater and mountainous shares';
+
+OPTIFLOW_GEOMULT(PROC,IAAAE,IAAAI) =
+  + OPTIFLOW_TRANSSHARE_SUBSEA(PROC,IAAAE,IAAAI)      * (SUBSEA_REL_INCR - 1)
+  + OPTIFLOW_TRANSSHARE_MOUNTAIN(PROC,IAAAE,IAAAI)    * (MOUNTAIN_REL_INCR  - 1)
+;
+
 
 
 

@@ -1352,6 +1352,7 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 *   discounted back to the first year in the present BB4 model, this latter is represented by factor IY4GINVCOSTWEIGHT below.
 *   Discounting further back from first year in the present BB4 model to the first year in Y is handled by the factor IDISCOUNTFACTOR(Y) above.
 *   The relative weight of the years is represented by   TODO: sammenlign med SONYstick:
+
    + IOF1000000*(SUM((IA,G)$(IAGKNY(Y,IA,G) AND (NOT IGKN_ES(G))), VGKN(Y,IA,G)*GINVCOST(IA,G)*(SUM(C$ICA(C,IA),ANNUITYCG(C,G)))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYG(Y,IYALIAS2,G))))
 
 * Investment costs, generation and storage capacity invested in previous years
@@ -1359,13 +1360,12 @@ IOF1_ * IDISCOUNTFACTOR(Y) * IWEIGHTY(Y) * (
 
 * Investment costs, new transmission capacity
 * (the average of the annuities for the two countries in question is used for international transmission):
-    + SUM((IRE,IRI)$((IXKN(Y,IRI,IRE) OR IXKN(Y,IRE,IRI)) AND (NOT (IXKN_ES(IRE,IRI) OR IXKN_ES(IRI,IRE)))),IOF05*VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*
+    + SUM((IRE,IRI)$((IXKN(Y,IRI,IRE) OR IXKN(Y,IRE,IRI)) AND (NOT (IXKN_ES(IRE,IRI) OR IXKN_ES(IRI,IRE)))),IOF05*VXKN(Y,IRE,IRI)*XINVCOST(Y,IRE,IRI)*(1+X_GEOMULT(IRE,IRI))*
       (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*SUM(IYALIAS2$(ORD(IYALIAS2) EQ ORD(Y)),IYHASANNUITYX(IYALIAS2,Y)))
 
 *Investment costs, transmission capacity invested in previous years
-    + SUM((IYALIAS2,IRE,IRI)$((IXKN(IYALIAS2,IRI,IRE) OR IXKN(IYALIAS2,IRE,IRI)) AND (NOT (IXKN_ES(IRE,IRI) OR IXKN_ES(IRI,IRE)))  AND (ORD(IYALIAS2) LT ORD(Y))),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*
+    + SUM((IYALIAS2,IRE,IRI)$((IXKN(IYALIAS2,IRI,IRE) OR IXKN(IYALIAS2,IRE,IRI)) AND (NOT (IXKN_ES(IRE,IRI) OR IXKN_ES(IRI,IRE)))  AND (ORD(IYALIAS2) LT ORD(Y))),IOF05*VXKN(IYALIAS2,IRE,IRI)*XINVCOST(IYALIAS2,IRE,IRI)*(1+X_GEOMULT(IRE,IRI))*
       (IOF05* (SUM(C$CCCRRR(C,IRE),ANNUITYCX(C))+SUM(C$CCCRRR(C,IRI),ANNUITYCX(C))))*IYHASANNUITYX(IYALIAS2,Y))
-
 
 
 * Emission taxes
