@@ -1,0 +1,4 @@
+Profile1 = EVs return to charger when gets below 60% SOC
+Profile2 = Avg. of Profile1 over countries
+Profile3 = EVs return to charger after every trip - This assumes all chargers being smartchargers. If wanted dumb charging, the G2V bounds needs to be dynamic e.g. made as a constraint instead.
+Profile4 = Avg. og Profile3 over countries
