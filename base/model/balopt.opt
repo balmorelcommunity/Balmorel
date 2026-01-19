@@ -186,51 +186,46 @@ $setglobal VRESHUTDOWN   yes
 *------------------------------EV ADDON-------------------------------------------------
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV 
+$setglobal EV yes
 *!option YES
 
-* Adds DUMB charging:
-$setglobal DUMB
-*!option yes
-
-* Adds smart charging. Only smart charging, without V2G!:
-$setglobal SMART 
-*!option yes
-
 * Adds V2G charging: 
-$setglobal V2G YES  
-*!option  yes
-
-* Restricts PHEV vehicles from doing V2G (only relevant if V2G is activated):
-$setglobal NO_PHEV_V2G  yes
-*!option  yes
-
-* Adds step charging scheme (NOT SURE IT IS WORKING ANY MORE):
-$setglobal STEPCHARGSCHEME
-*!option yes
-
-* Adds cycle degradation (NOT SURE IT IS WORKING ANY MORE, COSTS SHOULD BE ANNUALIZED):
-$setglobal DEGCYCLE
-*!option  yes
-
-* Adds calendar degradation (NOT SURE IT IS WORKING ANY MORE, COSTS SHOULD BE ANNUALIZED):
-$setglobal DEGCAL
-*!option yes
-
-* EV timeseries will be averaged (relevant if less than all time steps in TTT are used).
-* NOTE: It currently only works if T are equally distanced from each other and if the first T chosen is equal to the first element int TTT). If this is not desired, one can replace the timeseries with new averaged-with-another-procedude timeseries
-* NOTE: It might lead to infeasibilities though
-$setglobal EV_PROFILE_AVG  yes
-*!option yes
-
-*Adds EV infeasibility variables (added here on purpose, since if not all TTT are used it is very likely to run into small infeasibilities)
-*Note: The value of the parameter PENALTQ should be in line with the cost assumptions in the model to obtain meaninful results
-$setglobal EV_infeas  yes
-*!option
+$setglobal V2G yes
+*!option  
 
 * Models EV as inter-seasonal storage (if it is not activated, then EVs are model as intra-seasonal storage):
-$setglobal EV_INTERSEASONAL
+* NOTE: If not INTERSEASONAL, then use EV_allreturn and profile3 or profile4
+$setglobal EV_INTERSEASONAL yes
 *!option yes
+
+* EV timeseries will be normalized (relevant if less than all time steps in TTT are used).
+* NOTE: Normalizing each time step, by the time steps not used in the simulation.
+* Recommend to use if the terms are not 24 consecutive hours, as the profiles have hourly seasonality.
+$setglobal EV_normalization yes
+*!option yes
+
+* If not S01 is used, then it will calculate available EVs for the first season in the simulation.
+* If not "yes" and not S01 in simulation, then you would likely have more EVs in your system than assumed by the data.
+$setglobal EV_season_calc yes
+*!option yes
+
+* Adds EV infeasibility variables (added here on purpose, since if bad data is used, you will likely run into small infeasibilities)
+* Example when it can happen: V2G is no, profile says noone is leaving but everyone is dumb charging.
+* The reason is that the EV addon is highly affected by input data.
+* Note: The value of the parameter PENALTQ should be in line with the cost assumptions in the model to obtain meaninful results
+* Note: Rule of thumb, if this is needed, something is probably wrong with the data used.
+$setglobal EV_infeas
+*!option yes
+
+* Scenario where every EV return to charger after each trip. Needs specific profile as well (profile3 or profile4).
+$setglobal EV_allreturn 
+*!option yes
+
+* Set profile
+* NOTE: If NOT using EV_INTERSEASONAL or using EV_allreturn use profile3 or profile4
+$setglobal EV_profile profile1
+*!option profile1 profile2, profile3, profile4
+
 *------------------------------END: EV ADDON-------------------------------------------------
 
 *------------------------------TRANSPORT ADDON-------------------------------------------------
@@ -1042,3 +1037,4 @@ $setglobal GWAVE_DOL AAA
 *-------------------------------------------------------------------------------
 * End of Balopt.opt
 *-------------------------------------------------------------------------------
+

@@ -1424,7 +1424,7 @@ QDENET(IY411,IR,DEUSER,IS3,T)..
          =G=
                               ((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0)
 $ifi %DemandResponse%==yes  + SUM((IA,DR_TECH)$(IADR(IY411,IA,DR_TECH) AND RRRAAA(IR,IA) AND DR_TECH_USER(DR_TECH,DEUSER)),  VDR_UP(IY411,IA,DR_TECH,IS3,T) - VDR_DOWN(IY411,IA,DR_TECH,IS3,T))
-$ifi %EV%==yes               + (VEV_VG2V_BEV(IY411,IR,IS3,T)$IHASBEV(IR) + VEV_VG2V_PHEV(IY411,IR,IS3,T)$IHASPHEV(IR) - VEV_VV2G_BEV(IY411,IR,IS3,T)$IHASBEV(IR) - VEV_VV2G_PHEV(IY411,IR,IS3,T)$IHASPHEV(IR))$IRESE(DEUSER)
+$ifi %EV%==yes               + (VEV_G2V_BEV(IY411,IR,IS3,T)$IHASBEV(IR) + VEV_G2V_PHEV(IY411,IR,IS3,T)$IHASPHEV(IR) - VEV_V2G_BEV(IY411,IR,IS3,T)$IHASBEV(IR) - VEV_V2G_PHEV(IY411,IR,IS3,T)$IHASPHEV(IR))$IRESE(DEUSER)
 $ifi %INDUSTRY%==yes          + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)), SUM(IGETOH$IAGK_HASORPOT(IY411,IA,IGETOH), VGE_T(IY411,IA,IGETOH,IS3,T)))$IIND(DEUSER)
 $ifi %INDUSTRY%==yes $ifi %HYDROGEN%==yes   + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)), SUM(G$(IAGK_HASORPOT(IY411,IA,G) AND (IHYDROGEN_GEHTOH2(G) OR IHYDROGEN_GETOHH2(G) OR IHYDROGEN_GETOH2(G))), VGE_T(IY411,IA,G,IS3,T)))$IIND(DEUSER)
 $ifi %INDUSTRY%==yes          + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)),SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),VESTOLOADT(IY411,IA,IGESTO,IS3,T)))$IIND(DEUSER)
@@ -2818,29 +2818,28 @@ $ifi %HYDROGEN%==yes  execute_unload  "../../simex/XH2KACCUMNET.gdx", XH2KACCUMN
 $ifi %HYDROGEN%==yes XH2KACCUMNET(Y,IRE,IRI)=0;
 
 
-$ifi %EV%==yes   EV_VSOC_BEV(Y,IR,S,T)$IHASBEV(IR)=VEV_VSOC_BEV.L(Y,IR,S,T);
-$ifi %EV%==yes   EV_VSOC_PHEV(Y,IR,S,T)$IHASPHEV(IR)=VEV_VSOC_PHEV.L(Y,IR,S,T);
+$ifi %EV%==yes   $ifi %EV%==yes EV_BE_BEV(Y,IR,S,T)$IHASBEV(IR)=VEV_BE_BEV.L(Y,IR,S,T);
+$ifi %EV%==yes EV_BE_PHEV(Y,IR,S,T)$IHASPHEV(IR)=VEV_BE_PHEV.L(Y,IR,S,T);
 
-$ifi %EV%==yes  EV_BEV_NETCHARGING(Y,IR,S,T)$IHASBEV(IR)= + (EV_BEV_SOCFlex(Y,S,T,IR) + VEV_VG2V_BEV.L(Y,IR,S,T) * EV_PEFF(Y) - EV_BEV_Flex(Y,S,T,IR))
-$ifi %EV%==yes $ifi %V2G%==yes   - VEV_VV2G_BEV.L(Y,IR,S,T) / EV_PEFF(Y)
-$ifi %EV%==yes $ifi %EV_infeas%==yes     +VQEV_BEV_SOCBALANCE.L(Y,IR,S,T,'IMINUS') -VQEV_BEV_SOCBALANCE.L(Y,IR,S,T,'IPLUS')
-$ifi %EV%==yes  ;
+$ifi %EV%==yes $ifi not %EV_allreturn%==yes EV_BEV_NETCHARGING(Y,IR,S,T)$IHASBEV(IR)= + (IEV_BEV_return(Y,S,T,IR)*EV_BEV_return_energy(Y) + VEV_G2V_BEV.L(Y,IR,S,T) * EV_BEV_G2V_EFF(Y) + IEV_BEV_leave(Y,S,T,IR)*EV_BEV_leave_energy(Y))
+$ifi %EV%==yes $ifi %EV_allreturn%==yes EV_BEV_NETCHARGING(Y,IR,S,T)$IHASBEV(IR)= + (IEV_BEV_return(Y,S,T,IR)*(EV_BEV_batsize(Y)-EV_BEV_return_energy(T,IR)) + VEV_G2V_BEV.L(Y,IR,S,T) * EV_BEV_G2V_EFF(Y) + IEV_BEV_leave(Y,S,T,IR)*EV_BEV_leave_energy(Y))
+$ifi %EV%==yes $ifi %V2G%==yes - VEV_V2G_BEV.L(Y,IR,S,T)/EV_BEV_V2G_EFF(Y)
+$ifi %EV%==yes $ifi %EV_infeas%==yes +VQEV_BEV_BEBALANCE.L(Y,IR,S,T,'IMINUS') -VQEV_BEV_BEBALANCE.L(Y,IR,S,T,'IPLUS')
+$ifi %EV%==yes ;
 
-$ifi %EV%==yes  EV_PHEV_NETCHARGING(Y,IR,S,T)$IHASPHEV(IR)= + (EV_PHEV_SOCFlex(Y,S,T,IR) + VEV_VG2V_PHEV.L(Y,IR,S,T) * EV_PEFF(Y) - EV_PHEV_Flex(Y,S,T,IR))
-$ifi %EV%==yes $ifi %V2G%==yes   - VEV_VV2G_PHEV.L(Y,IR,S,T) / EV_PEFF(Y)
-$ifi %EV%==yes $ifi %EV_infeas%==yes     +VQEV_PHEV_SOCBALANCE.L(Y,IR,S,T,'IMINUS') -VQEV_PHEV_SOCBALANCE.L(Y,IR,S,T,'IPLUS')
-$ifi %EV%==yes  ;
+$ifi %EV%==yes EV_PHEV_NETCHARGING(Y,IR,S,T)$IHASPHEV(IR)= + (IEV_PHEV_return(Y,S,T,IR)*EV_PHEV_return_energy(Y) + VEV_G2V_PHEV.L(Y,IR,S,T) * EV_PHEV_G2V_EFF(Y) + IEV_PHEV_leave(Y,S,T,IR)*EV_PHEV_leave_energy(Y))
+$ifi %EV%==yes $ifi %V2G%==yes - VEV_V2G_PHEV.L(Y,IR,S,T)/EV_PHEV_V2G_EFF(Y)
+$ifi %EV%==yes $ifi %EV_infeas%==yes +VQEV_PHEV_BEBALANCE.L(Y,IR,S,T,'IMINUS') -VQEV_PHEV_BEBALANCE.L(Y,IR,S,T,'IPLUS')
+$ifi %EV%==yes ;
 
-$ifi %EV%==yes   execute_unload  "../../simex/EV_VSOC_BEV.gdx", EV_VSOC_BEV;
-$ifi %EV%==yes   execute_unload  "../../simex/EV_VSOC_PHEV.gdx", EV_VSOC_PHEV;
-$ifi %EV%==yes   execute_unload  "../../simex/EV_BEV_NETCHARGING.gdx", EV_BEV_NETCHARGING;
-$ifi %EV%==yes   execute_unload  "../../simex/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHARGING;
+$ifi %EV%==yes execute_unload "../../simex/EV_BE_BEV.gdx", EV_BE_BEV;
+$ifi %EV%==yes execute_unload "../../simex/EV_BE_PHEV.gdx", EV_BE_PHEV;
+$ifi %EV%==yes execute_unload "../../simex/EV_BEV_NETCHARGING.gdx", EV_BEV_NETCHARGING;
+$ifi %EV%==yes execute_unload "../../simex/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHARGING;
 
 *Reducing size of export files once they have been exported
-$ifi %EV%==yes   EV_VSOC_BEV(Y,IR,S,T)=0;
-$ifi %EV%==yes   EV_VSOC_PHEV(Y,IR,S,T)=0;
-$ifi %EV%==yes   EV_BEV_NETCHARGING(Y,IR,S,T)=0;
-$ifi %EV%==yes   EV_PHEV_NETCHARGING(Y,IR,S,T)=0;
+$ifi %EV%==yes EV_BEV_NETCHARGING(Y,IR,S,T)=0;
+$ifi %EV%==yes EV_PHEV_NETCHARGING(Y,IR,S,T)=0;
 
 $ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes INDIVUSERS_GROUPSHARE(Y,IR,DHUSER,INDIVUSERS_GROUP)=VINDIVUSERS_GROUPSHARE.L(Y,IR,DHUSER,INDIVUSERS_GROUP);
 $ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes execute_unload  "../../simex/INDIVUSERS_GROUPSHARE.gdx", INDIVUSERS_GROUPSHARE;
