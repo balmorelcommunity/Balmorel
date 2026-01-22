@@ -558,7 +558,7 @@ $setglobal optiOCC yes
 * ! option yes
 
 * Import renewable fuels from a global exogenous market at fixed cost
-$setglobal optiGlobalFuels
+$setglobal optiGlobalFuels yes
 *! option yes
 
 *Perform operational run by fixing capacities to PROCKAPAACUMNET in /localsimex
@@ -566,12 +566,12 @@ $setglobal load_ex_cap
 *! option yes
 
 *Define a sector-level carbon budget for direct combustion emissions in the maritime sector
-$setglobal maritime_carbon_budget
+$setglobal maritime_carbon_budget yes
 *! option yes
 
 
 *Allow retrofitting of old fleet (methanol, ammonia ICE)
-$setglobal optiRetrofit
+$setglobal optiRetrofit yes
 *! option yes
 
 

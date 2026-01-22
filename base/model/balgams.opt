@@ -53,19 +53,19 @@ $OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF
 * Defaults are LIMROW=3, LIMCOL=3;
 * The statement "LIMROW=0" turns the listing off:
 
-OPTIONS LIMROW=   200, LIMCOL=   0;
+OPTIONS LIMROW=   5, LIMCOL=   6;
 
 *...............................................................................
 * SYSOUT controls the printing of the solved status in the list file.
 * Useful in emergency cases.
 * OPTIONS SYSOUT=OFF (default) or OPTIONS SYSOUT=ON:
-OPTIONS SYSOUT=On;
+OPTIONS SYSOUT=Off;
 
 *...............................................................................
 * SOLPRINT controls the printing of the solution in the list file.
 * Useful for inspection of details.
 * OPTIONS SOLPRINT=OFF or OPTIONS SOLPRINT=ON (default):
-OPTIONS SOLPRINT=On;
+OPTIONS SOLPRINT=Off;
 
 *...............................................................................
 * DECIMALS controls the the number of decimals in the list file.
