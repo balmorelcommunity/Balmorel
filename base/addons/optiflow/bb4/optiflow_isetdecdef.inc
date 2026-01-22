@@ -43,9 +43,12 @@ ICO2_CC('CO2_Biochar_Sum','CO2_FLOW_BIOCHAR') = YES;
 
 $ifi not %optiOCC%==yes $goto NO_OCC
 
-ICO2_CC('CO2_Port_Handling','CO2_OCC_SEQ') = YES;
-ICO2_CC('ProcExim_Pipeline_CO2','CO2_OCC_OFF_PIPE') = YES;
-ICO2_CC('ProcExim_Ship_CO2','CO2_OCC_OFF_SHIP') = YES;
+*CO2_OCC_SEQ does neither add or contribute to the CO2 balance, it is simply an abated emission
+*Only OCC based on renewable fuels contributes as negative emissions to the system balance
+
+ICO2_CC('Biooil_Eff_OCC','CO2_OCC_NEG') = YES;
+ICO2_CC('E_FT_Eff_OCC','CO2_OCC_NEG') = YES;
+ICO2_CC('LBG_Eff_OCC','CO2_OCC_NEG') = YES;
 
 $label NO_OCC
 
@@ -74,7 +77,6 @@ ICO2_FUELPROC('LNG_Eff','CO2EQ_DIR_EMI') = YES;
 ICO2_FUELPROC('LNG_Eff_OCC','CO2EQ_PROC_EMI') = YES;
 ICO2_FUELPROC('LNG_Eff_OCC','CO2EQ_DIR_EMI') = YES;
 ICO2_FUELPROC('Hydrogen_Eff','CO2EQ_PROC_EMI') = YES;
-*CO2_OCC_SEQ does neither add or contribute to the CO2 balance, it is simply an abated emission
 
 $label noCCUopti
 
