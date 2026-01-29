@@ -247,6 +247,31 @@ $if     EXIST '../data/OPTIFLOW_PROCDATA.inc' $INCLUDE         '../data/OPTIFLOW
 $if not EXIST '../data/OPTIFLOW_PROCDATA.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCDATA.inc';
 %semislash%;
 
+*Parameters for relative cost increase from underwater share
+PARAMETER OPTIFLOW_TRANSSHARE_SUBSEA(PROC,IAAAE,IAAAI)	'Fraction of pipeline length between IAAAE and IAAAI that is underwater'
+$if     EXIST '../data/OPTIFLOW_TRANSSHARE_SUBSEA.inc' $INCLUDE         '../data/OPTIFLOW_TRANSSHARE_SUBSEA.inc';
+$if not EXIST '../data/OPTIFLOW_TRANSSHARE_SUBSEA.inc' $INCLUDE '../../base/data/OPTIFLOW_TRANSSHARE_SUBSEA.inc';
+%semislash%;
+
+*Parameters for relative cost increase from mountainous share
+PARAMETER OPTIFLOW_TRANSSHARE_MOUNTAIN(PROC,IAAAE,IAAAI)	'Fraction of pipeline length between IAAAE and IAAAI in mountainous regions'
+$if     EXIST '../data/OPTIFLOW_TRANSSHARE_MOUNTAIN.inc' $INCLUDE         '../data/OPTIFLOW_TRANSSHARE_MOUNTAIN.inc';
+$if not EXIST '../data/OPTIFLOW_TRANSSHARE_MOUNTAIN.inc' $INCLUDE '../../base/data/OPTIFLOW_TRANSSHARE_MOUNTAIN.inc';
+%semislash%;
+
+*Geography multiplier for electricity transmission lines
+PARAMETER OPTIFLOW_GEOMULT(PROC,IAAAE,IAAAI) 'Relative cost multiplier for electricity lines accounting for underwater and mountainous shares';
+
+OPTIFLOW_GEOMULT(PROC,IAAAE,IAAAI) =
+  + OPTIFLOW_TRANSSHARE_SUBSEA(PROC,IAAAE,IAAAI)      * (SUBSEA_REL_INCR - 1)
+  + OPTIFLOW_TRANSSHARE_MOUNTAIN(PROC,IAAAE,IAAAI)    * (MOUNTAIN_REL_INCR  - 1)
+;
+
+
+
+
+
+
 * Capacity is implemented as a bound on a Flow (index 4) that enters or leaves PROC (index 3).
 * The value of IFLOWINOUT determines whether the Flow enters or leaves PROC.
 * Hence, with 'IFLOWINOUT_OUT' the bound will be on the Flow from PROC,

@@ -73,4 +73,11 @@ $if not EXIST '../data/HYDROGEN_XH2INVCOST_ES.inc' $INCLUDE '../../base/data/HYD
 $if     EXIST '../data/HYDROGEN_XH2KN_ES.inc' $INCLUDE         '../data/HYDROGEN_XH2KN_ES.inc';
 $if not EXIST '../data/HYDROGEN_XH2KN_ES.inc' $INCLUDE '../../base/data/HYDROGEN_XH2KN_ES.inc';
 
+*Geography multiplier for H2 transmission corridors
+PARAMETER XH2_GEOMULT(IRRRE,IRRRI) 'Relative cost multiplier for H2 pipelines accounting for underwater and mountainous shares';
+
+XH2_GEOMULT(IRE,IRI) =
+  + TRANSSHARE_SUBSEA(IRE,IRI)          * (SUBSEA_REL_INCR - 1)
+  + TRANSSHARE_MOUNTAIN(IRE,IRI)        * (MOUNTAIN_REL_INCR  - 1)
+;
 
