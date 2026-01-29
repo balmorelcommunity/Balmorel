@@ -46,8 +46,15 @@ ICO2_CC('CO2_DAC','CO2_FLOW_DAC') = YES;
 ICO2_CC('CO2_Biogas','CO2_FLOW_BIOGAS') = YES;
 ICO2_CC('CO2_Biochar_Sum','CO2_FLOW_BIOCHAR') = YES;
 
-*Re-ad CO2 used for CU in OptiFlow
+***MDO emissions are added in SOSIBU2INDIC. OCC captured share is subtracted here, yielding a net reduction in residual emissions. 
+***For fossil drop-in fuels, OCC captured share is simply subtracted. This yields carbon neutral cycling for CCU and net removal for CCS. 
+ICO2_CC('OCC_30','CO2_FLOW_OCC') = YES;
+ICO2_CC('OCC_35','CO2_FLOW_OCC') = YES;
+ICO2_CC('OCC_40','CO2_FLOW_OCC') = YES;
+ICO2_CC('OCC_45','CO2_FLOW_OCC') = YES;
+ICO2_CC('OCC_50','CO2_FLOW_OCC') = YES;
 
+*Re-ad CO2 used for CU in OptiFlow
 SET ICO2_CU(PROC,FLOW)			"Set of PROC/FLOW pairs that deliver CO2 for CU";
 ICO2_CU(PROC,FLOW)=0;
 ICO2_CU('CO2_CU_Split','CO2_FLOW_EME') = YES;
