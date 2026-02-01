@@ -66,5 +66,8 @@ $ifi %addUP%==yes VFLOWTRANS.UP(Y,IAAAE,IAAAI,FLOW,S,T)       = ILOUPBOUNDS;  !!
 $ifi %addUP%==yes VSTORAGEVOL.UP(Y,IA,PROCSTORAGE,FLOW,S,T)   = ILOUPBOUNDS;  !! May be overwritten by real data later
 $ifi %addUP%==yes VPROCKAPNEW.UP(Y,IA,PROC)                   = ILOUPBOUNDS;  !! May be overwritten by real data later
 
+*OBS FF
+VPROCKAPNEW.UP(Y,IA,PROC)$(APROCKAPNEW(Y,IA,PROC))				 =2E7;
+VFLOWINDICVALUES.UP(Y,FLOWINDIC)      		 					 =2E11;
+VFLOWSOURCE.UP(Y,IA,PROCSOURCE,FLOW,S,T)    					 =1E8;
 
-VPROCKAPNEW.UP(Y,IA,PROC)$(APROCKAPNEW(Y,IA,PROC))=777777777777777;
