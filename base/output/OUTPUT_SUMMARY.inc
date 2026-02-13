@@ -80,6 +80,9 @@ $ifi %HYDROGEN%==yes PARAMETER XH2_FLOW_YCR(Y,C,IRRRE,IRRRI,UNITS) "H2 Transmiss
 $ifi %HYDROGEN%==yes PARAMETER ECO_XH2_YCR(Y,C,RRR,IRRRI,CATEGORY,SUBCATEGORY,UNITS) "H2 Transmission Economic Output for each year, country and region (Mmoney)";
 $ifi %HYDROGEN%==yes PARAMETER H2_DEMAND_YCRST(Y,C,RRR,SSS,TTT,VARIABLE_CATEGORY,UNITS) "Aggregated Hourly H2 Demand (MWh)";
 $ifi %HYDROGEN%==yes PARAMETER H2_DEMAND_YCR(Y,C,RRR,VARIABLE_CATEGORY,UNITS) "Aggregated annual H2 Demand (TWh)";
+$ifi %EV%==yes PARAMETER V2G_FLEX_Y(Y) "Total V2G flexibility use (TWh)";
+$ifi %EV%==yes PARAMETER V2G_FLEX_YCR(Y,RRR) "Total V2G flexibility use per region (TWh)";
+$ifi %EV%==yes PARAMETER V2G_per_EV_FLEX_YCR(Y,RRR) "Total V2G flexibility use per EV per region (TWh)";
 
 
 **Additional Addon output
@@ -480,14 +483,17 @@ EL_DEMAND_YCRST(Y,C,IR,S,T,'ENDO_INTERSTO','MWh')$CCCRRR(C,IR)=
 
 $ifi not %EV%==yes $goto NO_EV
 EL_DEMAND_YCRST(Y,C,IR,S,T,'ENDO_EV','MWh')$CCCRRR(C,IR)=
-                                + VEV_VG2V_BEV.L(Y,IR,S,T)
-                                + VEV_VG2V_PHEV.L(Y,IR,S,T)
-$ifi %V2G%==yes                 - VEV_VV2G_BEV.L(Y,IR,S,T)
-$ifi %V2G%==yes                 - VEV_VV2G_PHEV.L(Y,IR,S,T)
-$ifi %STEPCHARGSCHEME%==yes     - VEV_VV2G_BEV.L(Y,IR,S,T)$(cs('v2g',IY411))
-$ifi %STEPCHARGSCHEME%==yes     - VEV_VV2G_PHEV.L(Y,IR,S,T)$(cs('v2g',IY411))
+                                + VEV_G2V_BEV.L(Y,IR,S,T)
+                                + VEV_G2V_PHEV.L(Y,IR,S,T)
+$ifi %V2G%==yes                 - VEV_V2G_BEV.L(Y,IR,S,T)
+$ifi %V2G%==yes                 - VEV_V2G_PHEV.L(Y,IR,S,T)
 ;
 $label NO_EV
+
+**FLEXIBILITY
+$ifi %EV%==yes V2G_FLEX_Y(Y)=SUM((IR,S,T), VEV_V2G_BEV.L(Y,IR,S,T)*IHOURSINST(S,T))/1000000;
+$ifi %EV%==yes V2G_FLEX_YCR(Y,IR)=SUM((S,T), VEV_V2G_BEV.L(Y,IR,S,T)*IHOURSINST(S,T))/1000000;
+$ifi %EV%==yes V2G_per_EV_FLEX_YCR(Y,IR)$(IHASBEV(IR))=SUM((S,T), VEV_V2G_BEV.L(Y,IR,S,T)*IHOURSINST(S,T))/1000000/EV_BEV_available(Y,IR);
 
 $ifi %TRANSPORT%==yes EL_DEMAND_YCRST(Y,C,IR,S,T,'ENDO_OTHERTRANS','MWh')$CCCRRR(C,IR)=
 $ifi %TRANSPORT%==yes $ifi %TRANSPORT_SYNTHFUEL_COMMODITY%==ELECTRICITY +VTRANSDEMAND_T.L(Y,IR,S,T)
@@ -1654,6 +1660,7 @@ EL_BALANCE_YCRST,CURT_YCRAGFST,CURT_YCRAGF,H_BALANCE_YCRAST,STORAGE_LEVEL
 
 $ifi %HEATTRANS%==yes ,XH_CAP_YCA,XH_FLOW_YCAST,XH_FLOW_YCA,ECO_XH_YCRA
 $ifi %HYDROGEN%==yes  ,H2_PRICE_YCRST,H2_PRICE_YCR,BIOMETH_PRICE_YST,XH2_CAP_YCR, XH2_FLOW_YCRST,XH2_FLOW_YCR,ECO_XH2_YCR,H2_DEMAND_YCRST,H2_DEMAND_YCR
+$ifi %EV%==yes ,V2G_FLEX_Y, V2G_FLEX_YCR, V2G_per_EV_FLEX_YCR
 ;
 
 
@@ -1716,6 +1723,8 @@ $ifi %HYDROGEN%==yes  XH2_FLOW_YCR(Y,C,IRRRE,IRRRI,UNITS)=0;
 $ifi %HYDROGEN%==yes  ECO_XH2_YCR(Y,C,RRR,IRRRI,CATEGORY,SUBCATEGORY,UNITS)=0;
 $ifi %HYDROGEN%==yes  H2_DEMAND_YCRST(Y,C,RRR,SSS,TTT,VARIABLE_CATEGORY,UNITS)=0;
 $ifi %HYDROGEN%==yes  H2_DEMAND_YCR(Y,C,RRR,VARIABLE_CATEGORY,UNITS)=0;
+
+
 
 
 

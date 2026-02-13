@@ -27,6 +27,8 @@ $ifi %FlowBased%==yes      $include        "../../base/addons/FlowBased/bb4/flow
 $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/stepwise_ramping_setdeclare.inc";
 $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_setdeclare.inc";
 $ifi %INDIVUSERS%==yes       $include   "../../base/addons/indivusers/bb4/indivusers_setdeclare.inc";
+$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_setdeclare.inc";
+
 
 
 
