@@ -13,7 +13,7 @@ After having transferred our Balmorel model through WinSCP (see [previous page](
 The bottom commands assumes that the job script is submitted from inside your Balmorel folder, and that your Balmorel project contains a "scenario1" scenario - see [how to create new scenarios](../get_started/scenario_setup.md). The `threads=$LSB_DJOB_NUMPROC` command makes sure that Balmorel does not use more cores than defined  in your job script (four in this case, due to `#BSUB -n 4`)
 
 :::{warning}
-Make sure to copy the `cplex.op2` file to each scenario/model folder. The `--USEOPTIONFILE=2` option passed to the gams command in the example below tells Balmorel to look for this file, which makes sure that CPLEX use more HPC threads than requested. Note that this can also be changed in the `base/model/balgams.opt` file by setting `$Setglobal USEOPTIONFILE 2`. 
+Make sure to copy the `cplex.op2` file to each scenario/model folder. The `--USEOPTIONFILE=2` option passed to the gams command in the example below tells Balmorel to look for this file, which makes sure that CPLEX doesn't use more HPC threads than requested. Note that this can also be changed in the `base/model/balgams.opt` file by setting `$Setglobal USEOPTIONFILE 2`. 
 :::
 
 ```bash
