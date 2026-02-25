@@ -2,7 +2,8 @@ name: docs_building
 channels:
   - conda-forge
 dependencies:
-  - python=3.12
+  - python=3.14
+  - setuptools >=81,<=81
   - myst-parser
   - sphinx
   - sphinx-rtd-theme
