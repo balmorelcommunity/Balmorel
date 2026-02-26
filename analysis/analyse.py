@@ -383,8 +383,8 @@ def matrix(ctx, result: str, filters: str):
         .str.replace('N70_', 'N70M70_')
     )
     
-    N = df.index.str.extract('(N\d*)')
-    M = df.index.str.extract('(M\d*)')
+    N = df.index.str.extract(r'(N\d*)')
+    M = df.index.str.extract(r'(M\d*)')
     df.index = pd.MultiIndex.from_arrays((N[0], M[0]), names=('N', 'M'))
     df = pd.DataFrame({'' : df.values}, index=df.index).pivot_table(index='N', columns='M', values='')
     df.index.name = ''
@@ -1162,11 +1162,11 @@ def bar_chart(ctx, scenarios: str, symbol: str,
 ### ------------------------------- ###
 
 def get_geofile(scenario, model_path):
-    if re.match('N\d*M\d*', scenario):
-        geofile = model_path.replace('model', 'data') + '/DE_%dcluster_geofile_2nd-order.gpkg'%(int(re.findall('M\d+', scenario)[0].lstrip('M')))
+    if re.match(r'N\d*M\d*', scenario):
+        geofile = model_path.replace('model', 'data') + '/DE_%dcluster_geofile_2nd-order.gpkg'%(int(re.findall(r'M\d+', scenario)[0].lstrip('M')))
         geofile_region_column = 'cluster_name'
-    elif re.match('N\d*', scenario):
-        geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(re.findall('N\d+', scenario)[0].lstrip('N')))
+    elif re.match(r'N\d*', scenario):
+        geofile = 'analysis/geofiles/DE-DH-WNDFLH-SOLEFLH_%dcluster_geofile.gpkg'%(int(re.findall(r'N\d+', scenario)[0].lstrip('N')))
         geofile_region_column = 'cluster_name'
     else:
         geofile = 'analysis/geofiles/municipalities.gpkg'
