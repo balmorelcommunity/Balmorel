@@ -13,7 +13,7 @@
 ### -- specify that we want the job to get killed if it exceeds 5 GB per core/slot --
 #BSUB -M 10GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 48:00
+#BSUB -W 1:00
 ### -- set the email address --
 # please uncomment the following line and put in your e-mail address,
 # if you want to receive e-mail notifications on a non-default address
@@ -31,17 +31,15 @@
 export PATH=/appl/gams/47.6.0:$PATH
 export LD_LIBRARY_PATH=/appl/gams/47.6.0:$LD_LIBRARY_PATH
 
-# Investment optimisation
-cd base/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2
-cd ../../
+# Get scenario choice from jobs/scenario_choice.sh
+source jobs/scenario_choice.sh
 
 # Full year simulation
 cd fullyear/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2040 --SCNAME=$scenario_name
 cd ../../
 
 # Rolling horison simulation
 cd rolling/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2040 --SCNAME=$scenario_name
 cd ../../

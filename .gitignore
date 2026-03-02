@@ -12,6 +12,10 @@
 **/*.gpr
 **/*.dat
 **/*.cmd
+*.out
+*.err
+225*
+simex*/*
 **/data
 **/data/*.inc
 **/model/Balmorel.l*
