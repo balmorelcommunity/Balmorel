@@ -39,6 +39,14 @@ cd fullyear/model
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2040 --SCNAME=$scenario_name --scenario_name="${scenario_name}_full_2040"
 cd ../../
 
+# Check if simex_$scenario_name exists, create if not
+if not [ -d "${PWD}/simex_${scenario_name}_O2040" ]; then 
+  mkdir simex_${scenario_name}_O2040
+fi
+
+# Copy or overwrite simex files, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
+/usr/bin/cp -rf simex/* simex_${scenario_name}_O2040/
+
 # Rolling horison simulation
 cd rolling/model
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2040 --SCNAME=$scenario_name --scenario_name="${scenario_name}_full_2040"
