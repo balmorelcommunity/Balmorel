@@ -47,7 +47,10 @@ fi
 # Copy or overwrite simex files, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
 /usr/bin/cp -rf simex/* simex_${scenario_name}_O2030/
 
+# Overwrite simex folder, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
+/usr/bin/cp -rf simex_${scenario_name}_O2030/* simex/
+
 # Rolling horison simulation
 cd rolling/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2030 --SCNAME=$scenario_name --scenario_name="${scenario_name}_full_2030"
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2030 --SCNAME=$scenario_name --scenario_name="${scenario_name}_roll_2030"
 cd ../../
