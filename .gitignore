@@ -16,8 +16,8 @@
 *.err
 225*
 simex*/*
-**/data
-**/data/*.inc
+base/data
+base/data/*.inc
 **/model/Balmorel.l*
 **/output/economic/*.*
 /base/bui/gamsscr/*.*
