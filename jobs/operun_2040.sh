@@ -36,10 +36,10 @@ source jobs/scenario_choice.sh
 
 # Full year simulation
 cd fullyear/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2040 --SCNAME=$scenario_name
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2040 --SCNAME=$scenario_name --scenario_name="${scenario_name}_full_2040"
 cd ../../
 
 # Rolling horison simulation
 cd rolling/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2040 --SCNAME=$scenario_name
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2040 --SCNAME=$scenario_name --scenario_name="${scenario_name}_full_2040"
 cd ../../

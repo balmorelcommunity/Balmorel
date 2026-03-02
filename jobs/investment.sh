@@ -36,7 +36,7 @@ source jobs/scenario_choice.sh
 
 # Investment optimisation
 cd base/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name --scenario_name="${scenario_name}_invest"
 cd ../../
 
 # Check if simex_$scenario_name exists, create if not
