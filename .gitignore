@@ -22,6 +22,7 @@ base/data/*.inc
 **/output/economic/*.*
 /base/bui/gamsscr/*.*
 *.gsp
+%batfileMERGEWITHBASE%
 base/data/.gitignore
 base/data/README.md
 *.lst
