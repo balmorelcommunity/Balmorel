@@ -34,18 +34,15 @@ export LD_LIBRARY_PATH=/appl/gams/47.6.0:$LD_LIBRARY_PATH
 # Get scenario choice from jobs/scenario_choice.sh
 source jobs/scenario_choice.sh
 
+# Copy or overwrite simex files from investment run, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
+/usr/bin/cp -rf base/simex/* O2030/simex/
+
 # Full year simulation
-cd fullyear/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2030 --SCNAME=$scenario_name --scenario_name="${scenario_name}_full_2030"
+cd O2030/model
+mv balopt_full.opt balopt.opt
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name --scenario_name="${scenario_name}_F2030"
+mv balopt.opt balopt_full.opt
 cd ../../
 
-# Check if simex_$scenario_name exists, create if not
-if not [ -d "${PWD}/simex_${scenario_name}_O2030" ]; then
-  mkdir simex_${scenario_name}_O2030
-fi
-
-# Copy or overwrite simex files, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
-/usr/bin/cp -rf simex/* simex_${scenario_name}_O2030/
-
-# Submit  horizon run
+# Submit rolling horizon run
 bsub <jobs/rolling_2030.sh

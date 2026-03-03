@@ -34,10 +34,12 @@ export LD_LIBRARY_PATH=/appl/gams/47.6.0:$LD_LIBRARY_PATH
 # Get scenario choice from jobs/scenario_choice.sh
 source jobs/scenario_choice.sh
 
-# Overwrite simex folder, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
-/usr/bin/cp -rf simex_${scenario_name}_O2050/* simex/
-
 # Rolling horison simulation
-cd rolling/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --YEAR=2050 --SCNAME=$scenario_name --scenario_name="${scenario_name}_roll_2050"
-cd ../../
+cd O2050
+mv data/T_roll.inc data/T.inc
+cd model
+mv balopt_roll.opt balopt.opt
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name --scenario_name="${scenario_name}_R2050"
+mv balopt.opt balopt_roll.opt
+cd ../
+mv data/T.inc data/T_roll.inc

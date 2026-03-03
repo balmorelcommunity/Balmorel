@@ -36,16 +36,8 @@ source jobs/scenario_choice.sh
 
 # Investment optimisation
 cd base/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name --scenario_name="${scenario_name}_invest"
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name --scenario_name="${scenario_name}_INV"
 cd ../../
-
-# Check if simex_$scenario_name exists, create if not
-if not [ -d "${PWD}/simex_${scenario_name}" ]; then 
-  mkdir simex_${scenario_name}
-fi
-
-# Copy or overwrite simex files, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
-/usr/bin/cp -rf simex/* simex_${scenario_name}/
 
 # Submit fullyear runs
 bash jobs/submit_year_runs.sh
