@@ -38,5 +38,6 @@ build
 !.pixi/config.toml
 analysis/plots/
 analysis/files/
+analysis/output/
 .env
 __pycache__

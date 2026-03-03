@@ -150,8 +150,12 @@ def CLI(
     ctx.obj["dark_style"] = dark_style
     ctx.obj["plot_ext"] = plot_ext
     ctx.obj["path"] = path
-    ctx.obj["plot_path"] = os.path.join(path, "analysis", "plots")
+    ctx.obj["plot_path"] = Path(path) / "analysis" / "plots"
     ctx.obj["gams_system_directory"] = gams_sysdir
+
+    # Make output path if it doesn't exist
+    if not Path(ctx.obj["path"] + "/analysis/output").exists():
+        Path(ctx.obj["path"] + "/analysis/output").mkdir()
 
     # Set global style of plot (only true for plots using function in THIS script)
     if dark_style:
@@ -1632,11 +1636,11 @@ def plot_style(
         ax.legend(loc="center left", bbox_to_anchor=(1, 0.5), ncol=1)
 
     plot_path = ctx.obj["plot_path"]
-    if not (os.path.exists(plot_path)):
-        os.mkdir(plot_path)
+    if not (plot_path.exists()):
+        plot_path.mkdir()
 
     fig.savefig(
-        os.path.join(ctx.obj["plot_path"], name + ctx.obj["plot_ext"]),
+        ctx.obj["plot_path"] / (name + ctx.obj["plot_ext"]),
         bbox_inches="tight",
         transparent=True,
     )
