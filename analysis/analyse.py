@@ -1101,12 +1101,11 @@ def RA_Plot(ctx, scenarios: str):
 
 @CLI.command()
 @click.pass_context
-@click.argument('scenarios', type=str, required=True)
 @click.argument('symbol', type=str, required=True)
 @click.argument('index', type=str, required=True)
 @click.argument('columns', type=str, required=True)
 @click.option('--filters', type=str, default=None, required=False, help='Filters for df.query(...)')
-def bar_chart(ctx, scenarios: str, symbol: str, 
+def bar_chart(ctx, symbol: str, 
               index: Union[str | list], columns: Union[str | list],
               filters: str):
     """
@@ -1123,30 +1122,19 @@ def bar_chart(ctx, scenarios: str, symbol: str,
     """
     
     # Find scenarios
-    model = ctx.obj['Balmorel']
-    scenarios = scenarios.replace(' ', '').split(',')
-    paths = []
-    files = []
-    for sc in scenarios:
-        paths.append(os.path.join(ctx.obj['path'], model.scname_to_scfolder[sc], 'model'))
-        files.append('MainResults_%s.gdx'%sc)
-    mr = MainResults(files=files, paths=paths, system_directory=ctx.obj['gams_system_directory'])
-    
-    # Prepare index and columns
-    if ',' in index:
-        index = index.replace(' ', '').split(',')
-    if ',' in columns:
-        columns = columns.replace(' ', '').split(',')
+    df = collect_results(symbol)
     
     # Get symbol
     fig, ax = plt.subplots()
-    df = sort_scenarios(mr.get_result(symbol))
     
     # Apply filters
     if filters != None:
         df = df.query(filters)
         
-    df = df.pivot_table(index=index, columns=columns, values='Value', aggfunc='sum')
+    df = df.pivot_table(index=index.replace(' ', '').split(','), 
+                        columns=columns.replace(' ', '').split(','), 
+                        values='Value', 
+                        aggfunc='sum')
     try:
         df.plot(kind='bar', stacked=True, ax=ax, color=balmorel_colours)
     except KeyError:
