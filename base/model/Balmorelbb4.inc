@@ -756,7 +756,7 @@ PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close
 $ifi %GKRATE_DOL%==AAA_GGG_SSS     $ifi not %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT $ifi not %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T) = GKRATE(IA,G,S,T);
 $ifi %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T)=0;
-$ifi %IGKRATE_STOCHASTIC%==yes   execute_load "../../simex/IGKRATE.gdx", IGKRATE;
+$ifi %IGKRATE_STOCHASTIC%==yes   execute_load "simex/IGKRATE.gdx", IGKRATE;
 
 * The following parameters contain information about CO2 and SO2 emission
 * from technology G based on the fuel used and its emission data:
@@ -2594,10 +2594,10 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM.L(Y,IA,IGHYRS)$IGDECOMEXOPOT(Y,IA,IGHYRS)
        +VGKNACCUMNET.L(Y,IA,IGHYRS)))/CARD(T)*SUM(ITALIAS$(ORD(ITALIAS) LT ORD(T)),1)
          -SUM(ITALIAS$(ORD(ITALIAS) LT ORD(T)),SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),IHYRST(S,ITALIAS)*VGE_T.L(Y,IA,IGHYRS,S,ITALIAS)));
 
-execute_unload  "../../simex/HYRSG.gdx", HYRSG;
-execute_unload  "../../simex/VHYRS_SL.gdx", VHYRS_SL;
-execute_unload  "../../simex/WATERVAL.gdx", WATERVAL;
-execute_unload  "../../simex/VHYRS_STL.gdx", VHYRS_STL;
+execute_unload  "simex/HYRSG.gdx", HYRSG;
+execute_unload  "simex/VHYRS_SL.gdx", VHYRS_SL;
+execute_unload  "simex/WATERVAL.gdx", WATERVAL;
+execute_unload  "simex/VHYRS_STL.gdx", VHYRS_STL;
 
 *Reducing size of export files once they have been exported
 HYRSG(Y,IA,S)=0;
@@ -2621,9 +2621,9 @@ $ifi %HEATTRANS%==yes    XHKACCUMNET(Y,IAE,IAI)$IXHK_HASORPOT(Y,IAE,IAI)=XHKFX(Y
 $ifi %HEATTRANS%==yes    $ifi %HeatTransInvest%==yes +VXHKNACCUMNET.L(Y,IAE,IAI)
 $ifi %HEATTRANS%==yes    ;
 
-execute_unload  "../../simex/XKACCUMNET.gdx", XKACCUMNET;
-execute_unload  "../../simex/GKACCUMNET.gdx", GKACCUMNET;
-$ifi %HEATTRANS%==yes  execute_unload  "../../simex/XHKACCUMNET.gdx", XHKACCUMNET;
+execute_unload  "simex/XKACCUMNET.gdx", XKACCUMNET;
+execute_unload  "simex/GKACCUMNET.gdx", GKACCUMNET;
+$ifi %HEATTRANS%==yes  execute_unload  "simex/XHKACCUMNET.gdx", XHKACCUMNET;
 
 *Reducing size of export files once they have been exported
 XKACCUMNET(Y,IRE,IRI)=0;
@@ -2652,18 +2652,18 @@ HSTOVOLTVAL(Y,IA,IGHSTO,S,T)$IAGK_HASORPOT(Y,IA,IGHSTO)=QHSTOVOLT.M(Y,IA,IGHSTO,
 $ifi %import_results%==yes $ifi %ADDHSTOVOLT%==price + HSTOVOLTVAL(Y,IA,IGHSTOS,S,T)
 ;
 
-execute_unload  "../../simex/ESTOVOLTS.gdx", ESTOVOLTS;
-execute_unload  "../../simex/HSTOVOLTS.gdx", HSTOVOLTS;
-execute_unload  "../../simex/ESTOVOLT.gdx", ESTOVOLT;
-execute_unload  "../../simex/HSTOVOLT.gdx", HSTOVOLT;
-*execute_unload  "../../simex/ESTOLOADT.gdx", ESTOLOADT;
-*execute_unload  "../../simex/ESTOLOADTS.gdx", ESTOLOADTS;
-*execute_unload  "../../simex/HSTOLOADT.gdx", HSTOLOADT;
-*execute_unload  "../../simex/HSTOLOADTS.gdx", HSTOLOADTS;
-execute_unload  "../../simex/ESTOVOLTSVAL.gdx", ESTOVOLTSVAL;
-execute_unload  "../../simex/HSTOVOLTSVAL.gdx", HSTOVOLTSVAL;
-execute_unload  "../../simex/ESTOVOLTVAL.gdx", ESTOVOLTVAL;
-execute_unload  "../../simex/HSTOVOLTVAL.gdx", HSTOVOLTVAL;
+execute_unload  "../simex/ESTOVOLTS.gdx", ESTOVOLTS;
+execute_unload  "../simex/HSTOVOLTS.gdx", HSTOVOLTS;
+execute_unload  "../simex/ESTOVOLT.gdx", ESTOVOLT;
+execute_unload  "../simex/HSTOVOLT.gdx", HSTOVOLT;
+*execute_unload  "../simex/ESTOLOADT.gdx", ESTOLOADT;
+*execute_unload  "../simex/ESTOLOADTS.gdx", ESTOLOADTS;
+*execute_unload  "../simex/HSTOLOADT.gdx", HSTOLOADT;
+*execute_unload  "../simex/HSTOLOADTS.gdx", HSTOLOADTS;
+execute_unload  "../simex/ESTOVOLTSVAL.gdx", ESTOVOLTSVAL;
+execute_unload  "../simex/HSTOVOLTSVAL.gdx", HSTOVOLTSVAL;
+execute_unload  "../simex/ESTOVOLTVAL.gdx", ESTOVOLTVAL;
+execute_unload  "../simex/HSTOVOLTVAL.gdx", HSTOVOLTVAL;
 
 *Reducing size of export files once they have been exported
 ESTOVOLTS(Y,IA,G,S,T)=0;
@@ -2702,23 +2702,23 @@ $ifi %HYDROGEN%==yes  HYDROGEN_PRICE(Y,IR,S,T)=QHYDROGEN_EQ.M(Y,IR,S,T)/IHOURSIN
 $ifi %HYDROGEN%==yes  BIOMETHANE_PRICE(Y,S,T)=QBIOMETHANE_EQ.M(Y,S,T)/IHOURSINST(S,T)/IDISCOUNTFACTOR(Y)/IWEIGHTY(Y);
 
 
-*execute_unload  "../../simex/DE_T.gdx", DE_T;
-*execute_unload  "../../simex/DH_T.gdx", DH_T;
-execute_unload  "../../simex/GE_T.gdx", GE_T;
-execute_unload  "../../simex/GH_T.gdx", GH_T;
-$ifi %HYDROGEN%==yes  execute_unload  "../../simex/GH2_T.gdx", GH2_T;
-$ifi %HYDROGEN%==yes  execute_unload  "../../simex/GBIOMETHANE_T.gdx", GBIOMETHANE_T;
-$ifi %HYDROGEN%==yes  execute_unload  "../../simex/GBIOGASMETHANATION_T.gdx", GBIOGASMETHANATION_T;
-$ifi %HYDROGEN%==yes  execute_unload  "../../simex/GBIOGASUPGRADING_T.gdx", GBIOGASUPGRADING_T;
-*execute_unload  "../../simex/GF_T.gdx", GF_T;
-*execute_unload  "../../simex/X_T.gdx", X_T;
-*$ifi %HEATTRANS%==yes execute_unload  "../../simex/XH_T.gdx", XH_T;
-$ifi %UnitComm%==yes  execute_unload  "../../simex/UCON.gdx", UCON;
-$ifi %UnitComm%==yes  execute_unload  "../../simex/UCON_STOLOAD.gdx", UCON_STOLOAD;
-execute_unload  "../../simex/ELECTRICITY_PRICE.gdx", ELECTRICITY_PRICE;
-execute_unload  "../../simex/HEAT_PRICE.gdx", HEAT_PRICE;
-$ifi %HYDROGEN%==yes execute_unload  "../../simex/HYDROGEN_PRICE.gdx", HYDROGEN_PRICE;
-$ifi %HYDROGEN%==yes execute_unload  "../../simex/BIOMETHANE_PRICE.gdx", BIOMETHANE_PRICE;
+*execute_unload  "../simex/DE_T.gdx", DE_T;
+*execute_unload  "../simex/DH_T.gdx", DH_T;
+execute_unload  "../simex/GE_T.gdx", GE_T;
+execute_unload  "../simex/GH_T.gdx", GH_T;
+$ifi %HYDROGEN%==yes  execute_unload  "../simex/GH2_T.gdx", GH2_T;
+$ifi %HYDROGEN%==yes  execute_unload  "../simex/GBIOMETHANE_T.gdx", GBIOMETHANE_T;
+$ifi %HYDROGEN%==yes  execute_unload  "../simex/GBIOGASMETHANATION_T.gdx", GBIOGASMETHANATION_T;
+$ifi %HYDROGEN%==yes  execute_unload  "../simex/GBIOGASUPGRADING_T.gdx", GBIOGASUPGRADING_T;
+*execute_unload  "../simex/GF_T.gdx", GF_T;
+*execute_unload  "../simex/X_T.gdx", X_T;
+*$ifi %HEATTRANS%==yes execute_unload  "../simex/XH_T.gdx", XH_T;
+$ifi %UnitComm%==yes  execute_unload  "../simex/UCON.gdx", UCON;
+$ifi %UnitComm%==yes  execute_unload  "../simex/UCON_STOLOAD.gdx", UCON_STOLOAD;
+execute_unload  "../simex/ELECTRICITY_PRICE.gdx", ELECTRICITY_PRICE;
+execute_unload  "../simex/HEAT_PRICE.gdx", HEAT_PRICE;
+$ifi %HYDROGEN%==yes execute_unload  "../simex/HYDROGEN_PRICE.gdx", HYDROGEN_PRICE;
+$ifi %HYDROGEN%==yes execute_unload  "../simex/BIOMETHANE_PRICE.gdx", BIOMETHANE_PRICE;
 
 *Reducing size of export files once they have been exported
 GE_T(Y,IA,G,S,T)=0;
@@ -2738,7 +2738,7 @@ $ifi %STEPWISEPRICE%==yes OR STEPWISEPRICE_FFF(FFF)
 )=IOF3P6*SUM(IA$ICA(C,IA),SUM(IAGK_HASORPOT(Y,IA,G)$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)));
 F_T(Y,IR,FFF,S,T)$(GMAXF(Y,IR,FFF) OR SUM(ISALIAS,GMAXFS(Y,IR,FFF,ISALIAS)))=IOF3P6*SUM(IA$RRRAAA(IR,IA),SUM(IAGK_HASORPOT(Y,IA,G)$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)));
 F_T(Y,IA,FFF,S,T)$(GMAXF(Y,IA,FFF) OR SUM(ISALIAS,GMAXFS(Y,IA,FFF,ISALIAS)))=IOF3P6*SUM(IAGK_HASORPOT(Y,IA,G)$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T));
-execute_unload  "../../simex/F_T.gdx", F_T;
+execute_unload  "../simex/F_T.gdx", F_T;
 
 *Reducing size of export files once they have been exported
 F_T(Y,C,FFF,S,T)=0;
@@ -2749,7 +2749,7 @@ $ifi %STEPWISEPRICE%==yes OR STEPWISEPRICE_FFF(FFF)
 )=IOF3P6*SUM(IA$ICA(C,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
 GMAXFS(Y,IR,FFF,S)$GMAXF(Y,IR,FFF)=IOF3P6*SUM(IA$RRRAAA(IR,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
 GMAXFS(Y,IA,FFF,S)$GMAXF(Y,IA,FFF)=IOF3P6*SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
-execute_unload  "../../simex/GMAXFS.gdx", GMAXFS;
+execute_unload  "../simex/GMAXFS.gdx", GMAXFS;
 
 *Fuel price to be used in future runs by addon "import_results"
 FUELPRICE_EXC(Y,IA,FFF)=FUELPRICE(Y,IA,FFF);
@@ -2760,14 +2760,14 @@ QSTEPWISEPRICE_GFTOSTEP.M(Y,C,STEPWISEPRICE_FFF)/IOF3P6/(IDISCOUNTFACTOR(Y)*IWEI
     )
 ;
 $label NO_STEPWISEPRICE
-execute_unload  "../../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
+execute_unload  "../simex/FUELPRICE_EXC.gdx", FUELPRICE_EXC;
 
 *Reducing size of export files once they have been exported
 FUELPRICE_EXC(Y,IA,FFF)=0;
 
 *Planned maintenaince
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S)=VUCONMAINT.L(Y,IA,IGUC,S);
-$ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes execute_unload  "../../simex/UCONMAINT.gdx", UCONMAINT;
+$ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes execute_unload  "../simex/UCONMAINT.gdx", UCONMAINT;
 
 *Reducing size of export files once they have been exported
 $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S)=0;
@@ -2776,9 +2776,9 @@ $ifi %UnitComm%==yes $ifi %PLANNED_MAINTENANCE%==yes UCONMAINT(Y,IA,IGUC,S)=0;
 $ifi %TRANSPORT%==yes   TRANSDEMAND_T(Y,IR,S,T)=VTRANSDEMAND_T.L(Y,IR,S,T);
 $ifi %TRANSPORT%==yes   TRANSDEMAND_S(Y,IR,S)=SUM(T,VTRANSDEMAND_T.L(Y,IR,S,T))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
 $ifi %TRANSPORT%==yes   TRANSDEMAND_T_MAX(Y,IR)=VTRANSDEMAND_T_MAX.L(Y,IR);
-$ifi %TRANSPORT%==yes   execute_unload  "../../simex/TRANSDEMAND_T.gdx", TRANSDEMAND_T;
-$ifi %TRANSPORT%==yes   execute_unload  "../../simex/TRANSDEMAND_S.gdx", TRANSDEMAND_S;
-$ifi %TRANSPORT%==yes   execute_unload  "../../simex/TRANSDEMAND_T_MAX.gdx", TRANSDEMAND_T_MAX;
+$ifi %TRANSPORT%==yes   execute_unload  "../simex/TRANSDEMAND_T.gdx", TRANSDEMAND_T;
+$ifi %TRANSPORT%==yes   execute_unload  "../simex/TRANSDEMAND_S.gdx", TRANSDEMAND_S;
+$ifi %TRANSPORT%==yes   execute_unload  "../simex/TRANSDEMAND_T_MAX.gdx", TRANSDEMAND_T_MAX;
 
 *Reducing size of export files once they have been exported
 $ifi %TRANSPORT%==yes   TRANSDEMAND_T(Y,IR,S,T)=0;
@@ -2790,8 +2790,8 @@ $ifi %HYDROGEN%==yes   H2STOVOLTS(Y,IA,IHYDROGEN_GH2STO,S,T)$IAGK_HASORPOT(Y,IA,
 $ifi %HYDROGEN%==yes   H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)$IAGK_HASORPOT(Y,IA,IHYDROGEN_GH2STO)=QHYDROGEN_STOVOL.M(Y,IA,IHYDROGEN_GH2STO,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)))
 $ifi %HYDROGEN%==yes   $ifi %import_results%==yes $ifi %ADDH2STOVOLTS%==price + H2STOVOLTSVAL(Y,IA,IHYDROGEN_GH2STO,S,T)
 $ifi %HYDROGEN%==yes   ;
-$ifi %HYDROGEN%==yes   execute_unload  "../../simex/H2STOVOLTS.gdx", H2STOVOLTS;
-$ifi %HYDROGEN%==yes   execute_unload  "../../simex/H2STOVOLTSVAL.gdx", H2STOVOLTSVAL;
+$ifi %HYDROGEN%==yes   execute_unload  "../simex/H2STOVOLTS.gdx", H2STOVOLTS;
+$ifi %HYDROGEN%==yes   execute_unload  "../simex/H2STOVOLTSVAL.gdx", H2STOVOLTSVAL;
 
 *Reducing size of export files once they have been exported
 $ifi %HYDROGEN%==yes   H2STOVOLTS(Y,IA,G,S,T)=0;
@@ -2801,8 +2801,8 @@ $ifi %HYDROGEN%==yes   BIOMETHSTOVOLTS(Y,S,T)$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,
 $ifi %HYDROGEN%==yes   BIOMETHSTOVOLTSVAL(Y,S,T)$(SUM(G,IGBIOMETHANE(G)) AND SUM(G,IHYDROGEN_GH2TOBIOMETH(G)))=QBIOMETHANE_STOVOLTS.M(Y,S,T)*CHRONOHOUR(S,T)/(IDISCOUNTFACTOR(Y)*IWEIGHTY(Y)*IHOURSINST(S,T))*(1$(NOT(ORD(T) EQ CARD(T))) + SSIZE(S)$(ORD(T) EQ CARD(T)))
 $ifi %HYDROGEN%==yes   $ifi %import_results%==yes $ifi %ADDBIOMETHSTOVOLTS%==price + BIOMETHSTOVOLTSVAL(Y,S,T)
 $ifi %HYDROGEN%==yes   ;
-$ifi %HYDROGEN%==yes   execute_unload  "../../simex/BIOMETHSTOVOLTS.gdx", BIOMETHSTOVOLTS;
-$ifi %HYDROGEN%==yes   execute_unload  "../../simex/BIOMETHSTOVOLTSVAL.gdx", BIOMETHSTOVOLTSVAL;
+$ifi %HYDROGEN%==yes   execute_unload  "../simex/BIOMETHSTOVOLTS.gdx", BIOMETHSTOVOLTS;
+$ifi %HYDROGEN%==yes   execute_unload  "../simex/BIOMETHSTOVOLTSVAL.gdx", BIOMETHSTOVOLTSVAL;
 
 *Reducing size of export files once they have been exported
 $ifi %HYDROGEN%==yes   BIOMETHSTOVOLTS(Y,S,T)=0;
@@ -2812,7 +2812,7 @@ $ifi %HYDROGEN%==yes    XH2KACCUMNET(Y,IRE,IRI)$IXH2K_HASORPOT(Y,IRE,IRI)=XH2KFX
 $ifi %HYDROGEN%==yes    $ifi %H2TransInvest%==yes +VXH2KNACCUMNET.L(Y,IRE,IRI)
 $ifi %HYDROGEN%==yes    ;
 
-$ifi %HYDROGEN%==yes  execute_unload  "../../simex/XH2KACCUMNET.gdx", XH2KACCUMNET;
+$ifi %HYDROGEN%==yes  execute_unload  "../simex/XH2KACCUMNET.gdx", XH2KACCUMNET;
 
 *Reducing size of export files once they have been exported
 $ifi %HYDROGEN%==yes XH2KACCUMNET(Y,IRE,IRI)=0;
@@ -2832,17 +2832,17 @@ $ifi %EV%==yes $ifi %V2G%==yes - VEV_V2G_PHEV.L(Y,IR,S,T)/EV_PHEV_V2G_EFF(Y)
 $ifi %EV%==yes $ifi %EV_infeas%==yes +VQEV_PHEV_BEBALANCE.L(Y,IR,S,T,'IMINUS') -VQEV_PHEV_BEBALANCE.L(Y,IR,S,T,'IPLUS')
 $ifi %EV%==yes ;
 
-$ifi %EV%==yes execute_unload "../../simex/EV_BE_BEV.gdx", EV_BE_BEV;
-$ifi %EV%==yes execute_unload "../../simex/EV_BE_PHEV.gdx", EV_BE_PHEV;
-$ifi %EV%==yes execute_unload "../../simex/EV_BEV_NETCHARGING.gdx", EV_BEV_NETCHARGING;
-$ifi %EV%==yes execute_unload "../../simex/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHARGING;
+$ifi %EV%==yes execute_unload "../simex/EV_BE_BEV.gdx", EV_BE_BEV;
+$ifi %EV%==yes execute_unload "../simex/EV_BE_PHEV.gdx", EV_BE_PHEV;
+$ifi %EV%==yes execute_unload "../simex/EV_BEV_NETCHARGING.gdx", EV_BEV_NETCHARGING;
+$ifi %EV%==yes execute_unload "../simex/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHARGING;
 
 *Reducing size of export files once they have been exported
 $ifi %EV%==yes EV_BEV_NETCHARGING(Y,IR,S,T)=0;
 $ifi %EV%==yes EV_PHEV_NETCHARGING(Y,IR,S,T)=0;
 
 $ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes INDIVUSERS_GROUPSHARE(Y,IR,DHUSER,INDIVUSERS_GROUP)=VINDIVUSERS_GROUPSHARE.L(Y,IR,DHUSER,INDIVUSERS_GROUP);
-$ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes execute_unload  "../../simex/INDIVUSERS_GROUPSHARE.gdx", INDIVUSERS_GROUPSHARE;
+$ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes execute_unload  "../simex/INDIVUSERS_GROUPSHARE.gdx", INDIVUSERS_GROUPSHARE;
 
 *Reducing size of export files once they have been exported
 $ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes INDIVUSERS_GROUPSHARE(Y,IR,DHUSER,INDIVUSERS_GROUP)=0;
