@@ -116,7 +116,7 @@ VGH_T.UP(IY411,IA,IGDISPATCH(IGKH),S,T)$(GKFX(IY411,IA,IGKH) AND (NOT SUM(Y$(YVA
 
 $ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,IGDISPATCH(IGKE),S,T)     = VGE_T.UP(IY411,ia,IGKE,s,t);
 $ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,IGDISPATCH(IGKE),S,T)     = VGH_T.UP(IY411,ia,IGKE,s,t);
-$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_1.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
+$ifi %testbb1234%==yes  execute_unload "..\simex\VGx_up_bb4_1.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
 
 * Storage loading (MW) and unloading (MW) do not exceed capacity.
 * Complements to equations QESTOLOADTLIM and QHSTOLOADTLIM for the case with no endogenous IGESTO and IGHSTO investments.
@@ -152,11 +152,11 @@ VHSTOVOLTS.UP(IY411,IA,IGHSTOS,S,T)$(GKFX(IY411,IA,IGHSTOS) AND (NOT SUM(Y$(YVAL
 
 $ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
 $ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
-$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_2.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
+$ifi %testbb1234%==yes  execute_unload "..\simex\VGx_up_bb4_2.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
 
 $ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
 $ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
-$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_3.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
+$ifi %testbb1234%==yes  execute_unload "..\simex\VGx_up_bb4_3.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
 
 * Existing windpower, hydro-run-of-river, solarpower, solarheat and wavepower can not be dispatched.
 * Complement to equation QWNDDISPATCH for the case with no endogenous IGWND investments.
@@ -186,7 +186,7 @@ $ifi %GWAVE_DOL%==AAA_GGG   ((WAVEFLH(IA,IGWAVE) * GKFX(IY411,IA,IGWAVE) * (1$(N
 
 $ifi %testbb1234%==yes  IBB1234_VGE_T.UP(IY411,IA,G,S,T)     = VGE_T.UP(IY411,ia,g,s,t);
 $ifi %testbb1234%==yes  IBB1234_VGH_T.UP(IY411,IA,G,S,T)     = VGH_T.UP(IY411,ia,g,s,t);
-$ifi %testbb1234%==yes  execute_unload "..\..\simex\VGx_up_bb4_5.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
+$ifi %testbb1234%==yes  execute_unload "..\simex\VGx_up_bb4_5.gdx" IBB1234_VGE_T , IBB1234_VGH_T ;
 
 
 

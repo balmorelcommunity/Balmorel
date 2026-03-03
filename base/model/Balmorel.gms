@@ -99,7 +99,7 @@ SCALAR ISCALAR5   '(Context dependent)';
 $INCLUDE '../../base/logerror/logerinc/error1.inc';
 
 * Ensuring existence of needed output folders:
-$ifi not dexist "../../simex"            execute 'mkdir -p "../../simex"';
+$ifi not dexist "../simex"            execute 'mkdir -p "../simex"';
 $ifi not dexist "../logerror/logerinc"   execute 'mkdir -p "../logerror/logerinc"';
 $ifi not dexist "../output/economic"     execute 'mkdir -p "../output/economic"';
 $ifi not dexist "../output/inputout"     execute 'mkdir -p "../output/inputout"';
