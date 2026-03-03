@@ -13,7 +13,7 @@
 ### -- specify that we want the job to get killed if it exceeds 5 GB per core/slot --
 #BSUB -M 10GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 48:00
+#BSUB -W 24:00
 ### -- set the email address --
 # please uncomment the following line and put in your e-mail address,
 # if you want to receive e-mail notifications on a non-default address
@@ -31,17 +31,19 @@
 export PATH=/appl/gams/47.6.0:$PATH
 export LD_LIBRARY_PATH=/appl/gams/47.6.0:$LD_LIBRARY_PATH
 
+# Get scenario choice from jobs/scenario_choice.sh
+source jobs/scenario_choice.sh
+
 # Investment optimisation
 cd base/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name --scenario_name="${scenario_name}_invest"
 cd ../../
 
-# Full year simulation
-cd fullyear/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2
-cd ../../
+# Check if simex_$scenario_name exists, create if not
+if not [ -d "${PWD}/simex_${scenario_name}" ]; then 
+  mkdir simex_${scenario_name}
+fi
 
-# Rolling horison simulation
-cd rolling/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2
-cd ../../
+# Copy or overwrite simex files, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
+/usr/bin/cp -rf simex/* simex_${scenario_name}/
+
