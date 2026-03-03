@@ -3,7 +3,11 @@
 It is often not possible to run Balmorel optimisations for all hours in a year. You might also want to check the adequacy of capacities invested through other weather years. This guide illustrates the built-in capability of Balmorel to soft-link an investment optimisation with a operational run using rolling seasons. 
 
 :::{warning}
-It is recommended to perform a 3 step optimization. First, run an investment optimisation. Then, run a full year dispatch simulation (with less hours) that will capture the storage levels through the year. Then all seasons and hours can be run with a rolling season approach. 
+It is recommended to perform a 3 step optimization. 
+
+First, run an investment optimisation with export results enabled in balopt.opt: `$setglobal export_results yes`. 
+
+Then, run a full year dispatch simulation (with less hours) that will capture the storage levels through the year. Then all seasons and hours can be run with a rolling season approach. 
 
 - **Simex output gets overwritten for each scenario!** 
   
@@ -15,8 +19,17 @@ It is recommended to perform a 3 step optimization. First, run an investment opt
     You might have turned off the `export_results` global variable in `balopt.opt`. Make sure that it is turned on: `$Setglobal export_results yes`
 :::
 
+## Investment Optimisation
+
+This is the default execution of Balmorel, but you will need to change one thing in balopt.opt: Enable export_results to ensure that the necessary files are generated in the scenario/simex folder 
+
+```
+$setglobal export_results yes
+```
+
+
 ## Full year dispatch simulation
-This section assumes that you already run an investment optimisation with Balmorel, which by default outputs a lot of .gdx files to the simex folder. The full year run is an operational run that does not allow new capacities to be built, but will enable some backup if needed. The idea is to capture the storage levels through the year, that will then be used for the rolling season run to fix the storage levels at the beginning of each season. The Set S should contain all the 52 seasons. The set T should capture well enough the dynamics of the season (recommendation: every 5 hours at least). 
+This section assumes that you already run an investment optimisation with Balmorel with `$setglobal export_results yes` in balopt.opt, which outputs a lot of .gdx files to the simex folder. The full year run is an operational run that does not allow new capacities to be built, but will enable some backup if needed. The idea is to capture the storage levels through the year, that will then be used for the rolling season run to fix the storage levels at the beginning of each season. The Set S should contain all the 52 seasons. The set T should capture well enough the dynamics of the season (recommendation: every 5 hours at least). 
 
 In order to do the full year run, we need to make adjustments to `balopt.opt`. Follow the steps below.
 
