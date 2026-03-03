@@ -4,6 +4,15 @@ It is often not possible to run Balmorel optimisations for all hours in a year. 
 
 :::{warning}
 It is recommended to perform a 3 step optimization. First, run an investment optimisation. Then, run a full year dispatch simulation (with less hours) that will capture the storage levels through the year. Then all seasons and hours can be run with a rolling season approach. 
+
+- **Simex output gets overwritten for each scenario!** 
+  
+    If you are running several investment optimisations in the same scenario folder, the `simex/*.gdx` files will be replaced for each finished optimisation. Thus, include a copy command (Windows: `copy`, Linux: `cp`) in your batch script to save simex outputs for each of these sub-scenario runs.
+
+
+- **No simex output?** 
+
+    You might have turned off the `export_results` global variable in `balopt.opt`. Make sure that it is turned on: `$Setglobal export_results yes`
 :::
 
 ## Full year dispatch simulation
@@ -35,18 +44,7 @@ $setglobal RollingSeasons
 Then, you can perform a Rolling Season run with all hours. 
 
 ## Rolling Seasons
-This section assumes that you have already run an investment optimisation and dispatch simulation with Balmorel, which by default outputs a lot of .gdx files to the simex folder. These files include `simex/GKACCUMNET.gdx`, which contain the capacities of the investment optimisation and is required for an operational run.
-
-:::{warning}
-- **Simex output gets overwritten for each scenario!** 
-  
-    If you are running several investment optimisation scenarios, the `simex/*.gdx` files will be replaced for each finished optimisation. Thus, include a copy command (Windows: `copy`, Linux: `cp`) in your batch script to save simex outputs for each scenario.
-
-
-- **No simex output?** 
-
-    You might have turned off the `export_results` global variable in `balopt.opt`. Make sure that it is turned on: `$Setglobal export_results yes`
-:::
+This section assumes that you have already run the dispatch simulation with Balmorel, which outputs .gdx files to the simex folder. These files include `simex/GKACCUMNET.gdx`, which contain the capacities of the investment optimisation and is required for an operational run and `simex/H2STOVOLTS.gdx`, containing inter-seasonal hydrogen storage levels.
 
 We will need to make adjustments to `balopt.opt` in order to perform an operational run. Follow the steps below below.
 
