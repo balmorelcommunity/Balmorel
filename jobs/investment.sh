@@ -3,15 +3,15 @@
 ### -- specify queue --
 #BSUB -q man
 ### -- set the job Name --
-#BSUB -J GREAT
+#BSUB -J GREAT_investment
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 10
 ### -- specify that the cores must be on the same host --
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need 4GB of memory per core/slot --
-#BSUB -R "rusage[mem=10GB]"
+#BSUB -R "rusage[mem=7GB]"
 ### -- specify that we want the job to get killed if it exceeds 5 GB per core/slot --
-#BSUB -M 10GB
+#BSUB -M 7GB
 ### -- set walltime limit: hh:mm --
 #BSUB -W 24:00
 ### -- set the email address --
@@ -24,8 +24,8 @@
 #BSUB -N
 ### -- Specify the output and error file. %J is the job-id --
 ### -- -o and -e mean append, -oo and -eo mean overwrite --
-#BSUB -o logs/Output_%J.out
-#BSUB -e logs/Output_%J.err
+#BSUB -o logs/GREAT_investment_%J.out
+#BSUB -e logs/GREAT_investment_%J.err
 
 # Get paths to GAMS 47
 export PATH=/appl/gams/47.6.0:$PATH
@@ -47,3 +47,5 @@ fi
 # Copy or overwrite simex files, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
 /usr/bin/cp -rf simex/* simex_${scenario_name}/
 
+# Submit fullyear runs
+bash jobs/submit_year_runs.sh
