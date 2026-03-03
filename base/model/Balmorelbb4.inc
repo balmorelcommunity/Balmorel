@@ -756,7 +756,7 @@ PARAMETER IGKRATE(AAA,G,S,T)     "Capacity rating (non-negative, typically close
 $ifi %GKRATE_DOL%==AAA_GGG_SSS     $ifi not %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T) = GKRATE(IA,G,S);
 $ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT $ifi not %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T) = GKRATE(IA,G,S,T);
 $ifi %IGKRATE_STOCHASTIC%==yes   IGKRATE(IA,G,S,T)=0;
-$ifi %IGKRATE_STOCHASTIC%==yes   execute_load "simex/IGKRATE.gdx", IGKRATE;
+$ifi %IGKRATE_STOCHASTIC%==yes   execute_load "../simex/IGKRATE.gdx", IGKRATE;
 
 * The following parameters contain information about CO2 and SO2 emission
 * from technology G based on the fuel used and its emission data:
@@ -2594,10 +2594,10 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM.L(Y,IA,IGHYRS)$IGDECOMEXOPOT(Y,IA,IGHYRS)
        +VGKNACCUMNET.L(Y,IA,IGHYRS)))/CARD(T)*SUM(ITALIAS$(ORD(ITALIAS) LT ORD(T)),1)
          -SUM(ITALIAS$(ORD(ITALIAS) LT ORD(T)),SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),IHYRST(S,ITALIAS)*VGE_T.L(Y,IA,IGHYRS,S,ITALIAS)));
 
-execute_unload  "simex/HYRSG.gdx", HYRSG;
-execute_unload  "simex/VHYRS_SL.gdx", VHYRS_SL;
-execute_unload  "simex/WATERVAL.gdx", WATERVAL;
-execute_unload  "simex/VHYRS_STL.gdx", VHYRS_STL;
+execute_unload  "../simex/HYRSG.gdx", HYRSG;
+execute_unload  "../simex/VHYRS_SL.gdx", VHYRS_SL;
+execute_unload  "../simex/WATERVAL.gdx", WATERVAL;
+execute_unload  "../simex/VHYRS_STL.gdx", VHYRS_STL;
 
 *Reducing size of export files once they have been exported
 HYRSG(Y,IA,S)=0;
@@ -2621,9 +2621,9 @@ $ifi %HEATTRANS%==yes    XHKACCUMNET(Y,IAE,IAI)$IXHK_HASORPOT(Y,IAE,IAI)=XHKFX(Y
 $ifi %HEATTRANS%==yes    $ifi %HeatTransInvest%==yes +VXHKNACCUMNET.L(Y,IAE,IAI)
 $ifi %HEATTRANS%==yes    ;
 
-execute_unload  "simex/XKACCUMNET.gdx", XKACCUMNET;
-execute_unload  "simex/GKACCUMNET.gdx", GKACCUMNET;
-$ifi %HEATTRANS%==yes  execute_unload  "simex/XHKACCUMNET.gdx", XHKACCUMNET;
+execute_unload  "../simex/XKACCUMNET.gdx", XKACCUMNET;
+execute_unload  "../simex/GKACCUMNET.gdx", GKACCUMNET;
+$ifi %HEATTRANS%==yes  execute_unload  "../simex/XHKACCUMNET.gdx", XHKACCUMNET;
 
 *Reducing size of export files once they have been exported
 XKACCUMNET(Y,IRE,IRI)=0;
