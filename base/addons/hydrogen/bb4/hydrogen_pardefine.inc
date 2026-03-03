@@ -21,7 +21,7 @@ $if not EXIST '../data/HYDROGEN_DISLOSS_H2.inc' $INCLUDE '../../base/data/HYDROG
 
 PARAMETER HYDROGEN_STOVOL_START(Y,AAA,G,SSS)    'Start level of hydrogen storage';
 * Include start filling level of hydrogen storage obtained from yearly simulation
-$ifi %bb3%==yes execute_load '../../simex/HYDROGEN_STOVOL_START.gdx', HYDROGEN_STOVOL_START;
+$ifi %bb3%==yes execute_load '../simex/HYDROGEN_STOVOL_START.gdx', HYDROGEN_STOVOL_START;
 
 $onmulti
 $if     EXIST '../data/HYDROGEN_DAC_DE.inc' $INCLUDE         '../data/HYDROGEN_DAC_DE.inc';
