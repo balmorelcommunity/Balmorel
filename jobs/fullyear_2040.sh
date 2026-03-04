@@ -43,11 +43,15 @@ fi
 /usr/bin/cp -rf base/simex/* O2040/simex/
 
 # Full year simulation
-cd O2040/model
+cd O2040
+mv data/T_full.inc data/T.inc
+cd model
 mv balopt_full.opt balopt.opt
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name --scenario_name="${scenario_name}_F2040"
 mv balopt.opt balopt_full.opt
-cd ../../
+cd ../
+mv data/T.inc data/T_full.inc
+cd ../
 
 # Submit rolling horizon run
 bsub <jobs/rolling_2040.sh
