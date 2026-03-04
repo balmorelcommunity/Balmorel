@@ -9,9 +9,9 @@
 ### -- specify that the cores must be on the same host --
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need 4GB of memory per core/slot --
-#BSUB -R "rusage[mem=7GB]"
+#BSUB -R "rusage[mem=10GB]"
 ### -- specify that we want the job to get killed if it exceeds 5 GB per core/slot --
-#BSUB -M 7GB
+#BSUB -M 10GB
 ### -- set walltime limit: hh:mm --
 #BSUB -W 32:00
 ### -- set the email address --
@@ -33,6 +33,11 @@ export LD_LIBRARY_PATH=/appl/gams/47.6.0:$LD_LIBRARY_PATH
 
 # Get scenario choice from jobs/scenario_choice.sh
 source jobs/scenario_choice.sh
+
+# Check if simex exists, create if not
+if not [ -d "${PWD}/O2040/simex" ]; then
+  mkdir O2040/simex
+fi
 
 # Copy or overwrite simex files from investment run, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
 /usr/bin/cp -rf base/simex/* O2040/simex/

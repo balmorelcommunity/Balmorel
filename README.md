@@ -1,3 +1,17 @@
+# GREAT 
+
+Model for the GREAT project. 
+
+BALMOREL is applied in a [three-step uni-directional soft-linking](https://balmorelcommunity.github.io/Balmorel/addons/operational_run.html):
+1. Investment optimisation
+2. Full year dispatch simulation
+3. Rolling horison simulation
+
+The full procedure can be run on HPC by submitting the `jobs/investment.sh` script:
+`bsub < jobs/investment.sh`
+
+See the `jobs` folder for other relevant jobs.
+
 # Balmorel
 
 Check out [the documentation](https://balmorelcommunity.github.io/Balmorel/index.html) for tutorials on getting started with the Balmorel energy system model. 
