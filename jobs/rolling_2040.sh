@@ -39,5 +39,5 @@ cd O2040
 cat data/T_roll.inc > data/T.inc
 cd model
 cat balopt_roll.opt > balopt.opt
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name --scenario_name="${scenario_name}_R2040"
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario --scenario_name="${run_name}_R2040"
 cat balopt.opt > balopt_roll.opt

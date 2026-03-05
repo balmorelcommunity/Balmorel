@@ -47,7 +47,7 @@ cd O2030
 cat data/T_full.inc > data/T.inc
 cd model
 cat balopt_full.opt > balopt.opt
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name --scenario_name="${scenario_name}_F2030"
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario --scenario_name="${run_name}_F2030"
 cat balopt.opt > balopt_full.opt
 cd ../../
 
