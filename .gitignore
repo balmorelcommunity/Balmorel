@@ -41,3 +41,6 @@ analysis/files/
 analysis/output/
 .env
 __pycache__
+
+O20*/model/balopt.opt
+O20*/data/T.inc

@@ -36,10 +36,8 @@ source jobs/scenario_choice.sh
 
 # Rolling horison simulation
 cd O2050
-mv data/T_roll.inc data/T.inc
+cat data/T_roll.inc > data/T.inc
 cd model
-mv balopt_roll.opt balopt.opt
+cat balopt_roll.opt > balopt.opt
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name --scenario_name="${scenario_name}_R2050"
-mv balopt.opt balopt_roll.opt
-cd ../
-mv data/T.inc data/T_roll.inc
+cat balopt.opt > balopt_roll.opt
