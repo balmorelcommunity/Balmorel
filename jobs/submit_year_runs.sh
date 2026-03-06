@@ -1,4 +1,4 @@
-# Get scenario choice from jobs/scenario_choice.sh
+# Get scenario choice and run name from jobs/scenario_choice.sh
 source jobs/scenario_choice.sh
 
 # Submit fullyear runs (which, in turn, will submit rolling runs)

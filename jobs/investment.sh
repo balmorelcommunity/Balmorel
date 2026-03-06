@@ -31,7 +31,7 @@
 export PATH=/appl/gams/47.6.0:$PATH
 export LD_LIBRARY_PATH=/appl/gams/47.6.0:$LD_LIBRARY_PATH
 
-# Get scenario choice from jobs/scenario_choice.sh
+# Get scenario choice and run name from jobs/scenario_choice.sh
 source jobs/scenario_choice.sh
 
 # Investment optimisation
