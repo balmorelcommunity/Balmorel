@@ -157,6 +157,10 @@ def CLI(
     if not Path(ctx.obj["path"] + "/analysis/output").exists():
         Path(ctx.obj["path"] + "/analysis/output").mkdir()
 
+    # Make plot path if it doesn't exist
+    if not (ctx.obj['plot_path'].exists()):
+        ctx.obj['plot_path'].mkdir()
+
     # Set global style of plot (only true for plots using function in THIS script)
     if dark_style:
         plt.style.use("dark_background")
@@ -1636,8 +1640,6 @@ def plot_style(
         ax.legend(loc="center left", bbox_to_anchor=(1, 0.5), ncol=1)
 
     plot_path = ctx.obj["plot_path"]
-    if not (plot_path.exists()):
-        plot_path.mkdir()
 
     fig.savefig(
         ctx.obj["plot_path"] / (name + ctx.obj["plot_ext"]),
