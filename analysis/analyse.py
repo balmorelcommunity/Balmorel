@@ -1540,11 +1540,19 @@ def RA_Plot(ctx, scenarios: str):
     required=False,
     help="Filters for df.query(...)",
 )
-def bar_chart(symbol: str, index: str, columns: str, filters: str):
+@click.option(
+    "--filename",
+    type=str,
+    default='bar_chart_output.png',
+    required=False,
+    help="Name of outputted bar chart",
+)
+def bar_chart(symbol: str, index: str, columns: str, filters: str, filename: str):
     """
     Generates a bar chart from the specified scenarios and symbol.
     This function retrieves data from the specified scenarios, processes it, and generates a bar chart
-    based on the provided symbol, index, and columns. The resulting chart is saved as 'bar_chart_output.png'.
+    based on the provided symbol, index, and columns. The resulting chart is saved as 'bar_chart_output.png'
+    by default.
 
     Args:
         scenarios (str): A comma-separated string of scenario names.
@@ -1576,7 +1584,7 @@ def bar_chart(symbol: str, index: str, columns: str, filters: str):
 
     ax.legend(bbox_to_anchor=(1.01, 0.5), loc="center left")
 
-    fig.savefig("analysis/plots/bar_chart_output.png", bbox_inches="tight")
+    fig.savefig(f"analysis/plots/{filename}", bbox_inches="tight")
 
 
 # %% ------------------------------- ###
