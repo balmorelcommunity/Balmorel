@@ -83,7 +83,7 @@ marker_cycle = itertools.cycle(markers)
     "--gams-sysdir",
     type=str,
     required=False,
-    default=config("LD_LIBRARY_PATH"),
+    default=config("GAMS_SYSTEM_DIR"),
     help="Path to GAMS system directory. If none, will look for it in LD_LIBRARY_PATH, which can be set in an .env file",
 )
 @click.option(

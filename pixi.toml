@@ -15,4 +15,8 @@ click = ">=8.3.1,<9"
 python-decouple = ">=3.8,<4"
 
 [pypi-dependencies]
-pybalmorel = ">=0.5.8, <0.6"
+pybalmorel = ">=0.6.0, <0.7"
+
+[activation.env]
+GAMS_SYSTEM_DIR = "/appl/gams/47.6.0"
+
