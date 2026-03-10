@@ -36,7 +36,7 @@ source jobs/scenario_choice.sh
 
 # Investment optimisation
 cd base/model
-gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario_name --scenario_name="${scenario_name}_INV"
+gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario --scenario_name="${run_name}_INV"
 cd ../../
 
 # Submit fullyear runs
