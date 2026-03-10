@@ -35,7 +35,7 @@ export LD_LIBRARY_PATH=/appl/gams/47.6.0:$LD_LIBRARY_PATH
 source jobs/scenario_choice.sh
 
 # Investment optimisation
-cd base/model
+cd $investment_scenario/model
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario --scenario_name="${run_name}_INV"
 cd ../../
 

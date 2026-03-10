@@ -40,7 +40,7 @@ if not [ -d "${PWD}/O2030/simex" ]; then
 fi
 
 # Copy or overwrite simex files from investment run, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
-/usr/bin/cp -rf base/simex/* O2030/simex/
+/usr/bin/cp -rf $investment_scenario/simex/* O2030/simex/
 
 # Full year simulation
 cd O2030

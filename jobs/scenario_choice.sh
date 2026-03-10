@@ -7,6 +7,8 @@ scenario=APS
 # TOTAL
 # ENTSOE
 
-# Define name of the run 
-run_name="${scenario}"
+# Define name of the run
+run_name=$scenario
 
+# Define investment run
+investment_scenario=base
