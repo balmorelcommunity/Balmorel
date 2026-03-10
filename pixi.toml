@@ -9,14 +9,16 @@ version = "0.1.0"
 analyse = "python analysis/analyse.py "
 
 [dependencies]
-python = ">=3.14.3,<3.15"
 premailer = ">=3.10.0,<4"
 click = ">=8.3.1,<9"
 python-decouple = ">=3.8,<4"
-
-[pypi-dependencies]
-pybalmorel = ">=0.6.0, <0.7"
+python = "==3.12"
 
 [activation.env]
 GAMS_SYSTEM_DIR = "/appl/gams/47.6.0"
 
+[pypi-dependencies]
+gamsapi = "==47.6.0"
+pybalmorel = ">=1.0.0, <2"
+tsam = ">=3.1.2, <4"
+ripgrepy = ">=2.2.0, <3"
