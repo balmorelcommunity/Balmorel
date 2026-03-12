@@ -70,7 +70,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/c1/ea/53f2148663b321f21b5a606bd5f191517cf40b7072c0497d3c92c4a13b1e/executing-2.2.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0b/a1/d16318232964d786907b9b3613b8409f74cf0be2da400854509d3a864e43/fonttools-4.62.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/da/71/ae30dadffc90b9006d77af76b393cb9dfbfc9629f339fc1574a1c52e6806/future-1.0.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/f0/47/447c67763acdc53be024ff3d76d641acdd91b4b838959bc5ef353c6c2af4/gamsapi-47.6.0-cp312-cp312-manylinux_2_17_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/46/cc/df3ef6b828e8de00966309cac481db6b53b5330ad270773147c8e59dc556/gamsapi-50.4.1-cp312-cp312-manylinux_2_17_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/3c/78/6a04792ace63a93e162f1305392d500ae8ddcb620e7eb88a22fd622b35bb/geopandas-1.1.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/95/18/da5211dfc54c7a57e7432fd9a6ffeae1ce36fe5a313fa782b1c96529ea3d/gevent-25.9.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/7b/84/2dc373eb6493e00c884cc11e6c059ec97abae2678d42f06bf780570b0193/gevent_websocket-0.10.1-py3-none-any.whl
@@ -420,27 +420,12 @@ packages:
   version: 1.0.0
   sha256: 929292d34f5872e70396626ef385ec22355a1fae8ad29e1a734c3e43f9fbc216
   requires_python: '>=2.6,!=3.0.*,!=3.1.*,!=3.2.*'
-- pypi: https://files.pythonhosted.org/packages/f0/47/447c67763acdc53be024ff3d76d641acdd91b4b838959bc5ef353c6c2af4/gamsapi-47.6.0-cp312-cp312-manylinux_2_17_x86_64.whl
+- pypi: https://files.pythonhosted.org/packages/46/cc/df3ef6b828e8de00966309cac481db6b53b5330ad270773147c8e59dc556/gamsapi-50.4.1-cp312-cp312-manylinux_2_17_x86_64.whl
   name: gamsapi
-  version: 47.6.0
-  sha256: abcd4f7650b3ef30ddabe8fc0e8893897e676da9dbbf7884f6597d998f0b0028
+  version: 50.4.1
+  sha256: 342c925b29201ca07124029113af688e2a97952a0ef1557dbffa17fdfdcb72ec
   requires_dist:
-  - sqlalchemy ; extra == 'all'
-  - pymssql ; extra == 'all'
-  - openpyxl>=3.1.0 ; extra == 'all'
-  - python-dateutil ; extra == 'all'
-  - cerberus ; extra == 'all'
-  - pymysql ; extra == 'all'
-  - ipython ; extra == 'all'
-  - numpy ; extra == 'all'
-  - ply ; extra == 'all'
-  - urllib3 ; extra == 'all'
-  - scipy ; extra == 'all'
-  - pyodbc ; extra == 'all'
-  - pyyaml ; extra == 'all'
-  - psycopg2-binary ; extra == 'all'
-  - pandas>=1.5,<2.3 ; extra == 'all'
-  - pandas>=1.5,<2.3 ; extra == 'connect'
+  - pandas>=2.0,<2.3 ; extra == 'connect'
   - pyyaml ; extra == 'connect'
   - openpyxl>=3.1.0 ; extra == 'connect'
   - sqlalchemy ; extra == 'connect'
@@ -449,17 +434,34 @@ packages:
   - psycopg2-binary ; extra == 'connect'
   - pymysql ; extra == 'connect'
   - pymssql ; extra == 'connect'
+  - certifi ; extra == 'control'
   - urllib3 ; extra == 'control'
   - ply ; extra == 'core'
   - numpy ; extra == 'core'
   - python-dateutil ; extra == 'engine'
   - urllib3 ; extra == 'engine'
   - ipython ; extra == 'magic'
-  - pandas>=1.5,<2.3 ; extra == 'magic'
-  - pandas>=1.5,<2.3 ; extra == 'tools'
-  - pandas>=1.5,<2.3 ; extra == 'transfer'
+  - pandas>=2.0,<2.3 ; extra == 'magic'
+  - pandas>=2.0,<2.3 ; extra == 'tools'
+  - pandas>=2.0,<2.3 ; extra == 'transfer'
   - scipy ; extra == 'transfer'
-  requires_python: '>=3.8'
+  - pymssql ; extra == 'all'
+  - numpy ; extra == 'all'
+  - python-dateutil ; extra == 'all'
+  - psycopg2-binary ; extra == 'all'
+  - openpyxl>=3.1.0 ; extra == 'all'
+  - pandas>=2.0,<2.3 ; extra == 'all'
+  - cerberus ; extra == 'all'
+  - ply ; extra == 'all'
+  - ipython ; extra == 'all'
+  - pyodbc ; extra == 'all'
+  - pyyaml ; extra == 'all'
+  - sqlalchemy ; extra == 'all'
+  - scipy ; extra == 'all'
+  - certifi ; extra == 'all'
+  - pymysql ; extra == 'all'
+  - urllib3 ; extra == 'all'
+  requires_python: '>=3.9'
 - pypi: https://files.pythonhosted.org/packages/3c/78/6a04792ace63a93e162f1305392d500ae8ddcb620e7eb88a22fd622b35bb/geopandas-1.1.3-py3-none-any.whl
   name: geopandas
   version: 1.1.3

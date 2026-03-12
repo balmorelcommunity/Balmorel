@@ -15,10 +15,10 @@ python-decouple = ">=3.8,<4"
 python = "==3.12"
 
 [activation.env]
-GAMS_SYSTEM_DIR = "/appl/gams/47.6.0"
+GAMS_SYSTEM_DIR = "/appl/gams/50.4.1"
 
 [pypi-dependencies]
-gamsapi = "==47.6.0"
+gamsapi = "==50.4.1"
 pybalmorel = ">=1.0.0, <2"
 tsam = ">=3.1.2, <4"
 ripgrepy = ">=2.2.0, <3"

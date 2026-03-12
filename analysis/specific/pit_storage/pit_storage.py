@@ -39,7 +39,7 @@ def polygon_with_point(geofile: gpd.GeoDataFrame,
 def get_storage_profiles(all_endofmodel: str, 
                          carrier: str,
                          storage_type: str = 'inter',
-                         gams_system_directory: str = '/appl/gams/47.6.0'):
+                         gams_system_directory: str = '/appl/gams/50.4.1'):
     """
     Get storage profiles from all_endofmodel variables
     

@@ -28,8 +28,8 @@
 #BSUB -e logs/GREAT_rolling_2040_%J.err
 
 # Get paths to GAMS 47
-export PATH=/appl/gams/47.6.0:$PATH
-export LD_LIBRARY_PATH=/appl/gams/47.6.0:$LD_LIBRARY_PATH
+export PATH=/appl/gams/50.4.1:$PATH
+export LD_LIBRARY_PATH=/appl/gams/50.4.1:$LD_LIBRARY_PATH
 
 # Get scenario choice and run name from jobs/scenario_choice.sh
 source jobs/scenario_choice.sh
