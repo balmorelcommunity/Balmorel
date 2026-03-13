@@ -292,7 +292,9 @@ LOOP(Y,
 
 $label YES_EV_INTERSEASONAL
 
-
+IEV_BEV_available(Y,S,T,IR)$(IHASBEV(IR)) = 2*IEV_BEV_available(Y,S,T,IR);
+IEV_BEV_return(Y,S,T,IR)$(IHASBEV(IR)) = 2* IEV_BEV_return(Y,S,T,IR);
+IEV_BEV_leave(Y,S,T,IR)$(IHASBEV(IR)) = 2*IEV_BEV_leave(Y,S,T,IR);
 
 *Option here to make grid loss for either load or unload. Currently there is no loss on ELEC_STO and therefor not on EV, else it would create unfair competition
 Parameters
