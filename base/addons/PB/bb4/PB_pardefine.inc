@@ -20,12 +20,13 @@ $if     EXIST '../data/PB_LCA_DATA_X_H2_%IAM_Scenario%.inc' $INCLUDE         '..
 $if not EXIST '../data/PB_LCA_DATA_X_H2_%IAM_Scenario%.inc' $INCLUDE '../../base/data/PB_LCA_DATA_X_H2_%IAM_Scenario%.inc';
 $offmulti
 
-$ifi not %CCS%==yes goto $No_CCS 
+
 $onmulti
+$ifi not %CCS%==yes $goto No_CCS 
 $if     EXIST '../data/PB_LCA_DATA_CCS_%IAM_Scenario%.inc' $INCLUDE         '../data/PB_LCA_DATA_CCS_%IAM_Scenario%.inc';
 $if not EXIST '../data/PB_LCA_DATA_CCS_%IAM_Scenario%.inc' $INCLUDE '../../base/data/PB_LCA_DATA_CCS_%IAM_Scenario%.inc';
-$offmulti
 $label No_CCS 
+$offmulti
 
 $onmulti
 $if     EXIST '../data/PB_THRESHOLDS_DATA.inc' $INCLUDE         '../data/PB_THRESHOLDS_DATA.inc';

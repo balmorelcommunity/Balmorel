@@ -1,0 +1,11 @@
+* Option file 2 for CPLEX solver for HPC runs. For possible options, see the GAMS Solver Manual.
+* To use with CPLEX,  set  '$Setglobal USEOPTIONFILE 2' in balgams.opt.
+* Do not change this file, it is predefined.
+* To use other options with CPLEX, make and/or use some other file, see USEOPTIONFILE in balgams.opt.
+* "LPmethod  4": Barrier method
+* If memory tight, set the Threads parameter to 1.
+* advind is set to 0 by default since for large problems a better performance has been experienced. If 0, the optimization will not use the previous solution to try to find the next run faster.
+
+LPmethod  4
+advind 0
+predual -1

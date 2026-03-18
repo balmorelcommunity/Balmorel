@@ -70,4 +70,4 @@ POSITIVE VARIABLE         IS_RESOURCE_X(Y)      'Impact score of the carrying ca
 POSITIVE VARIABLE         IS_RESOURCE_X_H2(Y)   'Impact score of the carrying capacity Climate Change for H2 transmission capacity';
 POSITIVE VARIABLE         IS_RESOURCE_F(Y,FFF)  'Impact score of the carrying capacity resource use, minerals and metals per fuel';
 *$ifi  %PB_all%==yes $ifi %TL_ALLOWED%==yes 
-*POSITIVE VARIABLE         TL_RESOURCE(Y)        'Transgression level of the carrying capacity resource use, minerals and metals';
+POSITIVE VARIABLE         TL_RESOURCE(Y)        'Transgression level of the carrying capacity resource use, minerals and metals';

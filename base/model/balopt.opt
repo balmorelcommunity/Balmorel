@@ -98,12 +98,16 @@ $setglobal PB YES
 $setglobal IAM_Scenario IMAGE_SSP2_Base
 *!option IMAGE_SSP2_Base IMAGE_SSP2_RCP19 IMAGE_SSP2_RCP26
 
-$setglobal PB_all
+$setglobal PB_all yes
 *!option yes, if yes, optimizing for all PB's and if nothing, it is optimising only on CO2
 
-*$setglobal TL_ALLOWED no
-*!option yes and no, TL is allowed for all PB's
+$setglobal TL_ALLOWED yes
+*!option yes, meaning TL is allowed for all PB's
 
+*PB_all & TL_allowed combinations:
+*PB_all yes; TL_Allowed yes - Optimizing for all PB's while allowing Transgression (TL)
+*PB_all yes; TL_Allowed "empty" - Optimizing for all PB's while not allowing Transgression (TL_NO)
+*PB_all "empty"; TL_Allowed no - Optimizing for CO2 while not allowing Transgression (TL_NO)
 
 *------------------------------END:Planeatary boundaries addon-------------------------------------------------
 
@@ -196,7 +200,7 @@ $setglobal OFFSHOREGRID NO
 *!option yes
 
 * Allow Carbon Capture Storage (CCS) technologies.
-$setglobal CCS YES
+$setglobal CCS yes
 *!option yes
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
@@ -337,7 +341,7 @@ $setglobal COMBTECH
 *-----------------HYDROGEN ADDON---------------------------------------
 * overall control variable HYDROGEN must be 'yes' if any of the other HYDROGEN controls are:
 * Set demands for hydrogen consumption and enable hydrogen technologies (some options require COMBTECH to be activated too).
-$Setglobal HYDROGEN YES
+$Setglobal HYDROGEN yes
 *!option yes
 
 * Allows investments in hydrogen transport
