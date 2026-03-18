@@ -43,5 +43,7 @@ $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_setdefine.inc";
 
 $ifi %INDIVUSERS%==yes       $include   "../../base/addons/indivusers/bb4/indivusers_setdefine.inc";
 
+$ifi %PB%==yes       $include   "../../base/addons/PB/bb4/PB_setdefine.inc";
+
 
 $label endoffile
