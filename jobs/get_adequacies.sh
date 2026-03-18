@@ -27,9 +27,8 @@
 #BSUB -o logs/get_adequacies_%J.out
 #BSUB -e logs/get_adequacies_%J.err
 
-# Get paths to GAMS 47
-export PATH=/appl/gams/47.6.0:$PATH
-export LD_LIBRARY_PATH=/appl/gams/47.6.0:$LD_LIBRARY_PATH
+# Load error handling and GAMS paths
+source jobs/functions.sh
 
 # Get scenario choice and run name from jobs/scenario_choice.sh
 source jobs/scenario_choice.sh
