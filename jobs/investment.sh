@@ -27,17 +27,31 @@
 #BSUB -o logs/GREAT_investment_%J.out
 #BSUB -e logs/GREAT_investment_%J.err
 
-# Get paths to GAMS 47
-export PATH=/appl/gams/50.4.1:$PATH
-export LD_LIBRARY_PATH=/appl/gams/50.4.1:$LD_LIBRARY_PATH
+# Load error handling and GAMS paths
+source jobs/functions.sh
 
 # Get scenario choice and run name from jobs/scenario_choice.sh
 source jobs/scenario_choice.sh
 
+echo "Starting investment optimization at $(date)"
+echo "Scenario: $scenario, Run name: ${run_name}_INV"
+
 # Investment optimisation
 cd $investment_scenario/model
+
+# Run GAMS - if this fails, set -e will cause immediate exit via the trap
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario --scenario_name="${run_name}_INV"
+gams_exit_code=$?
+
 cd ../../
 
-# Submit fullyear runs
+# Explicitly check GAMS exit code
+if [ $gams_exit_code -ne 0 ]; then
+  echo "ERROR: GAMS investment optimization failed with exit code $gams_exit_code"
+  exit $gams_exit_code
+fi
+
+echo "Investment optimization completed successfully at $(date)"
+
+# Submit fullyear runs only if we reach this point
 bash jobs/submit_year_runs.sh
