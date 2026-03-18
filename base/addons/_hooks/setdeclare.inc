@@ -28,6 +28,9 @@ $ifi %STEPWISE_RAMPING%==yes  $include   "../../base/addons/STEPWISE_RAMPING/ste
 $ifi %CCS%==yes  $include   "../../base/addons/CCS/bb4/CCS_setdeclare.inc";
 $ifi %INDIVUSERS%==yes       $include   "../../base/addons/indivusers/bb4/indivusers_setdeclare.inc";
 $ifi %PB%==yes       $include   "../../base/addons/PB/bb4/PB_setdeclare.inc";
+$ifi %DEMANDRESPONSE%==yes      $include        "../../base/addons/demandresponse/bb4/dr_setdeclare.inc";
+
+
 
 
 $label endoffile

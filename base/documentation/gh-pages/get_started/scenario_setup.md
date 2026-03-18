@@ -1,5 +1,5 @@
 # Scenario Setup
-Lets start by learning how to execute Balmorel using a small test scenario. Create a new folder in the level of the base folder, a new data and model folder inside of this and copy and paste the Balmorel.gms and cplex.op4 folder from base/model. If you want to call this scenario "test_run" the folder structure should now look like the following:
+Lets start by learning how to execute Balmorel using a small test scenario. Create a new folder in the level of the base folder, a new data and model folder inside of this and copy and paste the Balmorel.gms and cplex.op4 folder from base/model (copy cplex.op2 instead of cplex.op4 if running on HPC). If you want to call this scenario "test_run" the folder structure should now look like the following:
 ```bash
 Balmorel
 ├── base
@@ -53,4 +53,4 @@ DENMARK
 ```
 This selects countries Norway and Denmark (which consist of respectively 5 and 2 electricity and hydrogen nodes, corresponding to the bidding zones of Norway and Denmark).
 
-We are now ready to run Balmorel, see the next page.
+We are now ready to run Balmorel, see the next page.
