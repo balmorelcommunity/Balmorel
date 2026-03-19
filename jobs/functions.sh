@@ -19,6 +19,13 @@ cleanup() {
 
 trap cleanup EXIT SIGTERM SIGINT
 
-# Get paths to GAMS 50.4.1
-export PATH=/appl/gams/50.4.1:$PATH
-export LD_LIBRARY_PATH=/appl/gams/50.4.1:$LD_LIBRARY_PATH
+# Get user settings and paths to GAMS 50.4.1
+source .env
+if not [ -f ".env" ]; then
+  echo "No .env file found! Make one and define:
+  GAMS_SYSTEM_DIR=...
+  "
+  exit 1
+fi
+export PATH=$GAMS_SYSTEM_DIR:$PATH
+export LD_LIBRARY_PATH=$GAMS_SYSTEM_DIR:$LD_LIBRARY_PATH

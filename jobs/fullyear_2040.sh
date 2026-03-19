@@ -17,7 +17,7 @@
 ### -- set the email address --
 # please uncomment the following line and put in your e-mail address,
 # if you want to receive e-mail notifications on a non-default address
-##BSUB -u mberos@dtu.dk
+##BSUB -u  
 ### -- send notification at start --
 ##BSUB -B
 ### -- send notification at completion --
