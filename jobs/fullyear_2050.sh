@@ -39,6 +39,7 @@ if not [ -d "${PWD}/O2050/simex" ]; then
 fi
 
 # Copy or overwrite simex files from investment run, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
+echo "Copying simex files from ${investment_scenario} to O2050/simex"
 /usr/bin/cp -rf $investment_scenario/simex/* O2050/simex/
 
 # Full year simulation
@@ -47,7 +48,6 @@ cat data/T_full.inc >data/T.inc
 cd model
 cat balopt_full.opt >balopt.opt
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario --scenario_name="${run_name}_F2050"
-cat balopt.opt >balopt_full.opt
 cd ../../
 
 # Submit rolling horizon run
