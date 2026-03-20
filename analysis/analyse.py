@@ -21,10 +21,10 @@ import sys
 import click
 import re
 from premailer import transform
-from typing import Union
 import itertools
 from matplotlib.patches import Wedge as WedgePatch
-from specific.pit_storage.pit_storage import get_storage_profiles, polygon_with_point
+from functions.pit_storage import get_storage_profiles, polygon_with_point
+from functions.utils import find_most_recent_result
 from pybalmorel import Balmorel, MainResults
 from pybalmorel.utils import symbol_to_df
 from pybalmorel.formatting import balmorel_colours

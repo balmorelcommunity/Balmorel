@@ -16,6 +16,7 @@ from decouple import config
 from pybalmorel.utils import symbol_to_df
 from pybalmorel import MainResults
 from gams import GamsWorkspace
+from functions.utils import find_most_recent_result
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -81,17 +82,14 @@ def ev_results(ctx, scenario):
     if scenario != '':
         # If input, choose inputted scenario
         path = Path(f'{sc_folder}/model/MainResults_{scenario}.gdx')
+        file = path.name
+        path = str(path.parent)
     else:
         # If nothing input, find most recent MainResults
-        path = Path(f'{sc_folder}/model')
-        results =  [p for p in path.iterdir() if 'MainResults' in str(p)]
-        mtimes = [modified.stat().st_mtime for modified in results]
-        most_recent = mtimes.index(max(mtimes))
-        path = Path(results[most_recent])
-        print(f'\nMost recent results in {sc_folder}: {path.name}\n')
+        file, path = find_most_recent_result(sc_folder)
 
     # Load results 
-    res = MainResults(path.name, str(path.parent))
+    res = MainResults(file, path)
     df = (
         res
         .get_result('EL_DEMAND_YCRST')
