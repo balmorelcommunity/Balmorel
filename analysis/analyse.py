@@ -39,6 +39,8 @@ balmorel_colours["BIOGASUPGRADING"] = "#E8C3A8"
 balmorel_colours["FUEL_TRANSPORT"] = balmorel_colours["WIND-ON"]
 balmorel_colours["H2_TRANSMISSION_CAPITAL_COSTS"] = "#A8D9E8"
 balmorel_colours["H2_TRANSMISSION_OPERATIONAL_COSTS"] = "#D3EBF2"
+balmorel_colours["HEAT_TRANSMISSION_CAPITAL_COSTS"] = "#ba585b"
+balmorel_colours["HEAT_TRANSMISSION_OPERATIONAL_COSTS"] = "#583738"
 balmorel_colours["TRANSMISSION_CAPITAL_COSTS"] = "#BA1600"
 balmorel_colours["TRANSMISSION_OPERATIONAL_COSTS"] = "#FF2B10"
 balmorel_colours["GENERATION_CAPITAL_COSTS"] = "#FFA500"
@@ -47,6 +49,8 @@ balmorel_colours["GENERATION_FUEL_COSTS"] = "#747474"
 balmorel_colours["GENERATION_OPERATIONAL_COSTS"] = "#E5D8D8"
 balmorel_colours["ELECTRICITY"] = "#FFD700"
 balmorel_colours["HEAT"] = "#BA4E00"
+balmorel_colours["GENERATION_CO2_TAX"]="#141414"
+balmorel_colours["GENERATION_CO2_TRANSPORT"]="#292929"
 
 # Define color and marker options
 colors = ["b", "r", "g", "c", "m", "y", "k", "orange", "purple", "brown"]
@@ -206,11 +210,11 @@ def all_bars(ctx, scenario):
     """
     Generate all bar charts for a specific scenario
     """
-    ctx.invoke(cap, gen=True, sto=True, filters="Scenario == @scenario")
-    ctx.invoke(fuel, filters="Scenario == @scenario")
-    ctx.invoke(costs, filters="Scenario == @scenario")
+    ctx.invoke(cap, gen=True, sto=True, filters=f'Scenario == "{scenario}"')
+    ctx.invoke(fuel, filters=f'Scenario == "{scenario}"')
+    ctx.invoke(costs, filters=f'Scenario == "{scenario}"')
     for commodity in ["electricity", "heat", "hydrogen"]:
-        ctx.invoke(dem, commodity=commodity, filters="Scenario == @scenario")
+        ctx.invoke(dem, commodity=commodity, filters=f'Scenario == "{scenario}"')
 
 
 @CLI.command()
