@@ -21,10 +21,10 @@ import sys
 import click
 import re
 from premailer import transform
-from typing import Union
 import itertools
 from matplotlib.patches import Wedge as WedgePatch
-from specific.pit_storage.pit_storage import get_storage_profiles, polygon_with_point
+from functions.pit_storage import get_storage_profiles, polygon_with_point
+from functions import find_result
 from pybalmorel import Balmorel, MainResults
 from pybalmorel.utils import symbol_to_df
 from pybalmorel.formatting import balmorel_colours
@@ -178,26 +178,39 @@ def CLI(
 
 @CLI.command()
 @click.pass_context
-def all(ctx):
+@click.option(
+    '--scenario', 
+    type=str, 
+    default='', 
+    help="Scenario name (suffix to MainResults_*.gdx) - will find most recent if empty string"
+)
+def all(ctx, scenario):
     """
-    Generate all plots
+    Generate all plots for a specific scenario
     """
-    ctx.invoke(all_bars)
-    ctx.invoke(all_profiles)
-    ctx.invoke(all_maps)
+
+    ctx.invoke(all_bars, scenario=scenario)
+    ctx.invoke(all_profiles, scenario=scenario)
+    ctx.invoke(all_maps, scenario=scenario)
 
 
 @CLI.command()
 @click.pass_context
-def all_bars(ctx):
+@click.option(
+    '--scenario', 
+    type=str, 
+    default='', 
+    help="Scenario name (suffix to MainResults_*.gdx) - will find most recent if empty string"
+)
+def all_bars(ctx, scenario):
     """
-    Generate all bar charts
+    Generate all bar charts for a specific scenario
     """
-    ctx.invoke(cap, gen=True, sto=True)
-    ctx.invoke(fuel)
-    ctx.invoke(costs)
+    ctx.invoke(cap, gen=True, sto=True, filters="Scenario == @scenario")
+    ctx.invoke(fuel, filters="Scenario == @scenario")
+    ctx.invoke(costs, filters="Scenario == @scenario")
     for commodity in ["electricity", "heat", "hydrogen"]:
-        ctx.invoke(dem, commodity=commodity)
+        ctx.invoke(dem, commodity=commodity, filters="Scenario == @scenario")
 
 
 @CLI.command()
@@ -209,16 +222,20 @@ def all_bars(ctx):
     default=2050,
     help="Which year to plot profiles from",
 )
-def all_profiles(ctx, year: int):
+@click.option(
+    '--scenario', 
+    type=str, 
+    default='', 
+    help="Scenario name (suffix to MainResults_*.gdx) - will find most recent if empty string"
+)
+def all_profiles(ctx, year, scenario):
     """
-    Generate all profiles for a year (2050 default)
+    Generate all profiles for a year (2050 default) and a specific scenario
     """
     m = ctx.obj["Balmorel"]
 
-    for sc_folder in m.scenarios:
-        for scenario in m.scfolder_to_scname[sc_folder]:
-            for commodity in ["electricity", "heat", "hydrogen"]:
-                ctx.invoke(profile, commodity=commodity, scenario=scenario, year=year)
+    for commodity in ["electricity", "heat", "hydrogen"]:
+        ctx.invoke(profile, commodity=commodity, scenario=scenario, year=year)
 
 
 @CLI.command()
@@ -230,14 +247,19 @@ def all_profiles(ctx, year: int):
     default=2050,
     help="Which year to plot profiles from",
 )
-def all_maps(ctx, year: int):
+@click.option(
+    '--scenario', 
+    type=str, 
+    default='', 
+    help="Scenario name (suffix to MainResults_*.gdx) - will find most recent if empty string"
+)
+def all_maps(ctx, year, scenario):
     """
-    Generate all maps for a year (2050 default)
+    Generate all maps for a year (2050 default) for a specific scenario
     """
 
-    for scenario in ctx.obj["Balmorel"].scenarios:
-        for commodity in ["Electricity", "Hydrogen"]:
-            ctx.invoke(map, commodity=commodity, scenario=scenario, year=year)
+    for commodity in ["Electricity", "Hydrogen"]:
+        ctx.invoke(map, commodity=commodity, scenario=scenario, year=year)
 
 
 @CLI.command()

@@ -9,15 +9,15 @@
 ### -- specify that the cores must be on the same host --
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need 4GB of memory per core/slot --
-#BSUB -R "rusage[mem=10GB]"
+#BSUB -R "rusage[mem=6.5GB]"
 ### -- specify that we want the job to get killed if it exceeds 5 GB per core/slot --
-#BSUB -M 10GB
+#BSUB -M 6.5GB
 ### -- set walltime limit: hh:mm --
-#BSUB -W 32:00
+#BSUB -W 8:00
 ### -- set the email address --
 # please uncomment the following line and put in your e-mail address,
 # if you want to receive e-mail notifications on a non-default address
-##BSUB -u mberos@dtu.dk
+##BSUB -u
 ### -- send notification at start --
 ##BSUB -B
 ### -- send notification at completion --
@@ -27,9 +27,8 @@
 #BSUB -o logs/GREAT_fullyear_2050_%J.out
 #BSUB -e logs/GREAT_fullyear_2050_%J.err
 
-# Get paths to GAMS 47
-export PATH=/appl/gams/50.4.1:$PATH
-export LD_LIBRARY_PATH=/appl/gams/50.4.1:$LD_LIBRARY_PATH
+# Load error handling and GAMS paths
+source jobs/functions.sh
 
 # Get scenario choice and run name from jobs/scenario_choice.sh
 source jobs/scenario_choice.sh
@@ -40,16 +39,18 @@ if not [ -d "${PWD}/O2050/simex" ]; then
 fi
 
 # Copy or overwrite simex files from investment run, use /usr/bin/cp to avoid interactive mode defined in ~/.bashrc
+echo "Copying simex files from ${investment_scenario} to O2050/simex"
 /usr/bin/cp -rf $investment_scenario/simex/* O2050/simex/
 
 # Full year simulation
 cd O2050
-cat data/T_full.inc > data/T.inc
+cat data/T_full.inc >data/T.inc
 cd model
-cat balopt_full.opt > balopt.opt
+cat balopt_full.opt >balopt.opt
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario --scenario_name="${run_name}_F2050"
-cat balopt.opt > balopt_full.opt
 cd ../../
+
+optimality_check $LSB_JOBID 1
 
 # Submit rolling horizon run
 bsub <jobs/rolling_2050.sh

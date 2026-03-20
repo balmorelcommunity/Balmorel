@@ -17,7 +17,7 @@
 ### -- set the email address --
 # please uncomment the following line and put in your e-mail address,
 # if you want to receive e-mail notifications on a non-default address
-##BSUB -u mberos@dtu.dk
+##BSUB -u
 ### -- send notification at start --
 ##BSUB -B
 ### -- send notification at completion --
@@ -27,17 +27,18 @@
 #BSUB -o logs/GREAT_rolling_2030_%J.out
 #BSUB -e logs/GREAT_rolling_2030_%J.err
 
-# Get paths to GAMS 47
-export PATH=/appl/gams/50.4.1:$PATH
-export LD_LIBRARY_PATH=/appl/gams/50.4.1:$LD_LIBRARY_PATH
+# Load error handling and GAMS paths
+source jobs/functions.sh
 
 # Get scenario choice and run name from jobs/scenario_choice.sh
 source jobs/scenario_choice.sh
 
 # Rolling horison simulation
 cd O2030
-cat data/T_roll.inc > data/T.inc
+cat data/T_roll.inc >data/T.inc
 cd model
-cat balopt_roll.opt > balopt.opt
+cat balopt_roll.opt >balopt.opt
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario --scenario_name="${run_name}_R2030"
-cat balopt.opt > balopt_roll.opt
+cd ../../
+
+optimality_check $LSB_JOBID 52

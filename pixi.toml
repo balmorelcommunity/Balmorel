@@ -7,6 +7,7 @@ version = "0.1.0"
 
 [tasks]
 analyse = "python analysis/analyse.py "
+verify = "python analysis/verify.py "
 
 [dependencies]
 premailer = ">=3.10.0,<4"
