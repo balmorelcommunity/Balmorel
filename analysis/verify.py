@@ -16,7 +16,7 @@ from decouple import config
 from pybalmorel.utils import symbol_to_df
 from pybalmorel import MainResults
 from gams import GamsWorkspace
-from functions.utils import find_most_recent_result
+from functions import find_most_recent_result
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np

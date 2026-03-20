@@ -1,5 +1,5 @@
 """
-Utilities
+Functions
 
 Utility functions for analyses
 
