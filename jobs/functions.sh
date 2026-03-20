@@ -19,6 +19,19 @@ cleanup() {
 
 trap cleanup EXIT SIGTERM SIGINT
 
+# Function for checking optimality
+optimality_check() {
+  job_id=$1
+  optimal_nr=$2
+  count=$(rg -e 'LP status \(1\): optimal' logs/*_${job_id}.out --count-matches)
+  if [[ "$count" -eq "$optimal_nr" ]]; then
+    echo "OPTIMAL: Job ${job_id} had ${count} optimal solutions as expected"
+  else
+    echo "INFEASIBLE: Job ${job_id} had ${count} optimal solutions, which is not the expected ${optimal_nr}!"
+    exit 1
+  fi
+}
+
 # Get user settings and paths to GAMS 50.4.1
 source .env
 if not [ -f ".env" ]; then

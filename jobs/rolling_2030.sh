@@ -17,7 +17,7 @@
 ### -- set the email address --
 # please uncomment the following line and put in your e-mail address,
 # if you want to receive e-mail notifications on a non-default address
-##BSUB -u  
+##BSUB -u
 ### -- send notification at start --
 ##BSUB -B
 ### -- send notification at completion --
@@ -39,3 +39,5 @@ cat data/T_roll.inc >data/T.inc
 cd model
 cat balopt_roll.opt >balopt.opt
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario --scenario_name="${run_name}_R2030"
+
+optimality_check $LSB_JOBID 52

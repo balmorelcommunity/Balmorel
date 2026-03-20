@@ -50,5 +50,7 @@ cat balopt_full.opt >balopt.opt
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario --scenario_name="${run_name}_F2030"
 cd ../../
 
+optimality_check $LSB_JOBID 1
+
 # Submit rolling horizon run
 bsub <jobs/rolling_2030.sh

@@ -17,7 +17,7 @@
 ### -- set the email address --
 # please uncomment the following line and put in your e-mail address,
 # if you want to receive e-mail notifications on a non-default address
-##BSUB -u  
+##BSUB -u
 ### -- send notification at start --
 ##BSUB -B
 ### -- send notification at completion --
@@ -49,6 +49,8 @@ cd model
 cat balopt_full.opt >balopt.opt
 gams Balmorel threads=$LSB_DJOB_NUMPROC --USEOPTIONFILE=2 --SCNAME=$scenario --scenario_name="${run_name}_F2040"
 cd ../../
+
+optimality_check $LSB_JOBID 1
 
 # Submit rolling horizon run
 bsub <jobs/rolling_2040.sh

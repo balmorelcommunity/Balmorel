@@ -51,6 +51,7 @@ if [ $gams_exit_code -ne 0 ]; then
   exit $gams_exit_code
 fi
 
+optimality_check $LSB_JOBID 1
 echo "Investment optimization completed successfully at $(date)"
 
 # Submit fullyear runs only if we reach this point
