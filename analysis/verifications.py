@@ -79,16 +79,16 @@ def ev_results(ctx, scenario):
     # Get MainResults file
     sc_folder=ctx.obj['sc-folder']
     if scenario != '':
+        # If input, choose inputted scenario
         path = Path(f'{sc_folder}/model/MainResults_{scenario}.gdx')
     else:
+        # If nothing input, find most recent MainResults
         path = Path(f'{sc_folder}/model')
         results =  [p for p in path.iterdir() if 'MainResults' in str(p)]
-        print(results)
         mtimes = [modified.stat().st_mtime for modified in results]
-        print(mtimes)
         most_recent = mtimes.index(max(mtimes))
         path = Path(results[most_recent])
-        print(f'Most recent results in {sc_folder}: {path.name}')
+        print(f'\nMost recent results in {sc_folder}: {path.name}\n')
 
     # Load results 
     res = MainResults(path.name, str(path.parent))
