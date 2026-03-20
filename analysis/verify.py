@@ -12,14 +12,9 @@ Created on 19.03.2026
 # ------------------------------- #
 
 from pathlib import Path
-from decouple import config
 from pybalmorel.utils import symbol_to_df
-from pybalmorel import MainResults
 from gams import GamsWorkspace
-from functions import find_most_recent_result
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
+from functions import find_result
 import click
 
 # ------------------------------- #
@@ -79,17 +74,9 @@ def ev_results(ctx, scenario):
     
     # Get MainResults file
     sc_folder=ctx.obj['sc-folder']
-    if scenario != '':
-        # If input, choose inputted scenario
-        path = Path(f'{sc_folder}/model/MainResults_{scenario}.gdx')
-        file = path.name
-        path = str(path.parent)
-    else:
-        # If nothing input, find most recent MainResults
-        file, path = find_most_recent_result(sc_folder)
+    res = find_result(sc_folder)
 
     # Load results 
-    res = MainResults(file, path)
     df = (
         res
         .get_result('EL_DEMAND_YCRST')
