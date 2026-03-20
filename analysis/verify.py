@@ -74,7 +74,7 @@ def ev_results(ctx, scenario):
     
     # Get MainResults file
     sc_folder=ctx.obj['sc-folder']
-    res = find_result(sc_folder)
+    res = find_result(sc_folder, scenario)
 
     # Load results 
     df = (

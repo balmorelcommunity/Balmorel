@@ -32,6 +32,11 @@ optimality_check() {
   fi
 }
 
+# Function for generating all plots for a scenario
+generate_plots() {
+  pixi run analyse --overwrite all --scenario $1
+}
+
 # Get user settings and paths to GAMS 50.4.1
 source .env
 if not [ -f ".env" ]; then
