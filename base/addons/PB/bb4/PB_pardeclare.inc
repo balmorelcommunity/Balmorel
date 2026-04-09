@@ -10,5 +10,9 @@ PARAMETER PB_LCA_DATA_X_H2(IRRRE,IRRRI,YYY,PB_LCA_DATASET) "LCA data for constru
 
 PARAMETER PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET, YYY, PB_LCA_DATASET) "LCA data for construction and operation of a generator G in (TECH_GROUP, FFF) for CCS";
 
+PARAMETER PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, YYY, PB_LCA_DATASET) "LCA data for construction and operation of H2 storage cavern";
+
+PARAMETER PB_LCA_DATA_EV(PB_GDTYPE_SET, YYY, PB_LCA_DATASET) "LCA data for EV";
+
 
 

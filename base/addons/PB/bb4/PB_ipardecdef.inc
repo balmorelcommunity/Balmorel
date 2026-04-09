@@ -17,6 +17,14 @@ LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
     );
 );
 
+LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
+    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
+            IM_CO2_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_CO2_prod_elec');
+            IM_CO2_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_CO2_prod_elec');
+            IM_CO2_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_CO2_prod_elec');
+        );
+);
+
 $ifi not %CCS%==yes $goto No_CCS1
     LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
         IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
@@ -37,6 +45,14 @@ LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
 		IM_Ozone_depletion_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Ozone_depletion_prod_heat');
 		IM_Ozone_depletion_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Ozone_depletion_constr');
     );
+);
+
+LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
+    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
+            IM_Ozone_depletion_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Ozone_depletion_constr');
+            IM_Ozone_depletion_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Ozone_depletion_constr');
+            IM_Ozone_depletion_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Ozone_depletion_constr');
+        );
 );
 
 $ifi not %CCS%==yes $goto No_CCS2
@@ -62,6 +78,14 @@ LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
     );
 );
 
+LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
+    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
+            IM_LU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_LU_constr');
+            IM_LU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_LU_constr');
+            IM_LU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_LU_constr');
+        );
+);
+
 $ifi not %CCS%==yes $goto No_CCS3
     LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
         IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
@@ -82,6 +106,14 @@ LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
 		IM_WU_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_WU_prod_heat');
 		IM_WU_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_WU_constr');
     );
+);
+
+LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
+    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
+            IM_WU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_WU_constr');
+            IM_WU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_WU_constr');
+            IM_WU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_WU_constr');
+        );
 );
 
 $ifi not %CCS%==yes $goto No_CCS4
@@ -106,6 +138,17 @@ LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
     );
 );
 
+
+LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
+    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
+            IM_Eutrophication_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Eutrophication_freshwater_constr');
+            IM_Eutrophication_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Eutrophication_freshwater_constr');
+            IM_Eutrophication_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Eutrophication_freshwater_constr');
+        );
+);
+
+
+
 $ifi not %CCS%==yes $goto No_CCS5
     LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
         IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
@@ -126,6 +169,14 @@ LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
 		IM_Ecotoxicity_freshwater_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Ecotoxicity_freshwater_prod_heat');
 		IM_Ecotoxicity_freshwater_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Ecotoxicity_freshwater_constr');
     );
+);
+
+LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
+    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
+            IM_Ecotoxicity_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Ecotoxicity_freshwater_constr');
+            IM_Ecotoxicity_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Ecotoxicity_freshwater_constr');
+            IM_Ecotoxicity_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Ecotoxicity_freshwater_constr');
+        );
 );
 
 $ifi not %CCS%==yes $goto No_CCS6
@@ -150,6 +201,14 @@ LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
     );
 );
 
+LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
+    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
+            IM_PM_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_PM_constr');
+            IM_PM_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_PM_constr');
+            IM_PM_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_PM_constr');
+        );
+);
+
 $ifi not %CCS%==yes $goto No_CCS7
     LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
         IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
@@ -170,6 +229,14 @@ LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
 		IM_Resource_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Resource_prod_heat');
 		IM_Resource_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Resource_constr');
     );
+);
+
+LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
+    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
+            IM_Resource_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Resource_constr');
+            IM_Resource_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Resource_constr');
+            IM_Resource_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Resource_constr');
+        );
 );
 
 $ifi not %CCS%==yes $goto No_CCS8
@@ -194,6 +261,14 @@ LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
     );
 );
 
+LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
+    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
+            IM_Acidification_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Acidification_constr');
+            IM_Acidification_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Acidification_constr');
+            IM_Acidification_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Acidification_constr');
+        );
+);
+
 $ifi not %CCS%==yes $goto No_CCS9
     LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
         IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
@@ -216,6 +291,13 @@ LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
     );
 );
 
+LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
+    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
+            IM_Radiation_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Radiation_constr');
+            IM_Radiation_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Radiation_constr');
+            IM_Radiation_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Radiation_constr');
+        );
+);
 $ifi not %CCS%==yes $goto No_CCS10
     LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
         IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),

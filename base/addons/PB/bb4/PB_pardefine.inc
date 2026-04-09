@@ -10,6 +10,10 @@ $if     EXIST '../data/PB_LCA_DATA_X_%IAM_Scenario%.inc' $INCLUDE         '../da
 $if not EXIST '../data/PB_LCA_DATA_X_%IAM_Scenario%.inc' $INCLUDE '../../base/data/PB_LCA_DATA_X_%IAM_Scenario%.inc';
 $offmulti
 
+$onmulti
+$if     EXIST '../data/PB_LCA_DATA_H2_STO_CAV_%IAM_Scenario%.inc' $INCLUDE         '../data/PB_LCA_DATA_H2_STO_CAV_%IAM_Scenario%.inc';
+$if not EXIST '../data/PB_LCA_DATA_H2_STO_CAV_%IAM_Scenario%.inc' $INCLUDE '../../base/data/PB_LCA_DATA_H2_STO_CAV_%IAM_Scenario%.inc';
+$offmulti
 *$onmulti
 *$if     EXIST '../data/PB_LCA_DATA_H2_%IAM_Scenario%.inc' $INCLUDE         '../data/PB_LCA_DATA_H2_%IAM_Scenario%.inc';
 *$if not EXIST '../data/PB_LCA_DATA_H2_%IAM_Scenario%.inc' $INCLUDE '../../base/data/PB_LCA_DATA_H2_%IAM_Scenario%.inc';
@@ -27,6 +31,15 @@ $if     EXIST '../data/PB_LCA_DATA_CCS_%IAM_Scenario%.inc' $INCLUDE         '../
 $if not EXIST '../data/PB_LCA_DATA_CCS_%IAM_Scenario%.inc' $INCLUDE '../../base/data/PB_LCA_DATA_CCS_%IAM_Scenario%.inc';
 $label No_CCS 
 $offmulti
+
+
+$onmulti
+$ifi not %EV%==yes $goto No_EV 
+$if     EXIST '../data/PB_LCA_DATA_EV_%IAM_Scenario%.inc' $INCLUDE         '../data/PB_LCA_DATA_EV_%IAM_Scenario%.inc';
+$if not EXIST '../data/PB_LCA_DATA_EV_%IAM_Scenario%.inc' $INCLUDE '../../base/data/PB_LCA_DATA_EV_%IAM_Scenario%.inc';
+$label No_EV 
+$offmulti
+
 
 $onmulti
 $if     EXIST '../data/PB_THRESHOLDS_DATA.inc' $INCLUDE         '../data/PB_THRESHOLDS_DATA.inc';
