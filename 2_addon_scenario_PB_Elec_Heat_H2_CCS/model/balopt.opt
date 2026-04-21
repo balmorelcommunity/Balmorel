@@ -214,7 +214,7 @@ $setglobal VRESHUTDOWN   yes
 *------------------------------EV ADDON-------------------------------------------------
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV yes
+$setglobal EV
 *!option YES
 
 * Adds V2G charging: 

@@ -200,7 +200,7 @@ $setglobal OFFSHOREGRID NO
 *!option yes
 
 * Allow Carbon Capture Storage (CCS) technologies.
-$setglobal CCS yes
+$setglobal CCS
 *!option yes
 
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
@@ -214,7 +214,7 @@ $setglobal VRESHUTDOWN   yes
 *------------------------------EV ADDON-------------------------------------------------
 * overall control variable EV must be 'yes' if any of the other EV controls are:
 
-$setglobal EV yes
+$setglobal EV
 *!option YES
 
 * Adds V2G charging: 
@@ -336,7 +336,7 @@ $setglobal COMBTECH
 *-----------------HYDROGEN ADDON---------------------------------------
 * overall control variable HYDROGEN must be 'yes' if any of the other HYDROGEN controls are:
 * Set demands for hydrogen consumption and enable hydrogen technologies (some options require COMBTECH to be activated too).
-$Setglobal HYDROGEN yes
+$Setglobal HYDROGEN
 *!option yes
 
 * Allows investments in hydrogen transport
