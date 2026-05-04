@@ -30,5 +30,65 @@ base/data/README.md
 build
 %batfileMERGEWITHBASE%
 
-nuts3/
-oper/
+
+1-FEU-Fuel/
+1-FEU-Fuel-oper/
+2-IMO-Fuel/
+2-IMO-Fuel-oper/
+3-FEU-Retro/
+3-FEU-Retro-oper/
+4-IMO-Retro/
+4-IMO-Retro-oper/
+5-FEU-OCC/
+5-FEU-OCC-oper/
+6-IMO-OCC/
+6-IMO-OCC-oper/
+
+7-FEU-OCC-0.8-seq/
+7-FEU-OCC-0.6-seq/
+7-FEU-OCC-0.4-seq/
+7-FEU-OCC-0.2-seq/
+
+8-IMO-Fuel-import-low/
+8-IMO-Fuel-import-med/
+
+9-IMO-Fuel-bmprice-1.2/
+9-IMO-Fuel-bmprice-1.4/
+9-IMO-Fuel-bmprice-1.6/
+9-IMO-Fuel-bmprice-1.8/
+9-IMO-Fuel-bmprice-2.0/
+
+10-FEU-OCC-capture-0.6/
+10-FEU-OCC-capture-0.8/
+10-IMO-OCC-capture-0.6/
+10-IMO-OCC-capture-0.8/
+
+results/
+results_gpu/
+results_oper/
+results_seq/
+results_import/
+results_bmprice/
+results_occ/
+
+joblogs/
+joblogs_gpu/
+joblogs_oper/
+joblogs_seq/
+joblogs_import/
+joblogs_bmprice/
+joblogs_occ/
+
+
+# VS Code
+*.code-workspace
+.vscode/
+
+# Local job scripts
+job_sub*.sh
+
+# Local options files
+base/model/*uopt.opt
+
+# Logs
+joblogs_*/
