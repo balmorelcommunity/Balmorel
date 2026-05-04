@@ -1,9 +1,5 @@
-* Option file 1 for CPLEX solver. For possible options, see the GAMS Solver Manual. Change as needed.
-
-LPmethod        4       * Use barrier
-BarCrossAlg     1       * Let CPLEX choose best crossover method
-BarHomogeneous  1       * Improves stability in tough models
-BarConvTol   1e-6       * Slightly relaxed, still acceptable for most use
-AggFill        50       * Moderate fill-in to balance speed and stability
-AdvInd          1       * Try advanced basis for better crossover
-Scaling 1        * Let CPLEX rescale the model automatically
+LPMethod 4
+Threads 20
+BarCrossAlg -1
+SolutionType 2
+NumericalEmphasis 1

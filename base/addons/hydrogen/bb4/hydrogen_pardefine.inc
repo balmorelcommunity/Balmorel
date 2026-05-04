@@ -76,6 +76,28 @@ $if not EXIST '../data/HYDROGEN_XH2KN_ES.inc' $INCLUDE '../../base/data/HYDROGEN
 
 *OBS FF
 
+*Parameters for relative cost increase from underwater share (hydrogen transmission)
+PARAMETER TRANSSHARE_SUBSEA(IRRRE,IRRRI)  'Fraction of corridor length between IRE and IRI that is underwater'
+$if     EXIST '../data/TRANSSHARE_SUBSEA.inc' $INCLUDE         '../data/TRANSSHARE_SUBSEA.inc';
+$if not EXIST '../data/TRANSSHARE_SUBSEA.inc' $INCLUDE '../../base/data/TRANSSHARE_SUBSEA.inc';
+%semislash%;
+
+*Parameters for relative cost increase from mountainous share (hydrogen transmission)
+PARAMETER TRANSSHARE_MOUNTAIN(IRRRE,IRRRI)  'Fraction of corridor length between IRE and IRI in mountainous regions'
+$if     EXIST '../data/TRANSSHARE_MOUNTAIN.inc' $INCLUDE         '../data/TRANSSHARE_MOUNTAIN.inc';
+$if not EXIST '../data/TRANSSHARE_MOUNTAIN.inc' $INCLUDE '../../base/data/TRANSSHARE_MOUNTAIN.inc';
+%semislash%;
+
+SCALAR SUBSEA_REL_INCR 'Increase in PROCINVCOST and PROCFIXEDCOST for the subsea share of a transmission line/pipeline (relative increase from base)'
+$if     EXIST '../data/SUBSEA_REL_INCR.inc' $INCLUDE         '../data/SUBSEA_REL_INCR.inc';
+$if not EXIST '../data/SUBSEA_REL_INCR.inc' $INCLUDE '../../base/data/SUBSEA_REL_INCR.inc';
+%semislash%;
+
+SCALAR MOUNTAIN_REL_INCR 'Increase in PROCINVCOST and PROCFIXEDCOST for the mountainous share of a transmission  line/pipeline (relative increase from base)'
+$if     EXIST '../data/MOUNTAIN_REL_INCR.inc' $INCLUDE         '../data/MOUNTAIN_REL_INCR.inc';
+$if not EXIST '../data/MOUNTAIN_REL_INCR.inc' $INCLUDE '../../base/data/MOUNTAIN_REL_INCR.inc';
+%semislash%;
+
 *Geography multiplier for H2 transmission corridors
 PARAMETER XH2_GEOMULT(IRRRE,IRRRI) 'Relative cost multiplier for H2 pipelines accounting for underwater and mountainous shares';
 
