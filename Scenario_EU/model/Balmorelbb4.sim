@@ -11,6 +11,10 @@
 * this is to make some of the differences relative to bb123.sim more visible.
 
 *-------------------------------------------------------------------------------
+* REPORT-ONLY MODE (scenario-local; inert unless --REPORTYEAR set): skip the solve loop;
+* the post-.sim OUTPUT_SUMMARY rebuilds MainResults.gdx from the committed cohort dispatch.
+$if set REPORTYEAR $goto BALREPORTONLY
+*-------------------------------------------------------------------------------
 * INITIALISATIONS BEFORE LOOPING OVER $YALIAS%:
 *-------------------------------------------------------------------------------
 
@@ -373,6 +377,14 @@ OPTION Savepoint=0;
 
 $ifi not %USEOPTIONFILE%==0 BALBASE4.optfile = %USEOPTIONFILE%;
 
+* 2050-only dispatch regularization (2026-05-31): S3 active ONLY for the degenerate 2050 cohort;
+* 2030/2040 keep EPS=0 -> untouched, exact, fast. IYALIAS = current cohort in the myopic loop.
+PB_DISPATCH_REG_EPS = 0;
+* 2_31_1_3 FLOOR TEST (2026-06-01): fixed eps = 3.0 (~28x the solver noise floor ~1.4e7).
+* The relative eps (~1.07e-3) gave tilt ~1.38e5 = ~100x BELOW the floor -> invisible (2050 grind byte-identical to un-reg).
+* eps=3.0 clears the floor decisively; lossless (<< VOM*duration ~ tens). Tests whether clearing the floor breaks the grind.
+PB_DISPATCH_REG_EPS$(SAMEAS(IYALIAS,'2050')) = 1.0;
+
 $ifi %SOLVETYPE%==LP   SOLVE BALBASE4 USING LP   MINIMIZING VOBJ;
 $ifi %SOLVETYPE%==RMIP SOLVE BALBASE4 USING RMIP MINIMIZING VOBJ;
 $ifi %SOLVETYPE%==MIP  SOLVE BALBASE4 USING MIP  MINIMIZING VOBJ;
@@ -392,6 +404,20 @@ $include "../../base/addons/_hooks/solveend.inc"
 *-------------------------------------------------------------------------------
 * End: SOLVE
 *-------------------------------------------------------------------------------
+
+*-------------------------------------------------------------------------------
+* Per-cohort deliverable persistence  (SCENARIO-LOCAL, added 2026-05-31)
+* This file is a scenario-local copy of base/model/Balmorelbb4.sim (base is NOT
+* touched; it is picked up via the local-first include at Balmorelbb4.inc:2602).
+* Dump each cohort's full state to output/cohort_<year>.gdx the instant it solves
+* (while V*.L are still fresh), so 2030/2040 survive even if the 2050 cohort grinds
+* out and the run is killed before the post-loop OUTPUT_SUMMARY/MainResults write.
+* ORD(IYALIAS): 1->2030, 2->2040, 3->2050 for this run's Y set.
+* Offline: run OUTPUT_SUMMARY.inc per gdx -> MainResults_<year>.gdx, or read V*.L/TL.
+*-------------------------------------------------------------------------------
+if(ORD(IYALIAS) eq 1, execute_unload '%relpathModel%../output/cohort_2030.gdx';);
+if(ORD(IYALIAS) eq 2, execute_unload '%relpathModel%../output/cohort_2040.gdx';);
+if(ORD(IYALIAS) eq 3, execute_unload '%relpathModel%../output/cohort_2050.gdx';);
 
 *-------------------------------------------------------------------------------
 * EV_infeas slack diagnostic — emits one grep-able line per solve into the
@@ -491,6 +517,18 @@ $include "../../base/addons/_hooks/varassign.inc"
 *------------------------------------------------------------------------------
 *-------------------------------------------------------------------------------
 * END: LOOP OVER ALL THE FIRSTYEARS IN ALL MODELS BALBASE4
+*-------------------------------------------------------------------------------
+
+$label BALREPORTONLY
+$ifThen set REPORTYEAR
+* Report-only (cf. 2_26_report): execute_loadpoint fills V*.L at runtime, so
+* $onImplicitAssign tells the compiler these symbols get values at runtime ($141).
+$onImplicitAssign
+* Re-init IS3 (OUTPUT_SUMMARY PB-recompute needs it; the skipped loop would have set it).
+IS3(S) = YES;
+* Restore the committed-cohort dispatch; post-.sim OUTPUT_SUMMARY writes MainResults.gdx.
+execute_loadpoint '%relpathModel%../output/cohort_%REPORTYEAR%.gdx';
+$endIf
 *-------------------------------------------------------------------------------
 
 

@@ -1,0 +1,90 @@
+*-------------------------------------------------------------------------------
+* balopt.opt  --  Scenario_EU : EU + Nordic Planetary-Boundary model
+*-------------------------------------------------------------------------------
+* Full European geography (35 countries incl. the Nordics, per data/C.inc), with a
+* reduced active LP via investability edits (Nordic/Baltic heat-area aggregation,
+* offshore-wind archetype drop, A1 bio-CCS investability restriction, pellet-
+* investment drop). Planetary Boundaries on -- all categories, "max" equity corridor
+* -- with the CCS, Hydrogen and EV add-ons. Myopic per-cohort optimisation of
+* 2030 / 2040 / 2050 with cohort-frozen-IM construction accounting and QPBSCORE
+* row-scale conditioning + non-investable transmission gates.
+*
+* Notable features:
+*  - eps  : a 2050-only chronological dispatch-regularisation tilt (PB_DISPATCH_REG_EPS
+*           = 1.0 in Balmorelbb4.sim, applied via data/PB_qobj_local.inc) that breaks
+*           the temporal degenerate face from the 1e12 PB big-M and gives a unique
+*           crossover vertex for the 2050 cohort.
+*  - caps : optional EU-wide limits on elec / H2 interconnector capacity
+*           (Elec_TransX_Limit_* / H2_TransX_Limit_* below).
+*  - nocap: no 2050 net-CO2 cap -- the -82 Mt EMI_POLNA line stays commented.
+*
+* Author: Dhruv Sharma
+*-------------------------------------------------------------------------------
+
+* Load all base defaults first (also activates PB / CCS / EV / HYDROGEN add-ons).
+$include '../../base/model/balopt.opt';
+
+* =============================================================================
+* ALL PB-RELATED GLOBALS -- set explicitly so this scenario is self-documenting.
+* (Base balopt sets these defaults; restated here as the single source of truth.)
+* =============================================================================
+
+* --- PB add-on core ----------------------------------------------------------
+$setglobal PB                            YES
+$setglobal PB_all                        yes
+$setglobal IAM_Scenario                  IMAGE_SSP2_RCP26
+
+* --- Foresight / cohort accounting -------------------------------------------
+$setglobal PB_ROLLING_FORESIGHT
+$setglobal PB_COHORT_CONSTR              yes
+
+* --- Conditioning + output (2026-05-29 best config; previously command-line) --
+$setglobal PB_ROWSCALE_ON                yes
+$setglobal PB_ROWSCALE_EXT             off
+$setglobal PB_XH2_RANKFIX             yes
+$setglobal PB_X_RANKFIX               yes
+$setglobal PB_PENALTY_VALUE          1e12
+* PB_SNAP_DISPATCH OFF: this noRF myopic run retains every cohort's dispatch
+* natively -- verified on the validated 5_1 Nordic run, which ran snapshot-off and
+* still produced correct per-cohort transmission/storage/production/generation in
+* MainResults + all_endofmodel. The snapshot is an unneeded no-op for noRF (it
+* auto-enables only under rolling foresight), so we run the exact validated config.
+$setglobal PB_SNAP_DISPATCH
+
+* --- Equity-corridor threshold selector  (max = lenient | min = strict) ------
+$setglobal PB_EQUITY_CORRIDOR_THRESHOLD  max
+
+* --- Coupled add-ons consumed by the PB LCA accounting -----------------------
+$setglobal CCS                           yes
+$setglobal EV                            yes
+$setglobal HYDROGEN                      yes
+$setglobal H2TransInvest                 YES
+
+* --- Per-category transgression slack: soft (yes) vs hard (empty) ------------
+* CO2 is always soft (no flag). Ozone/Radiation/Acidification are hard-constrained
+* (structurally dormant: TL stayed < 0.23 even under the 10x-tightened PB_min
+* stress test), which drops their 1e13*TL term from VOBJ -- non-binding hard cap.
+$setglobal TL_LU_ALLOWED                        yes
+$setglobal TL_WU_ALLOWED                        yes
+$setglobal TL_EUTROPHICATION_FRESHWATER_ALLOWED yes
+$setglobal TL_ECOTOXICITY_FRESHWATER_ALLOWED    yes
+$setglobal TL_PM_ALLOWED                        yes
+$setglobal TL_RESOURCE_ALLOWED                  yes
+$setglobal TL_OZONE_DEPLETION_ALLOWED
+$setglobal TL_RADIATION_ALLOWED
+$setglobal TL_ACIDIFICATION_ALLOWED
+
+* 2050-only S3: enable the dispatch-reg terms (EPS set per-cohort in Balmorelbb4.sim)
+$setglobal PB_DISPATCH_REG no
+$setglobal PB_DISPATCH_REG_EXT no
+
+* --- EU-wide transmission / H2-pipeline capacity caps (GW; unset/empty = no cap) ---
+* Cap the TOTAL installed (exogenous + endogenous) interconnector capacity, summed
+* EU-wide, in the matching cohort. Enforced by QELEC_TRANSX_LIM_* / QH2_TRANSX_LIM_*
+* in base/addons/PB/bb4/ (gated on "$if set"; leave one empty to drop that cap).
+* 2030 is intentionally left uncapped. Current uncapped solution: elec 1350/1376 GW,
+* H2 605 GW -- so these caps bind hard.
+$setglobal Elec_TransX_Limit_2040   650
+$setglobal Elec_TransX_Limit_2050   850
+$setglobal H2_TransX_Limit_2040     150
+$setglobal H2_TransX_Limit_2050     250

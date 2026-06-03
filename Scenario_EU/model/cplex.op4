@@ -1,0 +1,23 @@
+* ==========================================================================
+* CPLEX option file 4 (FACTOR PROBE): barrier-only, to MEASURE the 2030-cohort
+* Cholesky factor that concurrent LPmethod 6 hides.
+* The 2030 cohort LP is identical to the uncapped A1 run, so this number IS
+* A1's barrier factor (the tractability metric: full-CCS=2.0e9, msw=594M).
+* Run, capture "Total non-zeros in factor / FP ops / dense columns / Reduced
+* LP size" from the FIRST (2030) cohort, then KILL. (LPmethod 4 later fails
+* with LP status 22 on this PB matrix -- irrelevant; factor prints first.)
+* Use with: gams ... --USEOPTIONFILE=4
+* ==========================================================================
+
+LPmethod  4
+* Barrier ONLY -> emits "Summary statistics for Cholesky factor".
+
+advind 0
+predual -1
+scaind 1
+solutiontype 0
+numericalemphasis 1
+* (mirror the production numerics so the measured factor is representative.)
+
+bardisplay 2
+* REQUIRED: emits Cholesky factor summary + dense-column count + per-iter log.

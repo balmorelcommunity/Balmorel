@@ -101,13 +101,100 @@ $setglobal IAM_Scenario IMAGE_SSP2_RCP26
 $setglobal PB_all yes
 *!option yes, if yes, optimizing for all PB's and if nothing, it is optimising only on CO2
 
-$setglobal TL_ALLOWED yes
-*!option yes, meaning TL is allowed for all PB's
+*------- Per-impact-category soft/hard TL switch -------------------------------
+* Each TL_<CAT>_ALLOWED selects, for that category alone, between the soft
+* form (QPBLIM_<CAT>_TL with non-negative TL slack and penalty in objective)
+* and the hard form (QPBLIM_<CAT>_TL_NO with IS <= threshold strictly, no slack,
+* no penalty).
+*   yes   -> soft TL, TL_<CAT>(Y) variable enters the objective at PB_PENALTY_COEF
+*   empty -> hard constraint, no TL variable in objective for that category
+*
+* The previous single global TL_ALLOWED has been replaced by these per-category
+* flags. The defaults below (all yes) reproduce the legacy TL_ALLOWED=yes
+* behaviour exactly. Override individual ones per scenario, e.g.:
+*     $setglobal TL_OZONE_DEPLETION_ALLOWED
+*     $setglobal TL_RADIATION_ALLOWED
+*     $setglobal TL_ACIDIFICATION_ALLOWED
+* makes those three hard-constrained while leaving the rest soft.
+*
+* PB_all & TL_<CAT>_ALLOWED combinations:
+*   PB_all=yes, all TL_<CAT>_ALLOWED=yes      -> optimise all 10 PBs, soft TL for all
+*   PB_all=yes, some TL_<CAT>_ALLOWED=empty   -> optimise all 10 PBs, hard limit for those cats
+*   PB_all=empty, TL_CO2_ALLOWED=yes          -> optimise CO2 only, soft TL on CO2
+*   PB_all=empty, TL_CO2_ALLOWED=empty        -> optimise CO2 only, hard limit on CO2
+$setglobal TL_CO2_ALLOWED                       yes
+$setglobal TL_OZONE_DEPLETION_ALLOWED           yes
+$setglobal TL_LU_ALLOWED                        yes
+$setglobal TL_WU_ALLOWED                        yes
+$setglobal TL_EUTROPHICATION_FRESHWATER_ALLOWED yes
+$setglobal TL_ECOTOXICITY_FRESHWATER_ALLOWED    yes
+$setglobal TL_PM_ALLOWED                        yes
+$setglobal TL_RADIATION_ALLOWED                 yes
+$setglobal TL_ACIDIFICATION_ALLOWED             yes
+$setglobal TL_RESOURCE_ALLOWED                  yes
 
-*PB_all & TL_allowed combinations:
-*PB_all yes; TL_Allowed yes - Optimizing for all PB's while allowing Transgression (TL)
-*PB_all yes; TL_Allowed "empty" - Optimizing for all PB's while not allowing Transgression (TL_NO)
-*PB_all "empty"; TL_Allowed no - Optimizing for CO2 while not allowing Transgression (TL_NO)
+* Rolling-foresight orchestration for the PB add-on.
+* When yes: the year loop becomes a sliding 2-modeled-year window
+* ({Y[i], Y[i+1]} for i = 1 .. CARD(Y)-1), committing the front year and
+* updating the next-period threshold from the committed year's TL_<CAT>.L per
+* the rule configured in base/data/PB_RULE_CONFIG.inc (Path B banking for
+* cumulative-threshold PBs, Approach B tightening for steady-state-threshold
+* PBs). The horizon and stepping come from
+* the scenario's Y.inc -- e.g. {2025, 2030, 2035, 2040, 2045, 2050} gives
+* 5-year stepping; {2025, 2030, 2040, 2050} gives mixed 5/10/10-year stepping
+* (the banking math uses the actual per-window gap).
+* Requires PB_all=yes and the TL_<CAT>_ALLOWED flags set for any categories
+* you want the rolling threshold-update logic to manage.
+$setglobal PB_ROLLING_FORESIGHT
+*!option yes
+
+* (Note: a previous PB_RF_BANK_LASTYEAR flag has been removed. Terminal-year
+* propagation is now unconditional under PB_ROLLING_FORESIGHT=yes: the LOOP
+* covers all elements up to Y[CARD] and the threshold update at the
+* penultimate iter uses a fallback gap_next = gap_commit so the
+* banking / tightening reaches Y[last]. The final iter is a singleton
+* solo solve over Y[last] that commits its capacities and dispatch with
+* the propagated threshold.)
+
+* When PB=yes: replace the construction term in the QPBSCORE_<IMPACT> equations
+* (and the parallel IS_<IMPACT>_G computation in OUTPUT_SUMMARY.inc) with a
+* per-cohort sum whose IM_<IMPACT>_constr is FROZEN at the commission year T
+* (the cohort's investment year), not re-evaluated at the accounting year Y.
+*
+* Default (empty / off): the legacy convention applies --
+*     (VGKNACCUMNET(Y) * 1000) * IM_<IMPACT>_constr(Y, G) / lifetime
+*   uses the cumulative capacity stock with the accounting year's prospective
+*   IM factor, divided by lifetime. Because IM_<IMPACT>_constr(Y, G) varies
+*   with Y (typically a 10-35% decline from 2025 to 2050 as the upstream
+*   industrial system decarbonises), this convention does NOT preserve
+*   total construction emissions across the asset's lifetime.
+*
+* When yes: per-cohort summation --
+*     For each accounting year Y, the construction term sums over commission
+*     years T (an alias of Y in the simulation set) where T <= Y and
+*     Y - T < lifetime(G):
+*         (VGKN(T, IA, G) + NEW_GKFX(T, IA, G)) * 1000
+*         * IM_<IMPACT>_constr(T, G) / lifetime
+*   The IM factor is frozen at the cohort's commission year, consistent with
+*   how Balmorel already handles investment costs (per-cohort summation with
+*   frozen ANNUITYCG and GINVCOST -- see OUTPUT_SUMMARY.inc:1039). The total
+*   construction emissions of an asset over its lifetime equals capacity *
+*   IM_constr(commission_year, G), matching the physical reality of when
+*   the construction event occurred.
+*
+*   NEW_GKFX(T, IA, G) captures positive year-on-year deltas in the exogenous
+*   capacity table GKFX, attributing them as cohort-T new builds. Pre-2025
+*   legacy capacity (the residual GKFX present from the earliest simulation
+*   year that wasn't a positive delta) is NOT included in construction IS,
+*   on the basis that the PB threshold (Exiobase 2024 trajectory) already
+*   accounts for emissions through 2024; their 2025+ operational impact is
+*   still counted via the IM_<IMPACT>_prod_* terms when those plants run.
+*
+* Independent of PB_ROLLING_FORESIGHT -- works with rolling foresight on
+* (each iter's IY411 sees the same cohort sum) or off (myopic-recursive
+* LOOP also works; the cohort sum just iterates over Y elements naturally).
+$setglobal PB_COHORT_CONSTR
+*!option yes
 
 *------------------------------END:Planeatary boundaries addon-------------------------------------------------
 
@@ -203,6 +290,31 @@ $setglobal OFFSHOREGRID NO
 $setglobal CCS yes
 *!option yes
 
+* ----- OptiFlow ↔ CCS coupling flags (default OFF for backward compatibility) -----
+* These four flags are referenced by Frederik's CCS+Optiflow integration code
+* (CCS_eqndecdef.inc, CCS_balbase4.inc, optiflow_qlimco2c.inc, optiflow_qobj.inc,
+*  optiflow_isetdecdef.inc, etc.). They are only meaningful when both CCS=yes
+* AND OPTIFLOW=yes are active. Leaving them blank keeps the Optiflow link inert
+* in non-Optiflow scenarios (current PB runs).
+
+* Connects biomass use between Balmorel and OptiFlow.  Also sets MAXFLOW to 0.
+$setglobal baloptfuelbridge
+*!option yes
+
+* Connects biogas produced by OptiFlow to Balmorel.  Also sets balmorel biogas potential to 0.
+$setglobal baloptgasbridge
+*!option yes
+
+* Connects captured CO2 in Balmorel with CO2 use in OptiFlow.  Requires CCS=yes.
+$setglobal baloptCCU
+*!option yes
+
+* When 'yes': captured CO2 MUST be used in OptiFlow CCU/CS (equality form of QFLOWCO2LIM).
+* When blank (default): OptiFlow CCU usage is limited to captured CO2 (less-than form).
+* Requires CCS=yes AND baloptgasbridge=yes.
+$setglobal baloptCCS
+*!option yes
+
 * Allow wind turbines to shut down  (BB1,BB2,BB3)
 $setglobal WNDSHUTDOWN
 *!option yes
@@ -242,7 +354,7 @@ $setglobal EV_season_calc yes
 * The reason is that the EV addon is highly affected by input data.
 * Note: The value of the parameter PENALTQ should be in line with the cost assumptions in the model to obtain meaninful results
 * Note: Rule of thumb, if this is needed, something is probably wrong with the data used.
-$setglobal EV_infeas
+$setglobal EV_infeas yes
 *!option yes
 
 * Scenario where every EV return to charger after each trip. Needs specific profile as well (profile3 or profile4).

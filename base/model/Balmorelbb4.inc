@@ -2133,6 +2133,29 @@ $include "../../base/addons/_hooks/qxk_up.inc"
 * Put a cap on the maximum accummulated transmission capacity, if a cap is specified
 VXKNACCUMNET.UP(Y,IRRRE,IRRRI)$(XINVCOST(Y,IRRRE,IRRRI) AND XMAXINV(IRRRE,IRRRI))= XMAXINV(IRRRE,IRRRI);
 
+* Fix non-investable transmission pairs to zero (data-integrity, 2026-05-29).
+* Pairs not in IXKN have no QXKNACCUMNET defining equation (gate just below) and,
+* because XMAXINV is often empty, no .UP cap from the line above either -- leaving
+* VXKNACCUMNET a free variable. It still appears UNGATED in the PB transmission-LCA
+* score (QPBSCORE_CO2_X; the H2 sibling _X_H2 now sums VXH2KNACCUMNET, gated below),
+* where it can take spurious values (observed:
+* LU->DE4-S = 1.5e9 MW -> 3.5 Gt phantom construction CO2 in the 2040 cohort).
+* Pinning the complement of the accumulation-equation domain to 0 removes the leak;
+* any existing capacity on such pairs lives in XKFX and is untouched. Same IXKN gate
+* as QXKNACCUMNET below, so investable pairs are unaffected (lossless).
+* NB: indexed over Y with the alias IY402 for the inner sum -- NOT the loop set IY411,
+* which is uninitialized at this once-off setup point (the deferred equation below may
+* reference IY411; an executed assignment here may not -> error $352).
+VXKNACCUMNET.UP(Y,IRRRE,IRRRI)$(NOT SUM(IY402$(YVALUE(IY402) LE YVALUE(Y)),IXKN(IY402,IRRRE,IRRRI))) = 0;
+
+* Same fix for H2 transmission (VXH2KNACCUMNET), gated on H2TransInvest (the variable
+* is only declared/used then). Non-IXH2KN pairs have no QXH2KNACCUMNET equation, so the
+* variable is free and would leak into QPBSCORE_CO2_X_H2 (corrected 2026-05-29 to sum
+* VXH2KNACCUMNET instead of the elec VXKNACCUMNET). Pin them to 0. IXH2KN declared via
+* the ipardecdef hook (line 909), VXH2KNACCUMNET via vardeclare (line 1162) -> both in
+* scope here. Y + alias IY402 for the same reason as the elec line above.
+$ifi %H2TransInvest%==yes VXH2KNACCUMNET.UP(Y,IRRRE,IRRRI)$(NOT SUM(IY402$(YVALUE(IY402) LE YVALUE(Y)),IXH2KN(IY402,IRRRE,IRRRI))) = 0;
+
 
 * Accumulated endogenous transmission investments during present BB4 model -----
 * Note that it is assumed that there are no endogenous decommissioning
@@ -2519,6 +2542,19 @@ $include "../../base/addons/_hooks/balbase4.inc"
 BALBASE4.SCALEOPT=1;
 QOBJ.SCALE=IOF1000000;
 
+* 2026-05-27 Tier 2 matrix-conditioning experiment REJECTED.
+* Tested VGE_AGG.SCALE = VGH_AGG.SCALE = 1e6 to compress the 13-OOM column
+* spread on LCA-bearing AGG variables. Nordic A/B (5_4 scaleagg vs 5_2
+* cplex2_opt, jobs 28514788 vs 28511903): +12.4% total wall slower across
+* all 3 cohorts (cohort 1 +14.8%, 2 +15.7%, 3 +5.8%). Objective bit-identical
+* (math is clean), but adding GAMS scaling on top of CPLEX's scaind 1 made
+* per-iter cost +22% with only -10% iter count -> net slowdown. CPLEX
+* internal scaling was already handling the conditioning; our intervention
+* interfered. Mechanism: barrier Cholesky factor density worsened.
+*
+* See backup base/model/Balmorelbb4.inc.bak_20260527_scaleagg for the
+* attempted patch.
+
 *-------------------------------------------------------------------------------
 *----- Any further models to be defined here:
 *-------------------------------------------------------------------------------
@@ -2570,6 +2606,11 @@ $ifi not exist 'Balmorelbb4.sim'  $include '../../base/model/Balmorelbb4.sim';
 *-------------------------------------------------------------------------------
 
 *--- Main results calculation -----------------------------------------------
+* PB: restore V*.L from snapshot parameters BEFORE OUTPUT_SUMMARY computes
+* PRO_*. CPLEX zeroed V*.L for years that left IY411 between SOLVEs; the
+* snapshot preserved each year's committed dispatch.
+$ifi %PB_SNAP_DISPATCH%==yes $include '../../base/addons/PB/bb4/PB_per_iter_restore.inc';
+
 $ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY.inc';
 *--- End of Main results calculation ---------------------------------------
 

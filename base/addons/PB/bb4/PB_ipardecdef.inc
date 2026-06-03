@@ -1,647 +1,118 @@
-PARAMETER   ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET);
-PARAMETER   IM_CO2_prod_elec(Y,G) "CO2eq emission for the production of 1 kWh by unit G"; 
-PARAMETER   IM_CO2_prod_heat(Y,G) "CO2eq emission for the production of 1 MJ by unit G"; 
-PARAMETER   IM_CO2_constr(Y,G)   "CO2eq emission for the construction of 1 MW of unit G ";
+*-------------------------------------------------------------------------------
+* PB_ipardecdef.inc  --  Stub that loads precomputed per-generator IM_* values
+*-------------------------------------------------------------------------------
+* Part of the Balmorel Planetary Boundaries (PB) add-on.
+*
+* PURPOSE
+*   This thin stub replaces the slow GAMS LOOP/IF logic that lived in the
+*   original addons/PB/bb4/PB_ipardecdef.inc. It $INCLUDEs a per-scenario
+*   precomputed file generated offline by a Python preprocessor, so that GAMS
+*   loads the IM_<Category>_* parameters as direct assignments instead of
+*   recomputing them via a 5-dimensional Cartesian-product loop on every
+*   model run.
+*
+* PIPELINE
+*   1. Python preprocessor reads:
+*        - GDATA.inc, HYDROGEN_GDATA.inc, GDATA_renewable.inc,
+*          COMBTECH_GDATA.inc, INDIVUSERS_GDATA.inc  (generator -> TG/FFF/GDTYPE)
+*        - CCS_CCS_G.inc                             (CCS generator subset)
+*        - PB_LCA_DATA_<scenario>.inc                (main LCA values)
+*        - PB_LCA_DATA_H2_<scenario>.inc             (H2 LCA additions)
+*        - PB_LCA_DATA_CCS_<scenario>.inc            (CCS LCA values)
+*        - PB_LCA_DATA_H2_STO_CAV_<scenario>.inc     (H2 cavern overrides)
+*      ... and emits PB_ipardecdef_<scenario>.inc per scenario.
+*
+*   2. Each generated .inc declares 30 IM_<Category>_* parameters (10 impact
+*      categories x {prod_elec, prod_heat, constr}) with their values, plus
+*      $ifi-guarded HYDROGEN and CCS overrides that mirror the original
+*      conditional logic. The 10 categories are CO2, OZONE_DEPLETION, LU,
+*      WU, EUTROPHICATION_FRESHWATER, ECOTOXICITY_FRESHWATER, PM, RADIATION,
+*      ACIDIFICATION, RESOURCE.
+*
+*   3. This stub picks the right file at runtime based on %IAM_Scenario%.
+*
+* DEPLOYMENT (one-time)
+*   1. Generate the per-scenario files:
+*        cd /work3/dhrsh/Balmorel/2_PreProcessing_ipardecdef
+*        python3 preprocess_ipardecdef.py --scenario all
+*
+*   2. Stage the generated files into the model's data directory:
+*        cp Outputs/PB_ipardecdef_*.inc \
+*           <root>/base/data/
+*
+*   3. Replace the original addon file with this stub:
+*        cp Outputs/PB_ipardecdef.inc \
+*           <root>/base/addons/PB/bb4/PB_ipardecdef.inc
+*
+*   4. Run Balmorel as usual. Confirm runtime improvement on the
+*      compilation/preprocessing phase.
+*
+* RE-RUNNING AFTER LCA / GDATA UPDATES
+*   Repeat steps 1 and 2 only. This stub itself never changes.
+*
+* COMPATIBILITY NOTES
+*   - The CCS overrides remain $ifi-guarded by %CCS%, so a model run with
+*     CCS=no behaves exactly as before.
+*   - The H2 LCA additions are $ifi-guarded by %HYDROGEN%, mirroring the
+*     conditional include at the bottom of PB_LCA_DATA_<scenario>.inc.
+*   - The auxiliary set ILCA(Y,G,TECH_GROUP,FFF,PB_GDTYPE_SET) is no longer
+*     declared (audit confirmed it was never referenced outside the original
+*     file). If a future addon needs it, restore its declaration here.
+*   - The original CO2-cavern bug (line 22 of the deprecated file read
+*     'LCA_CO2_prod_elec' instead of 'LCA_CO2_constr') is silently fixed in
+*     the precomputed output. Numerical IM_CO2_constr values for H2 caverns
+*     will differ from a strict re-run of the original LOOP/IF code.
+*
+* Authors: Theo Balanza & Dhruv Sharma
+*-------------------------------------------------------------------------------
 
+* --- 10 biogenic + 10 fossil CC_STO aggregate-scalar declarations -----------
+* Declared HERE (before the $INCLUDE) because the per-scenario .inc populates
+* them via direct value assignments (2026-05-26 refactor: moved aggregation
+* offline into the Python preprocessor, replacing the prior capacity-weighted
+* SUM(G,...)/SUM(G,...) computed below). Arithmetic mean per group; matches
+* the original GAMS calc exactly in green-field where GKFX=0.
+$ifi %CCS%==yes PARAMETER IM_CC_STO_CO2_biogenic(YYY)                       'Group-mean biogenic CC_STO LCA (kg CO2-eq per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_CO2_fossil(YYY)                         'Group-mean fossil   CC_STO LCA (kg CO2-eq per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Ozone_depletion_biogenic(YYY)           'Group-mean biogenic CC_STO LCA (kg CFC11-eq per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Ozone_depletion_fossil(YYY)             'Group-mean fossil   CC_STO LCA (kg CFC11-eq per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_LU_biogenic(YYY)                        'Group-mean biogenic CC_STO LCA (Pt per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_LU_fossil(YYY)                          'Group-mean fossil   CC_STO LCA (Pt per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_WU_biogenic(YYY)                        'Group-mean biogenic CC_STO LCA (m3 dep. per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_WU_fossil(YYY)                          'Group-mean fossil   CC_STO LCA (m3 dep. per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Eutrophication_freshwater_biogenic(YYY) 'Group-mean biogenic CC_STO LCA (kg P-eq per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Eutrophication_freshwater_fossil(YYY)   'Group-mean fossil   CC_STO LCA (kg P-eq per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Ecotoxicity_freshwater_biogenic(YYY)    'Group-mean biogenic CC_STO LCA (CTUe per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Ecotoxicity_freshwater_fossil(YYY)      'Group-mean fossil   CC_STO LCA (CTUe per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_PM_biogenic(YYY)                        'Group-mean biogenic CC_STO LCA (disease incidence per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_PM_fossil(YYY)                          'Group-mean fossil   CC_STO LCA (disease incidence per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Radiation_biogenic(YYY)                 'Group-mean biogenic CC_STO LCA (kBq U-235-eq per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Radiation_fossil(YYY)                   'Group-mean fossil   CC_STO LCA (kBq U-235-eq per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Acidification_biogenic(YYY)             'Group-mean biogenic CC_STO LCA (mol H+-eq per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Acidification_fossil(YYY)               'Group-mean fossil   CC_STO LCA (mol H+-eq per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Resource_biogenic(YYY)                  'Group-mean biogenic CC_STO LCA (kg Sb-eq per kg CO2 stored)';
+$ifi %CCS%==yes PARAMETER IM_CC_STO_Resource_fossil(YYY)                    'Group-mean fossil   CC_STO LCA (kg Sb-eq per kg CO2 stored)';
 
-*The following specify relation between GDTECHGROUP and GDFUEL
-ILCA(Y, G,TECH_GROUP,FFF, PB_GDTYPE_SET) = YES $(GDATA(G,'GDTECHGROUP') EQ PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET, Y,'GROUP_TECH') AND GDATA(G,'GDFUEL') EQ PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'FUEL') AND GDATA(G,'GDTYPE') EQ PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'Generation_type'));
+$if     EXIST '../data/PB_ipardecdef_%IAM_Scenario%.inc' $INCLUDE         '../data/PB_ipardecdef_%IAM_Scenario%.inc';
+$if not EXIST '../data/PB_ipardecdef_%IAM_Scenario%.inc' $INCLUDE '../../base/data/PB_ipardecdef_%IAM_Scenario%.inc';
 
-*The following attributes LCA values to each generator based on its GDTECHGROUP, GDFUEL and GDTYPE, for the different impact categories
-*Climate Change
-LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-        IM_CO2_prod_elec(Y,G) = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET, Y,  'LCA_CO2_prod_elec');
-		IM_CO2_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET, Y, 'LCA_CO2_prod_heat');
-		IM_CO2_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET, Y, 'LCA_CO2_constr');
-    );
-);
-
-LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-            IM_CO2_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_CO2_prod_elec');
-            IM_CO2_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_CO2_prod_elec');
-            IM_CO2_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_CO2_prod_elec');
-        );
-);
-
-$ifi not %CCS%==yes $goto No_CCS1
-    LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-        IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-            IM_CO2_prod_elec(Y,G) = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET, Y,  'LCA_CO2_prod_elec');
-		    IM_CO2_prod_heat(Y,G)  = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET, Y, 'LCA_CO2_prod_heat');
-		    IM_CO2_constr(Y,G)= PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET, Y, 'LCA_CO2_constr');
-        );
-    );
-$label No_CCS1
-
-*Ozone depletion
-PARAMETER   IM_Ozone_depletion_prod_elec(Y,G) "CFC11eq emission for the production of 1 kWh by unit G)"; 
-PARAMETER   IM_Ozone_depletion_prod_heat(Y,G) "CFC11eq emission for the production of 1 MJ by unit G)"; 
-PARAMETER   IM_Ozone_depletion_constr(Y,G)   "CFC11eq emission for the construction of 1 MW of unit G ";
-LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-        IM_Ozone_depletion_prod_elec(Y,G) = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Ozone_depletion_prod_elec');
-		IM_Ozone_depletion_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Ozone_depletion_prod_heat');
-		IM_Ozone_depletion_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Ozone_depletion_constr');
-    );
-);
-
-LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-            IM_Ozone_depletion_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Ozone_depletion_constr');
-            IM_Ozone_depletion_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Ozone_depletion_constr');
-            IM_Ozone_depletion_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Ozone_depletion_constr');
-        );
-);
-
-$ifi not %CCS%==yes $goto No_CCS2
-    LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-        IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-            IM_Ozone_depletion_prod_elec(Y,G) = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Ozone_depletion_prod_elec');
-		    IM_Ozone_depletion_prod_heat(Y,G)  = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Ozone_depletion_prod_heat');
-		    IM_Ozone_depletion_constr(Y,G)= PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Ozone_depletion_constr');
-        );
-    );
-$label No_CCS2
-
-*Land use
-PARAMETER   IM_LU_prod_elec(Y,G) "Pt emission for the production of 1 kWh by unit G)"; 
-PARAMETER   IM_LU_prod_heat(Y,G) "Pt emission for the production of 1 MJ by unit G)"; 
-PARAMETER   IM_LU_constr(Y,G)   "Pt emission for the construction of 1 MW of unit G ";
-
-LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-        IM_LU_prod_elec(Y,G) = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_LU_prod_elec');
-		IM_LU_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_LU_prod_heat');
-		IM_LU_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_LU_constr');
-    );
-);
-
-LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-            IM_LU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_LU_constr');
-            IM_LU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_LU_constr');
-            IM_LU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_LU_constr');
-        );
-);
-
-$ifi not %CCS%==yes $goto No_CCS3
-    LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-        IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-            IM_LU_prod_elec(Y,G) = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_LU_prod_elec');
-            IM_LU_prod_heat(Y,G)  = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_LU_prod_heat');
-            IM_LU_constr(Y,G)= PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_LU_constr');
-        );
-    );
-$label No_CCS3
-
-*Water use
-PARAMETER   IM_WU_prod_elec(Y,G) "m3 deprivation impact for the production of 1 kWh by unit G)"; 
-PARAMETER   IM_WU_prod_heat(Y,G) "m3 deprivation impact for the production of 1 MJ by unit G)"; 
-PARAMETER   IM_WU_constr(Y,G)   "m3 deprivation impact for the construction of 1 MW of unit G ";
-LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-        IM_WU_prod_elec(Y,G) = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_WU_prod_elec');
-		IM_WU_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_WU_prod_heat');
-		IM_WU_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_WU_constr');
-    );
-);
-
-LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-            IM_WU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_WU_constr');
-            IM_WU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_WU_constr');
-            IM_WU_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_WU_constr');
-        );
-);
-
-$ifi not %CCS%==yes $goto No_CCS4
-    LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-        IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-            IM_WU_prod_elec(Y,G) = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_WU_prod_elec');
-            IM_WU_prod_heat(Y,G)  = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_WU_prod_heat');
-            IM_WU_constr(Y,G)= PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_WU_constr');
-        );
-    );
-$label No_CCS4
-
-*Eutrophication freshwater
-PARAMETER   IM_Eutrophication_freshwater_prod_elec(Y,G) "kg P equivalent emission for the production of 1 kWh by unit G)"; 
-PARAMETER   IM_Eutrophication_freshwater_prod_heat(Y,G) "kg P equivalent emission for the production of 1 MJ by unit G)"; 
-PARAMETER   IM_Eutrophication_freshwater_constr(Y,G)   "kg P equivalent emission for the construction of 1 MW of unit G ";
-LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-        IM_Eutrophication_freshwater_prod_elec(Y,G) = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Eutrophication_freshwater_prod_elec');
-		IM_Eutrophication_freshwater_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Eutrophication_freshwater_prod_heat');
-		IM_Eutrophication_freshwater_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Eutrophication_freshwater_constr');
-    );
-);
-
-
-LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-            IM_Eutrophication_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Eutrophication_freshwater_constr');
-            IM_Eutrophication_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Eutrophication_freshwater_constr');
-            IM_Eutrophication_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Eutrophication_freshwater_constr');
-        );
-);
-
-
-
-$ifi not %CCS%==yes $goto No_CCS5
-    LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-        IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-            IM_Eutrophication_freshwater_prod_elec(Y,G) = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Eutrophication_freshwater_prod_elec');
-            IM_Eutrophication_freshwater_prod_heat(Y,G)  = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Eutrophication_freshwater_prod_heat');
-            IM_Eutrophication_freshwater_constr(Y,G)= PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Eutrophication_freshwater_constr');
-        );
-    );
-$label No_CCS5
-
-*Ecotoxicity freshwater
-PARAMETER   IM_Ecotoxicity_freshwater_prod_elec(Y,G) "impact in CTU  for the production of 1 kWh by unit G)"; 
-PARAMETER   IM_Ecotoxicity_freshwater_prod_heat(Y,G) "impact in CTU for the production of 1 MJ by unit G)"; 
-PARAMETER   IM_Ecotoxicity_freshwater_constr(Y,G)   "impact in CTU for the construction of 1 MW of unit G ";
-LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-        IM_Ecotoxicity_freshwater_prod_elec(Y,G) = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Ecotoxicity_freshwater_prod_elec');
-		IM_Ecotoxicity_freshwater_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Ecotoxicity_freshwater_prod_heat');
-		IM_Ecotoxicity_freshwater_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Ecotoxicity_freshwater_constr');
-    );
-);
-
-LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-            IM_Ecotoxicity_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Ecotoxicity_freshwater_constr');
-            IM_Ecotoxicity_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Ecotoxicity_freshwater_constr');
-            IM_Ecotoxicity_freshwater_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Ecotoxicity_freshwater_constr');
-        );
-);
-
-$ifi not %CCS%==yes $goto No_CCS6
-    LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-        IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-            IM_Ecotoxicity_freshwater_prod_elec(Y,G) = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Ecotoxicity_freshwater_prod_elec');
-            IM_Ecotoxicity_freshwater_prod_heat(Y,G)  = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Ecotoxicity_freshwater_prod_heat');
-            IM_Ecotoxicity_freshwater_constr(Y,G)= PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Ecotoxicity_freshwater_constr');
-        );
-    );
-$label No_CCS6
-
-*Particulate Matter
-PARAMETER   IM_PM_prod_elec(Y,G) "disease incidence for the production of 1 kWh by unit G)"; 
-PARAMETER   IM_PM_prod_heat(Y,G) "disease incidence for the production of 1 MJ by unit G)"; 
-PARAMETER   IM_PM_constr(Y,G)   "disease incidence for the construction of 1 MW of unit G ";
-LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-        IM_PM_prod_elec(Y,G) = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET, Y,'LCA_PM_prod_elec');
-		IM_PM_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET, Y,'LCA_PM_prod_heat');
-		IM_PM_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_PM_constr');
-    );
-);
-
-LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-            IM_PM_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_PM_constr');
-            IM_PM_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_PM_constr');
-            IM_PM_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_PM_constr');
-        );
-);
-
-$ifi not %CCS%==yes $goto No_CCS7
-    LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-        IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-            IM_PM_prod_elec(Y,G) = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET, Y,'LCA_PM_prod_elec');
-            IM_PM_prod_heat(Y,G)  = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET, Y,'LCA_PM_prod_heat');
-            IM_PM_constr(Y,G)= PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_PM_constr');
-        );
-    );
-$label No_CCS7
-
-*Resource use
-PARAMETER   IM_Resource_prod_elec(Y,G) "kg of Sb equivalent for the production of 1 kWh by unit G)"; 
-PARAMETER   IM_Resource_prod_heat(Y,G) "kg of Sb equivalent for the production of 1 MJ by unit G)"; 
-PARAMETER   IM_Resource_constr(Y,G)   "kg of Sb equivalent for the construction of 1 MW of unit G ";
-LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-        IM_Resource_prod_elec(Y,G) = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Resource_prod_elec');
-		IM_Resource_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Resource_prod_heat');
-		IM_Resource_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Resource_constr');
-    );
-);
-
-LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-            IM_Resource_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Resource_constr');
-            IM_Resource_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Resource_constr');
-            IM_Resource_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Resource_constr');
-        );
-);
-
-$ifi not %CCS%==yes $goto No_CCS8
-    LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-        IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-            IM_Resource_prod_elec(Y,G) = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Resource_prod_elec');
-            IM_Resource_prod_heat(Y,G)  = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Resource_prod_heat');
-            IM_Resource_constr(Y,G)= PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Resource_constr');
-        );
-    );
-$label No_CCS8
-
-*Acidification
-PARAMETER   IM_Acidification_prod_elec(Y,G) "mol of H+ equivalent for the production of 1 kWh by unit G)"; 
-PARAMETER   IM_Acidification_prod_heat(Y,G) "mol of H+ equivalent for the production of 1 MJ by unit G)"; 
-PARAMETER   IM_Acidification_constr(Y,G)   "mol of H+ equivalent for the construction of 1 MW of unit G ";
-LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-        IM_Acidification_prod_elec(Y,G) = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET, Y,'LCA_Acidification_prod_elec');
-		IM_Acidification_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Acidification_prod_heat');
-		IM_Acidification_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Acidification_constr');
-    );
-);
-
-LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-            IM_Acidification_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Acidification_constr');
-            IM_Acidification_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Acidification_constr');
-            IM_Acidification_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Acidification_constr');
-        );
-);
-
-$ifi not %CCS%==yes $goto No_CCS9
-    LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-        IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-            IM_Acidification_prod_elec(Y,G) = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET, Y,'LCA_Acidification_prod_elec');
-            IM_Acidification_prod_heat(Y,G)  = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Acidification_prod_heat');
-            IM_Acidification_constr(Y,G)= PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Acidification_constr');
-        );
-    );
-$label No_CCS9
-
-*Ionising radiation
-PARAMETER   IM_Radiation_prod_elec(Y,G) "kBq U-235 equivalent for the production of 1 kWh by unit G)"; 
-PARAMETER   IM_Radiation_prod_heat(Y,G) "kBq U-235 equivalent for the production of 1 MJ by unit G)"; 
-PARAMETER   IM_Radiation_constr(Y,G)   "kBq U-235 equivalent for the construction of 1 MW of unit G ";
-LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-        IM_Radiation_prod_elec(Y,G) = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET, Y,'LCA_Radiation_prod_elec');
-		IM_Radiation_prod_heat(Y,G)  = PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Radiation_prod_heat');
-		IM_Radiation_constr(Y,G)= PB_LCA_DATA(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Radiation_constr');
-    );
-);
-
-LOOP((Y, G, TECH_GROUP, FFF, PB_GDTYPE_SET),
-    IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET),
-            IM_Radiation_constr(Y,'GNR_H2S_H2-CAVERN_Y-2030') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2030',  'LCA_Radiation_constr');
-            IM_Radiation_constr(Y,'GNR_H2S_H2-CAVERN_Y-2040') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2040',  'LCA_Radiation_constr');
-            IM_Radiation_constr(Y,'GNR_H2S_H2-CAVERN_Y-2050') = PB_LCA_DATA_H2_STO_CAV(TECH_GROUP, FFF, PB_GDTYPE_SET, '2050',  'LCA_Radiation_constr');
-        );
-);
-$ifi not %CCS%==yes $goto No_CCS10
-    LOOP((Y,G, TECH_GROUP, FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-        IF (ILCA(Y,G,TECH_GROUP,FFF, PB_GDTYPE_SET)$(CCS_G(G)),
-            IM_Radiation_prod_elec(Y,G) = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET, Y,'LCA_Radiation_prod_elec');
-            IM_Radiation_prod_heat(Y,G)  = PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y, 'LCA_Radiation_prod_heat');
-            IM_Radiation_constr(Y,G)= PB_LCA_DATA_CCS(TECH_GROUP, FFF, PB_GDTYPE_SET,Y,'LCA_Radiation_constr');
-        );
-    );
-$label No_CCS10
-
-$ontext
-*LCA data for CCS power plants, producing electricity only, for the different impact categories
-*Climate change
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-51_SS-10-MW_Y-2020')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-53_SS-10-MW_Y-2030')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-54_SS-10-MW_Y-2040')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-55_SS-10-MW_Y-2050')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-59_LS-100-MW_Y-2020')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-61_LS-100-MW_Y-2030')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-62_LS-100-MW_Y-2040')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-63_LS-100-MW_Y-2050')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-37_SS-5-MW_Y-2020')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-39_SS-5-MW_Y-2030')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2040')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2050')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-42_LS-40-MW_Y-2020')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-43_LS-40-MW_Y-2030')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2040')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2050')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-47_Y-2020')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-48_Y-2030')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-49_Y-2040')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-50_Y-2050')=0.172621612;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_NGASCCS_CND_E-47_LS-400-MW_Y-2020')=0.172621612;
-
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_LS-220-MW-FEED_Y-2020')=0.024984315;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_MS-80-MW-FEED_Y-2020 ')=0.024984315;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_SS-35-MW-FEED_Y-2020 ')=0.024984315;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_LS-220-MW-FEED_Y-2030 ')=0.024984315;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2030 ')=0.024984315;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2040')=0.024984315;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2050 ')=0.024984315;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2030')=0.024984315;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2040 ')=0.024984315;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2050')=0.024984315;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2040')=0.024984315;
-$ifi %CCS%==yes IM_CO2_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2050')=0.024984315;
-
-                               
-*Ozone depletion
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-51_SS-10-MW_Y-2020')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-53_SS-10-MW_Y-2030')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-54_SS-10-MW_Y-2040')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-55_SS-10-MW_Y-2050')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-59_LS-100-MW_Y-2020')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-61_LS-100-MW_Y-2030')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-62_LS-100-MW_Y-2040')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-63_LS-100-MW_Y-2050')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-37_SS-5-MW_Y-2020')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-39_SS-5-MW_Y-2030')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2040')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2050')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-42_LS-40-MW_Y-2020')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-43_LS-40-MW_Y-2030')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2040')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2050')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-47_Y-2020')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-48_Y-2030')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-49_Y-2040')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-50_Y-2050')=1.0072E-07;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_NGASCCS_CND_E-47_LS-400-MW_Y-2020')=1.0072E-07;
-
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_LS-220-MW-FEED_Y-2020')=6.55869E-10;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_MS-80-MW-FEED_Y-2020 ')=6.55869E-10;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_SS-35-MW-FEED_Y-2020 ')=6.55869E-10;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_LS-220-MW-FEED_Y-2030 ')=6.55869E-10;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2030 ')=6.55869E-10;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2040')=6.55869E-10;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2050 ')=6.55869E-10;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2030')=6.55869E-10;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2040 ')=6.55869E-10;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2050')=6.55869E-10;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2040')=6.55869E-10;
-$ifi %CCS%==yes IM_Ozone_depletion_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2050')=6.55869E-10;
-
-*Land usage
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-51_SS-10-MW_Y-2020')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-53_SS-10-MW_Y-2030')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-54_SS-10-MW_Y-2040')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-55_SS-10-MW_Y-2050')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-59_LS-100-MW_Y-2020')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-61_LS-100-MW_Y-2030')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-62_LS-100-MW_Y-2040')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-63_LS-100-MW_Y-2050')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-37_SS-5-MW_Y-2020')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-39_SS-5-MW_Y-2030')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2040')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2050')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-42_LS-40-MW_Y-2020')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-43_LS-40-MW_Y-2030')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2040')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2050')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-47_Y-2020')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-48_Y-2030')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-49_Y-2040')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-50_Y-2050')=0.211679555;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_NGASCCS_CND_E-47_LS-400-MW_Y-2020')=0.211679555;
-
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_LS-220-MW-FEED_Y-2020')=0.047911733;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_MS-80-MW-FEED_Y-2020 ')=0.047911733;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_SS-35-MW-FEED_Y-2020 ')=0.047911733;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_LS-220-MW-FEED_Y-2030 ')=0.047911733;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2030 ')=0.047911733;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2040')=0.047911733;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2050 ')=0.047911733;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2030')=0.047911733;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2040 ')=0.047911733;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2050')=0.047911733;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2040')=0.047911733;
-$ifi %CCS%==yes IM_LU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2050')=0.047911733;
-
-
-*Water usage
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-51_SS-10-MW_Y-2020')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-53_SS-10-MW_Y-2030')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-54_SS-10-MW_Y-2040')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-55_SS-10-MW_Y-2050')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-59_LS-100-MW_Y-2020')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-61_LS-100-MW_Y-2030')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-62_LS-100-MW_Y-2040')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-63_LS-100-MW_Y-2050')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-37_SS-5-MW_Y-2020')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-39_SS-5-MW_Y-2030')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2040')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2050')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-42_LS-40-MW_Y-2020')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-43_LS-40-MW_Y-2030')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2040')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2050')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-47_Y-2020')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-48_Y-2030')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-49_Y-2040')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-50_Y-2050')=0.037216977;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_NGASCCS_CND_E-47_LS-400-MW_Y-2020')=0.037216977;
-
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_LS-220-MW-FEED_Y-2020')=0.011671391;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_MS-80-MW-FEED_Y-2020 ')=0.011671391;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_SS-35-MW-FEED_Y-2020 ')=0.011671391;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_LS-220-MW-FEED_Y-2030 ')=0.011671391;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2030 ')=0.011671391;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2040')=0.011671391;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2050 ')=0.011671391;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2030')=0.011671391;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2040 ')=0.011671391;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2050')=0.011671391;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2040')=0.011671391;
-$ifi %CCS%==yes IM_WU_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2050')=0.011671391;
-
-*Eutrophication freshwater
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-51_SS-10-MW_Y-2020')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-53_SS-10-MW_Y-2030')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-54_SS-10-MW_Y-2040')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-55_SS-10-MW_Y-2050')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-59_LS-100-MW_Y-2020')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-61_LS-100-MW_Y-2030')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-62_LS-100-MW_Y-2040')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-63_LS-100-MW_Y-2050')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-37_SS-5-MW_Y-2020')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-39_SS-5-MW_Y-2030')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2040')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2050')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-42_LS-40-MW_Y-2020')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-43_LS-40-MW_Y-2030')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2040')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2050')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-47_Y-2020')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-48_Y-2030')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-49_Y-2040')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-50_Y-2050')=1.34191E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_NGASCCS_CND_E-47_LS-400-MW_Y-2020')=1.34191E-05;
-
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_LS-220-MW-FEED_Y-2020')=2.08079E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_MS-80-MW-FEED_Y-2020 ')=2.08079E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_SS-35-MW-FEED_Y-2020 ')=2.08079E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_LS-220-MW-FEED_Y-2030 ')=2.08079E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2030 ')=2.08079E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2040')=2.08079E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2050 ')=2.08079E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2030')=2.08079E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2040 ')=2.08079E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2050')=2.08079E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2040')=2.08079E-05;
-$ifi %CCS%==yes IM_Eutrophication_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2050')=2.08079E-05;
-
-*Ecotoxicity freshwater
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-51_SS-10-MW_Y-2020')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-53_SS-10-MW_Y-2030')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-54_SS-10-MW_Y-2040')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-55_SS-10-MW_Y-2050')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-59_LS-100-MW_Y-2020')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-61_LS-100-MW_Y-2030')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-62_LS-100-MW_Y-2040')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-63_LS-100-MW_Y-2050')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-37_SS-5-MW_Y-2020')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-39_SS-5-MW_Y-2030')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2040')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2050')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-42_LS-40-MW_Y-2020')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-43_LS-40-MW_Y-2030')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2040')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2050')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-47_Y-2020')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-48_Y-2030')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-49_Y-2040')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-50_Y-2050')=6.012688197;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_NGASCCS_CND_E-47_LS-400-MW_Y-2020')=6.012688197;
-
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_LS-220-MW-FEED_Y-2020')=4.496520766;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_MS-80-MW-FEED_Y-2020 ')=4.496520766;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_SS-35-MW-FEED_Y-2020 ')=4.496520766;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_LS-220-MW-FEED_Y-2030 ')=4.496520766;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2030 ')=4.496520766;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2040')=4.496520766;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2050 ')=4.496520766;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2030')=4.496520766;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2040 ')=4.496520766;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2050')=4.496520766;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2040')=4.496520766;
-$ifi %CCS%==yes IM_Ecotoxicity_freshwater_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2050')=4.496520766;
-
-*Particulate matter
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-51_SS-10-MW_Y-2020')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-53_SS-10-MW_Y-2030')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-54_SS-10-MW_Y-2040')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-55_SS-10-MW_Y-2050')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-59_LS-100-MW_Y-2020')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-61_LS-100-MW_Y-2030')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-62_LS-100-MW_Y-2040')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-63_LS-100-MW_Y-2050')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-37_SS-5-MW_Y-2020')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-39_SS-5-MW_Y-2030')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2040')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2050')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-42_LS-40-MW_Y-2020')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-43_LS-40-MW_Y-2030')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2040')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2050')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-47_Y-2020')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-48_Y-2030')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-49_Y-2040')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-50_Y-2050')=4.06093E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_NGASCCS_CND_E-47_LS-400-MW_Y-2020')=4.06093E-09;
-
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_LS-220-MW-FEED_Y-2020')=1.36912E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_MS-80-MW-FEED_Y-2020 ')=1.36912E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_SS-35-MW-FEED_Y-2020 ')=1.36912E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_LS-220-MW-FEED_Y-2030 ')=1.36912E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2030 ')=1.36912E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2040')=1.36912E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2050 ')=1.36912E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2030')=1.36912E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2040 ')=1.36912E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2050')=1.36912E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2040')=1.36912E-09;
-$ifi %CCS%==yes IM_PM_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2050')=1.36912E-09;
-
-*Acidification
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-51_SS-10-MW_Y-2020')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-53_SS-10-MW_Y-2030')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-54_SS-10-MW_Y-2040')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-55_SS-10-MW_Y-2050')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-59_LS-100-MW_Y-2020')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-61_LS-100-MW_Y-2030')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-62_LS-100-MW_Y-2040')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-63_LS-100-MW_Y-2050')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-37_SS-5-MW_Y-2020')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-39_SS-5-MW_Y-2030')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2040')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2050')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-42_LS-40-MW_Y-2020')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-43_LS-40-MW_Y-2030')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2040')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2050')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-47_Y-2020')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-48_Y-2030')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-49_Y-2040')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-50_Y-2050')=0.002183073;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_NGASCCS_CND_E-47_LS-400-MW_Y-2020')=0.002183073;
-
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_LS-220-MW-FEED_Y-2020')=0.000141728;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_MS-80-MW-FEED_Y-2020 ')=0.000141728;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_SS-35-MW-FEED_Y-2020 ')=0.000141728;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_LS-220-MW-FEED_Y-2030 ')=0.000141728;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2030 ')=0.000141728;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2040')=0.000141728;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2050 ')=0.000141728;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2030')=0.000141728;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2040 ')=0.000141728;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2050')=0.000141728;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2040')=0.000141728;
-$ifi %CCS%==yes IM_Acidification_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2050')=0.000141728;
-
-*Resource use
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-51_SS-10-MW_Y-2020')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-53_SS-10-MW_Y-2030')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-54_SS-10-MW_Y-2040')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-55_SS-10-MW_Y-2050')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-59_LS-100-MW_Y-2020')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-61_LS-100-MW_Y-2030')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-62_LS-100-MW_Y-2040')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_CC_NGASCCS_CND_E-63_LS-100-MW_Y-2050')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-37_SS-5-MW_Y-2020')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-39_SS-5-MW_Y-2030')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2040')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-40_SS-5-MW_Y-2050')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-42_LS-40-MW_Y-2020')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-43_LS-40-MW_Y-2030')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2040')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_GT_NGASCCS_CND_E-44_LS-40-MW_Y-2050')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-47_Y-2020')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-48_Y-2030')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-49_Y-2040')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ENG_NGASCCS_CND_E-50_Y-2050')=6.38631E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_NGASCCS_CND_E-47_LS-400-MW_Y-2020')=6.38631E-07;
-
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_LS-220-MW-FEED_Y-2020')=6.78241E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_MS-80-MW-FEED_Y-2020 ')=6.78241E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-23_SS-35-MW-FEED_Y-2020 ')=6.78241E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_LS-220-MW-FEED_Y-2030 ')=6.78241E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2030 ')=6.78241E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2040')=6.78241E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_MS-80-MW-FEED_Y-2050 ')=6.78241E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2030')=6.78241E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2040 ')=6.78241E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-24_SS-35-MW-FEED_Y-2050')=6.78241E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2040')=6.78241E-07;
-$ifi %CCS%==yes IM_Resource_prod_elec(Y,'GNR_ST_MSWCCS_CND_E-25_LS-220-MW-FEED_Y-2050')=6.78241E-07;
-
-$offtext
-
-
-
-
-
-
-
-
+* --- Disable AGKN/GKFX for CCS_G plants with NO LCA values (2026-05-26) ------
+* Per plan A14, certain CCS_G plants (currently the 5 BGASCCS plants with the
+* (BOILER, BIOGAS, GHOB) triple) have no main_lca twin, so the preprocessor
+* emits IM_CO2_constr = IM_CO2_prod_elec = IM_CO2_prod_heat = 0 across all
+* years for them.  Keeping them in CCS_G but with zero LCA would:
+*   - allow the LP to invest in them via AGKN at zero PB-construction cost,
+*   - bloat the LP matrix via IAGK_HASORPOT references in QVGF_AGG, QPBSCORE_*,
+*     and CCS_qeeq/qlimco2/qobj even though their PB / CCS contribution is ~0.
+* The defensive fix: identify these plants from the loaded IM_CO2_* parameters
+* and zero out AGKN and GKFX for them. With AGKN/GKFX = 0 they fall out of
+* IAGK_HASORPOT (computed later in Balmorelbb4.inc), dropping cleanly from the
+* LP matrix.  In current Nordic data they already have empty AGKN and GKFX so
+* this is a no-op; the value is future-proofing against data refreshes that
+* enable them and against scenarios where they might be set.
+$ifi %CCS%==yes SET IGEN_NO_LCA(GGG) "CCS_G plants with no LCA values, disabled from LP (2026-05-26)";
+$ifi %CCS%==yes IGEN_NO_LCA(G) = YES$(CCS_G(G) AND
+$ifi %CCS%==yes   (NOT SUM(Y, IM_CO2_constr(Y,G) + IM_CO2_prod_elec(Y,G) + IM_CO2_prod_heat(Y,G))));
+$ifi %CCS%==yes AGKN(IA, G)$IGEN_NO_LCA(G)    = NO;
+$ifi %CCS%==yes GKFX(Y, IA, G)$IGEN_NO_LCA(G) = 0;
+$ifi %CCS%==yes DISPLAY "Disabled CCS_G plants without LCA values (AGKN=NO, GKFX=0):", IGEN_NO_LCA;

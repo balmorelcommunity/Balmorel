@@ -14,6 +14,7 @@ SET TECH_TYPE /CONDENSING,CHP-BACK-PRESSURE,CHP-EXTRACTION,BOILERS,ELECT-TO-HEAT
 SET GTECH_TYPE(GGG,TECH_TYPE);
 SET PRICE_CATEGORY /AVERAGE,AVERAGE_WEIGHTED_BY_CONSUMPTION,AVERAGE_WEIGHTED_BY_PRODUCTION/;
 SET VARIABLE_CATEGORY /EXOGENOUS,ENDOGENOUS,DECOMMISSIONING,ENDOGENOUS_ELECT2HEAT,ENDO_INTRASTO,ENDO_INTERSTO,ENDO_EV,ENDO_HEATPUMP,ENDO_ELBOILER,ENDO_OTHERTRANS,DIST_LOSSES,TRANS_LOSSES,ENDO_CCS,ENDO_H2,ENDO_BIOMETHANE,ENDO_FUELCELL,ENDO_REGIONAL/;
+SET CO2_AVAIL_TYPE /BIOGENIC,FOSSIL/;
 SET EL_BAL_TYPE /CURTAILMENT,NETEXPORT,PRICE,DEMAND_EXO,DEMAND_LOSS,DEMAND_INTERSTO,DEMAND_INTRASTO,DEMAND_P2H,DEMAND_EV,CONDENSING,CHP-BACK-PRESSURE,CHP-EXTRACTION,ELECT-TO-HEAT,INTER-STO,INTRA-STO,HYDRO-RESERVOIRS,HYDRO-RUN-OF-RIVER,WIND-ON,WIND-OFF,SOLAR-PV,HYDRO-WAVE,FUELCELL,DEMAND_OTHERTRANS,DEMAND_DISTLOSSES,DEMAND_CCS,DEMAND_P2G/;
 SET H_BAL_TYPE /CURTAILMENT,NETEXPORT,PRICE,DEMAND_EXO,DEMAND_LOSS,DEMAND_INTERSTO,DEMAND_INTRASTO,BOILERS,CHP-BACK-PRESSURE,CHP-EXTRACTION,INTER-STO,INTRA-STO,SOLAR-HEATING,P2H,FUELCELL,DEMAND_P2G,DEMAND_DISTLOSSES/;
 SET UNITS /GW,TWh,MWh,Money_per_MWh,Mmoney,kton,GWh/;
@@ -57,6 +58,10 @@ PARAMETER X_FLOW_YCR(Y,C,IRRRE,IRRRI,UNITS) "Transmission flow for each year, co
 PARAMETER ECO_G_YCRAG(Y,C,RRR,AAA,G,FFF,TECH_TYPE,CATEGORY,SUBCATEGORY,UNITS) "Generation Economic Output for each year, country, region, fuel, technology type, area and technology (Mmoney)";
 PARAMETER ECO_X_YCR(Y,C,RRR,IRRRI,CATEGORY,SUBCATEGORY,UNITS) "Electric Transmission Economic Output for each year, country and region (Mmoney)";
 PARAMETER OBJ_YCR(Y,C,RRR,SUBCATEGORY,UNITS) "Objective function (Mmoney)";
+* PB diagnostic: captured CO2 from Balmorel CCS available for Optiflow consumption,
+* split by carbon origin (BIOGENIC = from biomass plants, FOSSIL = from fossil plants).
+* Mirrors RHS of Frederik's QFLOWCO2LIM. PB-gated to preserve default behavior.
+$ifi %PB%==yes $ifi %CCS%==yes PARAMETER CO2_AVAIL_OPTIFLOW(Y,C,RRR,CO2_AVAIL_TYPE,UNITS) "CO2 captured by Balmorel CCS available to Optiflow (ktons CO2/yr)";
 PARAMETER EL_PRICE_YCR(Y,C,RRR,PRICE_CATEGORY,UNITS) "Average Electricity Prices for each region (money/MWh)";
 PARAMETER EL_PRICE_YCRST(Y,C,RRR,SSS,TTT,UNITS) "Hourly Electricity Prices for each region (money/MWh)";
 PARAMETER H_PRICE_YCRA(Y,C,RRR,AAA,PRICE_CATEGORY,UNITS) "Average heating Prices for each area(money/MWh)";
@@ -1123,8 +1128,30 @@ $ifi %CCS%==yes    -(VGF_T.L(Y,IA,G,S,T)*CCS_CO2CAPTEFF_G(G))$CCS_G(G)
 ;
 
 ** CO2 TRANSPORT COST
+* Fix 2026-05-21: added * CCS_CO2CAPTEFF_G(G) factor. Without it, this report
+* over-counts the LP's actual transport-cost contribution (CCS_qobj.inc uses
+* the same formula but *with* CCS_CO2CAPTEFF_G). Empirical effect on EU runs:
+* OBJ_YCR.GENERATION_CO2_TRANSPORT was inflated by 1/0.9 = +11.1% relative to
+* the true LP cost; back-calculating captured CO2 from this report inherited
+* the same bias.
 $ifi %CCS%==yes ECO_G_YCRAG(Y,C,IR,IA,G,FFF,TECH_TYPE,'COSTS','GENERATION_CO2_TRANSPORT','Mmoney')$(CCCRRR(C,IR) and RRRAAA(IR,IA) AND IGF(G,FFF) AND GTECH_TYPE(G,TECH_TYPE) and IAGK_HASORPOT(Y,IA,G) AND CCS_G(G))=
-$ifi %CCS%==yes          OMONEY/IOF1000000*IHOURFRAC *IM_CO2(G)*IOF0001 * IOF3P6 * CCS_TRANSPORTCOST * SUM((S,T), IHOURSINST(S,T)*(VGF_T.L(Y,IA,G,S,T)));
+$ifi %CCS%==yes          OMONEY/IOF1000000*IHOURFRAC *IM_CO2(G)*IOF0001 * IOF3P6 * CCS_TRANSPORTCOST(IR) * CCS_CO2CAPTEFF_G(G) * SUM((S,T), IHOURSINST(S,T)*(VGF_T.L(Y,IA,G,S,T)));
+
+
+** CO2 AVAILABLE FOR OPTIFLOW (PB diagnostic) — mirrors RHS of Frederik's QFLOWCO2LIM
+* Per (Y, C, IR): captured CO2 from Balmorel CCS_G generators that would be available
+* for Optiflow consumption under QFLOWCO2LIM, split by carbon origin via IM_CO2 (fossil)
+* and IM_CO2RE (biogenic). Reports in ktons CO2/yr. Independent of OPTIFLOW flag — gives
+* the value Optiflow's RHS would see even when OPTIFLOW=no. The BIOGENIC component is
+* the basis for the BECCS credit (stored biogenic only, computed downstream in PB).
+* Units: tonnes / IOF1000 = ktons.
+$ifi %PB%==yes $ifi %CCS%==yes CO2_AVAIL_OPTIFLOW(Y,C,IR,'BIOGENIC','kton')$CCCRRR(C,IR)=
+$ifi %PB%==yes $ifi %CCS%==yes     SUM((IA,G)$(RRRAAA(IR,IA) AND ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G) AND CCS_G(G) AND IM_CO2RE(G)),
+$ifi %PB%==yes $ifi %CCS%==yes         SUM((S,T), IHOURSINST(S,T) * IHOURFRAC * IM_CO2RE(G) * IOF0001 * IOF3P6 * VGF_T.L(Y,IA,G,S,T) * CCS_CO2CAPTEFF_G(G))) / IOF1000;
+
+$ifi %PB%==yes $ifi %CCS%==yes CO2_AVAIL_OPTIFLOW(Y,C,IR,'FOSSIL','kton')$CCCRRR(C,IR)=
+$ifi %PB%==yes $ifi %CCS%==yes     SUM((IA,G)$(RRRAAA(IR,IA) AND ICA(C,IA) AND IAGK_HASORPOT(Y,IA,G) AND CCS_G(G) AND IM_CO2(G)),
+$ifi %PB%==yes $ifi %CCS%==yes         SUM((S,T), IHOURSINST(S,T) * IHOURFRAC * IM_CO2(G) * IOF0001 * IOF3P6 * VGF_T.L(Y,IA,G,S,T) * CCS_CO2CAPTEFF_G(G))) / IOF1000;
 
 
 ** OTHER EMISSIONS COST
@@ -1643,34 +1670,151 @@ H_BALANCE_YCRAST(Y,C,IR,IA,'PRICE',S,T,'Money_per_MWh')$(CCCRRR(C,IR) AND RRRAAA
 
 
 
+*-------------------------------------------------------------------------------
+* PB DURABLE FIX (2026-05-29): rebuild dispatch-driven impact-score inputs from
+* the RETAINED *_T dispatch before the IS reporting below.
+* Why: in the myopic noRF loop the QV*_AGG / QCO2CAP_* / QPBSCORE_*_CC_PS|STO
+* equations are presolved out for non-final cohorts, so VGE_AGG/VGH_AGG/VH2_AGG/
+* VGF_AGG/VCO2CAP_* and the IS_*_CC_PS|STO variables float to 0/garbage for
+* 2030/2040 -- collapsing the production term of every impact score to
+* construction-only (verified: VGE_AGG total = 0/0/9.66e8). VGE_T/VGH_T/VGF_T and
+* the H2 flows ARE retained for every cohort, so we recompute the aggregates here
+* EXACTLY as PB_eqndecdef.inc defines them. Reporting-only; no solve/model change.
+* For 2050 (last-solved) this reproduces the already-correct values; for 2030/2040
+* it restores the lost production term. OPTIFLOW assumed OFF (the PB-CCS path); if
+* OPTIFLOW is enabled, add the VFLOWSOURCE correction from QPBSCORE_*_CC_STO.
+*-------------------------------------------------------------------------------
+$ifi %PB%==yes VGE_AGG.L(Y,IA,G)$IAGK_HASORPOT(Y,IA,G) = SUM((IS3,T), IHOURSINST(IS3,T) * IHOURFRAC * VGE_T.L(Y,IA,G,IS3,T));
+$ifi %PB%==yes VGH_AGG.L(Y,IA,G)$IAGK_HASORPOT(Y,IA,G) = SUM((IS3,T), IHOURSINST(IS3,T) * IHOURFRAC * VGH_T.L(Y,IA,G,IS3,T));
+$ifi %PB%==yes $ifi %HYDROGEN%==yes VH2_AGG.L(Y,IA,G)$IAGK_HASORPOT(Y,IA,G) = SUM((IS3,T), IHOURSINST(IS3,T) * IHOURFRAC * (
+$ifi %PB%==yes $ifi %HYDROGEN%==yes     VHYDROGEN_GH2_T.L(Y,IA,G,IS3,T)$(IHYDROGEN_GCH4TOH2(G) OR IHYDROGEN_GH2STO(G))
+$ifi %PB%==yes $ifi %HYDROGEN%==yes   + VGBIOMETH_T.L(Y,IA,G,IS3,T)$IHYDROGEN_GH2TOBIOMETH(G)
+$ifi %PB%==yes $ifi %HYDROGEN%==yes   + VGBIOGASMETHANATION_T.L(Y,IA,G,IS3,T)$IHYDROGEN_GBIOGASMETHANATION(G)
+$ifi %PB%==yes $ifi %HYDROGEN%==yes   + VGBIOGASUPGRADING_T.L(Y,IA,G,IS3,T)$IHYDROGEN_GBIOGASUPGRADING(G)));
+$ifi %PB%==yes $ifi %CCS%==yes VGF_AGG.L(Y,IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)) = SUM((IS3,T), IHOURSINST(IS3,T) * IHOURFRAC * VGF_T.L(Y,IA,G,IS3,T));
+$ifi %PB%==yes $ifi %CCS%==yes VCO2CAP_BIO.L(Y) = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G) AND IM_CO2RE(G)), VGF_AGG.L(Y,IA,G) * IM_CO2RE(G) * IOF3P6 * CCS_CO2CAPTEFF_G(G));
+$ifi %PB%==yes $ifi %CCS%==yes VCO2CAP_FOS.L(Y) = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G) AND IM_CO2(G)), VGF_AGG.L(Y,IA,G) * IM_CO2(G) * IOF3P6 * CCS_CO2CAPTEFF_G(G));
+* CC_PS captured-CO2 mass per CCS plant -- the common factor of all 10 QPBSCORE_*_CC_PS:
+$ifi %PB%==yes $ifi %CCS%==yes PARAMETER PB_CCPS_CAPMASS(YYY,AAA,GGG) "captured-CO2 mass per CCS plant for CC_PS recompute (reporting)";
+$ifi %PB%==yes $ifi %CCS%==yes PB_CCPS_CAPMASS(Y,IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)) = VGF_AGG.L(Y,IA,G) * (IM_CO2(G) + IM_CO2RE(G)) * IOF3P6 * CCS_CO2CAPTEFF_G(G);
+$ifi %PB%==yes $ifi %CCS%==yes IS_CO2_CC_PS.L(Y)                       = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)), PB_CCPS_CAPMASS(Y,IA,G) * IM_CC_PS_CO2_constr(Y,G));
+$ifi %PB%==yes $ifi %CCS%==yes IS_OZONE_DEPLETION_CC_PS.L(Y)           = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)), PB_CCPS_CAPMASS(Y,IA,G) * IM_CC_PS_Ozone_depletion_constr(Y,G));
+$ifi %PB%==yes $ifi %CCS%==yes IS_LU_CC_PS.L(Y)                        = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)), PB_CCPS_CAPMASS(Y,IA,G) * IM_CC_PS_LU_constr(Y,G));
+$ifi %PB%==yes $ifi %CCS%==yes IS_WU_CC_PS.L(Y)                        = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)), PB_CCPS_CAPMASS(Y,IA,G) * IM_CC_PS_WU_constr(Y,G));
+$ifi %PB%==yes $ifi %CCS%==yes IS_EUTROPHICATION_FRESHWATER_CC_PS.L(Y) = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)), PB_CCPS_CAPMASS(Y,IA,G) * IM_CC_PS_Eutrophication_freshwater_constr(Y,G));
+$ifi %PB%==yes $ifi %CCS%==yes IS_ECOTOXICITY_FRESHWATER_CC_PS.L(Y)    = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)), PB_CCPS_CAPMASS(Y,IA,G) * IM_CC_PS_Ecotoxicity_freshwater_constr(Y,G));
+$ifi %PB%==yes $ifi %CCS%==yes IS_PM_CC_PS.L(Y)                        = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)), PB_CCPS_CAPMASS(Y,IA,G) * IM_CC_PS_PM_constr(Y,G));
+$ifi %PB%==yes $ifi %CCS%==yes IS_RADIATION_CC_PS.L(Y)                 = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)), PB_CCPS_CAPMASS(Y,IA,G) * IM_CC_PS_Radiation_constr(Y,G));
+$ifi %PB%==yes $ifi %CCS%==yes IS_ACIDIFICATION_CC_PS.L(Y)             = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)), PB_CCPS_CAPMASS(Y,IA,G) * IM_CC_PS_Acidification_constr(Y,G));
+$ifi %PB%==yes $ifi %CCS%==yes IS_RESOURCE_CC_PS.L(Y)                  = SUM((IA,G)$(IAGK_HASORPOT(Y,IA,G) AND CCS_G(G)), PB_CCPS_CAPMASS(Y,IA,G) * IM_CC_PS_Resource_constr(Y,G));
+* CC_STO: IS_<cat>_CC_STO = IM_CC_STO_<cat>_biogenic*VCO2CAP_BIO + IM_CC_STO_<cat>_fossil*VCO2CAP_FOS  (OPTIFLOW OFF):
+$ifi %PB%==yes $ifi %CCS%==yes IS_CO2_CC_STO.L(Y)                       = IM_CC_STO_CO2_biogenic(Y)*VCO2CAP_BIO.L(Y) + IM_CC_STO_CO2_fossil(Y)*VCO2CAP_FOS.L(Y);
+$ifi %PB%==yes $ifi %CCS%==yes IS_OZONE_DEPLETION_CC_STO.L(Y)           = IM_CC_STO_Ozone_depletion_biogenic(Y)*VCO2CAP_BIO.L(Y) + IM_CC_STO_Ozone_depletion_fossil(Y)*VCO2CAP_FOS.L(Y);
+$ifi %PB%==yes $ifi %CCS%==yes IS_LU_CC_STO.L(Y)                        = IM_CC_STO_LU_biogenic(Y)*VCO2CAP_BIO.L(Y) + IM_CC_STO_LU_fossil(Y)*VCO2CAP_FOS.L(Y);
+$ifi %PB%==yes $ifi %CCS%==yes IS_WU_CC_STO.L(Y)                        = IM_CC_STO_WU_biogenic(Y)*VCO2CAP_BIO.L(Y) + IM_CC_STO_WU_fossil(Y)*VCO2CAP_FOS.L(Y);
+$ifi %PB%==yes $ifi %CCS%==yes IS_EUTROPHICATION_FRESHWATER_CC_STO.L(Y) = IM_CC_STO_Eutrophication_freshwater_biogenic(Y)*VCO2CAP_BIO.L(Y) + IM_CC_STO_Eutrophication_freshwater_fossil(Y)*VCO2CAP_FOS.L(Y);
+$ifi %PB%==yes $ifi %CCS%==yes IS_ECOTOXICITY_FRESHWATER_CC_STO.L(Y)    = IM_CC_STO_Ecotoxicity_freshwater_biogenic(Y)*VCO2CAP_BIO.L(Y) + IM_CC_STO_Ecotoxicity_freshwater_fossil(Y)*VCO2CAP_FOS.L(Y);
+$ifi %PB%==yes $ifi %CCS%==yes IS_PM_CC_STO.L(Y)                        = IM_CC_STO_PM_biogenic(Y)*VCO2CAP_BIO.L(Y) + IM_CC_STO_PM_fossil(Y)*VCO2CAP_FOS.L(Y);
+$ifi %PB%==yes $ifi %CCS%==yes IS_RADIATION_CC_STO.L(Y)                 = IM_CC_STO_Radiation_biogenic(Y)*VCO2CAP_BIO.L(Y) + IM_CC_STO_Radiation_fossil(Y)*VCO2CAP_FOS.L(Y);
+$ifi %PB%==yes $ifi %CCS%==yes IS_ACIDIFICATION_CC_STO.L(Y)             = IM_CC_STO_Acidification_biogenic(Y)*VCO2CAP_BIO.L(Y) + IM_CC_STO_Acidification_fossil(Y)*VCO2CAP_FOS.L(Y);
+$ifi %PB%==yes $ifi %CCS%==yes IS_RESOURCE_CC_STO.L(Y)                  = IM_CC_STO_Resource_biogenic(Y)*VCO2CAP_BIO.L(Y) + IM_CC_STO_Resource_fossil(Y)*VCO2CAP_FOS.L(Y);
+
+* --- (2026-05-30) Gate the whole PB per-generator/per-fuel impact breakdown on %PB%.
+* --- The IS_<cat>_G / IS_<cat>_FFF assignments below reference PB-only symbols
+* --- (IM_<cat>_prod_*, IM_<cat>_constr, IS_<cat>_G), declared only under the PB addon,
+* --- so PB-off scenarios hit "Unknown symbol" (Error 140) without this gate. PB-on =>
+* --- byte-identical (the inner $ifi %PB% lines become redundant-true).
+$ifThenI %PB%==yes
 $ifi %PB%==yes PARAMETER IS_CO2_G(Y,G);
-IS_CO2_G(Y,G)=SUM((IA), SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC *(IM_CO2_prod_elec(Y,G) * 1000 * (VGE_T.L(Y,IA,G,IS3,T)))  + (IM_CO2_prod_elec(Y,G) * 1000 * (VHYDROGEN_GH2_T.L(Y,IA,G,IS3,T) + VGBIOMETH_T.L(Y,IA,G,IS3,T) + VGBIOGASMETHANATION_T.L(Y,IA,G,IS3,T) + VGBIOGASUPGRADING_T.L(Y,IA,G,IS3,T))) + IM_CO2_prod_heat(Y,G) * 1000 * VGH_T.L(Y,IA,G,IS3,T)))+ SUM((IA),((VGKNACCUMNET.L(Y,IA,G) *1000) * 1000) * IM_CO2_constr(Y,G)/GDATA(G,'GDLIFETIME'));
-
+IS_CO2_G(Y,G) = SUM(IA$IAGK_HASORPOT(Y,IA,G),
+    IM_CO2_prod_elec(Y,G) * 1000 * VGE_AGG.L(Y,IA,G)
+$ifi %HYDROGEN%==yes      + IM_CO2_prod_elec(Y,G) * 1000 * VH2_AGG.L(Y,IA,G)
+  + IM_CO2_prod_heat(Y,G) * 1000 * VGH_AGG.L(Y,IA,G)
+*       --- Construction term: cohort-frozen-IM (PB_COHORT_CONSTR=yes) or legacy
+*       --- VGKNACCUMNET form (default). See PB_eqndecdef.inc SECTION 2b.
+$ifi     %PB_COHORT_CONSTR%==yes  + SUM(IYALIAS2 $ ((YVALUE(IYALIAS2) LE YVALUE(Y)) AND (YVALUE(Y) - YVALUE(IYALIAS2) LT GDATA(G,'GDLIFETIME'))), (VGKN.L(IYALIAS2,IA,G) + NEW_GKFX(IYALIAS2,IA,G)) * 1000 * IM_CO2_constr(IYALIAS2,G) / GDATA(G,'GDLIFETIME')));
+$ifi not %PB_COHORT_CONSTR%==yes  + (VGKNACCUMNET.L(Y,IA,G) * 1000) * IM_CO2_constr(Y,G) / GDATA(G,'GDLIFETIME'));
 $ifi %PB%==yes PARAMETER IS_OZONE_DEPLETION_G(Y,G);
-IS_OZONE_DEPLETION_G(Y,G)=
-SUM((IA), SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC *(IM_OZONE_DEPLETION_prod_elec(Y,G) * 1000 * VGE_T.L(Y,IA,G,IS3,T))  + (IM_OZONE_DEPLETION_prod_elec(Y,G) * 1000 *(VHYDROGEN_GH2_T.L(Y,IA,G,IS3,T) + VGBIOMETH_T.L(Y,IA,G,IS3,T) + VGBIOGASMETHANATION_T.L(Y,IA,G,IS3,T) + VGBIOGASUPGRADING_T.L(Y,IA,G,IS3,T)))+ IM_OZONE_DEPLETION_prod_heat(Y,G) * 1000 * VGH_T.L(Y,IA,G,IS3,T)))+SUM((IA),((VGKNACCUMNET.L(Y,IA,G) * 1000) * 1000)* IM_OZONE_DEPLETION_constr(Y,G) / GDATA(G,'GDLIFETIME'));
-
+IS_OZONE_DEPLETION_G(Y,G) = SUM(IA$IAGK_HASORPOT(Y,IA,G),
+    IM_OZONE_DEPLETION_prod_elec(Y,G) * 1000 * VGE_AGG.L(Y,IA,G)
+$ifi %HYDROGEN%==yes      + IM_OZONE_DEPLETION_prod_elec(Y,G) * 1000 * VH2_AGG.L(Y,IA,G)
+  + IM_OZONE_DEPLETION_prod_heat(Y,G) * 1000 * VGH_AGG.L(Y,IA,G)
+*       --- Construction term: cohort-frozen-IM (PB_COHORT_CONSTR=yes) or legacy
+*       --- VGKNACCUMNET form (default). See PB_eqndecdef.inc SECTION 2b.
+$ifi     %PB_COHORT_CONSTR%==yes  + SUM(IYALIAS2 $ ((YVALUE(IYALIAS2) LE YVALUE(Y)) AND (YVALUE(Y) - YVALUE(IYALIAS2) LT GDATA(G,'GDLIFETIME'))), (VGKN.L(IYALIAS2,IA,G) + NEW_GKFX(IYALIAS2,IA,G)) * 1000 * IM_OZONE_DEPLETION_constr(IYALIAS2,G) / GDATA(G,'GDLIFETIME')));
+$ifi not %PB_COHORT_CONSTR%==yes  + (VGKNACCUMNET.L(Y,IA,G) * 1000) * IM_OZONE_DEPLETION_constr(Y,G) / GDATA(G,'GDLIFETIME'));
 $ifi %PB%==yes PARAMETER IS_LU_G(Y,G);
-IS_LU_G(Y,G)=SUM((IA), SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC *(IM_LU_prod_elec(Y,G) * 1000 * VGE_T.L(Y,IA,G,IS3,T))+ (IM_LU_prod_elec(Y,G) * 1000 *(VHYDROGEN_GH2_T.L(Y,IA,G,IS3,T)+ VGBIOMETH_T.L(Y,IA,G,IS3,T)+ VGBIOGASMETHANATION_T.L(Y,IA,G,IS3,T)+ VGBIOGASUPGRADING_T.L(Y,IA,G,IS3,T)))+ IM_LU_prod_heat(Y,G) * 1000 * VGH_T.L(Y,IA,G,IS3,T)))+SUM((IA),((VGKNACCUMNET.L(Y,IA,G) * 1000) * 1000)* IM_LU_constr(Y,G) / GDATA(G,'GDLIFETIME'));
-
+IS_LU_G(Y,G) = SUM(IA$IAGK_HASORPOT(Y,IA,G),
+    IM_LU_prod_elec(Y,G) * 1000 * VGE_AGG.L(Y,IA,G)
+$ifi %HYDROGEN%==yes      + IM_LU_prod_elec(Y,G) * 1000 * VH2_AGG.L(Y,IA,G)
+  + IM_LU_prod_heat(Y,G) * 1000 * VGH_AGG.L(Y,IA,G)
+*       --- Construction term: cohort-frozen-IM (PB_COHORT_CONSTR=yes) or legacy
+*       --- VGKNACCUMNET form (default). See PB_eqndecdef.inc SECTION 2b.
+$ifi     %PB_COHORT_CONSTR%==yes  + SUM(IYALIAS2 $ ((YVALUE(IYALIAS2) LE YVALUE(Y)) AND (YVALUE(Y) - YVALUE(IYALIAS2) LT GDATA(G,'GDLIFETIME'))), (VGKN.L(IYALIAS2,IA,G) + NEW_GKFX(IYALIAS2,IA,G)) * 1000 * IM_LU_constr(IYALIAS2,G) / GDATA(G,'GDLIFETIME')));
+$ifi not %PB_COHORT_CONSTR%==yes  + (VGKNACCUMNET.L(Y,IA,G) * 1000) * IM_LU_constr(Y,G) / GDATA(G,'GDLIFETIME'));
 $ifi %PB%==yes PARAMETER IS_WU_G(Y,G);
-IS_WU_G(Y,G)=SUM((IA), SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC *(IM_WU_prod_elec(Y,G) * 1000 * VGE_T.L(Y,IA,G,IS3,T))+ (IM_WU_prod_elec(Y,G) * 1000 *(VHYDROGEN_GH2_T.L(Y,IA,G,IS3,T)+ VGBIOMETH_T.L(Y,IA,G,IS3,T)+ VGBIOGASMETHANATION_T.L(Y,IA,G,IS3,T)+ VGBIOGASUPGRADING_T.L(Y,IA,G,IS3,T)))+ IM_WU_prod_heat(Y,G) * 1000 * VGH_T.L(Y,IA,G,IS3,T)))+SUM((IA),((VGKNACCUMNET.L(Y,IA,G) * 1000) * 1000)* IM_WU_constr(Y,G) / GDATA(G,'GDLIFETIME'));
-
+IS_WU_G(Y,G) = SUM(IA$IAGK_HASORPOT(Y,IA,G),
+    IM_WU_prod_elec(Y,G) * 1000 * VGE_AGG.L(Y,IA,G)
+$ifi %HYDROGEN%==yes      + IM_WU_prod_elec(Y,G) * 1000 * VH2_AGG.L(Y,IA,G)
+  + IM_WU_prod_heat(Y,G) * 1000 * VGH_AGG.L(Y,IA,G)
+*       --- Construction term: cohort-frozen-IM (PB_COHORT_CONSTR=yes) or legacy
+*       --- VGKNACCUMNET form (default). See PB_eqndecdef.inc SECTION 2b.
+$ifi     %PB_COHORT_CONSTR%==yes  + SUM(IYALIAS2 $ ((YVALUE(IYALIAS2) LE YVALUE(Y)) AND (YVALUE(Y) - YVALUE(IYALIAS2) LT GDATA(G,'GDLIFETIME'))), (VGKN.L(IYALIAS2,IA,G) + NEW_GKFX(IYALIAS2,IA,G)) * 1000 * IM_WU_constr(IYALIAS2,G) / GDATA(G,'GDLIFETIME')));
+$ifi not %PB_COHORT_CONSTR%==yes  + (VGKNACCUMNET.L(Y,IA,G) * 1000) * IM_WU_constr(Y,G) / GDATA(G,'GDLIFETIME'));
 $ifi %PB%==yes PARAMETER IS_EUTROPHICATION_FRESHWATER_G(Y,G);
-IS_EUTROPHICATION_FRESHWATER_G(Y,G)=SUM((IA), SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC *(IM_EUTROPHICATION_FRESHWATER_prod_elec(Y,G) * 1000 * VGE_T.L(Y,IA,G,IS3,T))+ (IM_EUTROPHICATION_FRESHWATER_prod_elec(Y,G) * 1000 *(VHYDROGEN_GH2_T.L(Y,IA,G,IS3,T)+ VGBIOMETH_T.L(Y,IA,G,IS3,T)+ VGBIOGASMETHANATION_T.L(Y,IA,G,IS3,T)+ VGBIOGASUPGRADING_T.L(Y,IA,G,IS3,T)))+ IM_EUTROPHICATION_FRESHWATER_prod_heat(Y,G) * 1000 * VGH_T.L(Y,IA,G,IS3,T)))+SUM((IA),((VGKNACCUMNET.L(Y,IA,G) * 1000) * 1000)* IM_EUTROPHICATION_FRESHWATER_constr(Y,G) / GDATA(G,'GDLIFETIME'));
-
+IS_EUTROPHICATION_FRESHWATER_G(Y,G) = SUM(IA$IAGK_HASORPOT(Y,IA,G),
+    IM_EUTROPHICATION_FRESHWATER_prod_elec(Y,G) * 1000 * VGE_AGG.L(Y,IA,G)
+$ifi %HYDROGEN%==yes      + IM_EUTROPHICATION_FRESHWATER_prod_elec(Y,G) * 1000 * VH2_AGG.L(Y,IA,G)
+  + IM_EUTROPHICATION_FRESHWATER_prod_heat(Y,G) * 1000 * VGH_AGG.L(Y,IA,G)
+*       --- Construction term: cohort-frozen-IM (PB_COHORT_CONSTR=yes) or legacy
+*       --- VGKNACCUMNET form (default). See PB_eqndecdef.inc SECTION 2b.
+$ifi     %PB_COHORT_CONSTR%==yes  + SUM(IYALIAS2 $ ((YVALUE(IYALIAS2) LE YVALUE(Y)) AND (YVALUE(Y) - YVALUE(IYALIAS2) LT GDATA(G,'GDLIFETIME'))), (VGKN.L(IYALIAS2,IA,G) + NEW_GKFX(IYALIAS2,IA,G)) * 1000 * IM_EUTROPHICATION_FRESHWATER_constr(IYALIAS2,G) / GDATA(G,'GDLIFETIME')));
+$ifi not %PB_COHORT_CONSTR%==yes  + (VGKNACCUMNET.L(Y,IA,G) * 1000) * IM_EUTROPHICATION_FRESHWATER_constr(Y,G) / GDATA(G,'GDLIFETIME'));
 $ifi %PB%==yes PARAMETER IS_ECOTOXICITY_FRESHWATER_G(Y,G);
-IS_ECOTOXICITY_FRESHWATER_G(Y,G)=SUM((IA), SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC *(IM_ECOTOXICITY_FRESHWATER_prod_elec(Y,G) * 1000 * VGE_T.L(Y,IA,G,IS3,T))+ (IM_ECOTOXICITY_FRESHWATER_prod_elec(Y,G) * 1000 *(VHYDROGEN_GH2_T.L(Y,IA,G,IS3,T)+ VGBIOMETH_T.L(Y,IA,G,IS3,T)+ VGBIOGASMETHANATION_T.L(Y,IA,G,IS3,T)+ VGBIOGASUPGRADING_T.L(Y,IA,G,IS3,T)))+ IM_ECOTOXICITY_FRESHWATER_prod_heat(Y,G) * 1000 * VGH_T.L(Y,IA,G,IS3,T)))+SUM((IA),((VGKNACCUMNET.L(Y,IA,G) * 1000) * 1000)* IM_ECOTOXICITY_FRESHWATER_constr(Y,G) / GDATA(G,'GDLIFETIME'));
-
+IS_ECOTOXICITY_FRESHWATER_G(Y,G) = SUM(IA$IAGK_HASORPOT(Y,IA,G),
+    IM_ECOTOXICITY_FRESHWATER_prod_elec(Y,G) * 1000 * VGE_AGG.L(Y,IA,G)
+$ifi %HYDROGEN%==yes      + IM_ECOTOXICITY_FRESHWATER_prod_elec(Y,G) * 1000 * VH2_AGG.L(Y,IA,G)
+  + IM_ECOTOXICITY_FRESHWATER_prod_heat(Y,G) * 1000 * VGH_AGG.L(Y,IA,G)
+*       --- Construction term: cohort-frozen-IM (PB_COHORT_CONSTR=yes) or legacy
+*       --- VGKNACCUMNET form (default). See PB_eqndecdef.inc SECTION 2b.
+$ifi     %PB_COHORT_CONSTR%==yes  + SUM(IYALIAS2 $ ((YVALUE(IYALIAS2) LE YVALUE(Y)) AND (YVALUE(Y) - YVALUE(IYALIAS2) LT GDATA(G,'GDLIFETIME'))), (VGKN.L(IYALIAS2,IA,G) + NEW_GKFX(IYALIAS2,IA,G)) * 1000 * IM_ECOTOXICITY_FRESHWATER_constr(IYALIAS2,G) / GDATA(G,'GDLIFETIME')));
+$ifi not %PB_COHORT_CONSTR%==yes  + (VGKNACCUMNET.L(Y,IA,G) * 1000) * IM_ECOTOXICITY_FRESHWATER_constr(Y,G) / GDATA(G,'GDLIFETIME'));
 $ifi %PB%==yes PARAMETER IS_PM_G(Y,G);
-IS_PM_G(Y,G)=SUM((IA), SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC *(IM_PM_prod_elec(Y,G) * 1000 * VGE_T.L(Y,IA,G,IS3,T))+ (IM_PM_prod_elec(Y,G) * 1000 *(VHYDROGEN_GH2_T.L(Y,IA,G,IS3,T)+ VGBIOMETH_T.L(Y,IA,G,IS3,T)+ VGBIOGASMETHANATION_T.L(Y,IA,G,IS3,T)+ VGBIOGASUPGRADING_T.L(Y,IA,G,IS3,T)))+ IM_PM_prod_heat(Y,G) * 1000 * VGH_T.L(Y,IA,G,IS3,T)))+SUM((IA),((VGKNACCUMNET.L(Y,IA,G) * 1000) * 1000)* IM_PM_constr(Y,G) / GDATA(G,'GDLIFETIME'));
-
+IS_PM_G(Y,G) = SUM(IA$IAGK_HASORPOT(Y,IA,G),
+    IM_PM_prod_elec(Y,G) * 1000 * VGE_AGG.L(Y,IA,G)
+$ifi %HYDROGEN%==yes      + IM_PM_prod_elec(Y,G) * 1000 * VH2_AGG.L(Y,IA,G)
+  + IM_PM_prod_heat(Y,G) * 1000 * VGH_AGG.L(Y,IA,G)
+*       --- Construction term: cohort-frozen-IM (PB_COHORT_CONSTR=yes) or legacy
+*       --- VGKNACCUMNET form (default). See PB_eqndecdef.inc SECTION 2b.
+$ifi     %PB_COHORT_CONSTR%==yes  + SUM(IYALIAS2 $ ((YVALUE(IYALIAS2) LE YVALUE(Y)) AND (YVALUE(Y) - YVALUE(IYALIAS2) LT GDATA(G,'GDLIFETIME'))), (VGKN.L(IYALIAS2,IA,G) + NEW_GKFX(IYALIAS2,IA,G)) * 1000 * IM_PM_constr(IYALIAS2,G) / GDATA(G,'GDLIFETIME')));
+$ifi not %PB_COHORT_CONSTR%==yes  + (VGKNACCUMNET.L(Y,IA,G) * 1000) * IM_PM_constr(Y,G) / GDATA(G,'GDLIFETIME'));
+$ifi %PB%==yes PARAMETER IS_RADIATION_G(Y,G);
+IS_RADIATION_G(Y,G) = SUM(IA$IAGK_HASORPOT(Y,IA,G),
+    IM_RADIATION_prod_elec(Y,G) * 1000 * VGE_AGG.L(Y,IA,G)
+$ifi %HYDROGEN%==yes      + IM_RADIATION_prod_elec(Y,G) * 1000 * VH2_AGG.L(Y,IA,G)
+  + IM_RADIATION_prod_heat(Y,G) * 1000 * VGH_AGG.L(Y,IA,G)
+*       --- Construction term: cohort-frozen-IM (PB_COHORT_CONSTR=yes) or legacy
+*       --- VGKNACCUMNET form (default). See PB_eqndecdef.inc SECTION 2b.
+$ifi     %PB_COHORT_CONSTR%==yes  + SUM(IYALIAS2 $ ((YVALUE(IYALIAS2) LE YVALUE(Y)) AND (YVALUE(Y) - YVALUE(IYALIAS2) LT GDATA(G,'GDLIFETIME'))), (VGKN.L(IYALIAS2,IA,G) + NEW_GKFX(IYALIAS2,IA,G)) * 1000 * IM_RADIATION_constr(IYALIAS2,G) / GDATA(G,'GDLIFETIME')));
+$ifi not %PB_COHORT_CONSTR%==yes  + (VGKNACCUMNET.L(Y,IA,G) * 1000) * IM_RADIATION_constr(Y,G) / GDATA(G,'GDLIFETIME'));
 $ifi %PB%==yes PARAMETER IS_ACIDIFICATION_G(Y,G);
-IS_ACIDIFICATION_G(Y,G)=SUM((IA), SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC *(IM_ACIDIFICATION_prod_elec(Y,G) * 1000 * VGE_T.L(Y,IA,G,IS3,T))+ (IM_ACIDIFICATION_prod_elec(Y,G) * 1000 *(VHYDROGEN_GH2_T.L(Y,IA,G,IS3,T)+ VGBIOMETH_T.L(Y,IA,G,IS3,T)+ VGBIOGASMETHANATION_T.L(Y,IA,G,IS3,T)+ VGBIOGASUPGRADING_T.L(Y,IA,G,IS3,T)))+ IM_ACIDIFICATION_prod_heat(Y,G) * 1000 * VGH_T.L(Y,IA,G,IS3,T)))+SUM((IA),((VGKNACCUMNET.L(Y,IA,G) * 1000) * 1000)* IM_ACIDIFICATION_constr(Y,G) / GDATA(G,'GDLIFETIME'));
-
+IS_ACIDIFICATION_G(Y,G) = SUM(IA$IAGK_HASORPOT(Y,IA,G),
+    IM_ACIDIFICATION_prod_elec(Y,G) * 1000 * VGE_AGG.L(Y,IA,G)
+$ifi %HYDROGEN%==yes      + IM_ACIDIFICATION_prod_elec(Y,G) * 1000 * VH2_AGG.L(Y,IA,G)
+  + IM_ACIDIFICATION_prod_heat(Y,G) * 1000 * VGH_AGG.L(Y,IA,G)
+*       --- Construction term: cohort-frozen-IM (PB_COHORT_CONSTR=yes) or legacy
+*       --- VGKNACCUMNET form (default). See PB_eqndecdef.inc SECTION 2b.
+$ifi     %PB_COHORT_CONSTR%==yes  + SUM(IYALIAS2 $ ((YVALUE(IYALIAS2) LE YVALUE(Y)) AND (YVALUE(Y) - YVALUE(IYALIAS2) LT GDATA(G,'GDLIFETIME'))), (VGKN.L(IYALIAS2,IA,G) + NEW_GKFX(IYALIAS2,IA,G)) * 1000 * IM_ACIDIFICATION_constr(IYALIAS2,G) / GDATA(G,'GDLIFETIME')));
+$ifi not %PB_COHORT_CONSTR%==yes  + (VGKNACCUMNET.L(Y,IA,G) * 1000) * IM_ACIDIFICATION_constr(Y,G) / GDATA(G,'GDLIFETIME'));
 $ifi %PB%==yes PARAMETER IS_RESOURCE_G(Y,G);
-IS_RESOURCE_G(Y,G)=SUM((IA), SUM((IS3,T), IHOURSINST(IS3,T)*IHOURFRAC *(IM_RESOURCE_prod_elec(Y,G) * 1000 * VGE_T.L(Y,IA,G,IS3,T))+ (IM_RESOURCE_prod_elec(Y,G) * 1000 *(VHYDROGEN_GH2_T.L(Y,IA,G,IS3,T)+ VGBIOMETH_T.L(Y,IA,G,IS3,T)+ VGBIOGASMETHANATION_T.L(Y,IA,G,IS3,T)+ VGBIOGASUPGRADING_T.L(Y,IA,G,IS3,T)))+ IM_RESOURCE_prod_heat(Y,G) * 1000 * VGH_T.L(Y,IA,G,IS3,T)))+SUM((IA),((VGKNACCUMNET.L(Y,IA,G) * 1000) * 1000)* IM_RESOURCE_constr(Y,G) / GDATA(G,'GDLIFETIME'));
-
+IS_RESOURCE_G(Y,G) = SUM(IA$IAGK_HASORPOT(Y,IA,G),
+    IM_RESOURCE_prod_elec(Y,G) * 1000 * VGE_AGG.L(Y,IA,G)
+$ifi %HYDROGEN%==yes      + IM_RESOURCE_prod_elec(Y,G) * 1000 * VH2_AGG.L(Y,IA,G)
+  + IM_RESOURCE_prod_heat(Y,G) * 1000 * VGH_AGG.L(Y,IA,G)
+*       --- Construction term: cohort-frozen-IM (PB_COHORT_CONSTR=yes) or legacy
+*       --- VGKNACCUMNET form (default). See PB_eqndecdef.inc SECTION 2b.
+$ifi     %PB_COHORT_CONSTR%==yes  + SUM(IYALIAS2 $ ((YVALUE(IYALIAS2) LE YVALUE(Y)) AND (YVALUE(Y) - YVALUE(IYALIAS2) LT GDATA(G,'GDLIFETIME'))), (VGKN.L(IYALIAS2,IA,G) + NEW_GKFX(IYALIAS2,IA,G)) * 1000 * IM_RESOURCE_constr(IYALIAS2,G) / GDATA(G,'GDLIFETIME')));
+$ifi not %PB_COHORT_CONSTR%==yes  + (VGKNACCUMNET.L(Y,IA,G) * 1000) * IM_RESOURCE_constr(Y,G) / GDATA(G,'GDLIFETIME'));
 PARAMETER IS_CO2_FFF(Y, G, FFF,TECH_TYPE);
 IS_CO2_FFF(Y, G, FFF, TECH_TYPE)$(IS_CO2_G(Y,G) AND IGF(G,FFF) AND GTECH_TYPE(G,TECH_TYPE)) = IS_CO2_G(Y,G);
 PARAMETER IS_OZONE_DEPLETION_FFF(Y, G, FFF, TECH_TYPE);
@@ -1691,13 +1835,33 @@ IS_ECOTOXICITY_FRESHWATER_FFF(Y, G, FFF, TECH_TYPE)$(IS_ECOTOXICITY_FRESHWATER_G
 PARAMETER IS_PM_FFF(Y, G, FFF, TECH_TYPE);
 IS_PM_FFF(Y, G, FFF, TECH_TYPE)$(IS_PM_G(Y,G) AND IGF(G,FFF) AND GTECH_TYPE(G,TECH_TYPE)) = IS_PM_G(Y,G);
 
+PARAMETER IS_RADIATION_FFF(Y, G, FFF, TECH_TYPE);
+IS_RADIATION_FFF(Y, G, FFF, TECH_TYPE)$(IS_RADIATION_G(Y,G) AND IGF(G,FFF) AND GTECH_TYPE(G,TECH_TYPE)) = IS_RADIATION_G(Y,G);
+
 PARAMETER IS_ACIDIFICATION_FFF(Y, G, FFF, TECH_TYPE);
 IS_ACIDIFICATION_FFF(Y, G, FFF, TECH_TYPE)$(IS_ACIDIFICATION_G(Y,G) AND IGF(G,FFF) AND GTECH_TYPE(G,TECH_TYPE)) = IS_ACIDIFICATION_G(Y,G);
 
 PARAMETER IS_RESOURCE_FFF(Y, G, FFF, TECH_TYPE);
 IS_RESOURCE_FFF(Y, G, FFF, TECH_TYPE)$(IS_RESOURCE_G(Y,G) AND IGF(G,FFF) AND GTECH_TYPE(G,TECH_TYPE)) = IS_RESOURCE_G(Y,G);
+$endif
+* --- (2026-05-30) end %PB% gate on the PB per-generator/per-fuel impact breakdown ---
 
-execute_unload "MainResults.gdx" OBJ_YCR,EL_PRICE_YCR,EL_PRICE_YCRST,PRO_YCRAGFST,EL_DEMAND_YCRST,EL_DEMAND_YCR,
+* PB DURABLE FIX (cont.): sync the IS_<cat> generation-TOTAL variables to the
+* recomputed per-G parameters (IS_<cat> = SUM(G) IS_<cat>_G), so the unloaded
+* totals match IS_*_FFF for every cohort. The bare IS_<cat> variables are
+* presolved-out leftovers for 2030/2040 otherwise (construction-only).
+$ifi %PB%==yes IS_CO2.L(Y)                       = SUM(G, IS_CO2_G(Y,G));
+$ifi %PB%==yes IS_OZONE_DEPLETION.L(Y)           = SUM(G, IS_OZONE_DEPLETION_G(Y,G));
+$ifi %PB%==yes IS_LU.L(Y)                        = SUM(G, IS_LU_G(Y,G));
+$ifi %PB%==yes IS_WU.L(Y)                        = SUM(G, IS_WU_G(Y,G));
+$ifi %PB%==yes IS_EUTROPHICATION_FRESHWATER.L(Y) = SUM(G, IS_EUTROPHICATION_FRESHWATER_G(Y,G));
+$ifi %PB%==yes IS_ECOTOXICITY_FRESHWATER.L(Y)    = SUM(G, IS_ECOTOXICITY_FRESHWATER_G(Y,G));
+$ifi %PB%==yes IS_PM.L(Y)                        = SUM(G, IS_PM_G(Y,G));
+$ifi %PB%==yes IS_RADIATION.L(Y)                 = SUM(G, IS_RADIATION_G(Y,G));
+$ifi %PB%==yes IS_ACIDIFICATION.L(Y)             = SUM(G, IS_ACIDIFICATION_G(Y,G));
+$ifi %PB%==yes IS_RESOURCE.L(Y)                  = SUM(G, IS_RESOURCE_G(Y,G));
+
+execute_unload "MainResults.gdx" OBJ_YCR,EL_PRICE_YCR,EL_PRICE_YCRST,H_PRICE_YCRA,H_PRICE_YCRAST,PRO_YCRAGFST,EL_DEMAND_YCRST,EL_DEMAND_YCR,
 PRO_YCRAGF,G_CAP_YCRAF,G_STO_YCRAF,X_CAP_YCR,X_FLOW_YCRST,X_FLOW_YCR
 
 
@@ -1705,11 +1869,44 @@ $ifi %HYDROGEN%==yes  ,H2_PRICE_YCRST,BIOMETH_PRICE_YST,XH2_CAP_YCR, XH2_FLOW_YC
 $ifi %EV%==yes ,V2G_FLEX_Y, V2G_FLEX_YCR, V2G_per_EV_FLEX_YCR
 
 $ifi %PB%==yes ,IS_CO2,IS_CO2_X,IS_CO2_X_H2,IS_CO2_EV,IS_CO2_FFF
-$ifi %PB%==yes $ifi %TL_ALLOWED%==yes ,TL_CO2
-$ifi %PB%==yes ,IS_OZONE_DEPLETION_X, IS_OZONE_DEPLETION_X_H2, IS_OZONE_DEPLETION_EV, IS_LU_X, IS_LU_X_H2, IS_LU_EV, IS_WU_X, IS_WU_X_H2, IS_WU_EV, IS_EUTROPHICATION_FRESHWATER_X, IS_EUTROPHICATION_FRESHWATER_X_H2, IS_EUTROPHICATION_FRESHWATER_EV, IS_ECOTOXICITY_FRESHWATER_X, IS_ECOTOXICITY_FRESHWATER_X_H2, IS_ECOTOXICITY_FRESHWATER_EV, IS_PM_X, IS_PM_X_H2, IS_PM_EV, IS_ACIDIFICATION_X, IS_ACIDIFICATION_X_H2, IS_ACIDIFICATION_EV, IS_OZONE_DEPLETION_FFF,IS_LU_FFF,IS_WU_FFF,IS_EUTROPHICATION_FRESHWATER_FFF,IS_ECOTOXICITY_FRESHWATER_FFF,IS_PM_FFF,IS_ACIDIFICATION_FFF,IS_RESOURCE_FFF
+$ifi %PB%==yes $ifi %TL_CO2_ALLOWED%==yes ,TL_CO2
+$ifi %PB%==yes ,IS_OZONE_DEPLETION_X, IS_OZONE_DEPLETION_X_H2, IS_OZONE_DEPLETION_EV, IS_LU_X, IS_LU_X_H2, IS_LU_EV, IS_WU_X, IS_WU_X_H2, IS_WU_EV, IS_EUTROPHICATION_FRESHWATER_X, IS_EUTROPHICATION_FRESHWATER_X_H2, IS_EUTROPHICATION_FRESHWATER_EV, IS_ECOTOXICITY_FRESHWATER_X, IS_ECOTOXICITY_FRESHWATER_X_H2, IS_ECOTOXICITY_FRESHWATER_EV, IS_PM_X, IS_PM_X_H2, IS_PM_EV, IS_RADIATION_X, IS_RADIATION_X_H2, IS_RADIATION_EV, IS_ACIDIFICATION_X, IS_ACIDIFICATION_X_H2, IS_ACIDIFICATION_EV, IS_OZONE_DEPLETION_FFF,IS_LU_FFF,IS_WU_FFF,IS_EUTROPHICATION_FRESHWATER_FFF,IS_ECOTOXICITY_FRESHWATER_FFF,IS_PM_FFF,IS_RADIATION_FFF,IS_ACIDIFICATION_FFF,IS_RESOURCE_FFF
 
-$ifi %PB%==yes $ifi %TL_ALLOWED%==yes $ifi %PB_all%==yes ,TL_OZONE_DEPLETION,TL_LU,TL_WU,TL_EUTROPHICATION_FRESHWATER,TL_ECOTOXICITY_FRESHWATER,TL_PM,TL_ACIDIFICATION
+* Per-category TL_<CAT> unload --- each gated by its own TL_<CAT>_ALLOWED flag
+* (replaces the former single TL_ALLOWED guard). When a category's flag is
+* empty, its TL variable is hard-bound to 0 by absence of QPBLIM_<CAT>_TL
+* and would be uninformative to unload.
+$ifi %PB%==yes $ifi %PB_all%==yes $ifi %TL_OZONE_DEPLETION_ALLOWED%==yes           ,TL_OZONE_DEPLETION
+$ifi %PB%==yes $ifi %PB_all%==yes $ifi %TL_LU_ALLOWED%==yes                        ,TL_LU
+$ifi %PB%==yes $ifi %PB_all%==yes $ifi %TL_WU_ALLOWED%==yes                        ,TL_WU
+$ifi %PB%==yes $ifi %PB_all%==yes $ifi %TL_EUTROPHICATION_FRESHWATER_ALLOWED%==yes ,TL_EUTROPHICATION_FRESHWATER
+$ifi %PB%==yes $ifi %PB_all%==yes $ifi %TL_ECOTOXICITY_FRESHWATER_ALLOWED%==yes    ,TL_ECOTOXICITY_FRESHWATER
+$ifi %PB%==yes $ifi %PB_all%==yes $ifi %TL_PM_ALLOWED%==yes                        ,TL_PM
+$ifi %PB%==yes $ifi %PB_all%==yes $ifi %TL_RADIATION_ALLOWED%==yes                 ,TL_RADIATION
+$ifi %PB%==yes $ifi %PB_all%==yes $ifi %TL_ACIDIFICATION_ALLOWED%==yes             ,TL_ACIDIFICATION
+$ifi %PB%==yes $ifi %PB_all%==yes $ifi %TL_RESOURCE_ALLOWED%==yes                  ,TL_RESOURCE
 $ifi %PB%==yes ,IS_RESOURCE,IS_RESOURCE_X,IS_RESOURCE_X_H2,IS_RESOURCE_EV
+
+* Modular CCS layer (2026-05-26): per-category capture/storage LCA + BECCS credit.
+* Gated by %PB%==yes %CCS%==yes -- these symbols only exist when both add-ons run.
+$ifi %PB%==yes $ifi %CCS%==yes ,IS_CO2_CC_PS,IS_CO2_CC_STO
+$ifi %PB%==yes $ifi %CCS%==yes ,IS_OZONE_DEPLETION_CC_PS,IS_OZONE_DEPLETION_CC_STO
+$ifi %PB%==yes $ifi %CCS%==yes ,IS_LU_CC_PS,IS_LU_CC_STO
+$ifi %PB%==yes $ifi %CCS%==yes ,IS_WU_CC_PS,IS_WU_CC_STO
+$ifi %PB%==yes $ifi %CCS%==yes ,IS_EUTROPHICATION_FRESHWATER_CC_PS,IS_EUTROPHICATION_FRESHWATER_CC_STO
+$ifi %PB%==yes $ifi %CCS%==yes ,IS_ECOTOXICITY_FRESHWATER_CC_PS,IS_ECOTOXICITY_FRESHWATER_CC_STO
+$ifi %PB%==yes $ifi %CCS%==yes ,IS_PM_CC_PS,IS_PM_CC_STO
+$ifi %PB%==yes $ifi %CCS%==yes ,IS_RADIATION_CC_PS,IS_RADIATION_CC_STO
+$ifi %PB%==yes $ifi %CCS%==yes ,IS_ACIDIFICATION_CC_PS,IS_ACIDIFICATION_CC_STO
+$ifi %PB%==yes $ifi %CCS%==yes ,IS_RESOURCE_CC_PS,IS_RESOURCE_CC_STO
+$ifi %PB%==yes $ifi %CCS%==yes ,VBECCS_CREDIT
+
+* CAR_DIESEL Component 2 (2026-05-26): per-category diesel-car impact scores.
+* Gated by %PB%==yes %EV%==yes -- variables only declared when both addons run
+* (DIESEL fleet derives from EV_BEV_available which only exists with EV).
+$ifi %PB%==yes $ifi %EV%==yes ,IS_CO2_DIESEL,IS_OZONE_DEPLETION_DIESEL,IS_LU_DIESEL,IS_WU_DIESEL
+$ifi %PB%==yes $ifi %EV%==yes ,IS_EUTROPHICATION_FRESHWATER_DIESEL,IS_ECOTOXICITY_FRESHWATER_DIESEL
+$ifi %PB%==yes $ifi %EV%==yes ,IS_PM_DIESEL,IS_RADIATION_DIESEL,IS_ACIDIFICATION_DIESEL,IS_RESOURCE_DIESEL
 
 ;
 

@@ -29,7 +29,7 @@ QMINFLOW_A
 QMINFLOW_R
 QMINFLOW_C
 
-*$ifi %inv%==yes       QPROCKAPACCUMNET        !! Has weakness - but used anyway
+$ifi %inv%==yes       QPROCKAPACCUMNET        !! Has weakness - but used anyway
 $ifi %inv%==yes       QPROCKAP_UP
 $ifi %inv%==yes       QSTOVOLTLIM_T
 $ifi %inv%==yes       QSTOVOLTLIM
@@ -37,4 +37,10 @@ $ifi %inv%==yes       QPROCKAUP_SCALE1
 $ifi %inv%==yes       QPROCKAUP_SCALE2
 $ifi %inv%==yes       QPROCKAP_DEC
 
+*OBS FF
+$ifi %inv%==yes       QTRANSPROCKAP
+$ifi %inv%==yes       QTRANSPROCKAP_SYMMETRY  
+
 $ifi %APKNDISC%==yes  QAPKNDISCEQUALCONT
+
+

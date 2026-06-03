@@ -1,0 +1,8 @@
+$log >>>PBQOBJLOCAL_2313E1p0_INCLUDED
+* 2_31_1 Path B (generic w): centered chronological w(s,t) tilt on ALL dispatch dims. 2050-only via
+* PB_DISPATCH_REG_EPS (relative, set per-cohort in Balmorelbb4.sim). Breaks the temporal degenerate face.
++ PB_DISPATCH_REG_EPS * SUM((IA,G,S,T)$IAGK_HASORPOT(Y,IA,G), (((ORD(S)-1)*CARD(T)+ORD(T))/(CARD(S)*CARD(T))) * VGE_T(Y,IA,G,S,T))
++ PB_DISPATCH_REG_EPS * SUM((IRRRE,IRRRI,S,T)$IXK_HASORPOT(Y,IRRRE,IRRRI), (((ORD(S)-1)*CARD(T)+ORD(T))/(CARD(S)*CARD(T))) * VX_T(Y,IRRRE,IRRRI,S,T))
++ PB_DISPATCH_REG_EPS * SUM((IA,G,S,T)$IAGK_HASORPOT(Y,IA,G), (((ORD(S)-1)*CARD(T)+ORD(T))/(CARD(S)*CARD(T))) * (VESTOLOADT(Y,IA,G,S,T) + VESTOLOADTS(Y,IA,G,S,T)))
+$ifi %HYDROGEN%==yes + PB_DISPATCH_REG_EPS * SUM((IRRRE,IRRRI,S,T)$IXH2K_HASORPOT(Y,IRRRE,IRRRI), (((ORD(S)-1)*CARD(T)+ORD(T))/(CARD(S)*CARD(T))) * VXH2_T(Y,IRRRE,IRRRI,S,T))
+$ifi %HYDROGEN%==yes + PB_DISPATCH_REG_EPS * SUM((IA,G,S,T)$IAGK_HASORPOT(Y,IA,G), (((ORD(S)-1)*CARD(T)+ORD(T))/(CARD(S)*CARD(T))) * VHYDROGEN_STOLOADT(Y,IA,G,S,T))

@@ -1,5 +1,0 @@
-* PB add-on. Added by Théo Balanza
-
-SET PB_LCA_DATASET;
-SET PB_THRESHOLDS_SET;
-SET PB_GDTYPE_SET;

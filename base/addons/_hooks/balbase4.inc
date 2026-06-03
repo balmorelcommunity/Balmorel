@@ -24,6 +24,8 @@ $ifi %TRANS_RAMP%==yes  $include   "../../base/addons/transmission_ramping/trans
 $ifi %ANC_SERV%==yes  $include   "../../base/addons/ancilliary_services/ancilliary_services_balbase4.inc";
 $ifi %BalancingMarket%==yes       $include   "../../base/addons/balancing_market/balancing_market_balbase4.inc";
 $ifi %INDIVUSERS%==yes       $include   "../../base/addons/indivusers/bb4/indivusers_balbase4.inc";
+$ifi %OPTIFLOW%==yes $include "../../base/addons/optiflow/bb4/optiflow_balbase4.inc";
+$ifi %CCS%==yes      $include "../../base/addons/CCS/bb4/CCS_balbase4.inc";
 $ifi %PB%==yes       $include   "../../base/addons/PB/bb4/PB_balbase4.inc";
 
 $label endoffile

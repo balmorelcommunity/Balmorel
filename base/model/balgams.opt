@@ -36,7 +36,11 @@
 *   $Setglobal ONOFFCODELISTING  $ONLISTING
 
 $Setglobal ONOFFDATALISTING  $OffLISTING
-$Setglobal ONOFFCODELISTING  $OnLISTING
+$Setglobal ONOFFCODELISTING  $OffLISTING
+* 2026-05-27: Both DATA and CODE listing OFF for production speed. The .lst
+* was 1.4-1.6 GB on EU runs; the bulk was equation expansions (QOBJ etc.)
+* with per-(Y,IA,G,S,T) terms. With both OFF, .lst should drop to ~50-150 MB.
+* For debugging, flip ONOFFCODELISTING back to $OnLISTING to see code echo.
 %ONOFFCODELISTING%
 
 
@@ -53,7 +57,11 @@ $OFFSYMXREF OFFSYMLIST OFFUELLIST OFFUELXREF
 * Defaults are LIMROW=3, LIMCOL=3;
 * The statement "LIMROW=0" turns the listing off:
 
-OPTIONS LIMROW=   5, LIMCOL=   6;
+* 2026-05-27: LIMROW=0 LIMCOL=0 turns equation/column listing OFF for
+* production speed. With LIMROW=5/LIMCOL=6, the EU .lst grew to 1.4+ GB
+* from millions of equation-expansion terms. For debugging, set both to 5-6
+* OR override on GAMS command line (e.g. limrow=5 limcol=6).
+OPTIONS LIMROW=0, LIMCOL=0;
 
 *...............................................................................
 * SYSOUT controls the printing of the solved status in the list file.

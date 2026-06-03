@@ -1,0 +1,38 @@
+* ==========================================================================
+* CPLEX option file 2 (FULL RUN): negcap2050 = A1 bio-CCS-realism + 2050 cap.
+* Solver settings IDENTICAL to the uncapped A1 run (..._aaa_reduced_transcost)
+* so capped-vs-uncapped is a clean A/B; the ONLY model difference is the
+* EMI_POLNA 2050 net CO2 <= -82 Mt cap (data/EMI_POLNA.inc).
+* Use with: gams ... --USEOPTIONFILE=2
+* ==========================================================================
+
+LPmethod  6
+* Concurrent barrier + dual simplex (proven config; barrier wins on this LP).
+
+advind 0
+* No warm start. (advind 1 REJECTED on Nordic.)
+
+predual -1
+* Auto primal/dual transformation.
+
+scaind 1
+* Aggressive scaling RESTORED (2026-05-29). scaind 0 was a stopgap but solved too
+* slowly (couldn't even clear 2030). The DURABLE fix is now the QPBSCORE row-scale
+* (PB_ROWSCALE in base PB, enabled via --PB_ROWSCALE_ON=yes): it collapses the
+* cross-category VGE_AGG coefficient spread AT THE SOURCE, so the matrix is well
+* conditioned and fast aggressive scaling no longer over-/un-scales into the 2040
+* status-5. Row-scale is lossless (f cancels -> IS_<CAT>.l physical). See
+* PB_rowscale_STAGED.md + RF_KNOWN_ISSUES.md.
+
+solutiontype 0
+* Barrier + crossover (basic vertex). Required for correctness.
+
+numericalemphasis 1
+* More careful pivoting on the 25-OOM coefficient spread.
+
+dpriind 2
+* Steepest-edge dual simplex pricing (concurrent dual thread).
+
+bardisplay 2
+* Barrier diagnostics (Cholesky factor summary etc.); concurrent mode limits
+* what is emitted, but harmless and kept identical to the uncapped A1 run.
