@@ -2863,6 +2863,15 @@ $ifi %EV%==yes execute_unload "../simex/EV_BE_PHEV.gdx", EV_BE_PHEV;
 $ifi %EV%==yes execute_unload "../simex/EV_BEV_NETCHARGING.gdx", EV_BEV_NETCHARGING;
 $ifi %EV%==yes execute_unload "../simex/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHARGING;
 
+
+$ifi %EV%==yes  PARAM_V2G_INFRA_CAP(Y,IR)$IHASBEV(IR)=V2G_INFRA_CAP.L(Y,IR);
+$ifi %EV%==yes  PARAM_G2V_INFRA_CAP(Y,IR)$IHASBEV(IR)=G2V_INFRA_CAP.L(Y,IR);
+$ifi %EV%==yes  PARAM_V2G_INFRA_EXTRA(Y,IR)$IHASBEV(IR)=V2G_INFRA_EXTRA.L(Y,IR);
+
+$ifi %EV%==yes execute_unload "../simex/PARAM_V2G_INFRA_CAP.gdx", PARAM_V2G_INFRA_CAP;
+$ifi %EV%==yes execute_unload "../simex/PARAM_G2V_INFRA_CAP.gdx", PARAM_G2V_INFRA_CAP;
+$ifi %EV%==yes execute_unload "../simex/PARAM_V2G_INFRA_EXTRA.gdx", PARAM_V2G_INFRA_EXTRA;
+
 *Reducing size of export files once they have been exported
 $ifi %EV%==yes EV_BEV_NETCHARGING(Y,IR,S,T)=0;
 $ifi %EV%==yes EV_PHEV_NETCHARGING(Y,IR,S,T)=0;

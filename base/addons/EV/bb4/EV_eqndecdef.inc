@@ -3,8 +3,40 @@ QEV_BEV_BEBALANCE(Y,RRR,S,T)                               *'Batter Energy balan
 QEV_BEV_CHARGEBALANCE(Y,RRR,S,T)                            *'G2V inflexible charging and V2G charging have to be smaller than maximum charger capacity for BEV'
 QEV_PHEV_BEBALANCE(Y,RRR,S,T)                              *'Battery Energy balance of the PHEV fleet'
 QEV_PHEV_CHARGEBALANCE(Y,RRR,S,T)                           *'G2V inflexible charging and V2G charging have to be smaller than maximum charger capacity for PHEV'
+QEV_INFRA_V2G_PEAK(Y,RRR,S,T)                               *'V2G infrastructure peak capacity'
+QEV_INFRA_G2V_PEAK(Y,RRR,S,T)                               *'G2V infrastructure peak capacity'
+QEV_INFRA_G2V_EXTRA(Y,RRR)      "Unidirectional excess = MAX(G2V-V2G,0) via cost-driven lower bound"
+QV2GINFRAACCUMNET(Y,RRR)
+QG2VINFRAACCUMNET(Y,RRR)
+*QEV_INFRA_G2V_EXTRA_BIS(Y,RRR)
 ;
 
+QEV_INFRA_V2G_PEAK(IY411,IR,S,T)$(IHASBEV(IR) AND IS3(S) AND IY411.val>2019)..
+    VV2GINFRAACCUMNET(IY411,IR) =G=VEV_V2G_BEV(IY411,IR,S,T);
+
+QEV_INFRA_G2V_PEAK(IY411,IR,S,T)$(IHASBEV(IR) AND IS3(S) AND IY411.val>2019)..
+    VG2VINFRAACCUMNET(IY411,IR) =G=VEV_G2V_BEV(IY411,IR,S,T);
+
+QEV_INFRA_G2V_EXTRA(IY411,IR)$(IHASBEV(IR) AND IY411.val>2019)..
+    V2G_INFRA_EXTRA(IY411,IR) =G= VG2VINFRAACCUMNET(IY411,IR) - VV2GINFRAACCUMNET(IY411,IR);
+
+*QEV_INFRA_G2V_EXTRA_BIS(IY411,IR)$(IHASBEV(IR) AND IY411.val>2019)..
+*    V2G_INFRA_EXTRA_BIS(IY411,IR) =G= V2G_INFRA_CAP(IY411,IR) - G2V_INFRA_CAP(IY411,IR);
+
+
+QV2GINFRAACCUMNET(IY411,IR)$IHASBEV(IR)..
+    VV2GINFRAACCUMNET(IY411,IR)
+    =E=
+    SUM(IY402$IY411PREVY(IY411,IY402), VV2GINFRAACCUMNET(IY402,IR))$(NOT IYFIRST(IY411))
+    + V2G_INFRA_CAP(IY411,IR)
+    ;
+
+QG2VINFRAACCUMNET(IY411,IR)$IHASBEV(IR)..
+    VG2VINFRAACCUMNET(IY411,IR)
+    =E=
+    SUM(IY402$IY411PREVY(IY411,IY402), VG2VINFRAACCUMNET(IY402,IR))$(NOT IYFIRST(IY411))
+    + G2V_INFRA_CAP(IY411,IR)
+    ;
 
 
 ** BEV Battery SOC balance

@@ -7,3 +7,11 @@ POSITIVE VARIABLE         VEV_V2G_PHEV(Y,RRR,S,T)       'Vehicle to grid. Discha
 
 $ifi %EV_infeas%==yes POSITIVE VARIABLE VQEV_BEV_BEBALANCE(Y,RRR,S,T,IPLUSMINUS)  "Feasibility of QEV_BEV_BEBALANCE";
 $ifi %EV_infeas%==yes POSITIVE VARIABLE VQEV_PHEV_BEBALANCE(Y,RRR,S,T,IPLUSMINUS)  "Feasibility of QEV_PHEV_BEBALANCE";
+
+
+POSITIVE VARIABLE         V2G_INFRA_CAP(Y,RRR)         'V2G infrastructure peak capacity [MW]'  ;
+POSITIVE VARIABLE         G2V_INFRA_CAP(Y,RRR)         'G2V infrastructure peak capacity [MW]'  ;
+POSITIVE VARIABLE         V2G_INFRA_EXTRA(Y,RRR)    "Additional unidirectional-only infra capacity needed beyond bidirectional V2G capacity, MW";
+POSITIVE VARIABLE         VV2GINFRAACCUMNET(Y,RRR)   "Accumulated V2G infrastructure capacity [MW]";
+POSITIVE VARIABLE         VG2VINFRAACCUMNET(Y,RRR)   "Accumulated G2V infrastructure capacity [MW]";
+*POSITIVE VARIABLE         V2G_INFRA_EXTRA_BIS(Y,RRR) "Additional unidirectional-only infra capacity needed beyond bidirectional V2G capacity, MW";

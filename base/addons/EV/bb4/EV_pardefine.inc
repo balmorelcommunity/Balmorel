@@ -73,3 +73,7 @@ PARAMETER   EV_BE_BEV(YYY,RRR,SSS,TTT)        'State of charge of the BEV vehicl
 PARAMETER   EV_BE_PHEV(YYY,RRR,SSS,TTT)       'State of charge of the PHEV vehicle fleet to be used in future runs';
 PARAMETER   EV_BEV_NETCHARGING(YYY,RRR,SSS,TTT)        'Net charging of BEV vehicle fleet to be used in future runs';
 PARAMETER   EV_PHEV_NETCHARGING(YYY,RRR,SSS,TTT)      'Net charging of PHEV vehicle fleet to be used in future runs';
+
+PARAMETER PARAM_V2G_INFRA_CAP(YYY,RRR) 'V2G infrastructure capacity to be used in future runs';
+PARAMETER PARAM_G2V_INFRA_CAP(YYY,RRR) 'G2V infrastructure capacity to be used in future runs';
+PARAMETER PARAM_V2G_INFRA_EXTRA(YYY,RRR) 'Extra V2G infrastructure capacity to be used in future runs';

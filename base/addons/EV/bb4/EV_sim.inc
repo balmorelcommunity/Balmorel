@@ -30,6 +30,8 @@ $ifi not %V2G%==yes VEV_V2G_BEV.FX(IY411,IR,S,T)$(IHASBEV(IR) AND IY411.val>2019
 $ifi not %V2G%==yes VEV_V2G_PHEV.FX(IY411,IR,S,T)$(IHASBEV(IR) AND IY411.val>2019) = 0;
 
 
+
+
 *Fixing storage level for EV from previous runs. Copied from old EV Addon, variable names adapted.
 *$ifi %import_results%==yes $ifi %EV%==yes $ifi %ADDEVSTOS%==cont  VEV_BE_BEV.FX(IY411,IR,S,T)$(ORD(T) EQ CARD(T))=EV_BE_BEV(IY411,IR,S,T);
 *$ifi %import_results%==yes $ifi %EV%==yes $ifi %ADDEVSTOS%==cont  VEV_BE_PHEV.FX(IY411,IR,S,T)$(ORD(T) EQ CARD(T))=EV_BE_PHEV(IY411,IR,S,T);
