@@ -2867,10 +2867,14 @@ $ifi %EV%==yes execute_unload "../simex/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHA
 $ifi %EV%==yes  PARAM_V2G_INFRA_CAP(Y,IR)$IHASBEV(IR)=V2G_INFRA_CAP.L(Y,IR);
 $ifi %EV%==yes  PARAM_G2V_INFRA_CAP(Y,IR)$IHASBEV(IR)=G2V_INFRA_CAP.L(Y,IR);
 $ifi %EV%==yes  PARAM_V2G_INFRA_EXTRA(Y,IR)$IHASBEV(IR)=V2G_INFRA_EXTRA.L(Y,IR);
+$ifi %EV%==yes  PARAM_V2G_INFRA_ACCUMNET(Y,IR)$IHASBEV(IR)=VV2GINFRAACCUMNET.L(Y,IR);
+$ifi %EV%==yes  PARAM_G2V_INFRA_ACCUMNET(Y,IR)$IHASBEV(IR)=VG2VINFRAACCUMNET.L(Y,IR);
 
 $ifi %EV%==yes execute_unload "../simex/PARAM_V2G_INFRA_CAP.gdx", PARAM_V2G_INFRA_CAP;
 $ifi %EV%==yes execute_unload "../simex/PARAM_G2V_INFRA_CAP.gdx", PARAM_G2V_INFRA_CAP;
 $ifi %EV%==yes execute_unload "../simex/PARAM_V2G_INFRA_EXTRA.gdx", PARAM_V2G_INFRA_EXTRA;
+$ifi %EV%==yes execute_unload "../simex/PARAM_V2G_INFRA_ACCUMNET.gdx", PARAM_V2G_INFRA_ACCUMNET;
+$ifi %EV%==yes execute_unload "../simex/PARAM_G2V_INFRA_ACCUMNET.gdx", PARAM_G2V_INFRA_ACCUMNET;
 
 *Reducing size of export files once they have been exported
 $ifi %EV%==yes EV_BEV_NETCHARGING(Y,IR,S,T)=0;

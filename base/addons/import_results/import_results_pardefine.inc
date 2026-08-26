@@ -40,7 +40,8 @@ $ifi %EV%==yes PARAM_V2G_INFRA_EXTRA(Y,IR) = EPS;
 $ifi %EV%==yes  execute_load '../simex/PARAM_V2G_INFRA_CAP.gdx', PARAM_V2G_INFRA_CAP;
 $ifi %EV%==yes  execute_load '../simex/PARAM_G2V_INFRA_CAP.gdx', PARAM_G2V_INFRA_CAP;
 $ifi %EV%==yes  execute_load '../simex/PARAM_V2G_INFRA_EXTRA.gdx', PARAM_V2G_INFRA_EXTRA;
-
+$ifi %EV%==yes  execute_load '../simex/PARAM_G2V_INFRA_ACCUMNET.gdx', PARAM_G2V_INFRA_ACCUMNET;
+$ifi %EV%==yes  execute_load '../simex/PARAM_V2G_INFRA_ACCUMNET.gdx', PARAM_V2G_INFRA_ACCUMNET;
 
 *Investments with/without decommissioning of endogenous capacity
 $ifi %ADDTECHDEV%==yes      execute_load  '../simex/GKACCUMNET.gdx', GKACCUMNET;

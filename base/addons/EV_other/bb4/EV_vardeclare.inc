@@ -15,4 +15,3 @@ POSITIVE VARIABLE         V2G_INFRA_EXTRA(Y,RRR)    "Additional unidirectional-o
 POSITIVE VARIABLE         VV2GINFRAACCUMNET(Y,RRR)   "Accumulated V2G infrastructure capacity [MW]";
 POSITIVE VARIABLE         VG2VINFRAACCUMNET(Y,RRR)   "Accumulated G2V infrastructure capacity [MW]";
 POSITIVE VARIABLE         V2G_INFRA_EXTRA_BIS(Y,RRR) "Additional unidirectional-only infra capacity needed beyond bidirectional V2G capacity, MW";
-$ifi not %TechInvest%==yes POSITIVE VARIABLE VG2VINFRASLACK(Y,RRR) 'Slack allowing transgression of fixed G2V infra capacity when TechInvest is off';
