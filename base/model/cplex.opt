@@ -1,8 +1,6 @@
 * Option file 1 for CPLEX solver. For possible options, see the GAMS Solver Manual. Change as needed.
 
-LPMethod 4
-BarCrossAlg 0
-OptimalityTarget 2
-Threads 20
-ParallelMode -1
-NumericalEmphasis 1
+LPMethod        4       
+BarCrossAlg     0       
+Threads         16
+ParallelMode    -1

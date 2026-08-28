@@ -367,7 +367,7 @@ XH2INVESTSTART= 2030;
 $setglobal ES_H2TRANS 
 
 * Allows import of Hydrogen from 3rd countries outside Balmorel
-$Setglobal IMPORT_H2 YES
+$Setglobal IMPORT_H2
 *!option yes
 
 * Allows flexible demand of H2 in regions (set ratio of flexible demand in HYDROGEN_FLEXDH2 with the scalar THETA_FLEX_DH2)
@@ -474,11 +474,11 @@ $setglobal LIFETIME_DECOM_ENDO_G YES
 *!option yes
 
 * Adds Endogenous capacities can be decommissioned based on their profitability:
-$setglobal ECONOMIC_DECOM_ENDO_G   yes
+$setglobal ECONOMIC_DECOM_ENDO_G
 *!option yes
 
 * Adds Endogenous decommissioned endogenous capacities can be brought back to the energy system. To be combined with the other decommissioning options:
-$setglobal REVERT_DECOM_ENDO_G   yes
+$setglobal REVERT_DECOM_ENDO_G
 *!option yes
 
 *--------END OF ENDOGENOUS CAPACITIES-----
@@ -553,7 +553,9 @@ $setglobal optiOCC yes
 * Require investments in CO2 sequestration in OptiFlow.
 * !! Requires the CCS addon and baloptgasbridge=yes !!
 
-
+*Perform operational run by fixing capacities to PROCKAPAACUMNET in /localsimex
+$setglobal load_ex_cap
+*! option yes
 
 * Debug possibilities:
 $Setglobal addEPStoL
@@ -919,10 +921,8 @@ $setglobal INPUTDATAGDX2XLS
 * A quick way to get (some of) the relevant information is to make a gdx file with all information.
 * This option will provide unloading of all that is available at the end of Balmorel.gms.
 *
-$setglobal all_endofmodelgdx yes
+$setglobal all_endofmodelgdx
 *!option yes     !Save the file all_endofmodel.gdx to the model folder
-
-
 
 
 * Make some output in text format to show some results of an execution.

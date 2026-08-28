@@ -2648,6 +2648,20 @@ $ifi not %export_results%==yes $goto result_export
 *------------------------------------------------------------------------------
 *                GENERATE INPUT FILES FOR FUTURE RUNS FROM RESULTS OF THIS RUN
 *------------------------------------------------------------------------------
+
+*OBS FF * Operational run
+
+$ifi %OPTIFLOW%==yes    PROCKAPACCUMNET(Y,AAAOPTIFLOW,PROC)=
+$ifi %OPTIFLOW%==yes 	$ifi %inv%==yes + VPROCKAPACCUMNET.L(Y,AAAOPTIFLOW,PROC)
+$ifi %OPTIFLOW%==yes 	; 
+$ifi %OPTIFLOW%==yes    execute_unload "../localsimex/PROCKAPACCUMNET.gdx", PROCKAPACCUMNET;
+
+$ifi %OPTIFLOW%==yes    PROCEXIMKAPACCUMNET(Y,IAAAE,IAAAI,PROC)$(AAAOPTIFLOW(IAAAE) AND AAAOPTIFLOW(IAAAI))=
+$ifi %OPTIFLOW%==yes 	$ifi %inv%==yes + VPROCEXIMKAPACCUMNET.L(Y,IAAAE,IAAAI,PROC)
+$ifi %OPTIFLOW%==yes 	; 
+$ifi %OPTIFLOW%==yes    execute_unload "../localsimex/PROCEXIMKAPACCUMNET.gdx", PROCEXIMKAPACCUMNET;
+
+
 * For hydro with reservoir save the following, to be used in future runs by addon "import_results":
 
 HYRSG(Y,IA,S)$SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS)) = SUM(IGHYRS$IAGK_HASORPOT(Y,IA,IGHYRS),SUM(T, IHYRST(S,T)*VGE_T.L(Y,IA,IGHYRS,S,T)));

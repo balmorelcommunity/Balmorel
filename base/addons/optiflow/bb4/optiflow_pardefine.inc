@@ -235,6 +235,10 @@ $if     EXIST '../data/OPTIFLOW_PROCEXIMKAPFX.inc' $INCLUDE         '../data/OPT
 $if not EXIST '../data/OPTIFLOW_PROCEXIMKAPFX.inc' $INCLUDE '../../base/data/OPTIFLOW_PROCEXIMKAPFX.inc';
 %semislash%;
 
+*Operational Run
+PARAMETER PROCKAPACCUMNET(Y,AAAOPTIFLOW,PROC) "Capacities from investment run to be fixed in operational run";
+PARAMETER PROCEXIMKAPACCUMNET(Y,IAAAE,IAAAI,PROC) "Inter-region transmission capacities from investment run to be fixed in operational run";
+
 * OBS FF * End *
 
 SET PROCDATASET  'Process addons/OptiFlow/data types' %semislash%   !! TODO: what kind of addons/OptiFlow/data? not all, some are  clearly in  procinoutflow
