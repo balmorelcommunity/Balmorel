@@ -1,0 +1,30 @@
+Policies addon enable predefined constraints on a userdefined geografy and regarding specific technologies or technology groups.
+These flexible constraints can be used to model a lot of different policies to constrain the model.
+
+User guide:
+
+Each policy consist of   a Policy Area
+                         a Polycy Type
+                         a group of Technologies (if nessesary)
+
+Files for defining Policies:
+
+In POLICY.inc      the names of the different Policies     should be stated
+In POLAREA.inc     the names of the different Policy Area  should be stated
+In POLAREAGEO.inc  the Policy Areas should be defined by a subset of CCCRRRAAA
+In POLTYP.inc      one of the predefined Policy Type should be assigned to each Policy
+In pol_data.inc    the yearly data for the different Policies should be stated
+
+If a Policy Type is choosen which requre specification of technology
+In POLTECH.inc     the group of technologies concerning the Policy should be stated
+
+
+
+
+
+
+
+
+
+
+

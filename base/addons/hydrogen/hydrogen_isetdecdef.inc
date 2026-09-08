@@ -5,6 +5,7 @@ Set IHYDROGEN_GCH4TOH2(G)         'Steam reforming technologies producing hydrog
 Set IHYDROGEN_GH2FUEL(G)          'Power plants using hydrogen as fuel';
 *IDA new additions
 SET IHYDROGEN_GH2TOE(G)           'Solid oxide fuel cells'
+Set IHYDROGEN_GH2UP(G)            'Fuels needing boost of hydrogen'
 ;
 
 * Based on 'GDTYPE'
@@ -13,6 +14,7 @@ IHYDROGEN_GETOH2(G)   = YES$(GDATA(G,'GDTYPE') EQ HYDROGEN_GETOH2);
 IHYDROGEN_GCH4TOH2(G) = YES$(GDATA(G,'GDTYPE') EQ HYDROGEN_GCH4TOH2);
 
 *IDA new additions
+IHYDROGEN_GH2UP(G)= YES$(GDATA(G,'GDFUEL') EQ THERMGAS_H2 OR GDATA(G,'GDFUEL') EQ BIOGAS_H2);
 IHYDROGEN_GH2TOE(G)= YES$(GDATA(G,'GDTYPE') EQ HYDROGEN_GH2TOE);
 IHYDROGEN_GEHTOH2(G)  = YES$(GDATA(G,'GDTYPE') EQ HYDROGEN_GEHTOH2);
 

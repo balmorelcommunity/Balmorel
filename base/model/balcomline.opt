@@ -11,7 +11,7 @@ Eolonly 1
 pw=180
 
 * Cerr is the maximum number of compile time errors before GAMS stops. 0 (default) means no limit:
-cerr=1
+cerr=3
 
 * Errmsg controls the position of error messages in the listing file. Possible values:
 *   0 Place error messages at the end of compiler listing (default)

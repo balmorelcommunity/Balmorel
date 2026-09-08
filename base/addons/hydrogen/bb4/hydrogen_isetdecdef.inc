@@ -6,6 +6,7 @@ Set IHYDROGEN_GCH4TOH2(G)         'Steam reforming technologies producing hydrog
 Set IHYDROGEN_GH2FUEL(G)          'Power plants using hydrogen as fuel (excluding H2 storage and biomethane technologies)';
 SET IHYDROGEN_GH2TOE(G)           'Technology producing only electricity consuming hydrogen'
 SET IHYDROGEN_GH2TOEH(G)          'Technology producing electricity and consuming hydrogen'
+Set IHYDROGEN_GH2UP(G)            'Fuels needing boost of hydrogen (not used)'
 Set IHYDROGEN_GH2TOBIOMETH(G)     'Hydrogen + DAC to synthetic natural gas technologies'
 SET IHYDROGEN_GBIOGASMETHANATION(G)  'Technologies consuming biogas, electricity, and H2 to produce biomethane'
 SET IHYDROGEN_GBIOGASUPGRADING(G)    'Technologies consuming biogas and electricity to remove CO2 and produce biomethane'

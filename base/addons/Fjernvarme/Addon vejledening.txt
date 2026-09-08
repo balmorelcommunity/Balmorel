@@ -1,0 +1,25 @@
+
+balmorel.gms:
+
+Internal sets for true addon
+$ifi %FV%==yes $include '../../base/addons/fjernvarme/sets_fv.inc';
+
+Parameters for true addon
+$ifi %FV%==yes $INCLUDE '../../base/addons/fjernvarme/data_fj.inc';
+
+Variables for true addon
+$ifi %FV%==yes $include '../../base/addons/fjernavrme/var_fv.inc';
+
+Objective function contributions
+$ifi %FV%==yes $include '../../base/addons/fjernvarme/cost_fv.inc';
+
+QHEQ
+$ifi %FV%==yes $include '../../base/addons/fjernvarme/heatbalance_fv.inc';
+
+Equations for true addon
+$ifi %FV%==yes $include '../../base/addons/fjernvarme/eq_fv.inc';
+
+Equations
+$ifi %FV%==yes $include '../../base/addons/fjernvarme/eqN_fv.inc';
+
+

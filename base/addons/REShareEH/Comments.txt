@@ -1,0 +1,4 @@
+Comment to RESEH, Hans Ravn, 20080603
+
+1. The factor IOF1_ in file RESEHPrt4.inc may have to be replaced by IOF1000000.
+2. 

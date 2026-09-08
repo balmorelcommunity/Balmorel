@@ -1,6 +1,6 @@
 Equations
-   QHYDROGEN_HGEHTOH2(Y,AAA,G,S,T)    'Link heat and electricity demand in hydrogen production of technologies consuming heat and electricity to produce H2'
-   QHYDROGEN_HGETOHH2(Y,AAA,G,S,T)    'Link heat and electricity demand in hydrogen production of technologies consuming electricity to produce H2 and heat'
+   QHYDROGEN_HGEHTOH2(Y,AAA,G,S,T)    'Link heat and electricity demand of technologies consuming heat and electricity to produce H2'
+   QHYDROGEN_HGETOHH2(Y,AAA,G,S,T)    'Link electricity demand of technologies consuming electricity to produce H2 and heat'
    QHYDROGEN_H2TOEH(Y,AAA,G,S,T)      'Link heat and electricity in technologies consuming hydrogen and producing heat and electricity'
    QHYDROGEN_GCH4KT_UP(Y,AAA,G,S,T)   'Hydrogen production of steam reforming plants restricted by capacity'
    QHYDROGEN_STOVOL(Y,AAA,G,S,T)      'Dynamic equation hydrogen storage'
@@ -15,16 +15,6 @@ Equations
    QGKBIOGASUPGRADING_UP(Y,AAA,G,S,T)  'Maximum generation of biomethane from biogas upgrading restricted by capacity (MW)'
    QGKBIOGASMETHANATION_UP(Y,AAA,G,S,T)  'Maximum generation of biomethane via biogas methanation restricted by capacity (MW)'
    QGKBIOMETHANE_UP(Y,AAA,G,S,T)      'Maximum generation of SNG restricted by capacity (MW)'
-;
-
-*Demand Shift equations
-Equations
-QSYNTHETIC_EQ_PRODUCTION(Y,RRR,S,T)
-QSYNTHETIC_EQ_SHIFT(Y,RRR)
-QSYNTHETIC_EQ_SHIFT_UP(Y,RRR)
-QSYNTHETIC_EQ_SHIFT_DOWN(Y,RRR)
-QSYNTHETIC_EQ_SHIFT_BALANCE_MOVE(Y)
-QSYNTHETIC_EQ_SHIFT_BALANCE_OVERALL(Y)
 ;
 
 
@@ -50,7 +40,6 @@ QHYDROGEN_H2TOEH(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2TOEH),IS3,T)$GDATA(IHYDROGE
 * Hydrogen production equal demand on region level:
 * Prod + OutputStorage - InputStorage = DemandTransport + DemandPower+DemandBioRefinery + other
 
-
 QHYDROGEN_EQ(IY411,IR,IS3,T)..
    SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GETOH2)$(RRRAAA(IR,IA)),VGE_T(IY411,IA,IHYDROGEN_GETOH2,IS3,T)*GDATA(IHYDROGEN_GETOH2,'GDFE')) +
    SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GETOHH2)$(RRRAAA(IR,IA)),VGE_T(IY411,IA,IHYDROGEN_GETOHH2,IS3,T)*GDATA(IHYDROGEN_GETOHH2,'GDFE'))+
@@ -60,8 +49,6 @@ QHYDROGEN_EQ(IY411,IR,IS3,T)..
    - SUM((IA,IHYDROGEN_GH2STO)$(RRRAAA(IR,IA) AND (IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2STO))),VHYDROGEN_STOLOADT(IY411,IA,IHYDROGEN_GH2STO,IS3,T))
    =E=
    IHYDROGEN_DH2_REGION_T_Y(IY411,IR,IS3,T)/(1-DISLOSS_H2(IR))+
-
-$ifi %flexible_h2_space%==yes   VGE_T_FLEXDH2(IY411,IR,IS3,T)/(1-DISLOSS_H2(IR))  + 
    SUM(IA$RRRAAA(IR,IA),IHYDROGEN_DH2_AREA_T_Y(IY411,IA,IS3,T)/(1-DISLOSS_H2(IA)))
    + SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2FUEL)$(RRRAAA(IR,IA)),VGE_T(IY411,IA,IHYDROGEN_GH2FUEL,IS3,T)/GDATA(IHYDROGEN_GH2FUEL,'GDFE'))
     + SUM(IAGK_HASORPOT(IY411,IA,IHYDROGEN_GH2TOBIOMETH)$(RRRAAA(IR,IA)),VGBIOMETH_T(IY411,IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)/GDATA(IHYDROGEN_GH2TOBIOMETH,'GDFE'))
@@ -74,54 +61,6 @@ $ifi %flexible_h2_space%==yes   VGE_T_FLEXDH2(IY411,IR,IS3,T)/(1-DISLOSS_H2(IR))
 $include "../../base/addons/_hooks/qhydrogen_eq.inc"
 
 ;
-
-$ONTEXT
-*Parameter initiation
-*IHYDROGEN_DH2_REGION_T_Y(Y,IR,S,T) = (HYDROGEN_DH2(Y,IR)*HYDROGEN_DH2_VAR_T(IR,S,T)/IHYDROGEN_DH2_REGION_SUMST(IR))$(IHYDROGEN_DH2_REGION_SUMST(IR) GT 0);
-*give it a try give the same demand
-
-*Initiate the total
-IHYDROGEN_DH2FLEX_REGION_Y_TOT(YYY,RRR) = HYDROGEN_DH2(YYY,RRR);
-*Initiate the first value
-IHYDROGEN_DH2FLEX_REGION_Y(YYY,RRR)$((ORD(YYY) EQ 1)) = IHYDROGEN_DH2FLEX_REGION_Y_TOT(YYY,RRR);
-*The difference
-LOOP(YYY$(NOT(ORD(YYY) EQ 1)),
-IHYDROGEN_DH2FLEX_REGION_Y(YYY,RRR) = IHYDROGEN_DH2FLEX_REGION_Y_TOT(YYY,RRR) - IHYDROGEN_DH2FLEX_REGION_Y_TOT(YYY-1,RRR);
-);
-
-$OFFTEXT
-
-*Additional EQs for hydrogen demand shift
-$ifi not %flexible_h2_space%==yes $goto no_flexible_h2_space
-QSYNTHETIC_EQ_PRODUCTION(IY411,IR,IS3,T)..
-VGE_T_FLEXDH2(IY411,IR,IS3,T) =E= (VGE_FLEXDH2(IY411,IR)*HYDROGEN_DH2_VAR_T(IR,IS3,T)/IHYDROGEN_DH2_REGION_SUMST(IR))$(IHYDROGEN_DH2_REGION_SUMST(IR) GT 0) 
-                                        
-;
-
-QSYNTHETIC_EQ_SHIFT(IY411,IR)..
-VGE_FLEXDH2(IY411,IR) =G= VFLEXDH2_SHIFT(IY411,IR)
-
-;
-
-QSYNTHETIC_EQ_SHIFT_UP(IY411,IR)..
-VFLEXDH2_SHIFT(IY411,IR) =G= (1-THETA_FLEX_DH2)*IHYDROGEN_DH2FLEX_REGION_Y(IY411,IR)
-
-;
-
-QSYNTHETIC_EQ_SHIFT_DOWN(IY411,IR)..
-(1+THETA_FLEX_DH2)*IHYDROGEN_DH2FLEX_REGION_Y(IY411,IR) =G= VFLEXDH2_SHIFT(IY411,IR)
-
-;
-
-QSYNTHETIC_EQ_SHIFT_BALANCE_MOVE(IY411)..
-sum(IR,VFLEXDH2_SHIFT(IY411,IR)) =E= sum(IR,IHYDROGEN_DH2FLEX_REGION_Y(IY411,IR))
-
-;
-
-QSYNTHETIC_EQ_SHIFT_BALANCE_OVERALL(IY411)..
-sum(IR,VGE_FLEXDH2(IY411,IR)) =E= sum(IR,IHYDROGEN_DH2FLEX_REGION_Y(IY411,IR))
-;
-$label no_flexible_h2_space
 
 * Hydrogen production equal demand on area level:
 * Prod + OutputStorage - InputStorage = DemandTransport + DemandPower + DemandBioRefinery + other
@@ -191,8 +130,6 @@ $ifi %DECOM%==yes   -(VDECOM_EXO_ACCUM(IY411,IA,IHYDROGEN_GH2STO)/GDATA(IHYDROGE
    VHYDROGEN_GH2_T(IY411,IA,IHYDROGEN_GH2STO,IS3,T)
 ;
 
-
-
 QBIOMETHANE_EQ(IY411,IS3,T)$SUM((IA,IGBIOMETHANE),IAGK_HASORPOT(IY411,IA,IGBIOMETHANE))..
 
 *Production SYNTHETIC NATURAL GAS
@@ -252,13 +189,10 @@ $ifi %DECOM%==yes   -VDECOM_EXO_ACCUM(IY411,IA,IHYDROGEN_GH2TOBIOMETH)$IGDECOMEX
         +VGKNACCUMNET(IY411,IA,IHYDROGEN_GH2TOBIOMETH)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IAGKNY(Y,IA,IHYDROGEN_GH2TOBIOMETH)))*(1$(NOT IGKRATE(IA,IHYDROGEN_GH2TOBIOMETH,IS3,T)) + IGKRATE(IA,IHYDROGEN_GH2TOBIOMETH,IS3,T))
 ;
 
-
 *Hydrogen pipe transmission
 
 EQUATIONS
 QXH2K_UP(Y,IRRRE,IRRRI,S,T)           "H2 transmission capacity constraint (MW)"
-
-$iftheni %H2TransInvest%==yes
 QXH2KNACCUMNET(Y,IRRRE,IRRRI)         "NOT FINISHED, TODO, Accumulated new H2 transmission investments available at beginning of next year (MW)"
 QXH2KNACCUMNET_NGTOH2(Y,IRRRE,IRRRI)  "NOT FINISHED, TODO, Accumulated new investments in conversion of existing natural gas pipe to H2 transmission available at beginning of next year (MW)"
 QXH2INVSYMMETRY(Y,IRRRE,IRRRI)        "H2 Transmission investments are set symetric(MW)"
@@ -267,19 +201,17 @@ QXH2KMAX_NGTOH2(Y,IRRRE,IRRRI)        "Maximum conversion of existing natural ga
 *Equations for modelling economy of scale
 QVXH2KN_ES(YYY,IRRRE,IRRRI)  "Equation to ensure the proper H2 capacity when using SOS2 variables"
 QXH2LAMBDA_ES(YYY,IRRRE,IRRRI) "Equation to ensure all the Lambda variables are equal to 1 for the same H2 transmission line"
-$endif
 ;
 
 *"H2 transmission capacity constraint (MW)"
 QXH2K_UP(IY411,IRE,IRI,IS3,T)$(SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IRE,IRI)) OR SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IRE,IRI)))..
    (  XH2KFX(IY411,IRE,IRI)
-$ifi %H2TransInvest%==yes      + VXH2KNACCUMNET(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IRE,IRI))
-$ifi %H2TransInvest%==yes      + VXH2KNACCUMNET_NGTOH2(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IRE,IRI))
+      + VXH2KNACCUMNET(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IRE,IRI))
+      + VXH2KNACCUMNET_NGTOH2(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN_NGTOH2(Y,IRE,IRI))
     )*(1$(NOT IXH2KRATE(IRE,IRI,IS3,T))+IXH2KRATE(IRE,IRI,IS3,T))
      =G=  VXH2_T(IY411,IRE,IRI,IS3,T)
 ;
 
-$ifi not %H2TransInvest%==yes $goto no_transmission_investments
 *"NOT FINISHED, TODO, Accumulated new heat transmission investments available at beginning of next year (MW)"
 QXH2KNACCUMNET(IY411,IRE,IRI)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXH2KN(Y,IRE,IRI))..
   VXH2KNACCUMNET(IY411,IRE,IRI)  !! End of this year's VXH2KNACCUMNET (available at beginning of next year)'
@@ -323,5 +255,3 @@ QVXH2KN_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
 
 QXH2LAMBDA_ES(IY411,IRE,IRI)$(IXH2KN(IY411,IRI,IRE) AND (IXH2KN_ES(IRE,IRI)))..
   SUM(XES,VXH2LAMBDA(IY411,IRE,IRI,XES)) =E= 1;
-
-$label no_transmission_investments

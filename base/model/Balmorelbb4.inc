@@ -1,7 +1,4 @@
 * File BalmorelBB4.inc for handling the Balbase4 model in Balmorel.
-* First version 2009(hr) based on DTU Master project by Jesper Felstedt &QHYDROGEN_ Morten Middelboe Pedersen under supervision by Hans Ravn.
-* Present version 20150428(hr), 20150430(Weiming), 20151217(hr), 20160810(hr), 20170419 (Juan and hr), 20240624 (Mathias and Ioannis)
-* Thanks to Weiming Xiong, Andreas von Recklinghausen and others for good contributions.
 
 * The model is still under development.
 * It will be available from www.balmorel.com under open source conditions.
@@ -34,7 +31,7 @@
 
 * SETS:
 * Geography related:
-SET CCCRRRAAA         All geographical entities (CCC + RRR + AAA);
+SET CCCRRRAAA         All geographical entities (CCC + RRR + AAA)';
 SET CCC(CCCRRRAAA)    "All Countries";
 SET C(CCC)            "Countries in the simulation";
 SET RRR(CCCRRRAAA)    "All regions";
@@ -253,7 +250,7 @@ PARAMETER VHYRS_STL(YYY,AAA,SSS,TTT)  "Hourly hydro storage level (MWh)";
 PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
 PARAMETER XKACCUMNET(YYY,IRRRE,IRRRI) "Resulting transmission capacity development at end (MISSING: minus any decommissioning of them due to lifetime expiration) this BB4, at end of previous (i.e., available at start of current) year (MW) to be transferred to future runs";
 
-* Data for handling storage
+* Data for handling other storage
 PARAMETER ESTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER HSTOVOLTS(YYY,AAA,GGG,SSS,TTT) "Inter-seasonal Heat storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
 PARAMETER ESTOVOLT(YYY,AAA,GGG,SSS,TTT) "Intra-seasonal Electricity storage contents at beginning of time segment (MWh) to be transferred to future runs (MWh)";
@@ -291,9 +288,9 @@ PARAMETER FUELPRICE_EXC(YYY,AAA,FFF)             "Fuel prices to be transferred 
 $ifi     exist "bb4datainc.inc" $include                   "bb4datainc.inc";
 $ifi not exist "bb4datainc.inc" $include  "../../base/model/bb4datainc.inc";
 
-* GKRATE 
-$ifi %GKRATE_DOL%==AAA_GGG_SSS       GKRATE(IA,G,S)$(GKRATE(IA,G,S) EQ 1) = 0; !! Should give no reduction in size unless the data files does not exploit that default value is 1.
-$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT   GKRATE(IA,G,S,T)$(GKRATE(IA,G,S,T) EQ 1) = 0;
+* UPS! Forgot DOL! TODO
+*GKNMAX(YYY,AAA,GGG)$((NOT Y(YYY)) OR (NOT IA(AAA))) = INF;    Presently not implemented.
+GKRATE(IA,G,S)$(GKRATE(IA,G,S) EQ 1) = 0; !! Should give no reduction in size unless the data files does not exploit that default value is 1.
 
 * The two specifications of fuel type 'FDACRONYM' and 'FDNB', have relative merits.
 * Under most circumstances 'FDACRONYM' is preferable, because it is more transparent.
@@ -766,7 +763,7 @@ PARAMETER   IM_SO2(G)   "SO2 emission coefficient for fuel (kg/GJ)";
 PARAMETER   IM_N2O(G)   "NO2 emission coefficient for fuel (kg/GJ)";
 
 LOOP(FFF, !! TODO: Check forbedringen af kode som givet p\E5 SONYstick
-  IM_CO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDCO2')*(1 - FDATA(FFF,'FDRE'));
+  IM_CO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDCO2');
   IM_CO2RE(G)$IGF(G,FFF) = FDATA(FFF,'FDCO2')*FDATA(FFF,'FDRE');
   IM_SO2(G)$IGF(G,FFF)   = FDATA(FFF,'FDSO2')$(GDATA(G,'GDDESO2') EQ 0) +
       (FDATA(FFF,'FDSO2')*(1-GDATA(G,'GDDESO2')))$(GDATA(G,'GDDESO2') GT 0);
@@ -1078,8 +1075,7 @@ $ifi %HYDROGEN%==yes HYDROGEN_DH2_VAR_T(AAA,SSS,TTT)$((NOT IA(AAA)) OR (NOT S(SS
 *DHF_STEPS(AAA,SSS,TTT,DF_QP,DHF)$((NOT IA(AAA)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
 *DHF_STEPS(IA,S,T,DF_QP,DHF)$((NOT DHF_D1(DHF) AND (NOT DHF_D2(DHF)) AND (NOT DHF_D3(DHF)) AND (NOT DHF_U1(DHF)) AND (NOT DHF_U2(DHF)) AND (NOT DHF_U3(DHF)))) = 0;
 
-$ifi %GKRATE_DOL%==AAA_GGG_SSS GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS))) = 0;
-$ifi %GKRATE_DOL%==AAA_GGG_SSS_TTT GKRATE(AAA,GGG,SSS,TTT)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS)) OR (NOT T(TTT))) = 0;
+GKRATE(AAA,GGG,SSS)$((NOT IA(AAA)) OR (NOT G(GGG)) OR (NOT S(SSS))) = 0;
 FUELPRICE(YYY,AAA,FFF)$(NOT(Y(YYY)))=0;
 
 * Discounting
@@ -1424,7 +1420,7 @@ QDENET(IY411,IR,DEUSER,IS3,T)..
          =G=
                               ((DE(IY411,IR,DEUSER) * DE_VAR_T(IR,DEUSER,IS3,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0)
 $ifi %DemandResponse%==yes  + SUM((IA,DR_TECH)$(IADR(IY411,IA,DR_TECH) AND RRRAAA(IR,IA) AND DR_TECH_USER(DR_TECH,DEUSER)),  VDR_UP(IY411,IA,DR_TECH,IS3,T) - VDR_DOWN(IY411,IA,DR_TECH,IS3,T))
-$ifi %EV%==yes               + (VEV_G2V_BEV(IY411,IR,IS3,T)$IHASBEV(IR) + VEV_G2V_PHEV(IY411,IR,IS3,T)$IHASPHEV(IR) - VEV_V2G_BEV(IY411,IR,IS3,T)$IHASBEV(IR) - VEV_V2G_PHEV(IY411,IR,IS3,T)$IHASPHEV(IR))$IRESE(DEUSER)
+$ifi %EV%==yes               + (VEV_VG2V_BEV(IY411,IR,IS3,T)$IHASBEV(IR) + VEV_VG2V_PHEV(IY411,IR,IS3,T)$IHASPHEV(IR) - VEV_VV2G_BEV(IY411,IR,IS3,T)$IHASBEV(IR) - VEV_VV2G_PHEV(IY411,IR,IS3,T)$IHASPHEV(IR))$IRESE(DEUSER)
 $ifi %INDUSTRY%==yes          + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)), SUM(IGETOH$IAGK_HASORPOT(IY411,IA,IGETOH), VGE_T(IY411,IA,IGETOH,IS3,T)))$IIND(DEUSER)
 $ifi %INDUSTRY%==yes $ifi %HYDROGEN%==yes   + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)), SUM(G$(IAGK_HASORPOT(IY411,IA,G) AND (IHYDROGEN_GEHTOH2(G) OR IHYDROGEN_GETOHH2(G) OR IHYDROGEN_GETOH2(G))), VGE_T(IY411,IA,G,IS3,T)))$IIND(DEUSER)
 $ifi %INDUSTRY%==yes          + SUM(IA$(RRRAAA(IR,IA) AND INDUSTRY_AAA(IA)),SUM(IGESTO$IAGK_HASORPOT(IY411,IA,IGESTO),VESTOLOADT(IY411,IA,IGESTO,IS3,T)))$IIND(DEUSER)
@@ -2129,11 +2125,6 @@ QXK_UP(IY411,IRE,IRI,IS3,T)$SUM(Y$(YVALUE(Y) LE YVALUE(IY411)),IXKN(Y,IRE,IRI)).
 $include "../../base/addons/_hooks/qxk_up.inc"
 ;
 
-
-* Put a cap on the maximum accummulated transmission capacity, if a cap is specified
-VXKNACCUMNET.UP(Y,IRRRE,IRRRI)$(XINVCOST(Y,IRRRE,IRRRI) AND XMAXINV(IRRRE,IRRRI))= XMAXINV(IRRRE,IRRRI);
-
-
 * Accumulated endogenous transmission investments during present BB4 model -----
 * Note that it is assumed that there are no endogenous decommissioning
 * of previous endogenous investment (cf. QGKACCUMNET).
@@ -2573,8 +2564,6 @@ $ifi not exist 'Balmorelbb4.sim'  $include '../../base/model/Balmorelbb4.sim';
 $ifi %OUTPUT_SUMMARY%==yes $if     EXIST '../../base/output/OUTPUT_SUMMARY.inc' $INCLUDE         '../../base/output/OUTPUT_SUMMARY.inc';
 *--- End of Main results calculation ---------------------------------------
 
-*----optiflow output file (TO BE MERGED IN OUTPUT_SUMMARY.inc)
-$ifi %Optiflow%==yes       $if     EXIST '../../base/output/Optiflow_OutputFile.inc' $include '../../base/output/Optiflow_OutputFile.inc';
 
 $ifi not %export_results%==yes $goto result_export
 *------------------------------------------------------------------------------
@@ -2680,7 +2669,7 @@ ESTOVOLTVAL(Y,IA,G,S,T)=0;
 HSTOVOLTVAL(Y,IA,G,S,T)=0;
 
 
-*Energy dispatch to be used in future runs by addon "import_results"
+*Energy and commitment dispatch to be used in future runs by addon "import_results"
 *DE_T(Y,IR,S,T)= SUM(DEUSER, ((DE(Y,IR,DEUSER) * DE_VAR_T(IR,DEUSER,S,T)) / IDE_SUMST(IR,DEUSER))$(IDE_SUMST(IR,DEUSER) GT 0))/(1-DISLOSS_E(IR));
 *DH_T(Y,IA,S,T)=SUM(DHUSER, ((DH(Y,IA,DHUSER) * DH_VAR_T(IA,DHUSER,S,T)) / IDH_SUMST(IA,DHUSER))$(IDH_SUMST(IA,DHUSER) GT 0))/(1-DISLOSS_H(IA));
 GE_T(Y,IA,IGE,S,T)$IAGK_HASORPOT(Y,IA,IGE)=VGE_T.L(Y,IA,IGE,S,T);
@@ -2818,28 +2807,29 @@ $ifi %HYDROGEN%==yes  execute_unload  "../../simex/XH2KACCUMNET.gdx", XH2KACCUMN
 $ifi %HYDROGEN%==yes XH2KACCUMNET(Y,IRE,IRI)=0;
 
 
-$ifi %EV%==yes   $ifi %EV%==yes EV_BE_BEV(Y,IR,S,T)$IHASBEV(IR)=VEV_BE_BEV.L(Y,IR,S,T);
-$ifi %EV%==yes EV_BE_PHEV(Y,IR,S,T)$IHASPHEV(IR)=VEV_BE_PHEV.L(Y,IR,S,T);
+$ifi %EV%==yes   EV_VSOC_BEV(Y,IR,S,T)$IHASBEV(IR)=VEV_VSOC_BEV.L(Y,IR,S,T);
+$ifi %EV%==yes   EV_VSOC_PHEV(Y,IR,S,T)$IHASPHEV(IR)=VEV_VSOC_PHEV.L(Y,IR,S,T);
 
-$ifi %EV%==yes $ifi not %EV_allreturn%==yes EV_BEV_NETCHARGING(Y,IR,S,T)$IHASBEV(IR)= + (IEV_BEV_return(Y,S,T,IR)*EV_BEV_return_energy(Y) + VEV_G2V_BEV.L(Y,IR,S,T) * EV_BEV_G2V_EFF(Y) + IEV_BEV_leave(Y,S,T,IR)*EV_BEV_leave_energy(Y))
-$ifi %EV%==yes $ifi %EV_allreturn%==yes EV_BEV_NETCHARGING(Y,IR,S,T)$IHASBEV(IR)= + (IEV_BEV_return(Y,S,T,IR)*(EV_BEV_batsize(Y)-EV_BEV_return_energy(T,IR)) + VEV_G2V_BEV.L(Y,IR,S,T) * EV_BEV_G2V_EFF(Y) + IEV_BEV_leave(Y,S,T,IR)*EV_BEV_leave_energy(Y))
-$ifi %EV%==yes $ifi %V2G%==yes - VEV_V2G_BEV.L(Y,IR,S,T)/EV_BEV_V2G_EFF(Y)
-$ifi %EV%==yes $ifi %EV_infeas%==yes +VQEV_BEV_BEBALANCE.L(Y,IR,S,T,'IMINUS') -VQEV_BEV_BEBALANCE.L(Y,IR,S,T,'IPLUS')
-$ifi %EV%==yes ;
+$ifi %EV%==yes  EV_BEV_NETCHARGING(Y,IR,S,T)$IHASBEV(IR)= + (EV_BEV_SOCFlex(Y,S,T,IR) + VEV_VG2V_BEV.L(Y,IR,S,T) * EV_PEFF(Y) - EV_BEV_Flex(Y,S,T,IR))
+$ifi %EV%==yes $ifi %V2G%==yes   - VEV_VV2G_BEV.L(Y,IR,S,T) / EV_PEFF(Y)
+$ifi %EV%==yes $ifi %EV_infeas%==yes     +VQEV_BEV_SOCBALANCE.L(Y,IR,S,T,'IMINUS') -VQEV_BEV_SOCBALANCE.L(Y,IR,S,T,'IPLUS')
+$ifi %EV%==yes  ;
 
-$ifi %EV%==yes EV_PHEV_NETCHARGING(Y,IR,S,T)$IHASPHEV(IR)= + (IEV_PHEV_return(Y,S,T,IR)*EV_PHEV_return_energy(Y) + VEV_G2V_PHEV.L(Y,IR,S,T) * EV_PHEV_G2V_EFF(Y) + IEV_PHEV_leave(Y,S,T,IR)*EV_PHEV_leave_energy(Y))
-$ifi %EV%==yes $ifi %V2G%==yes - VEV_V2G_PHEV.L(Y,IR,S,T)/EV_PHEV_V2G_EFF(Y)
-$ifi %EV%==yes $ifi %EV_infeas%==yes +VQEV_PHEV_BEBALANCE.L(Y,IR,S,T,'IMINUS') -VQEV_PHEV_BEBALANCE.L(Y,IR,S,T,'IPLUS')
-$ifi %EV%==yes ;
+$ifi %EV%==yes  EV_PHEV_NETCHARGING(Y,IR,S,T)$IHASPHEV(IR)= + (EV_PHEV_SOCFlex(Y,S,T,IR) + VEV_VG2V_PHEV.L(Y,IR,S,T) * EV_PEFF(Y) - EV_PHEV_Flex(Y,S,T,IR))
+$ifi %EV%==yes $ifi %V2G%==yes   - VEV_VV2G_PHEV.L(Y,IR,S,T) / EV_PEFF(Y)
+$ifi %EV%==yes $ifi %EV_infeas%==yes     +VQEV_PHEV_SOCBALANCE.L(Y,IR,S,T,'IMINUS') -VQEV_PHEV_SOCBALANCE.L(Y,IR,S,T,'IPLUS')
+$ifi %EV%==yes  ;
 
-$ifi %EV%==yes execute_unload "../../simex/EV_BE_BEV.gdx", EV_BE_BEV;
-$ifi %EV%==yes execute_unload "../../simex/EV_BE_PHEV.gdx", EV_BE_PHEV;
-$ifi %EV%==yes execute_unload "../../simex/EV_BEV_NETCHARGING.gdx", EV_BEV_NETCHARGING;
-$ifi %EV%==yes execute_unload "../../simex/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHARGING;
+$ifi %EV%==yes   execute_unload  "../../simex/EV_VSOC_BEV.gdx", EV_VSOC_BEV;
+$ifi %EV%==yes   execute_unload  "../../simex/EV_VSOC_PHEV.gdx", EV_VSOC_PHEV;
+$ifi %EV%==yes   execute_unload  "../../simex/EV_BEV_NETCHARGING.gdx", EV_BEV_NETCHARGING;
+$ifi %EV%==yes   execute_unload  "../../simex/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHARGING;
 
 *Reducing size of export files once they have been exported
-$ifi %EV%==yes EV_BEV_NETCHARGING(Y,IR,S,T)=0;
-$ifi %EV%==yes EV_PHEV_NETCHARGING(Y,IR,S,T)=0;
+$ifi %EV%==yes   EV_VSOC_BEV(Y,IR,S,T)=0;
+$ifi %EV%==yes   EV_VSOC_PHEV(Y,IR,S,T)=0;
+$ifi %EV%==yes   EV_BEV_NETCHARGING(Y,IR,S,T)=0;
+$ifi %EV%==yes   EV_PHEV_NETCHARGING(Y,IR,S,T)=0;
 
 $ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes INDIVUSERS_GROUPSHARE(Y,IR,DHUSER,INDIVUSERS_GROUP)=VINDIVUSERS_GROUPSHARE.L(Y,IR,DHUSER,INDIVUSERS_GROUP);
 $ifi %INDIVUSERS%==yes $ifi %GROUP_DEMAND_SHIFT%==yes execute_unload  "../../simex/INDIVUSERS_GROUPSHARE.gdx", INDIVUSERS_GROUPSHARE;

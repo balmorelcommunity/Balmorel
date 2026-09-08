@@ -3,12 +3,6 @@ $if     EXIST '../data/HYDROGEN_DH2.inc' $INCLUDE         '../data/HYDROGEN_DH2.
 $if not EXIST '../data/HYDROGEN_DH2.inc' $INCLUDE '../../base/data/HYDROGEN_DH2.inc';
 %semislash%;
 
-
-PARAMETER HYDROGEN_FLEXDH2(YYY,CCCRRRAAA)  'Yearly demand for hydrogen'   %semislash%
-$if     EXIST '../data/HYDROGEN_FLEXDH2.inc' $INCLUDE         '../data/HYDROGEN_FLEXDH2.inc';
-$if not EXIST '../data/HYDROGEN_FLEXDH2.inc' $INCLUDE '../../base/data/HYDROGEN_FLEXDH2.inc';
-%semislash%;
-
 PARAMETER HYDROGEN_DH2_VAR_T(CCCRRRAAA,SSS,TTT) 'Variation profile of H2 demand per region'  %semislash%
 $if     EXIST '../data/HYDROGEN_DH2_VAR_T.inc' $INCLUDE         '../data/HYDROGEN_DH2_VAR_T.inc';
 $if not EXIST '../data/HYDROGEN_DH2_VAR_T.inc' $INCLUDE '../../base/data/HYDROGEN_DH2_VAR_T.inc';
