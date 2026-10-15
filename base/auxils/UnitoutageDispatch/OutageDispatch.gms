@@ -202,14 +202,14 @@ $include   "../../base/addons/hydrogen/bb4/hydrogen_gkfxadditions.inc";
 
 *Adding optimized investment and decommissioning in generation
 PARAMETER GKACCUMNET(YYY,AAA,GGG) "Resulting technology capacity development at end of (ULTimo) previous (i.e., start of current) year (MW) (MWh for storage) to be transferred to future runs";
-$if     EXIST '../../simex/GKACCUMNET.gdx' execute_load  '../../simex/GKACCUMNET.gdx', GKACCUMNET;
-$if     EXIST '../../simex/GKACCUMNET.gdx' GKFX(YYY,AAA,GGG)=0;
-$if     EXIST '../../simex/GKACCUMNET.gdx' GKFX(Y,IA,G)=GKACCUMNET(Y,IA,G);
+$if     EXIST '../simex/GKACCUMNET.gdx' execute_load  '../simex/GKACCUMNET.gdx', GKACCUMNET;
+$if     EXIST '../simex/GKACCUMNET.gdx' GKFX(YYY,AAA,GGG)=0;
+$if     EXIST '../simex/GKACCUMNET.gdx' GKFX(Y,IA,G)=GKACCUMNET(Y,IA,G);
 
 *Import planned maintenance
 PARAMETER UCONMAINT(YYY,AAA,GGG,SSS) "Planned maintenance";
 UCONMAINT(YYY,AAA,GGG,SSS)=0;
-$if     EXIST '../../simex/UCONMAINT.gdx' execute_load  '../../simex/UCONMAINT.gdx', UCONMAINT;
+$if     EXIST '../simex/UCONMAINT.gdx' execute_load  '../simex/UCONMAINT.gdx', UCONMAINT;
 
 SET AGKN(AAA,GGG);
 $include "%inputdata%/AGKN.inc";

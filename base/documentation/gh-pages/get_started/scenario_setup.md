@@ -3,12 +3,12 @@ Lets start by learning how to execute Balmorel using a small test scenario. Crea
 ```bash
 Balmorel
 ├── base
-├── test_run
-│   ├── data 
-│   └── model
-│       ├── cplex.op4
-│       └── Balmorel.gms
-└── simex
+└── test_run
+    ├── simex 
+    ├── data 
+    └── model
+        ├── cplex.op4
+        └── Balmorel.gms
 ``` 
 
 This is how to setup different scenarios in Balmorel. The framework will first attempt to look for files in the test_run, and then in the base folder if the required file did not exist. This means you do not have to copy paste all of the data in base/data everytime you make a new scenario, but can simply add the *changed* data. We will do this below.  
