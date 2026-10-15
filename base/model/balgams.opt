@@ -110,9 +110,9 @@ $ONEMPTY
 * E.g., for using CBC for LP problems specify option   LP=CBC
 * E.g., for using IPOPT for LP problems specify option LP=IPOPT
 
-option LP   = CPLEX
-option RMIP = CPLEX
-option MIP  = CPLEX
+option LP   = HIGHS
+option RMIP = HIGHS
+option MIP  = HIGHS
 
 *-------------------------------------------------------------------------------
 * From GAMS many basic solver options may be specified, applicable for some or all solvers,
