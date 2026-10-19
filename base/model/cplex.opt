@@ -1,5 +1,11 @@
-LPMethod 4
-Threads 20
+LPMethod 6
+Threads 8
 BarCrossAlg -1
 SolutionType 2
 NumericalEmphasis 1
+scaind 1 		#internal scaling in cplex
+names 0			#don't pass names to cplex
+
+
+
+
