@@ -132,8 +132,8 @@ $if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DEUSER.inc';
 $include "../../base/addons/_hooks/deuseradditions.inc"
 
 SET DHUSER             "Heat demand user groups. Set must include element RESH for holding demand not included in any other user group"  %semislash%
-$if     EXIST '../data/DEUSER.inc' $INCLUDE         '../data/DHUSER.inc';
-$if not EXIST '../data/DEUSER.inc' $INCLUDE '../../base/data/DHUSER.inc';
+$if     EXIST '../data/DHUSER.inc' $INCLUDE         '../data/DHUSER.inc';
+$if not EXIST '../data/DHUSER.inc' $INCLUDE '../../base/data/DHUSER.inc';
 %semislash%;
 
 SET FFF                "Fuels"  %semislash%
