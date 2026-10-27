@@ -1,0 +1,18 @@
+/* Changing the ugly purple visited colour to remain blue or white for all links */
+/* Cross references turns grayblue */
+a[class="reference internal"]:visited {
+    color: #6a8392;
+}
+a[class="reference external"]:visited {
+    color: #6a8392;
+}
+
+/* Toctree remains white */
+div[class="wy-side-scroll"] li[class='toctree-l1'] a:visited {
+    color: white;
+}
+
+/* Home icon turns grayblue */
+ul[class="wy-breadcrumbs"] a:visited {
+    color: #6a8392;
+}
