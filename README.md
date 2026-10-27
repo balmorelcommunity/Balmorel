@@ -38,11 +38,11 @@ The Balmorel team of DTU Management, Energy Economics and Modelling has decided 
         Balmorel
         ├── base
         ├── changes
+        │   ├── simex
         │   ├── data
         │   └── model
         │       ├── cplex.op4
         │       └── Balmorel.gms 
-        ├── simex
         ├── README.md
         ├── .gitignore
         └── .gitattributes
