@@ -292,7 +292,9 @@ LOOP(Y,
 
 $label YES_EV_INTERSEASONAL
 
-
+IEV_BEV_available(Y,S,T,IR)$(IHASBEV(IR)) = 2*IEV_BEV_available(Y,S,T,IR);
+IEV_BEV_return(Y,S,T,IR)$(IHASBEV(IR)) = 2* IEV_BEV_return(Y,S,T,IR);
+IEV_BEV_leave(Y,S,T,IR)$(IHASBEV(IR)) = 2*IEV_BEV_leave(Y,S,T,IR);
 
 *Option here to make grid loss for either load or unload. Currently there is no loss on ELEC_STO and therefor not on EV, else it would create unfair competition
 Parameters
@@ -305,3 +307,43 @@ EV_DISTLOSSLOAD(IR)=0;
 EV_DISTLOSSUNLOAD(IR)=0;
 
 
+
+*-------------------------------------------------*
+* Charging infrastructure lifetime.
+* IEV_INFRA_ALIVE(Yinv,Y) = 1 if infrastructure invested in Yinv is in place, and its annuity paid, in Y.
+* Same rule as IYHASANNUITYG in Balmorelbb4.inc, with EV_INFRA_LIFETIME instead of GDLIFETIME.
+SCALAR    IEV_INFRA_ANNUITY             'Annuity factor of EV charging infrastructure (fraction)';
+PARAMETER IEV_INFRA_ALIVE(Y,Y)          'Charging infrastructure invested in Y (first index) is in place in Y (second index) (0,1)';
+PARAMETER IEV_INFRA_LEFT(Y,Y)           'Remaining lifetime of charging infrastructure invested in Y (first index) at the beginning of Y (second index) (years)';
+PARAMETER IEV_INFRA_NINV(Y)             'Number of charging infrastructure investments made within Y';
+
+IEV_INFRA_ANNUITY = DISCOUNTRATE/(1-(1+DISCOUNTRATE)**(-EV_INFRA_LIFETIME));
+
+LOOP(IYALIAS,
+  LOOP(Y$(ORD(Y) EQ ORD(IYALIAS)), IEV_INFRA_LEFT(IYALIAS,Y) = EV_INFRA_LIFETIME;);
+);
+LOOP(IYALIAS,
+  ILOOPBREAK = 0;
+  IEV_INFRA_NINV(IYALIAS) = MAX(1, ROUND(IWEIGHTY(IYALIAS)/EV_INFRA_LIFETIME));
+  LOOP(Y$(ORD(Y) GE ORD(IYALIAS) AND (ILOOPBREAK EQ 0)),
+    IF (ORD(Y) EQ ORD(IYALIAS),
+      IEV_INFRA_ALIVE(IYALIAS,Y) = 1;
+      IF (IEV_INFRA_LEFT(IYALIAS,Y)*IEV_INFRA_NINV(IYALIAS) LE IWEIGHTY(Y), ILOOPBREAK = 1;);
+      IEV_INFRA_LEFT(IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2)) = EV_INFRA_LIFETIME*IEV_INFRA_NINV(IYALIAS) - IWEIGHTY(Y);
+    );
+    IF (ORD(Y) GT ORD(IYALIAS),
+      IF (IEV_INFRA_LEFT(IYALIAS,Y) GT IWEIGHTY(Y),
+        IEV_INFRA_ALIVE(IYALIAS,Y) = 1;
+        IEV_INFRA_LEFT(IYALIAS,Y+1)$(ORD(Y) NE CARD(IYALIAS2)) = IEV_INFRA_LEFT(IYALIAS,Y) - IWEIGHTY(Y);
+      );
+      IF ((IEV_INFRA_LEFT(IYALIAS,Y) GE IWEIGHTY(IYALIAS)/2) AND (IEV_INFRA_LEFT(IYALIAS,Y) LE IWEIGHTY(Y)),
+        IEV_INFRA_ALIVE(IYALIAS,Y) = 1;
+        ILOOPBREAK = 1;
+      );
+      IF ((IEV_INFRA_LEFT(IYALIAS,Y) LT IWEIGHTY(IYALIAS)/2) AND (IEV_INFRA_LEFT(IYALIAS,Y) LE IWEIGHTY(Y)),
+        IEV_INFRA_ALIVE(IYALIAS,Y) = 0;
+        ILOOPBREAK = 1;
+      );
+    );
+  );
+);
