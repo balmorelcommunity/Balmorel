@@ -850,6 +850,11 @@ $if     EXIST '../data/XES.inc' $INCLUDE         '../data/XES.inc';
 $if not EXIST '../data/XES.inc' $INCLUDE '../../base/data/XES.inc';
 %semislash%;
 
+PARAMETER GKNMIN(YYY,AAA,GGG) "Minimum accumulated endogenous capacity (MW)"   %semislash%
+$if     EXIST '../data/GKNMIN.inc' $INCLUDE         '../data/GKNMIN.inc';
+$if not EXIST '../data/GKNMIN.inc' $INCLUDE '../../base/data/GKNMIN.inc';
+%semislash%;
+
 *-------------------------------------------------------------------------------
 *----- Any declarations and definitions of parameters:
 *-------------------------------------------------------------------------------

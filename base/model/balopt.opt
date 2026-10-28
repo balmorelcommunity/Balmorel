@@ -115,6 +115,10 @@ $setglobal TransInvest YES
 SCALAR XINVESTSTART 'Year from which endogenous decisions in transmission capacities are allowed' ;
 XINVESTSTART= 2035;
 
+* Cap total electricity and hydrogen transmission capacity at the TYNDP 2024 portfolio commissioning by 2035 (XMAXINV.inc, HYDROGEN_XH2MAXINV.inc):
+$setglobal tyndp2035
+*!option yes
+
 *---- End: Transmission investments options----
 
 *----END: Investments---------------------------------------------------

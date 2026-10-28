@@ -54,6 +54,9 @@ $if not EXIST '../data/HYDROGEN_XH2COST.inc' $INCLUDE '../../base/data/HYDROGEN_
 $if     EXIST '../data/HYDROGEN_XH2LOSS.inc' $INCLUDE         '../data/HYDROGEN_XH2LOSS.inc';
 $if not EXIST '../data/HYDROGEN_XH2LOSS.inc' $INCLUDE '../../base/data/HYDROGEN_XH2LOSS.inc';
 
+$if     EXIST '../data/HYDROGEN_XH2MAXINV.inc' $INCLUDE         '../data/HYDROGEN_XH2MAXINV.inc';
+$if not EXIST '../data/HYDROGEN_XH2MAXINV.inc' $INCLUDE '../../base/data/HYDROGEN_XH2MAXINV.inc';
+
 $if     EXIST '../data/HYDROGEN_XH2KRATE.inc' $INCLUDE         '../data/HYDROGEN_XH2KRATE.inc';
 $if not EXIST '../data/HYDROGEN_XH2KRATE.inc' $INCLUDE '../../base/data/HYDROGEN_XH2KRATE.inc';
 
