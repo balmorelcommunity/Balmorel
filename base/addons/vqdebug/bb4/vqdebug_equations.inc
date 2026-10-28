@@ -45,6 +45,8 @@ $ifi %equation%==qhydrogen_stovol        + VQHYDROGEN_STOVOL(IY411,IA,IHYDROGEN_
 $ifi %equation%==qbiomethane_stovolts    + VQBIOMETHANE_STOVOLTS(IY411,S,T,'IMINUS') - VQBIOMETHANE_STOVOLTS(IY411,S,T,'IPLUS')
 $ifi %equation%==qtranspeakdemand        + VQTRANSPEAKDEMAND(IY411,IR,IS3,T,'IMINUS') - VQTRANSPEAKDEMAND(IY411,IR,IS3,T,'IPLUS')
 $ifi %equation%==qhyrsseqcurt            + VQHYRSSEQCURT(IY411,IA,S,'IPLUS') - VQHYRSSEQCURT(IY411,IA,S,'IMINUS')
+$ifi %equation%==qlimco2na               + VQLIMCO2NA(IY411,GROUP)
+$ifi %equation%==qlimco2rolls            + VQLIMCO2ROLLS(IY411,GROUP,IS3)
 
 
 $ifi not %equation%==qobj  $goto endoffile
@@ -124,6 +126,10 @@ $ifi %HYDROGEN%==yes    + SUM((IS3,T)$(SUM((IA,IGBIOMETHANE),IAGK_HASORPOT(Y,IA,
 
 $ifi %TRANSPORT%==yes   +SUM((IR,IS3,T)$SUM(RRR,TRANSDEMAND_Y(Y,RRR)), (VQTRANSPEAKDEMAND(Y,IR,IS3,T,'IMINUS')+VQTRANSPEAKDEMAND(Y,IR,IS3,T,'IPLUS')))
 $ifi %import_results%==yes  $ifi %HYRSBB123%==price   +SUM((IA,IS3)$(SUM(IGHYRS,IAGK_HASORPOT(Y,IA,IGHYRS))),(VQHYRSSEQCURT(Y,IA,IS3,'IMINUS')+VQHYRSSEQCURT(Y,IA,IS3,'IPLUS')))
+
+* CO2 slacks cost PENALTYQ per kt (1e6 money/t), so a CO2 limit is relaxed before energy is shed
+$ifi not %RollingSeasons%==yes  +IOF0001*SUM(GROUP$(EMI_POLNA(Y,GROUP,'LIM_CO2') AND (EMI_POLNA(Y,GROUP,'LIM_CO2') LT INF)), VQLIMCO2NA(Y,GROUP))
+$ifi %RollingSeasons%==yes      +IOF0001*SUM((GROUP,IS3)$(EMI_POLNA(Y,GROUP,'LIM_CO2') AND (EMI_POLNA(Y,GROUP,'LIM_CO2') LT INF)), VQLIMCO2ROLLS(Y,GROUP,IS3))
 
 
 )
