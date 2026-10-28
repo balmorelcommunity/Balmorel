@@ -36,6 +36,13 @@ $ifi %EV%==yes $ifi not %ADDEVSTOS%==none execute_load '../simex/EV_BE_PHEV.gdx'
 $ifi %EV%==yes $ifi not %ADDEVSTOS%==none execute_load '../simex/EV_BEV_NETCHARGING.gdx', EV_BEV_NETCHARGING;
 $ifi %EV%==yes $ifi not %ADDEVSTOS%==none execute_load '../simex/EV_PHEV_NETCHARGING.gdx', EV_PHEV_NETCHARGING;
 
+$ifi %EV%==yes PARAM_V2G_INFRA_EXTRA(Y,IR) = EPS;
+* V2G infrastructure is only read when V2G is on, so stale V2G files in simex/ are never used
+$ifi %EV%==yes $ifi %V2G%==yes  execute_load '../simex/PARAM_V2G_INFRA_CAP.gdx', PARAM_V2G_INFRA_CAP;
+$ifi %EV%==yes  execute_load '../simex/PARAM_G2V_INFRA_CAP.gdx', PARAM_G2V_INFRA_CAP;
+$ifi %EV%==yes $ifi %V2G%==yes  execute_load '../simex/PARAM_V2G_INFRA_EXTRA.gdx', PARAM_V2G_INFRA_EXTRA;
+$ifi %EV%==yes  execute_load '../simex/PARAM_G2V_INFRA_ACCUMNET.gdx', PARAM_G2V_INFRA_ACCUMNET;
+$ifi %EV%==yes $ifi %V2G%==yes  execute_load '../simex/PARAM_V2G_INFRA_ACCUMNET.gdx', PARAM_V2G_INFRA_ACCUMNET;
 
 *Investments with/without decommissioning of endogenous capacity
 $ifi %ADDTECHDEV%==yes      execute_load  '../simex/GKACCUMNET.gdx', GKACCUMNET;

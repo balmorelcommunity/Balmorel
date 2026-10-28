@@ -9,5 +9,10 @@
 * ----------------------------------------------------- *
 * VQ
 
+* Charging infrastructure, costs in 10'000 EUR/MW: fixed O&M on the capacity in place, and the annuity of every investment still in place
+$ifi %TechInvest%==yes  + SUM((IR)$IHASBEV(IR),     VV2GINFRAACCUMNET(Y,IR)*10000*V2G_INFRA_COST_OPEX(Y) + V2G_INFRA_EXTRA(Y,IR) * 10000 * G2V_INFRA_COST_OPEX(Y)
+$ifi %TechInvest%==yes      + 10000*IEV_INFRA_ANNUITY*SUM(IYALIAS2$IEV_INFRA_ALIVE(IYALIAS2,Y), V2G_INFRA_CAP(IYALIAS2,IR)*V2G_INFRA_INVCOST(IYALIAS2) + V2G_INFRA_EXTRA_BIS(IYALIAS2,IR)*G2V_INFRA_INVCOST(IYALIAS2)) )
 
 $ifi %EV_infeas%==yes   +PENALTYQ*(SUM((IR,IS3,T),VQEV_PHEV_BEBALANCE(Y,IR,IS3,T,'IMINUS')$IHASPHEV(IR) +VQEV_PHEV_BEBALANCE(Y,IR,IS3,T,'IPLUS')$IHASPHEV(IR)  +VQEV_BEV_BEBALANCE(Y,IR,IS3,T,'IMINUS')$IHASBEV(IR) +VQEV_BEV_BEBALANCE(Y,IR,IS3,T,'IPLUS')$IHASBEV(IR)))
+* Slack on the G2V infrastructure fixed from the investment run
+$ifi not %TechInvest%==yes +PENALTYQ*SUM((IR,IS3,T), VG2VINFRASLACK(Y,IR,IS3,T))
