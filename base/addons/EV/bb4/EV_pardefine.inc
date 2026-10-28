@@ -72,6 +72,45 @@ PARAMETER EV_PHEV_leave_profile(YYY,SSS,TTT,RRR);
 $if     EXIST '../data/EV_PHEV_leave_profile1.inc' $INCLUDE         '../data/EV_PHEV_leave_profile1.inc';
 $if not EXIST '../data/EV_PHEV_leave_profile1.inc' $INCLUDE '../../base/data/EV_PHEV_leave_profile1.inc';
 
+* Regions without Monte Carlo profiles of their own can use another region's: EV_PROFILE_PROXY(region, source),
+* set in the optional data file EV_PROFILE_PROXY.inc. Copied before the year-edge fix below, which then covers them too.
+SET EV_PROFILE_PROXY(RRR,RRR) 'Region (first) uses the EV profiles of region (second)';
+EV_PROFILE_PROXY(RRR,IRRRE) = NO;
+$if     EXIST '../data/EV_PROFILE_PROXY.inc' $INCLUDE         '../data/EV_PROFILE_PROXY.inc';
+$if not EXIST '../data/EV_PROFILE_PROXY.inc' $if EXIST '../../base/data/EV_PROFILE_PROXY.inc' $INCLUDE '../../base/data/EV_PROFILE_PROXY.inc';
+LOOP((RRR,IRRRE)$EV_PROFILE_PROXY(RRR,IRRRE),
+    EV_BEV_return_profile(YYY,SSS,TTT,RRR)  = EV_BEV_return_profile(YYY,SSS,TTT,IRRRE);
+    EV_BEV_leave_profile(YYY,SSS,TTT,RRR)   = EV_BEV_leave_profile(YYY,SSS,TTT,IRRRE);
+    EV_PHEV_return_profile(YYY,SSS,TTT,RRR) = EV_PHEV_return_profile(YYY,SSS,TTT,IRRRE);
+    EV_PHEV_leave_profile(YYY,SSS,TTT,RRR)  = EV_PHEV_leave_profile(YYY,SSS,TTT,IRRRE);
+$ifi %EV_allreturn%==yes    EV_BEV_return_energy(TTT,RRR) = EV_BEV_return_energy(TTT,IRRRE);
+);
+
+* The Monte Carlo profiles simulate a closed year: every EV starts S01/T001 and ends S52/T168 on the charger
+* (Balanza et al., Appendix D), so S01 holds a start-up transient (~2x the weekly driving energy) and S52 a return spike.
+* That only cancels out when all 52 weeks are simulated and linked. For representative weeks, intra-seasonal weeks
+* or rolling windows, give the two edge weeks the profile of their neighbour week.
+* The year must then also start from the share of the fleet that the original S01 transient leaves on the charger,
+* not from the whole fleet, or availability stays at ~100 % all year. EV_ipardecdef.inc scales the start by these shares.
+PARAMETER EV_BEV_start_share(YYY,RRR)  'Share of the BEV fleet on the charger at S01/T001 (1 = whole fleet)'
+          EV_PHEV_start_share(YYY,RRR) 'Share of the PHEV fleet on the charger at S01/T001 (1 = whole fleet)';
+EV_BEV_start_share(YYY,RRR)  = 1;
+EV_PHEV_start_share(YYY,RRR) = 1;
+$ifi not %EV_fix_year_edges%==yes $goto NO_EV_fix_year_edges
+EV_BEV_start_share(YYY,RRR)$SUM(TTT, EV_BEV_return_profile(YYY,'S01',TTT,RRR))
+    = MIN(1, MAX(0, 1 + SUM(TTT, EV_BEV_return_profile(YYY,'S01',TTT,RRR) + EV_BEV_leave_profile(YYY,'S01',TTT,RRR))));
+EV_PHEV_start_share(YYY,RRR)$SUM(TTT, EV_PHEV_return_profile(YYY,'S01',TTT,RRR))
+    = MIN(1, MAX(0, 1 + SUM(TTT, EV_PHEV_return_profile(YYY,'S01',TTT,RRR) + EV_PHEV_leave_profile(YYY,'S01',TTT,RRR))));
+EV_BEV_return_profile(YYY,'S01',TTT,RRR)  = EV_BEV_return_profile(YYY,'S02',TTT,RRR);
+EV_BEV_leave_profile(YYY,'S01',TTT,RRR)   = EV_BEV_leave_profile(YYY,'S02',TTT,RRR);
+EV_PHEV_return_profile(YYY,'S01',TTT,RRR) = EV_PHEV_return_profile(YYY,'S02',TTT,RRR);
+EV_PHEV_leave_profile(YYY,'S01',TTT,RRR)  = EV_PHEV_leave_profile(YYY,'S02',TTT,RRR);
+EV_BEV_return_profile(YYY,'S52',TTT,RRR)  = EV_BEV_return_profile(YYY,'S51',TTT,RRR);
+EV_BEV_leave_profile(YYY,'S52',TTT,RRR)   = EV_BEV_leave_profile(YYY,'S51',TTT,RRR);
+EV_PHEV_return_profile(YYY,'S52',TTT,RRR) = EV_PHEV_return_profile(YYY,'S51',TTT,RRR);
+EV_PHEV_leave_profile(YYY,'S52',TTT,RRR)  = EV_PHEV_leave_profile(YYY,'S51',TTT,RRR);
+$label NO_EV_fix_year_edges
+
 
 * import_results parameters
 PARAMETER   EV_BE_BEV(YYY,RRR,SSS,TTT)        'State of charge of the BEV vehicle fleet to be used in future runs';
