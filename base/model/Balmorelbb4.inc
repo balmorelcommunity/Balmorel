@@ -2130,9 +2130,11 @@ $include "../../base/addons/_hooks/qxk_up.inc"
 ;
 
 
-* Put a cap on the maximum accummulated transmission capacity, if a cap is specified
-VXKNACCUMNET.UP(Y,IRRRE,IRRRI)$(XINVCOST(Y,IRRRE,IRRRI) AND XMAXINV(IRRRE,IRRRI))= XMAXINV(IRRRE,IRRRI);
+* Put a cap on the total transmission capacity (existing plus invested), if a cap is specified
+VXKNACCUMNET.UP(Y,IRRRE,IRRRI)$(XINVCOST(Y,IRRRE,IRRRI) AND XMAXINV(IRRRE,IRRRI))= MAX(0,XMAXINV(IRRRE,IRRRI)-XKFX(Y,IRRRE,IRRRI));
 
+* Put a floor on the accumulated endogenous generation capacity, if a minimum is specified
+VGKNACCUMNET.LO(Y,AAA,G)$(GKNMIN(Y,AAA,G))= GKNMIN(Y,AAA,G);
 
 * Accumulated endogenous transmission investments during present BB4 model -----
 * Note that it is assumed that there are no endogenous decommissioning
