@@ -2837,6 +2837,10 @@ $ifi %EV%==yes execute_unload "../simex/EV_BE_PHEV.gdx", EV_BE_PHEV;
 $ifi %EV%==yes execute_unload "../simex/EV_BEV_NETCHARGING.gdx", EV_BEV_NETCHARGING;
 $ifi %EV%==yes execute_unload "../simex/EV_PHEV_NETCHARGING.gdx", EV_PHEV_NETCHARGING;
 
+* Demand response capacity is an investment decision: only runs that optimise it export it, and runs with import_results and ADDTECHDEV fix it
+$ifi %TechInvest%==yes $ifi %DEMANDRESPONSE%==yes DRKN_ACCUMNET(Y,IA,DR_TECH)$(IADR(Y,IA,DR_TECH) AND DR_DATA(DR_TECH,'DRINVCOST')) = VDRKN_ACCUMNET.L(Y,IA,DR_TECH);
+$ifi %TechInvest%==yes $ifi %DEMANDRESPONSE%==yes execute_unload "../simex/DRKN_ACCUMNET.gdx", DRKN_ACCUMNET;
+
 *Reducing size of export files once they have been exported
 $ifi %EV%==yes EV_BEV_NETCHARGING(Y,IR,S,T)=0;
 $ifi %EV%==yes EV_PHEV_NETCHARGING(Y,IR,S,T)=0;

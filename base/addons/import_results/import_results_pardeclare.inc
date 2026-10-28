@@ -14,4 +14,7 @@ PARAMETER UCON(YYY,AAA,GGG,SSS,TTT)     "Unit commitment (0,1) on electricity ge
 PARAMETER UCON_STOLOAD(YYY,AAA,GGG,SSS,TTT)     "Unit commitment (0,1) on storage loading to be used in future runs";
 PARAMETER UCONMAINT(YYY,AAA,GGG,SSS)    "Unit commitment maintenance (0,1) on electricity generation to be used in future runs";
 
+*Demand response capacity
+$ifi %DEMANDRESPONSE%==yes PARAMETER DRKN_ACCUMNET(YYY,AAA,DR_TECHNOLOGIES) "Accumulated demand response capacity to be used in future runs (MW)";
+
 

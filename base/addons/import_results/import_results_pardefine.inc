@@ -42,6 +42,7 @@ $ifi %ADDTECHDEV%==yes      execute_load  '../simex/GKACCUMNET.gdx', GKACCUMNET;
 $ifi %ADDTRANSDEV%==yes     execute_load  '../simex/XKACCUMNET.gdx', XKACCUMNET;
 $ifi %HEATTRANS%==yes  $ifi %ADDHEATTRANSDEV%==yes execute_load  '../simex/XHKACCUMNET.gdx', XHKACCUMNET;
 $ifi %HYDROGEN%==yes   $ifi %ADDH2TRANSDEV%==yes   execute_load  '../simex/XH2KACCUMNET.gdx', XH2KACCUMNET;
+$ifi %DEMANDRESPONSE%==yes $ifi %ADDTECHDEV%==yes execute_load  '../simex/DRKN_ACCUMNET.gdx', DRKN_ACCUMNET;
 
 
 *Energy dispatch from previous optimization
