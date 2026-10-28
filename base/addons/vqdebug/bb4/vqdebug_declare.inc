@@ -54,4 +54,6 @@ POSITIVE VARIABLE VQTRANSPEAKDEMAND(Y,RRR,S,T,IPLUSMINUS) "Feasibility of QTRANS
 
 POSITIVE VARIABLE VQHYRSSEQCURT(Y,AAA,S,IPLUSMINUS)              "Feasibility of QHYRSSEQCURT(MWh)";
 
+POSITIVE VARIABLE VQCCS_STORAGE(Y)                            "Feasibility of CO2 storage limit QCCS_STORAGE, CO2 stored above the limit (t)";
+
 
