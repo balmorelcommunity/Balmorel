@@ -1111,7 +1111,8 @@ $ifi %GEQF_DOL%==CCCRRRAAA_FFF              IGEQF(Y,CCCRRRAAA,FFF) = GEQF(CCCRRR
 $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF          IGEQF(Y,CCCRRRAAA,FFF) = GEQF(Y,CCCRRRAAA,FFF);
 
 PARAMETER IGMAXFS(Y,CCCRRRAAA,FFF,SSS)         "Maximum annual fuel use by year, season, geography and fuel and (GJ)";
-IGMAXFS(Y,CCCRRRAAA,FFF,S) = GMAXFS(Y,CCCRRRAAA,FFF,S);
+* GMAXFS is per calendar week (168 h); a season weighted WEIGHT_S hours gets WEIGHT_S/168 weeks of it
+IGMAXFS(Y,CCCRRRAAA,FFF,S) = GMAXFS(Y,CCCRRRAAA,FFF,S)*WEIGHT_S(S)/168;
 
 * Unload input data to gdx and possibly MDB files.
 * Note that this is a compile time operation, such that only the 'direct' data
@@ -2744,11 +2745,12 @@ execute_unload  "../simex/F_T.gdx", F_T;
 F_T(Y,C,FFF,S,T)=0;
 
 *Fuel use in S to be used in future runs by addon "import_results"
+* Per calendar week (168 h), the unit IGMAXFS expects
 GMAXFS(Y,C,FFF,S)$(GMAXF(Y,C,FFF)
 $ifi %STEPWISEPRICE%==yes OR STEPWISEPRICE_FFF(FFF)
-)=IOF3P6*SUM(IA$ICA(C,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
-GMAXFS(Y,IR,FFF,S)$GMAXF(Y,IR,FFF)=IOF3P6*SUM(IA$RRRAAA(IR,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
-GMAXFS(Y,IA,FFF,S)$GMAXF(Y,IA,FFF)=IOF3P6*SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
+)=IOF3P6*SUM(IA$ICA(C,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*168;
+GMAXFS(Y,IR,FFF,S)$GMAXF(Y,IR,FFF)=IOF3P6*SUM(IA$RRRAAA(IR,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*168;
+GMAXFS(Y,IA,FFF,S)$GMAXF(Y,IA,FFF)=IOF3P6*SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T))/SUM(T,WEIGHT_T(T))*168;
 execute_unload  "../simex/GMAXFS.gdx", GMAXFS;
 
 *Fuel price to be used in future runs by addon "import_results"

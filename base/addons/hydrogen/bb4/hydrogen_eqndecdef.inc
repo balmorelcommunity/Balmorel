@@ -9,7 +9,6 @@ Equations
    QHYDROGEN_STOMAXUNLD(Y,AAA,G,S,T)  'Maximum unloading capacity of hydrogen storage'
    QHYDROGEN_EQ(Y,RRR,S,T)            'Hydrogen production equal demand'
    QHYDROGEN_EQ_AREA(Y,AAA,S,T)       'Hydrogen production equals demand at an areal level'
-   QHYDROGENGKE_UP_ADD(Y,AAA,G,S,T)   'Capacity adjustment constraint on electricity generation from biogas upgraded plants (MW)'
    QBIOMETHANE_EQ(Y,S,T)              'Biomethane production equals demand on international level in each year'
    QBIOMETHANE_STOVOLTS(Y,S,T)        'Dynamic equation biomethane storage'
    QGKBIOGASUPGRADING_UP(Y,AAA,G,S,T)  'Maximum generation of biomethane from biogas upgrading restricted by capacity (MW)'
