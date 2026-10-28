@@ -37,21 +37,19 @@ LOOP(Y,
       LOOP(IR$CCCRRR(C,IR),
          ILOOPBREAK=0;
          LOOP(IA$(RRRAAA(IR,IA)),
+* Electricity, hydrogen and biomethane backups in the first area of every region with electricity demand.
+* Hydrogen and biomethane backups don't depend on exogenous capacity (GKFX), since hydrogen demand
+* can also be served by invested capacity
             IF ((SUM(DEUSER,DE(Y,IR,DEUSER)) AND ILOOPBREAK=0),
                ILOOPBREAK=1;
                GKFX(Y,IA,G)$(GDATA(G,'GDTECHGROUP') EQ BACKUP_ELECTRICITY)=1000000;
+$ifi %HYDROGEN%==yes               GKFX(Y,IA,G)$(GDATA(G,'GDTECHGROUP') EQ BACKUP_HYDROGEN)=1000000;
+$ifi %HYDROGEN%==yes               GKFX(Y,IA,G)$(GDATA(G,'GDTECHGROUP') EQ BACKUP_BIOMETHANE)=1000000;
             );
+* Heat cannot move between areas, so backup heat sits in every area with heat demand
             IF (SUM(DHUSER,DH(Y,IA,DHUSER)),
                GKFX(Y,IA,G)$(GDATA(G,'GDTECHGROUP') EQ BACKUP_HEAT)=1000000;
             );
-$ifi not %HYDROGEN%==yes  $goto NO_HYDROGEN
-            IF (SUM(IHYDROGEN,GKFX(Y,IA,IHYDROGEN)),
-               GKFX(Y,IA,G)$(GDATA(G,'GDTECHGROUP') EQ BACKUP_HYDROGEN)=1000000;
-            );
-            IF (SUM(IHYDROGEN_GH2TOBIOMETH,GKFX(Y,IA,IHYDROGEN_GH2TOBIOMETH)),
-               GKFX(Y,IA,G)$(GDATA(G,'GDTECHGROUP') EQ BACKUP_BIOMETHANE)=1000000;
-            );
-$label NO_HYDROGEN
          );
       );
    );
