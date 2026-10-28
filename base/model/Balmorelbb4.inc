@@ -1298,6 +1298,10 @@ EQUATIONS
 *-------------------------------------------------------------------------------
 ;
 
+$ifi not %RollingSeasons%==yes $goto NoRollingCO2Decl
+EQUATION   QLIMCO2ROLLS(Y,GROUP,S)    "Limit on weekly CO2-emission by group in rolling runs (ton)";
+$label NoRollingCO2Decl
+
 * Equation definitions:
 *----- The objective function QOBJ: --------------------------------------------
 
@@ -2182,6 +2186,32 @@ QLIMCO2NA(IY411,GROUP)$(EMI_POLNA(IY411,GROUP,'LIM_CO2') AND (EMI_POLNA(IY411,GR
 $include "../../base/addons/_hooks/qlimco2na.inc"
 ;
 
+* "Limit on weekly CO2-emission by group (aggregated countries) in rolling runs (ton)"
+* Each week is limited to its net emissions in the fullyear run (simex/EMI_POLNA_S.gdx, written by OUTPUT_SUMMARY.inc),
+* so the weeks add up to the annual limit in EMI_POLNA. The left side is annualised (IHOURSINST sums to 8760 over IS3),
+* the fullyear emissions per week are not, so the limit is scaled by SUM(S, WEIGHT_S)/IWEIGHSUMS (52 for one week).
+* This assumes that the fullyear and rolling runs use the same seasons and weights.
+$ifi not %RollingSeasons%==yes $goto NoRollingCO2
+PARAMETER EMI_POLNA_S(YYY,SSS, GROUP,EMIPOLSET);
+PARAMETER EMI_POLNA_S2(YYY,SSS, GROUP,EMIPOLSET);
+* Only needed (and only required in simex) when a CO2 limit is set
+IF(SUM((Y,GROUP)$(EMI_POLNA(Y,GROUP,'LIM_CO2') AND (EMI_POLNA(Y,GROUP,'LIM_CO2') LT INF)), 1),
+   execute_load '../simex/EMI_POLNA_S.gdx',    EMI_POLNA_S;
+);
+EMI_POLNA_S2(Y,SSS,GROUP,'LIM_CO2')$(EMI_POLNA(Y,GROUP,'LIM_CO2') AND (EMI_POLNA(Y,GROUP,'LIM_CO2') LT INF))= EMI_POLNA_S(Y,SSS,GROUP,'LIM_CO2');
+* An empty or other-year EMI_POLNA_S.gdx would silently force net zero in every week
+abort$SUM((Y,GROUP)$(EMI_POLNA(Y,GROUP,'LIM_CO2') AND (EMI_POLNA(Y,GROUP,'LIM_CO2') LT INF) AND NOT SUM(SSS$EMI_POLNA_S(Y,SSS,GROUP,'LIM_CO2'), 1)), 1) "EMI_POLNA_S.gdx has no weekly CO2 emissions for a year with a CO2 limit - run fullyear for that year first", EMI_POLNA;
+
+QLIMCO2ROLLS(IY411,GROUP,IS3)$(EMI_POLNA(IY411,GROUP,'LIM_CO2') AND (EMI_POLNA(IY411,GROUP,'LIM_CO2') LT INF))..
+      SUM(C,
+         SUM((IA,G)$(IAGK_HASORPOT(IY411,IA,G) AND ICA(C,IA) AND GROUP_AAA(GROUP,IA)), SUM((T), IHOURSINST(IS3,T)*IHOURFRAC * (IM_CO2(G) * IOF0001) * IOF3P6 * VGF_T(IY411,IA,G,IS3,T)))
+         )
+      =L= EMI_POLNA_S2(IY411,IS3, GROUP,'LIM_CO2') * SUM(S, WEIGHT_S(S)) / IWEIGHSUMS
+$include "../../base/addons/_hooks/qlimco2rolls.inc"
+;
+$label NoRollingCO2
+
+
 
 * "Maximal investment by country and fuel during one simulated year (MW)"
 QMAXINVESTCF(IY411,C,FFF)$(FMAXINVEST(C,FFF) AND (FMAXINVEST(C,FFF) LT INF)) ..
@@ -2441,6 +2471,8 @@ $ifi not %RollingSeasons%==yes  QLIMCO2C
 $ifi not %RollingSeasons%==yes  QLIMSO2C
 $ifi not %RollingSeasons%==yes  QLIMNOXC
 $ifi not %RollingSeasons%==yes  QLIMCO2NA
+
+$ifi %RollingSeasons%==yes  QLIMCO2ROLLS
 
 *---------------------------------------------------------------
 $ifi not %TechInvest%==yes $ifi not %DECOM%==yes  $goto NO_TECH_INVESTMENTS_NO_DECOMMISSIONING
