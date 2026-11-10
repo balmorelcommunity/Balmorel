@@ -38,6 +38,11 @@ $if not EXIST '../data/EV_BEV_return_energy.inc' $INCLUDE '../../base/data/EV_BE
 
 $label NO_allreturn
 
+* Charging infrastructure costs and lifetime
+$if     EXIST '../data/EV_INFRA_DATA.inc' $INCLUDE         '../data/EV_INFRA_DATA.inc';
+$if not EXIST '../data/EV_INFRA_DATA.inc' $INCLUDE '../../base/data/EV_INFRA_DATA.inc';
+SCALAR EV_G2V_INFRA_MARGIN 'G2V infrastructure is built this much above the peak charging seen in the investment run (fraction)' /0.05/;
+
 * Select profile by setting. See Balopt.
 * Percentage of BEV fleet is connecting to grid
 PARAMETER EV_BEV_return_profile(YYY,SSS,TTT,RRR);
@@ -73,3 +78,9 @@ PARAMETER   EV_BE_BEV(YYY,RRR,SSS,TTT)        'State of charge of the BEV vehicl
 PARAMETER   EV_BE_PHEV(YYY,RRR,SSS,TTT)       'State of charge of the PHEV vehicle fleet to be used in future runs';
 PARAMETER   EV_BEV_NETCHARGING(YYY,RRR,SSS,TTT)        'Net charging of BEV vehicle fleet to be used in future runs';
 PARAMETER   EV_PHEV_NETCHARGING(YYY,RRR,SSS,TTT)      'Net charging of PHEV vehicle fleet to be used in future runs';
+
+PARAMETER PARAM_V2G_INFRA_CAP(YYY,RRR) 'V2G infrastructure capacity to be used in future runs';
+PARAMETER PARAM_G2V_INFRA_CAP(YYY,RRR) 'G2V infrastructure capacity to be used in future runs';
+PARAMETER PARAM_V2G_INFRA_EXTRA(YYY,RRR) 'Extra V2G infrastructure capacity to be used in future runs';
+PARAMETER PARAM_G2V_INFRA_ACCUMNET(YYY,RRR) 'Accumulated G2V infrastructure capacity to be used in future runs';
+PARAMETER PARAM_V2G_INFRA_ACCUMNET(YYY,RRR) 'Accumulated V2G infrastructure capacity to be used in future runs';

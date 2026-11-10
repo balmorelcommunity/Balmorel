@@ -5,3 +5,4 @@ $ifi %DECOM%==yes  $include   "../../base/addons/DECOM/DECOM_varassign.inc";
 $ifi %HEATTRANS%==yes       $include   "../../base/addons/heattrans/bb4/heattrans_varassign.inc";
 $ifi %HYDROGEN%==yes       $include   "../../base/addons/hydrogen/bb4/hydrogen_varassign.inc";
 $ifi %OFFSHOREGRID%==yes  $include   "../../base/addons/offshoregrid/bb4/offshoregrid_varassign.inc";
+$ifi %EV%==yes $ifi %bb4%==yes $include   "../../base/addons/EV/bb4/EV_varassign.inc";
