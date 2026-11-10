@@ -54,4 +54,7 @@ POSITIVE VARIABLE VQTRANSPEAKDEMAND(Y,RRR,S,T,IPLUSMINUS) "Feasibility of QTRANS
 
 POSITIVE VARIABLE VQHYRSSEQCURT(Y,AAA,S,IPLUSMINUS)              "Feasibility of QHYRSSEQCURT(MWh)";
 
+POSITIVE VARIABLE VQLIMCO2NA(Y,GROUP)                         "Feasibility of annual CO2 limit QLIMCO2NA, emissions above the limit (t)";
+POSITIVE VARIABLE VQLIMCO2ROLLS(Y,GROUP,S)                    "Feasibility of weekly CO2 limit QLIMCO2ROLLS, emissions above the limit (t annualised: the week x 52)";
+
 

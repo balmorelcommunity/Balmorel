@@ -1,0 +1,3 @@
+# Rolling runs cap each season's net CO2 at the full-year run's emissions
+
+Rolling runs used to drop the annual CO2 limits, because an annual limit can't bind on a season that is solved on its own. Now, where `EMI_POLNA` sets a CO2 limit, each season's net emissions are capped at what the full-year run emitted in that season (`simex/EMI_POLNA_S.gdx`), scaled to the rolling run's annualised hours, so the seasons add up to the annual limit. The full-year run must therefore run first with the same seasons and weights, and a rolling run aborts if the file lacks a year with a CO2 limit instead of silently forcing net zero in every season.
