@@ -3,8 +3,9 @@
 * Calendar degredation is not included, since it would not change variable decisions. But needs to be accounted for if you want the exact cost of using the EVs.
 * *1000 to convert from EUR/kWh to EUR/MWh in price
 * Formulation is made fractional. G2V/Batsize * (batcost*batsize) * degcyc * 1000
-+ (SUM((IR,IS3,T)$IHASBEV(IR),VEV_G2V_BEV(Y,IR,IS3,T))) * EV_BEV_batcost(Y) * EV_BEV_degcyc(Y) * 1000
-+ (SUM((IR,IS3,T)$IHASPHEV(IR),VEV_G2V_PHEV(Y,IR,IS3,T))) * EV_PHEV_batcost(Y) * EV_PHEV_degcyc(Y) * 1000
+* G2V is MW, so IHOURSINST turns it into MWh charged per year
++ (SUM((IR,IS3,T)$IHASBEV(IR),IHOURSINST(IS3,T)*VEV_G2V_BEV(Y,IR,IS3,T))) * EV_BEV_batcost(Y) * EV_BEV_degcyc(Y) * 1000
++ (SUM((IR,IS3,T)$IHASPHEV(IR),IHOURSINST(IS3,T)*VEV_G2V_PHEV(Y,IR,IS3,T))) * EV_PHEV_batcost(Y) * EV_PHEV_degcyc(Y) * 1000
 
 * ----------------------------------------------------- *
 * VQ

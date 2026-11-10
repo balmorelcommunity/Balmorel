@@ -226,6 +226,11 @@ $setglobal EV_allreturn
 $setglobal EV_profile profile1
 *!option profile1 profile2, profile3, profile4
 
+* Give S01 and S52 the profile of S02/S51: the Monte Carlo profiles start and end the year with every EV on the charger,
+* which only cancels out when all 52 weeks are simulated and linked (see EV_pardefine.inc)
+$setglobal EV_fix_year_edges yes
+*!option yes
+
 *------------------------------END: EV ADDON-------------------------------------------------
 
 *------------------------------TRANSPORT ADDON-------------------------------------------------
