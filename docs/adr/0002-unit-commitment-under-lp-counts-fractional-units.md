@@ -1,0 +1,3 @@
+# Unit commitment under LP/RMIP counts fractional units and uses a plain ramp rate
+
+When unit commitment is solved as LP or RMIP (`SOLVETYPE`), existing units are counted as `GKFX/GDUCUNITSIZE` instead of `CEIL(GKFX/GDUCUNITSIZE)`, and ramping is limited to the ramp rate times available capacity, without the MIP's start-up and shutdown term (`GDUCGMIN*VUCU/VUCD`). With fractional units, `CEIL` adds up to one unit of capacity that does not exist, and fractional start-ups let a fleet change output faster than its ramp rate. MIP keeps the original formulation. We rejected `FLOOR`, which removes real capacity, and `MIN(GDUCGMIN, ramp rate)` as the start-up term, because then a fleet that is fully off could never restart.
