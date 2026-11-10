@@ -1,7 +1,7 @@
 # Balmorel
 Balmorel is an open-source, bottom-up partial equilibrium energy system model[^1]. It has traditionally been applied to investigate decarbonisation pathways of sector-coupled energy systems[^2], infrastructure[^3], renewable fuel production[^4] and more. Results and framework has been validated against other open-source models[^5] [^6]. 
 
-A quick tutorial on how to get started can be found [here](get_started.md), and the full documentation can be found [here](https://github.com/balmorelcommunity/Balmorel/blob/master/base/documentation/TheBalmorelModelStructure-BMS301.pdf).
+A quick tutorial on how to get started can be found [here](get_started.md), and the full documentation can be found [here](https://github.com/balmorelcommunity/Balmorel/blob/master/docs/TheBalmorelModelStructure-BMS301.pdf).
 
 :::{figure} https://media.springernature.com/lw685/springer-static/image/art%3A10.1038%2Fs41467-024-49867-w/MediaObjects/41467_2024_49867_Fig5_HTML.png?
 :name: Exampleresults
@@ -30,7 +30,7 @@ github_tutorial
 :hidden:
 
 about
-Full Documentation <https://github.com/balmorelcommunity/Balmorel/blob/master/base/documentation/TheBalmorelModelStructure-BMS301.pdf>
+Full Documentation <https://github.com/balmorelcommunity/Balmorel/blob/master/docs/TheBalmorelModelStructure-BMS301.pdf>
 ```
 
 [^1]: Wiese, Frauke, Rasmus Bramstoft, Hardi Koduvere, Amalia Rosa Pizarro Alonso, Olexandr Balyk, Jon Gustav Kirkerud, Åsa Grytli Tveten, Torjus Folsland Bolkesjø, Marie Münster, and Hans V. Ravn. “Balmorel Open Source Energy System Model.” Energy Strategy Reviews 20 (2018): 26–34. [https://doi.org/10.1016/j.esr.2018.01.003](https://doi.org/10.1016/j.esr.2018.01.003).
