@@ -6,3 +6,5 @@ PARAMETER CCS_CO2CAPTEFF_G(GGG) "CO2 capture efficiency of each G (-)";
 
 SCALAR CCS_TRANSPORTCOST  "CO2 transport and storage cost (money/tCO2)";
 
+
+PARAMETER CCS_STORAGE_MAX(YYY) "Maximum CO2 stored per year, all countries (t CO2)";
