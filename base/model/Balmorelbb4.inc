@@ -599,6 +599,8 @@ SET IPLUSMINUS "Violation of equation"  /IPLUS Violation of equation upwards, IM
 *The following corrects the economic values in input data (defined in money/MWh) to match the relative size of T in the objective function, in case the size of T does not correspond to 1 hour
 SCALAR IHOURFRAC "Weight of T with respect to 1 hour (if T means 1 hour, then IHOURFRAC is 1, if T means 0.5 hours, IHOURFRAC is 0.5, etc.)";
 IHOURFRAC=8736/(CARD(TTT)*CARD(SSS));
+SCALAR IHOURSINS "Calendar hours in one S of the full year (168 if S means a week, 24 if S means a day, etc.)";
+IHOURSINS=8736/CARD(SSS);
 
 *Initializing the set IGDECOMEXOPOT in case the add-on DECOM is not activated
 IGDECOMEXOPOT(Y,IA,G)=0;
@@ -1111,7 +1113,8 @@ $ifi %GEQF_DOL%==CCCRRRAAA_FFF              IGEQF(Y,CCCRRRAAA,FFF) = GEQF(CCCRRR
 $ifi %GEQF_DOL%==YYY_CCCRRRAAA_FFF          IGEQF(Y,CCCRRRAAA,FFF) = GEQF(Y,CCCRRRAAA,FFF);
 
 PARAMETER IGMAXFS(Y,CCCRRRAAA,FFF,SSS)         "Maximum annual fuel use by year, season, geography and fuel and (GJ)";
-IGMAXFS(Y,CCCRRRAAA,FFF,S) = GMAXFS(Y,CCCRRRAAA,FFF,S);
+* GMAXFS is per calendar S (IHOURSINS h); a season weighted WEIGHT_S hours gets WEIGHT_S/IHOURSINS of it
+IGMAXFS(Y,CCCRRRAAA,FFF,S) = GMAXFS(Y,CCCRRRAAA,FFF,S)*WEIGHT_S(S)/IHOURSINS;
 
 * Unload input data to gdx and possibly MDB files.
 * Note that this is a compile time operation, such that only the 'direct' data
@@ -2744,11 +2747,12 @@ execute_unload  "../simex/F_T.gdx", F_T;
 F_T(Y,C,FFF,S,T)=0;
 
 *Fuel use in S to be used in future runs by addon "import_results"
+* Per calendar S (IHOURSINS h), the unit IGMAXFS expects
 GMAXFS(Y,C,FFF,S)$(GMAXF(Y,C,FFF)
 $ifi %STEPWISEPRICE%==yes OR STEPWISEPRICE_FFF(FFF)
-)=IOF3P6*SUM(IA$ICA(C,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
-GMAXFS(Y,IR,FFF,S)$GMAXF(Y,IR,FFF)=IOF3P6*SUM(IA$RRRAAA(IR,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
-GMAXFS(Y,IA,FFF,S)$GMAXF(Y,IA,FFF)=IOF3P6*SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T))/SUM(T,WEIGHT_T(T))*WEIGHT_S(S);
+)=IOF3P6*SUM(IA$ICA(C,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*IHOURSINS;
+GMAXFS(Y,IR,FFF,S)$GMAXF(Y,IR,FFF)=IOF3P6*SUM(IA$RRRAAA(IR,IA),SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T)))/SUM(T,WEIGHT_T(T))*IHOURSINS;
+GMAXFS(Y,IA,FFF,S)$GMAXF(Y,IA,FFF)=IOF3P6*SUM((T,IAGK_HASORPOT(Y,IA,G))$IGF(G,FFF),VGF_T.L(Y,IA,G,S,T))/SUM(T,WEIGHT_T(T))*IHOURSINS;
 execute_unload  "../simex/GMAXFS.gdx", GMAXFS;
 
 *Fuel price to be used in future runs by addon "import_results"
