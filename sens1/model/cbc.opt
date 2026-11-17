@@ -1,0 +1,3 @@
+* Option file 1 for CBC solver. For possible options, see the GAMS Solver Manual.
+
+reslim = 30000

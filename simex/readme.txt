@@ -1,0 +1,1 @@
+This folder simex (simulation exchange) is used for data exchange between different cases.

@@ -1,0 +1,24 @@
+* This file holds command line parameters for GAMS. For possible parameter seach for Command Line Parameters in the GAMS Documentation (e.g., under The GAMS Call).
+* It is an alternative or supplement to entering these parameters in the command line box (upper right when looking at Balmorel.gms in the IDE).
+* To activate it use the command   pf=balcomline.opt   in the command line box.
+* Additional command line parameters may be entered in the command line box.
+* The below first and last line with Eolonly are mandatory for this layout.
+
+* Obligatory ("Eolonly 1" must be first): --------------------------------------
+Eolonly 1
+
+* Pw (PageWidth) controls the width of the Balmorel.lst file. Default under IDE is 80. Possible values are between 72 and 32767:
+pw=180
+
+* Cerr is the maximum number of compile time errors before GAMS stops. 0 (default) means no limit:
+cerr=3
+
+* Errmsg controls the position of error messages in the listing file. Possible values:
+*   0 Place error messages at the end of compiler listing (default)
+*   1 Place error messages immediately following the line with the error
+*   2 Suppress error messages
+errmsg=1
+
+
+* Obligatory ("Eolonly 0" must be last): ---------------------------------------
+Eolonly 0

@@ -1,0 +1,161 @@
+******Create output file
+
+
+
+*FLOWS
+Parameter VFLOW_Opti_A(Y,AAA,IPROCFROM,IPROCTO,FLOW)   'FLOWS at an area level per year (PJ/year)';
+VFLOW_Opti_A(Y,IA,IPROCFROM,IPROCTO,FLOW)=   SUM((S,T),VFLOW.L(Y,IA,IPROCFROM,IPROCTO,FLOW,S,T)*IHOURSINST(S,T))*IOF0000001;
+
+
+Parameter VFLOW_Opti_C(Y,CCC,IPROCFROM,IPROCTO,FLOW) 'FLOWS at a country level per year (PJ/year)';
+VFLOW_Opti_C(Y,C,IPROCFROM,IPROCTO,FLOW)=SUM(IA$ICA(C,IA),VFLOW_Opti_A(Y,IA,IPROCFROM,IPROCTO,FLOW));
+
+
+*FLOWS source
+Parameter VFLOWSOURCE_Opti_A(Y,AAA,PROCSOURCE,FLOW)   'Source FLOWS at an area level per year (ton/year)';
+VFLOWSOURCE_Opti_A(Y,IA,PROCSOURCE,FLOW)$(NOT PROC_T(PROCSOURCE))=   SUM((S,T),VFLOWSOURCE.L(Y,IA,PROCSOURCE,FLOW,S,T)*IHOURSINSTWWT(S,T));
+VFLOWSOURCE_Opti_A(Y,IA,PROCSOURCE,FLOW)$(PROC_T(PROCSOURCE))=   SUM((S,T),VFLOWSOURCE.L(Y,IA,PROCSOURCE,FLOW,S,T)*IHOURSINST(S,T));
+
+Parameter VFLOWSOURCE_Opti_C(Y,CCC,PROCSOURCE,FLOW) 'Source FLOWS at a country level per year (ton/year)';
+VFLOWSOURCE_Opti_C(Y,C,PROCSOURCE,FLOW)=SUM(IA$ICA(C,IA),VFLOWSOURCE_Opti_A(Y,IA,PROCSOURCE,FLOW));
+
+
+*FLOWS Buffer
+Parameter VFLOWBUFFER_Opti_A(Y,AAA,PROCBUFFER,FLOW)   'BUFFER FLOWS at an area level per year (u/year)';
+VFLOWBUFFER_Opti_A(Y,IA,PROCBUFFER,FLOW)=   SUM((S,T),VFLOWBUFFER.L(Y,IA,PROCBUFFER,FLOW,S,T)*IHOURSINST(S,T));
+
+
+Parameter VFLOWBUFFER_Opti_C(Y,CCC,PROCBUFFER,FLOW) 'BUFFER FLOWS at a country level per year (u/year)';
+VFLOWBUFFER_Opti_C(Y,C,PROCBUFFER,FLOW)=SUM(IA$ICA(C,IA),VFLOWBUFFER_Opti_A(Y,IA,PROCBUFFER,FLOW));
+
+
+*FLOWS Storage
+Parameter VFLOWSTORAGE_Opti_A(Y,AAA,PROC,FLOW)   'Storage FLOWS at an area level per year (u/year)';
+VFLOWSTORAGE_Opti_A(Y,IA,PROCSTORAGE,FLOW)=   SUM((S,T),VSTORAGEVOL.L(Y,IA,PROCSTORAGE,FLOW,S,T)*IHOURSINST(S,T));
+
+Parameter VFLOWSTORAGE_Opti_C(Y,CCC,PROC,FLOW)   'Storage FLOWS at an area level per year (u/year)';
+VFLOWSTORAGE_Opti_C(Y,C,PROCSTORAGE,FLOW)=    SUM(IA$ICA(C,IA),VFLOWSTORAGE_Opti_A(Y,IA,PROCSTORAGE,FLOW));
+
+* Transport in OptiFlow
+Parameter VFLOWTRANS_Opti_A(Y,IAAAE,IAAAI,PROC,FLOW)    'Transport flows between areas per year (PJ/year)';
+VFLOWTRANS_Opti_A(Y,IAE,IAI,PROC,FLOW)= SUM((S,T),VFLOWTRANS.L(Y,IAE,IAI,PROC,FLOW,S,T)*IHOURSINST(S,T))*IOF0000001;
+
+ALIAS(C,ICE,ICI);
+Parameter VFLOWTRANS_Opti_C(Y,ICE,ICI,PROC,FLOW)    'Transport flows between countries per year (PJ/year)';
+VFLOWTRANS_Opti_C(Y,ICE,ICI,PROC,FLOW)=SUM((IAE,IAI)$(ICA(ICE,IAE) AND ICA(ICI,IAI) AND (NOT ICA(ICE,IAI))),VFLOWTRANS_Opti_A(Y,IAE,IAI,PROC,FLOW));
+
+* Costs in OptiFlow
+SET COST_TYPE /INVESTMENT,FIXED,OPERATIONAL,FUEL/;
+SET UNIT /Mmoney,PJ/;
+Parameter ECO_PROC_YCRAP(Y,C,RRR,AAA,PROC,COST_TYPE,UNIT)   "Cost of processes in OptiFlow for year country, region, and area";
+* Investment cost
+ECO_PROC_YCRAP(Y,C,IR,IA,PROC,'INVESTMENT','Mmoney')$(CCCRRR(C,IR) AND RRRAAA(IR,IA))=
+    OMONEY*(
+        SUM(IYALIAS2$(IAPROCKAPNEW(IYALIAS2,IA,PROC) AND (ORD(IYALIAS2) LE ORD(Y))),
+        PROCDATA(PROC,'PROCINVCOST')*VPROCKAPNEW.L(IYALIAS2,IA,PROC)*ANNUITYCPROC(C,PROC)*IYHASANNUITYPROC(IYALIAS2,Y,PROC))
+);
+
+ECO_PROC_YCRAP(Y,C,IR,IA,PROC,'FIXED','Mmoney')$(CCCRRR(C,IR) AND RRRAAA(IR,IA) AND IAPROCKAPNEW_notY(IA,PROC))=
+    OMONEY/IOF1000000*PROCDATA(PROC,'PROCFIXCOST')*(
+        VPROCKAPACCUMNET.L(Y,IA,PROC)
+);
+
+ECO_PROC_YCRAP(Y,C,IR,IA,'Wood_Gen','FUEL','Mmoney')$(CCCRRR(C,IR) AND RRRAAA(IR,IA))=
+    OMONEY/IOF1000000*(
+        SUM((S,T), IHOURSINST(S,T)*(
+    VFLOWSOURCE.L(Y,IA,'Wood_Gen','WOOD_GEN_FLOW',S,T) * SOSIBU2INDIC(Y,'Wood_Gen','WOOD_GEN_FLOW','OPERATIONCOST')
+        ))
+);
+
+ECO_PROC_YCRAP(Y,C,IR,IA,'Wood_Pellets_Gen','FUEL','Mmoney')$(CCCRRR(C,IR) AND RRRAAA(IR,IA))=
+    OMONEY/IOF1000000*(
+        SUM((S,T), IHOURSINST(S,T)*(
+    VFLOWSOURCE.L(Y,IA,'Wood_Pellets_Gen','WOOD_PELLETS_GEN_FLOW',S,T) * SOSIBU2INDIC(Y,'Wood_Pellets_Gen','WOOD_PELLETS_GEN_FLOW','OPERATIONCOST')
+        ))
+);
+
+ECO_PROC_YCRAP(Y,C,IR,IA,'Straw_Gen','FUEL','Mmoney')$(CCCRRR(C,IR) AND RRRAAA(IR,IA))=
+    OMONEY/IOF1000000*(
+        SUM((S,T), IHOURSINST(S,T)*(
+    VFLOWSOURCE.L(Y,IA,'Straw_Gen','STRAW_GEN_FLOW',S,T) * SOSIBU2INDIC(Y,'Straw_Gen','STRAW_GEN_FLOW','OPERATIONCOST')
+        ))
+);
+
+PARAMETER ECO_INDIC(Y,FLOWINDIC)      "Parameter with the VFLOWINDIC values in Optiflow";
+ECO_INDIC(Y,FLOWINDIC) = VFLOWINDICVALUES.L(Y,FLOWINDIC)*INDICLIMGOAL(FLOWINDIC,'INDICWEIGHT')*IOF0000001;
+
+*PARAMETER ECO_FUELCOST(Y,)
+
+PARAMETER EMI_PROC(Y,C,RRR,AAA,PROC,FLOW)   "Emissions from fossil fuel alternatives used in optiflow (ktonCO2/year)";
+EMI_PROC(Y,C,IR,IA,PROCSOURCE,FLOW)$(CCCRRR(C,IR) AND RRRAAA(IR,IA) AND SOSIBU2INDIC(Y,PROCSOURCE,FLOW,'GHGEMISSION_nonbio'))=
+    (SUM((IS3,T), IHOURSINST(IS3,T) * VFLOWSOURCE.L(Y,IA,PROCSOURCE,FLOW,IS3,T)$(SUM(IPROCTO,FLOWFROMTOPROC(Y,IA,PROCSOURCE,IPROCTO,FLOW))))* SOSIBU2INDIC(Y,PROCSOURCE,FLOW,'GHGEMISSION_nonbio')) * IOF0001
+;
+
+EMI_YCRAG(Y,C,IR,IA,'AROS3_ST_FUELOIL_EXT','FUELOIL','OPTIFLOW','kton')$(CCCRRR(C,IR) AND RRRAAA(IR,IA))=
+    SUM((PROCSOURCE,FLOW)$(SOSIBU2INDIC(Y,PROCSOURCE,FLOW,'GHGEMISSION_nonbio')),EMI_PROC(Y,C,IR,IA,PROCSOURCE,FLOW))
+
+;
+
+OBJ_YCR(Y,C,IR,'OPTIFLOW_INVESTMENT','Mmoney')$CCCRRR(C,IR)=
+    SUM((IA,PROC)$(RRRAAA(IR,IA)),
+        ECO_PROC_YCRAP(Y,C,IR,IA,PROC,'INVESTMENT','Mmoney')
+);
+OBJ_YCR(Y,C,IR,'OPTIFLOW_FIXED','Mmoney')$CCCRRR(C,IR)=
+    SUM((IA,PROC)$(RRRAAA(IR,IA)),
+        ECO_PROC_YCRAP(Y,C,IR,IA,PROC,'FIXED','Mmoney')
+);
+OBJ_YCR(Y,C,IR,'OPTIFLOW_FUEL','Mmoney')$CCCRRR(C,IR)=
+    SUM((IA,PROC)$(RRRAAA(IR,IA)),
+        ECO_PROC_YCRAP(Y,C,IR,IA,PROC,'FUEL','Mmoney')
+);  
+
+
+
+PARAMETER VFLOWCCU_A(Y,AAA,PROCSOURCE,FLOW)   "CO2 utilized from Balmorel";
+VFLOWCCU_A(Y,IA,PROCSOURCE,FLOW)$(PROC_T(PROCSOURCE) AND ICO2(PROCSOURCE,FLOW)) =  SUM((S,T),VFLOWSOURCE.L(Y,IA,PROCSOURCE,FLOW,S,T)*IHOURSINST(S,T));
+VFLOWCCU_A(Y,IA,PROCSOURCE,FLOW)$(NOT PROC_T(PROCSOURCE) AND ICO2(PROCSOURCE,FLOW)) =  SUM((S,T),VFLOWSOURCE.L(Y,IA,PROCSOURCE,FLOW,S,T)*IHOURSINSTWWT(S,T));
+PARAMETER VFLOWCCU_C(Y,C,PROCSOURCE,FLOW)   "CO2 utilized from Balmorel";
+VFLOWCCU_C(Y,C,PROCSOURCE,FLOW) = SUM(IA$(ICA(C,IA)), VFLOWCCU_A(Y,IA,PROCSOURCE,FLOW));
+
+* RE-fuel prices
+Parameter RE_fuel_Price(Y,C,PROC,FLOW)'RE-fuel price (� 2015/GJ)';
+RE_fuel_Price(Y,C,PROC,FLOW)=QMINFLOW_C.M(Y,C,PROC,FLOW) / IWEIGHTY(Y);
+
+
+
+*_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+*----Original
+$ontext
+execute_unload "Optiflow_MainResults.gdx" EPrice_RST, HPrice_AST, EDemand_RST, EDemand_R, Edemand_CST, Edemand_C, Hdemand_AST, EPrice_R, EPrice_CST, EPrice_C, HPrice_AS, HPrice_A, HPrice_C, EProduction_RST, ETrade_RST,
+Eproduction_CST, ETrade_CST, EProduction_R, EProduction_C, ETrade_R, ETrade_C, Hproduction_AST, Hproduction_AS, Hproduction_A, Hproduction_CST, Hproduction_CS, Hproduction_C, FuelConsumption_C, FuelConsumption_TOTAL,
+Elec_Capacity,Heat_Capacity,VOBJ,VGKN,VX_T,VXKN,
+VFLOW,VFLOWTRANS,VPROCKAPNEW,Hproduction_AST_Opti,
+*RE_GasFuel_AST_Opti,RE_Fuel_AST_Opti_A,RE_Fuel_AST_Opti_C,RE_Gas_AST_Opti,RE_Gas_AST_Opti_A,RE_Gas_AST_Opti_C,
+*Resource_use_Opti_C,Resource_use_AST_Opti,Resource_use_Opti_A,
+VFLOW_Opti_A,VFLOW_Opti_C,VFLOWSOURCE_Opti_A,VFLOWSOURCE_Opti_C,VFLOWTRANS_Opti_A,VFLOWBUFFER_Opti_C
+RE_fuel_Price
+$offtext
+
+execute_unload "Optiflow_MainResults.gdx" VOBJ,VGKN,VX_T,VXKN,
+*VFLOW
+VFLOWTRANS,VPROCKAPNEW,VPROCKAPACCUMNET,VFLOWTRANS_Opti_A,VFLOWTRANS_Opti_C,ECO_PROC_YCRAP,OBJ_YCR,ECO_INDIC
+*RE_GasFuel_AST_Opti,RE_Fuel_AST_Opti_A,RE_Fuel_AST_Opti_C,RE_Gas_AST_Opti,RE_Gas_AST_Opti_A,RE_Gas_AST_Opti_C,
+*Resource_use_Opti_C,Resource_use_AST_Opti,Resource_use_Opti_A,
+VFLOW_Opti_A,VFLOW_Opti_C,VFLOWSOURCE_Opti_A,VFLOWSOURCE_Opti_C,VFLOWBUFFER_Opti_C,VFLOWCCU_A,VFLOWCCU_C,EMI_PROC,EMI_YCRAG
+RE_fuel_Price
+*EL_PRICE_YCRST, EL_PRICE_YCR
+*DH_PRICE_YCRAST, DH_PRICE_YCRA
+PRO_YCRAGFST, PRO_YCRAGF
+*Hproduction_AST_Opti, Hproduction_A_Opti
+VFLOWSTORAGE_Opti_A,VFLOWSTORAGE_Opti_C
+*MASON
+
+$ONTEXT
+$if     EXIST '../addons/_hooks/Outputgdx.inc' $INCLUDE      '../addons/_hooks/Outputgdx.inc';
+$if not EXIST '../addons/_hooks/Outputgdx.inc' $INCLUDE '../../base/addons/_hooks/Outputgdx.inc';
+$OFFTEXT
+
+;
+
+
+*End of the output file
