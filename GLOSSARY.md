@@ -1,6 +1,6 @@
 # Balmorel
 
-Balmorel is an open-source energy system model, written in GAMS. It finds the least-cost investment in and operation of electricity, heat and other energy commodities across interconnected regions.
+Balmorel is an open-source energy system optimisation model, written in GAMS. It finds the least-cost investment and operation of electricity, heat and other energy commodities across interconnected regions.
 
 ## Project structure
 
