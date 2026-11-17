@@ -1,0 +1,4 @@
+[submodule "base/data"]
+	path = base/data
+	url = git@github.com:balmorelcommunity/Balmorel_data.git
+	branch = madsen_2025_eu-or-national

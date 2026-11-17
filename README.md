@@ -1,6 +1,14 @@
+# European or national-level emission reduction policy? Effectiveness and energy system implications
+
+Framework and data for [Theis Madsen et al. 2025](https://www.sciencedirect.com/science/article/pii/S0306261925004027). To install both, make sure to include the --recurse-submodules flag:
+
+```
+git clone -b madsen_2025_eu-or-national --recurse-submodules git@github.com:balmorelcommunity/Balmorel.git
+```
+
 # Balmorel
 
-Check out [the documentation](https://balmorelcommunity.github.io/Balmorel/index.html) for tutorials on getting started with the Balmorel energy system model. 
+Check out [the documentation](https://balmorelcommunity.github.io/Balmorel/index.html) for tutorials on getting started with the Balmorel energy system model.
 
 Data is included in the [Balmorel_data repository](https://github.com/balmorelcommunity/Balmorel_data), which we recommend cloning to base/ for version control of both base data and framework. Note: The cloned folder should be renamed from "Balmorel_data" to "data" to function properly.
 
