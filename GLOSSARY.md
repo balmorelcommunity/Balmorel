@@ -56,9 +56,9 @@ _Avoid_: plant, unit, generator
 An energy input that technologies use, including non-combustible resources such as wind, sun and water.
 _Avoid_: energy source, resource
 
-**Investment run**:
-A run in which Balmorel decides new capacity as well as how to operate it.
-_Avoid_: expansion run, capacity run
+**Capacity expansion run**:
+A run in which Balmorel optimises capacities (investments and decommissioning) as well as how to operate it during the chosen time slices.
+_Avoid_: investment run
 
 **Operational run**:
 A least-cost optimisation of energy system operation with investment capacities fixed, based on the results of an earlier Capacity Expansion run. It may be performed at a higher temporal resolution or across different weather years.
