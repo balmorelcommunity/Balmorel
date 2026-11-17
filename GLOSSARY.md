@@ -61,5 +61,5 @@ A run in which Balmorel decides new capacity as well as how to operate it.
 _Avoid_: expansion run, capacity run
 
 **Operational run**:
-A run with capacities fixed from an earlier investment run, in which Balmorel decides only how to operate them, often over more time periods or other weather years.
+A least-cost optimisation of energy system operation with investment capacities fixed, based on the results of an earlier Capacity Expansion run. It may be performed at a higher temporal resolution or across different weather years.
 _Avoid_: dispatch run, simulation run
