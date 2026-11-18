@@ -24,7 +24,7 @@ Balmorel is a modelling tool that can be used by energy system experts, energy c
 
 ## How is Balmorel supported and further developed?
 
-The model is developed and distributed under open source ideals. The source code has been provided on its homepage since 2001 and was assigned the [ISC license](https://opensource.org/licenses/ISC) in 2017. Ample documentation is available in the folder [within this repository](base/documentation). We also refer to information on [openmod](https://wiki.openmod-initiative.org/wiki/Balmorel). Presently the model development is mainly project driven, with a users' network around it, supporting the open source development idea.
+The model is developed and distributed under open source ideals. The source code has been provided on its homepage since 2001 and was assigned the [ISC license](https://opensource.org/licenses/ISC) in 2017. Ample documentation is available in the folder [within this repository](docs). We also refer to information on [openmod](https://wiki.openmod-initiative.org/wiki/Balmorel). Presently the model development is mainly project driven, with a users' network around it, supporting the open source development idea.
 
 ### Procedure for Merging Changes to Master
 

@@ -21,7 +21,7 @@ SCALAR IBALVERSN 'This version of Balmorel' /503.20240622/;
 
 * This is a preliminary version of Balmorel 3.03.
 * It is intended for review and commenting.
-* See a short list of changes since previous version 3.02 in base/documentation/Balmorel303.txt.
+* See a short list of changes since previous version 3.02 in docs/Balmorel303.txt.
 * It is scheduled that a final version 3.03 will be available early 2017.
 
 *-------------------------------------------------------------------------------

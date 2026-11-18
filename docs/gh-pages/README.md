@@ -14,7 +14,7 @@ On the long-term: interlink development of Balmorel with development of document
 
 The documentation can be tested on a local machine by running:
 ```bash
-sphinx-build base/documentation/gh-pages build
+sphinx-build docs/gh-pages build
 ```
 Then, build/index.html can be opened by, e.g., VS Code's "Go Live" extension and the website can be browsed.
 
@@ -36,7 +36,7 @@ dependencies:
 
 For more information on how to manage and install virtual python environments check out [this resource](https://docs.python.org/3/library/venv.html), or if you are a conda user, [this resource](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
-The correct virtual environment can be installed using the [provided .yaml file](base/documentation/gh-pages/docs_environment.yml) that is equal to the environments above.
+The correct virtual environment can be installed using the [provided .yaml file](docs_environment.yml) that is equal to the environments above.
 
 ## Example
 

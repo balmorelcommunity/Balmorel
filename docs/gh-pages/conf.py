@@ -5,7 +5,7 @@ release = "5.0"
 
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", ".testenv", ".testenv/**", "README.md"]
 
-conf_py_path = "/base/documentation/gh-pages"  # with leading and trailing slash
+conf_py_path = "/docs/gh-pages"  # with leading and trailing slash
 
 html_static_path = ["css"]
 
