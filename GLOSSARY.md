@@ -4,6 +4,18 @@ Balmorel is an open-source energy system optimisation model, written in GAMS. It
 
 ## Project structure
 
+**Framework**:
+The model code, addons and tools of Balmorel, which every scenario runs on.
+_Avoid_: model repo, code
+
+**Base data**:
+The dataset in `base` that every scenario falls back on, kept in a separate repository from the framework.
+_Avoid_: data repo, master data, input data
+
+**Preprocessing tool**:
+Anything that turns raw data, such as statistics, technology catalogues or weather data, into the .inc files of base data or of a scenario, e.g. an Excel workbook, a Snakemake pipeline or a Python script.
+_Avoid_: preprocessing framework, data pipeline
+
 **Base**:
 The `base` folder, which holds the reference model, addons and data that every scenario falls back on.
 _Avoid_: master model, default folder
