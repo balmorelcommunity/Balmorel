@@ -19,7 +19,7 @@ If you use [VS Code](https://code.visualstudio.com/?wt.mc_id=DX_841432) with git
 
 ## Choosing a solver and license
 
-By default Balmorel uses the open-source solver [HiGHS](https://highs.dev/), which is included in the [Free Personal GAMS License](https://www.gams.com/free-licenses/). However, when trying to solve larger models, users may need a commercial solver, available through the free academic or commercial license.
+By default the Balmorel settings select the open-source solver [HiGHS](https://highs.dev/), which is included in the [Free Personal GAMS License](https://www.gams.com/free-licenses/). However, when trying to solve larger models, users may need a commercial solver, available through the free academic or commercial license.
 
 :::{tip}
 The solver can be chosen in the `base/model/balgams.opt` file.
