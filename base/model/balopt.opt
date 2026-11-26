@@ -162,7 +162,7 @@ $setglobal SEASONALCOP
 *------------START OF: OFFSHORE GRIDS--------------------------
 * overall control variable OFFSHOREGRID must be 'yes' if any of the other OFFSHOREGRID controls are:
 * Allow to build a complicated offshore grid with hubs in the sea. Requires MIP to work as intended since technologies are modelled with economies of scale via SOS variables. If RMIP is used, it will become a linear problem.
-$setglobal OFFSHOREGRID NO
+$setglobal OFFSHOREGRID yes
 *!option yes
 
 *Adds Economies of Scale in generation elements that are part of offshore grids. It requires to use the MIP solver, so remember to activate it.
@@ -954,7 +954,7 @@ putclose fileMERGEWITHBASEbat;
 
 * The model type has implications for the solver type.
 * Classical model types are LP (Linear Programming), QP (Quadratic Programming), MIP (Mixed Integer Programming).
-$setglobal SOLVETYPE LP
+$setglobal SOLVETYPE RMIP
 *!option LP      "Linear Programming"
 *!option RMIP    "Relaxed Mixed Integer Programming"
 *!option MIP     "Mixed Integer Programming"

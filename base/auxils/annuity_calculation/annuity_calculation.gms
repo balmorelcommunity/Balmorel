@@ -65,6 +65,25 @@ $if not EXIST '../data/GGG.inc' $INCLUDE '../../base/data/GGG.inc';
 $include   "../../base/addons/industry/bb4/industry_gggadditions.inc";
 $include   "../../base/addons/indivusers/bb4/indivusers_gggadditions.inc";
 $include   "../../base/addons/hydrogen/bb4/hydrogen_gggadditions.inc";
+*INCLUDE GGG FROM OFFSHOREGRID ADDON (hub platforms, hub wind, ...)
+$setglobal OFFSHOREGRID_GGG_FILE ''
+$if EXIST '../../base/data/OFFSHOREGRID_GGG.inc' $setglobal OFFSHOREGRID_GGG_FILE '../../base/data/OFFSHOREGRID_GGG.inc'
+$if EXIST '../data/OFFSHOREGRID_GGG.inc'         $setglobal OFFSHOREGRID_GGG_FILE '../data/OFFSHOREGRID_GGG.inc'
+$onmulti
+$if not '%OFFSHOREGRID_GGG_FILE%'=='' $INCLUDE '%OFFSHOREGRID_GGG_FILE%';
+$offmulti
+
+SET IGOFFSHOREGRID(GGG) "Technologies added by the offshore grid add-on (written to OFFSHOREGRID_ANNUITYCG.inc, not to ANNUITYCG.inc)";
+* Read OFFSHOREGRID_GGG.inc on its own in a helper run, so that the add-on technologies can be kept apart from the main ones
+$if '%OFFSHOREGRID_GGG_FILE%'=='' $goto noOffshoreGrid
+$onecho > "%gams.scrdir%offshoregrid_ggg.gms"
+$include '%OFFSHOREGRID_GGG_FILE%'
+$offecho
+$call.checkErrorLevel gams "%gams.scrdir%offshoregrid_ggg.gms" lo=0 gdx="%gams.scrdir%offshoregrid_ggg.gdx"
+$gdxin "%gams.scrdir%offshoregrid_ggg.gdx"
+$load IGOFFSHOREGRID=GGG
+$gdxin
+$label noOffshoreGrid
 
 SET G(GGG)    "Generation technologies in the simulation"
 $if     EXIST '../data/G.inc' $INCLUDE         '../data/G.inc';
@@ -73,6 +92,7 @@ $if not EXIST '../data/G.inc' $INCLUDE '../../base/data/G.inc';
 $include   "../../base/addons/industry/bb4/industry_gadditions.inc";
 $include   "../../base/addons/indivusers/bb4/indivusers_gadditions.inc";
 $include   "../../base/addons/hydrogen/bb4/hydrogen_gadditions.inc";
+$if not '%OFFSHOREGRID_GGG_FILE%'=='' $include   "../../base/addons/offshoregrid/bb4/offshoregrid_gadditions.inc";
 
 SET GDATASET     "Generation technology data"
 $if     EXIST '../data/GDATASET.inc' $INCLUDE      '../data/GDATASET.inc';
@@ -83,6 +103,7 @@ $if     EXIST '../data/GDATA.inc' $INCLUDE         '../data/GDATA.inc';
 $if not EXIST '../data/GDATA.inc' $INCLUDE '../../base/data/GDATA.inc';
 *INCLUDE GDATA FROM OTHER ADDONS
 $include   "../../base/addons/hydrogen/bb4/hydrogen_gdataadditions.inc";
+$if not '%OFFSHOREGRID_GGG_FILE%'=='' $include   "../../base/addons/offshoregrid/bb4/offshoregrid_gdataadditions.inc";
 
 SCALAR DISCOUNTRATE "Discount rate by country (fraction)"
 $if     EXIST '../data/DISCOUNTRATE.inc' $INCLUDE         '../data/DISCOUNTRATE.inc';
@@ -181,8 +202,19 @@ file annuity_generation /'../../base/auxils/annuity_calculation/ANNUITYCG.inc'/;
 annuity_generation.nd  = 12;
 put annuity_generation;
 put '*PARAMETER ANNUITYCG(CCC,GGG) CALCULATED WITH AUXILS' //
-loop((CCC,GGG)$(GDATA(GGG,'GDKVARIABL') EQ 1),
+* Offshore grid add-on technologies are written to OFFSHOREGRID_ANNUITYCG.inc only, so the main file also works without the add-on
+loop((CCC,GGG)$((GDATA(GGG,'GDKVARIABL') EQ 1) AND NOT IGOFFSHOREGRID(GGG)),
           put ANNUITYCG.tn(CCC,GGG),'=' ANNUITYCG(CCC,GGG) :0 ';' /
+);
+putclose;
+
+file annuity_offshoregrid /'../../base/auxils/annuity_calculation/OFFSHOREGRID_ANNUITYCG.inc'/;
+annuity_offshoregrid.nd  = 12;
+put annuity_offshoregrid;
+put '*ANNUITY CG ADDITIONS FROM OFFSHOREGRID ADDON (CALCULATED WITH AUXILS)' /;
+put '*Calculated with ', (100*DISCOUNTRATE):0:2, '% discount rate' /;
+loop(GGG$(IGOFFSHOREGRID(GGG) AND (GDATA(GGG,'GDKVARIABL') EQ 1)),
+          put "ANNUITYCG(CCC,'", GGG.tl:0, "')=", SMAX(CCC, ANNUITYCG(CCC,GGG)):0, ';' /
 );
 putclose;
 
