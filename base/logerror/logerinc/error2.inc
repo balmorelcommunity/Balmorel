@@ -852,6 +852,18 @@ ERRCOUNT2=ERRCOUNT2+1;
 
 IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
 
+* Investable technologies with an investment cost need an annuity (ANNUITYCG), otherwise their investment cost is ignored in the objective
+ISCALAR5 = 10; !! Maximum number of error messages
+ISCALAR1=ERRCOUNT2;
+LOOP((IA,G)$(SUM(Y,IAGKNY(Y,IA,G)) AND (GINVCOST(IA,G) OR GDATA(G,'GDINVCOST0'))
+             AND (NOT SUM(C$ICA(C,IA),ANNUITYCG(C,G)))
+             AND (ERRCOUNT2 LT (ISCALAR1+ISCALAR5))),
+PUT "Error in ANNUITYCG:" ;
+PUT "   Technology " G.TL:48 " can be invested in area " IA.TL:OTLWCRA " but has no annuity (ANNUITYCG), so its investment cost is ignored." /;
+ERRCOUNT2=ERRCOUNT2+1;
+);
+IF((ISCALAR1 LT ERRCOUNT2),PUT "#"/;);
+
 
 
 /*
